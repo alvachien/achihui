@@ -11,19 +11,24 @@ namespace achihui
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            app.Run(async (context) =>
+            app.UseStaticFiles();
+
+            //var physicalFileSystem = new PhysicalFileSystem(webPath);
+            var options = new FileServerOptions
             {
-                await context.Response.WriteAsync("Hello World!");
-            });
+                EnableDefaultFiles = true,
+                //StaticFileSystem = physicalFileSystem
+            };
+            //options.StaticFileOptions.FileSystem = physicalFileSystem;
+            options.StaticFileOptions.ServeUnknownFileTypes = true;
+            options.DefaultFilesOptions.DefaultFileNames = new[] { "index.html" };
+            app.UseFileServer(options);
         }
     }
 }

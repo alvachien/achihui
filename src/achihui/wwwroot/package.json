@@ -12,7 +12,17 @@
   "author": "alvachien",
   "license": "MIT",
   "dependencies": {
-    "angularjs": "0.0.1",
+    "angular": "^1.5.6",
+    "angular-animate": "^1.5.5",
+    "angular-chart.js": "^1.0.0-alpha6",
+    "angular-sanitize": "^1.5.5",
+    "angular-smart-table": "^2.1.8",
+    "angular-touch": "^1.5.5",
+    "angular-translate": "^2.11.0",
+    "angular-ui-bootstrap": "^1.3.2",
+    "angular-ui-router": "^0.3.0",
+    "bootstrap": "^3.3.6",
+    "chart.js": "^2.1.3",
     "jquery": "^2.2.4"
   }
 }

@@ -1,0 +1,26 @@
+﻿{
+  "Common": {
+    "Home": "首页",
+    "ListView": "列表视图",
+    "About": "关于",
+    "Themes": "Themes",
+    "Language": "语言",
+    "Copyright": "版权所有",
+
+    "New": "New",
+    "Create": "Create",
+    "Refresh": "Refresh",
+    "Display": "Display",
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "Search": "Search",
+    "Operations": "Operations",
+    "Acknowledgements": "Acknowledgements"
+  },
+
+  "Command": "命令",
+  "CommandHit": "命令使用",
+  "Error": "错误",
+  "ErrorTraceStatus": "错误追踪状态",
+  "ErrorTrace": "错误追踪"
+}
