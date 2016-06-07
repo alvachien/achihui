@@ -26,8 +26,6 @@
           .when('/welcome', '/home')
           .when('/about', '/home/about')
           .when('/learn', '/home/learn')
-          .when('/commandhit', '/home/commandhit')
-          .when('/errortracestatus', '/home/errortracestatus')
           .when('/errortrace', '/home/errortrace')
 
           // If the url is ever invalid, e.g. '/asdf', then redirect to '/' aka the home state
@@ -66,20 +64,35 @@
               abstract: true,
               template: '<div ui-view></div>'
           })
-          .state('home.learn.word', {
+          .state('home.learn.overview', {
               url: "",
-              templateUrl: 'app/views/commandlist.html',
-              controller: 'CommandListController'
+              templateUrl: 'app/views/learnoverview.html',
+              controller: 'LearnOverviewController'
           })
-          .state('home.commandhit', {
-              url: "/commandhit",
+          .state('home.learn.pos', {
+              url: "/pos",
+              templateUrl: 'app/views/poslist.html',
+              controller: 'POSListController'
+          })
+          .state('home.learn.word', {
+              url: "/word",
               abstract: true,
               template: '<div ui-view></div>'
           })
-          .state('home.commandhit.list', {
+          .state('home.learn.word.list', {
               url: "",
-              templateUrl: 'app/views/commandhitlist.html',
-              controller: 'CommandHitListController'
+              templateUrl: 'app/views/wordlist.html',
+              controller: 'WordListController'
+          })
+          .state('home.learn.sentence', {
+              url: "/sentence",
+              abstract: true,
+              template: '<div ui-view></div>'
+          })
+          .state('home.learn.sentence.list', {
+              url: "",
+              templateUrl: 'app/views/sentencelist.html',
+              controller: 'SentenceListController'
           })
           .state('home.errortrace', {
               url: "/errortrace",
@@ -144,22 +157,22 @@
         function ($scope, $rootScope, $state, $http, $log) {
     	}])
 
-	.controller('CommandListController', ['$scope', '$rootScope', '$state', '$http', '$log',
+	.controller('POSListController', ['$scope', '$rootScope', '$state', '$http', '$log',
         function ($scope, $rootScope, $state, $http, $log) {
-            $scope.arCommandList = [];
+            $scope.arPOSList = [];
             $scope.dispList = [];
 
-            $http.get('http://qianh-pc2a:3500/api/command')
+            $http.get('http://achihapi.azurewebsites.net/api/pos')
                 .then(function (response) {
                     // The response object has these properties:
-                    $scope.arCommandList = [];
+                    $scope.arPOSList = [];
                     if ($.isArray(response.data) && response.data.length > 0) {
                         $.each(response.data, function (idx, obj) {
-                            $scope.arCommandList.push(obj);
+                            $scope.arPOSList.push(obj);
                         });
                     }
 
-                    $scope.dispList = [].concat($scope.arCommandList);
+                    $scope.dispList = [].concat($scope.arPOSList);
                 }, function (response) {
                     // Error occurs!
                 });
