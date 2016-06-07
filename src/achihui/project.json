@@ -43,7 +43,7 @@
   },
 
   "scripts": {
-    "prepublish": "npm install --prefix wwwroot",
+    "prepublish": "cd wwwroot && npm install && cd ..",
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }
