@@ -19,8 +19,9 @@
   },
 
   "Learning": {
+    "POS": "Part of Speech",
     "Word": "Word",
-    "Sentence":  "Sentence"
-  },
+    "Sentence": "Sentence"
+  }
 
 }

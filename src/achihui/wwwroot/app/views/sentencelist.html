@@ -1,7 +1,7 @@
-﻿<div id="viewErrorTraceStatusList">
+﻿<div id="viewErrorTraceList">
     <div class="page-header">
         <h2>
-            <span translate="ErrorTraceStatus">Error Trace Status</span> <small translate="Common.ListView"> List View </small>
+            <span translate="Learning.Sentence">Sentence</span> <small translate="Common.ListView"> List View </small>
         </h2>
 
         <div class="btn-toolbar" role="toolbar" aria-label="...">
@@ -36,21 +36,25 @@
         <thead>
             <tr>
                 <th></th>
-                <th st-sort="statusid">ID</th>
-                <th st-sort="name" translate="Common.Name">Name</th>
-                <th st-sort="statusdesp" translate="Common.Description">Description</th>
+                <th st-sort="traceid" >ID</th>
+                <th st-sort="displayas" translate="Login.DisplayAs">Display As</th>
+                <th st-sort="objname" translate="Learn.ObjectName">Object</th>
+                <th st-sort="categoryname" translate="Common.CategoryName">Category</th>
+                <th st-sort="learndate" translate="Common.Date">Date</th>
                 <th translate="Common.Operations">Operations</th>
             </tr>
             <tr>
-                <th colspan="5"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
+                <th colspan="7"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="row in dispList">
                 <td cs-select="row"></td>
-                <td>{{row.StatusID}}</td>
-                <td>{{row.StatusName}}</td>
-                <td>{{row.StatusDesp}}</td>
+                <td>{{row.UserID}}</td>
+                <td>{{row.UserObject.DisplayAs}}</td>
+                <td>{{row.LearnObject.Name}}</td>
+                <td>{{row.LearnObject.CategoryObject.FullDisplayText}}</td>
+                <td>{{row.LearnDate | date: 'yyyy.MM.dd'}}</td>
                 <td>
                     <button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
                         <i class="glyphicon glyphicon-share">
@@ -69,9 +73,10 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="5" class="text-center">
+                <td colspan="3" class="text-center">
                     <cst-count></cst-count>
                 </td>
+                <td colspan="4" class="text-center" st-pagination="" st-items-by-page="20"></td>
             </tr>
         </tfoot>
     </table>

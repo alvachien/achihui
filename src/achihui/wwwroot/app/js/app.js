@@ -94,26 +94,6 @@
               templateUrl: 'app/views/sentencelist.html',
               controller: 'SentenceListController'
           })
-          .state('home.errortrace', {
-              url: "/errortrace",
-              abstract: true,
-              template: '<div ui-view></div>'
-          })
-          .state('home.errortrace.list', {
-              url: "",
-              templateUrl: 'app/views/errortracelist.html',
-              controller: 'ErrorTraceListController'
-          })
-          .state('home.errortracestatus', {
-              url: "/errortracestatus",
-              abstract: true,
-              template: '<div ui-view></div>'
-          })
-          .state('home.errortracestatus.list', {
-              url: "",
-              templateUrl: 'app/views/errortracestatuslist.html',
-              controller: 'ErrorTraceStatusListController'
-          })
           .state('home.userdetail', {
               url: '/userdetail',
               templateUrl: 'app/views/userdetail.html'
@@ -178,33 +158,33 @@
                 });
         }])
 
-	.controller('CommandHitListController', ['$scope', '$rootScope', '$state', '$http', '$log',
+	.controller('WordListController', ['$scope', '$rootScope', '$state', '$http', '$log',
         function ($scope, $rootScope, $state, $http, $log) {
-            $scope.arCommandHitList = [];
+            $scope.arWordList = [];
             $scope.dispList = [];
 
-            $http.get('http://qianh-pc2a:3500/api/commandhit')
+            $http.get('http://achihapi.azurewebsites.net/api/word')
                 .then(function (response) {
                     // The response object has these properties:
-                    $scope.arCommandHitList = [];
+                    $scope.arWordList = [];
                     if ($.isArray(response.data) && response.data.length > 0) {
                         $.each(response.data, function (idx, obj) {
-                            $scope.arCommandHitList.push(obj);
+                            $scope.arWordList.push(obj);
                         });
                     }
 
-                    $scope.dispList = [].concat($scope.arCommandHitList);
+                    $scope.dispList = [].concat($scope.arWordList);
                 }, function (response) {
                     // Error occurs!
                 });
         }])
 
-	.controller('ErrorTraceListController', ['$scope', '$rootScope', '$state', '$http', '$log',
+	.controller('SentenceListController', ['$scope', '$rootScope', '$state', '$http', '$log',
         function ($scope, $rootScope, $state, $http, $log) {
             $scope.arErrorTraceList = [];
             $scope.dispList = [];
 
-            $http.get('http://qianh-pc2a:3500/api/errortrace')
+            $http.get('http://achihapi.azurewebsites.net/api/sentence')
                 .then(function (response) {
                     // The response object has these properties:
                     $scope.arErrorTraceList = [];

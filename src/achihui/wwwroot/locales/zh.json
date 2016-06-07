@@ -7,20 +7,20 @@
     "Language": "语言",
     "Copyright": "版权所有",
 
-    "New": "New",
-    "Create": "Create",
-    "Refresh": "Refresh",
-    "Display": "Display",
-    "Edit": "Edit",
-    "Delete": "Delete",
-    "Search": "Search",
-    "Operations": "Operations",
-    "Acknowledgements": "Acknowledgements"
+    "New": "新建",
+    "Create": "创建",
+    "Refresh": "刷新",
+    "Display": "显示",
+    "Edit": "编辑",
+    "Delete": "删除",
+    "Search": "搜索",
+    "Operations": "操作",
+    "Acknowledgements": "致谢"
   },
 
-  "Command": "命令",
-  "CommandHit": "命令使用",
-  "Error": "错误",
-  "ErrorTraceStatus": "错误追踪状态",
-  "ErrorTrace": "错误追踪"
+  "Learning": {
+    "POS": "词性",
+    "Word": "单词",
+    "Sentence": "句子"
+  }
 }
