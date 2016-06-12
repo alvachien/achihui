@@ -6,6 +6,7 @@
     "Themes": "Themes",
     "Language": "语言",
     "Copyright": "版权所有",
+    "ID":  "ID",
 
     "New": "新建",
     "Create": "创建",
@@ -24,7 +25,8 @@
   "Learning": {
     "POS": "词性",
     "Word": "单词",
-    "Sentence": "句子"
+    "Sentence": "句子",
+    "Explain": "Explain"
   },
 
   "Todo": {

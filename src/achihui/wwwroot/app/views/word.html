@@ -12,315 +12,131 @@
         </div>
     </div>
 
-    <ul class="nav nav-tabs">
-        <li role="presentation" ng-class="showPart === 'hdr' ? 'active' : ''"><a role="button" ng-click="showPart = 'hdr'"><span translate="Common.Header">Header</span></a></li>
-        <li role="presentation" ng-class="showPart === 'det' ? 'active' : ''"><a role="button" ng-click="showPart = 'det'"><span translate="Common.Detail">Detail</span></a></li>
-        <li role="presentation" ng-class="showPart === 'reg' ? 'active' : ''"><a role="button" ng-click="showPart = 'reg'"><span translate="Learn.Participants">Participants</span></a></li>
-    </ul>
-
-    <!-- Header -->
-    <div class="container" ng-show="showPart === 'hdr'">
-        <br>
-        <form class="form-horizontal" role="form" name="frmObj">
-            <div class="form-group">
-                <label class="control-label col-sm-2" translate="Common.Name">Name</label>
-                <div class="col-sm-10 input-group">
-                    <input type="text" class="form-control" width="300" ng-readonly="isReadonly" ng-model="CurrentLearnPlan.Name">
-                </div>
+    <form class="form-horizontal" role="form" name="frmObj">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="iptItemID" translate="Common.ID">ID:</label>
+            <div class="col-sm-10">
+                <p class="form-control-static" id="iptItemID">{{WordObject.WordID}}</p>
             </div>
+        </div>
 
-            <div class="form-group">
-                <label class="control-label col-sm-2" translate="Common.Comment">Comment</label>
-                <div class="col-sm-10 input-group">
-                    <input type="text" class="form-control" width="300" ng-readonly="isReadonly" ng-model="CurrentLearnPlan.Comment">
-                </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="iptWord" translate="Learning.Word">Word:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="iptWord" ng-readonly="ActivityID == 3" ng-model="WordObject.WordString">
             </div>
-        </form>
-    </div>
+        </div>
 
-    <!-- Details -->
-    <div class="container" ng-show="showPart === 'det'">
-        <!-- Tables -->
-        <table st-table="detailColl" st-safe-src="PlanDetailCollection" class="table table-striped table-hover">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="iptTags" translate="Common.Tags">Tags:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="iptTags" ng-readonly="ActivityID == 3" ng-model="WordObject.Tags">
+            </div>
+        </div>
+
+        <table st-table="diCollection" st-safe-src="ItemsCollection" class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th st-sort="objID" translate="Common.ID">Object ID</th>
-                    <th st-sort="objName" translate="Learn.LearningObject">Object Name</th>
-                    <th st-sort="defDay" translate="Learn.DefferedDays">Deffered Days</th>
-                    <th st-sort="recType" translate="Learn.RecurType">Recur. Type</th>
+                    <th st-sort="itemid" translate="Common.ID">ID</th>
+                    <th st-sort="pos" translate="Learning.POS">POSName</th>
+                    <th st-sort="lang" translate="Common.Language">Lang</th>
+                    <th st-sort="explain" translate="Learning.Explain">Explain</th>
                     <th translate="Common.Operations">Operations</th>
                 </tr>
                 <tr>
-                    <th colspan="5"><input st-search="" class="form-control" placeholder="{{ 'Search' | translate }}" type="text" /></th>
+                    <th colspan="8"><input st-search class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
                 </tr>
             </thead>
             <tbody>
-                <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanDetailCollection">
-                    <td>{{row.ObjectID}}</td>
-                    <td>{{row.LearnObjectObject.Name}}</td>
-                    <td>{{row.DeferredDay}}</td>
-                    <td>{{row.RecurTypeDisplay | translate}}</td>
+                <tr ng-repeat="row in diCollection">
+                    <td>{{row.ExplainID}}</td>
+                    <td>{{row.POSName}}</td>
+                    <td>{{row.LangID}}</td>
+                    <td>{{row.ExplainString}}</td>
                     <td>
-                        <button type="button" class="btn btn-sm" ng-click="displayDetail(row)">
+                        <button type="button" class="btn btn-sm" ng-click="displayItem(row.ItemID)" tooltip="{{'Common.Display' | translate}}">
                             <i class="glyphicon glyphicon-share">
                             </i>
                         </button>
-                        <button type="button" class="btn btn-sm" ng-click="editDetail(row)">
+                        <button type="button" class="btn btn-sm" ng-click="editItem(row.ItemID)" tooltip="{{'Common.Edit' | translate}}">
                             <i class="glyphicon glyphicon-edit">
                             </i>
                         </button>
-                        <button type="button" ng-click="removeDetail(row)" class="btn btn-sm btn-danger">
+                        <button type="button" class="btn btn-sm btn-danger" ng-click="removeItem(row.ItemID)" tooltip="{{'Common.Delete' | translate}}">
                             <i class="glyphicon glyphicon-remove-circle">
                             </i>
                         </button>
                     </td>
                 </tr>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">
+                        <cst-count></cst-count>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
 
-        <br />
-        <div class="panel panel-default" style="margin: 30px, 10px;" ng-hide="PlanDetailCollection.length <= 0">
-            <div class="panel-heading">{{'Learn.SimulatePlan' | translate}}</div>
-            <div class="panel-body">
-                <div class="input-group">
-                    <input type="text" class="form-control" uib-datepicker-popup="{{DateFormat}}" ng-model="simulateDate" is-open="isDateOpened"
-                           datepicker-options="dateOptions" close-text="{{'Common.Close' | translate}}" />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="openSimulateDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                        <button class="btn btn-default" ng-click="showSimulate()" ng-hide="isSimulate == true " translate="Learn.Simulate">Simulate</button>
-                        <button class="btn btn-default" ng-click="hideSimulate()" ng-hide="isSimulate == false" translate="Learn.HideSimulate">Hide Simulate</button>
-                    </span>
-                </div>
-
-                <div ng-show="isSimulate == true">
-                    <table st-table="simuColl" st-safe-src="PlanDetailSimulCollection" class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th st-sort="objID" translate="Common.ID">Object ID</th>
-                                <th st-sort="objName" translate="Learn.LearningObject">Object Name</th>
-                                <th st-sort="defDay" translate="Common.Date">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanDetailSimulCollection">
-                                <td>{{row.ObjectID}}</td>
-                                <td>{{row.ObjectName}}</td>
-                                <td>{{row.PlanDate | date:'yyyy.MM.dd' }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <br />
-
-        <!-- Then, default one -->
+        <!-- Explain Detail -->
         <div class="panel panel-default" style="margin: 30px, 10px;">
-            <div class="panel-heading">{{DetailActivity | translate}}</div>
+            <div class="panel-heading">{{ItemActivity | translate}}</div>
 
             <div class="panel-body">
-                <form class="form-horizontal" role="form" name="frmItem">
+                <div class="form-horizontal" role="form">
                     <div class="form-group">
-                        <label class="control-label col-sm-2" translate="Learn.LearningObject">Learning Object:</label>
+                        <label class="control-label col-sm-2" for="iptItemID" translate="Common.ID">ID:</label>
                         <div class="col-sm-10">
-                            <selectize placeholder='Select a learn object...' options='arLearnObject'
-                                       config="learnobjectConfig" ng-model="SelectedPlanDetail.ObjectID"
+                            <p class="form-control-static" id="iptItemID">{{SelectedExplain.ItemID}}</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" translate="Learning.POS">POS:</label>
+                        <div class="col-sm-10">
+                            <selectize placeholder='Pick account...' options='arPOSAbb' config="posConfig" ng-model="SelectedExplain.POSAbb"
                                        ng-disabled="isReadonly" required="required"></selectize>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-2" translate="Learn.RecurType">Recur Type:</label>
+                        <label class="control-label col-sm-2" translate="Common.Language">Language:</label>
                         <div class="col-sm-10">
-                            <select class="form-control" ng-model="SelectedPlanDetail.RecurType" ng-disabled="isReadonly" required="required">
-                                <option ng-disabled="isReadonly" value="1" translate="Learn.OneTime">One Time</option>
-                                <option ng-disabled="isReadonly" value="2" translate="Learn.HEbbinghaus">H. Ebbinghaus</option>
-                            </select>
+                            <selectize options='arLang' config="langConfig" ng-model="SelectedExplain.LangID"
+                                       ng-disabled="isReadonly" required="required"></selectize>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-2" translate="Learn.DefferedDays">Defer Days:</label>
+                        <label class="control-label col-sm-2" for="iptItemDesp" translate="Learning.Explain">Explain: </label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" ng-readonly="isReadonly" ng-model="SelectedPlanDetail.DeferredDay" required="required"></input>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" translate="Common.Comment">Comment: </label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" ng-readonly="isReadonly" ng-model="SelectedPlanDetail.Comment"></input>
+                            <input type="text" id="iptItemDesp" ng-readonly="isReadonly" class="form-control" ng-model="SelectedExplain.ExplainString" required="required">
                         </div>
                     </div>
 
                     <!-- Button group -->
                     <div class="form-group">
                         <div class="col-sm-10">
-                            <button class="btn btn-default btn-primary" ng-click="saveCurrentDetail()"
-                                    ng-hide="isReadonly" translate="Learn.SaveCurrentDetail">
-                                Save Detail
+                            <button class="btn btn-default btn-primary" ng-click="saveCurrentItem()" ng-hide="isReadonly"
+                                    translate="Finance.SaveCurrentItem">
+                                Save Item
                             </button>
-                            <button class="btn btn-danger" ng-click="cancelCurrentDetail()"
-                                    translate="Learn.CancelDetailEditing">
-                                Cancel Detail Editing
-                            </button>
+                            <button class="btn btn-danger" ng-click="cancelCurrentItem()" translate="Finance.CancelItemEditing">Cancel Item Editing</button>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Participants -->
-    <div class="container" ng-show="showPart === 'reg'">
-        <!-- Tables -->
-        <table st-table="partColl" st-saft-src="PlanParticipantCollection" class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th st-sort="userID" translate="Login.User">User</th>
-                    <th st-sort="userAlias" translate="Login.DisplayAs">Display As</th>
-                    <th st-sort="stdate" translate="Learn.StartDate">Start Date</th>
-                    <th st-sort="sts" translate="Common.Status">Status</th>
-                    <th translate="Common.Operations">Operations</th>
-                </tr>
-                <tr>
-                    <th colspan="5"><input st-search="" class="form-control" placeholder="{{ 'Search' | translate }}" type="text" /></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanParticipantCollection">
-                    <td>{{row.UserID}}</td>
-                    <td>{{row.UserObject.DisplayAs}}</td>
-                    <td>{{row.StartDate | date:'yyyy.MM.dd' }}</td>
-                    <td>{{row.StatusDisplay | translate}}</td>
-                    <td>
-                        <button type="button" class="btn btn-sm" ng-click="displayParticipant(row)">
-                            <i class="glyphicon glyphicon-share">
-                            </i>
-                        </button>
-                        <button type="button" class="btn btn-sm" ng-click="editParticipant(row)">
-                            <i class="glyphicon glyphicon-edit">
-                            </i>
-                        </button>
-                        <button type="button" class="btn btn-sm" ng-click="showComparison(row)">
-                            <i class="glyphicon glyphicon-adjust">
-                            </i>
-                        </button>
-                        <button type="button" ng-click="removeParticipant(row)" class="btn btn-sm btn-danger">
-                            <i class="glyphicon glyphicon-remove-circle">
-                            </i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <br />
-        <div class="panel panel-default" style="margin: 30px, 10px;" ng-hide="isCompare == false">
-            <div class="panel-heading">{{'Learn.PlanDetailComparison' | translate}}</div>
-            <div class="panel-body">
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" ng-click="hideComparison()">Hide Comparison</button>
-                    </span>
-                </div>
-
-                <div ng-show="isCompare == true">
-                    <table st-table="compTable" st-safe-src="PlanPartCompCollection" class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th st-sort="objID" translate="Common.ID">Object ID</th>
-                                <th st-sort="objName" translate="Learn.LearningObject">Object Name</th>
-                                <th st-sort="pdate" translate="Common.Date">Date</th>
-                                <th st-sort="hdate" translate="Learn.StartDate">Start Date</th>
-                                <th st-sort="diff" translate="Learn.DefferedDays">Deffered Days</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr st-select-row="row" st-select-mode="multiple" ng-repeat="row in PlanPartCompCollection track by $index">
-                                <td>{{row.ObjectID}}</td>
-                                <td>{{row.ObjectName}}</td>
-                                <td>{{row.PlanDate | date:'yyyy.MM.dd' }}</td>
-                                <td>{{row.HistoryDate | date:'yyyy.MM.dd' }}</td>
-                                <td>{{row.Difference }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
-        <br />
 
-        <!-- Then, default one -->
-        <div class="panel panel-default" style="margin: 30px, 10px;">
-            <div class="panel-heading">{{ParticipantActivity | translate}}</div>
-
-            <div class="panel-body">
-                <form class="form-horizontal" role="form" name="frmItem">
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" translate="Login.User">User:</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" ng-model="SelectedPlanParticipant.UserID" ng-disabled="isReadonly"
-                                    ng-options="usr.UserID as usr.DisplayAs for usr in arUserList"></select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" translate="Learn.StartDate">Start Date:</label>
-                        <div class="col-sm-10">
-                            <div class="input-group">
-                                <input type="text" class="form-control" uib-datepicker-popup="{{DateFormat}}" ng-model="SelectedPlanParticipant.StartDate" is-open="isStartDateOpened"
-                                       datepicker-options="dateOptions" close-text="{{'Common.Close' | translate}}" />
-                                <span class="input-group-btn">
-                                    <button type="button" class="btn btn-default" ng-click="openStartDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" translate="Common.Status">Status</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" ng-model="SelectedPlanParticipant.Status" ng-disabled="isReadonly" required="required">
-                                <option ng-disabled="isReadonly" value="1" translate="Common.NotStart">Not Start</option>
-                                <option ng-disabled="isReadonly" value="2" translate="Common.InProcess">In Process</option>
-                                <option ng-disabled="isReadonly" value="3" translate="Common.Completed">Completed</option>
-                                <option ng-disabled="isReadonly" value="4" translate="Common.Aborted">Aborted</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" translate="Common.Comment">Comment</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" ng-readonly="isReadonly" ng-model="SelectedPlanParticipant.Comment"></input>
-                        </div>
-                    </div>
-
-                    <!-- Button group -->
-                    <div class="form-group">
-                        <div class="col-sm-10">
-                            <button class="btn btn-default btn-primary" ng-click="saveCurrentParticipant()"
-                                    ng-hide="isReadonly" translate="Learn.SaveCurrentParticipant">
-                                Save Current Participant
-                            </button>
-                            <button class="btn btn-danger" ng-click="cancelCurrentParticipant()"
-                                    translate="Learn.CancelParticipantEditing">
-                                Cancel Participant Editing
-                            </button>
-                        </div>
-                    </div>
-                </form>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
+                        translate="Common.Submit">
+                    Submit
+                </button>
+                <button class="btn btn-danger" ng-click="close()" translate="Common.BackToList">Cancel</button>
             </div>
         </div>
-    </div>
-
-    <!-- Buttons -->
-    <div class="form-group">
-        <div class="col-sm-12 col-md-12 col-lg-12">
-            <button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly" translate="Common.Submit">Submit</button>
-            <button class="btn btn-danger" ng-click="close()" translate="Common.BackToList">Cancel</button>
-        </div>
-    </div>
+    </form>
 </div>
 

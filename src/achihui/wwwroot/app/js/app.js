@@ -280,6 +280,13 @@
                 }, function (response) {
                     // Error occurs!
                 });
+
+            $scope.Activity = "";
+            $scope.ActivityID = 1;
+            $scope.ItemActivity = "";
+            $scope.WordObject = {};
+            $scope.SelectedExplain = {};
+            $scope.isReadonly = false;
         }])
 
 	.controller('SentenceListController', ['$scope', '$rootScope', '$state', '$http', '$log',
