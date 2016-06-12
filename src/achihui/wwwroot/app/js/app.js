@@ -124,7 +124,7 @@
               templateUrl: 'app/views/todo.html',
               controller: 'TodoController'
           })
-          .state('home.todo.change', {
+          .state('home.todo.edit', {
               url: '/edit',
               templateUrl: 'app/views/todo.html',
               controller: 'TodoController'
@@ -217,6 +217,48 @@
                 }, function (response) {
                     // Error occurs!
                 });
+
+            $scope.newItem = function () {
+                $state.go('home.learn.word.create');
+            };
+
+            $scope.refreshList = function () {
+
+            };
+
+            // Display
+            $scope.displayItem = function (row) {
+                var nID = 0;
+                if (row) {
+                    nID = row.ID;
+                } else {
+                    for (var i = 0; i < $scope.dispList.length; i++) {
+                        if ($scope.dispList[i].isSelected) {
+                            nID = $scope.dispList[i].ID;
+                            break;
+                        }
+                    }
+                }
+
+                $state.go("home.learn.word.display", { objid: nID });
+            };
+
+            // Edit
+            $scope.editItem = function (row) {
+                var nID = 0;
+                if (row) {
+                    nID = row.ID;
+                } else {
+                    for (var i = 0; i < $scope.dispList.length; i++) {
+                        if ($scope.dispList[i].isSelected) {
+                            nID = $scope.dispList[i].ID;
+                            break;
+                        }
+                    }
+                }
+
+                $state.go("home.learn.word.change", { objid: nID });
+            };
         }])
 
 	.controller('WordController', ['$scope', '$rootScope', '$state', '$http', '$log',
