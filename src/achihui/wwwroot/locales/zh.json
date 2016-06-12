@@ -15,7 +15,10 @@
     "Delete": "删除",
     "Search": "搜索",
     "Operations": "操作",
-    "Acknowledgements": "致谢"
+    "Acknowledgements": "致谢",
+    "Login": "Login",
+    "Logout": "Logout",
+    "UserDetail": "User Detail"
   },
 
   "Learning": {

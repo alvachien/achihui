@@ -15,7 +15,10 @@
     "Delete": "Delete",
     "Search": "Search",
     "Operations": "Operations",
-    "Acknowledgements": "Acknowledgements"
+    "Acknowledgements": "Acknowledgements",
+    "Login": "Login",
+    "Logout": "Logout",
+    "UserDetail":  "User Detail"
   },
 
   "Learning": {
