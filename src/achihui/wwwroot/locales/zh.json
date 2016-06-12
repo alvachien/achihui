@@ -22,5 +22,9 @@
     "POS": "词性",
     "Word": "单词",
     "Sentence": "句子"
+  },
+
+  "Todo": {
+    "Todo": "Todo"
   }
 }

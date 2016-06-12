@@ -27,11 +27,20 @@
                             <a role="button" uib-dropdown-toggle><span translate="Learning">Learning</span><b class="caret"></b></a>
                             <ul uib-dropdown-menu>
                                 <li><a ui-sref="home.learn.pos"><span translate="Learning.POS">POS List</span></a></li>
+                                <li role="separator" class="divider"></li>
                                 <li class="dropdown-header"><span translate="Learning.Word">Word</span></li>
                                 <li><a ui-sref="home.learn.word.list"><span translate="Common.ListView">List View</span></a></li>
                                 <li role="separator" class="divider"></li>
                                 <li class="dropdown-header"><span translate="Learning.Sentence">Sentence</span></li>
                                 <li><a ui-sref="home.learn.sentence.list"><span translate="Common.ListView">List View</span></a></li>
+                            </ul>
+                        </li>
+                        <li uib-dropdown>
+                            <a role="button" uib-dropdown-toggle><span translate="Todo.Todo">Todo</span><b class="caret"></b></a>
+                            <ul uib-dropdown-menu>
+                                <li class="dropdown-header"><span translate="Todo.Todo">Todo</span></li>
+                                <li><a ui-sref="home.learn.word.list"><span translate="Common.ListView">List View</span></a></li>
+                                <li role="separator" class="divider"></li>
                             </ul>
                         </li>
                         <li><a href="#/about"><span translate="Common.About">About</span></a></li>

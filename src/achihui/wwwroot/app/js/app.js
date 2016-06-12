@@ -26,7 +26,7 @@
           .when('/welcome', '/home')
           .when('/about', '/home/about')
           .when('/learn', '/home/learn')
-          .when('/errortrace', '/home/errortrace')
+          .when('/todo', '/home/todo')
 
           // If the url is ever invalid, e.g. '/asdf', then redirect to '/' aka the home state
           .otherwise('/home');
@@ -84,6 +84,21 @@
               templateUrl: 'app/views/wordlist.html',
               controller: 'WordListController'
           })
+          .state('home.learn.word.create', {
+              url: "/create",
+              templateUrl: 'app/views/word.html',
+              controller: 'WordController'
+          })
+          .state('home.learn.word.display', {
+              url: "/display/{id}",
+              templateUrl: 'app/views/word.html',
+              controller: 'WordController'
+          })
+          .state('home.learn.word.edit', {
+              url: "/edit/{id}",
+              templateUrl: 'app/views/word.html',
+              controller: 'WordController'
+          })
           .state('home.learn.sentence', {
               url: "/sentence",
               abstract: true,
@@ -93,6 +108,31 @@
               url: "",
               templateUrl: 'app/views/sentencelist.html',
               controller: 'SentenceListController'
+          })
+          .state('home.todo', {
+              url: '/todo',
+              abstract: true,
+              template: '<div ui-view></div>'
+          })
+          .state('home.todo.list', {
+              url: '',
+              templateUrl: 'app/views/todolist.html',
+              controller: 'TodoListController'
+          })
+          .state('home.todo.create', {
+              url: '/create',
+              templateUrl: 'app/views/todo.html',
+              controller: 'TodoController'
+          })
+          .state('home.todo.change', {
+              url: '/edit',
+              templateUrl: 'app/views/todo.html',
+              controller: 'TodoController'
+          })
+          .state('home.todo.display', {
+              url: '/display',
+              templateUrl: 'app/views/todo.html',
+              controller: 'TodoController'
           })
           .state('home.userdetail', {
               url: '/userdetail',
@@ -179,6 +219,27 @@
                 });
         }])
 
+	.controller('WordController', ['$scope', '$rootScope', '$state', '$http', '$log',
+        function ($scope, $rootScope, $state, $http, $log) {
+            $scope.arWordList = [];
+            $scope.dispList = [];
+
+            $http.get('http://achihapi.azurewebsites.net/api/word')
+                .then(function (response) {
+                    // The response object has these properties:
+                    $scope.arWordList = [];
+                    if ($.isArray(response.data) && response.data.length > 0) {
+                        $.each(response.data, function (idx, obj) {
+                            $scope.arWordList.push(obj);
+                        });
+                    }
+
+                    $scope.dispList = [].concat($scope.arWordList);
+                }, function (response) {
+                    // Error occurs!
+                });
+        }])
+
 	.controller('SentenceListController', ['$scope', '$rootScope', '$state', '$http', '$log',
         function ($scope, $rootScope, $state, $http, $log) {
             $scope.arErrorTraceList = [];
@@ -200,22 +261,43 @@
                 });
         }])
 
-	.controller('ErrorTraceStatusListController', ['$scope', '$rootScope', '$state', '$http', '$log',
+	.controller('TodoListController', ['$scope', '$rootScope', '$state', '$http', '$log',
         function ($scope, $rootScope, $state, $http, $log) {
-            $scope.arErrorTraceStatusList = [];
+            $scope.arWordList = [];
             $scope.dispList = [];
 
-            $http.get('http://qianh-pc2a:3500/api/errortracestatus')
+            $http.get('http://achihapi.azurewebsites.net/api/todo')
                 .then(function (response) {
                     // The response object has these properties:
-                    $scope.arErrorTraceStatusList = [];
+                    $scope.arWordList = [];
                     if ($.isArray(response.data) && response.data.length > 0) {
                         $.each(response.data, function (idx, obj) {
-                            $scope.arErrorTraceStatusList.push(obj);
+                            $scope.arWordList.push(obj);
                         });
                     }
 
-                    $scope.dispList = [].concat($scope.arErrorTraceStatusList);
+                    $scope.dispList = [].concat($scope.arWordList);
+                }, function (response) {
+                    // Error occurs!
+                });
+        }])
+
+	.controller('TodoController', ['$scope', '$rootScope', '$state', '$http', '$log',
+        function ($scope, $rootScope, $state, $http, $log) {
+            $scope.arWordList = [];
+            $scope.dispList = [];
+
+            $http.get('http://achihapi.azurewebsites.net/api/todo')
+                .then(function (response) {
+                    // The response object has these properties:
+                    $scope.arWordList = [];
+                    if ($.isArray(response.data) && response.data.length > 0) {
+                        $.each(response.data, function (idx, obj) {
+                            $scope.arWordList.push(obj);
+                        });
+                    }
+
+                    $scope.dispList = [].concat($scope.arWordList);
                 }, function (response) {
                     // Error occurs!
                 });

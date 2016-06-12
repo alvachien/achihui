@@ -22,6 +22,9 @@
     "POS": "Part of Speech",
     "Word": "Word",
     "Sentence": "Sentence"
-  }
+  },
 
+  "Todo": {
+    "Todo":  "Todo"
+  }
 }
