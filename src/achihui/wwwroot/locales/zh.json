@@ -19,7 +19,9 @@
     "Acknowledgements": "致谢",
     "Login": "Login",
     "Logout": "Logout",
-    "UserDetail": "User Detail"
+    "UserDetail": "User Detail",
+    "Submit": "Submit",
+    "BackToList": "Back To List"
   },
 
   "Learning": {
@@ -45,6 +47,5 @@
     "InplaceMergeSort": "In-place merge sort",
     "InsertionSort": "Insertion Sort",
     "BubbleSort": "Bubble Sort"
-
   }
 }

@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module('achihapp', ["ui.router", "ngAnimate", 'ui.bootstrap', 'ngSanitize',
-		'pascalprecht.translate', 'ngTouch', 'chart.js', 'smart-table'])
+		'pascalprecht.translate', 'ngTouch', 'chart.js', 'smart-table', 'selectize'])
 
 		.run(['$rootScope', '$state', '$stateParams', '$timeout', '$http', '$log',
             function ($rootScope, $state, $stateParams, $timeout, $http, $log) {
