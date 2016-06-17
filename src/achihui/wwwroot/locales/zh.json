@@ -6,7 +6,7 @@
     "Themes": "Themes",
     "Language": "语言",
     "Copyright": "版权所有",
-    "ID":  "ID",
+    "ID": "ID",
 
     "New": "新建",
     "Create": "创建",
@@ -26,10 +26,25 @@
     "POS": "词性",
     "Word": "单词",
     "Sentence": "句子",
-    "Explain": "Explain"
+    "Explain": "Explain",
+    "ExplainCreate": "Explain Create",
+    "ExplainEdit": "Explain Edit",
+    "ExplainDisplay": "Explain Display"
   },
 
   "Todo": {
     "Todo": "Todo"
+  },
+
+  "Algorithm": {
+    "Algorithm": "Algorithm",
+    "Sorting": "Sorting",
+    "QuickSort": "Quick Sort",
+    "HeapSort": "Heap Sort",
+    "MergeSort": "Merge Sort",
+    "InplaceMergeSort": "In-place merge sort",
+    "InsertionSort": "Insertion Sort",
+    "BubbleSort": "Bubble Sort"
+
   }
 }

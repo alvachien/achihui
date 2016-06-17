@@ -90,12 +90,12 @@
               controller: 'WordController'
           })
           .state('home.learn.word.display', {
-              url: "/display/{id}",
+              url: "/display/:id",
               templateUrl: 'app/views/word.html',
               controller: 'WordController'
           })
           .state('home.learn.word.edit', {
-              url: "/edit/{id}",
+              url: "/edit/:id",
               templateUrl: 'app/views/word.html',
               controller: 'WordController'
           })
@@ -159,7 +159,7 @@
 	        'en_UK': 'en',
 	        'zh_CN': 'zh',
 	        'zh-CN': 'zh'
-	    })
+	        })
 		  .determinePreferredLanguage()
 		  //.preferredLanguage('zh')
 		  .fallbackLanguage('en');
@@ -182,20 +182,24 @@
             $scope.arPOSList = [];
             $scope.dispList = [];
 
-            $http.get('http://achihapi.azurewebsites.net/api/pos')
-                .then(function (response) {
-                    // The response object has these properties:
-                    $scope.arPOSList = [];
-                    if ($.isArray(response.data) && response.data.length > 0) {
-                        $.each(response.data, function (idx, obj) {
-                            $scope.arPOSList.push(obj);
-                        });
-                    }
+            $scope.refreshList = function () {
+                $http.get('http://achihapi.azurewebsites.net/api/pos')
+                    .then(function (response) {
+                        // The response object has these properties:
+                        $scope.arPOSList = [];
+                        if ($.isArray(response.data) && response.data.length > 0) {
+                            $.each(response.data, function (idx, obj) {
+                                $scope.arPOSList.push(obj);
+                            });
+                        }
 
-                    $scope.dispList = [].concat($scope.arPOSList);
-                }, function (response) {
-                    // Error occurs!
-                });
+                        $scope.dispList = [].concat($scope.arPOSList);
+                    }, function (response) {
+                        // Error occurs!
+                    });
+            };
+
+            $scope.refreshList();
         }])
 
 	.controller('WordListController', ['$scope', '$rootScope', '$state', '$http', '$log',
@@ -203,28 +207,28 @@
             $scope.arWordList = [];
             $scope.dispList = [];
 
-            $http.get('http://achihapi.azurewebsites.net/api/word')
-                .then(function (response) {
-                    // The response object has these properties:
-                    $scope.arWordList = [];
-                    if ($.isArray(response.data) && response.data.length > 0) {
-                        $.each(response.data, function (idx, obj) {
-                            $scope.arWordList.push(obj);
-                        });
-                    }
-
-                    $scope.dispList = [].concat($scope.arWordList);
-                }, function (response) {
-                    // Error occurs!
-                });
-
             $scope.newItem = function () {
                 $state.go('home.learn.word.create');
             };
 
             $scope.refreshList = function () {
+                $http.get('http://achihapi.azurewebsites.net/api/word')
+                    .then(function (response) {
+                        // The response object has these properties:
+                        $scope.arWordList = [];
+                        if ($.isArray(response.data) && response.data.length > 0) {
+                            $.each(response.data, function (idx, obj) {
+                                $scope.arWordList.push(obj);
+                            });
+                        }
 
+                        $scope.dispList = [].concat($scope.arWordList);
+                    }, function (response) {
+                        // Error occurs!
+                    });
             };
+
+            $scope.refreshList();
 
             // Display
             $scope.displayItem = function (row) {
@@ -240,7 +244,7 @@
                     }
                 }
 
-                $state.go("home.learn.word.display", { objid: nID });
+                $state.go("home.learn.word.display", { id: nID });
             };
 
             // Edit
@@ -257,99 +261,143 @@
                     }
                 }
 
-                $state.go("home.learn.word.change", { objid: nID });
+                $state.go("home.learn.word.change", { id: nID });
             };
         }])
 
-	.controller('WordController', ['$scope', '$rootScope', '$state', '$http', '$log',
-        function ($scope, $rootScope, $state, $http, $log) {
-            $scope.arWordList = [];
-            $scope.dispList = [];
+	.controller('WordController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log',
+        function ($scope, $rootScope, $state, $stateParams, $http, $log) {
+            $scope.Activity = "Common.Create"; // Default
+            $scope.ActivityID = 1;
+            $scope.ItemActivity = "Learning.ExplainCreate";
+            $scope.WordObject = {};
+            $scope.SelectedExplain = {};
+            $scope.isReadonly = false;
+            $scope.ReportedMessages = [];
 
-            $http.get('http://achihapi.azurewebsites.net/api/word')
+            // Selection control for POS
+            $scope.arPOSAbb = [];
+            $scope.posConfig = {
+                create: false,
+                onChange: function (value) {
+                    $log.info('WordController, POS control, event onChange, ', value);
+                },
+                valueField: 'POSAbb',
+                labelField: 'POSName',
+                maxItems: 1,
+                required: true
+            };
+            $http.get('http://achihapi.azurewebsites.net/api/pos')
                 .then(function (response) {
                     // The response object has these properties:
-                    $scope.arWordList = [];
+                    $scope.arPOSAbb = [];
                     if ($.isArray(response.data) && response.data.length > 0) {
                         $.each(response.data, function (idx, obj) {
-                            $scope.arWordList.push(obj);
+                            $scope.arPOSAbb.push(obj);
                         });
                     }
-
-                    $scope.dispList = [].concat($scope.arWordList);
                 }, function (response) {
                     // Error occurs!
                 });
 
-            $scope.Activity = "";
-            $scope.ActivityID = 1;
-            $scope.ItemActivity = "";
-            $scope.WordObject = {};
-            $scope.SelectedExplain = {};
-            $scope.isReadonly = false;
+            // Selection control for Lang
+            $scope.arLang = [];
+            $scope.langConfig = {
+                create: false,
+                onChange: function (value) {
+                    $log.info('WordController, Lang control, event onChange, ', value);
+                },
+                valueField: 'LCID',
+                labelField: 'Name',
+                maxItems: 1,
+                required: true
+            };
+            $http.get('http://achihapi.azurewebsites.net/api/language')
+                .then(function (response) {
+                    // The response object has these properties:
+                    $scope.arPOSAbb = [];
+                    if ($.isArray(response.data) && response.data.length > 0) {
+                        $.each(response.data, function (idx, obj) {
+                            $scope.arLang.push(obj);
+                        });
+                    }
+                }, function (response) {
+                    // Error occurs!
+                });
+
+            if (angular.isDefined($stateParams.id)) {
+                if ($state.current.name === "home.learn.word.edit") {
+                    $scope.Activity = "Common.Edit";
+                    $scope.ActivityID = 2;
+                } else if ($state.current.name === "home.learn.word.display") {
+                    $scope.Activity = "Common.Display";
+                    $scope.isReadonly = true;
+                    $scope.ActivityID = 3;
+                }
+
+                var nID = parseInt($stateParams.id);
+                // Read the ID out
+                $http.get('http://achihapi.azurewebsites.net/api/word/' + $stateParams.id)
+                    .then(function (response) {
+
+                    }, function (response) {
+                        // Error occurs!
+                    });
+            } else {
+
+            }
         }])
 
 	.controller('SentenceListController', ['$scope', '$rootScope', '$state', '$http', '$log',
         function ($scope, $rootScope, $state, $http, $log) {
-            $scope.arErrorTraceList = [];
+            $scope.arSentences = [];
             $scope.dispList = [];
 
-            $http.get('http://achihapi.azurewebsites.net/api/sentence')
-                .then(function (response) {
-                    // The response object has these properties:
-                    $scope.arErrorTraceList = [];
-                    if ($.isArray(response.data) && response.data.length > 0) {
-                        $.each(response.data, function (idx, obj) {
-                            $scope.arErrorTraceList.push(obj);
-                        });
-                    }
+            $scope.refreshList = function () {
+                $http.get('http://achihapi.azurewebsites.net/api/sentence')
+                    .then(function (response) {
+                        // The response object has these properties:
+                        $scope.arSentences = [];
+                        if ($.isArray(response.data) && response.data.length > 0) {
+                            $.each(response.data, function (idx, obj) {
+                                $scope.arSentences.push(obj);
+                            });
+                        }
 
-                    $scope.dispList = [].concat($scope.arErrorTraceList);
-                }, function (response) {
-                    // Error occurs!
-                });
+                        $scope.dispList = [].concat($scope.arSentences);
+                    }, function (response) {
+                        // Error occurs!
+                    });
+            };
+
+            $scope.refreshList();
         }])
 
 	.controller('TodoListController', ['$scope', '$rootScope', '$state', '$http', '$log',
         function ($scope, $rootScope, $state, $http, $log) {
-            $scope.arWordList = [];
+            $scope.arTodoList = [];
             $scope.dispList = [];
 
-            $http.get('http://achihapi.azurewebsites.net/api/todo')
-                .then(function (response) {
-                    // The response object has these properties:
-                    $scope.arWordList = [];
-                    if ($.isArray(response.data) && response.data.length > 0) {
-                        $.each(response.data, function (idx, obj) {
-                            $scope.arWordList.push(obj);
-                        });
-                    }
+            $scope.refreshList = function () {
+                $http.get('http://achihapi.azurewebsites.net/api/todo')
+                    .then(function (response) {
+                        // The response object has these properties:
+                        $scope.arTodoList = [];
+                        if ($.isArray(response.data) && response.data.length > 0) {
+                            $.each(response.data, function (idx, obj) {
+                                $scope.arTodoList.push(obj);
+                            });
+                        }
 
-                    $scope.dispList = [].concat($scope.arWordList);
-                }, function (response) {
-                    // Error occurs!
-                });
+                        $scope.dispList = [].concat($scope.arTodoList);
+                    }, function (response) {
+                        // Error occurs!
+                    });
+            };
         }])
 
 	.controller('TodoController', ['$scope', '$rootScope', '$state', '$http', '$log',
         function ($scope, $rootScope, $state, $http, $log) {
-            $scope.arWordList = [];
-            $scope.dispList = [];
-
-            $http.get('http://achihapi.azurewebsites.net/api/todo')
-                .then(function (response) {
-                    // The response object has these properties:
-                    $scope.arWordList = [];
-                    if ($.isArray(response.data) && response.data.length > 0) {
-                        $.each(response.data, function (idx, obj) {
-                            $scope.arWordList.push(obj);
-                        });
-                    }
-
-                    $scope.dispList = [].concat($scope.arWordList);
-                }, function (response) {
-                    // Error occurs!
-                });
         }])
 
 	.controller('AboutController', ['$scope', '$rootScope', function ($scope, $rootScope) {

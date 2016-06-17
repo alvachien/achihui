@@ -6,7 +6,7 @@
     "Themes": "Themes",
     "Language": "Language",
     "Copyright": "Copyright",
-    "ID":  "ID",
+    "ID": "ID",
 
     "New": "New",
     "Create": "Create",
@@ -19,17 +19,32 @@
     "Acknowledgements": "Acknowledgements",
     "Login": "Login",
     "Logout": "Logout",
-    "UserDetail":  "User Detail"
+    "UserDetail": "User Detail"
   },
 
   "Learning": {
     "POS": "Part of Speech",
     "Word": "Word",
     "Sentence": "Sentence",
-    "Explain":  "Explain"
+    "Explain": "Explain",
+    "ExplainCreate": "Explain Create",
+    "ExplainEdit": "Explain Edit",
+    "ExplainDisplay" :  "Explain Display"
   },
 
   "Todo": {
-    "Todo":  "Todo"
+    "Todo": "Todo"
+  },
+
+  "Algorithm": {
+    "Algorithm": "Algorithm",
+    "Sorting":  "Sorting",
+    "QuickSort": "Quick Sort",
+    "HeapSort": "Heap Sort",
+    "MergeSort": "Merge Sort",
+    "InplaceMergeSort":  "In-place merge sort",
+    "InsertionSort": "Insertion Sort",
+    "BubbleSort": "Bubble Sort",
+
   }
 }
