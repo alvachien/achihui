@@ -19,18 +19,18 @@
 
             this.Version = "1.2";
         }
-        Model.prototype.Init = function (obj) {
+        Model.prototype.init = function (obj) {
             console.log("Entering Init method.");
         }
-        Model.prototype.Verify = function () {
+        Model.prototype.verify = function () {
             console.log("Entering Verify method..");
             return [];
         }
-        Model.prototype.WriteToJSONObject = function () {
+        Model.prototype.writeToJSONObject = function () {
             console.log("Entering WriteToJSONObject method ");
             return {};
         }
-        Model.prototype.WriteToJSONObjectString = function () {
+        Model.prototype.writeToJSONObjectString = function () {
             console.log("Entering WriteToJSONObjectString method");
             return "";
         }
@@ -46,11 +46,13 @@
             this.NativeName = "";
         }
         AppLanguage.prototype.Init = function (obj) {
-            _super.prototype.Init.call(this, obj);
+            _super.prototype.init.call(this, obj);
             this.LCID = obj.LCID;
             this.Name = obj.Name;
             this.NativeName = obj.NativeName;
         }
+
+        return AppLanguage;
     }(hih.Model));
     /* POS */
     hih.EnPOS = (function (_super) {
@@ -61,13 +63,15 @@
             this.LangID = "";
             this.POSNativeName = "";
         }
-        EnPOS.prototype.Init = function (obj) {
-            _super.prototype.Init.call(this, obj);
+        EnPOS.prototype.init = function (obj) {
+            _super.prototype.init.call(this, obj);
             this.POSAbb = obj.POSAbb;
             this.POSName = obj.POSName;
             this.LangID = obj.LangID;
             this.POSNativeName = obj.POSNativeName;
         }
+
+        return EnPOS;
     }(hih.Model));
     /* Word Explain */
     hih.WordExplain = (function (_super) {
@@ -80,8 +84,8 @@
 
             this.RuntimeInfo = {};
         }
-        WordExplain.prototype.Verify = function () {
-            var errMsg = _super.prototype.Verify.call(this);
+        WordExplain.prototype.verify = function () {
+            var errMsg = _super.prototype.verify.call(this);
 
             this.POSAbb = this.POSAbb.trim();
             if (this.POSAbb.length <= 0) {
@@ -89,6 +93,7 @@
             }
             return errMsg;
         };
+
         return WordExplain;
     }(hih.Model));
     /* Word */
@@ -97,5 +102,7 @@
         function EnWord() {
 
         }
+
+        return EnWord;
     }(hih.Model));
 }());

@@ -138,7 +138,7 @@
                                 if ($.isArray(response.data) && response.data.length > 0) {
                                     $.each(response.data, function (idx, obj) {
                                         var applang = new hih.AppLanguage();
-                                        applang.Init(obj);
+                                        applang.init(obj);
                                         $rootScope.arLanguage.push(app);
                                     });
                                 }
@@ -168,7 +168,9 @@
                                 $rootScope.arPOS = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
                                     $.each(response.data, function (idx, obj) {
-                                        $rootScope.arPOS.push(obj);
+                                        var enpos = new hih.EnPOS();
+                                        enpos.init(obj);
+                                        $rootScope.arPOS.push(enpos);
                                     });
                                 }
                                 $rootScope.isPOSListLoaded = false;
