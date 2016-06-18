@@ -290,6 +290,7 @@
             $scope.ItemActivity = "Learning.ExplainCreate";
             $scope.WordObject = {};
             $scope.SelectedExplain = {};
+            $scope.Explains = [];
             $scope.isReadonly = false;
 
             // Reported message
@@ -341,14 +342,33 @@
                         // Error occurs!
                     });
             } else {
-
+                // Create a word
             }
+
+            $scope.nextItemID = 0;
+            $scope.updateNextItemID = function () {
+                if (angular.isArray($scope.Explains) && $scope.Explains.length > 0) {
+                    $scope.nextItemID = 0;
+
+                    $.each($scope.Explains, function (idx, obj) {
+                        var nItemID = parseInt(obj.ExplainID);
+
+                        if ($scope.nextItemID < nItemID) {
+                            $scope.nextItemID = nItemID;
+                        }
+                    });
+
+                    $scope.nextItemID++;
+                } else {
+                    $scope.nextItemID = 1;
+                }
+            };
 
             $scope.saveCurrentItem = function () {
                 $scope.cleanReportMessages();
 
                 // Conver the string to integers
-                $scope.SelectedPlanDetail.ObjectID = parseInt($scope.SelectedPlanDetail.ObjectID);
+                $scope.SelectedExplain.ExplainID = parseInt($scope.SelectedExplain.ExplainID);
 
                 // Perform the check
                 var rptMsgs = $scope.SelectedPlanDetail.Verify($translate);

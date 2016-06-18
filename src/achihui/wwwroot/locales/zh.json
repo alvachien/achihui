@@ -3,11 +3,11 @@
     "Home": "首页",
     "ListView": "列表视图",
     "About": "关于",
-    "Themes": "Themes",
+    "Themes": "主题",
     "Language": "语言",
     "Copyright": "版权所有",
     "ID": "ID",
-    "Tags": "Tags",
+    "Tags": "标签",
 
     "New": "新建",
     "Create": "创建",
@@ -18,38 +18,42 @@
     "Search": "搜索",
     "Operations": "操作",
     "Acknowledgements": "致谢",
-    "Login": "Login",
-    "Logout": "Logout",
-    "UserDetail": "User Detail",
+    "Login": "登入",
+    "Logout": "登出",
+    "UserDetail": "用户详细",
 
-    "Submit": "Submit",
-    "BackToList": "Back To List",
-    "SaveCurrentItem": "Save Current Item",
-    "CancelCurrentEditing": "Cancel Current Editing"
+    "Submit": "提交",
+    "BackToList": "返回列表视图",
+    "SaveCurrentItem": "保存当前项",
+    "CancelCurrentEditing": "取消当前项",
+
+    "Count": "总计",
+    "Default":  "默认"
   },
 
   "Learning": {
+    "Learning": "求知",
     "POS": "词性",
     "Word": "单词",
     "Sentence": "句子",
-    "Explain": "Explain",
-    "ExplainCreate": "Explain Create",
-    "ExplainEdit": "Explain Edit",
-    "ExplainDisplay": "Explain Display"
+    "Explain": "释义",
+    "ExplainCreate": "新释义",
+    "ExplainEdit": "编辑释义",
+    "ExplainDisplay": "显示释义"
   },
 
   "Todo": {
-    "Todo": "Todo"
+    "Todo": "代办事项"
   },
 
   "Algorithm": {
-    "Algorithm": "Algorithm",
-    "Sorting": "Sorting",
-    "QuickSort": "Quick Sort",
+    "Algorithm": "算法",
+    "Sorting": "排序",
+    "QuickSort": "快速排序",
     "HeapSort": "Heap Sort",
-    "MergeSort": "Merge Sort",
+    "MergeSort": "合并排序",
     "InplaceMergeSort": "In-place merge sort",
-    "InsertionSort": "Insertion Sort",
-    "BubbleSort": "Bubble Sort"
+    "InsertionSort": "插入排序",
+    "BubbleSort": "冒泡排序"
   }
 }

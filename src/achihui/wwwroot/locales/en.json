@@ -7,7 +7,7 @@
     "Language": "Language",
     "Copyright": "Copyright",
     "ID": "ID",
-    "Tags":  "Tags",
+    "Tags": "Tags",
 
     "New": "New",
     "Create": "Create",
@@ -25,17 +25,21 @@
     "Submit": "Submit",
     "BackToList": "Back To List",
     "SaveCurrentItem": "Save Current Item",
-    "CancelCurrentEditing":  "Cancel Current Editing"
+    "CancelCurrentEditing": "Cancel Current Editing",
+
+    "Count": "Count",
+    "Default": "Default"
   },
 
   "Learning": {
+    "Learning":  "Learning",
     "POS": "Part of Speech",
     "Word": "Word",
     "Sentence": "Sentence",
     "Explain": "Explain",
     "ExplainCreate": "Explain Create",
     "ExplainEdit": "Explain Edit",
-    "ExplainDisplay" :  "Explain Display"
+    "ExplainDisplay": "Explain Display"
   },
 
   "Todo": {

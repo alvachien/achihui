@@ -1,5 +1,6 @@
 ﻿/* global $ */
 /* global angular */
+/* global hih */
 (function() {
     "use strict";
 
@@ -113,6 +114,7 @@
 		        }
 		    };
 		})
+
 		.factory(
 			'utils', function($rootScope, $http, $q) {
 			    var rtnObj = {};
@@ -135,7 +137,9 @@
                                 $rootScope.arLanguage = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
                                     $.each(response.data, function (idx, obj) {
-                                        $rootScope.arLanguage.push(obj);
+                                        var applang = new hih.AppLanguage();
+                                        applang.Init(obj);
+                                        $rootScope.arLanguage.push(app);
                                     });
                                 }
                                 $rootScope.isLanguageListLoaded = false;
@@ -153,6 +157,7 @@
 			        }
 			        return deferred.promise;
 			    };
+
 			    rtnObj.loadPOSQ = function (bForceReload) {
 			        var deferred = $q.defer();
 			        if ($rootScope.isPOSListLoaded && !bForceReload) {
@@ -181,6 +186,7 @@
 			        }
 			        return deferred.promise;
 			    };
+
 			    rtnObj.loadWordListQ = function (bForceReload) {
 			        var deferred = $q.defer();
 			        if ($rootScope.isWordListLoaded && !bForceReload) {
@@ -209,16 +215,17 @@
 			        }
 			        return deferred.promise;
 			    };
+
 			    rtnObj.loadWordQ = function (id) {
 			        var deferred = $q.defer();
 			        if ($rootScope.isWordListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
-			            $http.get('http://achihapi.azurewebsites.net/api/word' + id)
+			            $http.get('http://achihapi.azurewebsites.net/api/word/' + id)
                             .then(function (response) {
                                 if ($rootScope.arWord && $.isArray($rootScope.arWord)) {
                                     $.each($rootScope.arWord, function (idx, obj) {
-                                        if (parseInt(obj.id) === parseInt(id)) {
+                                        if (parseInt(obj.WordID) === parseInt(id)) {
                                             // Todo!
                                         }
                                     });
