@@ -195,23 +195,14 @@
         function ($scope, $rootScope, $state, $http, $log) {
     	}])
 
-	.controller('POSListController', ['$scope', '$rootScope', '$state', '$http', '$log',
-        function ($scope, $rootScope, $state, $http, $log) {
-            $scope.arPOSList = [];
+	.controller('POSListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils',
+        function ($scope, $rootScope, $state, $http, $log, utils) {
             $scope.dispList = [];
 
             $scope.refreshList = function () {
-                $http.get('http://achihapi.azurewebsites.net/api/pos')
+                utils.loadPOSQ()
                     .then(function (response) {
-                        // The response object has these properties:
-                        $scope.arPOSList = [];
-                        if ($.isArray(response.data) && response.data.length > 0) {
-                            $.each(response.data, function (idx, obj) {
-                                $scope.arPOSList.push(obj);
-                            });
-                        }
-
-                        $scope.dispList = [].concat($scope.arPOSList);
+                        $scope.dispList = [].concat($rootScope.arPOS);
                     }, function (response) {
                         // Error occurs!
                     });
@@ -220,33 +211,30 @@
             $scope.refreshList();
         }])
 
-	.controller('WordListController', ['$scope', '$rootScope', '$state', '$http', '$log',
-        function ($scope, $rootScope, $state, $http, $log) {
-            $scope.arWordList = [];
+	.controller('WordListController', ['$scope', '$rootScope', '$state', '$http', '$log', '$q', 'utils',
+        function ($scope, $rootScope, $state, $http, $log, $q, utils) {
             $scope.dispList = [];
 
             $scope.newItem = function () {
-                $state.go('home.learn.word.create');
+                var promise1 = utils.loadLanguagesQ();
+                var promise2 = utils.loadPOSQ();
+                $q.all([promise1, promise2])
+                    .then(function (response) {
+                        $state.go('home.learn.word.create');
+                    }, function (reason) {
+                    });
             };
 
-            $scope.refreshList = function () {
-                $http.get('http://achihapi.azurewebsites.net/api/word')
+            $scope.refreshList = function (bForeceRefresh) {
+                utils.loadWordListQ(bForeceRefresh)
                     .then(function (response) {
-                        // The response object has these properties:
-                        $scope.arWordList = [];
-                        if ($.isArray(response.data) && response.data.length > 0) {
-                            $.each(response.data, function (idx, obj) {
-                                $scope.arWordList.push(obj);
-                            });
-                        }
-
-                        $scope.dispList = [].concat($scope.arWordList);
+                        $scope.dispList = [].concat($rootScope.arWord);
                     }, function (response) {
                         // Error occurs!
                     });
             };
 
-            $scope.refreshList();
+            $scope.refreshList(false);
 
             // Display
             $scope.displayItem = function (row) {
@@ -262,7 +250,13 @@
                     }
                 }
 
-                $state.go("home.learn.word.display", { id: nID });
+                var promise1 = utils.loadLanguagesQ();
+                var promise2 = utils.loadPOSQ();
+                $q.all([promise1, promise2])
+                    .then(function (response) {
+                        $state.go("home.learn.word.display", { id: nID });
+                    }, function (reason) {
+                    });                
             };
 
             // Edit
@@ -279,7 +273,13 @@
                     }
                 }
 
-                $state.go("home.learn.word.change", { id: nID });
+                var promise1 = utils.loadLanguagesQ();
+                var promise2 = utils.loadPOSQ();
+                $q.all([promise1, promise2])
+                    .then(function (response) {
+                        $state.go("home.learn.word.change", { id: nID });
+                    }, function (reason) {
+                    });
             };
         }])
 
@@ -297,14 +297,6 @@
             $scope.cleanReportMessages = function () {
                 $scope.ReportedMessages = [];
             };
-
-            var promise1 = utils.loadLanguagesQ();
-            var promise2 = utils.loadPOSQ();
-            $q.all([promise1, promise2])
-                .then(function (response) {
-
-                }, function (reason) {
-                });
 
             // Selection control for POS
             $scope.posConfig = {

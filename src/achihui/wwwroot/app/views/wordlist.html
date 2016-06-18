@@ -1,4 +1,4 @@
-﻿<div id="viewLearnHistory">
+﻿<div id="viewWordList">
     <div class="page-header">
         <h2>
             <span translate="Learning.Word">Word</span> <small translate="Common.ListView"> List View </small>
@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <table st-table="dispList" st-safe-src="arWordList" class="table table-striped table-hover">
+    <table st-table="dispList" st-safe-src="arWord" class="table table-striped table-hover">
         <thead>
             <tr>
                 <th></th>
@@ -45,7 +45,7 @@
                 <th translate="Common.Operations">Operations</th>
             </tr>
             <tr>
-                <th colspan="8"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
+                <th colspan="8"><input st-search="" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
             </tr>
         </thead>
         <tbody>

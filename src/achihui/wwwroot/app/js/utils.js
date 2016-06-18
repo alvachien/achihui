@@ -127,7 +127,7 @@
 
 			    rtnObj.loadLanguagesQ = function (bForceReload) {
 			        var deferred = $q.defer();
-			        if ($rootScope.isLanguageLoaded && !bForceReload) {
+			        if ($rootScope.isLanguageListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
 			            $http.get('http://achihapi.azurewebsites.net/api/language')
@@ -135,20 +135,27 @@
                                 $rootScope.arLanguage = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
                                     $.each(response.data, function (idx, obj) {
-                                        $rootScope.arLanguagearLang.push(obj);
+                                        $rootScope.arLanguage.push(obj);
                                     });
                                 }
-                                $rootScope.isLanguageLoaded = false;
+                                $rootScope.isLanguageListLoaded = false;
                                 deferred.resolve(true);
                             }, function (response) {
-                                deferred.reject(response.data.Message);
+                                var errormsg = "";
+                                if (response.data && response.data.Message) {
+                                    errormsg = response.data.Message;
+                                } else {
+                                    errormsg = "Error in loadLanguagesQ";
+                                }
+
+                                deferred.reject(errormsg);
                             });
 			        }
 			        return deferred.promise;
 			    };
 			    rtnObj.loadPOSQ = function (bForceReload) {
 			        var deferred = $q.defer();
-			        if ($rootScope.isPOSLoaded && !bForceReload) {
+			        if ($rootScope.isPOSListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
 			            $http.get('http://achihapi.azurewebsites.net/api/pos')
@@ -159,10 +166,76 @@
                                         $rootScope.arPOS.push(obj);
                                     });
                                 }
-                                $rootScope.isPOSLoaded = false;
+                                $rootScope.isPOSListLoaded = false;
                                 deferred.resolve(true);
                             }, function (response) {
-                                deferred.reject(response.data.Message);
+                                var errormsg = "";
+                                if (response.data && response.data.Message) {
+                                    errormsg = response.data.Message;
+                                } else {
+                                    errormsg = "Error in loadPOSQ";
+                                }
+
+                                deferred.reject(errormsg);
+                            });
+			        }
+			        return deferred.promise;
+			    };
+			    rtnObj.loadWordListQ = function (bForceReload) {
+			        var deferred = $q.defer();
+			        if ($rootScope.isWordListLoaded && !bForceReload) {
+			            deferred.resolve(true);
+			        } else {
+			            $http.get('http://achihapi.azurewebsites.net/api/word')
+                            .then(function (response) {
+                                $rootScope.arWord = [];
+                                if ($.isArray(response.data) && response.data.length > 0) {
+                                    $.each(response.data, function (idx, obj) {
+                                        $rootScope.arWord.push(obj);
+                                    });
+                                }
+                                $rootScope.isWordListLoaded = true;
+                                deferred.resolve(true);
+                            }, function (response) {
+                                var errormsg = "";
+                                if (response.data && response.data.Message) {
+                                    errormsg = response.data.Message;
+                                } else {
+                                    errormsg = "Error in loadWordListQ";
+                                }
+
+                                deferred.reject(errormsg);
+                            });
+			        }
+			        return deferred.promise;
+			    };
+			    rtnObj.loadWordQ = function (id) {
+			        var deferred = $q.defer();
+			        if ($rootScope.isWordListLoaded && !bForceReload) {
+			            deferred.resolve(true);
+			        } else {
+			            $http.get('http://achihapi.azurewebsites.net/api/word' + id)
+                            .then(function (response) {
+                                if ($rootScope.arWord && $.isArray($rootScope.arWord)) {
+                                    $.each($rootScope.arWord, function (idx, obj) {
+                                        if (parseInt(obj.id) === parseInt(id)) {
+                                            // Todo!
+                                        }
+                                    });
+                                } else {
+                                    $rootScope.arWord = [];
+                                    $rootScope.arWord.push($response.data);
+                                }
+                                deferred.resolve(true);
+                            }, function (response) {
+                                var errormsg = "";
+                                if (response.data && response.data.Message) {
+                                    errormsg = response.data.Message;
+                                } else {
+                                    errormsg = "Error in loadWordListQ";
+                                }
+
+                                deferred.reject(errormsg);
                             });
 			        }
 			        return deferred.promise;

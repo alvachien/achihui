@@ -1,28 +1,26 @@
-﻿<div id="viewLearnHistory">
+﻿<div id="viewPOSList">
     <div class="page-header">
         <h2>
-            <span translate="POS">PoS</span> <small translate="Common.ListView"> List View </small>
+            <span translate="Learning.POS">PoS</span> <small translate="Common.ListView"> List View </small>
         </h2>
     </div>
 
-    <table st-table="dispList" st-safe-src="arCommandList" class="table table-striped table-hover">
+    <table st-table="dispList" st-safe-src="arPOS" class="table table-striped table-hover">
         <thead>
             <tr>
-                <th></th>
                 <th st-sort="id" >ID</th>
                 <th st-sort="name" >Name</th>
                 <th st-sort="lang" >Lang</th>
                 <th st-sort="nvlang">Native Name</th>
             </tr>
             <tr>
-                <th colspan="5">
-                    <input st-search class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="search" />
+                <th colspan="4">
+                    <input st-search="" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="search" />
                 </th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="row in dispList">
-                <td cs-select="row"></td>
                 <td>{{row.POSAbb}}</td>
                 <td>{{row.POSNativeName}}</td>
                 <td>{{row.LangID}}</td>
@@ -31,10 +29,9 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="3" class="text-center">
+                <td colspan="4" class="text-center">
                     <cst-count></cst-count>
                 </td>
-                <td colspan="4" class="text-center" st-pagination="" st-items-by-page="20"></td>
             </tr>
         </tfoot>
     </table>
