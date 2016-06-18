@@ -1,0 +1,174 @@
+﻿/* global $ */
+/* global angular */
+(function() {
+    "use strict";
+
+    angular.module('achihapp.Utility', ['smart-table'])
+		.directive('stringToFloat', function() {
+		    return {
+		        require: 'ngModel',
+		        link: function(scope, element, attrs, ngModel) {
+		            ngModel.$parsers.push(function(value) {
+		                return '' + value;
+		            });
+		            ngModel.$formatters.push(function(value) {
+		                return parseFloat(value);
+		            });
+		        }
+		    };
+		})
+
+		.directive('csSelect', function () {
+		    return {
+		        require: '^stTable',
+		        template: '<input type="checkbox"/>',
+		        scope: {
+		            row: '=csSelect'
+		        },
+		        link: function (scope, element, attr, ctrl) {
+		            element.bind('change', function (evt) {
+		                scope.$apply(function () {
+		                    ctrl.select(scope.row, 'multiple');
+		                });
+		            });
+
+		            scope.$watch('row.isSelected', function (newValue, oldValue) {
+		                if (newValue === true) {
+		                    element.parent().addClass('st-selected');
+		                } else {
+		                    element.parent().removeClass('st-selected');
+		                }
+		            });
+		        }
+		    };
+		})
+
+		.directive('cstSum', function () {
+		    return {
+		        restrict: 'E',
+		        require: '^stTable',
+		        template: '<div>{{ "Common.Sum" | translate }}: {{ sum_columnname }} </div>',
+		        scope: {
+		            columnname: '@columnname'
+		        },
+		        controller: function ($scope) {
+		            $scope.sum_columnname = 0.0;
+		        },
+		        link: function (scope, element, attr, ctrl) {
+		            scope.$watch(ctrl.getFilteredCollection, function (val) {
+		                var nArr = (val || []);
+		                scope.sum_columnname = 0;
+		                for (var i = 0; i < nArr.length; i++) {
+		                    scope.sum_columnname += parseFloat(nArr[i][scope.columnname]);
+		                }
+		                scope.sum_columnname = scope.sum_columnname.toFixed(2);
+		            });
+		        }
+		    };
+		})
+
+		.directive('cstCount', function () {
+		    return {
+		        restrict: 'E',
+		        require: '^stTable',
+		        template: '<div>{{ "Common.Count" | translate }}: {{ cnt_columnname }} </div>',
+		        scope: {
+		        },
+		        controller: function ($scope) {
+		            $scope.cnt_columnname = 0;
+		        },
+		        link: function (scope, element, attr, ctrl) {
+		            scope.$watch(ctrl.getFilteredCollection, function (val) {
+		                var nArr = (val || []);
+		                scope.cnt_columnname = nArr.length;
+		            });
+		        }
+		    };
+		})
+
+		.directive('cstMax', function () {
+		    return {
+		        restrict: 'E',
+		        require: '^stTable',
+		        template: '<div>{{ "Common.Max" | translate }}: {{ max_columnname }} </div>',
+		        scope: {
+		            columnname: '@columnname'
+		        },
+		        controller: function ($scope) {
+		            $scope.max_columnname = 0;
+		        },
+		        link: function (scope, element, attr, ctrl) {
+		            scope.$watch(ctrl.getFilteredCollection, function (val) {
+		                var nArr = (val || []);
+		                for (var i = 0; i < nArr.length; i++) {
+		                    if (i === 1) {
+		                        scope.max_columnname = nArr[i][scope.columnname];
+		                    }
+
+		                    if (scope.sum_columnname < nArr[i][scope.columnname]) {
+		                        scope.sum_columnname = nArr[i][scope.columnname]
+		                    }
+		                }
+		            });
+		        }
+		    };
+		})
+		.factory(
+			'utils', function($rootScope, $http, $q) {
+			    var rtnObj = {};
+						
+			    rtnObj.findById = function (a, id) {
+			        for (var i = 0; i < a.length; i++) {
+			            if (a[i].id === id)
+			                return a[i];
+			        }
+			        return null;
+			    };
+
+			    rtnObj.loadLanguagesQ = function (bForceReload) {
+			        var deferred = $q.defer();
+			        if ($rootScope.isLanguageLoaded && !bForceReload) {
+			            deferred.resolve(true);
+			        } else {
+			            $http.get('http://achihapi.azurewebsites.net/api/language')
+                            .then(function (response) {
+                                $rootScope.arLanguage = [];
+                                if ($.isArray(response.data) && response.data.length > 0) {
+                                    $.each(response.data, function (idx, obj) {
+                                        $rootScope.arLanguagearLang.push(obj);
+                                    });
+                                }
+                                $rootScope.isLanguageLoaded = false;
+                                deferred.resolve(true);
+                            }, function (response) {
+                                deferred.reject(response.data.Message);
+                            });
+			        }
+			        return deferred.promise;
+			    };
+			    rtnObj.loadPOSQ = function (bForceReload) {
+			        var deferred = $q.defer();
+			        if ($rootScope.isPOSLoaded && !bForceReload) {
+			            deferred.resolve(true);
+			        } else {
+			            $http.get('http://achihapi.azurewebsites.net/api/pos')
+                            .then(function (response) {
+                                $rootScope.arPOS = [];
+                                if ($.isArray(response.data) && response.data.length > 0) {
+                                    $.each(response.data, function (idx, obj) {
+                                        $rootScope.arPOS.push(obj);
+                                    });
+                                }
+                                $rootScope.isPOSLoaded = false;
+                                deferred.resolve(true);
+                            }, function (response) {
+                                deferred.reject(response.data.Message);
+                            });
+			        }
+			        return deferred.promise;
+			    };
+
+			    return rtnObj;
+			})
+	;
+})();

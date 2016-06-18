@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module('achihapp', ["ui.router", "ngAnimate", 'ui.bootstrap', 'ngSanitize',
-		'pascalprecht.translate', 'ngTouch', 'chart.js', 'smart-table', 'selectize'])
+		'pascalprecht.translate', 'ngTouch', 'chart.js', 'smart-table', 'selectize', 'achihapp.Utility'])
 
 		.run(['$rootScope', '$state', '$stateParams', '$timeout', '$http', '$log',
             function ($rootScope, $state, $stateParams, $timeout, $http, $log) {
@@ -171,6 +171,24 @@
 
 	.controller('HomeController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$translate', '$q',
 		function ($scope, $rootScope, $state, $stateParams, $http, $log, $translate, $q) {
+		    $scope.setLanguage = function (newlang) {
+		        $log.info("Language change triggerd!");
+		        $translate.use(newlang);
+		    };
+
+		    $scope.setTheme = function (newtheme) {
+		        $log.info("Theme change triggerd!");
+
+		        var realtheme = "";
+		        if (newtheme && newtheme.length > 0) {
+		            // Now replace the CSS
+		            realtheme = newtheme;
+		        } else {
+		            // Go for default theme
+		            realtheme = "default";
+		        }
+		        $rootScope.$broadcast('ThemeChange', realtheme);
+		    };
 		}])
 
 	.controller('UserListController', ['$scope', '$rootScope', '$state', '$http', '$log',
@@ -265,18 +283,30 @@
             };
         }])
 
-	.controller('WordController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log',
-        function ($scope, $rootScope, $state, $stateParams, $http, $log) {
+	.controller('WordController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', 'utils',
+        function ($scope, $rootScope, $state, $stateParams, $http, $log, $q, utils) {
             $scope.Activity = "Common.Create"; // Default
             $scope.ActivityID = 1;
             $scope.ItemActivity = "Learning.ExplainCreate";
             $scope.WordObject = {};
             $scope.SelectedExplain = {};
             $scope.isReadonly = false;
+
+            // Reported message
             $scope.ReportedMessages = [];
+            $scope.cleanReportMessages = function () {
+                $scope.ReportedMessages = [];
+            };
+
+            var promise1 = utils.loadLanguagesQ();
+            var promise2 = utils.loadPOSQ();
+            $q.all([promise1, promise2])
+                .then(function (response) {
+
+                }, function (reason) {
+                });
 
             // Selection control for POS
-            $scope.arPOSAbb = [];
             $scope.posConfig = {
                 create: false,
                 onChange: function (value) {
@@ -287,21 +317,8 @@
                 maxItems: 1,
                 required: true
             };
-            $http.get('http://achihapi.azurewebsites.net/api/pos')
-                .then(function (response) {
-                    // The response object has these properties:
-                    $scope.arPOSAbb = [];
-                    if ($.isArray(response.data) && response.data.length > 0) {
-                        $.each(response.data, function (idx, obj) {
-                            $scope.arPOSAbb.push(obj);
-                        });
-                    }
-                }, function (response) {
-                    // Error occurs!
-                });
 
             // Selection control for Lang
-            $scope.arLang = [];
             $scope.langConfig = {
                 create: false,
                 onChange: function (value) {
@@ -312,18 +329,6 @@
                 maxItems: 1,
                 required: true
             };
-            $http.get('http://achihapi.azurewebsites.net/api/language')
-                .then(function (response) {
-                    // The response object has these properties:
-                    $scope.arPOSAbb = [];
-                    if ($.isArray(response.data) && response.data.length > 0) {
-                        $.each(response.data, function (idx, obj) {
-                            $scope.arLang.push(obj);
-                        });
-                    }
-                }, function (response) {
-                    // Error occurs!
-                });
 
             if (angular.isDefined($stateParams.id)) {
                 if ($state.current.name === "home.learn.word.edit") {
@@ -346,6 +351,39 @@
             } else {
 
             }
+
+            $scope.saveCurrentItem = function () {
+                $scope.cleanReportMessages();
+
+                // Conver the string to integers
+                $scope.SelectedPlanDetail.ObjectID = parseInt($scope.SelectedPlanDetail.ObjectID);
+
+                // Perform the check
+                var rptMsgs = $scope.SelectedPlanDetail.Verify($translate);
+                if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
+                    $q.all(rptMsgs)
+						.then(function (response) {
+						    $scope.cleanReportMessages();
+						    Array.prototype.push.apply($scope.ReportedMessages, response);
+						}, function (reason) {
+						    $rootScope.$broadcast("ShowMessageEx", "Error", [{ Type: 'danger', Message: "Fatal error on loading texts!" }]);
+						});
+                    return;
+                }
+                $scope.SelectedPlanDetail.RecurType = parseInt($scope.SelectedPlanDetail.RecurType);
+                $scope.SelectedPlanDetail.buildRelationship($rootScope.arLearnObject);
+                $scope.PlanDetailCollection.push($scope.SelectedPlanDetail);
+
+                // New detail
+                $scope.SelectedPlanDetail = new hih.LearnPlanDetail();
+                $scope.DetailActivity = "Learn.CreateDetail";
+            };
+            $scope.cancelCurrentItem = function () {
+
+            };
+            $scope.submit = function () {
+
+            };
         }])
 
 	.controller('SentenceListController', ['$scope', '$rootScope', '$state', '$http', '$log',

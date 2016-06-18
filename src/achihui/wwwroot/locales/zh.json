@@ -7,6 +7,7 @@
     "Language": "语言",
     "Copyright": "版权所有",
     "ID": "ID",
+    "Tags": "Tags",
 
     "New": "新建",
     "Create": "创建",
@@ -20,8 +21,11 @@
     "Login": "Login",
     "Logout": "Logout",
     "UserDetail": "User Detail",
+
     "Submit": "Submit",
-    "BackToList": "Back To List"
+    "BackToList": "Back To List",
+    "SaveCurrentItem": "Save Current Item",
+    "CancelCurrentEditing": "Cancel Current Editing"
   },
 
   "Learning": {
