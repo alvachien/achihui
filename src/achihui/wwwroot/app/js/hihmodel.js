@@ -54,6 +54,7 @@
 
         return AppLanguage;
     }(hih.Model));
+
     /* POS */
     hih.EnPOS = (function (_super) {
         __extends(EnPOS, _super);
@@ -73,11 +74,12 @@
 
         return EnPOS;
     }(hih.Model));
+
     /* Word Explain */
     hih.WordExplain = (function (_super) {
         __extends(WordExplain, _super);
         function WordExplain() {
-            this.ExplainID = 0;
+            this.ExplainID = -1;
             this.POSAbb = "";
             this.LangID = "";
             this.ExplainString = "";
@@ -92,15 +94,35 @@
                 errMsgs.push("POS is a must!");
             }
             return errMsg;
-        };
+        };        
 
         return WordExplain;
     }(hih.Model));
+
     /* Word */
     hih.EnWord = (function (_super) {
         __extends(EnWord, _super);
         function EnWord() {
+            this.WordID = -1;
+            this.WordString = "";
+            this.Tags = "";
+            this.Explains = [];
+            this.RuntimeInfo = {};
+        }
+        EnWord.prototype.init = function (obj) {
+            this.WordID = obj.WordID;
+            this.WordString = obj.WordString;
+            this.Tags = obj.Tags;
 
+            // Buildup the runtime info
+            var that = this;
+            if ($.isArray(obj.Explains) && obj.Explains.length > 0) {
+                $.each(obj.Explains, function (idx, eo) {
+                    var we = new hih.WordExplain();
+                    we.init(eo);
+                    that.Explains.push(we);
+                });
+            }
         }
 
         return EnWord;

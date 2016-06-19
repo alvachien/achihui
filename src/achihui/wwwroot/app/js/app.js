@@ -289,7 +289,7 @@
             $scope.ActivityID = 1;
             $scope.ItemActivity = "Learning.ExplainCreate";
             $scope.WordObject = {};
-            $scope.SelectedExplain = {};
+            $scope.SelectedExplain = new hih.WordExplain();
             $scope.Explains = [];
             $scope.isReadonly = false;
 
@@ -343,6 +343,7 @@
                     });
             } else {
                 // Create a word
+                $scope.WordObject = new hih.EnWord();
             }
 
             $scope.nextItemID = 0;
@@ -367,32 +368,39 @@
             $scope.saveCurrentItem = function () {
                 $scope.cleanReportMessages();
 
-                // Conver the string to integers
-                $scope.SelectedExplain.ExplainID = parseInt($scope.SelectedExplain.ExplainID);
-
                 // Perform the check
-                var rptMsgs = $scope.SelectedPlanDetail.Verify($translate);
+                var rptMsgs = $scope.SelectedExplain.verify();
                 if ($.isArray(rptMsgs) && rptMsgs.length > 0) {
-                    $q.all(rptMsgs)
-						.then(function (response) {
-						    $scope.cleanReportMessages();
-						    Array.prototype.push.apply($scope.ReportedMessages, response);
-						}, function (reason) {
-						    $rootScope.$broadcast("ShowMessageEx", "Error", [{ Type: 'danger', Message: "Fatal error on loading texts!" }]);
-						});
+                    //    $q.all(rptMsgs)
+                    //		.then(function (response) {
+                    //		    $scope.cleanReportMessages();
+                    //		    Array.prototype.push.apply($scope.ReportedMessages, response);
+                    //		}, function (reason) {
+                    //		    $rootScope.$broadcast("ShowMessageEx", "Error", [{ Type: 'danger', Message: "Fatal error on loading texts!" }]);
+                    //		});
                     return;
                 }
-                $scope.SelectedPlanDetail.RecurType = parseInt($scope.SelectedPlanDetail.RecurType);
-                $scope.SelectedPlanDetail.buildRelationship($rootScope.arLearnObject);
-                $scope.PlanDetailCollection.push($scope.SelectedPlanDetail);
+
+                if ($scope.SelectedExplain.ExplainID === -1) {
+                    $scope.updateNextItemID();
+                    $scope.SelectedExplain.ExplainID = $scope.nextItemID;
+                    $scope.Explains.push($scope.SelectedExplain);
+                } else {
+                    // Update the selected one
+                    // It is updated automatically? Yes, it is!
+                }
 
                 // New detail
-                $scope.SelectedPlanDetail = new hih.LearnPlanDetail();
-                $scope.DetailActivity = "Learn.CreateDetail";
+                $scope.SelectedExplain = new hih.WordExplain();
+                $scope.ItemActivity = "Learning.ExplainCreate";
             };
             $scope.cancelCurrentItem = function () {
+                $scope.cleanReportMessages();
 
+                $scope.SelectedExplain = new hih.WordExplain();
+                $scope.ItemActivity = "Learning.ExplainCreate";
             };
+
             $scope.submit = function () {
 
             };

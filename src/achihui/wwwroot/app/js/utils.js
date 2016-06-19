@@ -139,7 +139,7 @@
                                     $.each(response.data, function (idx, obj) {
                                         var applang = new hih.AppLanguage();
                                         applang.init(obj);
-                                        $rootScope.arLanguage.push(app);
+                                        $rootScope.arLanguage.push(applang);
                                     });
                                 }
                                 $rootScope.isLanguageListLoaded = false;
@@ -248,6 +248,10 @@
                             });
 			        }
 			        return deferred.promise;
+			    };
+
+			    rtnObj.createWordQ = function (wordObj) {
+
 			    };
 
 			    return rtnObj;
