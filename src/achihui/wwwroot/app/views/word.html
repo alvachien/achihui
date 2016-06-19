@@ -44,11 +44,11 @@
                     <th translate="Common.Operations">Operations</th>
                 </tr>
                 <tr>
-                    <th colspan="8"><input st-search="" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
+                    <th colspan="5"><input st-search="" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="row in diCollection">
+                <tr ng-repeat="row in dispCollection">
                     <td>{{row.ExplainID}}</td>
                     <td>{{row.POSName}}</td>
                     <td>{{row.LangID}}</td>

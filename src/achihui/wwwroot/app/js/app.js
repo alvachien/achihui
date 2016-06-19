@@ -292,6 +292,7 @@
             $scope.SelectedExplain = new hih.WordExplain();
             $scope.Explains = [];
             $scope.isReadonly = false;
+            $scope.dispCollection = [].concat($scope.Explains);
 
             // Reported message
             $scope.ReportedMessages = [];
