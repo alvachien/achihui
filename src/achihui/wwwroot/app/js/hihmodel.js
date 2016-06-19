@@ -20,18 +20,18 @@
             this.Version = "1.2";
         }
         Model.prototype.init = function (obj) {
-            console.log("Entering Init method.");
+            console.log("Entering Model.init method.");
         }
         Model.prototype.verify = function () {
-            console.log("Entering Verify method..");
+            console.log("Entering Model.verify method..");
             return [];
         }
         Model.prototype.writeToJSONObject = function () {
-            console.log("Entering WriteToJSONObject method ");
+            console.log("Entering Model.writeToJSONObject method ");
             return {};
         }
         Model.prototype.writeToJSONObjectString = function () {
-            console.log("Entering WriteToJSONObjectString method");
+            console.log("Entering Model.writeToJSONObjectString method");
             return "";
         }
         return Model;
@@ -45,7 +45,9 @@
             this.Name = "";
             this.NativeName = "";
         }
-        AppLanguage.prototype.Init = function (obj) {
+        AppLanguage.prototype.init = function (obj) {
+
+            console.log("Entering AppLanguage.init method.");
             _super.prototype.init.call(this, obj);
             this.LCID = obj.LCID;
             this.Name = obj.Name;
@@ -65,6 +67,7 @@
             this.POSNativeName = "";
         }
         EnPOS.prototype.init = function (obj) {
+            console.log("Entering EnPOS.init method.");
             _super.prototype.init.call(this, obj);
             this.POSAbb = obj.POSAbb;
             this.POSName = obj.POSName;
@@ -86,7 +89,19 @@
 
             this.RuntimeInfo = {};
         }
+        WordExplain.prototype.init = function (obj) {
+            console.log("Entering WordExplain.init method.");
+            _super.prototype.init.call(this, obj);
+
+            this.ExplainID = parseInt(obj.ExplainID);
+            this.POSAbb = obj.POSAbb;
+            this.LangID = parseInt(obj.LangID);
+            this.ExplainString = obj.ExplainString;
+
+            // Build up the runtime info.
+        }
         WordExplain.prototype.verify = function () {
+            console.log("Entering WordExplain.verify method.");
             var errMsg = _super.prototype.verify.call(this);
 
             this.POSAbb = this.POSAbb.trim();
@@ -110,6 +125,8 @@
             this.RuntimeInfo = {};
         }
         EnWord.prototype.init = function (obj) {
+            console.log("Entering EnWord.init method.");
+
             this.WordID = obj.WordID;
             this.WordString = obj.WordString;
             this.Tags = obj.Tags;
@@ -123,6 +140,15 @@
                     that.Explains.push(we);
                 });
             }
+        }
+        EnWord.prototype.verify = function () {
+            console.log("Entering EnWord.verify method.");
+            var errMsg = _super.prototype.verify.call(this);
+
+            if (this.Explains.length <= 0) {
+                errMsg.push("Explain is a must!");
+            }
+            return errMsg;
         }
 
         return EnWord;

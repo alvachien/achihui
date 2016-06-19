@@ -318,7 +318,7 @@
                     $log.info('WordController, Lang control, event onChange, ', value);
                 },
                 valueField: 'LCID',
-                labelField: 'Name',
+                labelField: 'NativeName',
                 maxItems: 1,
                 required: true
             };
