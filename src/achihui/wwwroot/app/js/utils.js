@@ -199,7 +199,9 @@
                                 $rootScope.arWord = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
                                     $.each(response.data, function (idx, obj) {
-                                        $rootScope.arWord.push(obj);
+                                        var wo = new hih.EnWord();
+                                        wo.init(obj);
+                                        $rootScope.arWord.push(wo);
                                     });
                                 }
                                 $rootScope.isWordListLoaded = true;
@@ -252,6 +254,35 @@
 
 			    rtnObj.createWordQ = function (wordObj) {
 
+			    };
+
+			    rtnObj.loadSentenceListQ = function (bForceReload) {
+			        var deferred = $q.defer();
+			        if ($rootScope.isSentenceListLoaded && !bForceReload) {
+			            deferred.resolve(true);
+			        } else {
+			            $http.get('http://achihapi.azurewebsites.net/api/sentence')
+                            .then(function (response) {
+                                $rootScope.arSentence = [];
+                                if ($.isArray(response.data) && response.data.length > 0) {
+                                    $.each(response.data, function (idx, obj) {
+                                        $rootScope.arSentence.push(obj);
+                                    });
+                                }
+                                $rootScope.isSentenceListLoaded = true;
+                                deferred.resolve(true);
+                            }, function (response) {
+                                var errormsg = "";
+                                if (response.data && response.data.Message) {
+                                    errormsg = response.data.Message;
+                                } else {
+                                    errormsg = "Error in loadSentenceListQ";
+                                }
+
+                                deferred.reject(errormsg);
+                            });
+			        }
+			        return deferred.promise;
 			    };
 
 			    return rtnObj;
