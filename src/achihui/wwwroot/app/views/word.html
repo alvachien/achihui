@@ -16,7 +16,7 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="iptItemID" translate="Common.ID">ID:</label>
             <div class="col-sm-10">
-                <input class="form-control" readonly id="iptItemID">{{WordObject.WordID}}</input>
+                <input class="form-control" readonly id="iptItemID" ng-model="WordObject.WordID" />
             </div>
         </div>
 
@@ -88,7 +88,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="iptItemID" translate="Common.ID">ID:</label>
                         <div class="col-sm-10">
-                            <input class="form-control-static" id="iptItemID">{{SelectedExplain.ExplainID}}</input>
+                            <input class="form-control-static" id="iptItemID" ng-model="SelectedExplain.ExplainID" />
                         </div>
                     </div>
 

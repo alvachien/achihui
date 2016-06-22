@@ -413,7 +413,23 @@
             };
 
             $scope.submit = function () {
+                if ($.isArray($scope.Explains) && $scop.Explains.length > 0) {
+                    $scope.WordObject.Explains = [];
 
+                    $.each($scope.Explains, function (idx, obj) {
+                        $scope.WordObject.Explains.Add(obj);
+                    });
+                }
+                var msgs = $scope.WordObject.verify();
+                if ($.isArray(msgs) && msgs.length > 0) {
+
+                }
+
+                rtnObj.createWordQ($scope.WordObject)
+                    .then(function (response) {
+                    }, function (reason) {
+                    }
+                    );
             };
         }])
 

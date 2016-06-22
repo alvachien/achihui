@@ -12,7 +12,14 @@
     };
 
     hih.Constants = {
-        IsConsoleLog : true
+        IsConsoleLog: true,
+        APIBaseURL: 'http://achihapi.azurewebsites.net/api/',
+        SubPathes: {
+            Word: 'word',
+            Sentence: 'sentence',
+            POS: 'pos',
+            Language: 'language'
+        }
     };
 
     /* Root Model */
@@ -42,7 +49,12 @@
             if (hih.Constants.IsConsoleLog) {
                 console.log("Entering Model.writeToJSONObjectString method");
             }
-            return "";
+
+            var forJSON = this.writeToJSONObject();
+            if (forJSON) {
+                return JSON && JSON.stringify(forJSON);
+            }
+            return JSON && JSON.stringify(this);            
         }
         return Model;
     }());

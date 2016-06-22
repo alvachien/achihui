@@ -132,7 +132,7 @@
 			        if ($rootScope.isLanguageListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
-			            $http.get('http://achihapi.azurewebsites.net/api/language')
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Language)
                             .then(function (response) {
                                 $rootScope.arLanguage = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
@@ -163,7 +163,7 @@
 			        if ($rootScope.isPOSListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
-			            $http.get('http://achihapi.azurewebsites.net/api/pos')
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.POS)
                             .then(function (response) {
                                 $rootScope.arPOS = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
@@ -194,7 +194,7 @@
 			        if ($rootScope.isWordListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
-			            $http.get('http://achihapi.azurewebsites.net/api/word')
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Word)
                             .then(function (response) {
                                 $rootScope.arWord = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
@@ -225,7 +225,7 @@
 			        if ($rootScope.isWordListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
-			            $http.get('http://achihapi.azurewebsites.net/api/word/' + id)
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Word + '/' + id)
                             .then(function (response) {
                                 if ($rootScope.arWord && $.isArray($rootScope.arWord)) {
                                     $.each($rootScope.arWord, function (idx, obj) {
@@ -253,7 +253,15 @@
 			    };
 
 			    rtnObj.createWordQ = function (wordObj) {
-
+			        var deferred = $q.defer();
+			        var jsonData = objLearnObj.toJSON();
+			        $http.post(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Word, wordObj.writeToJSONObjectString())
+                            .then(function (response) {
+                                deferred.resolve(response.data);
+                            }, function (response) {
+                                deferred.reject(response.data.Message);
+                            });
+			        return deferred.promise;
 			    };
 
 			    rtnObj.loadSentenceListQ = function (bForceReload) {
@@ -261,7 +269,7 @@
 			        if ($rootScope.isSentenceListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
-			            $http.get('http://achihapi.azurewebsites.net/api/sentence')
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Sentence)
                             .then(function (response) {
                                 $rootScope.arSentence = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
