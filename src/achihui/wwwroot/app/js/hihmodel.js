@@ -43,7 +43,10 @@
             if (hih.Constants.IsConsoleLog) {
                 console.log("Entering Model.writeToJSONObject method ");
             }
-            return {};
+            return {
+                CreatedAt: this.CreatedAt,
+                CreatedBy: this.CreatedBy
+            };
         }
         Model.prototype.writeToJSONObjectString = function () {
             if (hih.Constants.IsConsoleLog) {
@@ -130,6 +133,18 @@
 
             // Build up the runtime info.
         }
+        WordExplain.prototype.writeToJSONObject = function () {
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering WordExplain.writeToJSONObject method.");
+            }
+
+            var jsonObj = _super.prototype.writeToJSONObject.call(this);
+            jsonObj.ExplainID = this.ExplainID;
+            jsonObj.POSAbb = this.POSAbb;
+            jsonObj.LangID = this.LangID;
+            jsonObj.ExplainString = this.ExplainString;
+            return jsonObj;
+        }
         WordExplain.prototype.verify = function () {
             if (hih.Constants.IsConsoleLog) {
                 console.log("Entering WordExplain.verify method.");
@@ -179,6 +194,22 @@
                     that.Explains.push(we);
                 });
             }
+        }
+        EnWord.prototype.writeToJSONObject = function () {
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering EnWord.writeToJSONObject method.");
+            }
+
+            var jsonObj = _super.prototype.writeToJSONObject.call(this);
+            jsonObj.WordID = this.WordID;
+            jsonObj.WordString = this.WordString;
+            jsonObj.Tags = this.Tags;
+            jsonObj.Explains = [];
+            $.each(this.Explains, function (idx, obj) {
+                var subobj = obj.writeToJSONObject();
+                jsonObj.Explains.push(subobj);
+            });
+            return jsonObj;
         }
         EnWord.prototype.verify = function () {
             if (hih.Constants.IsConsoleLog) {
