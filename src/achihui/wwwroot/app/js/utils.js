@@ -254,7 +254,6 @@
 
 			    rtnObj.createWordQ = function (wordObj) {
 			        var deferred = $q.defer();
-			        var jsonData = objLearnObj.toJSON();
 			        $http.post(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Word, wordObj.writeToJSONObjectString())
                             .then(function (response) {
                                 deferred.resolve(response.data);
