@@ -413,7 +413,7 @@
             };
 
             $scope.submit = function () {
-                if ($.isArray($scope.Explains) && $scop.Explains.length > 0) {
+                if ($.isArray($scope.Explains) && $scope.Explains.length > 0) {
                     $scope.WordObject.Explains = [];
 
                     $.each($scope.Explains, function (idx, obj) {
@@ -427,6 +427,9 @@
 
                 rtnObj.createWordQ($scope.WordObject)
                     .then(function (response) {
+                        if (hih.Constants.IsConsoleLog) {
+                            $log.info("Create Word Succeed.");
+                        }
                     }, function (reason) {
                     }
                     );
