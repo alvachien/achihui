@@ -285,6 +285,13 @@
 
 	.controller('WordController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', 'utils',
         function ($scope, $rootScope, $state, $stateParams, $http, $log, $q, utils) {
+            var promise1 = utils.loadLanguagesQ();
+            var promise2 = utils.loadPOSQ();
+            $q.all([promise1, promise2])
+                .then(function (response) {
+                }, function(reason) {
+                });
+
             $scope.Activity = "Common.Create"; // Default
             $scope.ActivityID = 1;
             $scope.ItemActivity = "Learning.ExplainCreate";
@@ -334,34 +341,28 @@
                 required: true
             };
 
-            var promise1 = utils.loadLanguagesQ();
-            var promise2 = utils.loadPOSQ();
-            $q.all([promise1, promise2])
-                .then(function (response) {
-                    if (angular.isDefined($stateParams.id)) {
-                        if ($state.current.name === "home.learn.word.edit") {
-                            $scope.Activity = "Common.Edit";
-                            $scope.ActivityID = 2;
-                        } else if ($state.current.name === "home.learn.word.display") {
-                            $scope.Activity = "Common.Display";
-                            $scope.isReadonly = true;
-                            $scope.ActivityID = 3;
-                        }
+            if (angular.isDefined($stateParams.id)) {
+                if ($state.current.name === "home.learn.word.edit") {
+                    $scope.Activity = "Common.Edit";
+                    $scope.ActivityID = 2;
+                } else if ($state.current.name === "home.learn.word.display") {
+                    $scope.Activity = "Common.Display";
+                    $scope.isReadonly = true;
+                    $scope.ActivityID = 3;
+                }
 
-                        var nID = parseInt($stateParams.id);
-                        // Read the ID out
-                        $http.get('http://achihapi.azurewebsites.net/api/word/' + $stateParams.id)
-                            .then(function (response) {
+                var nID = parseInt($stateParams.id);
+                // Read the ID out
+                $http.get('http://achihapi.azurewebsites.net/api/word/' + $stateParams.id)
+                    .then(function (response) {
 
-                            }, function (response) {
-                                // Error occurs!
-                            });
-                    } else {
-                        // Create a word
-                        $scope.WordObject = new hih.EnWord();
-                    }
-                }, function (reason) {
-                });
+                    }, function (response) {
+                        // Error occurs!
+                    });
+            } else {
+                // Create a word
+                $scope.WordObject = new hih.EnWord();
+            }
 
             $scope.nextItemID = 0;
             $scope.updateNextItemID = function () {
@@ -431,7 +432,7 @@
 
                 }
 
-                rtnObj.createWordQ($scope.WordObject)
+                utils.createWordQ($scope.WordObject)
                     .then(function (response) {
                         if (hih.Constants.IsConsoleLog) {
                             $log.info("Create Word Succeed.");
