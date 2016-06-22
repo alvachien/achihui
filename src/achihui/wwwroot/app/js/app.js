@@ -300,6 +300,16 @@
                 $scope.ReportedMessages = [];
             };
 
+            // Selection control for Tags
+            $scope.arTags = [];
+            $scope.tagsConfig = {
+                create: true,
+                onChange: function (value) {
+                    $log.info('WordController, Tags control, event onChange, ', value);
+                },
+                maxItems: 10
+            };
+
             // Selection control for POS
             $scope.posConfig = {
                 create: false,

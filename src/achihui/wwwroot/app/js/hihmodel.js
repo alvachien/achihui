@@ -11,27 +11,37 @@
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 
+    hih.Constants = {
+        IsConsoleLog : true
+    };
+
     /* Root Model */
     hih.Model = (function () {
         function Model() {
             this.CreatedAt = new Date();
             this.CreatedBy = {};
-
-            this.Version = "1.2";
         }
         Model.prototype.init = function (obj) {
-            console.log("Entering Model.init method.");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering Model.init method.");
+            }
         }
         Model.prototype.verify = function () {
-            console.log("Entering Model.verify method..");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering Model.verify method..");
+            }
             return [];
         }
         Model.prototype.writeToJSONObject = function () {
-            console.log("Entering Model.writeToJSONObject method ");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering Model.writeToJSONObject method ");
+            }
             return {};
         }
         Model.prototype.writeToJSONObjectString = function () {
-            console.log("Entering Model.writeToJSONObjectString method");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering Model.writeToJSONObjectString method");
+            }
             return "";
         }
         return Model;
@@ -46,8 +56,10 @@
             this.NativeName = "";
         }
         AppLanguage.prototype.init = function (obj) {
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering AppLanguage.init method.");
+            }
 
-            console.log("Entering AppLanguage.init method.");
             _super.prototype.init.call(this, obj);
             this.LCID = obj.LCID;
             this.Name = obj.Name;
@@ -67,7 +79,10 @@
             this.POSNativeName = "";
         }
         EnPOS.prototype.init = function (obj) {
-            console.log("Entering EnPOS.init method.");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering EnPOS.init method.");
+            }
+
             _super.prototype.init.call(this, obj);
             this.POSAbb = obj.POSAbb;
             this.POSName = obj.POSName;
@@ -90,7 +105,10 @@
             this.RuntimeInfo = {};
         }
         WordExplain.prototype.init = function (obj) {
-            console.log("Entering WordExplain.init method.");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering WordExplain.init method.");
+            }
+
             _super.prototype.init.call(this, obj);
 
             this.ExplainID = parseInt(obj.ExplainID);
@@ -101,7 +119,10 @@
             // Build up the runtime info.
         }
         WordExplain.prototype.verify = function () {
-            console.log("Entering WordExplain.verify method.");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering WordExplain.verify method.");
+            }
+
             var errMsg = _super.prototype.verify.call(this);
 
             this.POSAbb = this.POSAbb.trim();
@@ -129,7 +150,9 @@
             this.RuntimeInfo = {};
         }
         EnWord.prototype.init = function (obj) {
-            console.log("Entering EnWord.init method.");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering EnWord.init method.");
+            }
 
             this.WordID = obj.WordID;
             this.WordString = obj.WordString;
@@ -146,7 +169,10 @@
             }
         }
         EnWord.prototype.verify = function () {
-            console.log("Entering EnWord.verify method.");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering EnWord.verify method.");
+            }
+
             var errMsg = _super.prototype.verify.call(this);
 
             this.WordString = this.WordString.trim();
@@ -173,7 +199,10 @@
             this.RuntimeInfo = {};
         }
         SentenceExplain.prototype.init = function (obj) {
-            console.log("Entering SentenceExplain.init method.");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering SentenceExplain.init method.");
+            }
+
             _super.prototype.init.call(this, obj);
 
             this.ExplainID = parseInt(obj.ExplainID);
@@ -183,7 +212,10 @@
             // Build up the runtime info.
         }
         SentenceExplain.prototype.verify = function () {
-            console.log("Entering SentenceExplain.verify method.");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering SentenceExplain.verify method.");
+            }
+
             var errMsg = _super.prototype.verify.call(this);
 
             this.LangID = this.LangID.trim();
@@ -206,7 +238,9 @@
             this.RuntimeInfo = {};
         }
         EnSentence.prototype.init = function (obj) {
-            console.log("Entering EnSentence.init method.");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering EnSentence.init method.");
+            }
 
             this.WordID = obj.WordID;
             this.SentenceString = obj.SentenceString;
@@ -223,7 +257,10 @@
             }
         }
         EnSentence.prototype.verify = function () {
-            console.log("Entering EnSentence.verify method.");
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering EnSentence.verify method.");
+            }
+
             var errMsg = _super.prototype.verify.call(this);
 
             this.SentenceString = this.SentenceString.trim();
