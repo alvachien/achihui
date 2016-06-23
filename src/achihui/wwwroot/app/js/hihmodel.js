@@ -14,6 +14,7 @@
     hih.Constants = {
         IsConsoleLog: true,
         APIBaseURL: 'http://achihapi.azurewebsites.net/api/',
+        //APIBaseURL: 'http://localhost:25688/api/',
         SubPathes: {
             Word: 'word',
             Sentence: 'sentence',
