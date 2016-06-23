@@ -1,10 +1,14 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+﻿<div id="viewSentence" class="container">
+    <div class="page-header">
+        <h2>
+            <span translate="Learning.Sentence">Sentence</span><small> {{ Activity | translate }}</small>
+        </h2>
+    </div>
 
-</body>
-</html>
+    <!-- Messages -->
+    <div ng-if="ReportedMessages.length > 0">
+        <div class="alert alert-danger" role="alert" ng-repeat="rptmsg in ReportedMessages">
+            {{ rptmsg  }}
+        </div>
+    </div>
+</div>

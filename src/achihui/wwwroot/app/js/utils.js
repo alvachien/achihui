@@ -273,7 +273,9 @@
                                 $rootScope.arSentence = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
                                     $.each(response.data, function (idx, obj) {
-                                        $rootScope.arSentence.push(obj);
+                                        var sent = new hih.EnSentence();
+                                        sent.init(obj);
+                                        $rootScope.arSentence.push(sent);
                                     });
                                 }
                                 $rootScope.isSentenceListLoaded = true;

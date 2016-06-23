@@ -443,23 +443,12 @@
             };
         }])
 
-	.controller('SentenceListController', ['$scope', '$rootScope', '$state', '$http', '$log',
-        function ($scope, $rootScope, $state, $http, $log) {
-            $scope.arSentences = [];
-            $scope.dispList = [];
+	.controller('SentenceListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils',
+        function ($scope, $rootScope, $state, $http, $log, utils) {
 
             $scope.refreshList = function () {
-                $http.get('http://achihapi.azurewebsites.net/api/sentence')
+                utils.loadSentenceListQ()
                     .then(function (response) {
-                        // The response object has these properties:
-                        $scope.arSentences = [];
-                        if ($.isArray(response.data) && response.data.length > 0) {
-                            $.each(response.data, function (idx, obj) {
-                                $scope.arSentences.push(obj);
-                            });
-                        }
-
-                        $scope.dispList = [].concat($scope.arSentences);
                     }, function (response) {
                         // Error occurs!
                     });
@@ -468,8 +457,8 @@
             $scope.refreshList();
         }])
 
-	.controller('TodoListController', ['$scope', '$rootScope', '$state', '$http', '$log',
-        function ($scope, $rootScope, $state, $http, $log) {
+	.controller('TodoListController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils',
+        function ($scope, $rootScope, $state, $http, $log, utils) {
             $scope.arTodoList = [];
             $scope.dispList = [];
 
@@ -491,11 +480,12 @@
             };
         }])
 
-	.controller('TodoController', ['$scope', '$rootScope', '$state', '$http', '$log',
-        function ($scope, $rootScope, $state, $http, $log) {
+	.controller('TodoController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils',
+        function ($scope, $rootScope, $state, $http, $log, utils) {
         }])
 
-	.controller('AboutController', ['$scope', '$rootScope', function ($scope, $rootScope) {
+	.controller('AboutController', ['$scope', '$rootScope', 'utils',
+        function ($scope, $rootScope) {
         // Do nothing!
 	    }])
     ;

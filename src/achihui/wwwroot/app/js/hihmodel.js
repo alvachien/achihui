@@ -18,7 +18,8 @@
             Word: 'word',
             Sentence: 'sentence',
             POS: 'pos',
-            Language: 'language'
+            Language: 'language',
+            Todo: 'todo'
         }
     };
 
@@ -203,7 +204,7 @@
             var jsonObj = _super.prototype.writeToJSONObject.call(this);
             jsonObj.WordID = this.WordID;
             jsonObj.WordString = this.WordString;
-            jsonObj.Tags = this.Tags;
+            jsonObj.Tags = this.Tags.toString();
             jsonObj.Explains = [];
             $.each(this.Explains, function (idx, obj) {
                 var subobj = obj.writeToJSONObject();
