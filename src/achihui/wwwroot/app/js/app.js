@@ -179,7 +179,7 @@
 		        response_type: "id_token token",
 		        scope: "openid profile api.hihapi"
 		    };
-		    $scope.mgr = new Oidc.UserManager(settings);
+		    $scope.mgr = new Oidc.UserManager($scope.settings);
 		    $rootScope.isLoggedIn = false;
 
 		    if (angular.isDefined($rootScope.User) && $rootScope.User) {
