@@ -5,9 +5,9 @@
     <title>AC HIH App</title>
 </head>
 <body>
-    <h1 id="waiting">Waiting...</h1>
+    <h1 id="waiting">Loading...</h1>
     <div id="error"></div>
-    <script src="oidc-client.js"></script>
+    <script src="app\js\oidc-client.js"></script>
     <script>
         //Oidc.Log.logger = console;
         new Oidc.UserManager().signinRedirectCallback().then(function (user) {
