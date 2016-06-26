@@ -207,7 +207,15 @@
 		    }
 
 		    $scope.doLogout = function () {
-		        $scope.mgr.signoutRedirect().then(function () {
+		        var logoutsettings = {
+		            authority: "http://acidserver.azurewebsites.net/",
+		            client_id: "achihui.js",
+		            redirect_uri: "http://achihui.azurewebsites.net/logoutcallback.html",
+		            response_type: "id_token token",
+		            scope: "openid profile api.hihapi"
+		        };
+		        var logoutmgr = new Oidc.UserManager(logoutsettings);
+		        logoutmgr.signoutRedirect().then(function () {
 		            $log.info("redirecting for logout...");
 		        })
                 .catch(function (er) {

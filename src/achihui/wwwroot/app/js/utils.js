@@ -142,7 +142,7 @@
                                         $rootScope.arLanguage.push(applang);
                                     });
                                 }
-                                $rootScope.isLanguageListLoaded = false;
+                                $rootScope.isLanguageListLoaded = true;
                                 deferred.resolve(true);
                             }, function (response) {
                                 var errormsg = "";
@@ -173,7 +173,7 @@
                                         $rootScope.arPOS.push(enpos);
                                     });
                                 }
-                                $rootScope.isPOSListLoaded = false;
+                                $rootScope.isPOSListLoaded = true;
                                 deferred.resolve(true);
                             }, function (response) {
                                 var errormsg = "";
