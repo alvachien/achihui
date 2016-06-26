@@ -171,6 +171,50 @@
 
 	.controller('HomeController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$translate', '$q',
 		function ($scope, $rootScope, $state, $stateParams, $http, $log, $translate, $q) {
+
+		    $scope.settings = {
+		        authority: "http://acidserver.azurewebsites.net/",
+		        client_id: "achihui.js",
+		        redirect_uri: "http://achihui.azurewebsites.net/logincallback.html",
+		        response_type: "id_token token",
+		        scope: "openid profile api.hihapi"
+		    };
+		    $scope.mgr = new Oidc.UserManager(settings);
+		    $rootScope.isLoggedIn = false;
+
+		    if (angular.isDefined($rootScope.User) && $rootScope.User) {
+		        $rootScope.isLoggedIn = true;
+		    } else {
+		        $scope.mgr.getUser().then(function (u) {
+		            if (u) {
+		                $log.info("User loaded", u);
+		                $rootScope.User = u;
+		                $rootScope.isLoggedIn = true;
+		            }
+		            else {
+		                $log.info("no user loaded");
+                    }
+		        });
+		    }
+
+		    $scope.doLogin = function () {
+		        $scope.mgr.signinRedirect().then(function () {
+		            $log.info("redirecting for login...");
+		        })
+                .catch(function (er) {
+                    $log.error("Sign-in error", er);
+                });
+		    }
+
+		    $scope.doLogout = function () {
+		        $scope.mgr.signoutRedirect().then(function () {
+		            $log.info("redirecting for logout...");
+		        })
+                .catch(function (er) {
+                    $log.error("Sign-out error", er);
+                });
+		    }
+
 		    $scope.setLanguage = function (newlang) {
 		        $log.info("Language change triggerd!");
 		        $translate.use(newlang);

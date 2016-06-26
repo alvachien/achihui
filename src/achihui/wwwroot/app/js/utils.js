@@ -194,7 +194,17 @@
 			        if ($rootScope.isWordListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
-			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Word)
+			            var xhrheader = {};
+
+			            if (angular.isDefined($rootScope.User) && $rootScope.User) {
+			                xhrheader = {
+			                    headers: {
+			                        "Authorization": "Bearer " + $rootScope.User.access_token
+			                    }
+			                }
+			            }
+
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Word, xhrheader)
                             .then(function (response) {
                                 $rootScope.arWord = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
@@ -225,7 +235,17 @@
 			        if ($rootScope.isWordListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
-			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Word + '/' + id)
+			            var xhrheader = {};
+
+			            if (angular.isDefined($rootScope.User) && $rootScope.User) {
+			                xhrheader = {
+			                    headers: {
+			                        "Authorization": "Bearer " + $rootScope.User.access_token
+			                    }
+			                }
+			            }
+
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Word + '/' + id, xhrheader)
                             .then(function (response) {
                                 if ($rootScope.arWord && $.isArray($rootScope.arWord)) {
                                     $.each($rootScope.arWord, function (idx, obj) {
@@ -254,7 +274,17 @@
 
 			    rtnObj.createWordQ = function (wordObj) {
 			        var deferred = $q.defer();
-			        $http.post(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Word, wordObj.writeToJSONObjectString())
+			        var xhrheader = {};
+
+			        if (angular.isDefined($rootScope.User) && $rootScope.User) {
+			            xhrheader = {
+			                headers: {
+			                    "Authorization": "Bearer " + $rootScope.User.access_token
+			                }
+			            }
+			        }
+
+			        $http.post(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Word, wordObj.writeToJSONObjectString(), xhrheader)
                             .then(function (response) {
                                 deferred.resolve(response.data);
                             }, function (response) {
@@ -268,7 +298,17 @@
 			        if ($rootScope.isSentenceListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
-			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Sentence)
+			            var xhrheader = {};
+
+			            if (angular.isDefined($rootScope.User) && $rootScope.User) {
+			                xhrheader = {
+			                    headers: {
+			                        "Authorization": "Bearer " + $rootScope.User.access_token
+			                    }
+			                }
+			            }
+
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Sentence, xhrheader)
                             .then(function (response) {
                                 $rootScope.arSentence = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
