@@ -260,8 +260,8 @@
             $scope.dispList = [];
 
             $scope.newItem = function () {
-                var promise1 = utils.loadLanguagesQ();
-                var promise2 = utils.loadPOSQ();
+                var promise1 = utils.loadLanguagesQ(false);
+                var promise2 = utils.loadPOSQ(false);
                 $q.all([promise1, promise2])
                     .then(function (response) {
                         $state.go('home.learn.word.create');
@@ -329,8 +329,8 @@
 
 	.controller('WordController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', 'utils',
         function ($scope, $rootScope, $state, $stateParams, $http, $log, $q, utils) {
-            var promise1 = utils.loadLanguagesQ();
-            var promise2 = utils.loadPOSQ();
+            var promise1 = utils.loadLanguagesQ(false);
+            var promise2 = utils.loadPOSQ(false);
             $q.all([promise1, promise2])
                 .then(function (response) {
                 }, function(reason) {
