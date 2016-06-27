@@ -387,7 +387,7 @@
                 onChange: function (value) {
                     $log.info('WordController, Lang control, event onChange, ', value);
                 },
-                valueField: 'LCID',
+                valueField: 'ISOName',
                 labelField: 'NativeName',
                 maxItems: 1,
                 required: true

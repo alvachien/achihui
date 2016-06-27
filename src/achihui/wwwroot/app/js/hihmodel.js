@@ -14,7 +14,7 @@
     hih.Constants = {
         IsConsoleLog: true,
         APIBaseURL: 'http://achihapi.azurewebsites.net/api/',
-        //APIBaseURL: 'http://localhost:25688/api/',
+        //APIBaseURLDebug: 'http://localhost:25688/api/',
         SubPathes: {
             Word: 'word',
             Sentence: 'sentence',
@@ -69,7 +69,8 @@
         __extends(AppLanguage, _super);
         function AppLanguage() {
             this.LCID = -1;
-            this.Name = "";
+            this.ISOName = "";
+            this.EnglishName = "";
             this.NativeName = "";
         }
         AppLanguage.prototype.init = function (obj) {
@@ -79,7 +80,8 @@
 
             _super.prototype.init.call(this, obj);
             this.LCID = obj.LCID;
-            this.Name = obj.Name;
+            this.ISOName = obj.ISOName;
+            this.EnglishName = obj.EnglishName;
             this.NativeName = obj.NativeName;
         }
 
@@ -130,7 +132,7 @@
 
             this.ExplainID = parseInt(obj.ExplainID);
             this.POSAbb = obj.POSAbb;
-            this.LangID = parseInt(obj.LangID);
+            this.LangID = obj.LangID;
             this.ExplainString = obj.ExplainString;
 
             // Build up the runtime info.
