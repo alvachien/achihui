@@ -18,10 +18,7 @@
                         <li uib-dropdown>
                             <a role="button" uib-dropdown-toggle><span translate="Common.Home">Home</span><b class="caret"></b></a>
                             <ul uib-dropdown-menu>
-                                <li><a ng-click="doLogin()" ng-hide="isLoggedIn"><span translate="Common.Login">Login</span></a></li>
                                 <li><a ui-sref="home.userdetail"><span translate="Common.UserDetail">User Detail</span></a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a ng-click="doLogout()" ng-show="isLoggedIn"><span translate="Common.Logout">Logout</span></a></li>
                             </ul>
                         </li>
                         <li uib-dropdown>
@@ -59,6 +56,8 @@
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
+                        <li><a role="button" ng-click="doLogin()" ng-hide="isLoggedIn"><span translate="Common.Login">Login</span></a></li>
+                        <li><a ui-sref="home.userdetail" ng-show="isLoggedIn">{{User.profile.name}}</a></li>
                         <li uib-dropdown>
                             <a role="button" uib-dropdown-toggle><span translate="Common.Themes">Themes</span><b class="caret"></b></a>
                             <ul uib-dropdown-menu>
