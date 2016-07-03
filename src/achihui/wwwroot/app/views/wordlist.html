@@ -36,27 +36,23 @@
         <thead>
             <tr>
                 <th></th>
-                <th st-sort="hitid">ID</th>
-                <th st-sort="alias">Alias</th>
-                <th st-sort="machine" >Machine</th>
-                <th st-sort="commandid" >Command </th>
-                <th st-sort="submitdt" translate="Common.Date">Date</th>
-                <th st-sort="tver" translate="Common.Version">Version</th>
+                <th st-sort="id">ID</th>
+                <th st-sort="word">Word</th>
+                <th st-sort="explain" >Explain</th>
+                <th st-sort="tag" >Tag</th>
                 <th translate="Common.Operations">Operations</th>
             </tr>
             <tr>
-                <th colspan="8"><input st-search="" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
+                <th colspan="6"><input st-search="" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="row in dispList">
                 <td cs-select="row"></td>
-                <td>{{row.HistID}}</td>
-                <td>{{row.UserAlias}}</td>
-                <td>{{row.MachineName}}</td>
-                <td>{{row.CommandID}}</td>
-                <td>{{row.SubmitTime | date: 'yyyy.MM.dd'}}</td>
-                <td>{{row.ToolVersion}}</td>
+                <td>{{row.WordID}}</td>
+                <td>{{row.WordString}}</td>
+                <td>{{row.RuntimeInfo.DisplayExplain}}</td>
+                <td>{{row.Tags}}</td>
                 <td>
                     <button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
                         <i class="glyphicon glyphicon-share">
@@ -78,7 +74,7 @@
                 <td colspan="3" class="text-center">
                     <cst-count></cst-count>
                 </td>
-                <td colspan="4" class="text-center" st-pagination="" st-items-by-page="20"></td>
+                <td colspan="3" class="text-center" st-pagination="" st-items-by-page="20"></td>
             </tr>
         </tfoot>
     </table>

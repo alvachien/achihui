@@ -13,8 +13,18 @@
 
     hih.Constants = {
         IsConsoleLog: true,
-        APIBaseURL: 'http://achihapi.azurewebsites.net/api/',
-        //APIBaseURLDebug: 'http://localhost:25688/api/',
+        // Debug
+        //APIBaseURL: "http://localhost:25688/api/",
+        //IdSrvURL: "http://localhost:41016/",
+        //IdSrvLoginRedirURL: "http://localhost:29521/logincallback.html",
+        //IdSrvLogoutRedirURL: "http://localhost:29521/logoutcallback.html",
+
+        // Release
+        APIBaseURL: "http://achihapi.azurewebsites.net/api/",
+        IdSrvURL: "http://acidserver.azurewebsites.net/",
+        IdSrvLoginRedirURL: "http://achihui.azurewebsites.net/logincallback.html",
+        IdSrvLogoutRedirURL: "http://achihui.azurewebsites.net/logoutcallback.html",
+
         SubPathes: {
             Word: 'word',
             Sentence: 'sentence',
@@ -136,6 +146,7 @@
             this.ExplainString = obj.ExplainString;
 
             // Build up the runtime info.
+            this.RuntimeInfo.DisplayExplain = this.POSAbb + ": [" + this.LangID + "] " + this.ExplainID;
         }
         WordExplain.prototype.writeToJSONObject = function () {
             if (hih.Constants.IsConsoleLog) {
@@ -195,7 +206,9 @@
                 $.each(obj.Explains, function (idx, eo) {
                     var we = new hih.WordExplain();
                     we.init(eo);
+
                     that.Explains.push(we);
+                    that.RuntimeInfo.DisplayExplain = that.RuntimeInfo.DisplayExplain + we.RuntimeInfo.DisplayExplain;
                 });
             }
         }

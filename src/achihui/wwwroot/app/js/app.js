@@ -173,9 +173,9 @@
 		function ($scope, $rootScope, $state, $stateParams, $http, $log, $translate, $q) {
 
 		    $scope.settings = {
-		        authority: "http://acidserver.azurewebsites.net/",
+		        authority: hih.Constants.IdSrvURL,
 		        client_id: "achihui.js",
-		        redirect_uri: "http://achihui.azurewebsites.net/logincallback.html",
+		        redirect_uri: hih.Constants.IdSrvLoginRedirURL,
 		        response_type: "id_token token",
 		        scope: "openid profile api.hihapi"
 		    };
@@ -208,9 +208,9 @@
 
 		    $scope.doLogout = function () {
 		        var logoutsettings = {
-		            authority: "http://acidserver.azurewebsites.net/",
+		            authority: hih.Constants.IdSrvURL,
 		            client_id: "achihui.js",
-		            redirect_uri: "http://achihui.azurewebsites.net/logoutcallback.html",
+		            redirect_uri: hih.Constants.IdSrvLogoutRedirURL,
 		            response_type: "id_token token",
 		            scope: "openid profile api.hihapi"
 		        };

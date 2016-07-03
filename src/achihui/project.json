@@ -41,16 +41,17 @@
       "web.config"
     ],
     "exclude": [
-      "wwwroot\\app\\js\\app.js",
-      "wwwroot\\app\\js\\hihmodel.js",
-      "wwwroot\\app\\js\\oidc-client.js",
-      "wwwroot\\app\\js\\utils.js",
-      "wwwroot\\css\\app.css"
+      //"wwwroot\\app\\js\\app.js",
+      //"wwwroot\\app\\js\\hihmodel.js",
+      //"wwwroot\\app\\js\\oidc-client.js",
+      //"wwwroot\\app\\js\\utils.js",
+      //"wwwroot\\css\\app.css"
     ]
   },
 
   "scripts": {
-    "prepublish": [ "npminstall.cmd", "dotnet bundle" ],
+    //"prepublish": [ "npminstall.cmd", "dotnet bundle" ],
+    "prepublish": [ "npminstall.cmd" ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }
