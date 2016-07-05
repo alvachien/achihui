@@ -49,10 +49,10 @@
         <tbody>
             <tr ng-repeat="row in dispList">
                 <td cs-select="row"></td>
-                <td>{{row.WordID}}</td>
-                <td>{{row.WordString}}</td>
+                <td>{{row.wordID}}</td>
+                <td>{{row.wordString}}</td>
                 <td>{{row.RuntimeInfo.DisplayExplain}}</td>
-                <td>{{row.Tags}}</td>
+                <td>{{row.tags}}</td>
                 <td>
                     <button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
                         <i class="glyphicon glyphicon-share">

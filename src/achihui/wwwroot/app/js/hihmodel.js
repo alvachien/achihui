@@ -78,10 +78,10 @@
     hih.AppLanguage = (function (_super) {
         __extends(AppLanguage, _super);
         function AppLanguage() {
-            this.LCID = -1;
-            this.ISOName = "";
-            this.EnglishName = "";
-            this.NativeName = "";
+            this.lcid = 0;
+            this.isoName = "";
+            this.englishName = "";
+            this.nativeName = "";
         }
         AppLanguage.prototype.init = function (obj) {
             if (hih.Constants.IsConsoleLog) {
@@ -89,10 +89,10 @@
             }
 
             _super.prototype.init.call(this, obj);
-            this.LCID = obj.LCID;
-            this.ISOName = obj.ISOName;
-            this.EnglishName = obj.EnglishName;
-            this.NativeName = obj.NativeName;
+            this.lcid = obj.lcid;
+            this.isoName = obj.isoName;
+            this.englishName = obj.englishName;
+            this.nativeName = obj.nativeName;
         }
 
         return AppLanguage;
@@ -102,10 +102,10 @@
     hih.EnPOS = (function (_super) {
         __extends(EnPOS, _super);
         function EnPOS() {
-            this.POSAbb = "";
-            this.POSName = "";
-            this.LangID = "";
-            this.POSNativeName = "";
+            this.posAbb = "";
+            this.posName = "";
+            this.langID = "";
+            this.posNativeName = "";
         }
         EnPOS.prototype.init = function (obj) {
             if (hih.Constants.IsConsoleLog) {
@@ -113,10 +113,10 @@
             }
 
             _super.prototype.init.call(this, obj);
-            this.POSAbb = obj.POSAbb;
-            this.POSName = obj.POSName;
-            this.LangID = obj.LangID;
-            this.POSNativeName = obj.POSNativeName;
+            this.posAbb = obj.posAbb;
+            this.posName = obj.posName;
+            this.langID = obj.langID;
+            this.posNativeName = obj.posNativeName;
         }
 
         return EnPOS;
@@ -126,10 +126,10 @@
     hih.WordExplain = (function (_super) {
         __extends(WordExplain, _super);
         function WordExplain() {
-            this.ExplainID = -1;
-            this.POSAbb = "";
-            this.LangID = "";
-            this.ExplainString = "";
+            this.explainID = 0;
+            this.posAbb = "";
+            this.langID = "";
+            this.explainString = "";
 
             this.RuntimeInfo = {};
         }
@@ -140,13 +140,13 @@
 
             _super.prototype.init.call(this, obj);
 
-            this.ExplainID = parseInt(obj.ExplainID);
-            this.POSAbb = obj.POSAbb;
-            this.LangID = obj.LangID;
-            this.ExplainString = obj.ExplainString;
+            this.explainID = parseInt(obj.explainID);
+            this.posAbb = obj.posAbb;
+            this.langID = obj.langID;
+            this.explainString = obj.explainString;
 
             // Build up the runtime info.
-            this.RuntimeInfo.DisplayExplain = this.POSAbb + ": [" + this.LangID + "] " + this.ExplainID;
+            this.RuntimeInfo.DisplayExplain = this.posAbb + ": [" + this.langID + "] " + this.explainID;
         }
         WordExplain.prototype.writeToJSONObject = function () {
             if (hih.Constants.IsConsoleLog) {
@@ -154,10 +154,11 @@
             }
 
             var jsonObj = _super.prototype.writeToJSONObject.call(this);
-            jsonObj.ExplainID = this.ExplainID;
-            jsonObj.POSAbb = this.POSAbb;
-            jsonObj.LangID = this.LangID;
-            jsonObj.ExplainString = this.ExplainString;
+            jsonObj.explainID = this.explainID;
+            jsonObj.posAbb = this.posAbb;
+            jsonObj.langID = this.langID;
+            jsonObj.explainString = this.explainString;
+
             return jsonObj;
         }
         WordExplain.prototype.verify = function () {
@@ -167,12 +168,12 @@
 
             var errMsg = _super.prototype.verify.call(this);
 
-            this.POSAbb = this.POSAbb.trim();
-            if (this.POSAbb.length <= 0) {
+            this.posAbb = this.posAbb.trim();
+            if (this.posAbb.length <= 0) {
                 errMsgs.push("POS is a must!");
             }
-            this.LangID = this.LangID.trim();
-            if (this.LangID.length <= 0) {
+            this.langID = this.langID.trim();
+            if (this.langID.length <= 0) {
                 errMsgs.push("Lange is a must!");
             }
             return errMsg;
@@ -185,10 +186,11 @@
     hih.EnWord = (function (_super) {
         __extends(EnWord, _super);
         function EnWord() {
-            this.WordID = -1;
-            this.WordString = "";
-            this.Tags = "";
-            this.Explains = [];
+            this.wordID = 0;
+            this.wordString = "";
+            this.tags = "";
+            this.explains = [];
+
             this.RuntimeInfo = {};
         }
         EnWord.prototype.init = function (obj) {
@@ -196,18 +198,18 @@
                 console.log("Entering EnWord.init method.");
             }
 
-            this.WordID = obj.WordID;
-            this.WordString = obj.WordString;
-            this.Tags = obj.Tags;
+            this.wordID = obj.wordID;
+            this.wordString = obj.wordString;
+            this.tags = obj.tags;
 
             // Buildup the runtime info
             var that = this;
-            if ($.isArray(obj.Explains) && obj.Explains.length > 0) {
-                $.each(obj.Explains, function (idx, eo) {
+            if ($.isArray(obj.explains) && obj.explains.length > 0) {
+                $.each(obj.explains, function (idx, eo) {
                     var we = new hih.WordExplain();
                     we.init(eo);
 
-                    that.Explains.push(we);
+                    that.explains.push(we);
                     that.RuntimeInfo.DisplayExplain = that.RuntimeInfo.DisplayExplain + we.RuntimeInfo.DisplayExplain;
                 });
             }
@@ -218,13 +220,14 @@
             }
 
             var jsonObj = _super.prototype.writeToJSONObject.call(this);
-            jsonObj.WordID = this.WordID;
-            jsonObj.WordString = this.WordString;
-            jsonObj.Tags = this.Tags.toString();
-            jsonObj.Explains = [];
-            $.each(this.Explains, function (idx, obj) {
+            jsonObj.wordID = this.wordID;
+            jsonObj.wordString = this.wordString;
+            jsonObj.tags = this.tags.toString();
+            jsonObj.explains = [];
+
+            $.each(this.explains, function (idx, obj) {
                 var subobj = obj.writeToJSONObject();
-                jsonObj.Explains.push(subobj);
+                jsonObj.explains.push(subobj);
             });
             return jsonObj;
         }
@@ -235,11 +238,11 @@
 
             var errMsg = _super.prototype.verify.call(this);
 
-            this.WordString = this.WordString.trim();
-            if (this.WordString.length <= 0) {
+            this.wordString = this.wordString.trim();
+            if (this.wordString.length <= 0) {
                 errMsg.push("String is a must!");
             }
-            if (this.Explains.length <= 0) {
+            if (this.explains.length <= 0) {
                 errMsg.push("Explain is a must!");
             }
             return errMsg;
@@ -252,9 +255,9 @@
     hih.SentenceExplain = (function (_super) {
         __extends(SentenceExplain, _super);
         function SentenceExplain() {
-            this.ExplainID = -1;
-            this.LangID = "";
-            this.ExplainString = "";
+            this.explainID = -1;
+            this.langID = "";
+            this.explainString = "";
 
             this.RuntimeInfo = {};
         }
@@ -265,9 +268,9 @@
 
             _super.prototype.init.call(this, obj);
 
-            this.ExplainID = parseInt(obj.ExplainID);
-            this.LangID = parseInt(obj.LangID);
-            this.ExplainString = obj.ExplainString;
+            this.explainID = parseInt(obj.explainID);
+            this.langID = parseInt(obj.langID);
+            this.explainString = obj.explainString;
 
             // Build up the runtime info.
         }
@@ -278,8 +281,8 @@
 
             var errMsg = _super.prototype.verify.call(this);
 
-            this.LangID = this.LangID.trim();
-            if (this.LangID.length <= 0) {
+            this.langID = this.langID.trim();
+            if (this.langID.length <= 0) {
                 errMsgs.push("Lange is a must!");
             }
             return errMsg;
@@ -291,10 +294,11 @@
     hih.EnSentence = (function (_super) {
         __extends(EnSentence, _super);
         function EnSentence() {
-            this.SentenceID = -1;
-            this.SentenceString = "";
-            this.Tags = "";
-            this.Explains = [];
+            this.sentenceID = 0;
+            this.sentenceString = "";
+            this.tags = "";
+            this.explains = [];
+
             this.RuntimeInfo = {};
         }
         EnSentence.prototype.init = function (obj) {
@@ -302,17 +306,17 @@
                 console.log("Entering EnSentence.init method.");
             }
 
-            this.WordID = obj.WordID;
-            this.SentenceString = obj.SentenceString;
-            this.Tags = obj.Tags;
+            this.wordID = obj.wordID;
+            this.sentenceString = obj.sentenceString;
+            this.tags = obj.tags;
 
             // Buildup the runtime info
             var that = this;
-            if ($.isArray(obj.Explains) && obj.Explains.length > 0) {
-                $.each(obj.Explains, function (idx, eo) {
+            if ($.isArray(obj.explains) && obj.explains.length > 0) {
+                $.each(obj.explains, function (idx, eo) {
                     var we = new hih.WordExplain();
                     we.init(eo);
-                    that.Explains.push(we);
+                    that.explains.push(we);
                 });
             }
         }
@@ -323,11 +327,11 @@
 
             var errMsg = _super.prototype.verify.call(this);
 
-            this.SentenceString = this.SentenceString.trim();
-            if (this.SentenceString.length <= 0) {
+            this.sentenceString = this.sentenceString.trim();
+            if (this.sentenceString.length <= 0) {
                 errMsg.push("String is a must!");
             }
-            if (this.Explains.length <= 0) {
+            if (this.explains.length <= 0) {
                 errMsg.push("Explain is a must!");
             }
             return errMsg;

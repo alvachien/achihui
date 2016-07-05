@@ -451,9 +451,9 @@
                     return;
                 }
 
-                if ($scope.SelectedExplain.ExplainID === -1) {
+                if ($scope.SelectedExplain.explainID === 0) {
                     $scope.updateNextItemID();
-                    $scope.SelectedExplain.ExplainID = $scope.nextItemID;
+                    $scope.SelectedExplain.explainID = $scope.nextItemID;
                     $scope.Explains.push($scope.SelectedExplain);
                 } else {
                     // Update the selected one

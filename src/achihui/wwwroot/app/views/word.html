@@ -16,21 +16,21 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="iptItemID" translate="Common.ID">ID:</label>
             <div class="col-sm-10">
-                <input class="form-control" readonly id="iptItemID" ng-model="WordObject.WordID" />
+                <input class="form-control" readonly id="iptItemID" ng-model="WordObject.wordID" />
             </div>
         </div>
 
         <div class="form-group">
             <label class="control-label col-sm-2" for="iptWord" translate="Learning.Word">Word:</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" name="iptWord" ng-readonly="ActivityID == 3" ng-model="WordObject.WordString">
+                <input type="text" class="form-control" name="iptWord" ng-readonly="ActivityID == 3" ng-model="WordObject.wordString">
             </div>
         </div>
 
         <div class="form-group">
             <label class="control-label col-sm-2" for="iptTags" translate="Common.Tags">Tags:</label>
             <div class="col-sm-10">
-                <selectize options='arTags' config="tagsConfig" ng-model="WordObject.Tags"
+                <selectize options='arTags' config="tagsConfig" ng-model="WordObject.tags"
                            ng-disabled="isReadonly"></selectize>
             </div>
         </div>
@@ -50,10 +50,10 @@
             </thead>
             <tbody>
                 <tr ng-repeat="row in dispCollection">
-                    <td>{{row.ExplainID}}</td>
-                    <td>{{row.POSName}}</td>
-                    <td>{{row.LangID}}</td>
-                    <td>{{row.ExplainString}}</td>
+                    <td>{{row.explainID}}</td>
+                    <td>{{row.posName}}</td>
+                    <td>{{row.langID}}</td>
+                    <td>{{row.explainString}}</td>
                     <td>
                         <button type="button" class="btn btn-sm" ng-click="displayItem(row.ItemID)" tooltip="{{'Common.Display' | translate}}">
                             <i class="glyphicon glyphicon-share">
@@ -88,14 +88,14 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="iptExplainID" translate="Common.ID">ID:</label>
                         <div class="col-sm-10">
-                            <input class="form-control" readonly id="iptExplainID" ng-model="SelectedExplain.ExplainID" />
+                            <input class="form-control" readonly id="iptExplainID" ng-model="SelectedExplain.explainID" />
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-2" translate="Learning.POS">POS:</label>
                         <div class="col-sm-10">
-                            <selectize options='arPOS' config="posConfig" ng-model="SelectedExplain.POSAbb"
+                            <selectize options='arPOS' config="posConfig" ng-model="SelectedExplain.posAbb"
                                        ng-disabled="isReadonly" required></selectize>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" translate="Common.Language">Language:</label>
                         <div class="col-sm-10">
-                            <selectize options='arLanguage' config="langConfig" ng-model="SelectedExplain.LangID"
+                            <selectize options='arLanguage' config="langConfig" ng-model="SelectedExplain.langID"
                                        ng-disabled="isReadonly" required></selectize>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="iptItemDesp" translate="Learning.Explain">Explain: </label>
                         <div class="col-sm-10">
-                            <input type="text" id="iptItemDesp" ng-readonly="isReadonly" class="form-control" ng-model="SelectedExplain.ExplainString" required />
+                            <input type="text" id="iptItemDesp" ng-readonly="isReadonly" class="form-control" ng-model="SelectedExplain.explainString" required />
                         </div>
                     </div>
 
