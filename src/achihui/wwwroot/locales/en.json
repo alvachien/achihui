@@ -32,14 +32,15 @@
   },
 
   "Learning": {
-    "Learning":  "Learning",
+    "Learning": "Learning",
     "POS": "Part of Speech",
     "Word": "Word",
     "Sentence": "Sentence",
     "Explain": "Explain",
     "ExplainCreate": "Explain Create",
     "ExplainEdit": "Explain Edit",
-    "ExplainDisplay": "Explain Display"
+    "ExplainDisplay": "Explain Display",
+    "PrimarySchool": "Primary School"
   },
 
   "Todo": {

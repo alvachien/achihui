@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module('achihapp', ["ui.router", "ngAnimate", 'ui.bootstrap', 'ngSanitize',
-		'pascalprecht.translate', 'ngTouch', 'chart.js', 'smart-table', 'selectize', 'achihapp.Utility'])
+		'pascalprecht.translate', 'ngTouch', 'chart.js', 'smart-table', 'selectize', 'achihapp.Utility', 'ui.tinymce'])
 
 		.run(['$rootScope', '$state', '$stateParams', '$timeout', '$http', '$log',
             function ($rootScope, $state, $stateParams, $timeout, $http, $log) {
@@ -108,6 +108,31 @@
               url: "",
               templateUrl: 'app/views/sentencelist.html',
               controller: 'SentenceListController'
+          })
+          .state('home.learn.primaryschool', {
+              url: "/primaryschool",
+              abstract: true,
+              template: '<div ui-view></div>'
+          })
+          .state('home.learn.primaryschool.list', {
+              url: "",
+              templateUrl: 'app/views/primaryschoollist.html',
+              controller: 'PrimarySchoolListController'
+          })
+          .state('home.learn.primaryschool.create', {
+              url: "/create",
+              templateUrl: 'app/views/primaryschool.html',
+              controller: 'PrimarySchoolController'
+          })
+          .state('home.learn.primaryschool.display', {
+              url: "/display/:id",
+              templateUrl: 'app/views/primaryschool.html',
+              controller: 'PrimarySchoolController'
+          })
+          .state('home.learn.primaryschool.edit', {
+              url: "/edit/:id",
+              templateUrl: 'app/views/primaryschool.html',
+              controller: 'PrimarySchoolController'
           })
           .state('home.todo', {
               url: '/todo',
@@ -534,6 +559,24 @@
 
 	.controller('TodoController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils',
         function ($scope, $rootScope, $state, $http, $log, utils) {
+        }])
+
+    .controller('PrimarySchoolListController', ['$scope', '$rootScope', 'utils',
+        function ($scope, $rootScope) {
+            // Do nothing!
+        }])
+
+    .controller('PrimarySchoolController', ['$scope', '$rootScope', 'utils',
+        function ($scope, $rootScope) {
+            $scope.tinymceOptions = {
+                onChange: function (e) {
+                    // put logic here for keypress and cut/paste changes
+                },
+                inline: false,
+                plugins: 'advlist autolink link image lists charmap print preview',
+                skin: 'lightgray',
+                theme: 'modern'
+            };
         }])
 
 	.controller('AboutController', ['$scope', '$rootScope', 'utils',
