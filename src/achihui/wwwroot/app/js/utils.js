@@ -341,7 +341,7 @@
 			        } else {
 			            var xhrheader = {};
 
-			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.KnolwedgeType)
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.KnowledgeType)
                             .then(function (response) {
                                 $rootScope.arKnowledgeType = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
@@ -374,7 +374,7 @@
 			        } else {
 			            var xhrheader = {};
 
-			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knolwedge)
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge)
                             .then(function (response) {
                                 $rootScope.arKnowledge = [];
                                 if ($.isArray(response.data) && response.data.length > 0) {
