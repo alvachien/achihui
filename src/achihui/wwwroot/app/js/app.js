@@ -586,8 +586,8 @@
         function ($scope, $rootScope, $state, $http, $log, utils) {
         }])
 
-    .controller('KnowledgeTypeListController', ['$scope', '$rootScope', 'utils',
-        function ($scope, $rootScope, utils) {
+    .controller('KnowledgeTypeListController', ['$scope', '$rootScope', '$state', '$log', '$q', 'utils',
+        function ($scope, $rootScope, $state, $log, $q, utils) {
 
             $scope.dispList = [];
 
@@ -601,14 +601,77 @@
             };
 
             $scope.refreshList(false);
+
+            $scope.newItem = function () {
+                var promise1 = utils.loadKnowledgeTypeListQ(false);
+                $q.all([promise1])
+                    .then(function (response) {
+                        $state.go('home.learn.knowledgetype.create');
+                    }, function (reason) {
+                    });
+            };
         }])
 
-	.controller('KnowledgeTypeController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils',
-        function ($scope, $rootScope, $state, $http, $log, utils) {
+	.controller('KnowledgeTypeController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils',
+        function ($scope, $rootScope, $state, $stateParams, $http, $log, utils) {
+
+            $scope.Activity = "Common.Create"; // Default
+            $scope.ActivityID = 1;
+            $scope.CurrentObject = {};
+            $scope.isReadonly = false;
+
+            // Reported message
+            $scope.ReportedMessages = [];
+            $scope.cleanReportMessages = function () {
+                $scope.ReportedMessages = [];
+            };
+
+            // Selection control for Knowledge type
+            $scope.parentConfig = {
+                create: false,
+                onChange: function (value) {
+                    $log.info('KnowledgeController, Type control, event onChange, ', value);
+                },
+                valueField: 'id',
+                labelField: 'name',
+                maxItems: 1,
+                required: true
+            };
+
+            if (angular.isDefined($stateParams.id)) {
+                if ($state.current.name === "home.learn.knowledge.edit") {
+                    $scope.Activity = "Common.Edit";
+                    $scope.ActivityID = 2;
+                } else if ($state.current.name === "home.learn.knowledge.display") {
+                    $scope.Activity = "Common.Display";
+                    $scope.isReadonly = true;
+                    $scope.ActivityID = 3;
+                }
+
+                var nID = parseInt($stateParams.id);
+                // Read the ID out
+                //$http.get('http://achihapi.azurewebsites.net/api/word/' + $stateParams.id)
+                //    .then(function (response) {
+
+                //    }, function (response) {
+                //        // Error occurs!
+                //    });
+            } else {
+                // Create a word
+                $scope.Current = new hih.KnowledgeType();
+            }
+
+            $scope.submit = function () {
+                var msgs = $scope.CurrentObject.verify();
+                if ($.isArray(msgs) && msgs.length > 0) {
+
+                }
+            }
+
         }])
 
-    .controller('KnowledgeListController', ['$scope', '$rootScope', 'utils',
-        function ($scope, $rootScope, utils) {
+    .controller('KnowledgeListController', ['$scope', '$rootScope', '$state', '$log', '$q', 'utils',
+        function ($scope, $rootScope, $state, $log, $q, utils) {
 
             $scope.dispList = [];
 
@@ -622,10 +685,57 @@
             };
 
             $scope.refreshList(false);
+
+            $scope.newItem = function () {
+                $state.go('home.learn.knowledge.create');
+                return;
+
+                var promise1 = utils.loadKnowledgeTypeListQ(false);
+                $q.all([promise1])
+                    .then(function (response) {
+                        $state.go('home.learn.knowledge.create');
+                    }, function (reason) {
+                    });
+            };
+
         }])
 
-    .controller('KnowledgeController', ['$scope', '$rootScope', 'utils',
-        function ($scope, $rootScope, utils) {
+    .controller('KnowledgeController', ['$scope', '$rootScope', '$state', '$stateParams', '$log', 'utils',
+        function ($scope, $rootScope, $state, $stateParams, $log, utils) {
+
+            $scope.Activity = "Common.Create"; // Default
+            $scope.ActivityID = 1;
+            $scope.CurrentObject = {};
+            $scope.isReadonly = false;
+
+            // Reported message
+            $scope.ReportedMessages = [];
+            $scope.cleanReportMessages = function () {
+                $scope.ReportedMessages = [];
+            };
+
+            // Selection control for Tags
+            $scope.arTags = [];
+            $scope.tagsConfig = {
+                create: true,
+                onChange: function (value) {
+                    $log.info('KnowledgeController, Tags control, event onChange, ', value);
+                },
+                maxItems: 10
+            };
+
+            // Selection control for Knowledge type
+            $scope.typeConfig = {
+                create: false,
+                onChange: function (value) {
+                    $log.info('KnowledgeController, Type control, event onChange, ', value);
+                },
+                valueField: 'id',
+                labelField: 'name',
+                maxItems: 1,
+                required: true
+            };
+
             $scope.tinymceOptions = {
                 onChange: function (e) {
                     // put logic here for keypress and cut/paste changes
@@ -635,6 +745,37 @@
                 skin: 'lightgray',
                 theme: 'modern'
             };
+
+            if (angular.isDefined($stateParams.id)) {
+                if ($state.current.name === "home.learn.knowledge.edit") {
+                    $scope.Activity = "Common.Edit";
+                    $scope.ActivityID = 2;
+                } else if ($state.current.name === "home.learn.knowledge.display") {
+                    $scope.Activity = "Common.Display";
+                    $scope.isReadonly = true;
+                    $scope.ActivityID = 3;
+                }
+
+                //var nID = parseInt($stateParams.id);
+                //// Read the ID out
+                //$http.get('http://achihapi.azurewebsites.net/api/word/' + $stateParams.id)
+                //    .then(function (response) {
+
+                //    }, function (response) {
+                //        // Error occurs!
+                //    });
+            } else {
+                // Create a knowlege
+                $scope.CurrentObject = new hih.Knowledge();
+            }
+
+            $scope.submit = function () {
+                var msgs = $scope.CurrentObject.verify();
+                if ($.isArray(msgs) && msgs.length > 0) {
+
+                }
+            }
+
         }])
 
 	.controller('AboutController', ['$scope', '$rootScope', 'utils',

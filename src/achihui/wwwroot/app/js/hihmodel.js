@@ -355,7 +355,7 @@
         }
         KnowledgeType.prototype.init = function (obj) {
             if (hih.Constants.IsConsoleLog) {
-                console.log("Entering EnSentence.init method.");
+                console.log("Entering KnowledgeType.init method.");
             }
 
             this.id = obj.id;
@@ -375,7 +375,7 @@
         }
         KnowledgeType.prototype.verify = function () {
             if (hih.Constants.IsConsoleLog) {
-                console.log("Entering EnSentence.verify method.");
+                console.log("Entering KnowledgeType.verify method.");
             }
 
             var errMsg = _super.prototype.verify.call(this);
@@ -405,7 +405,7 @@
         }
         Knowledge.prototype.init = function (obj) {
             if (hih.Constants.IsConsoleLog) {
-                console.log("Entering EnSentence.init method.");
+                console.log("Entering Knowledge.init method.");
             }
 
             this.id = obj.id;
@@ -426,7 +426,7 @@
         }
         Knowledge.prototype.verify = function () {
             if (hih.Constants.IsConsoleLog) {
-                console.log("Entering EnSentence.verify method.");
+                console.log("Entering Knowledge.verify method.");
             }
 
             var errMsg = _super.prototype.verify.call(this);
