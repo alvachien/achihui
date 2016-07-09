@@ -40,7 +40,9 @@
     "ExplainCreate": "Explain Create",
     "ExplainEdit": "Explain Edit",
     "ExplainDisplay": "Explain Display",
-    "PrimarySchool": "Primary School"
+    "PrimarySchool": "Primary School",
+    "KnowledgeType": "Knowledge Type",
+    "Knowledge":  "Knowledge"
   },
 
   "Todo": {

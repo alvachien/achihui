@@ -1,0 +1,38 @@
+﻿<div id="viewKnowledgeTypeList">
+    <div class="page-header">
+        <h2>
+            <span translate="Learning.KnowledgeType">Knowledge Type</span> <small translate="Common.ListView"> List View </small>
+        </h2>
+    </div>
+
+    <table st-table="dispList" st-safe-src="arKnowledgeType" class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th st-sort="id">ID</th>
+                <th st-sort="name">Name</th>
+                <th st-sort="cmt">Comment</th>
+                <th st-sort="parid">Parent ID</th>
+            </tr>
+            <tr>
+                <th colspan="4">
+                    <input st-search="" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="search" />
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="row in dispList">
+                <td>{{row.id}}</td>
+                <td>{{row.name}}</td>
+                <td>{{row.comment}}</td>
+                <td>{{row.parentid}}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-center">
+                    <cst-count></cst-count>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

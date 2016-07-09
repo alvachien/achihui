@@ -30,7 +30,9 @@
             Sentence: 'sentence',
             POS: 'pos',
             Language: 'language',
-            Todo: 'todo'
+            Todo: 'todo',
+            KnowledgeType: 'knowledgetype',
+            Knowledge: 'knowledge'
         }
     };
 
@@ -338,6 +340,108 @@
         }
 
         return EnSentence;
+    }(hih.Model));
+
+    /* Knowledge type */
+    hih.KnowledgeType = (function (_super) {
+        __extends(KnowledgeType, _super);
+        function KnowledgeType() {
+            this.id = 0;
+            this.parentid = "";
+            this.name = "";
+            this.comment = "";
+
+            this.RuntimeInfo = {};
+        }
+        KnowledgeType.prototype.init = function (obj) {
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering EnSentence.init method.");
+            }
+
+            this.id = obj.id;
+            this.parentid = obj.parentID;
+            this.name = obj.name;
+            this.comment = obj.comment;
+
+            // Buildup the runtime info
+            //var that = this;
+            //if ($.isArray(obj.explains) && obj.explains.length > 0) {
+            //    $.each(obj.explains, function (idx, eo) {
+            //        var we = new hih.WordExplain();
+            //        we.init(eo);
+            //        that.explains.push(we);
+            //    });
+            //}
+        }
+        KnowledgeType.prototype.verify = function () {
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering EnSentence.verify method.");
+            }
+
+            var errMsg = _super.prototype.verify.call(this);
+
+            this.name = this.name.trim();
+            if (this.name.length <= 0) {
+                errMsg.push("Name is a must!");
+            }
+
+            return errMsg;
+        }
+
+        return KnowledgeType;
+    }(hih.Model));
+
+    /* Knowledge */
+    hih.Knowledge = (function (_super) {
+        __extends(Knowledge, _super);
+        function Knowledge() {
+            this.id = 0;
+            this.typeid = 0;
+            this.title = "";
+            this.content = "";
+            this.tags = "";
+
+            this.RuntimeInfo = {};
+        }
+        Knowledge.prototype.init = function (obj) {
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering EnSentence.init method.");
+            }
+
+            this.id = obj.id;
+            this.typeid = obj.typeid;
+            
+            this.sentenceString = obj.sentenceString;
+            this.tags = obj.tags;
+
+            // Buildup the runtime info
+            var that = this;
+            if ($.isArray(obj.explains) && obj.explains.length > 0) {
+                $.each(obj.explains, function (idx, eo) {
+                    var we = new hih.WordExplain();
+                    we.init(eo);
+                    that.explains.push(we);
+                });
+            }
+        }
+        Knowledge.prototype.verify = function () {
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering EnSentence.verify method.");
+            }
+
+            var errMsg = _super.prototype.verify.call(this);
+
+            this.sentenceString = this.sentenceString.trim();
+            if (this.sentenceString.length <= 0) {
+                errMsg.push("String is a must!");
+            }
+            if (this.explains.length <= 0) {
+                errMsg.push("Explain is a must!");
+            }
+            return errMsg;
+        }
+
+        return Knowledge;
     }(hih.Model));
 
 }());

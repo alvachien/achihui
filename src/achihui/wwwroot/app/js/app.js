@@ -109,30 +109,55 @@
               templateUrl: 'app/views/sentencelist.html',
               controller: 'SentenceListController'
           })
-          .state('home.learn.primaryschool', {
-              url: "/primaryschool",
+          .state('home.learn.knowledgetype', {
+              url: "/knowledgetype",
               abstract: true,
               template: '<div ui-view></div>'
           })
-          .state('home.learn.primaryschool.list', {
+          .state('home.learn.knowledgetype.list', {
               url: "",
-              templateUrl: 'app/views/primaryschoollist.html',
-              controller: 'PrimarySchoolListController'
+              templateUrl: 'app/views/knowledgetypelist.html',
+              controller: 'KnowledgeTypeListController'
           })
-          .state('home.learn.primaryschool.create', {
+          .state('home.learn.knowledgetype.create', {
               url: "/create",
-              templateUrl: 'app/views/primaryschool.html',
-              controller: 'PrimarySchoolController'
+              templateUrl: 'app/views/knowledgetype.html',
+              controller: 'KnowledgeTypeController'
           })
-          .state('home.learn.primaryschool.display', {
+          .state('home.learn.knowledgetype.display', {
               url: "/display/:id",
-              templateUrl: 'app/views/primaryschool.html',
-              controller: 'PrimarySchoolController'
+              templateUrl: 'app/views/knowledgetype.html',
+              controller: 'KnowledgeTypeController'
           })
-          .state('home.learn.primaryschool.edit', {
+          .state('home.learn.knowledgetype.edit', {
               url: "/edit/:id",
-              templateUrl: 'app/views/primaryschool.html',
-              controller: 'PrimarySchoolController'
+              templateUrl: 'app/views/knowledgetype.html',
+              controller: 'KnowledgeTypeController'
+          })
+          .state('home.learn.knowledge', {
+              url: "/knowledge",
+              abstract: true,
+              template: '<div ui-view></div>'
+          })
+          .state('home.learn.knowledge.list', {
+              url: "",
+              templateUrl: 'app/views/knowledgelist.html',
+              controller: 'KnowledgeListController'
+          })
+          .state('home.learn.knowledge.create', {
+              url: "/create",
+              templateUrl: 'app/views/knowledge.html',
+              controller: 'KnowledgeController'
+          })
+          .state('home.learn.knowledge.display', {
+              url: "/display/:id",
+              templateUrl: 'app/views/knowledge.html',
+              controller: 'KnowledgeController'
+          })
+          .state('home.learn.knowledge.edit', {
+              url: "/edit/:id",
+              templateUrl: 'app/views/knowledge.html',
+              controller: 'KnowledgeController'
           })
           .state('home.todo', {
               url: '/todo',
@@ -561,13 +586,46 @@
         function ($scope, $rootScope, $state, $http, $log, utils) {
         }])
 
-    .controller('PrimarySchoolListController', ['$scope', '$rootScope', 'utils',
-        function ($scope, $rootScope) {
-            // Do nothing!
+    .controller('KnowledgeTypeListController', ['$scope', '$rootScope', 'utils',
+        function ($scope, $rootScope, utils) {
+
+            $scope.dispList = [];
+
+            $scope.refreshList = function (bForeceRefresh) {
+                utils.loadKnowledgeTypeListQ(bForeceRefresh)
+                    .then(function (response) {
+                        $scope.dispList = [].concat($rootScope.arKnowledgeType);
+                    }, function (response) {
+                        // Error occurs!
+                    });
+            };
+
+            $scope.refreshList(false);
         }])
 
-    .controller('PrimarySchoolController', ['$scope', '$rootScope', 'utils',
-        function ($scope, $rootScope) {
+	.controller('KnowledgeTypeController', ['$scope', '$rootScope', '$state', '$http', '$log', 'utils',
+        function ($scope, $rootScope, $state, $http, $log, utils) {
+        }])
+
+    .controller('KnowledgeListController', ['$scope', '$rootScope', 'utils',
+        function ($scope, $rootScope, utils) {
+
+            $scope.dispList = [];
+
+            $scope.refreshList = function (bForeceRefresh) {
+                utils.loadKnowledgeListQ(bForeceRefresh)
+                    .then(function (response) {
+                        $scope.dispList = [].concat($rootScope.arKnowledge);
+                    }, function (response) {
+                        // Error occurs!
+                    });
+            };
+
+            $scope.refreshList(false);
+        }])
+
+    .controller('KnowledgeController', ['$scope', '$rootScope', 'utils',
+        function ($scope, $rootScope, utils) {
             $scope.tinymceOptions = {
                 onChange: function (e) {
                     // put logic here for keypress and cut/paste changes

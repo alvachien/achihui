@@ -334,6 +334,73 @@
 			        return deferred.promise;
 			    };
 
+			    rtnObj.loadKnowledgeTypeListQ = function (bForceReload) {
+			        var deferred = $q.defer();
+			        if ($rootScope.isKnowledgeTypeListLoaded && !bForceReload) {
+			            deferred.resolve(true);
+			        } else {
+			            var xhrheader = {};
+
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.KnolwedgeType)
+                            .then(function (response) {
+                                $rootScope.arKnowledgeType = [];
+                                if ($.isArray(response.data) && response.data.length > 0) {
+                                    $.each(response.data, function (idx, obj) {
+                                        var wo = new hih.KnowledgeType();
+                                        wo.init(obj);
+                                        $rootScope.arKnowledgeType.push(wo);
+                                    });
+                                }
+                                $rootScope.isKnowledgeTypeListLoaded = true;
+                                deferred.resolve(true);
+                            }, function (response) {
+                                var errormsg = "";
+                                if (response.data && response.data.Message) {
+                                    errormsg = response.data.Message;
+                                } else {
+                                    errormsg = "Error in loadKnowledgeTypeListQ";
+                                }
+
+                                deferred.reject(errormsg);
+                            });
+			        }
+			        return deferred.promise;
+			    };
+
+			    rtnObj.loadKnowledgeListQ = function (bForceReload) {
+			        var deferred = $q.defer();
+			        if ($rootScope.isKnowledgeListLoaded && !bForceReload) {
+			            deferred.resolve(true);
+			        } else {
+			            var xhrheader = {};
+
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knolwedge)
+                            .then(function (response) {
+                                $rootScope.arKnowledge = [];
+                                if ($.isArray(response.data) && response.data.length > 0) {
+                                    $.each(response.data, function (idx, obj) {
+                                        var wo = new hih.Knowledge();
+                                        wo.init(obj);
+                                        $rootScope.arKnowledge.push(wo);
+                                    });
+                                }
+                                $rootScope.isKnowledgeListLoaded = true;
+                                deferred.resolve(true);
+                            }, function (response) {
+                                var errormsg = "";
+                                if (response.data && response.data.Message) {
+                                    errormsg = response.data.Message;
+                                } else {
+                                    errormsg = "Error in loadKnowledgeListQ";
+                                }
+
+                                deferred.reject(errormsg);
+                            });
+			        }
+			        return deferred.promise;
+			    };
+
+
 			    return rtnObj;
 			})
 	;
