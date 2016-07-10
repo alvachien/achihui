@@ -410,19 +410,19 @@
 
             this.id = obj.id;
             this.typeid = obj.typeid;
-            
-            this.sentenceString = obj.sentenceString;
+            this.title = obj.title;
+            this.conent = obj.content;
             this.tags = obj.tags;
 
             // Buildup the runtime info
-            var that = this;
-            if ($.isArray(obj.explains) && obj.explains.length > 0) {
-                $.each(obj.explains, function (idx, eo) {
-                    var we = new hih.WordExplain();
-                    we.init(eo);
-                    that.explains.push(we);
-                });
-            }
+            //var that = this;
+            //if ($.isArray(obj.explains) && obj.explains.length > 0) {
+            //    $.each(obj.explains, function (idx, eo) {
+            //        var we = new hih.WordExplain();
+            //        we.init(eo);
+            //        that.explains.push(we);
+            //    });
+            //}
         }
         Knowledge.prototype.verify = function () {
             if (hih.Constants.IsConsoleLog) {
@@ -431,14 +431,28 @@
 
             var errMsg = _super.prototype.verify.call(this);
 
-            this.sentenceString = this.sentenceString.trim();
-            if (this.sentenceString.length <= 0) {
-                errMsg.push("String is a must!");
+            this.title = this.title.trim();
+            if (this.title.length <= 0) {
+                errMsg.push("Title is a must!");
             }
-            if (this.explains.length <= 0) {
-                errMsg.push("Explain is a must!");
+            if (this.content.length <= 0) {
+                errMsg.push("Content is a must!");
             }
             return errMsg;
+        }
+        Knowledge.prototype.writeToJSONObject = function () {
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering Knowledge.writeToJSONObject method.");
+            }
+
+            var jsonObj = _super.prototype.writeToJSONObject.call(this);
+            jsonObj.id = this.id;
+            jsonObj.typeid = this.typeid;
+            jsonObj.tags = this.tags.toString();
+            jsonObj.title = this.title;
+            jsonObj.content = this.content;
+
+            return jsonObj;
         }
 
         return Knowledge;

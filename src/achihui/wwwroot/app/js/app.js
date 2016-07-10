@@ -774,6 +774,11 @@
                 if ($.isArray(msgs) && msgs.length > 0) {
 
                 }
+
+                utils.createKnowledgeQ($scope.CurrentObject)
+                    .then(function (response) {
+                    }, function (reason) {
+                    });
             }
 
         }])

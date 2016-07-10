@@ -399,7 +399,26 @@
 			        }
 			        return deferred.promise;
 			    };
+			    rtnObj.createKnowledgeQ = function (kobj) {
+			        var deferred = $q.defer();
+			        //var xhrheader = {};
 
+			        //if (angular.isDefined($rootScope.User) && $rootScope.User) {
+			        //    xhrheader = {
+			        //        headers: {
+			        //            "Authorization": "Bearer " + $rootScope.User.access_token
+			        //        }
+			        //    }
+			        //}
+
+			        $http.post(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge, kobj.writeToJSONObjectString())
+                            .then(function (response) {
+                                deferred.resolve(response.data);
+                            }, function (response) {
+                                deferred.reject(response.data.Message);
+                            });
+			        return deferred.promise;
+			    };
 
 			    return rtnObj;
 			})
