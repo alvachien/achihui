@@ -411,7 +411,7 @@
             this.id = obj.id;
             this.typeid = obj.typeid;
             this.title = obj.title;
-            this.conent = obj.content;
+            this.content = obj.content;
             this.tags = obj.tags;
 
             // Buildup the runtime info

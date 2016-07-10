@@ -702,6 +702,8 @@
 
     .controller('KnowledgeController', ['$scope', '$rootScope', '$state', '$stateParams', '$log', 'utils',
         function ($scope, $rootScope, $state, $stateParams, $log, utils) {
+            utils.loadKnowledgeTypeListQ(false)
+                .then(function (response) { }, function (reason) { });
 
             $scope.Activity = "Common.Create"; // Default
             $scope.ActivityID = 1;
@@ -779,7 +781,6 @@
                     }, function (reason) {
                     });
             }
-
         }])
 
 	.controller('AboutController', ['$scope', '$rootScope', 'utils',
