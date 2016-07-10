@@ -757,13 +757,12 @@
                 }
 
                 //var nID = parseInt($stateParams.id);
-                //// Read the ID out
-                //$http.get('http://achihapi.azurewebsites.net/api/word/' + $stateParams.id)
-                //    .then(function (response) {
+                utils.loadKnowledgeQ($stateParams.id)
+                    .then(function (response) {
+                        $scope.CurrentObject = response;
+                    }, function (reason) {
 
-                //    }, function (response) {
-                //        // Error occurs!
-                //    });
+                    });
             } else {
                 // Create a knowlege
                 $scope.CurrentObject = new hih.Knowledge();

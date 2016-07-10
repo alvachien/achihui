@@ -399,6 +399,55 @@
 			        }
 			        return deferred.promise;
 			    };
+			    rtnObj.loadKnowledgeQ = function (id) {
+			        var deferred = $q.defer();
+
+			        //var xhrheader = {};
+
+			        //if (angular.isDefined($rootScope.User) && $rootScope.User) {
+			        //    xhrheader = {
+			        //        headers: {
+			        //            "Authorization": "Bearer " + $rootScope.User.access_token
+			        //        }
+			        //    }
+			        //}
+			        $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge + '/' + id)
+                        .then(function (response) {
+                            var wo = new hih.Knowledge();
+                            wo.init(response);
+
+                            if ($rootScope.arKnowledge && $.isArray($rootScope.arKnowledge)) {
+                                var isExists = false;
+                                $.each($rootScope.arKnowledge, function (idx, obj) {
+                                    if (parseInt(obj.id) === parseInt(id)) {
+                                        // Todo!
+                                        isExists = true;
+                                        obj = wo;
+                                    }
+                                });
+
+                                if (!isExists) {
+                                    $rootScope.arKnowledge.push(wo);
+                                }
+                            } else {
+                                $rootScope.arKnowledge = [];
+
+                                $rootScope.arKnowledge.push(wo);
+                            }
+                            deferred.resolve(wo);
+                        }, function (response) {
+                            var errormsg = "";
+                            if (response.data && response.data.Message) {
+                                errormsg = response.data.Message;
+                            } else {
+                                errormsg = "Error in loadKnowledgeQ";
+                            }
+
+                            deferred.reject(errormsg);
+                        });
+
+			        return deferred.promise;
+			    };
 			    rtnObj.createKnowledgeQ = function (kobj) {
 			        var deferred = $q.defer();
 			        //var xhrheader = {};

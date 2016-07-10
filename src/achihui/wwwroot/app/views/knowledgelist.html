@@ -48,7 +48,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="row in dispList">
-                <td>{{row.id}}</td>
+                <td><a ng-href="#/home/learn/knowledge/display/{{row.id}}">{{row.id}}</a></td>
                 <td>{{row.title}}</td>
                 <td>{{row.content}}</td>
                 <td>{{row.tags}}</td>
