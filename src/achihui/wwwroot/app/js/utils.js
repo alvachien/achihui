@@ -414,7 +414,7 @@
 			        $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge + '/' + id)
                         .then(function (response) {
                             var wo = new hih.Knowledge();
-                            wo.init(response);
+                            wo.init(response.data);
 
                             if ($rootScope.arKnowledge && $.isArray($rootScope.arKnowledge)) {
                                 var isExists = false;
