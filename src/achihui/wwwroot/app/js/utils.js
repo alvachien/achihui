@@ -352,6 +352,29 @@
                                     });
                                 }
                                 $rootScope.isKnowledgeTypeListLoaded = true;
+
+                                // Build the parent relationship
+                                var arNodes = [];
+                                $.each($rootScope.arKnowledgeType, function (idx, obj) {
+                                    if (obj.parentid == 0)
+                                        arNodes.push(obj);
+                                });
+
+                                while (arNodes.length()) {
+                                    var arcurnodes = [].concat(arNodes);
+                                    arNodes = [];
+                                    $.each(arcurnodes, function (idx, obj) {
+                                        obj.buildParentRelationship($rootScope.arKnowledgeType);
+                                        obj.buildDisplayName();
+
+                                        $.each($rootScope.arKnowledgeType, function (idx2, obj2) {
+                                            if (obj2.parentid == obj.id) {
+                                                arNodes.push(obj2);
+                                            }
+                                        });
+                                    });
+                                }
+
                                 deferred.resolve(true);
                             }, function (response) {
                                 var errormsg = "";

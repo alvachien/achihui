@@ -33,7 +33,9 @@
             Todo: 'todo',
             KnowledgeType: 'knowledgetype',
             Knowledge: 'knowledge'
-        }
+        },
+
+        TypeParentSplitter: " > "
     };
 
     /* Root Model */
@@ -372,6 +374,28 @@
             //        that.explains.push(we);
             //    });
             //}
+        }
+        KnowledgeType.prototype.buildParentRelationship = function (arTypes) {
+            if (this.parentid === 0) {
+                this.RuntimeInfo.parentObject = null;
+            } else {
+                if ($.isArray(arTypes) && arTypes.length > 0) {
+                    var that = this;
+                    $.each(arTypes, function (idx, obj) {
+                        if (that.parentid === obj.id) {
+                            that.RuntimeInfo.parentObject = arTypes[idx];
+                            return false;
+                        }
+                    });
+                }
+            }
+        }
+        KnowledgeType.prototype.buildDisplayName = function () {
+            if (this.RuntimeInfo.parentObject) {
+                this.RuntimeInfo.displayName = this.RuntimeInfo.parentObject.RuntimeInfo.displayName + hih.Constants.TypeParentSplitter + this.name;
+            } else {
+                this.RuntimeInfo.displayName = this.name;
+            }
         }
         KnowledgeType.prototype.verify = function () {
             if (hih.Constants.IsConsoleLog) {

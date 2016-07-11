@@ -702,8 +702,6 @@
 
     .controller('KnowledgeController', ['$scope', '$rootScope', '$state', '$stateParams', '$log', 'utils',
         function ($scope, $rootScope, $state, $stateParams, $log, utils) {
-            utils.loadKnowledgeTypeListQ(false)
-                .then(function (response) { }, function (reason) { });
 
             $scope.Activity = "Common.Create"; // Default
             $scope.ActivityID = 1;
@@ -733,7 +731,7 @@
                     $log.info('KnowledgeController, Type control, event onChange, ', value);
                 },
                 valueField: 'id',
-                labelField: 'name',
+                labelField: 'RuntimeInfo.displayName',
                 maxItems: 1,
                 required: false
             };
@@ -756,31 +754,36 @@
                 theme : 'modern' 
             };
 
-            if (angular.isDefined($stateParams.id)) {
-                if ($state.current.name === "home.learn.knowledge.edit") {
-                    $scope.Activity = "Common.Edit";
-                    $scope.ActivityID = 2;
-                } else if ($state.current.name === "home.learn.knowledge.display") {
-                    $scope.Activity = "Common.Display";
-                    $scope.isReadonly = true;
-                    $scope.ActivityID = 3;
-                }
-
-                //var nID = parseInt($stateParams.id);
-                utils.loadKnowledgeQ($stateParams.id)
-                    .then(function (response) {
-                        if (response instanceof hih.Knowledge) {
-                            $scope.CurrentObject = angular.copy(response);
-                        } else {
-                            $scope.ReportedMessages.push("Internal error occurred");
+            utils.loadKnowledgeTypeListQ(false)
+                .then(function (response) {
+                    if (angular.isDefined($stateParams.id)) {
+                        if ($state.current.name === "home.learn.knowledge.edit") {
+                            $scope.Activity = "Common.Edit";
+                            $scope.ActivityID = 2;
+                        } else if ($state.current.name === "home.learn.knowledge.display") {
+                            $scope.Activity = "Common.Display";
+                            $scope.isReadonly = true;
+                            $scope.ActivityID = 3;
                         }
-                    }, function (reason) {
-                        $scope.ReportedMessages.push(reason);
-                    });
-            } else {
-                // Create a knowlege
-                $scope.CurrentObject = new hih.Knowledge();
-            }
+
+                        //var nID = parseInt($stateParams.id);
+                        utils.loadKnowledgeQ($stateParams.id)
+                            .then(function (response) {
+                                if (response instanceof hih.Knowledge) {
+                                    $scope.CurrentObject = angular.copy(response);
+                                } else {
+                                    $scope.ReportedMessages.push("Internal error occurred");
+                                }
+                            }, function (reason) {
+                                $scope.ReportedMessages.push(reason);
+                            });
+                    } else {
+                        // Create a knowlege
+                        $scope.CurrentObject = new hih.Knowledge();
+                    }
+                }, function (reason) {
+                    $scope.ReportedMessages.push(reason);
+                });
 
             $scope.submit = function () {
                 $scope.cleanReportMessages();
