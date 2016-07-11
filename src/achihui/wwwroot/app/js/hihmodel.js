@@ -348,8 +348,8 @@
     hih.KnowledgeType = (function (_super) {
         __extends(KnowledgeType, _super);
         function KnowledgeType() {
-            this.id = 0;
-            this.parentid = "";
+            this.id = -1;
+            this.parentid = -1;
             this.name = "";
             this.comment = "";
 
@@ -362,8 +362,11 @@
                 console.log("Entering KnowledgeType.init method.");
             }
 
-            this.id = obj.id;
-            this.parentid = obj.parentID;
+            this.id = parseInt(obj.id);
+            if (obj.parentID)
+                this.parentid = parseInt(obj.parentID);
+            else
+                this.parentid = -1;
             this.name = obj.name;
             this.comment = obj.comment;
 
@@ -378,7 +381,7 @@
             //}
         }
         KnowledgeType.prototype.buildParentRelationship = function (arTypes) {
-            if (this.parentid === 0) {
+            if (this.parentid === -1) {
                 this.RuntimeInfo.parentObject = null;
             } else {
                 if ($.isArray(arTypes) && arTypes.length > 0) {

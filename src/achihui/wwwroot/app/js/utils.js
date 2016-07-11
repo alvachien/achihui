@@ -339,8 +339,6 @@
 			        if ($rootScope.isKnowledgeTypeListLoaded && !bForceReload) {
 			            deferred.resolve(true);
 			        } else {
-			            var xhrheader = {};
-
 			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.KnowledgeType)
                             .then(function (response) {
                                 $rootScope.arKnowledgeType = [];
@@ -356,19 +354,20 @@
                                 // Build the parent relationship
                                 var arNodes = [];
                                 $.each($rootScope.arKnowledgeType, function (idx, obj) {
-                                    if (!obj.parentid)
+                                    if (obj.parentid === -1)
                                         arNodes.push(obj);
                                 });
 
                                 while (arNodes.length > 0) {
                                     var arcurnodes = [].concat(arNodes);
                                     arNodes = [];
+
                                     $.each(arcurnodes, function (idx, obj) {
                                         obj.buildParentRelationship($rootScope.arKnowledgeType);
                                         obj.buildDisplayName();
 
                                         $.each($rootScope.arKnowledgeType, function (idx2, obj2) {
-                                            if (obj2.parentid && obj2.parentid == obj.id) {
+                                            if (obj2.parentid === obj.id) {
                                                 arNodes.push(obj2);
                                             }
                                         });

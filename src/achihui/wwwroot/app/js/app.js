@@ -783,8 +783,7 @@
                 },
                 valueField: 'id',
                 labelField: 'fullDisplayName',
-                maxItems: 1,
-                required: false
+                maxItems: 1
             };
 
             $scope.tinymceOptions = {
