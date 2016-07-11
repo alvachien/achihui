@@ -356,7 +356,7 @@
                                 // Build the parent relationship
                                 var arNodes = [];
                                 $.each($rootScope.arKnowledgeType, function (idx, obj) {
-                                    if (obj.parentid == 0)
+                                    if (!obj)
                                         arNodes.push(obj);
                                 });
 

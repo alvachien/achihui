@@ -442,6 +442,9 @@
             this.createdAt = obj.createdAt;
             this.modifiedAt = obj.modifiedAt;
 
+            var regex = /(<([^>]+)>)/ig;
+            this.RuntimeInfo.shortcontent = this.content.replace(regex, "");
+
             // Buildup the runtime info
             //var that = this;
             //if ($.isArray(obj.explains) && obj.explains.length > 0) {
