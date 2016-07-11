@@ -324,6 +324,7 @@
                     .then(function (response) {
                         $state.go('home.learn.word.create');
                     }, function (reason) {
+                        // Todo
                     });
             };
 
@@ -333,6 +334,7 @@
                         $scope.dispList = [].concat($rootScope.arWord);
                     }, function (response) {
                         // Error occurs!
+                        // Todo
                     });
             };
 
@@ -342,57 +344,56 @@
             $scope.displayItem = function (row) {
                 var nID = 0;
                 if (row) {
-                    nID = row.ID;
+                    nID = row.wordID;
                 } else {
                     for (var i = 0; i < $scope.dispList.length; i++) {
                         if ($scope.dispList[i].isSelected) {
-                            nID = $scope.dispList[i].ID;
+                            nID = $scope.dispList[i].wordID;
                             break;
                         }
                     }
                 }
 
-                var promise1 = utils.loadLanguagesQ();
-                var promise2 = utils.loadPOSQ();
-                $q.all([promise1, promise2])
-                    .then(function (response) {
-                        $state.go("home.learn.word.display", { id: nID });
-                    }, function (reason) {
-                    });                
+                if (nID) {
+                    var promise1 = utils.loadLanguagesQ();
+                    var promise2 = utils.loadPOSQ();
+                    $q.all([promise1, promise2])
+                        .then(function (response) {
+                            $state.go("home.learn.word.display", { id: nID });
+                        }, function (reason) {
+                        });
+                }
             };
 
             // Edit
             $scope.editItem = function (row) {
                 var nID = 0;
                 if (row) {
-                    nID = row.ID;
+                    nID = row.wordID;
                 } else {
                     for (var i = 0; i < $scope.dispList.length; i++) {
                         if ($scope.dispList[i].isSelected) {
-                            nID = $scope.dispList[i].ID;
+                            nID = $scope.dispList[i].wordID;
                             break;
                         }
                     }
                 }
 
-                var promise1 = utils.loadLanguagesQ();
-                var promise2 = utils.loadPOSQ();
-                $q.all([promise1, promise2])
-                    .then(function (response) {
-                        $state.go("home.learn.word.change", { id: nID });
-                    }, function (reason) {
-                    });
+                if (nID) {
+                    var promise1 = utils.loadLanguagesQ();
+                    var promise2 = utils.loadPOSQ();
+                    $q.all([promise1, promise2])
+                        .then(function (response) {
+                            $state.go("home.learn.word.change", { id: nID });
+                        }, function (reason) {
+                            // Todo
+                        });
+                }
             };
         }])
 
 	.controller('WordController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', '$q', 'utils',
         function ($scope, $rootScope, $state, $stateParams, $http, $log, $q, utils) {
-            var promise1 = utils.loadLanguagesQ(false);
-            var promise2 = utils.loadPOSQ(false);
-            $q.all([promise1, promise2])
-                .then(function (response) {
-                }, function(reason) {
-                });
 
             $scope.Activity = "Common.Create"; // Default
             $scope.ActivityID = 1;
@@ -411,6 +412,7 @@
 
             // Selection control for Tags
             $scope.arTags = [];
+            $scope.tags = [];
             $scope.tagsConfig = {
                 create: true,
                 onChange: function (value) {
@@ -443,28 +445,38 @@
                 required: true
             };
 
-            if (angular.isDefined($stateParams.id)) {
-                if ($state.current.name === "home.learn.word.edit") {
-                    $scope.Activity = "Common.Edit";
-                    $scope.ActivityID = 2;
-                } else if ($state.current.name === "home.learn.word.display") {
-                    $scope.Activity = "Common.Display";
-                    $scope.isReadonly = true;
-                    $scope.ActivityID = 3;
-                }
+            var promise1 = utils.loadLanguagesQ(false);
+            var promise2 = utils.loadPOSQ(false);
+            $q.all([promise1, promise2])
+                .then(function (response) {
+                    if (angular.isDefined($stateParams.id)) {
+                        if ($state.current.name === "home.learn.word.edit") {
+                            $scope.Activity = "Common.Edit";
+                            $scope.ActivityID = 2;
+                        } else if ($state.current.name === "home.learn.word.display") {
+                            $scope.Activity = "Common.Display";
+                            $scope.isReadonly = true;
+                            $scope.ActivityID = 3;
+                        }
 
-                var nID = parseInt($stateParams.id);
-                // Read the ID out
-                $http.get('http://achihapi.azurewebsites.net/api/word/' + $stateParams.id)
-                    .then(function (response) {
+                        var nID = parseInt($stateParams.id);
+                        // Read the ID out
+                        $http.get('http://achihapi.azurewebsites.net/api/word/' + $stateParams.id)
+                            .then(function (response) {
+                                if ($scope.WordObject.tags) {
+                                    $scope.tags = $scope.WordObject.tags.split(hih.Constants.IDSplitChar);
+                                }
+                            }, function (response) {
+                                // Error occurs!
+                            });
+                    } else {
+                        // Create a word
+                        $scope.WordObject = new hih.EnWord();
+                    }
 
-                    }, function (response) {
-                        // Error occurs!
-                    });
-            } else {
-                // Create a word
-                $scope.WordObject = new hih.EnWord();
-            }
+
+                }, function (reason) {
+                });
 
             $scope.nextItemID = 0;
             $scope.updateNextItemID = function () {
@@ -529,6 +541,9 @@
                         $scope.WordObject.Explains.push(obj);
                     });
                 }
+
+                $scope.WordObject.tags = $scope.tags.join(hih.Constants.IDSplitChar);
+
                 var msgs = $scope.WordObject.verify();
                 if ($.isArray(msgs) && msgs.length > 0) {
 
@@ -855,6 +870,7 @@
             $scope.ActivityID = 1;
             $scope.CurrentObject = {};
             $scope.isReadonly = false;
+            $scope.arTypes = [];
 
             // Reported message
             $scope.ReportedMessages = [];
@@ -864,6 +880,7 @@
 
             // Selection control for Tags
             $scope.arTags = [];
+            $scope.tags = [];
             $scope.tagsConfig = {
                 create: true,
                 onChange: function (value) {
@@ -903,6 +920,8 @@
 
             utils.loadKnowledgeTypeListQ(false)
                 .then(function (response) {
+                    $scope.arTypes = [].concat($rootScope.arKnowledgeType);
+
                     if (angular.isDefined($stateParams.id)) {
                         if ($state.current.name === "home.learn.knowledge.edit") {
                             $scope.Activity = "Common.Edit";
@@ -918,6 +937,8 @@
                             .then(function (response) {
                                 if (response instanceof hih.Knowledge) {
                                     $scope.CurrentObject = angular.copy(response);
+
+                                    $scope.tags = $scope.CurrentObject.tags.split(hih.Constants.IDSplitChar);
                                 } else {
                                     $scope.ReportedMessages.push("Internal error occurred");
                                 }
@@ -934,6 +955,8 @@
 
             $scope.submit = function () {
                 $scope.cleanReportMessages();
+
+                $scope.CurrentObject.tags = $scope.tags.join(hih.Constants.IDSplitChar);
 
                 var msgs = $scope.CurrentObject.verify();
                 if ($.isArray(msgs) && msgs.length > 0) {

@@ -227,7 +227,7 @@
             var jsonObj = _super.prototype.writeToJSONObject.call(this);
             jsonObj.wordID = this.wordID;
             jsonObj.wordString = this.wordString;
-            jsonObj.tags = this.tags.toString();
+            jsonObj.tags = this.tags;
             jsonObj.explains = [];
 
             $.each(this.explains, function (idx, obj) {
