@@ -698,6 +698,57 @@
                     });
             };
 
+            // Display 
+            $scope.displayItem = function (row) { 
+                var nID = 0; 
+                if (row) { 
+                    nID = row.ID; 
+                } else { 
+                    for(var i = 0; i < $scope.dispList.length; i ++) { 
+                        if ($scope.dispList[i].isSelected) { 
+                            nID = $scope.dispList[i].ID; 
+                            break; 
+                        } 
+                    } 
+                }
+                
+                $state.go("home.learn.knowledge.display",  { id: nID }); 
+            }; 
+
+            // Edit 
+            $scope.editItem = function (row) { 
+                var nID = 0; 
+                if (row) { 
+                    nID = row.ID; 
+                } else { 
+                    for(var i = 0; i < $scope.dispList.length; i ++) { 
+                        if ($scope.dispList[i].isSelected) { 
+                            nID = $scope.dispList[i].ID; 
+                            break; 
+                        } 
+                    } 
+                }
+
+                $state.go("home.learn.knowledge.edit",  { id : nID }); 
+            }; 
+
+            $scope.removeItem = function (row) {
+                var strIDs = ""; 
+                if (row) { 
+                    strIDs = row.ID.toString() 
+                } else { 
+                    //for(var i = 0; i < $scope.dispList.length; i ++) { 
+                    //    if ($scope.dispList[i].isSelected) { 
+                    //        if (strIDs.length <= 0) {								 
+                    //        } else { 
+                    //            strIDs = strIDs.concat(hih.Constants.IDSplitChar);								 
+                    //        } 
+
+                    //        strIDs = strIDs.concat($scope.dispList[i].ID.toString());
+                    //    } 
+                    //} 
+                } 
+            }
         }])
 
     .controller('KnowledgeController', ['$scope', '$rootScope', '$state', '$stateParams', '$log', 'utils',

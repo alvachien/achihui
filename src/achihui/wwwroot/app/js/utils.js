@@ -356,7 +356,7 @@
                                 // Build the parent relationship
                                 var arNodes = [];
                                 $.each($rootScope.arKnowledgeType, function (idx, obj) {
-                                    if (!obj)
+                                    if (!obj.parentid)
                                         arNodes.push(obj);
                                 });
 
@@ -368,7 +368,7 @@
                                         obj.buildDisplayName();
 
                                         $.each($rootScope.arKnowledgeType, function (idx2, obj2) {
-                                            if (obj2.parentid == obj.id) {
+                                            if (obj2.parentid && obj2.parentid == obj.id) {
                                                 arNodes.push(obj2);
                                             }
                                         });
