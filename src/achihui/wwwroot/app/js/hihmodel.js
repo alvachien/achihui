@@ -411,6 +411,9 @@
 
             var errMsg = _super.prototype.verify.call(this);
 
+            if (this.id === -1 || this.id === 0) {
+                errMsg.push("Input a valid ID!");
+            }
             this.name = this.name.trim();
             if (this.name.length <= 0) {
                 errMsg.push("Name is a must!");

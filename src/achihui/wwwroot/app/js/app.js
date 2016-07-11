@@ -741,13 +741,16 @@
             $scope.submit = function () {
                 var msgs = $scope.CurrentObject.verify();
                 if ($.isArray(msgs) && msgs.length > 0) {
-
+                    $.each(msgs, function (idx, obj) {
+                        $scope.ReportedMessages.push(obj);
+                    });
+                    return;
                 }
 
                 if ($scope.ActivityID === 1) {
                     utils.createKnowledgeTypeQ($scope.CurrentObject)
                         .then(function (response) {
-                            // 
+                            $state.go("home.learn.knowledgetype.display", { id: $scope.CurrentObject.id });
                         }, function (reason) {
                             // Todo
                         });
@@ -963,18 +966,21 @@
                     $.each(msgs, function (idx, obj) {
                         $scope.ReportedMessages.push(obj);
                     });
+                    return;
                 }
 
                 if ($scope.ActivityID === 1) {
                     utils.createKnowledgeQ($scope.CurrentObject)
                         .then(function (response) {
                             // Navigate to the display mode
+                            $state.go("home.learn.knowledge.list");
                         }, function (reason) {
                         });
                 } else if ($scope.ActivityID === 2) {
                     utils.updateKnowledgeQ($scope.CurrentObject)
                         .then(function (response) {
                             // Navigate to the display mode
+                            $state.go("home.learn.knowledge.list");
                         }, function (reason) {
                         });
                 }
