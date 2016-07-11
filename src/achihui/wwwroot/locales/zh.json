@@ -31,7 +31,10 @@
     "Default": "默认",
     "Title": "标题",
     "CreatedAt": "创建时间",
-    "LastModifiedAt": "最后修改时间"
+    "LastModifiedAt": "最后修改时间",
+    "Name": "名称",
+    "Comment": "说明",
+    "Parent": "父对象"
   },
 
   "Learning": {

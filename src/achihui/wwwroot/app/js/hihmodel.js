@@ -14,13 +14,13 @@
     hih.Constants = {
         IsConsoleLog: true,
         // Debug
-        //APIBaseURL: "http://localhost:25688/api/",
+        APIBaseURL: "http://localhost:25688/api/",
         //IdSrvURL: "http://localhost:41016/",
         //IdSrvLoginRedirURL: "http://localhost:29521/logincallback.html",
         //IdSrvLogoutRedirURL: "http://localhost:29521/logoutcallback.html",
 
         // Release
-        APIBaseURL: "http://achihapi.azurewebsites.net/api/",
+        //APIBaseURL: "http://achihapi.azurewebsites.net/api/",
         IdSrvURL: "http://acidserver.azurewebsites.net/",
         IdSrvLoginRedirURL: "http://achihui.azurewebsites.net/logincallback.html",
         IdSrvLogoutRedirURL: "http://achihui.azurewebsites.net/logoutcallback.html",
@@ -386,9 +386,10 @@
             } else {
                 if ($.isArray(arTypes) && arTypes.length > 0) {
                     var that = this;
+
                     $.each(arTypes, function (idx, obj) {
                         if (that.parentid === obj.id) {
-                            that.RuntimeInfo.parentObject = arTypes[idx];
+                            that.RuntimeInfo.parentObject = obj;
                             return false;
                         }
                     });
@@ -415,6 +416,22 @@
             }
 
             return errMsg;
+        }
+        KnowledgeType.prototype.writeToJSONObject = function () {
+            if (hih.Constants.IsConsoleLog) {
+                console.log("Entering KnowledgeType.writeToJSONObject method.");
+            }
+
+            var jsonObj = _super.prototype.writeToJSONObject.call(this);
+            jsonObj.id = this.id;
+            if (this.parentid === -1)
+                jsonObj.parentid = null;
+            else
+                jsonObj.parentid = this.parentid;
+            jsonObj.name = this.name.trim();
+            jsonObj.comment = this.comment.trim();
+
+            return jsonObj;
         }
 
         return KnowledgeType;

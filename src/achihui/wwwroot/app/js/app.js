@@ -603,13 +603,57 @@
             $scope.refreshList(false);
 
             $scope.newItem = function () {
-                var promise1 = utils.loadKnowledgeTypeListQ(false);
-                $q.all([promise1])
-                    .then(function (response) {
-                        $state.go('home.learn.knowledgetype.create');
-                    }, function (reason) {
-                    });
+                $state.go('home.learn.knowledgetype.create');
             };
+
+            $scope.displayItem = function (row) {
+                var nID = 0;
+                if (row) {
+                    nID = row.id;
+                } else {
+                    for (var i = 0; i < $scope.dispList.length; i++) {
+                        if ($scope.dispList[i].isSelected) {
+                            nID = $scope.dispList[i].id;
+                            break;
+                        }
+                    }
+                }
+
+                $state.go("home.learn.knowledgetype.display", { id: nID });
+            }
+
+            $scope.editItem = function (row) {
+                var nID = 0;
+                if (row) {
+                    nID = row.id;
+                } else {
+                    for (var i = 0; i < $scope.dispList.length; i++) {
+                        if ($scope.dispList[i].isSelected) {
+                            nID = $scope.dispList[i].id;
+                            break;
+                        }
+                    }
+                }
+
+                $state.go("home.learn.knowledgetype.edit", { id: nID });
+            }
+
+            $scope.removeItem = function (row) {
+                var nID = 0;
+                if (row) {
+                    nID = row.id;
+                } else {
+                    for (var i = 0; i < $scope.dispList.length; i++) {
+                        if ($scope.dispList[i].isSelected) {
+                            nID = $scope.dispList[i].id;
+                            break;
+                        }
+                    }
+                }
+
+                utils.deleteKnowledgeTypeQ(nID)
+                    .then(function (response) { }, function (reason) { });
+            }
         }])
 
 	.controller('KnowledgeTypeController', ['$scope', '$rootScope', '$state', '$stateParams', '$http', '$log', 'utils',
@@ -633,41 +677,55 @@
                     $log.info('KnowledgeController, Type control, event onChange, ', value);
                 },
                 valueField: 'id',
-                labelField: 'name',
+                labelField: 'fullDisplayName',
                 maxItems: 1,
                 required: true
             };
 
-            if (angular.isDefined($stateParams.id)) {
-                if ($state.current.name === "home.learn.knowledge.edit") {
-                    $scope.Activity = "Common.Edit";
-                    $scope.ActivityID = 2;
-                } else if ($state.current.name === "home.learn.knowledge.display") {
-                    $scope.Activity = "Common.Display";
-                    $scope.isReadonly = true;
-                    $scope.ActivityID = 3;
-                }
+            utils.loadKnowledgeTypeListQ(false)
+                .then(function (response) {
+                    if (angular.isDefined($stateParams.id)) {
+                        if ($state.current.name === "home.learn.knowledgetype.edit") {
+                            $scope.Activity = "Common.Edit";
+                            $scope.ActivityID = 2;
+                        } else if ($state.current.name === "home.learn.knowledgetype.display") {
+                            $scope.Activity = "Common.Display";
+                            $scope.isReadonly = true;
+                            $scope.ActivityID = 3;
+                        }
 
-                var nID = parseInt($stateParams.id);
-                // Read the ID out
-                //$http.get('http://achihapi.azurewebsites.net/api/word/' + $stateParams.id)
-                //    .then(function (response) {
+                        // Read the ID out
+                        utils.loadKnowledgeTypeQ($stateParams.id)
+                            .then(function (response) {
+                                if (response instanceof hih.KnowledgeType) {
+                                    $scope.CurrentObject = angular.copy(response);
+                                }
+                            }, function (reason) {
+                            });
+                    } else {
+                        // Create a word
+                        $scope.CurrentObject = new hih.KnowledgeType();
+                    }
+                }, function (response) {
+                    // Error occurs!
+                });
 
-                //    }, function (response) {
-                //        // Error occurs!
-                //    });
-            } else {
-                // Create a word
-                $scope.Current = new hih.KnowledgeType();
-            }
 
             $scope.submit = function () {
                 var msgs = $scope.CurrentObject.verify();
                 if ($.isArray(msgs) && msgs.length > 0) {
 
                 }
+
+                utils.createKnowledgeTypeQ($scope.CurrentObject)
+                    .then(function (response) {
+                    }, function (reason) {
+                    });
             }
 
+            $scope.close = function () {
+                $state.go("home.learn.knowledgetype.list");
+            }
         }])
 
     .controller('KnowledgeListController', ['$scope', '$rootScope', '$state', '$log', '$q', 'utils',
@@ -702,11 +760,11 @@
             $scope.displayItem = function (row) { 
                 var nID = 0; 
                 if (row) { 
-                    nID = row.ID; 
+                    nID = row.id;
                 } else { 
                     for(var i = 0; i < $scope.dispList.length; i ++) { 
                         if ($scope.dispList[i].isSelected) { 
-                            nID = $scope.dispList[i].ID; 
+                            nID = $scope.dispList[i].id;
                             break; 
                         } 
                     } 
@@ -719,11 +777,11 @@
             $scope.editItem = function (row) { 
                 var nID = 0; 
                 if (row) { 
-                    nID = row.ID; 
+                    nID = row.id;
                 } else { 
                     for(var i = 0; i < $scope.dispList.length; i ++) { 
                         if ($scope.dispList[i].isSelected) { 
-                            nID = $scope.dispList[i].ID; 
+                            nID = $scope.dispList[i].id;
                             break; 
                         } 
                     } 

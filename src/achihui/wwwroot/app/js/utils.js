@@ -352,27 +352,32 @@
                                 $rootScope.isKnowledgeTypeListLoaded = true;
 
                                 // Build the parent relationship
-                                var arNodes = [];
-                                $.each($rootScope.arKnowledgeType, function (idx, obj) {
-                                    if (obj.parentid === -1)
-                                        arNodes.push(obj);
-                                });
+                                //var arNodes = [];
+                                //$.each($rootScope.arKnowledgeType, function (idx, obj) {
+                                //    if (obj.parentid === -1) {
+                                //        obj.RuntimeInfo.parentObject = null;
+                                //        obj.buildDisplayName();
+                                //        arNodes.push(obj);
+                                //    }
+                                //});
 
-                                while (arNodes.length > 0) {
-                                    var arcurnodes = [].concat(arNodes);
-                                    arNodes = [];
+                                //while (arNodes.length > 0) {
+                                //    var arcurnodes = [].concat(arNodes);
+                                //    arNodes = [];
 
-                                    $.each(arcurnodes, function (idx, obj) {
-                                        obj.buildParentRelationship($rootScope.arKnowledgeType);
-                                        obj.buildDisplayName();
+                                //    $.each(arcurnodes, function (idx, obj) {
+                                //        //obj.buildParentRelationship($rootScope.arKnowledgeType);
+                                //        //obj.buildDisplayName();
 
-                                        $.each($rootScope.arKnowledgeType, function (idx2, obj2) {
-                                            if (obj2.parentid === obj.id) {
-                                                arNodes.push(obj2);
-                                            }
-                                        });
-                                    });
-                                }
+                                //        $.each($rootScope.arKnowledgeType, function (idx2, obj2) {
+                                //            if (obj2.parentid === obj.id) {
+                                //                obj2.RuntimeInfo.parentObject = obj;
+                                //                obj2.buildDisplayName();
+                                //                arNodes.push(obj2);
+                                //            }
+                                //        });
+                                //    });
+                                //}
 
                                 deferred.resolve(true);
                             }, function (response) {
@@ -388,6 +393,59 @@
 			        }
 			        return deferred.promise;
 			    };
+			    rtnObj.createKnowledgeTypeQ = function (typeobj) {
+			        var deferred = $q.defer();
+
+			        $http.post(hih.Constants.APIBaseURL + hih.Constants.SubPathes.KnowledgeType, typeobj.writeToJSONObjectString())
+                            .then(function (response) {
+                                deferred.resolve(response.data);
+                            }, function (response) {
+                                deferred.reject(response.data.Message);
+                            });
+			        return deferred.promise;
+			    };
+			    rtnObj.loadKnowledgeTypeQ = function (id) {
+			        var deferred = $q.defer();
+			        var ktobj = null;
+
+			        if ($rootScope.arKnowledgeType && $.isArray($rootScope.arKnowledgeType) && $rootScope.arKnowledgeType.length > 0) {
+			            $.each($rootScope.arKnowledgeType, function (idx, obj) {
+			                if (parseInt(id) === obj.id) {
+			                    ktobj = obj;
+			                    return false;
+			                }
+			            });
+			        } else {
+			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.KnowledgeType + '/' + id)
+                            .then(function (response) {
+                                ktobj = new hih.KnowledgeType();
+                                ktobj.init(response.data);
+
+                                $rootScope.arKnowledgeType = [];
+                                $rootScope.arKnowledgeType.push(ktobj);
+                            }, function (reason) {
+                                // Todo
+                            });
+			        }
+
+			        if (ktobj && ktobj instanceof hih.KnowledgeType) {
+			            deferred.resolve(ktobj);
+			        } else {
+                        deferred.reject("Failed!")
+			        }
+ 
+			        return deferred.promise;
+			    }
+			    rtnObj.deleteKnowledgeTypeQ = function (id) {
+			        var deferred = $q.defer();
+			        $http.delete(hih.Constants.APIBaseURL + hih.Constants.SubPathes.KnowledgeType + "/" + id)
+                        .then(function (response) {
+                            deferred.resolve(true);
+                        }, function (reason) {
+                            deferred.resolve(true);
+                        });
+			        return deferred.promise;
+			    }
 
 			    rtnObj.loadKnowledgeListQ = function (bForceReload) {
 			        var deferred = $q.defer();
@@ -488,6 +546,15 @@
                             }, function (response) {
                                 deferred.reject(response.data.Message);
                             });
+			        return deferred.promise;
+			    };
+			    rtnObj.deleteKnowledgeQ = function (id) {
+			        var deferred = $q.defer();
+			        $http.delete(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge, id)
+                        .then(function (response) {
+
+                        }, function (reason) {
+                        });
 			        return deferred.promise;
 			    };
 

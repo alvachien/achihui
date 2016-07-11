@@ -31,7 +31,10 @@
     "Default": "Default",
     "Title": "Title",
     "CreatedAt": "Created At",
-    "LastModifiedAt": "Last Modified At"
+    "LastModifiedAt": "Last Modified At",
+    "Name": "Name",
+    "Comment": "Comment",
+    "Parent":  "Parent"
   },
 
   "Learning": {

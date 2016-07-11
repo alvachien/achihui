@@ -14,9 +14,9 @@
 
     <form class="form-horizontal" role="form" name="frmObj">
         <div class="form-group">
-            <label class="control-label col-sm-2" for="iptItemID" translate="Common.ID">ID:</label>
+            <label class="control-label col-sm-2" for="iptID" translate="Common.ID">ID:</label>
             <div class="col-sm-10">
-                <input class="form-control" readonly id="iptItemID" ng-model="CurrentObject.id" />
+                <input class="form-control" id="iptID" ng-readonly="ActivityID == 3" ng-model="CurrentObject.id" type="number" />
             </div>
         </div>
 
@@ -39,7 +39,7 @@
             <label class="control-label col-sm-2" translate="Common.Parent">Parent:</label>
             <div class="col-sm-10">
                 <selectize options='arKnowledgeType' config="parentConfig" ng-model="CurrentObject.parentid"
-                           ng-disabled="isReadonly" required></selectize>
+                           ng-disabled="isReadonly"></selectize>
             </div>
         </div>
 
