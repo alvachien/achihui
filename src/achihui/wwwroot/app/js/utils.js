@@ -360,7 +360,7 @@
                                         arNodes.push(obj);
                                 });
 
-                                while (arNodes.length()) {
+                                while (arNodes.length > 0) {
                                     var arcurnodes = [].concat(arNodes);
                                     arNodes = [];
                                     $.each(arcurnodes, function (idx, obj) {
