@@ -352,32 +352,32 @@
                                 $rootScope.isKnowledgeTypeListLoaded = true;
 
                                 // Build the parent relationship
-                                //var arNodes = [];
-                                //$.each($rootScope.arKnowledgeType, function (idx, obj) {
-                                //    if (obj.parentid === -1) {
-                                //        obj.RuntimeInfo.parentObject = null;
-                                //        obj.buildDisplayName();
-                                //        arNodes.push(obj);
-                                //    }
-                                //});
+                                var arNodes = [];
+                                $.each($rootScope.arKnowledgeType, function (idx, obj) {
+                                    if (obj.parentid === -1) {
+                                        obj.RuntimeInfo.parentObject = null;
+                                        obj.buildDisplayName();
+                                        arNodes.push(obj);
+                                    }
+                                });
 
-                                //while (arNodes.length > 0) {
-                                //    var arcurnodes = [].concat(arNodes);
-                                //    arNodes = [];
+                                while (arNodes.length > 0) {
+                                    var arcurnodes = [].concat(arNodes);
+                                    arNodes = [];
 
-                                //    $.each(arcurnodes, function (idx, obj) {
-                                //        //obj.buildParentRelationship($rootScope.arKnowledgeType);
-                                //        //obj.buildDisplayName();
+                                    $.each(arcurnodes, function (idx, obj) {
+                                        //obj.buildParentRelationship($rootScope.arKnowledgeType);
+                                        //obj.buildDisplayName();
 
-                                //        $.each($rootScope.arKnowledgeType, function (idx2, obj2) {
-                                //            if (obj2.parentid === obj.id) {
-                                //                obj2.RuntimeInfo.parentObject = obj;
-                                //                obj2.buildDisplayName();
-                                //                arNodes.push(obj2);
-                                //            }
-                                //        });
-                                //    });
-                                //}
+                                        $.each($rootScope.arKnowledgeType, function (idx2, obj2) {
+                                            if (obj2.parentid === obj.id) {
+                                                obj2.RuntimeInfo.parentObject = obj;
+                                                obj2.buildDisplayName();
+                                                arNodes.push(obj2);
+                                            }
+                                        });
+                                    });
+                                }
 
                                 deferred.resolve(true);
                             }, function (response) {
@@ -548,12 +548,23 @@
                             });
 			        return deferred.promise;
 			    };
+			    rtnObj.updateKnowledgeQ = function (kobj) {
+			        var deferred = $q.defer();
+			        $http.put(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge + "/" + kobj.id, kobj.writeToJSONObjectString())
+                        .then(function (response) {
+                            deferred.resolve(true);
+                        }, function (reason) {
+                            deferred.reject(reason);
+                        });
+			        return deferred.promise;
+			    }
 			    rtnObj.deleteKnowledgeQ = function (id) {
 			        var deferred = $q.defer();
-			        $http.delete(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge, id)
+			        $http.delete(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge + "/" + id)
                         .then(function (response) {
-
+                            deferred.resolve(true);
                         }, function (reason) {
+                            deferred.reject(reason);
                         });
 			        return deferred.promise;
 			    };

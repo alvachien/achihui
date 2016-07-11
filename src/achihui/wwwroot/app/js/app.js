@@ -619,7 +619,9 @@
                     }
                 }
 
-                $state.go("home.learn.knowledgetype.display", { id: nID });
+                if (nID) {
+                    $state.go("home.learn.knowledgetype.display", { id: nID });
+                }
             }
 
             $scope.editItem = function (row) {
@@ -635,7 +637,9 @@
                     }
                 }
 
-                $state.go("home.learn.knowledgetype.edit", { id: nID });
+                if (nID) {
+                    $state.go("home.learn.knowledgetype.edit", { id: nID });
+                }
             }
 
             $scope.removeItem = function (row) {
@@ -651,8 +655,15 @@
                     }
                 }
 
-                utils.deleteKnowledgeTypeQ(nID)
-                    .then(function (response) { }, function (reason) { });
+                if (nID) {
+                    utils.deleteKnowledgeTypeQ(nID)
+                        .then(function (response) {
+                            $scope.refreshList(true);
+                        }, function (reason) {
+                            // Add the error message
+                            // Todo
+                        });
+                }
             }
         }])
 
@@ -663,6 +674,7 @@
             $scope.ActivityID = 1;
             $scope.CurrentObject = {};
             $scope.isReadonly = false;
+            $scope.arParentTypes = angular.copy($rootScope.arKnowledgeType);
 
             // Reported message
             $scope.ReportedMessages = [];
@@ -674,7 +686,7 @@
             $scope.parentConfig = {
                 create: false,
                 onChange: function (value) {
-                    $log.info('KnowledgeController, Type control, event onChange, ', value);
+                    $log.info('KnowledgeController, Parent control, event onChange, ', value);
                 },
                 valueField: 'id',
                 labelField: 'fullDisplayName',
@@ -717,10 +729,16 @@
 
                 }
 
-                utils.createKnowledgeTypeQ($scope.CurrentObject)
-                    .then(function (response) {
-                    }, function (reason) {
-                    });
+                if ($scope.ActivityID === 1) {
+                    utils.createKnowledgeTypeQ($scope.CurrentObject)
+                        .then(function (response) {
+                            // 
+                        }, function (reason) {
+                            // Todo
+                        });
+                } else if ($scope.ActivityID == 2) {
+                    // Todo
+                }
             }
 
             $scope.close = function () {
@@ -753,6 +771,7 @@
                     .then(function (response) {
                         $state.go('home.learn.knowledge.create');
                     }, function (reason) {
+                        // Todo.
                     });
             };
 
@@ -770,7 +789,11 @@
                     } 
                 }
                 
-                $state.go("home.learn.knowledge.display",  { id: nID }); 
+                if (nID) {
+                    $state.go("home.learn.knowledge.display", { id: nID });
+                } else {
+                    // Todo
+                }
             }; 
 
             // Edit 
@@ -787,25 +810,41 @@
                     } 
                 }
 
-                $state.go("home.learn.knowledge.edit",  { id : nID }); 
+                if (nID) {
+                    $state.go("home.learn.knowledge.edit", { id: nID });
+                } else {
+                    // Todo
+                }
             }; 
 
             $scope.removeItem = function (row) {
                 var strIDs = ""; 
                 if (row) { 
-                    strIDs = row.ID.toString() 
+                    strIDs = row.id.toString() 
                 } else { 
-                    //for(var i = 0; i < $scope.dispList.length; i ++) { 
-                    //    if ($scope.dispList[i].isSelected) { 
-                    //        if (strIDs.length <= 0) {								 
-                    //        } else { 
-                    //            strIDs = strIDs.concat(hih.Constants.IDSplitChar);								 
-                    //        } 
+                    for(var i = 0; i < $scope.dispList.length; i ++) { 
+                        if ($scope.dispList[i].isSelected) { 
+                            if (strIDs.length <= 0) {								 
+                            } else { 
+                                strIDs = strIDs.concat(hih.Constants.IDSplitChar);								 
+                            } 
 
-                    //        strIDs = strIDs.concat($scope.dispList[i].ID.toString());
-                    //    } 
-                    //} 
-                } 
+                            strIDs = strIDs.concat($scope.dispList[i].id.toString());
+                        } 
+                    } 
+                }
+
+                if (strIDs.length > 0) {
+                    utils.deleteKnowledgeQ(strIDs)
+                        .then(function (respone) {
+                            // Delete the item successfully
+                            $scope.refreshList(true);
+                        }, function (reason) {
+                            // Todo
+                        });
+                } else {
+                    // Todo
+                }
             }
         }])
 
@@ -903,11 +942,19 @@
                     });
                 }
 
-                utils.createKnowledgeQ($scope.CurrentObject)
-                    .then(function (response) {
-                        // Navigate to the display mode
-                    }, function (reason) {
-                    });
+                if ($scope.ActivityID === 1) {
+                    utils.createKnowledgeQ($scope.CurrentObject)
+                        .then(function (response) {
+                            // Navigate to the display mode
+                        }, function (reason) {
+                        });
+                } else if ($scope.ActivityID === 2) {
+                    utils.updateKnowledgeQ($scope.CurrentObject)
+                        .then(function (response) {
+                            // Navigate to the display mode
+                        }, function (reason) {
+                        });
+                }
             }
 
             $scope.close = function() {
