@@ -754,7 +754,7 @@
                 plugins : 'advlist autolink link image lists charmap print preview', 
                 skin: 'lightgray', 
                 theme : 'modern' 
-        };
+            };
 
             if (angular.isDefined($stateParams.id)) {
                 if ($state.current.name === "home.learn.knowledge.edit") {
@@ -769,9 +769,13 @@
                 //var nID = parseInt($stateParams.id);
                 utils.loadKnowledgeQ($stateParams.id)
                     .then(function (response) {
-                        $scope.CurrentObject = response;
+                        if (response instanceof hih.Knowledge) {
+                            $scope.CurrentObject = angular.copy(response);
+                        } else {
+                            $scope.ReportedMessages.push("Internal error occurred");
+                        }
                     }, function (reason) {
-
+                        $scope.ReportedMessages.push(reason);
                     });
             } else {
                 // Create a knowlege
@@ -793,6 +797,10 @@
                         // Navigate to the display mode
                     }, function (reason) {
                     });
+            }
+
+            $scope.close = function() {
+                $state.go("home.learn.knowledge.list");
             }
         }])
 

@@ -14,16 +14,16 @@
 
     <form class="form-horizontal" role="form" name="frmObj">
         <div class="form-group">
-            <label class="control-label col-sm-2" for="iptItemID" translate="Common.ID">ID:</label>
+            <label class="control-label col-sm-2" for="iptID" translate="Common.ID">ID:</label>
             <div class="col-sm-10">
-                <input class="form-control" readonly id="iptItemID" ng-model="CurrentObject.id" />
+                <input class="form-control" readonly id="iptID" ng-model="CurrentObject.id" />
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="iptName" translate="Common.Title">Title:</label>
+            <label class="control-label col-sm-2" for="iptTitle" translate="Common.Title">Title:</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" name="iptName" ng-readonly="ActivityID == 3" ng-model="CurrentObject.title">
+                <input type="text" class="form-control" name="iptTitle" ng-readonly="ActivityID == 3" ng-model="CurrentObject.title">
             </div>
         </div>
 
@@ -40,10 +40,24 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="iptTags" translate="Common.Tags">Tags:</label>
+            <label class="control-label col-sm-2" translate="Common.Tags">Tags:</label>
             <div class="col-sm-10">
                 <selectize options='arTags' config="tagsConfig" ng-model="CurrentObject.tags"
                            ng-disabled="isReadonly"></selectize>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="ActivityID == 2 || ActivityID == 3">
+            <label class="control-label col-sm-2" translate="Common.CreatedAt">Created At:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" ng-readonly="true" ng-model="CurrentObject.createdAt">
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="ActivityID == 2 || ActivityID == 3">
+            <label class="control-label col-sm-2" translate="Common.LastModifiedAt">Modified At:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" ng-readonly="true" ng-model="CurrentObject.modifiedAt">
             </div>
         </div>
 

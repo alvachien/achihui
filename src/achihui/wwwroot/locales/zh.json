@@ -28,7 +28,10 @@
     "CancelCurrentEditing": "取消当前项",
 
     "Count": "总计",
-    "Default":  "默认"
+    "Default": "默认",
+    "Title": "标题",
+    "CreatedAt": "创建时间",
+    "LastModifiedAt": "最后修改时间"
   },
 
   "Learning": {
@@ -41,8 +44,8 @@
     "ExplainEdit": "编辑释义",
     "ExplainDisplay": "显示释义",
     "PrimarySchool": "小学",
-    "KnowledgeType": "Knowledge Type",
-    "Knowledge": "Knowledge"
+    "KnowledgeType": "知识库类型",
+    "Knowledge": "知识库"
   },
 
   "Todo": {

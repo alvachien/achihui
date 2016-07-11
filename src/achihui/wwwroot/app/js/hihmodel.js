@@ -400,6 +400,8 @@
             this.title = "";
             this.content = "";
             this.tags = "";
+            this.createdAt = new Date();
+            this.modifiedAt = new Date();
 
             this.RuntimeInfo = {};
         }
@@ -409,10 +411,12 @@
             }
 
             this.id = obj.id;
-            this.typeid = obj.typeid;
+            this.typeid = obj.typeID;
             this.title = obj.title;
             this.content = obj.content;
             this.tags = obj.tags;
+            this.createdAt = obj.createdAt;
+            this.modifiedAt = obj.modifiedAt;
 
             // Buildup the runtime info
             //var that = this;
@@ -438,6 +442,7 @@
             if (this.content.length <= 0) {
                 errMsg.push("Content is a must!");
             }
+
             return errMsg;
         }
         Knowledge.prototype.writeToJSONObject = function () {
@@ -451,6 +456,7 @@
             jsonObj.tags = this.tags.toString();
             jsonObj.title = this.title;
             jsonObj.content = this.content;
+            // For createdAt and modifiedAt, it will be updated via the API internally
 
             return jsonObj;
         }

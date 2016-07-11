@@ -28,7 +28,10 @@
     "CancelCurrentEditing": "Cancel Current Editing",
 
     "Count": "Count",
-    "Default": "Default"
+    "Default": "Default",
+    "Title": "Title",
+    "CreatedAt": "Created At",
+    "LastModifiedAt": "Last Modified At"
   },
 
   "Learning": {
