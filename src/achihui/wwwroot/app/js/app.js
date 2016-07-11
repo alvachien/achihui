@@ -782,7 +782,7 @@
                     $log.info('KnowledgeController, Type control, event onChange, ', value);
                 },
                 valueField: 'id',
-                labelField: 'RuntimeInfo.displayName',
+                labelField: 'fullDisplayName',
                 maxItems: 1,
                 required: false
             };

@@ -354,6 +354,8 @@
             this.comment = "";
 
             this.RuntimeInfo = {};
+            // To UI binding purpose, also a kind of runtime
+            this.fullDisplayName = "";
         }
         KnowledgeType.prototype.init = function (obj) {
             if (hih.Constants.IsConsoleLog) {
@@ -392,9 +394,9 @@
         }
         KnowledgeType.prototype.buildDisplayName = function () {
             if (this.RuntimeInfo.parentObject) {
-                this.RuntimeInfo.displayName = this.RuntimeInfo.parentObject.RuntimeInfo.displayName + hih.Constants.TypeParentSplitter + this.name;
+                this.fullDisplayName = this.RuntimeInfo.parentObject.fullDisplayName + hih.Constants.TypeParentSplitter + this.name;
             } else {
-                this.RuntimeInfo.displayName = this.name;
+                this.fullDisplayName = this.name;
             }
         }
         KnowledgeType.prototype.verify = function () {
