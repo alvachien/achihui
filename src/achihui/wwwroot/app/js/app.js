@@ -735,18 +735,26 @@
                 valueField: 'id',
                 labelField: 'name',
                 maxItems: 1,
-                required: true
+                required: false
             };
 
             $scope.tinymceOptions = {
                 onChange: function (e) {
                     // put logic here for keypress and cut/paste changes
+                    $log.info('KnowledgeController, Tinymce control, event onChange, ', value);
                 },
-                inline: false,
-                plugins: 'advlist autolink link image lists charmap print preview',
-                skin: 'lightgray',
-                theme: 'modern'
-            };
+                //inline: false,
+                //plugins: 'advlist autolink link image lists charmap print preview',
+                //skin: 'lightgray',
+                //theme: 'modern'
+                inline: false, 
+                menubar: false, 
+                statusbar: true, 
+                toolbar: "fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link forecolor backcolor | removeformat", 
+                plugins : 'advlist autolink link image lists charmap print preview', 
+                skin: 'lightgray', 
+                theme : 'modern' 
+        };
 
             if (angular.isDefined($stateParams.id)) {
                 if ($state.current.name === "home.learn.knowledge.edit") {
@@ -771,13 +779,18 @@
             }
 
             $scope.submit = function () {
+                $scope.cleanReportMessages();
+
                 var msgs = $scope.CurrentObject.verify();
                 if ($.isArray(msgs) && msgs.length > 0) {
-
+                    $.each(msgs, function (idx, obj) {
+                        $scope.ReportedMessages.push(obj);
+                    });
                 }
 
                 utils.createKnowledgeQ($scope.CurrentObject)
                     .then(function (response) {
+                        // Navigate to the display mode
                     }, function (reason) {
                     });
             }
