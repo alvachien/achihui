@@ -399,9 +399,20 @@
 			        $http.post(hih.Constants.APIBaseURL + hih.Constants.SubPathes.KnowledgeType, typeobj.writeToJSONObjectString())
                             .then(function (response) {
                                 deferred.resolve(response.data);
-                            }, function (response) {
-                                deferred.reject(response.data.Message);
+                            }, function (reason) {
+                                deferred.reject(reason.data.Message);
                             });
+			        return deferred.promise;
+			    };
+			    rtnObj.updateKnowledgeTypeQ = function (typeobj) {
+			        var deferred = $q.defer();
+
+			        $http.put(hih.Constants.APIBaseURL + hih.Constants.SubPathes.KnowledgeType + "/" + typeobj.id.toString(),  typeobj.writeToJSONObjectString())
+                        .then(function (response) {
+                            deferred.resolve(response.data);
+                        }, function (reason) {
+                            deferred.reject(reason.data.Message);
+                        });
 			        return deferred.promise;
 			    };
 			    rtnObj.loadKnowledgeTypeQ = function (id) {
@@ -500,7 +511,6 @@
                                 var isExists = false;
                                 $.each($rootScope.arKnowledge, function (idx, obj) {
                                     if (parseInt(obj.id) === parseInt(id)) {
-                                        // Todo!
                                         isExists = true;
                                         obj = wo;
                                     }
@@ -515,10 +525,10 @@
                                 $rootScope.arKnowledge.push(wo);
                             }
                             deferred.resolve(wo);
-                        }, function (response) {
+                        }, function (reason) {
                             var errormsg = "";
-                            if (response.data && response.data.Message) {
-                                errormsg = response.data.Message;
+                            if (reason.data && reason.data.Message) {
+                                errormsg = reason.data.Message;
                             } else {
                                 errormsg = "Error in loadKnowledgeQ";
                             }
@@ -543,16 +553,17 @@
 			        $http.post(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge, kobj.writeToJSONObjectString())
                             .then(function (response) {
                                 deferred.resolve(response.data);
-                            }, function (response) {
-                                deferred.reject(response.data.Message);
+                            }, function (reason) {
+                                deferred.reject(reason);
                             });
+
 			        return deferred.promise;
 			    };
 			    rtnObj.updateKnowledgeQ = function (kobj) {
 			        var deferred = $q.defer();
 			        $http.put(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge + "/" + kobj.id, kobj.writeToJSONObjectString())
                         .then(function (response) {
-                            deferred.resolve(true);
+                            deferred.resolve(response.data);
                         }, function (reason) {
                             deferred.reject(reason);
                         });

@@ -750,12 +750,27 @@
                 if ($scope.ActivityID === 1) {
                     utils.createKnowledgeTypeQ($scope.CurrentObject)
                         .then(function (response) {
-                            $state.go("home.learn.knowledgetype.display", { id: $scope.CurrentObject.id });
+                            var wo = new hih.KnowledgeType();
+                            wo.init(response);
+                            $rootScope.arKnowledgeType.push(wo);
+
+                            $scope.Activity = "Common.Display";
+                            $scope.isReadonly = true;
+                            $scope.ActivityID = 3;
+                            $scope.CurrentObject = angular.copy(wo);
                         }, function (reason) {
                             // Todo
                         });
                 } else if ($scope.ActivityID == 2) {
                     // Todo
+                    utils.updateKnowledgeTypeQ($scope.CurrentObject)
+                        .then(function (response) {
+                            $scope.Activity = "Common.Display";
+                            $scope.isReadonly = true;
+                            $scope.ActivityID = 3;
+                        }, function (reason) {
+                            // Todo
+                        });
                 }
             }
 
@@ -973,14 +988,25 @@
                     utils.createKnowledgeQ($scope.CurrentObject)
                         .then(function (response) {
                             // Navigate to the display mode
-                            $state.go("home.learn.knowledge.list");
+                            var wo = new hih.Knowledge();
+                            wo.init(response.data);
+                            $rootScope.arKnowledge.push(wo);
+
+                            $scope.ActivityID = 3;
+                            $scope.CurrentObject = angular.copy(wo);
+                            $scope.isReadonly = true;
+                            $scope.Activity = "Common.Display";
                         }, function (reason) {
+                            // Todo
                         });
                 } else if ($scope.ActivityID === 2) {
                     utils.updateKnowledgeQ($scope.CurrentObject)
                         .then(function (response) {
                             // Navigate to the display mode
-                            $state.go("home.learn.knowledge.list");
+                            $scope.ActivityID = 3;
+                            $scope.isReadonly = true;
+                            $scope.Activity = "Common.Display";
+                            //$state.go("home.learn.knowledge.list");
                         }, function (reason) {
                         });
                 }
