@@ -36,7 +36,8 @@
     "LastModifiedAt": "最后修改时间",
     "Name": "名称",
     "Comment": "说明",
-    "Parent": "父对象"
+    "Parent": "父对象",
+    "Type": "类型"
   },
 
   "Learning": {

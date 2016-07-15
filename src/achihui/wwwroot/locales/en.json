@@ -36,7 +36,8 @@
     "LastModifiedAt": "Last Modified At",
     "Name": "Name",
     "Comment": "Comment",
-    "Parent":  "Parent"
+    "Parent": "Parent",
+    "Type":  "Type"
   },
 
   "Learning": {
