@@ -458,38 +458,83 @@
 			        return deferred.promise;
 			    }
 
-			    rtnObj.loadKnowledgeListQ = function (bForceReload) {
+			    rtnObj.loadKnowledgeListQ = function (filterObj) {
 			        var deferred = $q.defer();
-			        if ($rootScope.isKnowledgeListLoaded && !bForceReload) {
-			            deferred.resolve(true);
-			        } else {
-			            var xhrheader = {};
+			        var xhrheader = {};
+			        var parm = [];
+			        var parmStr = "";
 
-			            $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge)
-                            .then(function (response) {
-                                $rootScope.arKnowledge = [];
-                                if ($.isArray(response.data) && response.data.length > 0) {
-                                    $.each(response.data, function (idx, obj) {
-                                        var wo = new hih.Knowledge();
-                                        wo.init(obj);
-                                        $rootScope.arKnowledge.push(wo);
-                                    });
-                                }
-                                $rootScope.isKnowledgeListLoaded = true;
-                                deferred.resolve(true);
-                            }, function (response) {
-                                var errormsg = "";
-                                if (response.data && response.data.Message) {
-                                    errormsg = response.data.Message;
-                                } else {
-                                    errormsg = "Error in loadKnowledgeListQ";
-                                }
-
-                                deferred.reject(errormsg);
-                            });
+			        if (angular.isDefined(filterObj.typeid) && filterObj.typeid) {
+			            parm.push("typeid=" + filterObj.typeid.join(','));
 			        }
+			        if (angular.isDefined(filterObj.tags) && filterObj.tags) {
+			            parm.push("tags=" + filterObj.tags.join(','));
+			        }
+			        if (angular.isDefined(filterObj.maxhit) && filterObj.maxhit) {
+			            parm.push("maxhit=" + filterObj.maxhit.toString());
+			        }
+			        if (parm.length > 0) {
+			            parmStr = "?";
+			            $.each(parm, function (idx, obj) {
+			                parmStr += "&" + obj;
+			            });
+			        }
+
+			        $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge + parmStr)
+                        .then(function (response) {
+                            var arKnowledge = [];
+                            if ($.isArray(response.data) && response.data.length > 0) {
+                                $.each(response.data, function (idx, obj) {
+                                    var wo = new hih.Knowledge();
+                                    wo.init(obj);
+                                    arKnowledge.push(wo);
+                                });
+                            }
+                            deferred.resolve(arKnowledge);
+                        }, function (reason) {
+                            var errormsg = "";
+                            if (reason.data && reason.data.Message) {
+                                errormsg = reason.data.Message;
+                            } else {
+                                errormsg = "Error in loadKnowledgeListQ";
+                            }
+
+                            deferred.reject(errormsg);
+                        });
 			        return deferred.promise;
 			    };
+			    //rtnObj.loadKnowledgeListQ = function (bForceReload) {
+			    //    var deferred = $q.defer();
+			    //    if ($rootScope.isKnowledgeListLoaded && !bForceReload) {
+			    //        deferred.resolve(true);
+			    //    } else {
+			    //        var xhrheader = {};
+
+			    //        $http.get(hih.Constants.APIBaseURL + hih.Constants.SubPathes.Knowledge)
+                //            .then(function (response) {
+                //                $rootScope.arKnowledge = [];
+                //                if ($.isArray(response.data) && response.data.length > 0) {
+                //                    $.each(response.data, function (idx, obj) {
+                //                        var wo = new hih.Knowledge();
+                //                        wo.init(obj);
+                //                        $rootScope.arKnowledge.push(wo);
+                //                    });
+                //                }
+                //                $rootScope.isKnowledgeListLoaded = true;
+                //                deferred.resolve(true);
+                //            }, function (response) {
+                //                var errormsg = "";
+                //                if (response.data && response.data.Message) {
+                //                    errormsg = response.data.Message;
+                //                } else {
+                //                    errormsg = "Error in loadKnowledgeListQ";
+                //                }
+
+                //                deferred.reject(errormsg);
+                //            });
+			    //    }
+			    //    return deferred.promise;
+			    //};
 			    rtnObj.loadKnowledgeQ = function (id) {
 			        var deferred = $q.defer();
 

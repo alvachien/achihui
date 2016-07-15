@@ -14,13 +14,13 @@
     hih.Constants = {
         IsConsoleLog: true,
         // Debug
-        //APIBaseURL: "http://localhost:25688/api/",
+        APIBaseURL: "http://localhost:25688/api/",
         //IdSrvURL: "http://localhost:41016/",
         //IdSrvLoginRedirURL: "http://localhost:29521/logincallback.html",
         //IdSrvLogoutRedirURL: "http://localhost:29521/logoutcallback.html",
 
         // Release
-        APIBaseURL: "http://achihapi.azurewebsites.net/api/",
+        //APIBaseURL: "http://achihapi.azurewebsites.net/api/",
         IdSrvURL: "http://acidserver.azurewebsites.net/",
         IdSrvLoginRedirURL: "http://achihui.azurewebsites.net/logincallback.html",
         IdSrvLogoutRedirURL: "http://achihui.azurewebsites.net/logoutcallback.html",

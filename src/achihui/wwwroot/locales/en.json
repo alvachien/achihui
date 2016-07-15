@@ -21,6 +21,8 @@
     "Login": "Login",
     "Logout": "Logout",
     "UserDetail": "User Detail",
+    "Filter": "Filter",
+    "ResetFilter": "Reset Filter",
 
     "Submit": "Submit",
     "BackToList": "Back To List",

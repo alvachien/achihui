@@ -782,18 +782,62 @@
     .controller('KnowledgeListController', ['$scope', '$rootScope', '$state', '$log', '$q', 'utils',
         function ($scope, $rootScope, $state, $log, $q, utils) {
 
-            $scope.dispList = [];
+            // Selection control for Tags
+            $scope.ftagsConfig = {
+                create: true,
+                onChange: function (value) {
+                    $log.info('KnowledgeListController, Tags control, event onChange, ', value);
+                },
+                maxItems: 10
+            };
 
-            $scope.refreshList = function (bForeceRefresh) {
-                utils.loadKnowledgeListQ(bForeceRefresh)
+            // Selection control for Knowledge type
+            $scope.ftypesConfig = {
+                create: false,
+                onChange: function (value) {
+                    $log.info('KnowledgeListController, Type control, event onChange, ', value);
+                },
+                valueField: 'id',
+                labelField: 'fullDisplayName',
+                maxItems: 10
+            };
+
+            $scope.dispList = [];
+            $scope.farTypes = [];
+            $scope.farTags = [];
+            $scope.filterObject = {};
+            $scope.arKnowledge = [];
+
+            $scope.refreshFilter = function () {
+                utils.loadKnowledgeListQ($scope.filterObject)
                     .then(function (response) {
-                        $scope.dispList = [].concat($rootScope.arKnowledge);
-                    }, function (response) {
-                        // Error occurs!
+                        $scope.arKnowledge = [].concat(response);
+                        $scope.dispList = [].concat($scope.arKnowledge);
+                    }, function (reason) {
+                        // Todo
                     });
             };
 
-            $scope.refreshList(false);
+            $scope.resetFilter = function () {
+
+            }
+
+            //$scope.refreshList = function (bForeceRefresh) {
+            //    utils.loadKnowledgeListQ(bForeceRefresh)
+            //        .then(function (response) {
+            //            $scope.dispList = [].concat($rootScope.arKnowledge);
+            //        }, function (response) {
+            //            // Error occurs!
+            //        });
+            //};
+
+            utils.loadKnowledgeTypeListQ(false)
+                .then(function (response) {
+                    $scope.farTypes = [].concat($rootScope.arKnowledgeType);
+                    //$scope.refreshList(false);
+                }, function (reason) {
+
+                });
 
             $scope.newItem = function () {
                 $state.go('home.learn.knowledge.create');

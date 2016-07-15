@@ -21,6 +21,8 @@
     "Login": "登入",
     "Logout": "登出",
     "UserDetail": "用户详细",
+    "Filter": "过滤",
+    "ResetFilter": "重置",
 
     "Submit": "提交",
     "BackToList": "返回列表视图",
