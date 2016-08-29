@@ -819,25 +819,20 @@
             };
 
             $scope.resetFilter = function () {
-
+                $scope.refreshFilter.maxhit = 100;
             }
-
-            //$scope.refreshList = function (bForeceRefresh) {
-            //    utils.loadKnowledgeListQ(bForeceRefresh)
-            //        .then(function (response) {
-            //            $scope.dispList = [].concat($rootScope.arKnowledge);
-            //        }, function (response) {
-            //            // Error occurs!
-            //        });
-            //};
 
             utils.loadKnowledgeTypeListQ(false)
                 .then(function (response) {
                     $scope.farTypes = [].concat($rootScope.arKnowledgeType);
                     //$scope.refreshList(false);
+
+                    $scope.refreshFilter();
                 }, function (reason) {
 
                 });
+
+            $scope.resetFilter();
 
             $scope.newItem = function () {
                 $state.go('home.learn.knowledge.create');
