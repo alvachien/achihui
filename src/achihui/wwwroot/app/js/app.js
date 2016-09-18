@@ -805,7 +805,7 @@
             $scope.dispList = [];
             $scope.farTypes = [];
             $scope.farTags = [];
-            $scope.filterObject = {};
+            $scope.filterObject = {};            
             $scope.arKnowledge = [];
 
             $scope.refreshFilter = function () {
@@ -819,8 +819,9 @@
             };
 
             $scope.resetFilter = function () {
-
+                $scope.filterObject.maxhit = 100;                
             }
+            $scope.resetFilter();
 
             //$scope.refreshList = function (bForeceRefresh) {
             //    utils.loadKnowledgeListQ(bForeceRefresh)
