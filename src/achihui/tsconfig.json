@@ -1,13 +1,23 @@
 {
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "system",
+    "moduleResolution": "node",
+    "noEmitOnError": false,
     "noImplicitAny": false,
-    "noEmitOnError": true,
-    "removeComments": false,
+    "removeComments": true,
     "sourceMap": true,
-    "target": "es6"
+    "skipLibCheck": true,
+    "target": "es6",
+    "outDir": "wwwroot/app/js/"
   },
+  "include": [
+    "app/scripts/**/*.ts"
+  ],
   "exclude": [
-    "node_modules",
-    "wwwroot"
+    "node_modules/",
+    "wwwroot/",
+    "typings/"
   ]
 }

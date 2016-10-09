@@ -1,75 +1,72 @@
 ﻿<!DOCTYPE html>
 <html ng-app="achihapp" ng-controller="MainController">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Alva Chien">
-        <meta name="author" content="Alva Chien">
-        <title>HIH on Azure, by Alva Chien</title>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Alva Chien">
+    <meta name="author" content="Alva Chien">
+    <title>HIH, by Alva Chien</title>
 
-        <!-- Bootstrap -->
-        <link href="node_modules\bootstrap\dist\css\bootstrap.min.css" rel="stylesheet">
-        <link href="node_modules\bootstrap\dist\css\bootstrap-theme.min.css" rel="stylesheet" />
-        <!-- Selectize -->
-        <link href="node_modules\selectize\dist\css\selectize.bootstrap3.css" rel="stylesheet" />
-        <!-- App -->
-        <link href="css\app.css" rel="stylesheet" />
-    </head>
+    <!-- 0. Load CSS -->
+    <link href="libs/css/tether.min.css" rel="stylesheet" />
+    <link href="libs/css/tether-theme-basic.min.css" rel="stylesheet" />
+    <link href="libs/css/tether-theme-arrows.min.css" rel="stylesheet" />
+    <link href="libs/css/bootstrap.css" rel="stylesheet" />
+    <link href="libs/css/font-awesome.css" rel="stylesheet" />
+    <link href="libs/css/jquery.fancybox.css" rel="stylesheet" />
+    <link href="libs/css/jquery.fancybox-thumbs.css" rel="stylesheet" />
+    <link href="libs/css/magnific-popup.css" rel="stylesheet">
+    <link href="app/css/alertify.css" rel="stylesheet" id="alertifyCSS" />
+    <link href="app/css/stylesheet.css" rel="stylesheet" />
 
-    <body>
-        <!-- Main content area begins -->
-        <div class="container-fluid" ui-view></div>
-        <!-- Main content area ends -->
-        <!-- Footer area begins -->
-        <footer class="footer navbar-inverse">
-            <div class="container">
-                <p class="text-muted">
-                    <div><span translate="Common.Copyright">Copyright</span> ©2016 Alva Chien</div>
-                </p>
-            </div>
-        </footer>
-        <!-- Footer area ends -->
+    <!-- 1. Load libraries -->
+    <!-- Polyfill(s) for older browsers -->
+    <script>
+        (function () {
+            var vendors = ['webkit', 'moz'];
+            for (var i = 0; i < vendors.length && !window.requestAnimationFrame; ++i) {
+                var vp = vendors[i];
+                window.requestAnimationFrame = window[vp + 'RequestAnimationFrame'];
+                window.cancelAnimationFrame = (window[vp + 'CancelAnimationFrame']
+                                           || window[vp + 'CancelRequestAnimationFrame']);
+            }
+            if (!window.requestAnimationFrame || !window.cancelAnimationFrame) {
+                var lastTime = 0;
+                window.requestAnimationFrame = function (callback) {
+                    var now = new Date().getTime();
+                    var nextTime = Math.max(lastTime + 16, now);
+                    return setTimeout(function () { callback(lastTime = nextTime); },
+                                      nextTime - now);
+                };
+                window.cancelAnimationFrame = clearTimeout;
+            }
+        }());
+    </script>
+    <script src="libs/js/jquery/dist/jquery.min.js"></script>
+    <script src="libs/js/oidc-client/dist/oidc-client.js"></script>
+    <script src="libs/js/alertify.js/dist/js/alertify.js"></script>
+    <script src="libs/js/tether/dist/js/tether.min.js"></script>
+    <script src="libs/js/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="libs/fineuploader/fine-uploader.core.js"></script>
+    <script src="libs/js/magnific-popup/dist/jquery.magnific-popup.js"></script>
+    <script src="libs/js/core-js/client/shim.min.js"></script>
+    <script src="libs/js/zone.js/dist/zone.js"></script>
+    <script src="libs/js/reflect-metadata/Reflect.js"></script>
+    <script src="libs/js/systemjs/dist/system.js"></script>
 
-        <!-- JS loading -->
-        <!-- jQuery -->
-        <script src="node_modules\jquery\dist\jquery.min.js"></script>
-        <!-- Angular JS -->
-        <script src="node_modules\angular\angular.min.js"></script>
-        <script src="node_modules\angular-animate\angular-animate.min.js"></script>
-        <script src="node_modules\angular-sanitize\angular-sanitize.min.js"></script>
-        <script src="node_modules\angular-touch\angular-touch.min.js"></script>
-        <!-- Angular UI - UIRoute -->
-        <script src="node_modules\angular-ui-router\release\angular-ui-router.min.js"></script>
-        <!-- Angular UI - UI bootstrap -->
-        <script src="node_modules\angular-ui-bootstrap\dist\ui-bootstrap-tpls.js"></script>
-        <!-- Angular translate -->
-        <script src="node_modules\angular-translate\dist\angular-translate.min.js"></script>
-        <!-- Angular translate: plugins -->
-        <script src="node_modules\angular-translate\dist\angular-translate-loader-static-files\angular-translate-loader-static-files.min.js"></script>
-        <!-- Chart.js -->
-        <script src="node_modules\chart.js\dist\Chart.min.js"></script>
-        <!-- Angular Chart.js -->
-        <script src="node_modules\angular-chart.js\dist\angular-chart.min.js"></script>
-        <!-- Smart table -->
-        <script src="node_modules\angular-smart-table\dist\smart-table.min.js"></script>
-        <!-- Selectize.js -->
-        <script src="node_modules\selectize\dist\js\standalone\selectize.js"></script>
-        <!-- Angular selectize 2 -->
-        <script src="node_modules\angular-selectize2\dist\selectize.js"></script>
-        <!-- TinyMCE -->
-        <script src="node_modules\tinymce\tinymce.min.js"></script>
-        <!-- UI-tinymce -->
-        <script src="node_modules\angular-ui-tinymce\dist\tinymce.min.js"></script>
+    <!-- 2. Configure SystemJS -->
+    <script src="systemjs.config.js"></script>
+    <script>
+        System.import('app').catch(function (err) {
+            console.error(err);
+        });
+    </script>
+</head>
 
-        <!-- Application part -->
-        <script src="app\js\hihmodel.js"></script>
-        <script src="app\js\utils.js"></script>
-        <script src="app\js\app.js"></script>
-        <script src="app\js\oidc-client.js"></script>
-        <!--<script src="app\js\hihmodel.min.js"></script>
-        <script src="app\js\utils.min.js"></script>
-        <script src="app\js\app.min.js"></script>
-        <script src="app\js\oidc-client.min.js"></script>-->
-    </body>
+<!-- 3. Display the application -->
+<body>
+    <div id="nav-separator"></div>
+    <my-app>HIH is loading...</my-app>
+</body>
 </html>
