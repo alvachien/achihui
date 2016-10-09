@@ -4,6 +4,11 @@
  */
 (function (global) {
     System.config({
+        transpiler: 'typescript',
+        //typescript compiler options
+        typescriptOptions: {
+            emitDecoratorMetadata: true
+        },
         paths: {
             // paths serve as alias
             'lib:': 'libs/js/'
@@ -36,7 +41,9 @@
             'angular2-in-memory-web-api': 'lib:angular2-in-memory-web-api',
             'moment': 'lib:moment/min/moment.min.js',
             'ng2-bootstrap': 'lib:ng2-bootstrap',
-            'oidc-client': 'lib:oidc-client/dist/oidc-client.min.js'
+            'ng2-translate': 'lib:ng2-translate',
+            'oidc-client': 'lib:oidc-client/dist/oidc-client.min.js',
+            'typescript': 'lib:typescript/lib/typescript.js'
         },
         packages: {
             'app': {
@@ -48,6 +55,9 @@
                 defaultExtension: 'js'
             },
             'ng2-bootstrap': {
+                defaultExtension: 'js'
+            },
+            'ng2-translate': {
                 defaultExtension: 'js'
             },
             'angular2-in-memory-web-api': {

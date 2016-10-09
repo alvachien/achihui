@@ -1,6 +1,6 @@
 ﻿import {
-    IDServerUrl, ACGalleryCallback, ACGalleryLogoutCallback,
-    ACGalleryHost, environment
+    IDServerUrl, AppLoginCallback, AppLogoutCallback,
+    AppHost, environment
 } from '../app.setting';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
@@ -22,10 +22,10 @@ export class AuthService {
         let settings = {
             authority: IDServerUrl,
             client_id: "acgallery.app",
-            redirect_uri: ACGalleryCallback,
+            redirect_uri: AppLoginCallback,
             response_type: "id_token token",
             scope: "openid profile api.hihapi api.acgallery",
-            post_logout_redirect_uri: ACGalleryLogoutCallback
+            post_logout_redirect_uri: AppLogoutCallback
         };
 
         this.mgr = new Oidc.UserManager(settings);

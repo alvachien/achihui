@@ -17,7 +17,7 @@ var paths = {
 
     cssApp: app + 'css/',
     viewsApp: app + 'views/',
-    localApp: app + 'locales/',
+    localeApp: app + 'locales/',
     resApp: app + 'resources/',
 
     jsVendors: lib + 'js/',
@@ -40,12 +40,14 @@ gulp.task('setup-vendors-js', function () {
         '@angular/**/*.js',
         'moment/min/*.js',
         'ng2-bootstrap/**/*.js',
+        'ng2-translate/**/*.js',
         'angular2-in-memory-web-api/**/*.js',
         'jquery/dist/jquery*.js',
         'bootstrap/dist/js/bootstrap*.js',
         'tether/dist/js/tether*.js',
         'oidc-client/dist/*.js',
-        'alertify.js/dist/js/*.js'
+        'alertify.js/dist/js/*.js',
+        'typescript/**/*.js'
     ], {
         cwd: "node_modules/**"
     })
@@ -104,8 +106,7 @@ gulp.task('setup-environment', function (done) {
       'app/index.html',
       'app/logincallback.html',
       'app/logoutcallback.html',
-      "app/resources/favicon.ico",
-      "app/resources/grey.jpg"
+      "app/resources/favicon.ico"
     ]).pipe(gulp.dest('./wwwroot/'));
 });
 
@@ -119,6 +120,20 @@ gulp.task('build-css', function () {
     gulp.src([
         'app/css/**/*.css'
     ]).pipe(gulp.dest(paths.cssApp));
+});
+
+gulp.task('build-resource', function () {
+    gulp.src([
+        'app/resources/**/*.ico',
+        'app/resources/**/*.png',
+        'app/resources/**/*.jpg',
+    ]).pipe(gulp.dest(paths.resApp));
+});
+
+gulp.task('build-locales', function () {
+    gulp.src([
+        'app/locales/**/*.json'
+    ]).pipe(gulp.dest(paths.localeApp));
 });
 
 gulp.task('compile-typescript', function (done) {
@@ -153,5 +168,5 @@ gulp.task('build-clean', ['clean-lib', 'clean-app']);
 
 gulp.task('build', function () {
     runSequence('build-clean',
-              ['setup-vendors', 'setup-environment', 'build-view', 'build-css', 'compile-typescript']);
+              ['setup-vendors', 'setup-environment', 'build-view', 'build-css', 'build-locales', 'build-resource', 'compile-typescript']);
 });

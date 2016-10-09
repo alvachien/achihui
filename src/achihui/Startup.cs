@@ -17,18 +17,31 @@ namespace achihui
 
         public void Configure(IApplicationBuilder app)
         {
-            app.UseStaticFiles();
-
-            //var physicalFileSystem = new PhysicalFileSystem(webPath);
-            var options = new FileServerOptions
-            {
-                EnableDefaultFiles = true,
-                //StaticFileSystem = physicalFileSystem
+            var angularRoutes = new[] {
+                "/learn",
+                "/finance",
+                "/event",
+                "/credits",
+                "/unauthorized",
+                "/forbidden",
+                "/logout",
+                "/about",
+                "/home"
             };
-            //options.StaticFileOptions.FileSystem = physicalFileSystem;
-            options.StaticFileOptions.ServeUnknownFileTypes = true;
-            options.DefaultFilesOptions.DefaultFileNames = new[] { "index.html" };
-            app.UseFileServer(options);
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.HasValue && null != angularRoutes.FirstOrDefault(
+                    (ar) => context.Request.Path.Value.StartsWith(ar, StringComparison.OrdinalIgnoreCase)))
+                {
+                    context.Request.Path = new PathString("/");
+                }
+
+                await next();
+            });
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
         }
     }
 }

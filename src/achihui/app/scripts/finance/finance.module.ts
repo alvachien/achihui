@@ -1,15 +1,16 @@
-﻿import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+﻿import { NgModule }         from '@angular/core';
+import { FormsModule }      from '@angular/forms';
+import { CommonModule }     from '@angular/common';
+import { HttpModule, Http } from '@angular/http';
 
 import { FinanceComponent } from './finance.component';
-import { financeRouting } from './finance.routing';
+import { financeRouting }   from './finance.routing';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        financeRouting
+        financeRouting        
     ],
     declarations: [
         FinanceComponent
