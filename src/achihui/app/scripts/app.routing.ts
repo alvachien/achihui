@@ -17,6 +17,10 @@ const mainRoutes: Routes = [
         loadChildren: 'learn/learn.module#LearnModule'
     },
     {
+        path: 'event',
+        loadChildren: 'event/event.module#EventModule'
+    },
+    {
         path: 'finance',
         loadChildren: 'finance/finance.module#FinanceModule'
     }

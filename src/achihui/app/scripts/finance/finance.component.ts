@@ -2,11 +2,10 @@
 
 @Component({
     selector: 'my-app-about',
-    templateUrl: 'app/views/about.html'
+    templateUrl: 'app/views/finance/finance.html'
 })
-export class AboutComponent implements OnInit {
-    title = 'About';
 
+export class FinanceComponent implements OnInit {
     constructor() {
     }
 

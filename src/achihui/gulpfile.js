@@ -17,6 +17,8 @@ var paths = {
 
     cssApp: app + 'css/',
     viewsApp: app + 'views/',
+    localApp: app + 'locales/',
+    resApp: app + 'resources/',
 
     jsVendors: lib + 'js/',
     cssVendors: lib + 'css/',
@@ -43,8 +45,7 @@ gulp.task('setup-vendors-js', function () {
         'bootstrap/dist/js/bootstrap*.js',
         'tether/dist/js/tether*.js',
         'oidc-client/dist/*.js',
-        'alertify.js/dist/js/*.js',
-        'magnific-popup/dist/**/*.js'
+        'alertify.js/dist/js/*.js'
     ], {
         cwd: "node_modules/**"
     })
@@ -55,8 +56,7 @@ gulp.task('setup-vendors-css', function () {
     gulp.src([
       paths.npm + 'tether/dist/css/tether*.css',
       paths.npm + 'bootstrap/dist/css/bootstrap.css',
-      paths.npm + 'font-awesome/css/font-awesome*.css',
-      paths.npm + 'magnific-popup/dist/**/*.css'
+      paths.npm + 'font-awesome/css/font-awesome*.css'
     ]).pipe(gulp.dest(paths.cssVendors));
 });
 
@@ -96,7 +96,7 @@ gulp.task('setup-vendors-font', function () {
     ]).pipe(gulp.dest(paths.fontsVendors));
 });
 
-gulp.task('setup-vendors', ['setup-vendors-js', 'setup-vendors-css', 'setup-vendors-font', 'setup-vendors-fineuploader']);
+gulp.task('setup-vendors', ['setup-vendors-js', 'setup-vendors-css', 'setup-vendors-font']);
 
 gulp.task('setup-environment', function (done) {
     gulp.src([
@@ -125,7 +125,7 @@ gulp.task('compile-typescript', function (done) {
     var tsResult = gulp.src([
        "app/scripts/**/*.ts"
     ])
-     .pipe(ts(tsProject), undefined, ts.reporter.fullReporter());
+     .pipe(tsProject(), undefined, ts.reporter.fullReporter());
     return tsResult.js.pipe(gulp.dest(paths.tsOutput));
 });
 

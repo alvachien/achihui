@@ -2,15 +2,12 @@
 
 @Component({
     selector: 'my-app-about',
-    templateUrl: 'app/views/learn.html'
+    templateUrl: 'app/views/learn/learn.html'
 })
 export class LearnComponent implements OnInit {
-    title = 'About';
-
     constructor() {
     }
 
     ngOnInit() {
     }
-
 }

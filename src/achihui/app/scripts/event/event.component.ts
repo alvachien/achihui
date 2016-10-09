@@ -2,9 +2,10 @@
 
 @Component({
     selector: 'my-app-about',
-    templateUrl: 'app/views/about.html'
+    templateUrl: 'app/views/event/event.html'
 })
-export class AboutComponent implements OnInit {
+
+export class EventComponent implements OnInit {
     title = 'About';
 
     constructor() {

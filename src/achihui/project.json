@@ -36,15 +36,30 @@
 
   "publishOptions": {
     "include": [
-      "web.config"
+      "wwwroot",
+      "web.config",
+      "favicon.ico"
     ],
     "exclude": [
-      "node_modules"
+      "node_modules",
+      "bower_components"
     ]
   },
 
   "scripts": {
-    "prepublish": [ "npm install" ],
+    "prepublish": [
+      "npm install",
+      "npm install gulp",
+      "npm install path",
+      "npm install gulp-clean",
+      "npm install gulp-concat",
+      "npm install gulp-typescript",
+      "npm install gulp-tsc",
+      "npm install del",
+      "npm install run-sequence",
+      "typings install",
+      "gulp --gulpfile gulpfile.js build"
+    ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }
