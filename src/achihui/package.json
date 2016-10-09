@@ -1,0 +1,55 @@
+{
+  "name": "achihui",
+  "version": "1.0.0",
+  "description": "UI for HIH",
+  "main": "index.html",
+  "keywords": [
+    "HIH"
+  ],
+  "author": "alva chien",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "typings": "typings",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@angular/common": "2.0.0",
+    "@angular/compiler": "2.0.0",
+    "@angular/core": "2.0.0",
+    "@angular/forms": "2.0.0",
+    "@angular/http": "2.0.0",
+    "@angular/platform-browser": "2.0.0",
+    "@angular/platform-browser-dynamic": "2.0.0",
+    "@angular/router": "3.0.0",
+    "@angular/upgrade": "2.0.0",
+
+    "core-js": "^2.4.1",
+    "reflect-metadata": "^0.1.8",
+    "rxjs": "^5.0.0-beta.12",
+    "systemjs": "^0.19.39",
+    "zone.js": "^0.6.25",
+
+    "alertify.js": "^1.0.12",
+    "babel-polyfill": "^6.16.0",
+    "bootstrap": "^4.0.0-alpha.4",
+    "jquery": "^3.1.1",
+    "ng2-bootstrap": "^1.1.11",
+    "oidc-client": "^1.2.0",
+    "tether": "^1.3.7",
+    "typescript": "^2.0.3",
+    "typings": "^1.4.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "path": "^0.12.7",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-typescript": "^3.0.2",
+    "gulp-tsc": "^1.2.4",
+    "del": "^2.2.2",
+    "run-sequence": "^1.2.2"
+  }
+}

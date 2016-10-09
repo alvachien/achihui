@@ -1,16 +1,15 @@
 ﻿{
   "dependencies": {
     "Microsoft.NETCore.App": {
-      "version": "1.0.0",
+      "version": "1.0.1",
       "type": "platform"
     },
     "Microsoft.AspNetCore.StaticFiles": "1.0.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0"
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.1"
   },
 
   "tools": {
-    "BundlerMinifier.Core": "2.0.238",
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
       "version": "1.0.0-preview2-final",
       "imports": "portable-net45+win8+dnxcore50"
@@ -37,21 +36,15 @@
 
   "publishOptions": {
     "include": [
-      "wwwroot",
       "web.config"
     ],
     "exclude": [
-      //"wwwroot\\app\\js\\app.js",
-      //"wwwroot\\app\\js\\hihmodel.js",
-      //"wwwroot\\app\\js\\oidc-client.js",
-      //"wwwroot\\app\\js\\utils.js",
-      //"wwwroot\\css\\app.css"
+      "node_modules"
     ]
   },
 
   "scripts": {
-    //"prepublish": [ "npminstall.cmd", "dotnet bundle" ],
-    "prepublish": [ "npminstall.cmd" ],
+    "prepublish": [ "npm install" ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }
