@@ -68,9 +68,23 @@ export class BaseModel {
     }
 }
 
+// Module
+export class HIHModule {
+    public Module: string;
+    public Name: string;
+}
+
 // Tag
 export class HIHTag {
+    public ID: number;
     public Tag: string;
+}
+
+// Tag linkage
+export class HIHTagLinkage {
+    public TagID: number;
+    public Module: string;
+    public ObjectID: number;
 }
 
 // App language: the language set which supported by current app.
