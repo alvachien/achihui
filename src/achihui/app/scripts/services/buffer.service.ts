@@ -1,19 +1,33 @@
 ﻿import { Injectable } from '@angular/core';
 import * as HIHFinance from '../model/finance';
+import * as HIHUser from '../model/user';
+import * as HIHLearn from '../model/learn';
 import { DebugLogging } from '../app.setting';
 
 @Injectable()
 export class BufferService {
+    // User part
+    usrDetail: HIHUser.UserDetail;
+    usrHistories: Array<HIHUser.UserHistory>;
+
+    // Finance part
     finSettings: Array<HIHFinance.Setting>;
     finAccountCategories: Array<HIHFinance.AccountCategory>;
     finDocTypes: Array<HIHFinance.DocumentType>;
     finTranTypes: Array<HIHFinance.TranType>;
     finCurrencies: Array<HIHFinance.Currency>;
+    finAccounts: Array<HIHFinance.Account>;
+    finControllingCenters: Array<HIHFinance.ControllingCenter>;
     _isfinSettingLoaded: boolean;
     _isfinAcntCtgyLoaded: boolean;
     _isfinDocTypeLoaded: boolean;
     _isfinTranTypeLoaded: boolean;
     _isfinCurrencyLoaded: boolean;
+    _isfinAccountLoaded: boolean;
+    _isfinControllingCenterLoaded: boolean;
+    _isfinOrderLoaded: boolean;
+    _isfinExRateLoaded: boolean;
+    _isfinDocumentLoaded: boolean;
     
     constructor() {
         if (DebugLogging) {
