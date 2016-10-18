@@ -18,6 +18,8 @@ export class FinanceService {
     private _settings$: Subject<HIHFinance.Setting[]>;
     private _acntctgys$: Subject<HIHFinance.AccountCategory[]>;
     private _currencies$: Subject<HIHFinance.Currency[]>;
+    private _doctype$: Subject<HIHFinance.DocumentType[]>;
+    private _trantype$: Subject<HIHFinance.TranType[]>;
 
     constructor(private http: Http,
         private authService: AuthService,
@@ -25,6 +27,8 @@ export class FinanceService {
         this._settings$ = <Subject<HIHFinance.Setting[]>>new Subject();
         this._acntctgys$ = <Subject<HIHFinance.AccountCategory[]>>new Subject();
         this._currencies$ = <Subject<HIHFinance.Currency[]>>new Subject();
+        this._doctype$ = <Subject<HIHFinance.DocumentType[]>>new Subject();
+        this._trantype$ = <Subject<HIHFinance.TranType[]>>new Subject();
     }
 
     get settings$() {
@@ -35,6 +39,12 @@ export class FinanceService {
     }
     get currencies$() {
         return this._currencies$.asObservable();
+    }
+    get doctypes$() {
+        return this._doctype$.asObservable();
+    }
+    get trantypes$() {
+        return this._trantype$.asObservable();
     }
 
     // Common
@@ -79,10 +89,121 @@ export class FinanceService {
     }
 
     // Account category
+    loadAccountCategories(forceReload?: boolean) {
+        if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
+            this._acntctgys$.next(this.buffService.finAccountCategories);
+            return;
+        }
+
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        this.http.get(APIUrl + 'financeaccountcategory', { headers: headers })
+            .map(this.extractAcntCtgyData)
+            .catch(this.handleError)
+            .subscribe(data => {
+                this.buffService.setFinAccountCategories(data);
+                this._acntctgys$.next(this.buffService.finAccountCategories);
+            },
+            error => {
+                // It should be handled already
+            });
+    }
+
+    private extractAcntCtgyData(res: Response) {
+        let body = res.json();
+        if (body && body instanceof Array) {
+            let sets = new Array<HIHFinance.AccountCategory>();
+            for (let alm of body) {
+                let alm2 = new HIHFinance.AccountCategory();
+
+                sets.push(alm2);
+            }
+            return sets;
+        }
+
+        return body || {};
+    }
 
     // Tran type
+    loadTranTypes(forceReload?: boolean) {
+        if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
+            this._trantype$.next(this.buffService.finTranTypes);
+            return;
+        }
+
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        this.http.get(APIUrl + 'financetrantype', { headers: headers })
+            .map(this.extractTranTypeData)
+            .catch(this.handleError)
+            .subscribe(data => {
+                this.buffService.setFinTranTypes(data);
+                this._trantype$.next(this.buffService.finTranTypes);
+            },
+            error => {
+                // It should be handled already
+            });
+    }
+
+    private extractTranTypeData(res: Response) {
+        let body = res.json();
+        if (body && body instanceof Array) {
+            let sets = new Array<HIHFinance.TranType>();
+            for (let alm of body) {
+                let alm2 = new HIHFinance.TranType();
+
+                sets.push(alm2);
+            }
+            return sets;
+        }
+
+        return body || {};
+    }
 
     // Doc type
+    loadDocTypes(forceReload?: boolean) {
+        if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
+            this._doctype$.next(this.buffService.finDocTypes);
+            return;
+        }
+
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        this.http.get(APIUrl + 'financedoctype', { headers: headers })
+            .map(this.extractDocTypeData)
+            .catch(this.handleError)
+            .subscribe(data => {
+                this.buffService.setFinDocTypes(data);
+                this._doctype$.next(this.buffService.finDocTypes);
+            },
+            error => {
+                // It should be handled already
+            });
+    }
+
+    private extractDocTypeData(res: Response) {
+        let body = res.json();
+        if (body && body instanceof Array) {
+            let sets = new Array<HIHFinance.DocumentType>();
+            for (let alm of body) {
+                let alm2 = new HIHFinance.DocumentType();
+
+                sets.push(alm2);
+            }
+            return sets;
+        }
+
+        return body || {};
+    }
 
     // Currency
     loadCurrencies(forceReload?: boolean) {

@@ -28,9 +28,15 @@
                             <i class="fa fa-photo fa-fw"></i>&nbsp;Finance<b class="caret"></b>
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" [routerLink]="['/finance']" routerLinkActive="active">Finance</a>
+                            <a class="dropdown-item" [routerLink]="['/finance/setting']" routerLinkActive="active">Setting</a>
+                            <a class="dropdown-item" [routerLink]="['/finance/currency']" routerLinkActive="active">Currency</a>
+                            <a class="dropdown-item" [routerLink]="['/finance/doctype']" routerLinkActive="active">Document Type</a>
+                            <a class="dropdown-item" [routerLink]="['/finance/accountctgy']" routerLinkActive="active">Account Category</a>
+                            <a class="dropdown-item" [routerLink]="['/finance/trantypelist']" routerLinkActive="active">Tran Type List</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" [routerLink]="['/photo/upload']" routerLinkActive="active">Upload</a>
+                            <a class="dropdown-item" [routerLink]="['/finance/account']" routerLinkActive="active">Account List</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" [routerLink]="['/finance/documentlist']" routerLinkActive="active">Document List</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">

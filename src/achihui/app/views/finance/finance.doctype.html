@@ -1,0 +1,17 @@
+﻿<div class="container">
+    <table class="table">
+        <thead class="thead-default">
+            <tr>
+                <th>ID</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let fs of finCurrencies">
+                <td><div class="checkbox"><input type="checkbox" [(ngModel)]="fs.SetId"></div></td>
+                <td>{{fs.SetValue}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

@@ -24,7 +24,7 @@ export class AuthService {
             client_id: "acgallery.app",
             redirect_uri: AppLoginCallback,
             response_type: "id_token token",
-            scope: "openid profile api.hihapi api.acgallery",
+            scope: "openid profile api.hihapi email roles",
             post_logout_redirect_uri: AppLogoutCallback
         };
 
