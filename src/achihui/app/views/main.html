@@ -15,7 +15,21 @@
                 <ul class="nav navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-picture-o fa-fw"></i>&nbsp;Learn<b class="caret"></b>
+                            <i class="fa fa-home" aria-hidden="true"></i>&nbsp;Home<b class="caret"></b>
+                        </a>
+                        <div class="dropdown-menu">
+                            <h6 class="dropdown-header">System</h6>
+                            <a class="dropdown-item" [routerLink]="['/module']" routerLinkActive="active">Modules</a>
+                            <a class="dropdown-item" [routerLink]="['/language']" routerLinkActive="active">Languages</a>
+                            <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">Current User</h6>
+                            <a class="dropdown-item" [routerLink]="['/userdetail']" routerLinkActive="active">User Detail</a>
+                            <a class="dropdown-item" [routerLink]="['/userhist']" routerLinkActive="active">Histories</a>                            
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-graduation-cap" aria-hidden="true"></i>&nbsp;Learn<b class="caret"></b>
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" [routerLink]="['/learn']" routerLinkActive="active">Learn</a>
@@ -25,7 +39,7 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-photo fa-fw"></i>&nbsp;Finance<b class="caret"></b>
+                            <i class="fa fa-cubes" aria-hidden="true"></i>&nbsp;Finance<b class="caret"></b>
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" [routerLink]="['/finance/setting']" routerLinkActive="active">Setting</a>
@@ -41,7 +55,7 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-pencil-square-o fa-fw"></i>&nbsp;About<b class="caret"></b>
+                            <i class="fa fa-info"></i>&nbsp;About<b class="caret"></b>
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" [routerLink]="['/about']" routerLinkActive="active">About</a>

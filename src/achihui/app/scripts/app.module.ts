@@ -23,6 +23,10 @@ import { DialogService }    from './services/dialog.service';
 import { BufferService }    from './services/buffer.service';
 import { AuthService }      from './services/auth.service';
 import { HomeComponent }    from './home/home.component';
+import { LanguageComponent } from './home/language.component';
+import { ModuleComponent } from './home/module.component';
+import { UserDetailComponent } from './home/user.detail.component';
+import { UserHistoryComponent } from './home/user.history.component';
 
 @NgModule({
     imports: [
@@ -45,6 +49,10 @@ import { HomeComponent }    from './home/home.component';
         CreditsComponent,
         AboutComponent,
         HomeComponent,
+        LanguageComponent,
+        ModuleComponent,
+        UserDetailComponent,
+        UserHistoryComponent,
         ForbiddenComponent,
         UnauthorizedComponent
     ],

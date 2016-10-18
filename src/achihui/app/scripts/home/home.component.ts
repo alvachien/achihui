@@ -1,16 +1,21 @@
-﻿import { Component, OnInit }        from '@angular/core';
-//import { LoginService }             from '../login.service';
+﻿import { Component, OnInit, OnDestroy }        from '@angular/core';
+import { DebugLogging } from '../app.setting';
 
 @Component({
     selector: 'my-app-home',
-    templateUrl: 'app/views/home.html'
+    templateUrl: 'app/views/home/home.html'
 })
 
 export class HomeComponent implements OnInit {
-    //constructor(public loginService: LoginService) {
     constructor() {
+        if (DebugLogging) {
+            console.log("Entering constructor of HomeComponent");
+        }
     }
 
     ngOnInit() {
+        if (DebugLogging) {
+            console.log("Entering constructor of HomeComponent");
+        }
     }
 }

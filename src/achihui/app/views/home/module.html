@@ -1,0 +1,16 @@
+﻿<div class="container">
+    <table class="table">
+        <thead class="thead-default">
+            <tr>
+                <th>ID</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let fs of finSettings">
+                <td>{{fs.SetId}}</td>
+                <td>{{fs.SetValue}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
