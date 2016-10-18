@@ -2,28 +2,27 @@
 import * as hih from './common';
 
 export class Setting extends hih.BaseModel {
-    public LocalCurrency: string;
-    public LocalCurrencyComment: string;
-    public CurrencyExchangeToilence: number;
-    public CurrencyExchangeToilenceComment: string;
+    public SetId: string;
+    public SetValue: string;
+    public Comment: number;
 
     constructor() {
         super();
         if (DebugLogging) {
-            console.log("Entering constructor of KnowledgeType");
+            console.log("Entering constructor of Finance.Setting");
         }
     }
 
     public onInit() {
         super.onInit();
         if (DebugLogging) {
-            console.log("Entering onInit of KnowledgeType");
+            console.log("Entering onInit of Finance.Setting");
         }
     }
 
     public onVerify(): boolean {
         if (DebugLogging) {
-            console.log("Entering onVerify of KnowledgeType");
+            console.log("Entering onVerify of Finance.Setting");
         }
         if (!super.onVerify())
             return false;
@@ -33,11 +32,28 @@ export class Setting extends hih.BaseModel {
 
     public writeJSONObject(): any {
         if (DebugLogging) {
-            console.log("Entering writeJSONObject of KnowledgeType");
+            console.log("Entering writeJSONObject of Finance.Setting");
         }
 
         let rstObj = super.writeJSONObject();
         return rstObj;
+    }
+    
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Finance.Setting");
+        }
+
+        super.onSetData(data);
+        if (data && data.setID) {
+            this.SetId = data.setID;
+        }
+        if (data && data.setValue) {
+            this.SetValue = data.setValue;
+        }
+        if (data && data.comment) {
+            this.Comment = data.comment;
+        }
     }
 }
 

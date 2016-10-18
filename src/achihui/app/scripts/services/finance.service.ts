@@ -79,7 +79,7 @@ export class FinanceService {
             let sets = new Array<HIHFinance.Setting>();
             for (let alm of body) {
                 let alm2 = new HIHFinance.Setting();
-
+                alm2.onSetData(alm);
                 sets.push(alm2);
             }
             return sets;

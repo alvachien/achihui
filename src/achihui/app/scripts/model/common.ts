@@ -15,8 +15,8 @@ export class InfoMessage {
 export class BaseModel {        
     public CreatedAt: Date;
     public CreatedBy: string;
-    public ModifiedAt: Date;
-    public ModifiedBy: string;
+    public UpdatedAt: Date;
+    public UpdatedBy: string;
 
     public VerifiedMsgs: InfoMessage[];
 
@@ -26,7 +26,7 @@ export class BaseModel {
         }
 
         this.CreatedAt = new Date();
-        this.ModifiedAt = new Date();
+        this.UpdatedAt = new Date();
     }
 
     public onInit() {
@@ -65,6 +65,25 @@ export class BaseModel {
             return JSON && JSON.stringify(forJSON);
         }
         return JSON && JSON.stringify(this);
+    }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of BaseModel");
+        }
+
+        if (data && data.createdBy) {
+            this.CreatedBy = data.createdBy;
+        }
+        if (data && data.createdAt) {
+            this.CreatedAt = data.createdAt;
+        }
+        if (data && data.updatedBy) {
+            this.UpdatedBy = data.updatedBy;
+        }
+        if (data && data.updatedAt) {
+            this.UpdatedAt = data.updatedAt;
+        }
     }
 }
 
