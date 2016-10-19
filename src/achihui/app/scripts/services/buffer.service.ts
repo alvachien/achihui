@@ -1,4 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
+import * as HIHBase from '../model/common';
 import * as HIHFinance from '../model/finance';
 import * as HIHUser from '../model/user';
 import * as HIHLearn from '../model/learn';
@@ -6,9 +7,19 @@ import { DebugLogging } from '../app.setting';
 
 @Injectable()
 export class BufferService {
+    // Common part
+    cmnModules: Array<HIHBase.Module>;
+    cmnTags: Array<HIHBase.Tag>;
+    cmnTagLinkages: Array<HIHBase.TagLinkage>;
+    _iscmnModuleLoaded: boolean;
+    _iscmnTagLoaded: boolean;
+    _iscmnTagLinkageLoaded: boolean;
+
     // User part
     usrDetail: HIHUser.UserDetail;
     usrHistories: Array<HIHUser.UserHistory>;
+    _isusrDetailLoaded: boolean;
+    _isusrHistoryLoaded: boolean;
 
     // Finance part
     finSettings: Array<HIHFinance.Setting>;
@@ -33,17 +44,112 @@ export class BufferService {
         if (DebugLogging) {
             console.log("Entering constructor of BufferService");
         }
+
+        this._iscmnModuleLoaded = false;
+        this._iscmnTagLoaded = false;
+        this._iscmnTagLinkageLoaded = false;
+        this._isusrDetailLoaded = false;
+        this._isusrHistoryLoaded = false;
         this._isfinSettingLoaded = false;
         this._isfinAcntCtgyLoaded = false;
         this._isfinDocTypeLoaded = false;
         this._isfinTranTypeLoaded = false;
         this._isfinCurrencyLoaded = false;
 
+        this.cmnModules = new Array<HIHBase.Module>();
+        this.cmnTags = new Array<HIHBase.Tag>();
+        this.cmnTagLinkages = new Array<HIHBase.TagLinkage>();
+        this.usrDetail = new HIHUser.UserDetail();
+        this.usrHistories = new Array<HIHUser.UserHistory>();
         this.finSettings = new Array<HIHFinance.Setting>();
         this.finAccountCategories = new Array<HIHFinance.AccountCategory>();
         this.finDocTypes = new Array<HIHFinance.DocumentType>();
         this.finTranTypes = new Array<HIHFinance.TranType>();
         this.finCurrencies = new Array<HIHFinance.Currency>();
+    }
+
+    // Common module
+    get isCommonModuleLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isCommonModuleLoaded-get of BufferService");
+        }
+        return this._iscmnModuleLoaded;
+    }
+    set isCommonModuleLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isCommonModuleLoaded-set of BufferService");
+        }
+        this._iscmnModuleLoaded = val;
+    }
+    public setCommonModules(data: Array<HIHBase.Module>) {
+        if (DebugLogging) {
+            console.log("Entering setCommonModules of BufferService");
+        }
+        this.cmnModules = data;
+        this._iscmnModuleLoaded = true;
+    }
+
+    // Common tag
+    get isCommonTagLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isCommonTagLoaded-get of BufferService");
+        }
+        return this._iscmnTagLoaded;
+    }
+    set isCommonTagLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isCommonTagLoaded-set of BufferService");
+        }
+        this._iscmnTagLoaded = val;
+    }
+    public setCommonTags(data: Array<HIHBase.Tag>) {
+        if (DebugLogging) {
+            console.log("Entering setCommonTags of BufferService");
+        }
+        this.cmnTags = data;
+        this._iscmnTagLoaded = true;
+    }
+
+    // Common tag linkage
+    get isCommonTagLinkageLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isCommonTagLinkageLoaded-get of BufferService");
+        }
+        return this._iscmnTagLinkageLoaded;
+    }
+    set isCommonTagLinkageLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isCommonTagLinkageLoaded-set of BufferService");
+        }
+        this._iscmnTagLinkageLoaded = val;
+    }
+    public setCommonTagLinkages(data: Array<HIHBase.TagLinkage>) {
+        if (DebugLogging) {
+            console.log("Entering setCommonTagLinkages of BufferService");
+        }
+        this.cmnTagLinkages = data;
+        this._iscmnTagLinkageLoaded = true;
+    }
+
+    // User history
+    get isUserHistoriesLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isUserHistoriesLoaded-get of BufferService");
+        }
+        return this._isusrHistoryLoaded;
+    }
+    set isUserHistoriesLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isUserHistoriesLoaded-set of BufferService");
+        }
+        this._isusrHistoryLoaded = val;
+    }
+    public setUserHistories(data: Array<HIHUser.UserHistory>) {
+        if (DebugLogging) {
+            console.log("Entering setUserHistories of BufferService");
+        }
+        this.usrHistories = data;
+        this._isusrHistoryLoaded = true;
     }
 
     // Finance setting

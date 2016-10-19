@@ -88,19 +88,19 @@ export class BaseModel {
 }
 
 // Module
-export class HIHModule {
+export class Module {
     public Module: string;
     public Name: string;
 }
 
 // Tag
-export class HIHTag {
+export class Tag {
     public ID: number;
     public Tag: string;
 }
 
 // Tag linkage
-export class HIHTagLinkage {
+export class TagLinkage {
     public TagID: number;
     public Module: string;
     public ObjectID: number;

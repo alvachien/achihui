@@ -21,7 +21,7 @@ export class AuthService {
     constructor() {
         let settings = {
             authority: IDServerUrl,
-            client_id: "acgallery.app",
+            client_id: "achihui.js",
             redirect_uri: AppLoginCallback,
             response_type: "id_token token",
             scope: "openid profile api.hihapi email roles",

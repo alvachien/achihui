@@ -24,6 +24,10 @@ export class FinanceService {
     constructor(private http: Http,
         private authService: AuthService,
         private buffService: BufferService) {
+        if (DebugLogging) {
+            console.log("Entering constructor of FinanceService");
+        }
+
         this._settings$ = <Subject<HIHFinance.Setting[]>>new Subject();
         this._acntctgys$ = <Subject<HIHFinance.AccountCategory[]>>new Subject();
         this._currencies$ = <Subject<HIHFinance.Currency[]>>new Subject();
@@ -51,6 +55,10 @@ export class FinanceService {
 
     // Setting
     loadSettings(forceReload?: boolean) {
+        if (DebugLogging) {
+            console.log("Entering loadSettings of FinanceService");
+        }
+
         if (!forceReload && this.buffService.isFinSettingLoaded) {
             this._settings$.next(this.buffService.finSettings);
             return;
@@ -74,6 +82,10 @@ export class FinanceService {
     }
 
     private extractSettingData(res: Response) {
+        if (DebugLogging) {
+            console.log("Entering extractSettingData of FinanceService");
+        }
+
         let body = res.json();
         if (body && body instanceof Array) {
             let sets = new Array<HIHFinance.Setting>();
@@ -90,6 +102,10 @@ export class FinanceService {
 
     // Account category
     loadAccountCategories(forceReload?: boolean) {
+        if (DebugLogging) {
+            console.log("Entering loadAccountCategories of FinanceService");
+        }
+
         if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
             this._acntctgys$.next(this.buffService.finAccountCategories);
             return;
@@ -113,6 +129,10 @@ export class FinanceService {
     }
 
     private extractAcntCtgyData(res: Response) {
+        if (DebugLogging) {
+            console.log("Entering extractAcntCtgyData of FinanceService");
+        }
+
         let body = res.json();
         if (body && body instanceof Array) {
             let sets = new Array<HIHFinance.AccountCategory>();
@@ -129,6 +149,10 @@ export class FinanceService {
 
     // Tran type
     loadTranTypes(forceReload?: boolean) {
+        if (DebugLogging) {
+            console.log("Entering loadTranTypes of FinanceService");
+        }
+
         if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
             this._trantype$.next(this.buffService.finTranTypes);
             return;
@@ -152,6 +176,10 @@ export class FinanceService {
     }
 
     private extractTranTypeData(res: Response) {
+        if (DebugLogging) {
+            console.log("Entering extractTranTypeData of FinanceService");
+        }
+
         let body = res.json();
         if (body && body instanceof Array) {
             let sets = new Array<HIHFinance.TranType>();
@@ -168,6 +196,10 @@ export class FinanceService {
 
     // Doc type
     loadDocTypes(forceReload?: boolean) {
+        if (DebugLogging) {
+            console.log("Entering loadDocTypes of FinanceService");
+        }
+
         if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
             this._doctype$.next(this.buffService.finDocTypes);
             return;
@@ -191,6 +223,10 @@ export class FinanceService {
     }
 
     private extractDocTypeData(res: Response) {
+        if (DebugLogging) {
+            console.log("Entering extractDocTypeData of FinanceService");
+        }
+
         let body = res.json();
         if (body && body instanceof Array) {
             let sets = new Array<HIHFinance.DocumentType>();
@@ -207,6 +243,10 @@ export class FinanceService {
 
     // Currency
     loadCurrencies(forceReload?: boolean) {
+        if (DebugLogging) {
+            console.log("Entering loadCurrencies of FinanceService");
+        }
+
         if (!forceReload && this.buffService.isFinCurrencyLoaded) {
             this._currencies$.next(this.buffService.finCurrencies);
             return;
@@ -229,6 +269,10 @@ export class FinanceService {
             });
     }
     private extractCurrencyData(res: Response) {
+        if (DebugLogging) {
+            console.log("Entering extractCurrencyData of FinanceService");
+        }
+
         let body = res.json();
         if (body && body instanceof Array) {
             let sets = new Array<HIHFinance.Currency>();
@@ -245,6 +289,10 @@ export class FinanceService {
 
     // Others
     private handleError(error: any) {
+        if (DebugLogging) {
+            console.log("Entering handleError of FinanceService");
+        }
+
         // In a real world app, we might use a remote logging infrastructure
         // We'd also dig deeper into the error to get a better message
         let errMsg = (error.message) ? error.message :
