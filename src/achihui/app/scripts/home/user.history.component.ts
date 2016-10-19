@@ -15,7 +15,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         if (DebugLogging) {
-            console.log("Entering constructor of UserHistoryComponent");
+            console.log("Entering ngOnInit of UserHistoryComponent");
         }
     }
 

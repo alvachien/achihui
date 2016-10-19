@@ -26,7 +26,11 @@ namespace achihui
                 "/forbidden",
                 "/logout",
                 "/about",
-                "/home"
+                "/home",
+                "/language",
+                "/module",
+                "/userdetail",
+                "/userhist"
             };
 
             app.Use(async (context, next) =>

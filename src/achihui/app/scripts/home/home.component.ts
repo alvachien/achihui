@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         if (DebugLogging) {
-            console.log("Entering constructor of HomeComponent");
+            console.log("Entering ngOnInit of HomeComponent");
         }
     }
 }

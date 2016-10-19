@@ -7,7 +7,6 @@ import {
 } from '@angular/http';
 import '../rxjs-operators';
 import * as HIHBase from '../model/common';
-import * as HIHFinance from '../model/finance';
 import {
     APIUrl, DebugLogging
 } from '../app.setting';
@@ -18,130 +17,75 @@ import { BufferService } from '../services/buffer.service';
 export class UtilService {
     private _modules$: Subject<HIHBase.Module[]>;
     private _langs$: Subject<HIHBase.AppLanguage[]>;
-
-    private _settings$: Subject<HIHFinance.Setting[]>;
-    private _acntctgys$: Subject<HIHFinance.AccountCategory[]>;
-    private _currencies$: Subject<HIHFinance.Currency[]>;
-    private _doctype$: Subject<HIHFinance.DocumentType[]>;
-    private _trantype$: Subject<HIHFinance.TranType[]>;
+    private _tags$: Subject<HIHBase.Tag[]>;
+    private _taglinks$: Subject<HIHBase.TagLinkage[]>;
 
     constructor(private http: Http,
         private authService: AuthService,
         private buffService: BufferService) {
         if (DebugLogging) {
-            console.log("Entering constructor of FinanceService");
+            console.log("Entering constructor of UtilService");
         }
 
-        this._settings$ = <Subject<HIHFinance.Setting[]>>new Subject();
-        this._acntctgys$ = <Subject<HIHFinance.AccountCategory[]>>new Subject();
-        this._currencies$ = <Subject<HIHFinance.Currency[]>>new Subject();
-        this._doctype$ = <Subject<HIHFinance.DocumentType[]>>new Subject();
-        this._trantype$ = <Subject<HIHFinance.TranType[]>>new Subject();
+        this._modules$ = <Subject<HIHBase.Module[]>>new Subject();
+        this._langs$ = <Subject<HIHBase.AppLanguage[]>>new Subject();
+        this._tags$ = <Subject<HIHBase.Tag[]>>new Subject();
+        this._taglinks$ = <Subject<HIHBase.TagLinkage[]>>new Subject();
     }
 
-    get settings$() {
-        return this._settings$.asObservable();
+    get moudles$() {
+        return this._modules$.asObservable();
     }
-    get accountcategories$() {
-        return this._acntctgys$.asObservable();
+    get languages$() {
+        return this._langs$.asObservable();
     }
-    get currencies$() {
-        return this._currencies$.asObservable();
+    get tags$() {
+        return this._tags$.asObservable();
     }
-    get doctypes$() {
-        return this._doctype$.asObservable();
-    }
-    get trantypes$() {
-        return this._trantype$.asObservable();
+    get taglinkages$() {
+        return this._taglinks$.asObservable();
     }
 
-    // Common
-
-    // Setting
-    loadSettings(forceReload?: boolean) {
+    // Modules
+    loadModules(forceReload?: boolean) {
         if (DebugLogging) {
-            console.log("Entering loadSettings of FinanceService");
+            console.log("Entering loadModules of UtilService");
         }
 
-        if (!forceReload && this.buffService.isFinSettingLoaded) {
-            this._settings$.next(this.buffService.finSettings);
+        if (!forceReload && this.buffService.isCommonModuleLoaded) {
+            this._modules$.next(this.buffService.cmnModules);
             return;
         }
 
         var headers = new Headers();
         headers.append('Accept', 'application/json');
-        if (this.authService.authSubject.getValue().isAuthorized)
-            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        //if (this.authService.authSubject.getValue().isAuthorized)
+        //    headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financesetting', { headers: headers })
-            .map(this.extractSettingData)
+        this.http.get(APIUrl + 'module', { headers: headers })
+            .map(this.extractModuleData)
             .catch(this.handleError)
             .subscribe(data => {
-                this.buffService.setFinSettings(data);
-                this._settings$.next(this.buffService.finSettings);
+                this.buffService.setCommonModules(data);
+                this._modules$.next(this.buffService.cmnModules);
             },
             error => {
                 // It should be handled already
             });
     }
 
-    private extractSettingData(res: Response) {
+    private extractModuleData(res: Response) {
         if (DebugLogging) {
-            console.log("Entering extractSettingData of FinanceService");
+            console.log("Entering extractModuleData of UtilService");
         }
 
         let body = res.json();
         if (body && body instanceof Array) {
-            let sets = new Array<HIHFinance.Setting>();
+            let sets = new Array<HIHBase.Module>();
             for (let alm of body) {
-                let alm2 = new HIHFinance.Setting();
-                alm2.onSetData(alm);
-                sets.push(alm2);
-            }
-            return sets;
-        }
-
-        return body || {};
-    }
-
-    // Account category
-    loadAccountCategories(forceReload?: boolean) {
-        if (DebugLogging) {
-            console.log("Entering loadAccountCategories of FinanceService");
-        }
-
-        if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
-            this._acntctgys$.next(this.buffService.finAccountCategories);
-            return;
-        }
-
-        var headers = new Headers();
-        headers.append('Accept', 'application/json');
-        if (this.authService.authSubject.getValue().isAuthorized)
-            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
-
-        this.http.get(APIUrl + 'financeaccountcategory', { headers: headers })
-            .map(this.extractAcntCtgyData)
-            .catch(this.handleError)
-            .subscribe(data => {
-                this.buffService.setFinAccountCategories(data);
-                this._acntctgys$.next(this.buffService.finAccountCategories);
-            },
-            error => {
-                // It should be handled already
-            });
-    }
-
-    private extractAcntCtgyData(res: Response) {
-        if (DebugLogging) {
-            console.log("Entering extractAcntCtgyData of FinanceService");
-        }
-
-        let body = res.json();
-        if (body && body instanceof Array) {
-            let sets = new Array<HIHFinance.AccountCategory>();
-            for (let alm of body) {
-                let alm2 = new HIHFinance.AccountCategory();
+                let alm2 = new HIHBase.Module();
+                alm2.Module = alm.module;
+                alm2.Name = alm.Name;
 
                 sets.push(alm2);
             }
@@ -151,44 +95,49 @@ export class UtilService {
         return body || {};
     }
 
-    // Tran type
-    loadTranTypes(forceReload?: boolean) {
+    // Languages
+    loadLanguages(forceReload?: boolean) {
         if (DebugLogging) {
-            console.log("Entering loadTranTypes of FinanceService");
+            console.log("Entering loadLanguages of UtilService");
         }
 
-        if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
-            this._trantype$.next(this.buffService.finTranTypes);
+        if (!forceReload && this.buffService.isCommonLanguageLoaded) {
+            this._langs$.next(this.buffService.cmnLanguages);
             return;
         }
 
         var headers = new Headers();
         headers.append('Accept', 'application/json');
-        if (this.authService.authSubject.getValue().isAuthorized)
-            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        //if (this.authService.authSubject.getValue().isAuthorized)
+        //    headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financetrantype', { headers: headers })
-            .map(this.extractTranTypeData)
+        this.http.get(APIUrl + 'language', { headers: headers })
+            .map(this.extractLangData)
             .catch(this.handleError)
             .subscribe(data => {
-                this.buffService.setFinTranTypes(data);
-                this._trantype$.next(this.buffService.finTranTypes);
+                this.buffService.setCommonLanguages(data);
+                this._langs$.next(this.buffService.cmnLanguages);
             },
             error => {
                 // It should be handled already
             });
     }
 
-    private extractTranTypeData(res: Response) {
+    private extractLangData(res: Response) {
         if (DebugLogging) {
-            console.log("Entering extractTranTypeData of FinanceService");
+            console.log("Entering extractLangData of UtilService");
         }
 
         let body = res.json();
         if (body && body instanceof Array) {
-            let sets = new Array<HIHFinance.TranType>();
+            let sets = new Array<HIHBase.AppLanguage>();
             for (let alm of body) {
-                let alm2 = new HIHFinance.TranType();
+                let alm2 = new HIHBase.AppLanguage();
+                alm2.Lcid = alm.lcid;
+                alm2.IsoName = alm.isoName;
+                alm2.EnglishName = alm.englishName;
+                alm2.NativeName = alm.nativeName;
+                alm2.AppFlag = alm.appFlag;
 
                 sets.push(alm2);
             }
@@ -198,44 +147,46 @@ export class UtilService {
         return body || {};
     }
 
-    // Doc type
-    loadDocTypes(forceReload?: boolean) {
+    // Tags
+    loadTags(forceReload?: boolean) {
         if (DebugLogging) {
-            console.log("Entering loadDocTypes of FinanceService");
+            console.log("Entering loadTags of UtilService");
         }
 
-        if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
-            this._doctype$.next(this.buffService.finDocTypes);
+        if (!forceReload && this.buffService.isCommonTagLoaded) {
+            this._tags$.next(this.buffService.cmnTags);
             return;
         }
 
         var headers = new Headers();
         headers.append('Accept', 'application/json');
-        if (this.authService.authSubject.getValue().isAuthorized)
-            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        //if (this.authService.authSubject.getValue().isAuthorized)
+        //    headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financedoctype', { headers: headers })
-            .map(this.extractDocTypeData)
+        this.http.get(APIUrl + 'tag', { headers: headers })
+            .map(this.extractTagData)
             .catch(this.handleError)
             .subscribe(data => {
-                this.buffService.setFinDocTypes(data);
-                this._doctype$.next(this.buffService.finDocTypes);
+                this.buffService.setCommonTags(data);
+                this._tags$.next(this.buffService.cmnTags);
             },
             error => {
                 // It should be handled already
             });
     }
 
-    private extractDocTypeData(res: Response) {
+    private extractTagData(res: Response) {
         if (DebugLogging) {
-            console.log("Entering extractDocTypeData of FinanceService");
+            console.log("Entering extractTagData of UtilService");
         }
 
         let body = res.json();
         if (body && body instanceof Array) {
-            let sets = new Array<HIHFinance.DocumentType>();
+            let sets = new Array<HIHBase.Tag>();
             for (let alm of body) {
-                let alm2 = new HIHFinance.DocumentType();
+                let alm2 = new HIHBase.Tag();
+                alm2.ID = alm.id;
+                alm2.Tag = alm.tag;
 
                 sets.push(alm2);
             }
@@ -245,43 +196,47 @@ export class UtilService {
         return body || {};
     }
 
-    // Currency
-    loadCurrencies(forceReload?: boolean) {
+    // Tag linkages
+    loadTagLinkages(forceReload?: boolean) {
         if (DebugLogging) {
-            console.log("Entering loadCurrencies of FinanceService");
+            console.log("Entering loadTagLinkages of UtilService");
         }
 
-        if (!forceReload && this.buffService.isFinCurrencyLoaded) {
-            this._currencies$.next(this.buffService.finCurrencies);
+        if (!forceReload && this.buffService.isCommonTagLinkageLoaded) {
+            this._taglinks$.next(this.buffService.cmnTagLinkages);
             return;
         }
 
         var headers = new Headers();
         headers.append('Accept', 'application/json');
-        if (this.authService.authSubject.getValue().isAuthorized)
-            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        //if (this.authService.authSubject.getValue().isAuthorized)
+        //    headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'currency', { headers: headers })
-            .map(this.extractCurrencyData)
+        this.http.get(APIUrl + 'taglinkage', { headers: headers })
+            .map(this.extractTagLinkageData)
             .catch(this.handleError)
             .subscribe(data => {
-                this.buffService.setFinCurrencies(data);
-                this._currencies$.next(this.buffService.finCurrencies);
+                this.buffService.setCommonTagLinkages(data);
+                this._taglinks$.next(this.buffService.cmnTagLinkages);
             },
             error => {
                 // It should be handled already
             });
     }
-    private extractCurrencyData(res: Response) {
+
+    private extractTagLinkageData(res: Response) {
         if (DebugLogging) {
-            console.log("Entering extractCurrencyData of FinanceService");
+            console.log("Entering extractTagLinkageData of UtilService");
         }
 
         let body = res.json();
         if (body && body instanceof Array) {
-            let sets = new Array<HIHFinance.Currency>();
+            let sets = new Array<HIHBase.TagLinkage>();
             for (let alm of body) {
-                let alm2 = new HIHFinance.Currency();
+                let alm2 = new HIHBase.TagLinkage();
+                alm2.Module = alm.module;
+                alm2.ObjectID = alm.objectId;
+                alm2.TagID = alm.tagId;
 
                 sets.push(alm2);
             }
@@ -294,7 +249,7 @@ export class UtilService {
     // Others
     private handleError(error: any) {
         if (DebugLogging) {
-            console.log("Entering handleError of FinanceService");
+            console.log("Entering handleError of UtilService");
         }
 
         // In a real world app, we might use a remote logging infrastructure

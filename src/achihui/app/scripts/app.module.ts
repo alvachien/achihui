@@ -22,6 +22,7 @@ import { UnauthorizedComponent }    from './unauthorized/unauthorized.component'
 import { DialogService }    from './services/dialog.service';
 import { BufferService }    from './services/buffer.service';
 import { AuthService }      from './services/auth.service';
+import { UtilService }      from './services/util.service';
 import { HomeComponent }    from './home/home.component';
 import { LanguageComponent } from './home/language.component';
 import { ModuleComponent } from './home/module.component';
@@ -60,7 +61,8 @@ import { UserHistoryComponent } from './home/user.history.component';
         appRoutingProviders,
         DialogService,
         AuthService,
-        BufferService
+        BufferService,
+        UtilService
     ],
     bootstrap: [AppComponent]
 })

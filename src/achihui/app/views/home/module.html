@@ -2,14 +2,14 @@
     <table class="table">
         <thead class="thead-default">
             <tr>
-                <th>ID</th>
-                <th>Value</th>
+                <th>Module</th>
+                <th>Name</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let fs of finSettings">
-                <td>{{fs.SetId}}</td>
-                <td>{{fs.SetValue}}</td>
+            <tr *ngFor="let am of arModules">
+                <td>{{am.Module}}</td>
+                <td>{{am.Name}}</td>
             </tr>
         </tbody>
     </table>

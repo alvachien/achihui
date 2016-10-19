@@ -112,5 +112,5 @@ export class AppLanguage {
     public IsoName: string;
     public EnglishName: string;
     public NativeName: string;
-        
+    public AppFlag: boolean;
 }

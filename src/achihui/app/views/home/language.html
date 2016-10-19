@@ -2,14 +2,20 @@
     <table class="table">
         <thead class="thead-default">
             <tr>
-                <th>ID</th>
-                <th>Value</th>
+                <th>LCID</th>
+                <th>ISO</th>
+                <th>English</th>
+                <th>Native</th>
+                <th>App Flag</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let fs of finSettings">
-                <td>{{fs.SetId}}</td>
-                <td>{{fs.SetValue}}</td>
+            <tr *ngFor="let lang of arLanguages">
+                <td>{{lang.Lcid}}</td>
+                <td>{{lang.IsoName}}</td>
+                <td>{{lang.EnglishName}}</td>
+                <td>{{lang.NativeName}}</td>
+                <td>{{lang.AppFlag}}</td>
             </tr>
         </tbody>
     </table>

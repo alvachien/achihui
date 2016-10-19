@@ -11,9 +11,11 @@ export class BufferService {
     cmnModules: Array<HIHBase.Module>;
     cmnTags: Array<HIHBase.Tag>;
     cmnTagLinkages: Array<HIHBase.TagLinkage>;
+    cmnLanguages: Array<HIHBase.AppLanguage>;
     _iscmnModuleLoaded: boolean;
     _iscmnTagLoaded: boolean;
     _iscmnTagLinkageLoaded: boolean;
+    _iscmnLanguageLoaded: boolean;
 
     // User part
     usrDetail: HIHUser.UserDetail;
@@ -48,6 +50,7 @@ export class BufferService {
         this._iscmnModuleLoaded = false;
         this._iscmnTagLoaded = false;
         this._iscmnTagLinkageLoaded = false;
+        this._iscmnLanguageLoaded = false;
         this._isusrDetailLoaded = false;
         this._isusrHistoryLoaded = false;
         this._isfinSettingLoaded = false;
@@ -59,6 +62,7 @@ export class BufferService {
         this.cmnModules = new Array<HIHBase.Module>();
         this.cmnTags = new Array<HIHBase.Tag>();
         this.cmnTagLinkages = new Array<HIHBase.TagLinkage>();
+        this.cmnLanguages = new Array<HIHBase.AppLanguage>();
         this.usrDetail = new HIHUser.UserDetail();
         this.usrHistories = new Array<HIHUser.UserHistory>();
         this.finSettings = new Array<HIHFinance.Setting>();
@@ -129,6 +133,27 @@ export class BufferService {
         }
         this.cmnTagLinkages = data;
         this._iscmnTagLinkageLoaded = true;
+    }
+
+    // Common langauge
+    get isCommonLanguageLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isCommonLanguageLoaded-get of BufferService");
+        }
+        return this._iscmnLanguageLoaded;
+    }
+    set isCommonLanguageLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isCommonLanguageLoaded-set of BufferService");
+        }
+        this._iscmnLanguageLoaded = val;
+    }
+    public setCommonLanguages(data: Array<HIHBase.AppLanguage>) {
+        if (DebugLogging) {
+            console.log("Entering setCommonLanguages of BufferService");
+        }
+        this.cmnLanguages = data;
+        this._iscmnLanguageLoaded = true;
     }
 
     // User history
