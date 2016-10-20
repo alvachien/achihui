@@ -1,6 +1,6 @@
 ﻿import {
     IDServerUrl, AppLoginCallback, AppLogoutCallback,
-    AppHost, environment
+    AppHost, environment, DebugLogging
 } from '../app.setting';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
@@ -19,6 +19,10 @@ export class AuthService {
     private mgr: any;
 
     constructor() {
+        if (DebugLogging) {
+            console.log("Entering constructor of AuthService");
+        }
+
         let settings = {
             authority: IDServerUrl,
             client_id: "achihui.js",
@@ -53,8 +57,8 @@ export class AuthService {
     }
 
     public doLogin() {
-        if (environment === "Development") {
-            console.log("Start the login...");
+        if (DebugLogging) {
+            console.log("Entering doLogin of AuthService");
         }
 
         if (this.mgr) {
@@ -72,8 +76,8 @@ export class AuthService {
     }
 
     public doLogout() {
-        if (environment === "Development") {
-            console.log("Start the login...");
+        if (DebugLogging) {
+            console.log("Entering doLogout of AuthService");
         }
 
         if (this.mgr) {
