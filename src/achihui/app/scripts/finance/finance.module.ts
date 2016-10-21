@@ -2,6 +2,7 @@
 import { FormsModule }      from '@angular/forms';
 import { CommonModule }     from '@angular/common';
 import { HttpModule, Http } from '@angular/http';
+import { TranslateModule, TranslateLoader, TranslateStaticLoader } from "ng2-translate/ng2-translate";
 
 import { FinanceService }   from '../services/finance.service';
 import { FinanceComponent } from './finance.component';
@@ -17,6 +18,11 @@ import { FinanceTranTypeDetailComponent } from './finance.trantype.detail.compon
     imports: [
         CommonModule,
         FormsModule,
+        TranslateModule.forRoot({
+            provide: TranslateLoader,
+            useFactory: (http: Http) => new TranslateStaticLoader(http, '/app/locales/', '.json'),
+            deps: [Http]
+        }),
         financeRouting        
     ],
     declarations: [

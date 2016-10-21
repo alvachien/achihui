@@ -37,7 +37,23 @@
     "Name": "名称",
     "Comment": "说明",
     "Parent": "父对象",
-    "Type": "类型"
+    "Type": "类型",
+
+    "Currency": {
+      "USD": "美元",
+      "KRW": "韩币",
+      "TWD": "新台币",
+      "EUR": "欧元",
+      "JPY": "日币",
+      "CNY": "人民币",
+      "HKD": "港币",
+      "GBP": "B英镑",
+      "INR": "Indian Rupee",
+      "AUD": "澳元",
+      "CAD": "Canadian Dollar",
+      "SGD": "新币",
+      "THB": "泰铢"
+    }
   },
 
   "Learning": {

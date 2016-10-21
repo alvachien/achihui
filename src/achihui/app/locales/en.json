@@ -37,7 +37,23 @@
     "Name": "Name",
     "Comment": "Comment",
     "Parent": "Parent",
-    "Type":  "Type"
+    "Type": "Type",
+
+    "Currency": {
+      "USD": "US Dollar",
+      "KRW": "South Korean Won",
+      "TWD": "Taiwan New Dollar",
+      "EUR": "Euro",
+      "JPY": "Japanese Yen",
+      "CNY": "Chinese Yuan",
+      "HKD": "Hongkong Dollar",
+      "GBP": "British Pound",
+      "INR": "Indian Rupee",
+      "AUD": "Australian Dollar",
+      "CAD": "Canadian Dollar",
+      "SGD": "Singapore Dollar",
+      "THB": "Thai Baht"
+    }
   },
 
   "Learning": {

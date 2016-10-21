@@ -102,24 +102,25 @@ export class Currency extends hih.BaseModel {
     public Name: String;
     public Symbol: String;
     public IsLocalCurrency: boolean;
+    public SysFlag: boolean;
 
     constructor() {
         super();
         if (DebugLogging) {
-            console.log("Entering constructor of KnowledgeType");
+            console.log("Entering constructor of Currency");
         }
     }
 
     public onInit() {
         super.onInit();
         if (DebugLogging) {
-            console.log("Entering onInit of KnowledgeType");
+            console.log("Entering onInit of Currency");
         }
     }
 
     public onVerify(): boolean {
         if (DebugLogging) {
-            console.log("Entering onVerify of KnowledgeType");
+            console.log("Entering onVerify of Currency");
         }
         if (!super.onVerify())
             return false;
@@ -129,11 +130,29 @@ export class Currency extends hih.BaseModel {
 
     public writeJSONObject(): any {
         if (DebugLogging) {
-            console.log("Entering writeJSONObject of KnowledgeType");
+            console.log("Entering writeJSONObject of Currency");
         }
 
         let rstObj = super.writeJSONObject();
         return rstObj;
+    }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Currency");
+        }
+
+        super.onSetData(data);
+        if (data && data.curr)
+            this.Currency = data.curr;
+        if (data && data.name)
+            this.Name = data.name;
+        if (data && data.symbol) {
+            this.Symbol = data.symbol;
+        }
+        if (data && data.sysFlag) {
+            this.SysFlag = data.sysFlag;
+        }
     }
 }
 
@@ -145,20 +164,20 @@ export class AccountCategory extends hih.BaseModel {
     constructor() {
         super();
         if (DebugLogging) {
-            console.log("Entering constructor of KnowledgeType");
+            console.log("Entering constructor of AccountCategory");
         }
     }
 
     public onInit() {
         super.onInit();
         if (DebugLogging) {
-            console.log("Entering onInit of KnowledgeType");
+            console.log("Entering onInit of AccountCategory");
         }
     }
 
     public onVerify(): boolean {
         if (DebugLogging) {
-            console.log("Entering onVerify of KnowledgeType");
+            console.log("Entering onVerify of AccountCategory");
         }
         if (!super.onVerify())
             return false;
@@ -168,7 +187,7 @@ export class AccountCategory extends hih.BaseModel {
 
     public writeJSONObject(): any {
         if (DebugLogging) {
-            console.log("Entering writeJSONObject of KnowledgeType");
+            console.log("Entering writeJSONObject of AccountCategory");
         }
 
         let rstObj = super.writeJSONObject();
@@ -183,20 +202,20 @@ export class DocumentType extends hih.BaseModel {
     constructor() {
         super();
         if (DebugLogging) {
-            console.log("Entering constructor of KnowledgeType");
+            console.log("Entering constructor of DocumentType");
         }
     }
 
     public onInit() {
         super.onInit();
         if (DebugLogging) {
-            console.log("Entering onInit of KnowledgeType");
+            console.log("Entering onInit of DocumentType");
         }
     }
 
     public onVerify(): boolean {
         if (DebugLogging) {
-            console.log("Entering onVerify of KnowledgeType");
+            console.log("Entering onVerify of DocumentType");
         }
         if (!super.onVerify())
             return false;
@@ -206,7 +225,7 @@ export class DocumentType extends hih.BaseModel {
 
     public writeJSONObject(): any {
         if (DebugLogging) {
-            console.log("Entering writeJSONObject of KnowledgeType");
+            console.log("Entering writeJSONObject of DocumentType");
         }
 
         let rstObj = super.writeJSONObject();
@@ -224,20 +243,20 @@ export class Account extends hih.BaseModel {
     constructor() {
         super();
         if (DebugLogging) {
-            console.log("Entering constructor of KnowledgeType");
+            console.log("Entering constructor of Account");
         }
     }
 
     public onInit() {
         super.onInit();
         if (DebugLogging) {
-            console.log("Entering onInit of KnowledgeType");
+            console.log("Entering onInit of Account");
         }
     }
 
     public onVerify(): boolean {
         if (DebugLogging) {
-            console.log("Entering onVerify of KnowledgeType");
+            console.log("Entering onVerify of Account");
         }
         if (!super.onVerify())
             return false;
@@ -247,7 +266,7 @@ export class Account extends hih.BaseModel {
 
     public writeJSONObject(): any {
         if (DebugLogging) {
-            console.log("Entering writeJSONObject of KnowledgeType");
+            console.log("Entering writeJSONObject of Account");
         }
 
         let rstObj = super.writeJSONObject();

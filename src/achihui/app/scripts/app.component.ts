@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit }    from '@angular/core';
 import { AuthService }          from './services/auth.service';
 import { TranslateService }     from 'ng2-translate/ng2-translate';
-import { DebugLogging }         from './app.setting';
+import { environment, DebugLogging }         from './app.setting';
 
 @Component({
     selector: 'hih-app',
@@ -35,8 +35,12 @@ export class AppComponent implements OnInit {
         translateService.addLangs(["en", "zh"]);
         translateService.setDefaultLang('zh');
 
-        let browserLang = translateService.getBrowserLang();
-        translateService.use(browserLang.match(/en|zh/) ? browserLang : 'en');
+        if (environment !== "Development") {
+            let browserLang = translateService.getBrowserLang();
+            translateService.use(browserLang.match(/en|zh/) ? browserLang : 'zh');
+        } else {
+            translateService.use('zh');
+        }
     }
 
     ngOnInit() {        

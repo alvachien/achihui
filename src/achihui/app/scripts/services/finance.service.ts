@@ -257,7 +257,7 @@ export class FinanceService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'currency', { headers: headers })
+        this.http.get(APIUrl + 'financecurrency', { headers: headers })
             .map(this.extractCurrencyData)
             .catch(this.handleError)
             .subscribe(data => {
@@ -278,7 +278,7 @@ export class FinanceService {
             let sets = new Array<HIHFinance.Currency>();
             for (let alm of body) {
                 let alm2 = new HIHFinance.Currency();
-
+                alm2.onSetData(alm);
                 sets.push(alm2);
             }
             return sets;
