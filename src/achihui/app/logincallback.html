@@ -7,7 +7,7 @@
 <body>
     <h1 id="waiting">Loading...</h1>
     <div id="error"></div>
-    <script src="app\js\oidc-client.js"></script>
+    <script src="libs/js/oidc-client/dist/oidc-client.min.js"></script>
     <script>
         //Oidc.Log.logger = console;
         new Oidc.UserManager().signinRedirectCallback().then(function (user) {

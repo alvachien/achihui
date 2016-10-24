@@ -58,7 +58,7 @@ export class FinanceDocTypeComponent implements OnInit, OnDestroy {
 
     getDocTypes(data: Array<HIHFinance.DocumentType>) {
         if (DebugLogging) {
-            console.log("Entering getCurrencies of FinanceDocTypeComponent");
+            console.log("Entering getDocTypes of FinanceDocTypeComponent");
         }
 
         this.zone.run(() => {

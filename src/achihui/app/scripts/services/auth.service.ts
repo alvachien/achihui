@@ -16,7 +16,7 @@ export class AuthService {
 
     public authContent: Observable<UserInfo> = this.authSubject.asObservable();
 
-    private mgr: any;
+    private mgr: any = null;
 
     constructor() {
         if (DebugLogging) {
@@ -28,7 +28,7 @@ export class AuthService {
             client_id: "achihui.js",
             redirect_uri: AppLoginCallback,
             response_type: "id_token token",
-            scope: "openid profile api.hihapi email roles",
+            scope: "openid profile api.hihapi",
             post_logout_redirect_uri: AppLogoutCallback
         };
 
@@ -47,7 +47,7 @@ export class AuthService {
         });
 
         this.mgr.events.addUserUnloaded((e) => {
-            if (environment === "Development") {
+            if (DebugLogging) {
                 console.log("user unloaded");
             }
             that.authSubject.value.cleanContent();
@@ -63,12 +63,12 @@ export class AuthService {
 
         if (this.mgr) {
             this.mgr.signinRedirect().then(function () {
-                if (environment === "Development") {
-                    console.info("redirecting for login...");
-                }
-            })
+                    if (DebugLogging) {
+                        console.info("redirecting for login...");
+                    }
+                })
                 .catch(function (er) {
-                    if (environment === "Development") {
+                    if (DebugLogging) {
                         console.error("Sign-in error", er);
                     }
                 });
@@ -82,12 +82,12 @@ export class AuthService {
 
         if (this.mgr) {
             this.mgr.signoutRedirect().then(function () {
-                if (environment === "Development") {
-                    console.info("redirecting for logout...");
-                }
-            })
+                    if (DebugLogging) {
+                        console.info("redirecting for logout...");
+                    }
+                })
                 .catch(function (er) {
-                    if (environment === "Development") {
+                    if (DebugLogging) {
                         console.error("Sign-out error", er);
                     }
                 });
