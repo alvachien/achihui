@@ -202,11 +202,21 @@ export class AccountCategory extends hih.BaseModel {
         }
 
         super.onSetData(data);
-        this.Id = data.id;
-        this.Name = data.name;
-        this.AssetFlag = data.assetFalg;
-        this.Comment = data.comment;
-        this.SysFlag = data.sysFlag;        
+        if (data && data.id) {
+            this.Id = data.id;
+        }
+        if (data && data.name) {
+            this.Name = data.name;
+        }
+        if (data && data.assetFlag) {
+            this.AssetFlag = data.assetFlag;
+        }
+        if (data && data.comment) {
+            this.Comment = data.comment;
+        }
+        if (data && data.sysFlag) {
+            this.SysFlag = data.sysFlag;
+        }        
     }
 }
 
@@ -255,10 +265,18 @@ export class DocumentType extends hih.BaseModel {
         }
 
         super.onSetData(data);
-        this.Id = +data.id;
-        this.Name = data.name;
-        this.Comment = data.comment;
-        this.SysFlag = data.sysFlag;
+        if (data && data.id) {
+            this.Id = +data.id;
+        }
+        if (data && data.name) {
+            this.Name = data.name;
+        }
+        if (data && data.comment) {
+            this.Comment = data.comment;
+        }
+        if (data && data.sysFlag) {
+            this.SysFlag = data.sysFlag;
+        }        
     }
 }
 
@@ -306,6 +324,8 @@ export class Account extends hih.BaseModel {
         if (DebugLogging) {
             console.log("Entering onSetData of Account");
         }
+
+        super.onSetData(data);
     }
 }
 
@@ -448,6 +468,12 @@ export class SettlementRule extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of SettlementRule");
+        }
+    }
 }
 
 export class TranType extends hih.BaseModel {
@@ -493,16 +519,29 @@ export class TranType extends hih.BaseModel {
 
     public onSetData(data: any) {
         if (DebugLogging) {
-            console.log("Entering onSetData of TranType");
+            console.log("Entering onSetData of FinanceTranType");
         }
 
         super.onSetData(data);
-        this.Id = +data.id;
-        this.Name = data.name;
-        this.Expense = data.expense;
-        this.ParId = +data.parID;
-        this.Comment = data.comment;
-        this.SysFlag = data.sysFlag;
+
+        if (data && data.id) {
+            this.Id = +data.id;
+        }
+        if (data && data.name) {
+            this.Name = data.name;
+        }
+        if (data && data.expense) {
+            this.Expense = data.expense;
+        }
+        if (data && data.parID) {
+            this.ParId = +data.parID;
+        }
+        if (data && data.comment) {
+            this.Comment = data.comment;
+        }
+        if (data && data.sysFlag) {
+            this.SysFlag = data.sysFlag;
+        }        
     }
 }
 
@@ -611,5 +650,11 @@ export class TemplateDocDP extends hih.BaseModel {
 
         let rstObj = super.writeJSONObject();
         return rstObj;
+    }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of TemplateDocDP");
+        }
     }
 }

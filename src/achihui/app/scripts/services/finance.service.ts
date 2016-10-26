@@ -154,7 +154,7 @@ export class FinanceService {
             console.log("Entering loadTranTypes of FinanceService");
         }
 
-        if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
+        if (!forceReload && this.buffService.isFinTranTypeLoaded) {
             this._trantype$.next(this.buffService.finTranTypes);
             return;
         }
@@ -201,7 +201,7 @@ export class FinanceService {
             console.log("Entering loadDocTypes of FinanceService");
         }
 
-        if (!forceReload && this.buffService.isFinAccountCategoryLoaded) {
+        if (!forceReload && this.buffService.isFinDocTypeLoaded) {
             this._doctype$.next(this.buffService.finDocTypes);
             return;
         }

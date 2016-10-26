@@ -281,5 +281,4 @@ export class BufferService {
         this.finTranTypes = data;
         this._isfinTranTypeLoaded = true;
     }
-
 }
