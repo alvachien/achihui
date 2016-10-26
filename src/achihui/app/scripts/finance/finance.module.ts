@@ -13,6 +13,9 @@ import { FinanceDocTypeComponent } from './finance.doctype.component';
 import { FinanceAccountCategoryComponent } from './finance.acntctgy.component';
 import { FinanceTranTypeListComponent } from './finance.trantype.list.component';
 import { FinanceTranTypeDetailComponent } from './finance.trantype.detail.component';
+import { FinanceAccountListComponent } from './finance.account.list.component';
+import { FinanceControllingCenterListComponent } from './finance.controllingcenter.list.component';
+import { FinanceOrderListComponent } from './finance.order.list.component';
 
 @NgModule({
     imports: [
@@ -32,7 +35,11 @@ import { FinanceTranTypeDetailComponent } from './finance.trantype.detail.compon
         FinanceDocTypeComponent,
         FinanceAccountCategoryComponent,
         FinanceTranTypeListComponent,
-        FinanceTranTypeDetailComponent
+        FinanceTranTypeDetailComponent,
+
+        FinanceAccountListComponent,
+        FinanceControllingCenterListComponent,
+        FinanceOrderListComponent
     ],
 
     providers: [

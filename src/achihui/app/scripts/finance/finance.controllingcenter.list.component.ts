@@ -12,13 +12,13 @@ import { DialogService } from '../services/dialog.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-    selector: 'hih-fin-trantypedetail',
-    templateUrl: 'app/views/finance/finance.trantype.list.html'
+    selector: 'hih-fin-cclist',
+    templateUrl: 'app/views/finance/finance.controllingcenter.list.html'
 })
 
-export class FinanceTranTypeDetailComponent implements OnInit, OnDestroy {
-    public finTranType: Array<HIHFinance.TranType>;
-    private subFinTranType: Subscription;
+export class FinanceControllingCenterListComponent implements OnInit, OnDestroy {
+    public finControllingCenters: Array<HIHFinance.ControllingCenter>;
+    private subControlCenter: Subscription;
 
     constructor(
         private zone: NgZone,
@@ -28,47 +28,47 @@ export class FinanceTranTypeDetailComponent implements OnInit, OnDestroy {
         private financeService: FinanceService,
         private authService: AuthService) {
         if (DebugLogging) {
-            console.log("Entering constructor of FinanceTranTypeDetailComponent");
+            console.log("Entering constructor of FinanceControllingCenterListComponent");
         }
     }
 
     ngOnInit() {
         if (DebugLogging) {
-            console.log("Entering ngOnInit of FinanceTranTypeDetailComponent");
+            console.log("Entering ngOnInit of FinanceControllingCenterListComponent");
         }
 
-        if (!this.subFinTranType) {
-            this.subFinTranType = this.financeService.trantypes$.subscribe(data => this.getTranTypeList(data),
+        if (!this.subControlCenter) {
+            this.subControlCenter = this.financeService.controllingcenter$.subscribe(data => this.getControllingCenterList(data),
                 error => this.handleError(error));
 
-            this.financeService.loadTranTypes();
+            this.financeService.loadControllingCenters();
         }
     }
 
     ngOnDestroy() {
         if (DebugLogging) {
-            console.log("Entering ngOnDestroy of FinanceTranTypeDetailComponent");
+            console.log("Entering ngOnDestroy of FinanceControllingCenterListComponent");
         }
 
-        if (this.subFinTranType) {
-            this.subFinTranType.unsubscribe();
-            this.subFinTranType = null;
+        if (this.subControlCenter) {
+            this.subControlCenter.unsubscribe();
+            this.subControlCenter = null;
         }
     }
 
-    getTranTypeList(data: Array<HIHFinance.TranType>) {
+    getControllingCenterList(data: Array<HIHFinance.ControllingCenter>) {
         if (DebugLogging) {
-            console.log("Entering getCurrencies of FinanceTranTypeDetailComponent");
+            console.log("Entering getControllingCenterList of FinanceControllingCenterListComponent");
         }
 
         this.zone.run(() => {
-            this.finTranType = data;
+            this.finControllingCenters = data;
         });
     }
 
     handleError(error: any) {
         if (DebugLogging) {
-            console.log("Entering handleError of FinanceTranTypeDetailComponent");
+            console.log("Entering handleError of FinanceControllingCenterListComponent");
         }
         console.log(error);
 

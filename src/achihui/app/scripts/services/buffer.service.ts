@@ -31,6 +31,7 @@ export class BufferService {
     finCurrencies: Array<HIHFinance.Currency>;
     finAccounts: Array<HIHFinance.Account>;
     finControllingCenters: Array<HIHFinance.ControllingCenter>;
+    finOrders: Array<HIHFinance.Order>;
     _isfinSettingLoaded: boolean;
     _isfinAcntCtgyLoaded: boolean;
     _isfinDocTypeLoaded: boolean;
@@ -58,6 +59,9 @@ export class BufferService {
         this._isfinDocTypeLoaded = false;
         this._isfinTranTypeLoaded = false;
         this._isfinCurrencyLoaded = false;
+        this._isfinAccountLoaded = false;
+        this._isfinControllingCenterLoaded = false;
+        this._isfinOrderLoaded = false;
 
         this.cmnModules = new Array<HIHBase.Module>();
         this.cmnTags = new Array<HIHBase.Tag>();
@@ -70,6 +74,9 @@ export class BufferService {
         this.finDocTypes = new Array<HIHFinance.DocumentType>();
         this.finTranTypes = new Array<HIHFinance.TranType>();
         this.finCurrencies = new Array<HIHFinance.Currency>();
+        this.finAccounts = new Array<HIHFinance.Account>();
+        this.finControllingCenters = new Array<HIHFinance.ControllingCenter>();
+        this.finOrders = new Array<HIHFinance.Order>();
     }
 
     // Common module
@@ -280,5 +287,68 @@ export class BufferService {
         }
         this.finTranTypes = data;
         this._isfinTranTypeLoaded = true;
+    }
+
+    // Finance account
+    get isFinAccountLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isFinAccountLoaded-get of BufferService");
+        }
+        return this._isfinAccountLoaded;
+    }
+    set isFinAccountLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isFinAccountLoaded-set of BufferService");
+        }
+        this._isfinAccountLoaded = val;
+    }
+    public setFinAccounts(data: Array<HIHFinance.Account>) {
+        if (DebugLogging) {
+            console.log("Entering setFinAccounts of BufferService");
+        }
+        this.finAccounts = data;
+        this._isfinAccountLoaded = true;
+    }
+
+    // Finance controlling center
+    get isFinControllingCenterLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isFinControllingCenterLoaded-get of BufferService");
+        }
+        return this._isfinControllingCenterLoaded;
+    }
+    set isFinControllingCenterLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isFinControllingCenterLoaded-set of BufferService");
+        }
+        this._isfinControllingCenterLoaded = val;
+    }
+    public setFinControllingCenters(data: Array<HIHFinance.ControllingCenter>) {
+        if (DebugLogging) {
+            console.log("Entering setFinControllingCenters of BufferService");
+        }
+        this.finControllingCenters = data;
+        this._isfinControllingCenterLoaded = true;
+    }
+
+    // Finance order
+    get isFinOrderLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isFinOrderLoaded-get of BufferService");
+        }
+        return this._isfinOrderLoaded;
+    }
+    set isFinOrderLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isFinOrderLoaded-set of BufferService");
+        }
+        this._isfinOrderLoaded = val;
+    }
+    public setFinOrders(data: Array<HIHFinance.Order>) {
+        if (DebugLogging) {
+            console.log("Entering setFinOrders of BufferService");
+        }
+        this.finOrders = data;
+        this._isfinOrderLoaded = true;
     }
 }

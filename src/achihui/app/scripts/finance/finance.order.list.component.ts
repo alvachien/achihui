@@ -12,13 +12,13 @@ import { DialogService } from '../services/dialog.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-    selector: 'hih-fin-trantypedetail',
-    templateUrl: 'app/views/finance/finance.trantype.list.html'
+    selector: 'hih-fin-orderlist',
+    templateUrl: 'app/views/finance/finance.order.list.html'
 })
 
-export class FinanceTranTypeDetailComponent implements OnInit, OnDestroy {
-    public finTranType: Array<HIHFinance.TranType>;
-    private subFinTranType: Subscription;
+export class FinanceOrderListComponent implements OnInit, OnDestroy {
+    public finOrder: Array<HIHFinance.Order>;
+    private subOrder: Subscription;
 
     constructor(
         private zone: NgZone,
@@ -28,47 +28,47 @@ export class FinanceTranTypeDetailComponent implements OnInit, OnDestroy {
         private financeService: FinanceService,
         private authService: AuthService) {
         if (DebugLogging) {
-            console.log("Entering constructor of FinanceTranTypeDetailComponent");
+            console.log("Entering constructor of FinanceOrderListComponent");
         }
     }
 
     ngOnInit() {
         if (DebugLogging) {
-            console.log("Entering ngOnInit of FinanceTranTypeDetailComponent");
+            console.log("Entering ngOnInit of FinanceOrderListComponent");
         }
 
-        if (!this.subFinTranType) {
-            this.subFinTranType = this.financeService.trantypes$.subscribe(data => this.getTranTypeList(data),
+        if (!this.subOrder) {
+            this.subOrder = this.financeService.order$.subscribe(data => this.getOrderList(data),
                 error => this.handleError(error));
 
-            this.financeService.loadTranTypes();
+            this.financeService.loadOrders();
         }
     }
 
     ngOnDestroy() {
         if (DebugLogging) {
-            console.log("Entering ngOnDestroy of FinanceTranTypeDetailComponent");
+            console.log("Entering ngOnDestroy of FinanceOrderListComponent");
         }
 
-        if (this.subFinTranType) {
-            this.subFinTranType.unsubscribe();
-            this.subFinTranType = null;
+        if (this.subOrder) {
+            this.subOrder.unsubscribe();
+            this.subOrder = null;
         }
     }
 
-    getTranTypeList(data: Array<HIHFinance.TranType>) {
+    getOrderList(data: Array<HIHFinance.Order>) {
         if (DebugLogging) {
-            console.log("Entering getCurrencies of FinanceTranTypeDetailComponent");
+            console.log("Entering getOrderList of FinanceOrderListComponent");
         }
 
         this.zone.run(() => {
-            this.finTranType = data;
+            this.finOrder = data;
         });
     }
 
     handleError(error: any) {
         if (DebugLogging) {
-            console.log("Entering handleError of FinanceTranTypeDetailComponent");
+            console.log("Entering handleError of FinanceOrderListComponent");
         }
         console.log(error);
 

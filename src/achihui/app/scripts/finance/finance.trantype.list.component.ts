@@ -12,7 +12,7 @@ import { DialogService } from '../services/dialog.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-    selector: 'my-fin-trantypelist',
+    selector: 'hih-fin-trantypelist',
     templateUrl: 'app/views/finance/finance.trantype.list.html'
 })
 

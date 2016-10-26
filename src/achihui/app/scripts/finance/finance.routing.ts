@@ -6,6 +6,9 @@ import { FinanceDocTypeComponent }      from './finance.doctype.component';
 import { FinanceAccountCategoryComponent } from './finance.acntctgy.component';
 import { FinanceTranTypeListComponent } from './finance.trantype.list.component';
 import { FinanceTranTypeDetailComponent } from './finance.trantype.detail.component';
+import { FinanceAccountListComponent } from './finance.account.list.component';
+import { FinanceControllingCenterListComponent } from './finance.controllingcenter.list.component';
+import { FinanceOrderListComponent } from './finance.order.list.component';
 
 export const financeRoutes: Routes = [
     {
@@ -35,6 +38,18 @@ export const financeRoutes: Routes = [
             {
                 path: 'trantype/:id',
                 component: FinanceTranTypeDetailComponent
+            },
+            {
+                path: 'accountlist',
+                component: FinanceAccountListComponent
+            },
+            {
+                path: 'controllingcenterlist',
+                component: FinanceControllingCenterListComponent
+            },
+            {
+                path: 'orderlist',
+                component: FinanceOrderListComponent
             },
             //{
             //    path: 'detail/:id',

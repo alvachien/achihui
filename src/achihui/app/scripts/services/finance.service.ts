@@ -21,6 +21,10 @@ export class FinanceService {
     private _doctype$: Subject<HIHFinance.DocumentType[]>;
     private _trantype$: Subject<HIHFinance.TranType[]>;
 
+    private _account$: Subject<HIHFinance.Account[]>;
+    private _controlcenter$: Subject<HIHFinance.ControllingCenter[]>;
+    private _order$: Subject<HIHFinance.Order[]>;
+
     constructor(private http: Http,
         private authService: AuthService,
         private buffService: BufferService) {
@@ -33,6 +37,10 @@ export class FinanceService {
         this._currencies$ = <Subject<HIHFinance.Currency[]>>new Subject();
         this._doctype$ = <Subject<HIHFinance.DocumentType[]>>new Subject();
         this._trantype$ = <Subject<HIHFinance.TranType[]>>new Subject();
+
+        this._account$ = <Subject<HIHFinance.Account[]>>new Subject();
+        this._controlcenter$ = <Subject<HIHFinance.ControllingCenter[]>>new Subject();
+        this._order$ = <Subject<HIHFinance.Order[]>>new Subject();
     }
 
     get settings$() {
@@ -49,6 +57,15 @@ export class FinanceService {
     }
     get trantypes$() {
         return this._trantype$.asObservable();
+    }
+    get account$() {
+        return this._account$.asObservable();
+    }
+    get controllingcenter$() {
+        return this._controlcenter$.asObservable();
+    }
+    get order$() {
+        return this._order$.asObservable();
     }
 
     // Common
@@ -279,6 +296,144 @@ export class FinanceService {
             let sets = new Array<HIHFinance.Currency>();
             for (let alm of body) {
                 let alm2 = new HIHFinance.Currency();
+                alm2.onSetData(alm);
+                sets.push(alm2);
+            }
+            return sets;
+        }
+
+        return body || {};
+    }
+
+    // Accounts
+    loadAccounts(forceReload?: boolean) {
+        if (DebugLogging) {
+            console.log("Entering loadAccounts of FinanceService");
+        }
+
+        if (!forceReload && this.buffService.isFinAccountLoaded) {
+            this._account$.next(this.buffService.finAccounts);
+            return;
+        }
+
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        this.http.get(APIUrl + 'financeaccount', { headers: headers })
+            .map(this.extractAccountData)
+            .catch(this.handleError)
+            .subscribe(data => {
+                this.buffService.setFinAccounts(data);
+                this._account$.next(this.buffService.finAccounts);
+            },
+            error => {
+                // It should be handled already
+            });
+    }
+    private extractAccountData(res: Response) {
+        if (DebugLogging) {
+            console.log("Entering extractAccountData of FinanceService");
+        }
+
+        let body = res.json();
+        if (body && body instanceof Array) {
+            let sets = new Array<HIHFinance.Account>();
+            for (let alm of body) {
+                let alm2 = new HIHFinance.Account();
+                alm2.onSetData(alm);
+                sets.push(alm2);
+            }
+            return sets;
+        }
+
+        return body || {};
+    }
+
+    // Controlling center
+    loadControllingCenters(forceReload?: boolean) {
+        if (DebugLogging) {
+            console.log("Entering loadControllingCenters of FinanceService");
+        }
+
+        if (!forceReload && this.buffService.isFinControllingCenterLoaded) {
+            this._controlcenter$.next(this.buffService.finControllingCenters);
+            return;
+        }
+
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        this.http.get(APIUrl + 'financecontrollingcenter', { headers: headers })
+            .map(this.extractControllingCenterData)
+            .catch(this.handleError)
+            .subscribe(data => {
+                this.buffService.setFinControllingCenters(data);
+                this._controlcenter$.next(this.buffService.finControllingCenters);
+            },
+            error => {
+                // It should be handled already
+            });
+    }
+    private extractControllingCenterData(res: Response) {
+        if (DebugLogging) {
+            console.log("Entering extractControllingCenterData of FinanceService");
+        }
+
+        let body = res.json();
+        if (body && body instanceof Array) {
+            let sets = new Array<HIHFinance.ControllingCenter>();
+            for (let alm of body) {
+                let alm2 = new HIHFinance.ControllingCenter();
+                alm2.onSetData(alm);
+                sets.push(alm2);
+            }
+            return sets;
+        }
+
+        return body || {};
+    }
+
+    // Orders
+    loadOrders(forceReload?: boolean) {
+        if (DebugLogging) {
+            console.log("Entering loadOrders of FinanceService");
+        }
+
+        if (!forceReload && this.buffService.isFinOrderLoaded) {
+            this._order$.next(this.buffService.finOrders);
+            return;
+        }
+
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        this.http.get(APIUrl + 'financeorder', { headers: headers })
+            .map(this.extractOrderData)
+            .catch(this.handleError)
+            .subscribe(data => {
+                this.buffService.setFinOrders(data);
+                this._order$.next(this.buffService.finOrders);
+            },
+            error => {
+                // It should be handled already
+            });
+    }
+    private extractOrderData(res: Response) {
+        if (DebugLogging) {
+            console.log("Entering extractOrderData of FinanceService");
+        }
+
+        let body = res.json();
+        if (body && body instanceof Array) {
+            let sets = new Array<HIHFinance.Order>();
+            for (let alm of body) {
+                let alm2 = new HIHFinance.Order();
                 alm2.onSetData(alm);
                 sets.push(alm2);
             }
