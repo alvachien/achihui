@@ -12,7 +12,7 @@ import { DialogService } from '../services/dialog.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-    selector: 'my-fin-setting',
+    selector: 'hih-fin-acntctgy',
     templateUrl: 'app/views/finance/finance.acntctgy.html'
 })
 
@@ -58,7 +58,7 @@ export class FinanceAccountCategoryComponent implements OnInit, OnDestroy {
 
     getAccountCategories(data: Array<HIHFinance.AccountCategory>) {
         if (DebugLogging) {
-            console.log("Entering getCurrencies of FinanceAccountCategoryComponent");
+            console.log("Entering getAccountCategories of FinanceAccountCategoryComponent");
         }
 
         this.zone.run(() => {

@@ -12,7 +12,7 @@ import { DialogService } from '../services/dialog.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-    selector: 'my-fin-setting',
+    selector: 'hih-fin-setting',
     templateUrl: 'app/views/finance/finance.setting.html'
 })
 

@@ -36,8 +36,7 @@ import { FinanceTranTypeDetailComponent } from './finance.trantype.detail.compon
     ],
 
     providers: [
-        FinanceService,
-        //AlbumDetailResolve
+        FinanceService
     ]
 })
 export class FinanceModule { }

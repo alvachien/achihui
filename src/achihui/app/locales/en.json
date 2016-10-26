@@ -1,4 +1,54 @@
 ﻿{
+  "Sys": {
+    "CurrExgToilence": "Toilence for currency exchange",
+    "LocalCurrency": "Local Currency",
+    "Currency": {
+      "USD": "US Dollar",
+      "KRW": "South Korean Won",
+      "TWD": "Taiwan New Dollar",
+      "EUR": "Euro",
+      "JPY": "Japanese Yen",
+      "CNY": "Chinese Yuan",
+      "HKD": "Hongkong Dollar",
+      "GBP": "British Pound",
+      "INR": "Indian Rupee",
+      "AUD": "Australian Dollar",
+      "CAD": "Canadian Dollar",
+      "SGD": "Singapore Dollar",
+      "THB": "Thai Baht"
+    },
+    "AcntCtg": {
+      "Cash": "Cash",
+      "DebitCard": "Debit Card",
+      "CreditCard": "Credit Card",
+      "AccountPayable": "Account Payable",
+      "AccountReceivable": "Account Receivable",
+      "FinanceInvestment": "Finance and Investment",
+      "Asset": "Asset",
+      "DownPayment": "Down Payment",
+      "AdvancedPayment": "Advanced Payment"
+    },
+    "DocType": {
+      "Normal": "Normal",
+      "Transfer": "Transfer",
+      "Exchange": "Currency Exchange",
+      "Installment": "Installment",
+      "Prepayment": "Prepayment",
+      "AdvPayment": "Advanced Payment",
+      "BorrowIn": "Borrow In",
+      "LendOut": "Lend Out",
+      "AssetIn": "Asset In",
+      "AssetOut": "Asset Out"
+    },
+    "TranType": {
+      "PrimeOpRev": "Prime operating revenue",
+      "Salary": "Salary",
+      "Bonus": "Bonus",
+      "InvestReturns": "Investment returns",
+      "StockReturns": "Stock returns",
+      "FundIncome": "Fund income"
+    }
+  },
   "Common": {
     "Home": "Home",
     "ListView": "List View",
@@ -37,23 +87,7 @@
     "Name": "Name",
     "Comment": "Comment",
     "Parent": "Parent",
-    "Type": "Type",
-
-    "Currency": {
-      "USD": "US Dollar",
-      "KRW": "South Korean Won",
-      "TWD": "Taiwan New Dollar",
-      "EUR": "Euro",
-      "JPY": "Japanese Yen",
-      "CNY": "Chinese Yuan",
-      "HKD": "Hongkong Dollar",
-      "GBP": "British Pound",
-      "INR": "Indian Rupee",
-      "AUD": "Australian Dollar",
-      "CAD": "Canadian Dollar",
-      "SGD": "Singapore Dollar",
-      "THB": "Thai Baht"
-    }
+    "Type": "Type"
   },
 
   "Learning": {
@@ -67,7 +101,7 @@
     "ExplainDisplay": "Explain Display",
     "PrimarySchool": "Primary School",
     "KnowledgeType": "Knowledge Type",
-    "Knowledge":  "Knowledge"
+    "Knowledge": "Knowledge"
   },
 
   "Todo": {
@@ -76,11 +110,11 @@
 
   "Algorithm": {
     "Algorithm": "Algorithm",
-    "Sorting":  "Sorting",
+    "Sorting": "Sorting",
     "QuickSort": "Quick Sort",
     "HeapSort": "Heap Sort",
     "MergeSort": "Merge Sort",
-    "InplaceMergeSort":  "In-place merge sort",
+    "InplaceMergeSort": "In-place merge sort",
     "InsertionSort": "Insertion Sort",
     "BubbleSort": "Bubble Sort"
   }

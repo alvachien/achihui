@@ -1,4 +1,54 @@
 ﻿{
+  "Sys": {
+    "CurrExgToilence": "Toilence for currency exchange",
+    "LocalCurrency": "Local Currency",
+    "Currency": {
+      "USD": "美元",
+      "KRW": "韩币",
+      "TWD": "新台币",
+      "EUR": "欧元",
+      "JPY": "日币",
+      "CNY": "人民币",
+      "HKD": "港币",
+      "GBP": "B英镑",
+      "INR": "Indian Rupee",
+      "AUD": "澳元",
+      "CAD": "Canadian Dollar",
+      "SGD": "新币",
+      "THB": "泰铢"
+    },
+    "AcntCtg": {
+      "Cash": "现金",
+      "DebitCard": "储蓄卡",
+      "CreditCard": "信用卡",
+      "AccountPayable": "应付账款",
+      "AccountReceivable": "应收账款",
+      "FinanceInvestment": "投资理财",
+      "Asset": "资产",
+      "DownPayment": "预付款项",
+      "AdvancedPayment": "预收款项"
+    },
+    "DocType": {
+      "Normal": "普通收支",
+      "Transfer": "转账",
+      "Exchange": "货币兑换",
+      "Installment": "分期付款",
+      "Prepayment": "预付款",
+      "AdvPayment": "预收款",
+      "BorrowIn": "借入款",
+      "LendOut": "借出款",
+      "AssetIn": "资产购入",
+      "AssetOut": "资产售出"
+    },
+    "TranType": {
+      "PrimeOpRev": "主营业务收入",
+      "Salary": "薪水",
+      "Bonus": "奖金",
+      "InvestReturns": "投资收益",
+      "StockReturns": "股票收益",
+      "FundIncome": "基金收益"
+    }
+  },
   "Common": {
     "Home": "首页",
     "ListView": "列表视图",
@@ -37,23 +87,7 @@
     "Name": "名称",
     "Comment": "说明",
     "Parent": "父对象",
-    "Type": "类型",
-
-    "Currency": {
-      "USD": "美元",
-      "KRW": "韩币",
-      "TWD": "新台币",
-      "EUR": "欧元",
-      "JPY": "日币",
-      "CNY": "人民币",
-      "HKD": "港币",
-      "GBP": "B英镑",
-      "INR": "Indian Rupee",
-      "AUD": "澳元",
-      "CAD": "Canadian Dollar",
-      "SGD": "新币",
-      "THB": "泰铢"
-    }
+    "Type": "类型"
   },
 
   "Learning": {

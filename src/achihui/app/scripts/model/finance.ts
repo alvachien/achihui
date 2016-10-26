@@ -159,8 +159,10 @@ export class Currency extends hih.BaseModel {
 export class AccountCategory extends hih.BaseModel {
     public Id: number;
     public Name: string;
-    public IsAsset: boolean;
+    public AssetFlag: boolean;
     public Comment: string;
+    public SysFlag: boolean;
+
     constructor() {
         super();
         if (DebugLogging) {
@@ -193,12 +195,27 @@ export class AccountCategory extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of AccountCategory");
+        }
+
+        super.onSetData(data);
+        this.Id = data.id;
+        this.Name = data.name;
+        this.AssetFlag = data.assetFalg;
+        this.Comment = data.comment;
+        this.SysFlag = data.sysFlag;        
+    }
 }
 
 export class DocumentType extends hih.BaseModel {
     public Id: number;
     public Name: string;
     public Comment: string;
+    public SysFlag: boolean;
+
     constructor() {
         super();
         if (DebugLogging) {
@@ -230,6 +247,18 @@ export class DocumentType extends hih.BaseModel {
 
         let rstObj = super.writeJSONObject();
         return rstObj;
+    }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of DocumentType");
+        }
+
+        super.onSetData(data);
+        this.Id = +data.id;
+        this.Name = data.name;
+        this.Comment = data.comment;
+        this.SysFlag = data.sysFlag;
     }
 }
 
@@ -271,6 +300,12 @@ export class Account extends hih.BaseModel {
 
         let rstObj = super.writeJSONObject();
         return rstObj;
+    }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Account");
+        }
     }
 }
 
@@ -366,6 +401,12 @@ export class Order extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Order");
+        }
+    }
 }
 
 export class SettlementRule extends hih.BaseModel {
@@ -449,6 +490,20 @@ export class TranType extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of TranType");
+        }
+
+        super.onSetData(data);
+        this.Id = +data.id;
+        this.Name = data.name;
+        this.Expense = data.expense;
+        this.ParId = +data.parID;
+        this.Comment = data.comment;
+        this.SysFlag = data.sysFlag;
+    }
 }
 
 export class Document extends hih.BaseModel {
@@ -493,6 +548,12 @@ export class Document extends hih.BaseModel {
 
         let rstObj = super.writeJSONObject();
         return rstObj;
+    }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Document");
+        }
     }
 }
 

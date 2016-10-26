@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'my-app-about',
+    selector: 'hih-finance',
     templateUrl: 'app/views/finance/finance.html'
 })
 

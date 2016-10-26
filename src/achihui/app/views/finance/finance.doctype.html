@@ -3,15 +3,18 @@
         <thead class="thead-default">
             <tr>
                 <th>ID</th>
-                <th>Value</th>
+                <th>Name</th>
+                <th>Comment</th>
+                <th>Sys Flag</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let fs of finCurrencies">
-                <td><div class="checkbox"><input type="checkbox" [(ngModel)]="fs.SetId"></div></td>
-                <td>{{fs.SetValue}}</td>
+            <tr *ngFor="let fs of finDocType">
+                <td>{{fs.Id}}</td>
+                <td>{{fs.Name}}</td>
+                <td>{{fs.Comment}}</td>
+                <td><div class="checkbox"><input type="checkbox" [(ngModel)]="fs.SysFlag"></div></td>
             </tr>
         </tbody>
     </table>
-
 </div>

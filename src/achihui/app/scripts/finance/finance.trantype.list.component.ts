@@ -12,7 +12,7 @@ import { DialogService } from '../services/dialog.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-    selector: 'my-fin-setting',
+    selector: 'my-fin-trantypelist',
     templateUrl: 'app/views/finance/finance.trantype.list.html'
 })
 
@@ -58,7 +58,7 @@ export class FinanceTranTypeListComponent implements OnInit, OnDestroy {
 
     getTranTypeList(data: Array<HIHFinance.TranType>) {
         if (DebugLogging) {
-            console.log("Entering getCurrencies of FinanceTranTypeListComponent");
+            console.log("Entering getTranTypeList of FinanceTranTypeListComponent");
         }
 
         this.zone.run(() => {

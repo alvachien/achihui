@@ -138,6 +138,7 @@ export class FinanceService {
             let sets = new Array<HIHFinance.AccountCategory>();
             for (let alm of body) {
                 let alm2 = new HIHFinance.AccountCategory();
+                alm2.onSetData(alm);
 
                 sets.push(alm2);
             }
@@ -185,7 +186,7 @@ export class FinanceService {
             let sets = new Array<HIHFinance.TranType>();
             for (let alm of body) {
                 let alm2 = new HIHFinance.TranType();
-
+                alm2.onSetData(alm);
                 sets.push(alm2);
             }
             return sets;
@@ -232,7 +233,7 @@ export class FinanceService {
             let sets = new Array<HIHFinance.DocumentType>();
             for (let alm of body) {
                 let alm2 = new HIHFinance.DocumentType();
-
+                alm2.onSetData(alm);
                 sets.push(alm2);
             }
             return sets;
