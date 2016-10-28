@@ -163,6 +163,27 @@ export class BufferService {
         this._iscmnLanguageLoaded = true;
     }
 
+    // User detail
+    get isUserDetailLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isUserDetailLoaded-get of BufferService");
+        }
+        return this._isusrDetailLoaded;
+    }
+    set isUserDetailLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isUserDetailLoaded-set of BufferService");
+        }
+        this._isusrDetailLoaded = val;
+    }
+    public setUserDetail(data: HIHUser.UserDetail) {
+        if (DebugLogging) {
+            console.log("Entering setUserDetail of BufferService");
+        }
+        this.usrDetail = data;
+        this._isusrDetailLoaded = true;
+    }
+
     // User history
     get isUserHistoriesLoaded(): boolean {
         if (DebugLogging) {

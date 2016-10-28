@@ -6,9 +6,87 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { UserInfo } from './user.service';
 declare var Oidc: any;
 //import * as Oidc                    from 'oidc-client';
+
+export class UserInfo {
+    public isAuthorized: boolean;
+    private currentUser: any;
+    private userName: string;
+    private accessToken: string;
+
+    public cleanContent() {
+        if (DebugLogging) {
+            console.log("Entering cleanContent of UserService");
+        }
+
+        this.currentUser = null;
+        this.isAuthorized = false;
+    }
+    public setContent(user) {
+        if (DebugLogging) {
+            console.log("Entering setContent of UserService");
+        }
+
+        if (user) {
+            //this.currentUser = user;
+            this.isAuthorized = true;
+
+            this.userName = user.profile.name;
+            this.accessToken = user.access_token;
+            //this.galleryAlbumCreate = user.profile.GalleryAlbumCreate;
+            //this.galleryAlbumChange = user.profile.GalleryAlbumChange;
+            //this.galleryAlbumDelete = user.profile.GalleryAlbumDelete;
+            //this.galleryPhotoUpload = user.profile.GalleryPhotoUpload;
+            //this.galleryPhotoChange = user.profile.GalleryPhotoChange;
+            //this.galleryPhotoDelete = user.profile.GalleryPhotoDelete;
+            //this.galleryPhotoUploadSize = user.profile.GalleryPhotoUploadSize;
+        } else {
+            this.cleanContent();
+        }
+    }
+
+    public getUserName(): string {
+        if (DebugLogging) {
+            console.log("Entering getUserName of UserService");
+        }
+
+        if (this.userName) {
+            return this.userName;
+        }
+
+        return "";
+    }
+    //private getObjectRights(strValue: string, usrName?: string): boolean {
+    //    if (strValue) {
+    //        if (strValue === this.ForAll)
+    //            return true;
+    //        if (strValue === this.OnlyOwner) {
+    //            if (usrName === this.userName)
+    //                return true;
+    //            return false;
+    //        }
+    //    }
+
+    //    return false;
+    //}
+    //public canCreateAlbum(): boolean {
+    //    return this.getObjectRights(this.galleryAlbumCreate);
+    //}
+    //public canChangeAlbum(crterName?: string): boolean {
+    //    return this.getObjectRights(this.galleryAlbumChange, crterName);
+    //}
+    //public canDeleteAlbum(crterName?: string): boolean {
+    //    return this.getObjectRights(this.galleryAlbumDelete, crterName);
+    //}
+    public getAccessToken(): string {
+        if (DebugLogging) {
+            console.log("Entering getAccessToken of UserService");
+        }
+
+        return this.accessToken;
+    }
+}
 
 @Injectable()
 export class AuthService {

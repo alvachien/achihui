@@ -1,13 +1,13 @@
-﻿import { Component, OnInit }    from '@angular/core';
-import { AuthService }          from './services/auth.service';
-import { TranslateService }     from 'ng2-translate/ng2-translate';
-import { environment, DebugLogging }         from './app.setting';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AuthService }                  from './services/auth.service';
+import { TranslateService }             from 'ng2-translate/ng2-translate';
+import { environment, DebugLogging }    from './app.setting';
 
 @Component({
     selector: 'hih-app',
     templateUrl: 'app/views/main.html'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
     public isLoggedIn: boolean;
     public titleLogin: string;
@@ -49,15 +49,29 @@ export class AppComponent implements OnInit {
         }
     }
 
+    ngOnDestroy() {
+        if (DebugLogging) {
+            console.log("Entering ngOnDestroy of AppComponent");
+        }
+    }
+
     public onLogin() {
         if (DebugLogging) {
             console.log("Entering onLogin of AppComponent");
         }
 
+        if (!this.isLoggedIn) {
+            this.doLogin();
+        }
+    }
+
+    public onLogout() {
+        if (DebugLogging) {
+            console.log("Entering onLogout of AppComponent");
+        }
+
         if (this.isLoggedIn) {
             this.doLogout();
-        } else {
-            this.doLogin();
         }
     }
 

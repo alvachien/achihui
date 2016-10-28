@@ -35,7 +35,7 @@
     "alertify.js": "^1.0.12",
     "font-awesome": "^4.6.3",
     "babel-polyfill": "^6.16.0",
-    "bootstrap": "^4.0.0-alpha.4",
+    "bootstrap": "^4.0.0-alpha.5",
     "jquery": "^3.1.1",
     "ng2-bootstrap": "^1.1.14",
     "oidc-client": "^1.2.1-beta.3",

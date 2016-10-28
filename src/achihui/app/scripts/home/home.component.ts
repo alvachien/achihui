@@ -2,11 +2,11 @@
 import { DebugLogging } from '../app.setting';
 
 @Component({
-    selector: 'my-app-home',
+    selector: 'hih-app-home',
     templateUrl: 'app/views/home/home.html'
 })
 
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
     constructor() {
         if (DebugLogging) {
             console.log("Entering constructor of HomeComponent");
@@ -16,6 +16,12 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
         if (DebugLogging) {
             console.log("Entering ngOnInit of HomeComponent");
+        }
+    }
+
+    ngOnDestroy() {
+        if (DebugLogging) {
+            console.log("Entering ngOnDestroy of HomeComponent");
         }
     }
 }

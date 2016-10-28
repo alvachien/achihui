@@ -7,7 +7,7 @@
         <br />
         Please register yourself first via the 'Login' link in header area.
         <br />
-        Please contact me: 
+        Or contact me: 
         <address>
             Alva Chien (<a href= "mailto:alvachien@live.com"> email </a>, <a href="http://www.flickr.com/photos/alvachien">Flickr</a>, etc)
         </address>.

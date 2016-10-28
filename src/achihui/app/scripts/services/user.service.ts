@@ -1,102 +1,145 @@
-﻿import { Observable } from 'rxjs/Observable';
+﻿import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import {
+    Http, Headers, Response,
+    RequestOptions, URLSearchParams
+} from '@angular/http';
+import '../rxjs-operators';
+import * as HIHUser from '../model/user';
+import {
+    APIUrl, DebugLogging
+} from '../app.setting';
+import { AuthService } from '../services/auth.service';
+import { BufferService } from '../services/buffer.service';
 
-export class UserInfo {
-    public isAuthorized: boolean;
-    private currentUser: any;
-    private galleryAlbumCreate: string;
-    private galleryAlbumChange: string;
-    private galleryAlbumDelete: string;
-    private galleryPhotoUpload: string;
-    private galleryPhotoChange: string;
-    private galleryPhotoDelete: string;
-    private galleryPhotoUploadSize: string;
-    private userName: string;
-    private accessToken: string;
+@Injectable()
+export class UserService {
+    private userDetail: HIHUser.UserDetail;
+    private userHistory: Array<HIHUser.UserHistory>;
 
-    private ForAll: string = 'All';
-    private OnlyOwner: string = 'OnlyOwner';
+    private _userdetail$: Subject<HIHUser.UserDetail>;
+    private _userhists$: Subject<HIHUser.UserHistory[]>;
 
-    public cleanContent() {
-        this.currentUser = null;
-        this.isAuthorized = false;
-    }
-    public setContent(user) {
-        if (user) {
-            //this.currentUser = user;
-            this.isAuthorized = true;
-
-            this.userName = user.profile.name;
-            this.accessToken = user.access_token;
-            this.galleryAlbumCreate = user.profile.GalleryAlbumCreate;
-            this.galleryAlbumChange = user.profile.GalleryAlbumChange;
-            this.galleryAlbumDelete = user.profile.GalleryAlbumDelete;
-            this.galleryPhotoUpload = user.profile.GalleryPhotoUpload;
-            this.galleryPhotoChange = user.profile.GalleryPhotoChange;
-            this.galleryPhotoDelete = user.profile.GalleryPhotoDelete;
-            this.galleryPhotoUploadSize = user.profile.GalleryPhotoUploadSize;
-        } else {
-            this.cleanContent();
-        }
-    }
-
-    public getUserName(): string {
-        if (this.userName) {
-            return this.userName;
+    constructor(private http: Http,
+        private authService: AuthService,
+        private buffService: BufferService) {
+        if (DebugLogging) {
+            console.log("Entering constructor of UserService");
         }
 
-        return "";
+        this._userdetail$ = <Subject<HIHUser.UserDetail>>new Subject();
+        this._userhists$ = <Subject<HIHUser.UserHistory[]>>new Subject();
     }
-    public getUserUploadKBSize(): Array<number> {
-        if (this.galleryPhotoUploadSize) {
-            let i = this.galleryPhotoUploadSize.indexOf('-');
-            if (i != -1) {
-                let minSize = +this.galleryPhotoUploadSize.substr(0, i - 1);
-                let maxSize = +this.galleryPhotoUploadSize.substr(i + 1);
-                return [minSize, maxSize];
+
+    get userDetail$() {
+        return this._userdetail$.asObservable();
+    }
+    get userHistories$() {
+        return this._userhists$.asObservable();
+    }
+
+    // User detail
+    loadUserDetail(forceReload?: boolean) {
+        if (DebugLogging) {
+            console.log("Entering loadUserDetail of UserService");
+        }
+
+        if (!forceReload && this.buffService.isUserDetailLoaded) {
+            this._userdetail$.next(this.buffService.usrDetail);
+            return;
+        }
+
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        this.http.get(APIUrl + 'userdetail', { headers: headers })
+            .map(this.extractUserDetailData)
+            .catch(this.handleError)
+            .subscribe(data => {
+                this.buffService.setUserDetail(data);
+                this._userdetail$.next(this.buffService.usrDetail);
+            },
+            error => {
+                // It should be handled already
+            });
+    }
+
+    private extractUserDetailData(res: Response) {
+        if (DebugLogging) {
+            console.log("Entering extractUserDetailData of UserService");
+        }
+
+        let body = res.json();
+        if (body) {
+            let det = new HIHUser.UserDetail();
+            det.onSetData(body);
+            return det;
+        }
+
+        return body || {};
+    }
+
+    // User history
+    loadUserHistories(forceReload?: boolean) {
+        if (DebugLogging) {
+            console.log("Entering loadUserHistories of UserService");
+        }
+
+        if (!forceReload && this.buffService.isUserHistoriesLoaded) {
+            this._userhists$.next(this.buffService.usrHistories);
+            return;
+        }
+
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        this.http.get(APIUrl + 'userhistory', { headers: headers })
+            .map(this.extractUserHistoryData)
+            .catch(this.handleError)
+            .subscribe(data => {
+                this.buffService.setUserDetail(data);
+                this._userhists$.next(this.buffService.usrHistories);
+            },
+            error => {
+                // It should be handled already
+            });
+    }
+
+    private extractUserHistoryData(res: Response) {
+        if (DebugLogging) {
+            console.log("Entering extractUserHistoryData of UserService");
+        }
+
+        let body = res.json();
+        if (body && body instanceof Array) {
+            let sets = new Array<HIHUser.UserHistory>();
+            for (let alm of body) {
+                let alm2 = new HIHUser.UserHistory();
+                alm2.onSetData(alm);
+                sets.push(alm2);
             }
+            return sets;
         }
 
-        return [0, 0];
+        return body || {};
     }
-    private getObjectRights(strValue: string, usrName?: string): boolean {
-        if (strValue) {
-            if (strValue === this.ForAll)
-                return true;
-            if (strValue === this.OnlyOwner) {
-                if (usrName === this.userName)
-                    return true;
-                return false;
-            }
+
+    // Others
+    private handleError(error: any) {
+        if (DebugLogging) {
+            console.log("Entering handleError of UserService");
         }
 
-        return false;
-    }
-    public canCreateAlbum(): boolean {
-        return this.getObjectRights(this.galleryAlbumCreate);
-    }
-    public canChangeAlbum(crterName?: string): boolean {
-        return this.getObjectRights(this.galleryAlbumChange, crterName);
-    }
-    public canDeleteAlbum(crterName?: string): boolean {
-        return this.getObjectRights(this.galleryAlbumDelete, crterName);
-    }
-    public canUploadPhoto(): boolean {
-        let brst = this.getObjectRights(this.galleryPhotoUpload);
-        if (brst) {
-            let sizes = this.getUserUploadKBSize();
-            if (sizes[1] <= 0)
-                brst = false;
-        }
-
-        return brst;
-    }
-    public canChangePhoto(updrName?: string) {
-        return this.getObjectRights(this.galleryPhotoChange, updrName);
-    }
-    public canDeletePhoto(updrName?: string) {
-        return this.getObjectRights(this.galleryPhotoDelete, updrName);
-    }
-    public getAccessToken(): string {
-        return this.accessToken;
+        // In a real world app, we might use a remote logging infrastructure
+        // We'd also dig deeper into the error to get a better message
+        let errMsg = (error.message) ? error.message :
+            error.status ? `${error.status} - ${error.statusText}` : 'Server error';
+        console.error(errMsg); // log to console instead
+        return Observable.throw(errMsg);
     }
 }

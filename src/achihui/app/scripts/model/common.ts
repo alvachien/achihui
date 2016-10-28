@@ -3,6 +3,7 @@
 export const TypeParentSplitter: string = " > ";
 export const IDSplitChar: string = ",";
 
+export enum AuthorizeScope { All = 1, OnlyOwner = 2 };
 export enum MessageType { Info = 1, Warning = 2, Error = 3 };
 
 export class InfoMessage {
