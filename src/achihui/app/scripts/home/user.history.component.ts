@@ -2,7 +2,7 @@
 import { DebugLogging } from '../app.setting';
 
 @Component({
-    selector: 'hih-home-lang',
+    selector: 'hih-home-userhist',
     templateUrl: 'app/views/home/userhistory.html'
 })
 

@@ -2,6 +2,7 @@
 import { AuthService }                  from './services/auth.service';
 import { TranslateService }             from 'ng2-translate/ng2-translate';
 import { environment, DebugLogging }    from './app.setting';
+import { UserService }                  from './services/user.service';
 
 @Component({
     selector: 'hih-app',
@@ -13,6 +14,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public titleLogin: string;
 
     constructor(private authService: AuthService,
+        private userService: UserService,
         private translateService: TranslateService) {
 
         if (DebugLogging) {
@@ -23,10 +25,14 @@ export class AppComponent implements OnInit, OnDestroy {
         this.titleLogin = 'Login';
         this.authService.authContent.subscribe(x => {
             this.isLoggedIn = x.isAuthorized;
-            if (this.isLoggedIn)
+            if (this.isLoggedIn) {
                 this.titleLogin = x.getUserName();
-            else
+
+                // Get the user detail out
+                this.userService.loadUserDetail();
+            } else {
                 this.titleLogin = "";
+            }
 
             if (!this.titleLogin)
                 this.titleLogin = 'Login';
