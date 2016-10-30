@@ -12,11 +12,12 @@ import { DialogService } from '../services/dialog.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-    selector: 'hih-fin-account',
-    templateUrl: 'app/views/finance/finance.account.html'
+    selector: 'hih-fin-account-detail',
+    templateUrl: 'app/views/finance/account.detail.html'
 })
-
-export class FinanceAccountComponent implements OnInit, OnDestroy {
+export class AccountDetailComponent implements OnInit, OnDestroy {
+    public finAccount: HIHFinance.Account;
+    private subAccount: Subscription;
 
     constructor(
         private zone: NgZone,
@@ -26,25 +27,25 @@ export class FinanceAccountComponent implements OnInit, OnDestroy {
         private financeService: FinanceService,
         private authService: AuthService) {
         if (DebugLogging) {
-            console.log("Entering constructor of FinanceAccountComponent");
+            console.log("Entering constructor of AccountCreateComponent");
         }
     }
 
     ngOnInit() {
         if (DebugLogging) {
-            console.log("Entering ngOnInit of FinanceAccountComponent");
+            console.log("Entering ngOnInit of AccountCreateComponent");
         }
     }
 
     ngOnDestroy() {
         if (DebugLogging) {
-            console.log("Entering ngOnDestroy of FinanceAccountComponent");
+            console.log("Entering ngOnDestroy of AccountCreateComponent");
         }
     }
 
     handleError(error: any) {
         if (DebugLogging) {
-            console.log("Entering handleError of FinanceAccountComponent");
+            console.log("Entering handleError of AccountCreateComponent");
         }
         console.log(error);
 

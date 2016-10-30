@@ -12,11 +12,10 @@ import { DialogService } from '../services/dialog.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-    selector: 'hih-fin-trantypelist',
-    templateUrl: 'app/views/finance/finance.trantype.list.html'
+    selector: 'hih-fin-trantype-detail',
+    templateUrl: 'app/views/finance/trantype.detail.html'
 })
-
-export class FinanceTranTypeListComponent implements OnInit, OnDestroy {
+export class TranTypeDetailComponent implements OnInit, OnDestroy {
     public finTranType: Array<HIHFinance.TranType>;
     private subFinTranType: Subscription;
 
@@ -28,13 +27,13 @@ export class FinanceTranTypeListComponent implements OnInit, OnDestroy {
         private financeService: FinanceService,
         private authService: AuthService) {
         if (DebugLogging) {
-            console.log("Entering constructor of FinanceTranTypeListComponent");
+            console.log("Entering constructor of TranTypeDetailComponent");
         }
     }
 
     ngOnInit() {
         if (DebugLogging) {
-            console.log("Entering ngOnInit of FinanceTranTypeListComponent");
+            console.log("Entering ngOnInit of TranTypeDetailComponent");
         }
 
         if (!this.subFinTranType) {
@@ -47,7 +46,7 @@ export class FinanceTranTypeListComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (DebugLogging) {
-            console.log("Entering ngOnDestroy of FinanceTranTypeListComponent");
+            console.log("Entering ngOnDestroy of TranTypeDetailComponent");
         }
 
         if (this.subFinTranType) {
@@ -58,7 +57,7 @@ export class FinanceTranTypeListComponent implements OnInit, OnDestroy {
 
     getTranTypeList(data: Array<HIHFinance.TranType>) {
         if (DebugLogging) {
-            console.log("Entering getTranTypeList of FinanceTranTypeListComponent");
+            console.log("Entering getCurrencies of TranTypeDetailComponent");
         }
 
         this.zone.run(() => {
@@ -68,7 +67,7 @@ export class FinanceTranTypeListComponent implements OnInit, OnDestroy {
 
     handleError(error: any) {
         if (DebugLogging) {
-            console.log("Entering handleError of FinanceTranTypeListComponent");
+            console.log("Entering handleError of TranTypeDetailComponent");
         }
         console.log(error);
 

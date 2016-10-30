@@ -11,13 +11,18 @@ import { FinanceSettingComponent } from './finance.setting.component';
 import { FinanceCurrencyComponent } from './finance.currency.component';
 import { FinanceDocTypeComponent } from './finance.doctype.component';
 import { FinanceAccountCategoryComponent } from './finance.acntctgy.component';
-import { FinanceTranTypeListComponent } from './finance.trantype.list.component';
-import { FinanceTranTypeDetailComponent } from './finance.trantype.detail.component';
-import { FinanceAccountComponent } from './finance.account.component';
-import { FinanceAccountListComponent } from './finance.account.list.component';
-import { FinanceAccountCreateComponent } from './finance.account.create.component';
-import { FinanceControllingCenterListComponent } from './finance.controllingcenter.list.component';
-import { FinanceOrderListComponent } from './finance.order.list.component';
+import { TranTypeComponent }            from './trantype.component';
+import { TranTypeListComponent }        from './trantype.list.component';
+import { TranTypeDetailComponent }      from './trantype.detail.component';
+import { AccountComponent }             from './account.component';
+import { AccountListComponent }         from './account.list.component';
+import { AccountDetailComponent }       from './account.detail.component';
+import { ControllingCenterComponent }   from './controllingcenter.component';
+import { ControllingCenterListComponent } from './controllingcenter.list.component';
+import { ControllingCenterDetailComponent } from './controllingcenter.detail.component';
+import { OrderComponent }               from './order.component';
+import { OrderListComponent }           from './order.list.component';
+import { OrderDetailComponent }         from './order.detail.component';
 
 @NgModule({
     imports: [
@@ -36,13 +41,18 @@ import { FinanceOrderListComponent } from './finance.order.list.component';
         FinanceCurrencyComponent,
         FinanceDocTypeComponent,
         FinanceAccountCategoryComponent,
-        FinanceTranTypeListComponent,
-        FinanceTranTypeDetailComponent,
-        FinanceAccountComponent,
-        FinanceAccountListComponent,
-        FinanceAccountCreateComponent,
-        FinanceControllingCenterListComponent,
-        FinanceOrderListComponent
+        TranTypeComponent,
+        TranTypeListComponent,
+        TranTypeDetailComponent,
+        AccountComponent,
+        AccountListComponent,
+        AccountDetailComponent,
+        ControllingCenterComponent,
+        ControllingCenterListComponent,
+        ControllingCenterDetailComponent,
+        OrderComponent,
+        OrderListComponent,
+        OrderDetailComponent
     ],
 
     providers: [

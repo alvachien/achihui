@@ -12,13 +12,12 @@ import { DialogService } from '../services/dialog.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-    selector: 'hih-fin-accountlist',
-    templateUrl: 'app/views/finance/finance.account.list.html'
+    selector: 'hih-fin-order-detail',
+    templateUrl: 'app/views/finance/order.detail.html'
 })
-
-export class FinanceAccountListComponent implements OnInit, OnDestroy {
-    public finAccounts: Array<HIHFinance.Account>;
-    private subAccount: Subscription;
+export class OrderDetailComponent implements OnInit, OnDestroy {
+    public finOrder: HIHFinance.Order;
+    private subOrder: Subscription;
 
     constructor(
         private zone: NgZone,
@@ -28,47 +27,25 @@ export class FinanceAccountListComponent implements OnInit, OnDestroy {
         private financeService: FinanceService,
         private authService: AuthService) {
         if (DebugLogging) {
-            console.log("Entering constructor of FinanceAccountListComponent");
+            console.log("Entering constructor of OrderDetailComponent");
         }
     }
 
     ngOnInit() {
         if (DebugLogging) {
-            console.log("Entering ngOnInit of FinanceAccountListComponent");
-        }
-
-        if (!this.subAccount) {
-            this.subAccount = this.financeService.account$.subscribe(data => this.getAccountList(data),
-                error => this.handleError(error));
-
-            this.financeService.loadAccounts();
+            console.log("Entering ngOnInit of OrderDetailComponent");
         }
     }
 
     ngOnDestroy() {
         if (DebugLogging) {
-            console.log("Entering ngOnDestroy of FinanceAccountListComponent");
+            console.log("Entering ngOnDestroy of OrderDetailComponent");
         }
-
-        if (this.subAccount) {
-            this.subAccount.unsubscribe();
-            this.subAccount = null;
-        }
-    }
-
-    getAccountList(data: Array<HIHFinance.Account>) {
-        if (DebugLogging) {
-            console.log("Entering getAccountList of FinanceAccountListComponent");
-        }
-
-        this.zone.run(() => {
-            this.finAccounts = data;
-        });
     }
 
     handleError(error: any) {
         if (DebugLogging) {
-            console.log("Entering handleError of FinanceAccountListComponent");
+            console.log("Entering handleError of OrderDetailComponent");
         }
         console.log(error);
 

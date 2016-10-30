@@ -1,0 +1,20 @@
+﻿<div class="container">
+    <table class="table">
+        <thead class="thead-default">
+            <tr>
+                <th>SeqNo</th>
+                <th>Type</th>
+                <th>TimePoint</th>
+                <th>Others</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let fs of userHistr">
+                <td>{{fs.SeqNo}}</td>
+                <td>{{fs.HistType}}</td>
+                <td>{{fs.TimePoint}}</td>
+                <td>{{fs.Others}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

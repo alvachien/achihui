@@ -5,18 +5,17 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import '../rxjs-operators';
-import { DebugLogging } from '../app.setting';
-import * as HIHFinance from '../model/finance';
-import { FinanceService } from '../services/finance.service';
-import { DialogService } from '../services/dialog.service';
-import { AuthService } from '../services/auth.service';
+import { DebugLogging }         from '../app.setting';
+import * as HIHFinance          from '../model/finance';
+import { FinanceService }       from '../services/finance.service';
+import { DialogService }        from '../services/dialog.service';
+import { AuthService }          from '../services/auth.service';
 
 @Component({
-    selector: 'hih-fin-orderlist',
-    templateUrl: 'app/views/finance/finance.order.list.html'
+    selector: 'hih-fin-order-list',
+    templateUrl: 'app/views/finance/order.list.html'
 })
-
-export class FinanceOrderListComponent implements OnInit, OnDestroy {
+export class OrderListComponent implements OnInit, OnDestroy {
     public finOrder: Array<HIHFinance.Order>;
     private subOrder: Subscription;
 
@@ -28,13 +27,13 @@ export class FinanceOrderListComponent implements OnInit, OnDestroy {
         private financeService: FinanceService,
         private authService: AuthService) {
         if (DebugLogging) {
-            console.log("Entering constructor of FinanceOrderListComponent");
+            console.log("Entering constructor of OrderListComponent");
         }
     }
 
     ngOnInit() {
         if (DebugLogging) {
-            console.log("Entering ngOnInit of FinanceOrderListComponent");
+            console.log("Entering ngOnInit of OrderListComponent");
         }
 
         if (!this.subOrder) {
@@ -47,7 +46,7 @@ export class FinanceOrderListComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (DebugLogging) {
-            console.log("Entering ngOnDestroy of FinanceOrderListComponent");
+            console.log("Entering ngOnDestroy of OrderListComponent");
         }
 
         if (this.subOrder) {
@@ -58,7 +57,7 @@ export class FinanceOrderListComponent implements OnInit, OnDestroy {
 
     getOrderList(data: Array<HIHFinance.Order>) {
         if (DebugLogging) {
-            console.log("Entering getOrderList of FinanceOrderListComponent");
+            console.log("Entering getOrderList of OrderListComponent");
         }
 
         this.zone.run(() => {
@@ -68,7 +67,7 @@ export class FinanceOrderListComponent implements OnInit, OnDestroy {
 
     handleError(error: any) {
         if (DebugLogging) {
-            console.log("Entering handleError of FinanceOrderListComponent");
+            console.log("Entering handleError of OrderListComponent");
         }
         console.log(error);
 
