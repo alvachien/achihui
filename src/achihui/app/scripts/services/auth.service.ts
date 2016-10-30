@@ -17,7 +17,7 @@ export class UserInfo {
 
     public cleanContent() {
         if (DebugLogging) {
-            console.log("Entering cleanContent of UserService");
+            console.log("Entering cleanContent of UserInfo");
         }
 
         this.currentUser = null;
@@ -25,7 +25,7 @@ export class UserInfo {
     }
     public setContent(user) {
         if (DebugLogging) {
-            console.log("Entering setContent of UserService");
+            console.log("Entering setContent of UserInfo");
         }
 
         if (user) {
@@ -48,7 +48,7 @@ export class UserInfo {
 
     public getUserName(): string {
         if (DebugLogging) {
-            console.log("Entering getUserName of UserService");
+            console.log("Entering getUserName of UserInfo");
         }
 
         if (this.userName) {
@@ -81,7 +81,7 @@ export class UserInfo {
     //}
     public getAccessToken(): string {
         if (DebugLogging) {
-            console.log("Entering getAccessToken of UserService");
+            console.log("Entering getAccessToken of UserInfo");
         }
 
         return this.accessToken;
@@ -113,6 +113,9 @@ export class AuthService {
         this.mgr = new Oidc.UserManager(settings);
         var that = this;
         this.mgr.getUser().then(function (u) {
+            if (DebugLogging) {
+                console.log("User get successfully from OIDC-Client");
+            }
             if (u) {
                 that.authSubject.value.setContent(u);
             }
@@ -122,6 +125,10 @@ export class AuthService {
 
             that.authSubject.next(that.authSubject.value);
         }, function (reason) {
+            if (DebugLogging) {
+                console.log("User get failed from OIDC-Client, reason is :");
+                console.log(reason);
+            }
         });
 
         this.mgr.events.addUserUnloaded((e) => {

@@ -3,6 +3,7 @@ import { AuthService }                  from './services/auth.service';
 import { TranslateService }             from 'ng2-translate/ng2-translate';
 import { environment, DebugLogging }    from './app.setting';
 import { UserService }                  from './services/user.service';
+import { BufferService }                from './services/buffer.service';
 
 @Component({
     selector: 'hih-app',
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     constructor(private authService: AuthService,
         private userService: UserService,
+        private bufferService: BufferService,
         private translateService: TranslateService) {
 
         if (DebugLogging) {

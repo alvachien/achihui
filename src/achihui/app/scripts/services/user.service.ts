@@ -57,13 +57,14 @@ export class UserService {
 
         this.http.get(APIUrl + 'userdetail', { headers: headers })
             .map(this.extractUserDetailData)
-            .catch(this.handleError)
             .subscribe(data => {
                 this.buffService.setUserDetail(data);
                 this._userdetail$.next(this.buffService.usrDetail);
             },
             error => {
-                // It should be handled already
+                if (DebugLogging) {
+                    console.log("Failed to read out the user detail in class UserService");
+                }
             });
     }
 
@@ -80,6 +81,12 @@ export class UserService {
         }
 
         return body || {};
+    }
+
+    private handleUserDetailError(error: any) {
+        if (DebugLogging) {
+            console.log("Entering handleUserDetailError of UserService");
+        }
     }
 
     // User history
