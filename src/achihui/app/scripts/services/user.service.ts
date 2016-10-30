@@ -63,8 +63,10 @@ export class UserService {
             },
             error => {
                 if (DebugLogging) {
-                    console.log("Failed to read out the user detail in class UserService");
+                    console.log("Failed to read out the user detail in UserService");
                 }
+
+                this._userdetail$.error(false);
             });
     }
 
@@ -87,6 +89,48 @@ export class UserService {
         if (DebugLogging) {
             console.log("Entering handleUserDetailError of UserService");
         }
+    }
+
+    createUserDetail(data: HIHUser.UserDetail) {
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        var dataJSON = JSON && JSON.stringify(data);
+
+        this.http.post(APIUrl + 'userdetail', dataJSON, { headers: headers })
+            .map(response => response.json())
+            .subscribe(data => {
+                this.buffService.setUserDetail(data);
+                this._userdetail$.next(this.buffService.usrDetail);
+            },
+            error => {
+                if (DebugLogging) {
+                    console.log("Failed to create the user detail!");
+                }
+            });
+    }
+
+    updateUserDetail(data: HIHUser.UserDetail) {
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        var dataJSON = JSON && JSON.stringify(data);
+
+        this.http.put(APIUrl + 'userdetail', dataJSON, { headers: headers })
+            .map(response => response.json())
+            .subscribe(data => {
+                this.buffService.setUserDetail(data);
+                this._userdetail$.next(this.buffService.usrDetail);
+            },
+            error => {
+                if (DebugLogging) {
+                    console.log("Failed to create the user detail!");
+                }
+            });
     }
 
     // User history

@@ -17,6 +17,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     public userDetail: HIHUser.UserDetail = null;
     private subUserDetail: Subscription = null;
     private userId: string = null;
+    private isCreate: boolean = false;
 
     constructor(
         private zone: NgZone,
@@ -75,26 +76,31 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         }
         console.log(error);
 
-        if (error.status === 401) {
-            this.dialogService.confirm("Unauthorized! It most likely you input an WRONG access code!");
-        } else if (error.status === 404) {
-            // It is allowed for the new registered user haven't set the display as yet
-            if (DebugLogging) {
-                console.log("It seems no user detail set yet, using initial value");
-            }
-
-            this.zone.run(() => {
-                this.userDetail = new HIHUser.UserDetail();
-                this.userDetail.UserId = this.userId;
-                this.userDetail.DisplayAs = this.userId;
-                this.userDetail.Email = this.userId;
-            });
+        if (DebugLogging) {
+            console.log("It seems no user detail set yet, using initial value");
         }
+        this.isCreate = true;
+
+        this.zone.run(() => {
+            this.userDetail = new HIHUser.UserDetail();
+            this.userDetail.UserId = this.userId;
+            this.userDetail.DisplayAs = this.userId;
+            this.userDetail.Email = this.userId;
+        });
     }
 
     onSubmit() {
         if (DebugLogging) {
             console.log("Entering onSubmit of UserDetailComponent");
+        }
+
+        // Do the base UI validation
+
+        // Then, submit to the server
+        if (this.isCreate) {
+            this.userService.createUserDetail(this.userDetail);
+        } else {
+            this.userService.updateUserDetail(this.userDetail);
         }
     }
 }

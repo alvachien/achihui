@@ -6,9 +6,12 @@ import { FinanceDocTypeComponent }      from './finance.doctype.component';
 import { FinanceAccountCategoryComponent } from './finance.acntctgy.component';
 import { FinanceTranTypeListComponent } from './finance.trantype.list.component';
 import { FinanceTranTypeDetailComponent } from './finance.trantype.detail.component';
-import { FinanceAccountListComponent } from './finance.account.list.component';
 import { FinanceControllingCenterListComponent } from './finance.controllingcenter.list.component';
 import { FinanceOrderListComponent } from './finance.order.list.component';
+
+import { FinanceAccountComponent } from './finance.account.component';
+import { FinanceAccountListComponent } from './finance.account.list.component';
+import { FinanceAccountCreateComponent } from './finance.account.create.component';
 
 export const financeRoutes: Routes = [
     {
@@ -40,10 +43,6 @@ export const financeRoutes: Routes = [
                 component: FinanceTranTypeDetailComponent
             },
             {
-                path: 'accountlist',
-                component: FinanceAccountListComponent
-            },
-            {
                 path: 'controllingcenterlist',
                 component: FinanceControllingCenterListComponent
             },
@@ -51,6 +50,20 @@ export const financeRoutes: Routes = [
                 path: 'orderlist',
                 component: FinanceOrderListComponent
             },
+            {
+                path: 'account',
+                component: FinanceAccountComponent,
+                children: [
+                    {
+                        path: 'list',
+                        component: FinanceAccountListComponent,
+                    },
+                    {
+                        path: 'create',
+                        component: FinanceAccountCreateComponent
+                    }
+                ]
+            }
             //{
             //    path: 'detail/:id',
             //    component: AlbumDetailComponent,

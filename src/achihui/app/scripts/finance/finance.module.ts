@@ -13,7 +13,9 @@ import { FinanceDocTypeComponent } from './finance.doctype.component';
 import { FinanceAccountCategoryComponent } from './finance.acntctgy.component';
 import { FinanceTranTypeListComponent } from './finance.trantype.list.component';
 import { FinanceTranTypeDetailComponent } from './finance.trantype.detail.component';
+import { FinanceAccountComponent } from './finance.account.component';
 import { FinanceAccountListComponent } from './finance.account.list.component';
+import { FinanceAccountCreateComponent } from './finance.account.create.component';
 import { FinanceControllingCenterListComponent } from './finance.controllingcenter.list.component';
 import { FinanceOrderListComponent } from './finance.order.list.component';
 
@@ -36,8 +38,9 @@ import { FinanceOrderListComponent } from './finance.order.list.component';
         FinanceAccountCategoryComponent,
         FinanceTranTypeListComponent,
         FinanceTranTypeDetailComponent,
-
+        FinanceAccountComponent,
         FinanceAccountListComponent,
+        FinanceAccountCreateComponent,
         FinanceControllingCenterListComponent,
         FinanceOrderListComponent
     ],
