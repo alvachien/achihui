@@ -75,4 +75,93 @@ export class AccountListComponent implements OnInit, OnDestroy {
             this.dialogService.confirm("Unauthorized! It most likely you input an WRONG access code!");
         }
     }
+
+    // Remove to the real data holder
+    removeItem(row) {
+        //var nAccntID = 0;
+        //if (row) {
+        //    nAccntID = row.ID;
+        //} else {
+        //    for (var i = 0; i < $scope.dispList.length; i++) {
+        //        if ($scope.dispList[i].isSelected) {
+        //            nAccntID = $scope.dispList[i].ID;
+        //            break;
+        //        }
+        //    }
+        //    if (0 === nAccntID) {
+        //        $translate('Message.SelectSingleItemForDeletion')
+        //            .then(
+        //            function (response) {
+        //                $rootScope.$broadcast("ShowMessageEx", "Error", [{ Type: 'danger', Message: response }]);
+        //            },
+        //            function (reason) {
+        //                $rootScope.$broadcast("ShowMessageEx", "Error", [{ Type: 'danger', Message: "Fatal Error!" }]);
+        //            }
+        //            );
+        //        return;
+        //    }
+        //}
+
+        //$rootScope.$broadcast('ShowMessageEx', 'Delete Confirmation', [{ Type: 'warning', Message: 'Confirm on deleta the selected item?' }],
+        //    function () {
+        //        utils.deleteFinanceAccountQ(nAccntID)
+        //            .then(function (response) {
+
+        //                // Just refresh it!
+        //                $scope.refreshList();
+        //            }, function (reason) {
+        //                $rootScope.$broadcast("ShowMessageEx", "Error", [{ Type: 'danger', Message: reason }]);
+        //            });
+        //    });
+    }
+
+    // Display
+    displayItem(row) {
+        //var nAccntID = 0;
+        //if (row) {
+        //    nAccntID = row.ID;
+        //} else {
+        //    for (var i = 0; i < $scope.dispList.length; i++) {
+        //        if ($scope.dispList[i].isSelected) {
+        //            nAccntID = $scope.dispList[i].ID;
+        //            break;
+        //        }
+        //    }
+        //}
+
+        //$state.go("home.finance.account.display", { accountid: nAccntID });
+    }
+
+    // Edit
+    editItem(row) {
+        //var nAccntID = 0;
+        //if (row) {
+        //    nAccntID = row.ID;
+        //} else {
+        //    for (var i = 0; i < $scope.dispList.length; i++) {
+        //        if ($scope.dispList[i].isSelected) {
+        //            nAccntID = $scope.dispList[i].ID;
+        //            break;
+        //        }
+        //    }
+        //}
+
+        //$state.go("home.finance.account.maintain", { accountid: nAccntID });
+    }
+
+    // Create
+    newItem() {
+        //$state.go('home.finance.account.create');
+    }
+
+    // Refresh the list
+    refreshList() {
+        //utils.loadFinanceAccountsQ(true)
+        //    .then(function (response2) {
+        //        // Do nothing!
+        //    }, function (reason2) {
+        //        // Error occurred
+        //        $rootScope.$broadcast("ShowMessageEx", "Error", [{ Type: 'danger', Message: reason2 }]);
+        //    });
+    }
 }

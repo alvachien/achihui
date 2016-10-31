@@ -1,10 +1,83 @@
 ﻿<div class="container">
     <div class="page-header">
         <h2>
-            <span>Account</span><small> List View</small>
+            <span translate="Finance.Accounts">Account</span> <small translate="Common.ListView"> List View </small>
         </h2>
+
+        <div class="btn-toolbar" role="toolbar" aria-label="...">
+            <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn-group btn-primary"
+                        tooltip="{{'Common.New' | translate}}"
+                        ng-click="newItem()" translate="Common.New">
+                    New
+                </button>
+                <button type="button" class="btn-group btn-primary"
+                        tooltip="{{'Common.Refresh' | translate}}"
+                        ng-click="refreshList()" translate="Common.Refresh">
+                    Refresh
+                </button>
+            </div>
+
+            <div class="btn-group" role="group" aria-label="...">
+                <button type="button" ng-click="displayItem()"
+                        class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}"
+                        translate="Common.Display"></button>
+                <button type="button" ng-click="editItem()"
+                        class="btn-group btn-warning" tooltip="{{'Common.Edit' | translate}}"
+                        translate="Common.Edit"></button>
+                <button type="button" ng-click="removeItem()"
+                        class="btn-group btn-danger" tooltip="{{'Common.Delete' | translate}}"
+                        translate="Common.Delete"></button>
+            </div>
+        </div>
     </div>
 
-    <hr />
-
+    <table st-table="dispList" st-safe-src="arFinanceAccount" class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th st-sort="id" translate="Common.ID">ID</th>
+                <th st-sort="ctgyname" translate="Common.Category">Category</th>
+                <th st-sort="name" translate="Common.Name">Name</th>
+                <th st-sort="astflag" translate="Finance.Asset">Balance</th>
+                <th st-sort="cmt" translate="Common.Comment">Comment</th>
+                <th translate="Common.Operations">Operations</th>
+            </tr>
+            <tr>
+                <th colspan="7"><input st-search="serch" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="text" /></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="row in dispList">
+                <td cs-select="row"></td>
+                <td><a ng-href="#/home/finance/account/display/{{row.ID}}">{{row.ID}}</a></td>
+                <td>{{row.CategoryObject.Name}}</td>
+                <td>{{row.Name}}</td>
+                <td><span ng-class="row.CategoryObject.AssetFlag ? 'accountasset' : 'accountnotasset'">{{row.CategoryObject.AssetFlag}}</span></td>
+                <td>{{row.Comment}}</td>
+                <td>
+                    <button type="button" class="btn btn-sm" ng-click="displayItem(row)" tooltip="{{'Common.Display' | translate}}">
+                        <i class="glyphicon glyphicon-share">
+                        </i>
+                    </button>
+                    <button type="button" class="btn btn-sm" ng-click="editItem(row)" tooltip="{{'Common.Edit' | translate}}">
+                        <i class="glyphicon glyphicon-edit">
+                        </i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" ng-click="removeItem(row)" tooltip="{{'Common.Delete' | translate}}">
+                        <i class="glyphicon glyphicon-remove-circle">
+                        </i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <cst-count></cst-count>
+                </td>
+                <td colspan="5" class="text-center" st-pagination="" st-items-by-page="20"></td>
+            </tr>
+        </tfoot>
+    </table>
 </div>

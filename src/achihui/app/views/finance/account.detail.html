@@ -1,10 +1,139 @@
-﻿<div class="container">
+﻿<div id="viewFinanceAccount">
     <div class="page-header">
         <h2>
-            <span>Account</span><small>Detail</small>
+            <span>Finance Account</span><small> {{Activity | translate}}</small>
         </h2>
     </div>
 
-    <hr />
+    <!-- Messages -->
+    <div *ngIf="ReportedMessages.length > 0">
+        <div class="alert alert-danger" role="alert" ng-repeat="rptmsg in ReportedMessages">
+            {{ rptmsg }}
+        </div>
+    </div>
 
+    <form class="form-horizontal" role="form" name="frmObj">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="iptID" translate="Common.ID">ID:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="iptID"
+                       readonly="readonly" placeholder="{{'Common.ID' | translate}}" ng-model="AccountObject.ID">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" translate="Common.Category">Category:</label>
+            <div class="col-sm-10">
+                <!--<selectize placeholder='Pick category...' options='arFinanceAccountCategory' config="sourceCurrConfig" ng-model="DocumentObject.TranCurrency"
+                    ng-disabled="isReadonly"
+                    required></selectize>-->
+                <select ng-model="AccountObject.CategoryID" ng-disabled="ActivityID == 3"
+                        ng-options="fac.ID as fac.Name for fac in arFinanceAccountCategory"></select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="iptName" translate="Common.Name">Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="iptName" ng-readonly="ActivityID == 3"
+                       placeholder="{{'Common.Name' | translate}}" ng-model="AccountObject.Name" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="iptComment" translate="Common.Comment">Comment</label>
+            <div class="col-sm-10">
+                <input class="form-control" ng-readonly="ActivityID == 3" id="iptComment"
+                       ng-model="AccountObject.Comment" />
+            </div>
+        </div>
+
+        <div class="panel panel-success" ng-show="ShowDownpaymentInfo">
+            <div class="panel-heading">
+                <h3 class="panel-title"><span translate="Finance.Downpayment">Downpayment</span></h3>
+            </div>
+
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" translate="Finance.Direction">Direction</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" readonly="readonly" ng-model="DPAccountInfo.Direct" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" translate="Finance.BeginDate">Begin Date</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" readonly="readonly" ng-model="DPAccountInfo.StartDate | date: 'yyyy.MM.dd'" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" translate="Finance.EndDate">End Date</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" readonly="readonly" ng-model="DPAccountInfo.EndDate | date: 'yyyy.MM.dd'" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Repeat Type</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" readonly="readonly" ng-model="DPAccountInfo.RepeatType" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2" translate="Finance.RefDoc">Ref. Doc</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" readonly="readonly" ng-model="DPAccountInfo.RefDocID" />
+                    </div>
+                </div>
+
+                <table st-table="DPTmpDoc" st-safe-src="SafeDPTmpDoc" class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th st-sort="did" translate="Common.ID">ID</th>
+                            <th st-sort="refid" translate="Finance.RefDoc">Ref Doc ID</th>
+                            <th st-sort="ttyp" translate="Finance.TransactionType">Tran Type</th>
+                            <th st-sort="tdate" translate="Common.Date">Date</th>
+                            <th st-sort="amt" translate="Finance.Amount">Amount</th>
+                            <th translate="Common.Operations">Operations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="row in DPTmpDoc">
+                            <td>{{row.DocID | idTostring}}</td>
+                            <td>{{row.RefDocID | idTostring}}</td>
+                            <td>{{row.TranTypeID | idTostring}}</td>
+                            <td>{{row.TranDate | date: 'yyyy.MM.dd'}}</td>
+                            <td>{{row.Amount | currency:'￥':2}}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm" ng-click="goDPDoc(row)" tooltip="{{'Common.Create' | translate}}">
+                                    <i class="glyphicon glyphicon-saved">
+                                    </i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                <cst-count></cst-count>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="ActivityID == 3"
+                        ng-disabled="frmObj.$invalid || !frmObj.$dirty" translate="Common.Submit">
+                    Submit
+                </button>
+                <button class="btn btn-danger" ng-click="close()" translate="Common.BackToList">Back to List</button>
+            </div>
+        </div>
+    </form>
 </div>
