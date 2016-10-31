@@ -13,7 +13,7 @@ import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: 'hih-fin-trantype-list',
-    templateUrl: 'app/views/finance/finance.trantype.list.html'
+    templateUrl: 'app/views/finance/trantype.list.html'
 })
 
 export class TranTypeListComponent implements OnInit, OnDestroy {

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { DebugLogging } from '../app.setting';
 import * as HIHUser from '../model/user';
 import { DialogService } from '../services/dialog.service';
-import { AuthService } from '../services/auth.service';
+import { UserInfo, AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 
 @Component({
@@ -16,8 +16,8 @@ import { UserService } from '../services/user.service';
 export class UserDetailComponent implements OnInit, OnDestroy {
     public userDetail: HIHUser.UserDetail = null;
     private subUserDetail: Subscription = null;
-    private userId: string = null;
     private isCreate: boolean = false;
+    private userInfo: UserInfo = null;
 
     constructor(
         private zone: NgZone,
@@ -33,7 +33,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         this.userDetail = new HIHUser.UserDetail();
         this.authService.authContent.subscribe(x => {
             if (x.isAuthorized) {
-                this.userId = x.getUserName();
+                this.userInfo = x;
             } else {
                 if (DebugLogging) {
                     console.log("Fatal error: no authorized user reached User Detail page!!");
@@ -83,9 +83,9 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
         this.zone.run(() => {
             this.userDetail = new HIHUser.UserDetail();
-            this.userDetail.UserId = this.userId;
-            this.userDetail.DisplayAs = this.userId;
-            this.userDetail.Email = this.userId;
+            this.userDetail.UserId = this.userInfo.getUserId();
+            this.userDetail.DisplayAs = this.userInfo.getUserName();
+            this.userDetail.Email = this.userInfo.getUserName();
         });
     }
 

@@ -13,6 +13,7 @@ export class UserInfo {
     public isAuthorized: boolean;
     private currentUser: any;
     private userName: string;
+    private userId: string;
     private accessToken: string;
 
     public cleanContent() {
@@ -29,23 +30,28 @@ export class UserInfo {
         }
 
         if (user) {
-            //this.currentUser = user;
+            if (DebugLogging) {
+                this.currentUser = user;
+            }
             this.isAuthorized = true;
-
+            this.userId = user.profile.sub;
             this.userName = user.profile.name;
             this.accessToken = user.access_token;
-            //this.galleryAlbumCreate = user.profile.GalleryAlbumCreate;
-            //this.galleryAlbumChange = user.profile.GalleryAlbumChange;
-            //this.galleryAlbumDelete = user.profile.GalleryAlbumDelete;
-            //this.galleryPhotoUpload = user.profile.GalleryPhotoUpload;
-            //this.galleryPhotoChange = user.profile.GalleryPhotoChange;
-            //this.galleryPhotoDelete = user.profile.GalleryPhotoDelete;
-            //this.galleryPhotoUploadSize = user.profile.GalleryPhotoUploadSize;
         } else {
             this.cleanContent();
         }
     }
+    public getUserId(): string {
+        if (DebugLogging) {
+            console.log("Entering getUserId of UserInfo");
+        }
 
+        if (this.userId) {
+            return this.userId;
+        }
+
+        return "";
+    }
     public getUserName(): string {
         if (DebugLogging) {
             console.log("Entering getUserName of UserInfo");

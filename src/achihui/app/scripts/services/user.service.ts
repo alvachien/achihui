@@ -93,9 +93,9 @@ export class UserService {
 
     createUserDetail(data: HIHUser.UserDetail) {
         var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
-        if (this.authService.authSubject.getValue().isAuthorized)
-            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
         var dataJSON = JSON && JSON.stringify(data);
 
