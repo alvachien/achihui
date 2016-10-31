@@ -1,16 +1,17 @@
-﻿import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+﻿import { Injectable }   from '@angular/core';
+import { Observable }   from 'rxjs/Observable';
+import { Subject }      from 'rxjs/Subject';
 import {
     Http, Headers, Response,
     RequestOptions, URLSearchParams
 } from '@angular/http';
 import '../rxjs-operators';
-import * as HIHUser from '../model/user';
+import * as HIHCommon   from '../model/common';
+import * as HIHUser     from '../model/user';
 import {
     APIUrl, DebugLogging
 } from '../app.setting';
-import { AuthService } from '../services/auth.service';
+import { AuthService }  from '../services/auth.service';
 import { BufferService } from '../services/buffer.service';
 
 @Injectable()
@@ -21,12 +22,18 @@ export class UserService {
     private _userdetail$: Subject<HIHUser.UserDetail>;
     private _userhists$: Subject<HIHUser.UserHistory[]>;
 
+    private apiUserDetail: string;
+    private apiUserHistory: string;
+
     constructor(private http: Http,
         private authService: AuthService,
         private buffService: BufferService) {
         if (DebugLogging) {
             console.log("Entering constructor of UserService");
         }
+
+        this.apiUserDetail = APIUrl + 'userdetail';
+        this.apiUserHistory = APIUrl + 'userhistory';
 
         this._userdetail$ = <Subject<HIHUser.UserDetail>>new Subject();
         this._userhists$ = <Subject<HIHUser.UserHistory[]>>new Subject();
@@ -55,7 +62,7 @@ export class UserService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'userdetail', { headers: headers })
+        this.http.get(this.apiUserDetail, { headers: headers })
             .map(this.extractUserDetailData)
             .subscribe(data => {
                 this.buffService.setUserDetail(data);
@@ -99,7 +106,7 @@ export class UserService {
 
         var dataJSON = JSON && JSON.stringify(data);
 
-        this.http.post(APIUrl + 'userdetail', dataJSON, { headers: headers })
+        this.http.post(this.apiUserDetail, dataJSON, { headers: headers })
             .map(response => response.json())
             .subscribe(data => {
                 this.buffService.setUserDetail(data);
@@ -120,7 +127,7 @@ export class UserService {
 
         var dataJSON = JSON && JSON.stringify(data);
 
-        this.http.put(APIUrl + 'userdetail', dataJSON, { headers: headers })
+        this.http.put(this.apiUserDetail, dataJSON, { headers: headers })
             .map(response => response.json())
             .subscribe(data => {
                 this.buffService.setUserDetail(data);
@@ -128,7 +135,7 @@ export class UserService {
             },
             error => {
                 if (DebugLogging) {
-                    console.log("Failed to create the user detail!");
+                    console.log("Failed to update the user detail!");
                 }
             });
     }
@@ -149,15 +156,70 @@ export class UserService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'userhistory', { headers: headers })
+        this.http.get(this.apiUserHistory, { headers: headers })
             .map(this.extractUserHistoryData)
             .catch(this.handleError)
             .subscribe(data => {
-                this.buffService.setUserDetail(data);
+                this.buffService.setUserHistories(data);
                 this._userhists$.next(this.buffService.usrHistories);
             },
             error => {
                 // It should be handled already
+            });
+    }
+    createUserLoginHistory(usrId: string) {
+        if (DebugLogging) {
+            console.log("Entering createUserLoginHistory of UserService");
+        }
+
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        let uh = new HIHUser.UserHistory();
+        uh.UserId = usrId;
+        uh.HistType = HIHCommon.UserHistType.Login;
+        uh.TimePoint = new Date();
+
+        var dataJSON = JSON && JSON.stringify(uh);
+
+        this.http.post(this.apiUserHistory, dataJSON, { headers: headers })
+            .map(response => response.json())
+            .subscribe(data => {
+                // Do nothing here
+            },
+            error => {
+                if (DebugLogging) {
+                    console.log("Failed to create the user login history!");
+                }
+            });
+    }
+    createUserLogoutHistory(usrId: string) {
+        if (DebugLogging) {
+            console.log("Entering createUserLogoutHistory of UserService");
+        }
+
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        let uh = new HIHUser.UserHistory();
+        uh.UserId = usrId;
+        uh.HistType = HIHCommon.UserHistType.Logout;
+        uh.TimePoint = new Date();
+        var dataJSON = JSON && JSON.stringify(uh);
+
+        this.http.post(this.apiUserHistory, dataJSON, { headers: headers })
+            .map(response => response.json())
+            .subscribe(data => {
+                // Do nothing here
+            },
+            error => {
+                if (DebugLogging) {
+                    console.log("Failed to create the user logout history!");
+                }
             });
     }
 

@@ -2,22 +2,18 @@
     <table class="table">
         <thead class="thead-default">
             <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Expense</th>
-                <th>Parent</th>
-                <th>Comment</th>
-                <th>Sys Flag</th>
+                <th>SeqNo</th>
+                <th>Type</th>
+                <th>TimePoint</th>
+                <th>Others</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let fs of finTranType">
-                <td>{{fs.Id}}</td>
-                <td>{{fs.Name}}</td>
-                <td><div class="checkbox"><input type="checkbox" [(ngModel)]="fs.Expense"></div></td>
-                <td>{{fs.ParentId}}</td>
-                <td>{{fs.Comment}}</td>
-                <td><div class="checkbox"><input type="checkbox" [(ngModel)]="fs.SysFlag"></div></td>
+            <tr *ngFor="let fs of userHist">
+                <td>{{fs.SeqNo}}</td>
+                <td>{{fs.HistType}}</td>
+                <td>{{fs.TimePoint}}</td>
+                <td>{{fs.Others}}</td>
             </tr>
         </tbody>
     </table>

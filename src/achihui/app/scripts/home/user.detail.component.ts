@@ -7,15 +7,15 @@ import * as HIHUser from '../model/user';
 import { DialogService } from '../services/dialog.service';
 import { UserInfo, AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
+import { BufferService } from '../services/buffer.service';
 
 @Component({
     selector: 'hih-home-userdetail',
     templateUrl: 'app/views/home/userdetail.html'
 })
-
 export class UserDetailComponent implements OnInit, OnDestroy {
     public userDetail: HIHUser.UserDetail = null;
-    private subUserDetail: Subscription = null;
+    //private subUserDetail: Subscription = null;
     private isCreate: boolean = false;
     private userInfo: UserInfo = null;
 
@@ -23,9 +23,10 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         private zone: NgZone,
         private route: ActivatedRoute,
         private router: Router,
-        public dialogService: DialogService,
+        private dialogService: DialogService,
         private userService: UserService,
-        private authService: AuthService) {
+        private authService: AuthService,
+        private buffService: BufferService) {
         if (DebugLogging) {
             console.log("Entering constructor of UserDetailComponent");
         }
@@ -41,11 +42,25 @@ export class UserDetailComponent implements OnInit, OnDestroy {
             }
         });
 
-        if (!this.subUserDetail) {
-            this.subUserDetail = this.userService.userDetail$.subscribe(
-                data => this.getUserDetail(data),
-                error => this.handleUserDetailError(error));
+        if (buffService.isUserDetailLoaded) {
+            this.userDetail = buffService.usrDetail;
+        } else {
+            if (DebugLogging) {
+                console.log("It seems no user detail set yet, using initial value");
+            }
+            this.isCreate = true;
+
+            this.userDetail = new HIHUser.UserDetail();
+            this.userDetail.UserId = this.userInfo.getUserId();
+            this.userDetail.DisplayAs = this.userInfo.getUserName();
+            this.userDetail.Email = this.userInfo.getUserName();
         }
+
+        //if (!this.subUserDetail) {
+        //    this.subUserDetail = this.userService.userDetail$.subscribe(
+        //        data => this.getUserDetail(data),
+        //        error => this.handleUserDetailError(error));
+        //}
     }
 
     ngOnInit() {

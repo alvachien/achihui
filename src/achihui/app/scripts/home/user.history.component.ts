@@ -50,7 +50,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
 
     getUserHistories(data: Array<HIHUser.UserHistory>) {
         if (DebugLogging) {
-            console.log("Entering getUserDetail of UserHistoryComponent");
+            console.log("Entering getUserHistories of UserHistoryComponent");
         }
 
         this.zone.run(() => {

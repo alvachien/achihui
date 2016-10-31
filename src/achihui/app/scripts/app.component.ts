@@ -30,6 +30,8 @@ export class AppComponent implements OnInit, OnDestroy {
             if (this.isLoggedIn) {
                 this.titleLogin = x.getUserName();
 
+                // Create the login user history
+                this.userService.createUserLoginHistory(x.getUserId());
                 // Get the user detail out
                 this.userService.loadUserDetail();
             } else {

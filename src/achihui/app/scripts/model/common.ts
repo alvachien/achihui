@@ -5,6 +5,14 @@ export const IDSplitChar: string = ",";
 
 export enum AuthorizeScope { All = 1, OnlyOwner = 2 };
 export enum MessageType { Info = 1, Warning = 2, Error = 3 };
+export enum UserHistType {
+    Create = 0,
+    Login = 1,
+    Logout = 2,
+    ChangePassword = 3,
+    ResetPassword = 4,
+    Delete = 5
+}
 
 export class InfoMessage {
     public MsgType: MessageType;
