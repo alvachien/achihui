@@ -1,23 +1,25 @@
 ﻿import {
     Component, OnInit, OnDestroy, NgZone
 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Router, ActivatedRoute }   from '@angular/router';
+import { Observable }               from 'rxjs/Observable';
+import { Subscription }             from 'rxjs/Subscription';
 import '../rxjs-operators';
-import { DebugLogging } from '../app.setting';
-import * as HIHFinance from '../model/finance';
-import { FinanceService } from '../services/finance.service';
-import { DialogService } from '../services/dialog.service';
-import { AuthService } from '../services/auth.service';
+import { DebugLogging }             from '../app.setting';
+import * as HIHCommon               from '../model/common';
+import * as HIHFinance              from '../model/finance';
+import { FinanceService }           from '../services/finance.service';
+import { DialogService }            from '../services/dialog.service';
+import { AuthService }              from '../services/auth.service';
 
 @Component({
     selector: 'hih-fin-account-detail',
     templateUrl: 'app/views/finance/account.detail.html'
 })
 export class AccountDetailComponent implements OnInit, OnDestroy {
-    public finAccount: HIHFinance.Account;
+    public finAccount: HIHFinance.Account = null;
     private subAccount: Subscription;
+    public currMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
 
     constructor(
         private zone: NgZone,
@@ -48,9 +50,5 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
             console.log("Entering handleError of AccountCreateComponent");
         }
         console.log(error);
-
-        if (error.status === 401) {
-            this.dialogService.confirm("Unauthorized! It most likely you input an WRONG access code!");
-        }
     }
 }

@@ -1,4 +1,12 @@
 ﻿<div class="container">
+    <div class="page-header">
+        <h2>
+            <span>Language</span><small> List View</small>
+        </h2>
+    </div>
+
+    <hr />
+
     <table class="table">
         <thead class="thead-default">
             <tr>
@@ -15,7 +23,7 @@
                 <td>{{lang.IsoName}}</td>
                 <td>{{lang.EnglishName}}</td>
                 <td>{{lang.NativeName}}</td>
-                <td>{{lang.AppFlag}}</td>
+                <td><div class="checkbox"><input type="checkbox" [(ngModel)]="lang.AppFlag"></div></td>
             </tr>
         </tbody>
     </table>

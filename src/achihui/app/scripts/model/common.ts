@@ -12,7 +12,12 @@ export enum UserHistType {
     ChangePassword = 3,
     ResetPassword = 4,
     Delete = 5
-}
+};
+export enum UIMode {
+    Create = 1,
+    Change = 2,
+    Display = 3
+};
 
 export class InfoMessage {
     public MsgType: MessageType;

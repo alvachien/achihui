@@ -15,7 +15,6 @@ import { AuthService } from '../services/auth.service';
     selector: 'hih-fin-trantype-list',
     templateUrl: 'app/views/finance/trantype.list.html'
 })
-
 export class TranTypeListComponent implements OnInit, OnDestroy {
     public finTranType: Array<HIHFinance.TranType>;
     private subFinTranType: Subscription;

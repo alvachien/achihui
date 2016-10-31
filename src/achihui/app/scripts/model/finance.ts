@@ -487,20 +487,20 @@ export class TranType extends hih.BaseModel {
     constructor() {
         super();
         if (DebugLogging) {
-            console.log("Entering constructor of FinanceTranType");
+            console.log("Entering constructor of TranType");
         }
     }
 
     public onInit() {
         super.onInit();
         if (DebugLogging) {
-            console.log("Entering onInit of FinanceTranType");
+            console.log("Entering onInit of TranType");
         }
     }
 
     public onVerify(): boolean {
         if (DebugLogging) {
-            console.log("Entering onVerify of FinanceTranType");
+            console.log("Entering onVerify of TranType");
         }
         if (!super.onVerify())
             return false;
@@ -510,7 +510,7 @@ export class TranType extends hih.BaseModel {
 
     public writeJSONObject(): any {
         if (DebugLogging) {
-            console.log("Entering writeJSONObject of FinanceTranType");
+            console.log("Entering writeJSONObject of TranType");
         }
 
         let rstObj = super.writeJSONObject();
@@ -519,7 +519,7 @@ export class TranType extends hih.BaseModel {
 
     public onSetData(data: any) {
         if (DebugLogging) {
-            console.log("Entering onSetData of FinanceTranType");
+            console.log("Entering onSetData of TranType");
         }
 
         super.onSetData(data);
