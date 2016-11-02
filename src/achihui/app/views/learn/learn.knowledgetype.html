@@ -7,7 +7,7 @@
 
     <!-- Messages -->
     <div ng-if="ReportedMessages.length > 0">
-        <div class="alert alert-danger" role="alert" ng-repeat="rptmsg in ReportedMessages">
+        <div class="alert alert-danger" role="alert" *ngFor="let rptmsg of ReportedMessages">
             {{ rptmsg  }}
         </div>
     </div>
@@ -45,11 +45,10 @@
 
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button class="btn btn-default btn-primary" ng-click="submit()" ng-hide="isReadonly"
-                        translate="Common.Submit">
-                    Submit
+                <button class="btn btn-default btn-primary" (click)="submit()" ng-hide="isReadonly">
+                    {{"Common.Submit" | translate}}
                 </button>
-                <button class="btn btn-danger" ng-click="close()" translate="Common.BackToList">Cancel</button>
+                <button class="btn btn-danger" (click)="close()">{{"Common.BackToList" | translate}}</button>
             </div>
         </div>
     </form>

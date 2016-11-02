@@ -9,32 +9,27 @@
         <div class="btn-toolbar" role="toolbar" aria-label="...">
             <div class="btn-group" role="group" aria-label="...">
                 <button type="button" class="btn-group btn-primary"
-                        tooltip="{{'Common.New' | translate}}"
-                        ng-click="newItem()">
+                        (click)="newItem()">
                     {{ 'Common.New' | translate}}
                 </button>
 
                 <button type="button" class="btn-group btn-primary"
-                        tooltip="{{'Common.Refresh' | translate}}"
-                        ng-click="refreshList(true)">
+                        (click)="refreshList(true)">
                     {{ 'Common.Refresh' | translate}}
                 </button>
             </div>
 
             <div class="btn-group" role="group" aria-label="...">
-                <button type="button" ng-click="displayItem()"
-                        class="btn-group btn-primary" tooltip="{{'Common.Display' | translate}}"
-                        >{{ 'Common.Display' | translate}}</button>
-                <button type="button" ng-click="editItem()"
-                        class="btn-group btn-warning" tooltip="{{'Common.Edit' | translate}}"
-                        >{{ 'Common.Edit' | translate}}</button>
-                <button type="button" ng-click="removeItem()"
-                        class="btn-group btn-danger" tooltip="{{'Common.Delete' | translate}}"
-                        >{{ 'Common.Delete' | translate}}</button>
+                <button type="button" (click)="displayItem()"
+                        class="btn-group btn-primary">{{ 'Common.Display' | translate}}</button>
+                <button type="button" (click)="editItem()"
+                        class="btn-group btn-warning">{{ 'Common.Edit' | translate}}</button>
+                <button type="button" (click)="removeItem()"
+                        class="btn-group btn-danger">{{ 'Common.Delete' | translate}}</button>
             </div>
         </div>
 
-        <table st-table="dispList" st-safe-src="arKnowledgeType" class="table table-striped table-hover">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <th></th>
@@ -43,14 +38,9 @@
                     <th st-sort="cmt">{{ 'Common.Comment' | translate}}</th>
                     <th st-sort="parid">{{ 'Common.ParentID' | translate}}</th>
                 </tr>
-                <tr>
-                    <th colspan="5">
-                        <input st-search="" class="form-control" placeholder="{{ 'Common.Search' | translate }}" type="search" />
-                    </th>
-                </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="row in dispList">
+                <tr *ngFor="let row of dispList">
                     <td cs-select="row"></td>
                     <td><a ng-href="#/home/learn/knowledgetype/display/{{row.id}}">{{row.id}}</a></td>
                     <td>{{row.fullDisplayName}}</td>
@@ -59,11 +49,6 @@
                 </tr>
             </tbody>
             <tfoot>
-                <tr>
-                    <td colspan="5" class="text-center">
-                        <cst-count></cst-count>
-                    </td>
-                </tr>
             </tfoot>
         </table>
     </div>
