@@ -46,6 +46,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
         }
 
         this.Activity = "Common.Create";
+        this.AccountObject = new HIHFinance.Account();
 
         //this.route.params
         //this.router.routerState
@@ -173,6 +174,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
         if (DebugLogging) {
             console.log("Entering onClose of AccountDetailComponent");
         }
-        //$state.go("home.finance.account.list");
+
+        this.router.navigate(['/finance/account/list']);
     }
 }

@@ -151,7 +151,8 @@ export class AccountListComponent implements OnInit, OnDestroy {
 
     // Create
     newItem() {
-        //$state.go('home.finance.account.create');
+        // Navigate to the create page
+        this.router.navigate(['/finance/account/create']);
     }
 
     // Refresh the list
