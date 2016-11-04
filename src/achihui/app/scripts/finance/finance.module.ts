@@ -17,6 +17,7 @@ import { TranTypeDetailComponent }      from './trantype.detail.component';
 import { AccountComponent }             from './account.component';
 import { AccountListComponent }         from './account.list.component';
 import { AccountDetailComponent }       from './account.detail.component';
+import { AccountDetailDPComponent }     from './account.detail.dp.component';
 import { ControllingCenterComponent }   from './controllingcenter.component';
 import { ControllingCenterListComponent } from './controllingcenter.list.component';
 import { ControllingCenterDetailComponent } from './controllingcenter.detail.component';
@@ -47,6 +48,7 @@ import { OrderDetailComponent }         from './order.detail.component';
         AccountComponent,
         AccountListComponent,
         AccountDetailComponent,
+        AccountDetailDPComponent,
         ControllingCenterComponent,
         ControllingCenterListComponent,
         ControllingCenterDetailComponent,

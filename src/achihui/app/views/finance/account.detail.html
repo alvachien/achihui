@@ -12,11 +12,12 @@
         </div>
     </div>
 
-    <form class="form-horizontal" role="form" name="frmObj">
+    <!-- Form -->
+    <form class="form-horizontal" name="frmObj" (ngSubmit)="onSubmit(detailForm)" #detailForm="ngForm">
         <div class="form-group">
             <label class="control-label col-sm-2" for="iptID">{{'Common.ID' | translate }}</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="iptID"
+                <input type="text" class="form-control" id="iptID" name="iptID"
                        readonly="readonly" placeholder="{{'Common.ID' | translate}}" [(ngModel)]="AccountObject.ID">
             </div>
         </div>
@@ -24,26 +25,25 @@
         <div class="form-group">
             <label class="control-label col-sm-2">{{'Common.Category' | translate }}</label>
             <div class="col-sm-10">
-                <select [(ngModel)]="AccountObject.CategoryID" (disabled)="ActivityID == 3">
-                        <!--ng-options="fac.ID as fac.Name for fac in arFinanceAccountCategory">-->
-                    <option ></option>
+                <select class="form-control" [(ngModel)]="AccountObject.CategoryID" (disabled)="ActivityID == 3" name="category">
+                    <option *ngFor="let ctgy of finAccountCategory" (value)="ctgy.Id">{{ctgy.Name}}</option>
                 </select>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="iptName">{{'Common.Name' | translate }}</label>
+            <label class="control-label col-sm-2">{{'Common.Name' | translate }}</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="iptName" ng-readonly="ActivityID == 3"
+                <input type="text" class="form-control" (readonly)="ActivityID == 3" name="name"
                        placeholder="{{'Common.Name' | translate}}" [(ngModel)]="AccountObject.Name" required>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="iptComment">{{'Common.Comment' | translate }}</label>
+            <label class="control-label col-sm-2">{{'Common.Comment' | translate }}</label>
             <div class="col-sm-10">
-                <input class="form-control" (readonly)="ActivityID == 3" id="iptComment"
-                       [(ngModel)]="AccountObject.Comment" />
+                <input class="form-control" (readonly)="ActivityID == 3" name="comment"
+                       [(ngModel)]="AccountObject.Comment">
             </div>
         </div>
 
@@ -54,11 +54,9 @@
 
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button class="btn btn-default btn-primary" (click)="onSubmit()" ng-hide="ActivityID == 3">
-                    {{'Common.Submit' | translate}}
-                </button>
+                <input type="submit" class="btn btn-default btn-primary" *ngIf="ActivityID != 3" [disabled]="!detailForm.form.valid">
                 <button class="btn btn-danger" (click)="onClose()">{{'Common.BackToList' | translate}}</button>
             </div>
         </div>
-</form>
+    </form>
 </div>

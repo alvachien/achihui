@@ -14,7 +14,7 @@ import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: 'hih-fin-account-detail-dp',
-    template: `<div class="panel panel-success" *ngIf="ShowDownpaymentInfo">
+    template: `<div class="panel panel-success">
                 <div class="panel-heading">
                     <h3 class="panel-title"><span>{{'Finance.Downpayment' | translate }}</span></h3>
                 </div>
@@ -23,35 +23,35 @@ import { AuthService } from '../services/auth.service';
                     <div class="form-group">
                         <label class="control-label col-sm-2">{{'Finance.Direction' | translate }}</label>
                         <div class="col-sm-10">
-                            <input class="form-control" readonly="readonly" [(ngModel)]="DPAccountInfo.Direct" />
+                            <input class="form-control" readonly="readonly" name="dpdirect" [(ngModel)]="DPAccountInfo.Direct" />
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-2">{{'Finance.BeginDate' | translate }}</label>
                         <div class="col-sm-10">
-                            <input class="form-control" readonly="readonly" [(ngModel)]="DPAccountInfo.StartDate" />
+                            <input class="form-control" readonly="readonly" name="dpstartdate" [(ngModel)]="DPAccountInfo.StartDate" />
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-2">{{'Finance.EndDate' | translate }}</label>
                         <div class="col-sm-10">
-                            <input class="form-control" readonly="readonly" [(ngModel)]="DPAccountInfo.EndDate" />
+                            <input class="form-control" readonly="readonly" name="dpenddate" [(ngModel)]="DPAccountInfo.EndDate" />
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-2">Repeat Type</label>
                         <div class="col-sm-10">
-                            <input class="form-control" readonly="readonly" [(ngModel)]="DPAccountInfo.RepeatType" />
+                            <input class="form-control" readonly="readonly" name="dprepttype" [(ngModel)]="DPAccountInfo.RepeatType" />
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-2">{{'Finance.RefDoc' | translate }}</label>
                         <div class="col-sm-10">
-                            <input class="form-control" readonly="readonly" [(ngModel)]="DPAccountInfo.RefDocID" />
+                            <input class="form-control" readonly="readonly" name="dprefdocid" [(ngModel)]="DPAccountInfo.RefDocID" />
                         </div>
                     </div>
 

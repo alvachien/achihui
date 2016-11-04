@@ -11,6 +11,7 @@ import * as HIHFinance              from '../model/finance';
 import { FinanceService }           from '../services/finance.service';
 import { DialogService }            from '../services/dialog.service';
 import { AuthService }              from '../services/auth.service';
+import { BufferService }            from '../services/buffer.service';
 
 @Component({
     selector: 'hih-fin-account-detail',
@@ -18,8 +19,8 @@ import { AuthService }              from '../services/auth.service';
 })
 export class AccountDetailComponent implements OnInit, OnDestroy {
     public AccountObject: HIHFinance.Account = null;
-    private subAccount: Subscription;
-    public currMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
+    public finAccountCategory: Array<HIHFinance.AccountCategory>;
+
     public Activity:string = "";
     public ActivityID: HIHCommon.UIMode = HIHCommon.UIMode.Create;
     public ShowDownpaymentInfo: boolean = false;
@@ -28,15 +29,28 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     public SafeDPTmpDoc = [];
     public ReportedMessages = [];
 
+    private subAccount: Subscription;
+    private subAccountCtgy: Subscription;
+
     constructor(
         private zone: NgZone,
         private route: ActivatedRoute,
         private router: Router,
-        public dialogService: DialogService,
+        private dialogService: DialogService,
         private financeService: FinanceService,
-        private authService: AuthService) {
+        private authService: AuthService,
+        private buffService: BufferService) {
         if (DebugLogging) {
             console.log("Entering constructor of AccountDetailComponent");
+        }
+
+        if (!this.buffService.isFinAccountCategoryLoaded) {
+            this.subAccountCtgy = this.financeService.accountcategories$.subscribe(data => this.getAccountCategories(data),
+                error => this.handleError(error));
+
+            this.financeService.loadAccountCategories();
+        } else {
+            this.getAccountCategories(this.buffService.finAccountCategories);
         }
     }
 
@@ -96,6 +110,16 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
         if (DebugLogging) {
             console.log("Entering ngOnDestroy of AccountDetailComponent");
         }
+    }
+
+    getAccountCategories(data: Array<HIHFinance.AccountCategory>) {
+        if (DebugLogging) {
+            console.log("Entering getAccountCategories of AccountDetailComponent");
+        }
+
+        this.zone.run(() => {
+            this.finAccountCategory = data;
+        });
     }
 
     handleError(error: any) {
