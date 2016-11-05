@@ -25,6 +25,15 @@ export class FinanceService {
     private _controlcenter$: Subject<HIHFinance.ControllingCenter[]>;
     private _order$: Subject<HIHFinance.Order[]>;
 
+    private apiSetting: string;
+    private apiAccountCategory: string;
+    private apiTranType: string;
+    private apiDocType: string;
+    private apiCurrency: string;
+    private apiAccount: string;
+    private apiControllingCenter: string;
+    private apiOrder: string;
+
     constructor(private http: Http,
         private authService: AuthService,
         private buffService: BufferService) {
@@ -41,6 +50,15 @@ export class FinanceService {
         this._account$ = <Subject<HIHFinance.Account[]>>new Subject();
         this._controlcenter$ = <Subject<HIHFinance.ControllingCenter[]>>new Subject();
         this._order$ = <Subject<HIHFinance.Order[]>>new Subject();
+
+        this.apiSetting = APIUrl + "financesetting";
+        this.apiAccountCategory = APIUrl + "financeaccountcategory";
+        this.apiTranType = APIUrl + "financetrantype";
+        this.apiDocType = APIUrl + "financedoctype";
+        this.apiCurrency = APIUrl + "financecurrency";
+        this.apiAccount = APIUrl + "financeaccount";
+        this.apiControllingCenter = APIUrl + "financecontrollingcenter";
+        this.apiOrder = APIUrl + "financeorder";
     }
 
     get settings$() {
@@ -86,7 +104,7 @@ export class FinanceService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financesetting', { headers: headers })
+        this.http.get(this.apiSetting, { headers: headers })
             .map(this.extractSettingData)
             .catch(this.handleError)
             .subscribe(data => {
@@ -133,7 +151,7 @@ export class FinanceService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financeaccountcategory', { headers: headers })
+        this.http.get(this.apiAccountCategory, { headers: headers })
             .map(this.extractAcntCtgyData)
             .catch(this.handleError)
             .subscribe(data => {
@@ -181,7 +199,7 @@ export class FinanceService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financetrantype', { headers: headers })
+        this.http.get(this.apiTranType, { headers: headers })
             .map(this.extractTranTypeData)
             .catch(this.handleError)
             .subscribe(data => {
@@ -228,7 +246,7 @@ export class FinanceService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financedoctype', { headers: headers })
+        this.http.get(this.apiDocType, { headers: headers })
             .map(this.extractDocTypeData)
             .catch(this.handleError)
             .subscribe(data => {
@@ -275,7 +293,7 @@ export class FinanceService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financecurrency', { headers: headers })
+        this.http.get(this.apiCurrency, { headers: headers })
             .map(this.extractCurrencyData)
             .catch(this.handleError)
             .subscribe(data => {
@@ -321,7 +339,7 @@ export class FinanceService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financeaccount', { headers: headers })
+        this.http.get(this.apiAccount, { headers: headers })
             .map(this.extractAccountData)
             .catch(this.handleError)
             .subscribe(data => {
@@ -350,6 +368,26 @@ export class FinanceService {
 
         return body || {};
     }
+    createAccount(data: HIHFinance.Account) {
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        var dataJSON = JSON && JSON.stringify(data);
+
+        this.http.post(this.apiAccount, dataJSON, { headers: headers })
+            .map(response => response.json())
+            .subscribe(data => {
+                //this.buffService.setUserDetail(data);
+                //this._userdetail$.next(this.buffService.usrDetail);
+            },
+            error => {
+                if (DebugLogging) {
+                    console.log("Failed to create the account!");
+                }
+            });
+    }
 
     // Controlling center
     loadControllingCenters(forceReload?: boolean) {
@@ -367,7 +405,7 @@ export class FinanceService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financecontrollingcenter', { headers: headers })
+        this.http.get(this.apiControllingCenter, { headers: headers })
             .map(this.extractControllingCenterData)
             .catch(this.handleError)
             .subscribe(data => {
@@ -413,7 +451,7 @@ export class FinanceService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(APIUrl + 'financeorder', { headers: headers })
+        this.http.get(this.apiOrder, { headers: headers })
             .map(this.extractOrderData)
             .catch(this.handleError)
             .subscribe(data => {

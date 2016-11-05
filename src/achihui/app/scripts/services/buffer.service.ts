@@ -42,6 +42,22 @@ export class BufferService {
     _isfinOrderLoaded: boolean;
     _isfinExRateLoaded: boolean;
     _isfinDocumentLoaded: boolean;
+
+    // Learn part
+    lrnCategories: Array<HIHLearn.LearnCategory>;
+    lrnObjects: Array<HIHLearn.LearnObject>;
+    lrnHistories: Array<HIHLearn.LearnHistory>;
+    lrnAwards: Array<HIHLearn.LearnAward>;
+    lrnEnWords: Array<HIHLearn.EnWord>;    
+    lrnEnSentences: Array<HIHLearn.EnSentence>;
+    lrnEnPOS: Array<HIHLearn.ENPOS>;
+    _islrnCategoryLoaded: boolean;
+    _islrnObjectLoaded: boolean;
+    _islrnHistoryLoaded: boolean;
+    _islrnAwardLoaded: boolean;
+    _islrnEnWordLoaded: boolean;
+    _islrnEnSentenceLoaded: boolean;
+    _islrnEnPOSLoaded: boolean;
     
     constructor() {
         if (DebugLogging) {
@@ -62,6 +78,13 @@ export class BufferService {
         this._isfinAccountLoaded = false;
         this._isfinControllingCenterLoaded = false;
         this._isfinOrderLoaded = false;
+        this._islrnAwardLoaded = false;
+        this._islrnCategoryLoaded = false;
+        this._islrnHistoryLoaded = false;
+        this._islrnObjectLoaded = false;
+        this._islrnEnWordLoaded = false;
+        this._islrnEnSentenceLoaded = false;
+        this._islrnEnPOSLoaded = false;
 
         this.cmnModules = new Array<HIHBase.Module>();
         this.cmnTags = new Array<HIHBase.Tag>();
@@ -77,6 +100,13 @@ export class BufferService {
         this.finAccounts = new Array<HIHFinance.Account>();
         this.finControllingCenters = new Array<HIHFinance.ControllingCenter>();
         this.finOrders = new Array<HIHFinance.Order>();
+        this.lrnAwards = new Array<HIHLearn.LearnAward>();
+        this.lrnCategories = new Array<HIHLearn.LearnCategory>();
+        this.lrnHistories = new Array<HIHLearn.LearnHistory>();
+        this.lrnObjects = new Array<HIHLearn.LearnObject>();
+        this.lrnEnPOS = new Array<HIHLearn.ENPOS>();
+        this.lrnEnWords = new Array<HIHLearn.EnWord>();
+        this.lrnEnSentences = new Array<HIHLearn.EnSentence>();
     }
 
     // Common module
@@ -371,5 +401,152 @@ export class BufferService {
         }
         this.finOrders = data;
         this._isfinOrderLoaded = true;
+    }
+
+    // Learn category
+    get isLearnCategoryLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isLearnCategoryLoaded-get of BufferService");
+        }
+        return this._islrnCategoryLoaded;
+    }
+    set isLearnCategoryLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isLearnCategoryLoaded-set of BufferService");
+        }
+        this._islrnCategoryLoaded = val;
+    }
+    public setLearnCategories(data: Array<HIHLearn.LearnCategory>) {
+        if (DebugLogging) {
+            console.log("Entering setLearnCategories of BufferService");
+        }
+        this.lrnCategories = data;
+        this._islrnCategoryLoaded = true;
+    }
+
+    // Learn object
+    get isLearnObjectLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isLearnObjectLoaded-get of BufferService");
+        }
+        return this._islrnObjectLoaded;
+    }
+    set isLearnObjectLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isLearnObjectLoaded-set of BufferService");
+        }
+        this._islrnObjectLoaded = val;
+    }
+    public setLearnObjects(data: Array<HIHLearn.LearnObject>) {
+        if (DebugLogging) {
+            console.log("Entering setLearnObjects of BufferService");
+        }
+        this.lrnObjects = data;
+        this._islrnObjectLoaded = true;
+    }
+
+    // Learn history
+    get isLearnHistoryLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isLearnHistoryLoaded-get of BufferService");
+        }
+        return this._islrnHistoryLoaded;
+    }
+    set isLearnHistoryLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isLearnHistoryLoaded-set of BufferService");
+        }
+        this._islrnHistoryLoaded = val;
+    }
+    public setLearnHistories(data: Array<HIHLearn.LearnHistory>) {
+        if (DebugLogging) {
+            console.log("Entering setLearnHistories of BufferService");
+        }
+        this.lrnHistories = data;
+        this._islrnHistoryLoaded = true;
+    }
+
+    // Learn award
+    get isLearnAwardLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isLearnAwardLoaded-get of BufferService");
+        }
+        return this._islrnAwardLoaded;
+    }
+    set isLearnAwardLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isLearnAwardLoaded-set of BufferService");
+        }
+        this._islrnAwardLoaded = val;
+    }
+    public setLearnAwards(data: Array<HIHLearn.LearnAward>) {
+        if (DebugLogging) {
+            console.log("Entering setLearnAwards of BufferService");
+        }
+        this.lrnAwards = data;
+        this._islrnAwardLoaded = true;
+    }
+
+    // Learn En POS
+    get isLearnEnPOSLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isLearnEnPOSLoaded-get of BufferService");
+        }
+        return this._islrnEnPOSLoaded;
+    }
+    set isLearnEnPOSLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isLearnEnPOSLoaded-set of BufferService");
+        }
+        this._islrnEnPOSLoaded = val;
+    }
+    public setLearnEnPOS(data: Array<HIHLearn.ENPOS>) {
+        if (DebugLogging) {
+            console.log("Entering setLearnEnPOS of BufferService");
+        }
+        this.lrnEnPOS = data;
+        this._islrnEnPOSLoaded = true;
+    }
+
+    // Learn En Word
+    get isLearnEnWordLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isLearnEnWordLoaded-get of BufferService");
+        }
+        return this._islrnEnWordLoaded;
+    }
+    set isLearnEnWordLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isLearnEnWordLoaded-set of BufferService");
+        }
+        this._islrnEnWordLoaded = val;
+    }
+    public setLearnEnWord(data: Array<HIHLearn.EnWord>) {
+        if (DebugLogging) {
+            console.log("Entering setLearnEnWord of BufferService");
+        }
+        this.lrnEnWords = data;
+        this._islrnEnWordLoaded = true;
+    }
+
+    // Learn En Sentence
+    get isLearnEnSentenceLoaded(): boolean {
+        if (DebugLogging) {
+            console.log("Entering isLearnEnSentenceLoaded-get of BufferService");
+        }
+        return this._islrnEnSentenceLoaded;
+    }
+    set isLearnEnSentenceLoaded(val: boolean) {
+        if (DebugLogging) {
+            console.log("Entering isLearnEnSentenceLoaded-set of BufferService");
+        }
+        this._islrnEnSentenceLoaded = val;
+    }
+    public setLearnEnSentence(data: Array<HIHLearn.EnSentence>) {
+        if (DebugLogging) {
+            console.log("Entering setLearnEnSentence of BufferService");
+        }
+        this.lrnEnSentences = data;
+        this._islrnEnSentenceLoaded = true;
     }
 }

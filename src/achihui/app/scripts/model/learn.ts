@@ -1,6 +1,10 @@
 ﻿import { DebugLogging } from '../app.setting';
 import * as hih from './common';
 
+/**
+ * Knowledge type is equivalent to Learn Category!
+ * Therefore, Knowledge actually map to Learn Object! 
+
 // Knowledge type
 export class KnowledgeType extends hih.BaseModel {
     public Id: number;
@@ -83,8 +87,12 @@ export class Knowledge extends hih.BaseModel {
         return rstObj;
     }
 }
+ */
 
-// ENPOS
+
+/**
+ * ENPOS: English Part of Speech
+ */
 export class ENPOS extends hih.BaseModel {
     public PosAbb: string;
     public PosName: string;
@@ -122,9 +130,19 @@ export class ENPOS extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of ENPOS");
+        }
+
+        super.onSetData(data);
+    }
 }
 
-// Word explain
+/**
+ * ENWordExplain: English Word's Explain
+ */
 export class ENWordExplain extends hih.BaseModel {
     public ExplainId: number;
     public PosAbb: string;
@@ -164,7 +182,9 @@ export class ENWordExplain extends hih.BaseModel {
     }
 }
 
-// Word
+/**
+ * ENWord: English Word
+ */
 export class EnWord extends hih.BaseModel {
     public WordId: number;
     public WordString: string;
@@ -202,9 +222,19 @@ export class EnWord extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Finance.Setting");
+        }
+
+        super.onSetData(data);
+    }
 }
 
-// Senence explain
+/**
+ * ENSentenceExplain: English Sentence's Explain
+ */
 export class EnSentenceExplain extends hih.BaseModel {
     public ExplainId: number;
     public LangId: number;
@@ -243,12 +273,15 @@ export class EnSentenceExplain extends hih.BaseModel {
     }
 }
 
-// Sentence
+/**
+ * EnSentence: English Sentence
+ */
 export class EnSentence extends hih.BaseModel {
     public SentenceId: number;
     public SentenceString: string;
     public Tags: string[];
     public Explains: ENWordExplain[];
+
     constructor() {
         super();
         if (DebugLogging) {
@@ -281,9 +314,19 @@ export class EnSentence extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Finance.Setting");
+        }
+
+        super.onSetData(data);
+    }
 }
 
-// Learn category
+/**
+ * LearnCategory: Learn category, same as knowledge type
+ */
 export class LearnCategory extends hih.BaseModel {
     public Id: number;
     public ParentId: number;
@@ -327,9 +370,19 @@ export class LearnCategory extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Finance.Setting");
+        }
+
+        super.onSetData(data);
+    }
 }
 
-// Learn Object
+/**
+ * LearnObject: Learn object, same as Knowledge
+ */
 export class LearnObject extends hih.BaseModel {
     public Id: number;
     public CategoryId: number;
@@ -366,9 +419,19 @@ export class LearnObject extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Finance.Setting");
+        }
+
+        super.onSetData(data);
+    }
 }
 
-// Learn History
+/**
+ * LearnHistory: History of the learn object and the user
+ */
 export class LearnHistory extends hih.BaseModel {
     constructor() {
         super();
@@ -402,9 +465,19 @@ export class LearnHistory extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Finance.Setting");
+        }
+
+        super.onSetData(data);
+    }
 }
 
-// Learn Award
+/**
+ * LearnAward: Learn award for the user
+ */
 export class LearnAward extends hih.BaseModel {
     constructor() {
         super();
@@ -438,7 +511,13 @@ export class LearnAward extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
+
+    public onSetData(data: any) {
+        if (DebugLogging) {
+            console.log("Entering onSetData of Finance.Setting");
+        }
+
+        super.onSetData(data);
+    }
 }
-
-
 
