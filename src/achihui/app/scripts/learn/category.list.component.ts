@@ -5,16 +5,18 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import '../rxjs-operators';
+import * as HIHLearn from '../model/learn';
 import { DebugLogging } from '../app.setting';
 import { DialogService } from '../services/dialog.service';
 import { AuthService } from '../services/auth.service';
+import { LearnService } from '../services/learn.service';
 
 @Component({
-    selector: 'my-fin-setting',
-    templateUrl: 'app/views/learn/learn.category.list.html'
+    selector: 'hih-learn-category-list',
+    templateUrl: 'app/views/learn/category.list.html'
 })
-
-export class LearnCategoryListComponent implements OnInit, OnDestroy {
+export class CategoryListComponent implements OnInit, OnDestroy {
+    public lrnCategories: Array<HIHLearn.LearnCategory>;
     //public finSettings: Array<HIHFinance.Setting>;
     //private subFinSetting: Subscription;
 
@@ -22,17 +24,17 @@ export class LearnCategoryListComponent implements OnInit, OnDestroy {
         private zone: NgZone,
         private route: ActivatedRoute,
         private router: Router,
-        public dialogService: DialogService,
-        //private financeService: FinanceService,
+        private dialogService: DialogService,
+        private learnService: LearnService,
         private authService: AuthService) {
         if (DebugLogging) {
-            console.log("Entering constructor of FinanceSettingComponent");
+            console.log("Entering constructor of CategoryListComponent");
         }
     }
 
     ngOnInit() {
         if (DebugLogging) {
-            console.log("Entering ngOnInit of FinanceSettingComponent");
+            console.log("Entering ngOnInit of CategoryListComponent");
         }
 
         //if (!this.subFinSetting) {
@@ -45,7 +47,7 @@ export class LearnCategoryListComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (DebugLogging) {
-            console.log("Entering ngOnDestroy of FinanceSettingComponent");
+            console.log("Entering ngOnDestroy of CategoryListComponent");
         }
 
         //if (this.subFinSetting) {

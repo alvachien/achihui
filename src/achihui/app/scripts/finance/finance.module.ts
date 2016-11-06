@@ -56,7 +56,6 @@ import { OrderDetailComponent }         from './order.detail.component';
         OrderListComponent,
         OrderDetailComponent
     ],
-
     providers: [
         FinanceService
     ]
