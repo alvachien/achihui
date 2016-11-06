@@ -36,12 +36,12 @@ export class ObjectListComponent implements OnInit, OnDestroy {
             console.log("Entering ngOnInit of Learn.ObjectListComponent");
         }
 
-        //if (!this.subAccount) {
-        //    this.subAccount = this.financeService.account$.subscribe(data => this.getAccountList(data),
-        //        error => this.handleError(error));
+        if (!this.subObject) {
+            this.subObject = this.learnService.object$.subscribe(data => this.getObjectList(data),
+                error => this.handleError(error));
 
-        //    this.financeService.loadAccounts();
-        //}
+            this.learnService.loadObjects();
+        }
     }
 
     ngOnDestroy() {
@@ -49,21 +49,21 @@ export class ObjectListComponent implements OnInit, OnDestroy {
             console.log("Entering ngOnDestroy of Learn.ObjectListComponent");
         }
 
-        //if (this.subAccount) {
-        //    this.subAccount.unsubscribe();
-        //    this.subAccount = null;
-        //}
+        if (this.subObject) {
+            this.subObject.unsubscribe();
+            this.subObject = null;
+        }
     }
 
-    //getAccountList(data: Array<HIHFinance.Account>) {
-    //    if (DebugLogging) {
-    //        console.log("Entering getAccountList of Learn.ObjectListComponent");
-    //    }
+    getObjectList(data: Array<HIHLearn.LearnObject>) {
+        if (DebugLogging) {
+            console.log("Entering getObjectList of Learn.ObjectListComponent");
+        }
 
-    //    this.zone.run(() => {
-    //        this.finAccounts = data;
-    //    });
-    //}
+        this.zone.run(() => {
+            this.lrnObjects = data;
+        });
+    }
 
     handleError(error: any) {
         if (DebugLogging) {

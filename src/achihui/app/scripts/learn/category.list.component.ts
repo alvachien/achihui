@@ -17,11 +17,9 @@ import { LearnService } from '../services/learn.service';
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
     public lrnCategories: Array<HIHLearn.LearnCategory>;
-    //public finSettings: Array<HIHFinance.Setting>;
-    //private subFinSetting: Subscription;
+    private subLrnCtgy: Subscription;
 
-    constructor(
-        private zone: NgZone,
+    constructor(private zone: NgZone,
         private route: ActivatedRoute,
         private router: Router,
         private dialogService: DialogService,
@@ -37,43 +35,43 @@ export class CategoryListComponent implements OnInit, OnDestroy {
             console.log("Entering ngOnInit of CategoryListComponent");
         }
 
-        //if (!this.subFinSetting) {
-        //    this.subFinSetting = this.financeService.settings$.subscribe(data => this.getSettings(data),
-        //        error => this.handleError(error));
+        if (!this.subLrnCtgy) {
+            this.subLrnCtgy = this.learnService.category$.subscribe(data => this.getCategories(data),
+                error => this.handleError(error));
 
-        //    this.financeService.loadSettings();
-        //}
+            this.learnService.loadCategories();
+        }
     }
 
     ngOnDestroy() {
         if (DebugLogging) {
-            console.log("Entering ngOnDestroy of CategoryListComponent");
+            console.log("Entering ngOnDestroy of Learn.CategoryListComponent");
         }
 
-        //if (this.subFinSetting) {
-        //    this.subFinSetting.unsubscribe();
-        //    this.subFinSetting = null;
-        //}
+        if (this.subLrnCtgy) {
+            this.subLrnCtgy.unsubscribe();
+            this.subLrnCtgy = null;
+        }
     }
 
-    //getSettings(data: Array<HIHFinance.Setting>) {
-    //    if (DebugLogging) {
-    //        console.log("Entering getSettings of FinanceSettingComponent");
-    //    }
+    getCategories(data: Array<HIHLearn.LearnCategory>) {
+        if (DebugLogging) {
+            console.log("Entering getCategories of Learn.CategoryListComponent");
+        }
 
-    //    this.zone.run(() => {
-    //        this.finSettings = data;
-    //    });
-    //}
+        this.zone.run(() => {
+            this.lrnCategories = data;
+        });
+    }
 
-    //handleError(error: any) {
-    //    if (DebugLogging) {
-    //        console.log("Entering handleError of FinanceSettingComponent");
-    //    }
-    //    console.log(error);
+    handleError(error: any) {
+        if (DebugLogging) {
+            console.log("Entering handleError of Learn.CategoryListComponent");
+        }
+        console.log(error);
 
-    //    if (error.status === 401) {
-    //        this.dialogService.confirm("Unauthorized! It most likely you input an WRONG access code!");
-    //    }
-    //}
+        if (error.status === 401) {
+            this.dialogService.confirm("Unauthorized! It most likely you input an WRONG access code!");
+        }
+    }
 }

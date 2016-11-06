@@ -332,6 +332,7 @@ export class LearnCategory extends hih.BaseModel {
     public ParentId: number;
     public Name: string;
     public Comment: string;
+    public SysFlag: boolean;
 
     // Runtime information
     public ParentIdForJsTree: number;
@@ -377,6 +378,26 @@ export class LearnCategory extends hih.BaseModel {
         }
 
         super.onSetData(data);
+
+        if (data && data.id) {
+            this.Id = +data.id;
+        }
+        if (data && data.parID) {
+            this.ParentId = +data.parID;
+        } else {
+            this.ParentId = null;
+        }
+        if (data && data.name) {
+            this.Name = data.name;
+        }
+        if (data && data.comment) {
+            this.Comment = data.comment;
+        }
+        if (data && data.sysFlag) {
+            this.SysFlag = data.sysFlag;
+        } else {
+            this.SysFlag = false;
+        }
     }
 }
 
