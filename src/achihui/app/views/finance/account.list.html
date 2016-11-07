@@ -31,7 +31,6 @@
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th></th>
                 <th>{{'Common.ID' | translate }}</th>
                 <th>{{'Common.Category' | translate }}</th>
                 <th>{{'Common.Name' | translate }}</th>
@@ -42,7 +41,6 @@
         </thead>
         <tbody>
             <tr *ngFor="let row of finAccounts">
-                <td></td>
                 <td><a>{{row.ID}}</a></td>
                 <td>{{row.CategoryObject.Name}}</td>
                 <td>{{row.Name}}</td>

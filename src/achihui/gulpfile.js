@@ -62,6 +62,20 @@ gulp.task('setup-vendors-css', function () {
     ]).pipe(gulp.dest(paths.cssVendors));
 });
 
+gulp.task('setup-vendors-tinymce', function () {
+    gulp.src([
+      paths.npm + 'tinymce/**/*.js'
+    ]).pipe(gulp.dest(lib + 'tinymce/'));
+
+    gulp.src([
+      paths.npm + 'fine-uploader/fine-uploader/templates/*.html',
+    ]).pipe(gulp.dest(lib + 'fineuploader/templates/'));
+
+    gulp.src([
+      paths.npm + 'fine-uploader/fine-uploader/placeholders/*.png',
+    ]).pipe(gulp.dest(lib + 'fineuploader/placeholders/'));
+});
+
 gulp.task('setup-vendors-fineuploader', function () {
     gulp.src([
       paths.npm + 'fine-uploader/fine-uploader/fine-uploader.core.js',
