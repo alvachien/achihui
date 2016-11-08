@@ -43,13 +43,13 @@ export class AppComponent implements OnInit, OnDestroy {
         });
 
         translateService.addLangs(["en", "zh"]);
-        translateService.setDefaultLang('zh');
+        translateService.setDefaultLang('en');
 
         if (environment !== "Development") {
             let browserLang = translateService.getBrowserLang();
-            translateService.use(browserLang.match(/en|zh/) ? browserLang : 'zh');
+            translateService.use(browserLang.match(/en|zh/) ? browserLang : 'en');
         } else {
-            translateService.use('zh');
+            translateService.use('en');
         }
     }
 

@@ -1,10 +1,10 @@
-﻿/// <binding AfterBuild='build' Clean='clean-lib' />
+﻿/// <binding AfterBuild='build2' Clean='build-clean2' />
 var gulp = require('gulp'),
     ts = require('gulp-typescript'),
     fs = require("fs"),
     del = require('del'),
     path = require('path'),
-    runSequence = require('run-sequence');;
+    runSequence = require('run-sequence');
 
 var lib = "./wwwroot/libs/";
 var app = "./wwwroot/app/";
@@ -68,12 +68,16 @@ gulp.task('setup-vendors-tinymce', function () {
     ]).pipe(gulp.dest(lib + 'tinymce/'));
 
     gulp.src([
-      paths.npm + 'fine-uploader/fine-uploader/templates/*.html',
-    ]).pipe(gulp.dest(lib + 'fineuploader/templates/'));
+      paths.npm + 'tinymce/**/*.css'
+    ]).pipe(gulp.dest(lib + 'tinymce/'));
 
     gulp.src([
-      paths.npm + 'fine-uploader/fine-uploader/placeholders/*.png',
-    ]).pipe(gulp.dest(lib + 'fineuploader/placeholders/'));
+      paths.npm + 'tinymce/**/*.woff'
+    ]).pipe(gulp.dest(lib + 'tinymce/'));
+
+    gulp.src([
+      paths.npm + 'tinymce/**/*.ttf'
+    ]).pipe(gulp.dest(lib + 'tinymce/'));
 });
 
 gulp.task('setup-vendors-fineuploader', function () {
@@ -89,15 +93,15 @@ gulp.task('setup-vendors-fineuploader', function () {
       paths.npm + 'fine-uploader/fine-uploader/fine-uploader-new.min.css.map',
       paths.npm + 'fine-uploader/fine-uploader/fine-uploader-gallery.css',
       paths.npm + 'fine-uploader/fine-uploader/fine-uploader-gallery.min.css',
-      paths.npm + 'fine-uploader/fine-uploader/fine-uploader-gallery.min.css.map',
+      paths.npm + 'fine-uploader/fine-uploader/fine-uploader-gallery.min.css.map'
     ]).pipe(gulp.dest(lib + 'fineuploader/'));
 
     gulp.src([
-      paths.npm + 'fine-uploader/fine-uploader/templates/*.html',
+      paths.npm + 'fine-uploader/fine-uploader/templates/*.html'
     ]).pipe(gulp.dest(lib + 'fineuploader/templates/'));
 
     gulp.src([
-      paths.npm + 'fine-uploader/fine-uploader/placeholders/*.png',
+      paths.npm + 'fine-uploader/fine-uploader/placeholders/*.png'
     ]).pipe(gulp.dest(lib + 'fineuploader/placeholders/'));
 });
 
@@ -108,11 +112,11 @@ gulp.task('setup-vendors-font', function () {
       paths.npm + 'font-awesome/fonts/fontawesome-webfont.svg',
       paths.npm + 'font-awesome/fonts/fontawesome-webfont.ttf',
       paths.npm + 'font-awesome/fonts/fontawesome-webfont.woff',
-      paths.npm + 'font-awesome/fonts/fontawesome-webfont.woff2',
+      paths.npm + 'font-awesome/fonts/fontawesome-webfont.woff2'
     ]).pipe(gulp.dest(paths.fontsVendors));
 });
 
-gulp.task('setup-vendors', ['setup-vendors-js', 'setup-vendors-css', 'setup-vendors-font']);
+gulp.task('setup-vendors', ['setup-vendors-js', 'setup-vendors-css', 'setup-vendors-font', 'setup-vendors-tinymce']);
 
 gulp.task('setup-environment', function (done) {
     gulp.src([
@@ -140,7 +144,7 @@ gulp.task('build-resource', function () {
     gulp.src([
         'app/resources/**/*.ico',
         'app/resources/**/*.png',
-        'app/resources/**/*.jpg',
+        'app/resources/**/*.jpg'
     ]).pipe(gulp.dest(paths.resApp));
 });
 
@@ -180,7 +184,23 @@ gulp.task('clean-app', function () {
 
 gulp.task('build-clean', ['clean-lib', 'clean-app']);
 
+//gulp.task('build-clean2', gulp.parallel('clean-lib', 'clean-app', function () {
+//    // do more stuff
+//    //done();
+//}));
+
 gulp.task('build', function () {
     runSequence('build-clean',
               ['setup-vendors', 'setup-environment', 'build-view', 'build-css', 'build-locales', 'build-resource', 'compile-typescript']);
 });
+
+//gulp.task('build-mid2', gulp.parallel('setup-vendors', 'setup-environment', 'build-view', 'build-css', 'build-locales', 'build-resource', 'compile-typescript', function () {
+//    // do more stuff
+//    //done();
+//}));
+
+//gulp.task('build2', gulp.series('build-clean2', 'build-mid2', function (done) {
+//    // do more stuff
+//    done();
+//}
+//));

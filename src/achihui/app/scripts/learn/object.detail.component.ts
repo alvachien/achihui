@@ -17,6 +17,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class ObjectDetailComponent implements OnInit, OnDestroy {
     public lrnObject: HIHLearn.LearnObject = null;
+    public lrnCategories: Array<HIHLearn.LearnCategory>;
     private subObject: Subscription = null;
 
     constructor(
@@ -52,5 +53,9 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
         if (error.status === 401) {
             this.dialogService.confirm("Unauthorized! It most likely you input an WRONG access code!");
         }
+    }
+
+    onEditorKeyup($event) {
+        console.log($event);
     }
 }
