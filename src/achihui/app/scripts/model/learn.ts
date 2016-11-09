@@ -407,6 +407,8 @@ export class LearnCategory extends hih.BaseModel {
 export class LearnObject extends hih.BaseModel {
     public Id: number;
     public CategoryId: number;
+    public Name: string;
+    public Content: string;
 
     constructor() {
         super();
@@ -447,6 +449,19 @@ export class LearnObject extends hih.BaseModel {
         }
 
         super.onSetData(data);
+
+        if (data && data.id) {
+            this.Id = data.id;
+        }
+        if (data && data.category) {
+            this.CategoryId = data.category;
+        }
+        if (data && data.name) {
+            this.Name = data.name;
+        }
+        if (data && data.content) {
+            this.Content = data.content;
+        }
     }
 }
 
@@ -454,6 +469,11 @@ export class LearnObject extends hih.BaseModel {
  * LearnHistory: History of the learn object and the user
  */
 export class LearnHistory extends hih.BaseModel {
+    public UserId: string;
+    public ObjectId: number;
+    public LearnDate: Date;
+    public Comment: string;
+
     constructor() {
         super();
         if (DebugLogging) {

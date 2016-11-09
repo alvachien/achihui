@@ -108,13 +108,13 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (DebugLogging) {
-            console.log("Entering ngOnDestroy of AccountDetailComponent");
+            console.log("Entering ngOnDestroy of Finance.AccountDetailComponent");
         }
     }
 
     getAccountCategories(data: Array<HIHFinance.AccountCategory>) {
         if (DebugLogging) {
-            console.log("Entering getAccountCategories of AccountDetailComponent");
+            console.log("Entering getAccountCategories of Finance.AccountDetailComponent");
         }
 
         this.zone.run(() => {
@@ -124,7 +124,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
     handleError(error: any) {
         if (DebugLogging) {
-            console.log("Entering handleError of AccountDetailComponent");
+            console.log("Entering handleError of Finance.AccountDetailComponent");
         }
         console.log(error);
     }
@@ -135,7 +135,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
     goDPDoc(row) {
         if (DebugLogging) {
-            console.log("Entering goDPDoc of AccountDetailComponent");
+            console.log("Entering goDPDoc of Finance.AccountDetailComponent");
         }
         //$state.go('home.finance.document.dptmpdoc_post', { docid: row.DocID });
     };

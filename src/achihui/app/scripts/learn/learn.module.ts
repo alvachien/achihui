@@ -4,6 +4,8 @@ import { CommonModule }     from '@angular/common';
 import { HttpModule, Http } from '@angular/http';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from "ng2-translate/ng2-translate";
 
+import { TinyMceDirective2 } from '../directives/tinymce.directive';
+
 import { SimpleTinyComponent } from '../tinymce.component';
 import { LearnService } from '../services/learn.service';
 import { LearnComponent }   from './learn.component';
@@ -34,6 +36,7 @@ import { PlanDetailComponent } from './plan.detail.component';
         learnRouting
     ],
     declarations: [
+        TinyMceDirective2,
         SimpleTinyComponent,
         LearnComponent,
         CategoryListComponent,
