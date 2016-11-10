@@ -132,6 +132,33 @@ export class LearnService {
                 // It should be handled already
             });
     }
+    createObject(objData: HIHLearn.LearnObject) {
+        if (DebugLogging) {
+            console.log("Entering createObject of LearnService");
+        }
+
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized) {
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        }
+
+        var dataJSON = JSON && JSON.stringify(objData);
+
+        this.http.post(this.apiObject, dataJSON, { headers: headers })
+            .map(response => response.json())
+            .subscribe(data => {
+                // ToDo: Add the new created object into buffer
+                //this.buffService.setUserDetail(data);
+                //this._userdetail$.next(this.buffService.usrDetail);
+            },
+            error => {
+                if (DebugLogging) {
+                    console.log("Failed to create the object!");
+                }
+            });
+    }
     private extractObjectData(res: Response) {
         if (DebugLogging) {
             console.log("Entering extractObjectData of LearnService");

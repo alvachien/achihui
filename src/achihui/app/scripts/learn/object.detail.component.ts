@@ -46,7 +46,6 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
         } else {
             this.getCategories(this.bufferService.lrnCategories);
         }
-
     }
 
     ngOnInit() {
@@ -91,6 +90,16 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
     }
 
     onSubmit($event) {
+        if (DebugLogging) {
+            console.log("Entering onSubmit of Learn.ObjectDetailComponent");
+        }
 
+        // Perform the checks on the UI
+
+        if (this.ActivityID === HIHCommon.UIMode.Create) {
+            this.learnService.createObject(this.lrnObject);
+        } else if (this.ActivityID === HIHCommon.UIMode.Change) {
+
+        }
     }
 }

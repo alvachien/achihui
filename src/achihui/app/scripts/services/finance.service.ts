@@ -336,8 +336,9 @@ export class FinanceService {
 
         var headers = new Headers();
         headers.append('Accept', 'application/json');
-        if (this.authService.authSubject.getValue().isAuthorized)
+        if (this.authService.authSubject.getValue().isAuthorized) {
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        }
 
         this.http.get(this.apiAccount, { headers: headers })
             .map(this.extractAccountData)
@@ -369,6 +370,10 @@ export class FinanceService {
         return body || {};
     }
     createAccount(data: HIHFinance.Account) {
+        if (DebugLogging) {
+            console.log("Entering createAccount of FinanceService");
+        }
+
         var headers = new Headers();
         headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
