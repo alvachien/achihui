@@ -16,7 +16,7 @@ import { AuthService }              from '../services/auth.service';
     templateUrl: 'app/views/learn/object.list.html'
 })
 export class ObjectListComponent implements OnInit, OnDestroy {
-    public lrnObjects: Array<HIHLearn.LearnObject>;
+    public lrnObjects: Array<HIHLearn.LearnObject> = [];
     private subObject: Subscription;
 
     constructor(

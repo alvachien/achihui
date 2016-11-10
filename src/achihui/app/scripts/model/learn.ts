@@ -445,7 +445,7 @@ export class LearnObject extends hih.BaseModel {
 
     public onSetData(data: any) {
         if (DebugLogging) {
-            console.log("Entering onSetData of Finance.Setting");
+            console.log("Entering onSetData of LearnObject");
         }
 
         super.onSetData(data);

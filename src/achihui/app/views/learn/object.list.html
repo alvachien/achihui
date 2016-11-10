@@ -1,7 +1,7 @@
 ﻿<div class="container">
     <div class="page-header">
         <h2>
-            <span>{{'Learn.LearningObject' | translate}}</span><small>{{'Common.ListView' | translate}}</small>
+            <span>{{'Learning.LearningObject' | translate}}</span><small>{{'Common.ListView' | translate}}</small>
         </h2>
 
         <div class="btn-toolbar" role="toolbar" aria-label="...">
@@ -33,9 +33,9 @@
             <tr>
                 <th></th>
                 <th>{{'Common.ID' | translate}}</th>
-                <th>{{'Common.Parent' | translate}}</th>
+                <th>{{'Common.Category' | translate}}</th>
                 <th>{{'Common.Name' | translate}}</th>
-                <th>{{'Common.Comment' | translate}}</th>
+                <th>{{'Common.Content' | translate}}</th>
                 <th>{{'Common.Operations' | translate}}</th>
             </tr>
             <tr>
@@ -44,10 +44,10 @@
         <tbody>
             <tr *ngFor="let row of lrnObjects">
                 <td></td>
-                <td><a href="#/home/learn/category/display/{{row.ID}}">{{row.ID}}</a></td>
-                <td><a href="#/home/learn/category/display/{{row.ParentID}}">{{row.ParentID}}</a></td>
+                <td>{{row.Id}}</td>
+                <td>{{row.CategoryId}}</td>
                 <td>{{row.Name}}</td>
-                <td>{{row.Comment}}</td>
+                <td>{{row.Content}}</td>
                 <td>
                     <button type="button" class="btn btn-sm" (click)="displayItem(row)">
                         <i class="glyphicon glyphicon-share">
@@ -67,5 +67,4 @@
         <tfoot>
         </tfoot>
     </table>
-
 </div>
