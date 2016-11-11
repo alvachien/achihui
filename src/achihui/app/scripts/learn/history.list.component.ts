@@ -17,7 +17,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class HistoryListComponent implements OnInit, OnDestroy {
     public lrnHistories: Array<HIHLearn.LearnHistory>;
-    private subObject: Subscription;
+    private subHistory: Subscription;
 
     constructor(
         private zone: NgZone,
@@ -36,12 +36,12 @@ export class HistoryListComponent implements OnInit, OnDestroy {
             console.log("Entering ngOnInit of Learn.HistoryListComponent");
         }
 
-        //if (!this.subAccount) {
-        //    this.subAccount = this.financeService.account$.subscribe(data => this.getAccountList(data),
-        //        error => this.handleError(error));
+        if (!this.subHistory) {
+            this.subHistory = this.learnService.history$.subscribe(data => this.getHistoryList(data),
+                error => this.handleError(error));
 
-        //    this.financeService.loadAccounts();
-        //}
+            this.learnService.loadHistories();
+        }
     }
 
     ngOnDestroy() {
@@ -55,15 +55,15 @@ export class HistoryListComponent implements OnInit, OnDestroy {
         //}
     }
 
-    //getAccountList(data: Array<HIHFinance.Account>) {
-    //    if (DebugLogging) {
-    //        console.log("Entering getAccountList of Learn.ObjectListComponent");
-    //    }
+    getHistoryList(data: Array<HIHLearn.LearnHistory>) {
+        if (DebugLogging) {
+            console.log("Entering getHistoryList of Learn.HistoryListComponent");
+        }
 
-    //    this.zone.run(() => {
-    //        this.finAccounts = data;
-    //    });
-    //}
+        this.zone.run(() => {
+            this.lrnHistories = data;
+        });
+    }
 
     handleError(error: any) {
         if (DebugLogging) {
@@ -152,7 +152,7 @@ export class HistoryListComponent implements OnInit, OnDestroy {
     // Create
     newItem() {
         // Navigate to the create page
-        this.router.navigate(['/learn/object/create']);
+        this.router.navigate(['/learn/history/create']);
     }
 
     // Refresh the list

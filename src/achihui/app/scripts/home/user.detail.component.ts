@@ -87,7 +87,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
     handleUserDetailError(error: any) {
         if (DebugLogging) {
-            console.log("Entering handleError of UserDetailComponent");
+            console.log("Entering handleUserDetailError of UserDetailComponent");
         }
         console.log(error);
 
