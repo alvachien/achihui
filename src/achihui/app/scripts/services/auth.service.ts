@@ -120,7 +120,7 @@ export class AuthService {
         var that = this;
         this.mgr.getUser().then(function (u) {
             if (DebugLogging) {
-                console.log("User get successfully from OIDC-Client");
+                console.log("AuthService log : User get successfully from OIDC-Client");
             }
             if (u) {
                 that.authSubject.value.setContent(u);
@@ -132,7 +132,7 @@ export class AuthService {
             that.authSubject.next(that.authSubject.value);
         }, function (reason) {
             if (DebugLogging) {
-                console.log("User get failed from OIDC-Client, reason is :");
+                console.log("AuthService log : User get failed from OIDC-Client, reason is :");
                 console.log(reason);
             }
         });

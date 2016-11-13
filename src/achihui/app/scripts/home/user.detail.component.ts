@@ -32,15 +32,13 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         }
 
         this.userDetail = new HIHUser.UserDetail();
-        this.authService.authContent.subscribe(x => {
-            if (x.isAuthorized) {
-                this.userInfo = x;
-            } else {
-                if (DebugLogging) {
-                    console.log("Fatal error: no authorized user reached User Detail page!!");
-                }
+        if (this.authService.authSubject.value && this.authService.authSubject.value.isAuthorized) {
+            this.userInfo = this.authService.authSubject.value;
+        } else {
+            if (DebugLogging) {
+                console.log("Fatal error: no authorized user reached User Detail page!!");
             }
-        });
+        }
 
         if (buffService.isUserDetailLoaded) {
             this.userDetail = buffService.usrDetail;
