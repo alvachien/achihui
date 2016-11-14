@@ -15,8 +15,8 @@ import { BufferService } from '../services/buffer.service';
 })
 export class UserDetailComponent implements OnInit, OnDestroy {
     public userDetail: HIHUser.UserDetail = null;
-    //private subUserDetail: Subscription = null;
-    private isCreate: boolean = false;
+    private subUserDetail: Subscription = null;
+    private isCreateMode: boolean = false;
     private userInfo: UserInfo = null;
 
     constructor(
@@ -46,19 +46,13 @@ export class UserDetailComponent implements OnInit, OnDestroy {
             if (DebugLogging) {
                 console.log("It seems no user detail set yet, using initial value");
             }
-            this.isCreate = true;
+            this.isCreateMode = true;
 
             this.userDetail = new HIHUser.UserDetail();
             this.userDetail.UserId = this.userInfo.getUserId();
             this.userDetail.DisplayAs = this.userInfo.getUserName();
             this.userDetail.Email = this.userInfo.getUserName();
         }
-
-        //if (!this.subUserDetail) {
-        //    this.subUserDetail = this.userService.userDetail$.subscribe(
-        //        data => this.getUserDetail(data),
-        //        error => this.handleUserDetailError(error));
-        //}
     }
 
     ngOnInit() {
@@ -73,10 +67,13 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         }
     }
 
-    getUserDetail(data: HIHUser.UserDetail) {
+    getUpdatedUserDetail(data: HIHUser.UserDetail) {
         if (DebugLogging) {
-            console.log("Entering getUserDetail of UserDetailComponent");
+            console.log("Entering getUpdatedUserDetail of UserDetailComponent");
         }
+
+        this.onUnregisterDetailChange();
+        this.dialogService.prompt("User detail created or updated successfully!");
 
         this.zone.run(() => {
             this.userDetail = data;
@@ -87,19 +84,23 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         if (DebugLogging) {
             console.log("Entering handleUserDetailError of UserDetailComponent");
         }
-        console.log(error);
+        console.error(error);
 
-        if (DebugLogging) {
-            console.log("It seems no user detail set yet, using initial value");
+        this.onUnregisterDetailChange();
+        this.dialogService.confirm("User detail created or updated failed: " + error);
+    }
+
+    private onRegisterDetailChange() {
+        if (!this.subUserDetail) {
+            this.subUserDetail = this.userService.userDetail$.subscribe(
+                data => this.getUpdatedUserDetail(data),
+                error => this.handleUserDetailError(error));
         }
-        this.isCreate = true;
+    }
 
-        this.zone.run(() => {
-            this.userDetail = new HIHUser.UserDetail();
-            this.userDetail.UserId = this.userInfo.getUserId();
-            this.userDetail.DisplayAs = this.userInfo.getUserName();
-            this.userDetail.Email = this.userInfo.getUserName();
-        });
+    private onUnregisterDetailChange() {
+        this.subUserDetail.unsubscribe();
+        this.subUserDetail = null;
     }
 
     onSubmit() {
@@ -110,7 +111,8 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         // Do the base UI validation
 
         // Then, submit to the server
-        if (this.isCreate) {
+        this.onRegisterDetailChange();
+        if (this.isCreateMode) {
             this.userService.createUserDetail(this.userDetail);
         } else {
             this.userService.updateUserDetail(this.userDetail);

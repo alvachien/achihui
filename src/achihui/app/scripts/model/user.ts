@@ -11,7 +11,7 @@ export class UserDetail {
             console.log("Entering onSetData of UserDetail");
         }
 
-        this.UserId = data.userId;
+        this.UserId = data.userID;
         this.DisplayAs = data.displayAs;
         this.Email = data.email;
         this.Others = data.others;

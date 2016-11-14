@@ -209,7 +209,7 @@ export class BufferService {
     public setUserDetail(data: HIHUser.UserDetail) {
         if (DebugLogging) {
             console.log("Entering setUserDetail of BufferService");
-        }
+        } 
         this.usrDetail = data;
         this._isusrDetailLoaded = true;
     }

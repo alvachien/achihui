@@ -51,6 +51,11 @@ export class UserService {
         if (DebugLogging) {
             console.log("Entering loadUserDetail of UserService");
         }
+        if (!this.authService.authSubject.getValue().isAuthorized) {
+            // Shall never go here if not authorized
+            console.error("Fatal error! Non-authorized user reached this method, quit now!");
+            return;
+        }
 
         if (!forceReload && this.buffService.isUserDetailLoaded) {
             this._userdetail$.next(this.buffService.usrDetail);
@@ -59,14 +64,17 @@ export class UserService {
 
         var headers = new Headers();
         headers.append('Accept', 'application/json');
-        if (this.authService.authSubject.getValue().isAuthorized)
-            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(this.apiUserDetail, { headers: headers })
+        this.http.get(this.apiUserDetail + '/' + this.authService.authSubject.getValue().getUserId(), { headers: headers })
             .map(this.extractUserDetailData)
             .subscribe(data => {
-                this.buffService.setUserDetail(data);
-                this._userdetail$.next(this.buffService.usrDetail);
+                if (!data.UserId) {
+                    console.error("Fatal error: Though the data returned successfully but no key UserId");
+                } else {
+                    this.buffService.setUserDetail(data);
+                    this._userdetail$.next(this.buffService.usrDetail);
+                }
             },
             error => {
                 if (DebugLogging) {
@@ -114,7 +122,8 @@ export class UserService {
             },
             error => {
                 if (DebugLogging) {
-                    console.log("Failed to create the user detail!");
+                    console.error("Failed to create the user detail!");
+                    this._userdetail$.error(error);
                 }
             });
     }
