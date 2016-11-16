@@ -444,6 +444,14 @@ export class BufferService {
         this.lrnObjects = data;
         this._islrnObjectLoaded = true;
     }
+    public addLearnObject(data: HIHLearn.LearnObject) {
+        if (DebugLogging) {
+            console.log("Entering addLearnObject of BufferService");
+        }
+
+        if (this.lrnObjects)
+            this.lrnObjects.push(data);
+    }
 
     // Learn history
     get isLearnHistoryLoaded(): boolean {

@@ -128,8 +128,7 @@ export class ObjectListComponent implements OnInit, OnDestroy {
         //        }
         //    }
         //}
-
-        //$state.go("home.finance.account.display", { accountid: nAccntID });
+        this.router.navigate(['/learn/object/display', +row.Id]);
     }
 
     // Edit
@@ -147,6 +146,7 @@ export class ObjectListComponent implements OnInit, OnDestroy {
         //}
 
         //$state.go("home.finance.account.maintain", { accountid: nAccntID });
+        this.router.navigate(['/learn/object/change', +row.Id]);
     }
 
     // Create

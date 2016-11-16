@@ -21,6 +21,7 @@ export class LearnService {
     private _history$: Subject<HIHLearn.LearnHistory[]>;
     private _award$: Subject<HIHLearn.LearnAward[]>;
     //private _plan$: Subject<HIHLearn.LearnP>
+    private _objdetail$: Subject<HIHLearn.LearnObject>;
 
     private apiCategory: string;
     private apiObject: string;
@@ -38,6 +39,7 @@ export class LearnService {
         this._object$ = <Subject<HIHLearn.LearnObject[]>>new Subject();
         this._history$ = <Subject<HIHLearn.LearnHistory[]>>new Subject();
         this._award$ = <Subject<HIHLearn.LearnAward[]>>new Subject();
+        this._objdetail$ = <Subject<HIHLearn.LearnObject>>new Subject();
 
         this.apiCategory = APIUrl + "learncategory";
         this.apiObject = APIUrl + "learnobject";
@@ -56,6 +58,9 @@ export class LearnService {
     }
     get award$() {
         return this._award$.asObservable();
+    }
+    get objectdetail$() {
+        return this._objdetail$.asObservable();
     }
 
     // Category
@@ -132,6 +137,20 @@ export class LearnService {
                 // It should be handled already
             });
     }
+    loadObject(objid: number) {
+        if (DebugLogging) {
+            console.log("Entering loadObject of LearnService");
+        }
+
+        var headers = new Headers();
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        return this.http.get(this.apiObject + '/' + objid.toString(), { headers: headers })
+            .map(response => response.json())
+            .catch(this.handleError);
+    }
     createObject(objData: HIHLearn.LearnObject) {
         if (DebugLogging) {
             console.log("Entering createObject of LearnService");
@@ -149,9 +168,12 @@ export class LearnService {
         this.http.post(this.apiObject, dataJSON, { headers: headers })
             .map(response => response.json())
             .subscribe(data => {
-                // ToDo: Add the new created object into buffer
-                //this.buffService.setUserDetail(data);
-                //this._userdetail$.next(this.buffService.usrDetail);
+                let lobj = new HIHLearn.LearnObject();
+                lobj.onSetData(data);
+                this.buffService.addLearnObject(lobj);
+
+                this._objdetail$.next(lobj);
+                this._object$.next(this.buffService.lrnObjects);
             },
             error => {
                 if (DebugLogging) {
@@ -168,9 +190,9 @@ export class LearnService {
         if (body && body instanceof Array) {
             let sets = new Array<HIHLearn.LearnObject>();
             for (let alm of body) {
-                let alm2 = new HIHLearn.LearnObject();
-                alm2.onSetData(alm);
-                sets.push(alm2);
+                let lobj = new HIHLearn.LearnObject();
+                lobj.onSetData(alm);
+                sets.push(lobj);
             }
             return sets;
         }

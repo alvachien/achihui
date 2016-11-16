@@ -35,15 +35,24 @@ export const learnRoutes: Routes = [
                     },
                     {
                         path: 'create',
-                        component: ObjectDetailComponent
+                        component: ObjectDetailComponent,
+                        data: {
+                            uimode: 1
+                        }
                     },
                     {
                         path: 'change/:id',
-                        component: ObjectDetailComponent
+                        component: ObjectDetailComponent,
+                        data: {
+                            uimode: 2
+                        }
                     },
                     {
                         path: 'display/:id',
-                        component: ObjectDetailComponent
+                        component: ObjectDetailComponent,
+                        data: {
+                            uimode: 3
+                        }
                     }
                 ]
             },

@@ -1,7 +1,7 @@
 ﻿import {
     Component, OnInit, OnDestroy, NgZone
 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable }       from 'rxjs/Observable';
 import { Subscription }     from 'rxjs/Subscription';
 import '../rxjs-operators';
@@ -22,6 +22,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
     public lrnCategories: Array<HIHLearn.LearnCategory>;
     public Activity: string = "";
     public ActivityID: HIHCommon.UIMode = HIHCommon.UIMode.Create;
+    private routerId: number;
 
     private subObject: Subscription = null;
     private subCtgy: Subscription;
@@ -53,9 +54,51 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
             console.log("Entering ngOnInit of Learn.ObjectDetailComponent");
         }
 
-        this.Activity = "Common.Create";
+        let aid: number = -1;
+        //this.route.params
+        //    .switchMap((params: Params) => {
+        //        this.routerId = +params['id'];
+        //    });
+        this.route.url.forEach(value => {
+            if (DebugLogging) {
+                console.log(value);
+            }
+        });
+        if (this.route.data) {
+            if (DebugLogging) {
+                console.log(this.route.data);
+            }
+            this.ActivityID = +this.route.data['uimode'];
+        }
+
         this.lrnObject = new HIHLearn.LearnObject();
-        this.lrnObject.Content = "Just a test!";
+        if (this.ActivityID === HIHCommon.UIMode.Create) {
+            this.Activity = "Common.Create";
+        } else {
+            this.route.params.forEach((next: { id: number }) => {
+                aid = next.id;
+            });
+            if (aid !== -1 && aid != this.routerId) {
+                this.routerId = aid;
+            }
+
+            if (this.ActivityID === HIHCommon.UIMode.Change) {
+                this.Activity = "Common.Change";
+                this.learnService.loadObject(this.routerId).subscribe(data => {
+                    this.zone.run(() => {
+                        this.lrnObject.onSetData(data);
+                    });
+                });
+            }
+            else {
+                this.Activity = "Common.Display";
+                this.learnService.loadObject(this.routerId).subscribe(data => {
+                    this.zone.run(() => {
+                        this.lrnObject.onSetData(data);
+                    });
+                });
+            }
+        }
     }
 
     ngOnDestroy() {
@@ -89,13 +132,36 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
         console.log($event);
     }
 
+    private registerObject() {
+        if (!this.subObject) {
+            this.subObject = this.learnService.objectdetail$.subscribe(
+                data => {
+                    this.dialogService.log("Object created/changed successfully!");
+                },
+                error => {
+                    this.dialogService.log("Object created/changed failed!");
+                },
+                () => {
+                    this.unregisterObject();
+                }
+            )
+        }
+    }
+
+    private unregisterObject() {
+        if (this.subObject) {
+            this.subObject.unsubscribe();
+            this.subObject = null;
+        }
+    }
+
     onSubmit($event) {
         if (DebugLogging) {
             console.log("Entering onSubmit of Learn.ObjectDetailComponent");
         }
 
         // Perform the checks on the UI
-
+        this.registerObject();
         if (this.ActivityID === HIHCommon.UIMode.Create) {
             this.learnService.createObject(this.lrnObject);
         } else if (this.ActivityID === HIHCommon.UIMode.Change) {
