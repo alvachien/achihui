@@ -40,7 +40,10 @@ export class ObjectListComponent implements OnInit, OnDestroy {
             this.subObject = this.learnService.object$.subscribe(data => this.getObjectList(data),
                 error => this.handleError(error));
 
-            this.learnService.loadObjects();
+            this.learnService.loadObjects().subscribe(data => {
+            }, error => {
+            }, () => {
+            });
         }
     }
 

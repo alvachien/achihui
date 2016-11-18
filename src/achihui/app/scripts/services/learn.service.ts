@@ -126,16 +126,9 @@ export class LearnService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        this.http.get(this.apiObject, { headers: headers })
-            .map(this.extractObjectData)
-            .catch(this.handleError)
-            .subscribe(data => {
-                this.buffService.setLearnObjects(data);
-                this._object$.next(this.buffService.lrnObjects);
-            },
-            error => {
-                // It should be handled already
-            });
+        return this.http.get(this.apiObject, { headers: headers })
+            .map(response => response.json())
+            .catch(this.handleError);
     }
     loadObject(objid: number) {
         if (DebugLogging) {
