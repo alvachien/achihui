@@ -146,6 +146,7 @@
     "TakeALookAtUserDetail": "Take a look at User Detail",
     "LearningTrace": "Learning Trace",
     "FinanceTrace": "Finance Trace",
+    "EventTrace": "Event Trace",
     "About": "About",
     "Acknowledgements": "Acknowledgements",
     "Credits": "Credits",
@@ -209,6 +210,12 @@
     "HEbbinghaus": "H. Ebbinghaus",
     "DefferedDays": "Deffered Days",
     "RecurType": "Recur. Type"
+  },
+
+  "Event": {
+    "Event": "Event",
+    "Events": "Events",
+    "EventItem": "Event Item"
   },
 
   "Todo": {

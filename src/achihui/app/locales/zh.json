@@ -145,6 +145,7 @@
     "UserDetail": "用户详细信息",
     "TakeALookAtUserDetail": "查看当前用户详细信息",
     "LearningTrace": "学习记录系统",
+    "EventTrace": "事务记录系统",
     "FinanceTrace": "财务记录系统",
     "About": "关于",
     "Acknowledgements": "致谢",
@@ -209,6 +210,12 @@
     "HEbbinghaus": "H. Ebbinghaus记忆曲线",
     "DefferedDays": "顺延日期",
     "RecurType": "重复类型"
+  },
+
+  "Event": {
+    "Event": "事务",
+    "Events": "事务",
+    "EventItem": "事务项"
   },
 
   "Todo": {

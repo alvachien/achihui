@@ -3,6 +3,7 @@ import * as HIHBase from '../model/common';
 import * as HIHFinance from '../model/finance';
 import * as HIHUser from '../model/user';
 import * as HIHLearn from '../model/learn';
+import * as HIHEvent from '../model/event';
 import { DebugLogging } from '../app.setting';
 
 @Injectable()
@@ -58,6 +59,9 @@ export class BufferService {
     _islrnEnWordLoaded: boolean;
     _islrnEnSentenceLoaded: boolean;
     _islrnEnPOSLoaded: boolean;
+
+    // Event part
+    
     
     constructor() {
         if (DebugLogging) {

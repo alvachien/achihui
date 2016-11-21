@@ -6,10 +6,32 @@ import { UserDetailComponent }      from './user.detail.component';
 import { UserHistoryComponent }     from './user.history.component';
 
 export const homeRoutes: Routes = [
-    { path: 'home', component: HomeComponent },
-    { path: 'language', component: LanguageComponent },
-    { path: 'module', component: ModuleComponent },
-    { path: 'userdetail', component: UserDetailComponent },
-    { path: 'userhist', component: UserHistoryComponent },
+    {
+        path: 'home',
+        component: HomeComponent,
+        children: [
+            {
+                path: 'language',
+                component: LanguageComponent
+            },
+            {
+                path: 'module',
+                component: ModuleComponent
+            },
+            {
+                path: 'userdetail',
+                component: UserDetailComponent 
+            },
+            { path: 'userhist', component: UserHistoryComponent },
+            //{
+            //    path: 'contact',
+            //    component: 
+            //}
+        ]
+    },
+    //{ path: 'language', component: LanguageComponent },
+    //{ path: 'module', component: ModuleComponent },
+    //{ path: 'userdetail', component: UserDetailComponent },
+    //{ path: 'userhist', component: UserHistoryComponent },
 ];
 

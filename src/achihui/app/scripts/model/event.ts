@@ -2,13 +2,18 @@
 import * as hih from './common';
 
 export class EventItem extends hih.BaseModel {
-    public EventId: number;
-    public EventDate: Date;
+    public Id: number;
     public Name: string;
+    public StartTimepoint: Date;
+    public EndTimepoint: Date;
     public Content: string;
+    public IsPublic: boolean;
+    public Owner: string;
+    public RefID: number;
 
     constructor() {
         super();
+
         if (DebugLogging) {
             console.log("Entering constructor of EventItem");
         }
@@ -46,5 +51,16 @@ export class EventItem extends hih.BaseModel {
         }
 
         super.onSetData(data);
+
+        if (data && data.id) {
+            this.Id = +data.id;
+        }
+        if (data && data.name) {
+            this.Name = data.name;
+        }
     }
+}
+
+export class EventRecurItem extends hih.BaseModel {
+
 }
