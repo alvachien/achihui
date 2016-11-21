@@ -111,14 +111,9 @@ export class LearnService {
     }
 
     // Objects
-    loadObjects(forceReload?: boolean) {
+    loadObjects() {
         if (DebugLogging) {
             console.log("Entering loadObjects of LearnService");
-        }
-
-        if (!forceReload && this.buffService.isLearnObjectLoaded) {
-            this._object$.next(this.buffService.lrnObjects);
-            return;
         }
 
         var headers = new Headers();
@@ -158,21 +153,21 @@ export class LearnService {
 
         var dataJSON = JSON && JSON.stringify(objData);
 
-        this.http.post(this.apiObject, dataJSON, { headers: headers })
-            .map(response => response.json())
-            .subscribe(data => {
-                let lobj = new HIHLearn.LearnObject();
-                lobj.onSetData(data);
-                this.buffService.addLearnObject(lobj);
+        return this.http.post(this.apiObject, dataJSON, { headers: headers })
+            .map(response => response.json());
+            //.subscribe(data => {
+            //    let lobj = new HIHLearn.LearnObject();
+            //    lobj.onSetData(data);
+            //    this.buffService.addLearnObject(lobj);
 
-                this._objdetail$.next(lobj);
-                this._object$.next(this.buffService.lrnObjects);
-            },
-            error => {
-                if (DebugLogging) {
-                    console.log("Failed to create the object!");
-                }
-            });
+            //    this._objdetail$.next(lobj);
+            //    this._object$.next(this.buffService.lrnObjects);
+            //},
+            //error => {
+            //    if (DebugLogging) {
+            //        console.log("Failed to create the object!");
+            //    }
+            //});
     }
     private extractObjectData(res: Response) {
         if (DebugLogging) {

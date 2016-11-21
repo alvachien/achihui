@@ -18,6 +18,8 @@ import { AuthService }              from '../services/auth.service';
 export class ObjectListComponent implements OnInit, OnDestroy {
     public lrnObjects: Array<HIHLearn.LearnObject> = [];
     private subObject: Subscription;
+    public totalCount: number;
+    public currentPage: number;
 
     constructor(
         private zone: NgZone,

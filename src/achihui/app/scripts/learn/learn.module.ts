@@ -3,6 +3,7 @@ import { FormsModule }      from '@angular/forms';
 import { CommonModule }     from '@angular/common';
 import { HttpModule, Http } from '@angular/http';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from "ng2-translate/ng2-translate";
+import { PaginationModule } from 'ng2-bootstrap/ng2-bootstrap';
 
 import { TinyMceDirective2 } from '../directives/tinymce.directive';
 
@@ -28,6 +29,7 @@ import { PlanDetailComponent } from './plan.detail.component';
     imports: [
         CommonModule,
         FormsModule,
+        PaginationModule,
         TranslateModule.forRoot({
             provide: TranslateLoader,
             useFactory: (http: Http) => new TranslateStaticLoader(http, '/app/locales/', '.json'),

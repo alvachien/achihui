@@ -128,3 +128,5 @@ export class AppLanguage {
     public NativeName: string;
     public AppFlag: boolean;
 }
+
+
