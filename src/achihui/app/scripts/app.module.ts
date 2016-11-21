@@ -27,7 +27,7 @@ import { LanguageComponent }        from './home/language.component';
 import { ModuleComponent }          from './home/module.component';
 import { UserDetailComponent }      from './home/user.detail.component';
 import { UserHistoryComponent }     from './home/user.history.component';
-import { TinyMceDirective2 }        from './directives/tinymce.directive';
+import { UIRefModule }              from './uiref.module';
 
 @NgModule({
     imports: [
@@ -36,17 +36,17 @@ import { TinyMceDirective2 }        from './directives/tinymce.directive';
         HttpModule,
         routing,
         Ng2BootstrapModule,
-        TranslateModule.forRoot({
-            provide: TranslateLoader,
-            useFactory: (http: Http) => new TranslateStaticLoader(http, '/app/locales/', '.json'),
-            deps: [Http]
-        }),
+        UIRefModule,
+        //TranslateModule.forRoot({
+        //    provide: TranslateLoader,
+        //    useFactory: (http: Http) => new TranslateStaticLoader(http, '/app/locales/', '.json'),
+        //    deps: [Http]
+        //}),
         EventModule,
         LearnModule,
         FinanceModule
     ],
     declarations: [
-        TinyMceDirective2,
 
         AppComponent,
         CreditsComponent,

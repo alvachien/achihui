@@ -4,6 +4,7 @@ import { CommonModule }     from '@angular/common';
 import { HttpModule, Http } from '@angular/http';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from "ng2-translate/ng2-translate";
 
+import { UIRefModule }      from '../uiref.module';
 import { FinanceService }   from '../services/finance.service';
 import { FinanceComponent } from './finance.component';
 import { financeRouting }   from './finance.routing';
@@ -29,11 +30,12 @@ import { OrderDetailComponent }         from './order.detail.component';
     imports: [
         CommonModule,
         FormsModule,
-        TranslateModule.forRoot({
-            provide: TranslateLoader,
-            useFactory: (http: Http) => new TranslateStaticLoader(http, '/app/locales/', '.json'),
-            deps: [Http]
-        }),
+        UIRefModule,
+        //TranslateModule.forRoot({
+        //    provide: TranslateLoader,
+        //    useFactory: (http: Http) => new TranslateStaticLoader(http, '/app/locales/', '.json'),
+        //    deps: [Http]
+        //}),
         financeRouting        
     ],
     declarations: [

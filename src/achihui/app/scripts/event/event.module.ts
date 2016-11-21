@@ -3,7 +3,7 @@ import { FormsModule }      from '@angular/forms';
 import { CommonModule }     from '@angular/common';
 import { HttpModule, Http } from '@angular/http';
 import { TranslateModule, TranslateLoader, TranslateStaticLoader } from "ng2-translate/ng2-translate";
-import { TinyMceDirective2 } from '../directives/tinymce.directive';
+import { UIRefModule }      from '../uiref.module';
 
 import { EventService } from '../services/event.service';
 
@@ -16,11 +16,12 @@ import { eventRouting }   from './event.routing';
     imports: [
         CommonModule,
         FormsModule,
-        TranslateModule.forRoot({
-            provide: TranslateLoader,
-            useFactory: (http: Http) => new TranslateStaticLoader(http, '/locales/', '.json'),
-            deps: [Http]
-        }),
+        UIRefModule,
+        //TranslateModule.forRoot({
+        //    provide: TranslateLoader,
+        //    useFactory: (http: Http) => new TranslateStaticLoader(http, '/app/locales/', '.json'),
+        //    deps: [Http]
+        //}),
         eventRouting        
     ],
     declarations: [
