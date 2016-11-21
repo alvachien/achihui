@@ -38,7 +38,6 @@ import { PlanDetailComponent } from './plan.detail.component';
         learnRouting
     ],
     declarations: [
-        TinyMceDirective2,
         SimpleTinyComponent,
         LearnComponent,
         CategoryListComponent,

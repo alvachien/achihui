@@ -24,7 +24,6 @@ import { eventRouting }   from './event.routing';
         eventRouting        
     ],
     declarations: [
-        TinyMceDirective2,
         EventComponent,
         EventListComponent,
         EventDetailComponent

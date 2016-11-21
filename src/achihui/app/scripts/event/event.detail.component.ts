@@ -2,16 +2,16 @@
     Component, OnInit, OnDestroy, NgZone
 } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable }       from 'rxjs/Observable';
+import { Subscription }     from 'rxjs/Subscription';
 import '../rxjs-operators';
-import { DebugLogging } from '../app.setting';
-import * as HIHCommon from '../model/common';
-import * as HIHEvent from '../model/event';
-import { EventService } from '../services/event.service';
-import { DialogService } from '../services/dialog.service';
-import { AuthService } from '../services/auth.service';
-import { BufferService } from '../services/buffer.service';
+import { DebugLogging }     from '../app.setting';
+import * as HIHCommon       from '../model/common';
+import * as HIHEvent        from '../model/event';
+import { EventService }     from '../services/event.service';
+import { DialogService }    from '../services/dialog.service';
+import { AuthService }      from '../services/auth.service';
+import { BufferService }    from '../services/buffer.service';
 
 @Component({
     selector: 'hih-event-item-detail',
@@ -40,6 +40,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         if (DebugLogging) {
             console.log("Entering ngOnInit of Learn.EventDetailComponent");
         }
+
+        this.eventObject = new HIHEvent.EventItem();
 
         //let aid: number = -1;
         ////this.route.params

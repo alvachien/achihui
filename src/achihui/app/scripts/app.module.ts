@@ -27,6 +27,7 @@ import { LanguageComponent }        from './home/language.component';
 import { ModuleComponent }          from './home/module.component';
 import { UserDetailComponent }      from './home/user.detail.component';
 import { UserHistoryComponent }     from './home/user.history.component';
+import { TinyMceDirective2 }        from './directives/tinymce.directive';
 
 @NgModule({
     imports: [
@@ -45,6 +46,8 @@ import { UserHistoryComponent }     from './home/user.history.component';
         FinanceModule
     ],
     declarations: [
+        TinyMceDirective2,
+
         AppComponent,
         CreditsComponent,
         AboutComponent,
