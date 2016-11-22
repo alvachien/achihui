@@ -21,7 +21,7 @@ export class EventService {
         private authService: AuthService,
         private buffService: BufferService) {
         if (DebugLogging) {
-            console.log("Entering constructor of FinanceService");
+            console.log("Entering constructor of EventService");
         }
 
         this.apiURL = APIUrl + "event";
@@ -29,7 +29,7 @@ export class EventService {
 
     loadEvents() {
         if (DebugLogging) {
-            console.log("Entering loadSettings of FinanceService");
+            console.log("Entering loadEvents of EventService");
         }
 
         var headers = new Headers();
@@ -38,6 +38,23 @@ export class EventService {
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
         return this.http.get(this.apiURL, { headers: headers })
+            .map(response => response.json());
+    }
+
+    createEvent(objData: HIHEvent.EventItem) {
+        if (DebugLogging) {
+            console.log("Entering createEvent of EventService");
+        }
+
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        if (this.authService.authSubject.getValue().isAuthorized)
+            headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+        var dataJSON = JSON && JSON.stringify(objData);
+
+        return this.http.post(this.apiURL, dataJSON, { headers: headers })
             .map(response => response.json());
     }
 }

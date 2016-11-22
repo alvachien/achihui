@@ -42,6 +42,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         }
 
         this.eventObject = new HIHEvent.EventItem();
+        this.eventObject.StartTimepoint = new Date();
+        this.eventObject.EndTimepoint = new Date();
 
         //let aid: number = -1;
         ////this.route.params
@@ -93,6 +95,55 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         if (DebugLogging) {
             console.log("Entering ngOnDestroy of Learn.EventDetailComponent");
+        }
+    }
+
+    private parseDateToStringWithFormat(date: Date): string {
+        let result: string;
+        let dd = date.getDate().toString();
+        let mm = (date.getMonth() + 1).toString();
+        let hh = date.getHours().toString();
+        let min = date.getMinutes().toString();
+        dd = dd.length === 2 ? dd : "0" + dd;
+        mm = mm.length === 2 ? mm : "0" + mm;
+        hh = hh.length === 2 ? hh : "0" + hh;
+        min = min.length === 2 ? min : "0" + min;
+        result = [date.getFullYear(), '-', mm, '-', dd, 'T', hh, ':', min].join('');
+
+        return result;
+    }
+
+    public set dateTimeStart(v: string) {
+        let actualParsedDate = v ? new Date(v) : new Date();
+        let normalizedParsedDate = new Date(actualParsedDate.getTime() + (actualParsedDate.getTimezoneOffset() * 60000));
+        this.eventObject.StartTimepoint = normalizedParsedDate;
+    }
+
+    public get dateTimeStart(): string {
+        return this.parseDateToStringWithFormat(this.eventObject.StartTimepoint);
+    }
+
+    public set dateTimeEnd(v: string) {
+        let actualParsedDate = v ? new Date(v) : new Date();
+        let normalizedParsedDate = new Date(actualParsedDate.getTime() + (actualParsedDate.getTimezoneOffset() * 60000));
+        this.eventObject.EndTimepoint = normalizedParsedDate;
+    }
+
+    public get dateTimeEnd(): string {
+        return this.parseDateToStringWithFormat(this.eventObject.EndTimepoint);
+    }
+
+    onSubmit(objForm: any) {
+        if (this.ActivityID === HIHCommon.UIMode.Create) {
+            this.eventService.createEvent(this.eventObject).subscribe(x => {
+                console.log("Event created: " + x);
+            }, error => {
+                console.log("Error occurred: " + error);
+            }, () => {
+                    console.log("Completed!");
+            });
+        } else if (this.ActivityID === HIHCommon.UIMode.Change) {
+
         }
     }
 }

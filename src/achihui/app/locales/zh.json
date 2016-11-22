@@ -215,7 +215,9 @@
   "Event": {
     "Event": "事务",
     "Events": "事务",
-    "EventItem": "事务项"
+    "EventItem": "事务项",
+    "Begin": "起始",
+    "End": "终止"
   },
 
   "Todo": {

@@ -215,7 +215,9 @@
   "Event": {
     "Event": "Event",
     "Events": "Events",
-    "EventItem": "Event Item"
+    "EventItem": "Event Item",
+    "Begin": "Begin",
+    "End": "End"
   },
 
   "Todo": {
