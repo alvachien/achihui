@@ -46,7 +46,7 @@
         <br />
 
         <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
+            <div class="offset-sm-2 col-sm-10">
                 <input type="submit" class="btn btn-default btn-primary" *ngIf="ActivityID != 3" [disabled]="!detailForm.form.valid">
                 <button class="btn btn-danger" (click)="close()">{{'Common.BackToList' | translate}}</button>
             </div>
