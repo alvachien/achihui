@@ -27,7 +27,7 @@ export class EventService {
         this.apiURL = APIUrl + "event";
     }
 
-    loadEvents() {
+    loadEvents(curPage: number, itemspp: number) {
         if (DebugLogging) {
             console.log("Entering loadEvents of EventService");
         }
@@ -37,7 +37,7 @@ export class EventService {
         if (this.authService.authSubject.getValue().isAuthorized)
             headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-        return this.http.get(this.apiURL, { headers: headers })
+        return this.http.get(this.apiURL + "?top=" + itemspp.toString() + "&skip=" + ((curPage-1) * itemspp).toString(), { headers: headers })
             .map(response => response.json());
     }
 

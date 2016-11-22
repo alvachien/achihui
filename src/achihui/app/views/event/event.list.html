@@ -70,19 +70,15 @@
                 <td colspan="6">
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
+                            <li class="page-item" *ngIf="currentPage > 1">
+                                <a class="page-link" (click)="onPagePreviousClick()" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                     <span class="sr-only">Previous</span>
                                 </a>
                             </li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item"><a class="page-link" href="#">5</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
+                            <li class="page-item" *ngFor="let pageidx of pageArrays"><a class="page-link" (click)="onPageClick(pageidx)">{{pageidx}}</a></li>
+                            <li class="page-item" *ngIf="currentPage < pageCount">
+                                <a class="page-link" (click)="onPageNextClick()" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                     <span class="sr-only">Next</span>
                                 </a>

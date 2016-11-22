@@ -10,6 +10,7 @@ export class EventItem extends hih.BaseModel {
     public IsPublic: boolean;
     public Owner: string;
     public RefID: number;
+    public Tags: string;
 
     constructor() {
         super();
@@ -57,6 +58,27 @@ export class EventItem extends hih.BaseModel {
         }
         if (data && data.name) {
             this.Name = data.name;
+        }
+        if (data && data.startTimePoint) {
+            this.StartTimepoint = data.startTimePoint;
+        }
+        if (data && data.endTimePoint) {
+            this.EndTimepoint = data.endTimePoint;
+        }
+        if (data && data.content) {
+            this.Content = data.content;
+        }
+        if (data && data.isPublic) {
+            this.IsPublic = data.isPublic;
+        }
+        if (data && data.owner) {
+            this.Owner = data.owner;
+        }
+        if (data && data.refId) {
+            this.RefID = data.refId;
+        }
+        if (data && data.tags) {
+            this.Tags = data.tags;
         }
     }
 }
