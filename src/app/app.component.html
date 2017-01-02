@@ -1,16 +1,31 @@
-<td-layout #layout sidenavTitle="Sidenav Title" logo="svgIconName">
-  <md-nav-list menu-items>
-    <a *ngFor="let item of routes" md-list-item [routerLink]="[item.route]" (click)="layout.close()">
-      <md-icon>{{item.icon}}</md-icon>
-      {{item.title}}
-    </a>
-  </md-nav-list>
-  <td-layout-nav toolbarTitle="Toolbar Title" logo="svgIconName">
-    <td-layout-card-over cardTitle="Card Title" cardSubtitle="Card subtitle" cardWidth="75">
-      <router-outlet></router-outlet>
-    </td-layout-card-over>
-    <td-layout-footer>
-      Optional footer
-    </td-layout-footer>
-  </td-layout-nav>
-</td-layout>
+  
+<md-sidenav-container>
+  <md-sidenav mode="side" #start (open)="closeStartButton.focus()" opened="false">
+    <div fxLayout="column">
+      
+    </div>
+    <button md-button #closeStartButton (click)="start.close()">Close</button>
+  </md-sidenav>
+
+  <div class="flex-container" 
+      fxLayout="column" 
+      fxLayoutAlign="stretch">
+
+    <md-toolbar color="primary" class="flex-item">
+      <button md-mini-fab (click)="start.open()">
+          <md-icon class="md-24">menu</md-icon>
+      </button>
+      <span>Home Info. Hub</span>
+
+      <span class="toolbar-fill-remaining-space"></span>
+
+      <button md-button>About</button>
+    </md-toolbar>
+
+    <div class="flex-container flex-item" 
+        fxLayout="column" 
+        fxLayoutAlign="stretch">
+        <router-outlet></router-outlet>
+    </div>
+  </div>
+</md-sidenav-container>

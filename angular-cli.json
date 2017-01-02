@@ -21,7 +21,9 @@
       "styles": [
         "styles.css"
       ],
-      "scripts": [],
+      "scripts": [
+        "../node_modules/oidc-client/dist/oidc-client.min.js"      
+      ],
       "environments": {
         "source": "environments/environment.ts",
         "dev": "environments/environment.ts",
