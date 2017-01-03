@@ -1,15 +1,12 @@
-  
 <md-sidenav-container>
   <md-sidenav mode="side" #start (open)="closeStartButton.focus()" opened="false">
     <div fxLayout="column">
-      
+
     </div>
     <button md-button #closeStartButton (click)="start.close()">Close</button>
   </md-sidenav>
 
-  <div class="flex-container" 
-      fxLayout="column" 
-      fxLayoutAlign="stretch">
+  <div class="flex-container" fxLayout="column" fxLayoutAlign="stretch">
 
     <md-toolbar color="primary" class="flex-item">
       <button md-mini-fab (click)="start.open()">
@@ -19,13 +16,12 @@
 
       <span class="toolbar-fill-remaining-space"></span>
 
-      <button md-button>About</button>
+      <button md-button (click)="onLogin()" *ngIf="!isLoggedIn">Login</button>
+      <button md-button (click)="onLogOut()" *ngIf="isLoggedIn">{{titleLogin}}</button>
     </md-toolbar>
 
-    <div class="flex-container flex-item" 
-        fxLayout="column" 
-        fxLayoutAlign="stretch">
-        <router-outlet></router-outlet>
+    <div class="flex-container flex-item" fxLayout="column" fxLayoutAlign="stretch">
+      <router-outlet></router-outlet>
     </div>
   </div>
 </md-sidenav-container>

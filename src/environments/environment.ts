@@ -4,5 +4,11 @@
 // The list of which env maps to which file can be found in `angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+
+  DebugLogging: true,
+  IDServerUrl: 'http://localhost:41016/',
+  AppLoginCallbackUrl: 'http://localhost:29521/logincallback.html',
+  AppLogoutCallbackUrl: 'http://localhost:29521/',
+  AppHost: 'http://localhost:29521',
 };
