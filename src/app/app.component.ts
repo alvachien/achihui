@@ -57,4 +57,18 @@ export class AppComponent implements OnInit {
       this.authService.doLogout();
     }
   }
+
+  public routes: Object[] = [
+    {
+      title: "Home", route: "/", icon: "home"
+    }, {
+      title: "Learn Object", route: "/learn/object", icon: "library_books"
+    }, {
+      title: "Learn History", route: "/learn/history", icon: "color_lens"
+    }, {
+      title: "Finance Account", route: "/finance/account", icon: "view_quilt"
+    }, {
+      title: "Finance Document", route: "/finance/document", icon: "picture_in_picture"
+    }
+  ];  
 }

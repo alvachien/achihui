@@ -1,11 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LearnComponent } from './learn.component';
+import { ListComponent as ObjectListComponent } from './object/list/list.component';
+import { DetailComponent as ObjectDetailComponent } from './object/detail/detail.component';
+import { LearnRoutingModule } from './learn-routing.module';
+import { ObjectComponent } from './object/object.component';
+import { HistoryComponent } from './history/history.component';
+import { ListComponent as HistoryListComponent } from './history/list/list.component';
+import { DetailComponent as HistoryDetailComponent } from './history/detail/detail.component';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    LearnRoutingModule
   ],
-  declarations: [LearnComponent]
+  declarations: [
+    LearnComponent, 
+    ObjectListComponent, 
+    ObjectDetailComponent, 
+    ObjectComponent, 
+    HistoryComponent, 
+    HistoryListComponent, 
+    HistoryDetailComponent
+    ]
 })
 export class LearnModule { }

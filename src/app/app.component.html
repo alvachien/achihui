@@ -1,8 +1,50 @@
+<!--
+<td-layout #layout sidenavTitle="Sidenav Title" logo="svgIconName">
+  <md-nav-list menu-items>
+    <a *ngFor="let item of routes" md-list-item (click)="layout.close()">      
+      {{item.title}}
+    </a>
+  </md-nav-list>
+  <td-layout-nav toolbarTitle="Toolbar Title" logo="svgIconName">
+    <td-layout-card-over cardTitle="Card Title" cardSubtitle="Card subtitle" cardWidth="75">
+      <router-outlet></router-outlet>
+    </td-layout-card-over>
+    <td-layout-footer>
+      Optional footer
+    </td-layout-footer>
+  </td-layout-nav>
+</td-layout>
+-->
+
 <md-sidenav-container>
   <md-sidenav mode="side" #start (open)="closeStartButton.focus()" opened="false">
-    <div fxLayout="column">
+    <div fxLayout="column" *ngIf="isLoggedIn">
+      <md-card>
+        <md-card-header>
+          <img md-card-avatar src="https://placekitten.com/g/40/40">
+          <md-card-title>{{titleLogin}}</md-card-title>
+          <md-card-subtitle>Header subtitle</md-card-subtitle>
+        </md-card-header>
+        <md-card-content>
+          <h3 class="md-subhead">{{titleLogin}}</h3>
+          <p class="md-body-1">Here is some more content</p>
+        </md-card-content>
+      </md-card>
 
+      <md-divider></md-divider>
+
+      <md-nav-list>
+        <template let-item let-last="last" ngFor [ngForOf]="routes">
+          <md-list-item>
+            <md-icon md-list-avatar>{{item.icon}}</md-icon>
+            <h3 md-line [routerLink]="item.route" routerLinkActive="active"> {{item.title}} </h3>
+          </md-list-item>
+          <md-divider *ngIf="!last" md-inset></md-divider>
+        </template>
+      </md-nav-list>
     </div>
+
+    <md-divider></md-divider>
     <button md-button #closeStartButton (click)="start.close()">Close</button>
   </md-sidenav>
 
@@ -17,7 +59,7 @@
       <span class="toolbar-fill-remaining-space"></span>
 
       <button md-button (click)="onLogin()" *ngIf="!isLoggedIn">Login</button>
-      <button md-button (click)="onLogOut()" *ngIf="isLoggedIn">{{titleLogin}}</button>
+      <button md-button (click)="onLogout()" *ngIf="isLoggedIn">{{titleLogin}}</button>
     </md-toolbar>
 
     <div class="flex-container flex-item" fxLayout="column" fxLayoutAlign="stretch">
