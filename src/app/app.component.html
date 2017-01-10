@@ -1,33 +1,22 @@
-<!--
-<td-layout #layout sidenavTitle="Sidenav Title" logo="svgIconName">
+<td-layout #layout logo="assets:covalent" sidenavTitle="Quickstart" displayName="Firstname Lastname" (logout)="logout()">
   <md-nav-list menu-items>
-    <a *ngFor="let item of routes" md-list-item (click)="layout.close()">      
-      {{item.title}}
-    </a>
+    <template let-item let-last="last" ngFor [ngForOf]="routes">
+      <a md-list-item [routerLink]="[item.route]" (click)="layout.close()"><md-icon>{{item.icon}}</md-icon>{{item.title}}</a>
+    </template>
   </md-nav-list>
-  <td-layout-nav toolbarTitle="Toolbar Title" logo="svgIconName">
-    <td-layout-card-over cardTitle="Card Title" cardSubtitle="Card subtitle" cardWidth="75">
-      <router-outlet></router-outlet>
-    </td-layout-card-over>
-    <td-layout-footer>
-      Optional footer
-    </td-layout-footer>
-  </td-layout-nav>
+  <router-outlet></router-outlet>
 </td-layout>
--->
 
-<md-sidenav-container>
+<!--<md-sidenav-container>
   <md-sidenav mode="side" #start (open)="closeStartButton.focus()" opened="false">
     <div fxLayout="column" *ngIf="isLoggedIn">
       <md-card>
         <md-card-header>
           <img md-card-avatar src="https://placekitten.com/g/40/40">
           <md-card-title>{{titleLogin}}</md-card-title>
-          <md-card-subtitle>Header subtitle</md-card-subtitle>
         </md-card-header>
         <md-card-content>
           <h3 class="md-subhead">{{titleLogin}}</h3>
-          <p class="md-body-1">Here is some more content</p>
         </md-card-content>
       </md-card>
 
@@ -66,4 +55,4 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-</md-sidenav-container>
+</md-sidenav-container>-->

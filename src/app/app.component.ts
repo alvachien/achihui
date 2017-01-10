@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { environment } from '../environments/environment';
 import { TranslateService } from 'ng2-translate';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MdIconRegistry } from '@angular/material';
+import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +16,11 @@ export class AppComponent implements OnInit {
   public titleLogin: string;
 
   constructor(private authService: AuthService,
-    private translateService: TranslateService) {
-
+    private translateService: TranslateService,
+    private _loadingService: TdLoadingService,
+    private _iconRegistry: MdIconRegistry,
+    private _domSanitizer: DomSanitizer,
+    viewContainerRef: ViewContainerRef) {
     this.isLoggedIn = false;
     this.titleLogin = 'Login';
 
@@ -31,6 +37,28 @@ export class AppComponent implements OnInit {
       if (!this.titleLogin)
         this.titleLogin = 'Login';
     });
+
+    let options: ILoadingOptions = {
+      name: 'main',
+      type: LoadingType.Circular,
+    };
+    this._loadingService.createOverlayComponent(options, viewContainerRef);
+    this._iconRegistry.addSvgIconInNamespace('assets', 'teradata',
+      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/teradata.svg'));
+    this._iconRegistry.addSvgIconInNamespace('assets', 'github',
+      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
+    this._iconRegistry.addSvgIconInNamespace('assets', 'covalent',
+      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/covalent.svg'));
+    this._iconRegistry.addSvgIconInNamespace('assets', 'covalent-mark',
+      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/covalent-mark.svg'));
+    this._iconRegistry.addSvgIconInNamespace('assets', 'teradata-ux',
+      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/teradata-ux.svg'));
+    this._iconRegistry.addSvgIconInNamespace('assets', 'appcenter',
+      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/appcenter.svg'));
+    this._iconRegistry.addSvgIconInNamespace('assets', 'listener',
+      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/listener.svg'));
+    this._iconRegistry.addSvgIconInNamespace('assets', 'querygrid',
+      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/querygrid.svg'));
   }
 
   ngOnInit() {
@@ -58,6 +86,10 @@ export class AppComponent implements OnInit {
     }
   }
 
+  public onMenuButtonClicked(): void {
+
+  }
+
   public routes: Object[] = [
     {
       title: "Home", route: "/", icon: "home"
@@ -70,5 +102,5 @@ export class AppComponent implements OnInit {
     }, {
       title: "Finance Document", route: "/finance/document", icon: "picture_in_picture"
     }
-  ];  
+  ];
 }
