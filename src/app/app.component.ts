@@ -43,14 +43,19 @@ export class AppComponent implements OnInit {
       type: LoadingType.Circular,
     };
     this._loadingService.createOverlayComponent(options, viewContainerRef);
-    this._iconRegistry.addSvgIconInNamespace('assets', 'teradata',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/teradata.svg'));
+
+    // this._iconRegistry.addSvgIconInNamespace('assets', 'teradata',
+    //   this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/teradata.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'github',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
+    this._iconRegistry.addSvgIconInNamespace('assets', 'angular',
+      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/angular.ico'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'covalent',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/covalent.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'covalent-mark',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/covalent-mark.svg'));
+    this._iconRegistry.addSvgIconInNamespace('assets', 'hihlogo',
+      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hihapplogo.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'teradata-ux',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/teradata-ux.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'appcenter',

@@ -12,3 +12,8 @@ md-sidenav {
 .toolbar-fill-remaining-space {
   flex: 1 1 auto;
 }
+
+.md-icon-logo {
+  width:20px;
+  height: 20px;
+}
