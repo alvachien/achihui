@@ -1,5 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+import { MaterialModule } from '@angular/material';
+import { CovalentCoreModule } from '@covalent/core';
+
 import { LearnComponent } from './learn.component';
 import { ListComponent as ObjectListComponent } from './object/list/list.component';
 import { DetailComponent as ObjectDetailComponent } from './object/detail/detail.component';
@@ -12,7 +16,9 @@ import { DetailComponent as HistoryDetailComponent } from './history/detail/deta
 @NgModule({
   imports: [
     CommonModule,
-    LearnRoutingModule
+    LearnRoutingModule,
+    MaterialModule.forRoot(),
+    CovalentCoreModule.forRoot()
   ],
   declarations: [
     LearnComponent, 

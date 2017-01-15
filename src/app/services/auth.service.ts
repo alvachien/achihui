@@ -12,6 +12,10 @@ export class AuthService {
   private mgr: any;
 
   constructor() {
+    if (environment.DebugLogging) {
+      console.log("ACHIHUI Log: Entering AuthService constructor...");
+    }
+
     let settings = {
       authority: environment.IDServerUrl,
       client_id: "achihui.js",
@@ -51,7 +55,7 @@ export class AuthService {
 
   public doLogin() {
     if (environment.DebugLogging) {
-      console.log("Start the login...");
+      console.log("ACHIHUI Log: Start the login...");
     }
 
     if (this.mgr) {
@@ -70,7 +74,7 @@ export class AuthService {
 
   public doLogout() {
     if (environment.DebugLogging) {
-      console.log("Start the logout...");
+      console.log("ACHIHUI Log: Start the logout...");
     }
 
     if (this.mgr) {

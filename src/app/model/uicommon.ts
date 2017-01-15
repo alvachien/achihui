@@ -21,3 +21,9 @@ export class UIRadioButtonGroup {
     public value:any;
     public disabled:boolean;
 }
+
+export class UIRouteLink {
+    public title: string;
+    public route: string;
+    public icon: string;
+}

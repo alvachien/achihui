@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FinanceComponent } from './finance.component';
 
+import { MaterialModule } from '@angular/material';
+import { CovalentCoreModule } from '@covalent/core';
+
+import { FinanceComponent } from './finance.component';
 import { ListComponent as AccountListComponent } from './account/list/list.component';
 import { DetailComponent as AccountDetailComponent } from './account/detail/detail.component';
 import { ListComponent as DocumentListComponent } from './document/list/list.component';
@@ -13,6 +16,8 @@ import { DocumentComponent } from './document/document.component';
 @NgModule({
   imports: [
     CommonModule,
+    MaterialModule.forRoot(),
+    CovalentCoreModule.forRoot(),
     FinanceRoutingModule
   ],
   declarations: [

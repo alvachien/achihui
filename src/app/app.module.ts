@@ -24,6 +24,7 @@ import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AboutComponent } from './about/about.component';
 import { UserdetailComponent } from './userdetail/userdetail.component';
 import { AuthService } from './services/auth.service';
+import { UIStatusService } from './services/uistatus.service';
 import { AppRoutingModule } from './app-routing.module';
 
 export function funcHttpFactory(http: Http) {
@@ -56,7 +57,8 @@ export function funcHttpFactory(http: Http) {
     UserdetailComponent
   ],
   providers: [
-    AuthService
+    AuthService,
+    UIStatusService
   ],
   bootstrap: [AppComponent]
 })

@@ -21,8 +21,6 @@ export class AppComponent implements OnInit {
     private _iconRegistry: MdIconRegistry,
     private _domSanitizer: DomSanitizer,
     viewContainerRef: ViewContainerRef) {
-    this.isLoggedIn = false;
-    this.titleLogin = 'Login';
 
     translateService.addLangs(["en", "zh"]);
     translateService.setDefaultLang('en');
@@ -38,11 +36,11 @@ export class AppComponent implements OnInit {
         this.titleLogin = 'Login';
     });
 
-    let options: ILoadingOptions = {
-      name: 'main',
-      type: LoadingType.Circular,
-    };
-    this._loadingService.createOverlayComponent(options, viewContainerRef);
+    // let options: ILoadingOptions = {
+    //   name: 'main',
+    //   type: LoadingType.Circular,
+    // };
+    // this._loadingService.createOverlayComponent(options, viewContainerRef);
 
     // this._iconRegistry.addSvgIconInNamespace('assets', 'teradata',
     //   this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/teradata.svg'));
@@ -86,26 +84,9 @@ export class AppComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering onLogout of AppComponent");
     }
+
     if (this.isLoggedIn) {
       this.authService.doLogout();
     }
   }
-
-  public onMenuButtonClicked(): void {
-
-  }
-
-  public routes: Object[] = [
-    {
-      title: "Home", route: "/", icon: "home"
-    }, {
-      title: "Learn Object", route: "/learn/object", icon: "library_books"
-    }, {
-      title: "Learn History", route: "/learn/history", icon: "color_lens"
-    }, {
-      title: "Finance Account", route: "/finance/account", icon: "view_quilt"
-    }, {
-      title: "Finance Document", route: "/finance/document", icon: "picture_in_picture"
-    }
-  ];
 }
