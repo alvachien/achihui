@@ -26,7 +26,15 @@ const learnRoutes: Routes = [
             component: CategoryListComponent
           },
           {
-            path: ':id',
+            path:'create',
+            component: CategoryDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: CategoryDetailComponent
+          },
+          {
+            path: 'edit/:id',
             component: CategoryDetailComponent
           }
         ]

@@ -23,6 +23,10 @@ export class UIStatusService {
   public subjTitleLogin: BehaviorSubject<string> = new BehaviorSubject(this.titleLogin);
   public obsTitleLogin = this.subjTitleLogin.asObservable();
 
+  private learnSubModule: string = "Sub Module";
+  public subjLearnSubModule: BehaviorSubject<string> = new BehaviorSubject(this.learnSubModule);
+  public obsLearnSubModule = this.subjLearnSubModule.asObservable();
+
   constructor() {
     if (environment.DebugLogging) {
       console.log("ACHIHUI Log: Entering constructor of UIStatusService");
@@ -85,5 +89,13 @@ export class UIStatusService {
     }
     this.titleLogin = titleLogin;
     this.subjTitleLogin.next(this.titleLogin);
+  }
+
+  public setLearnSubModule(learnMod: string) : void {
+    if (environment.DebugLogging) {
+      console.log("ACHIHUI Log: Entering setLearnSubModule of UIStatusService with " + learnMod);
+    }
+    this.learnSubModule = learnMod;
+    this.subjLearnSubModule.next(this.learnSubModule);
   }
 }

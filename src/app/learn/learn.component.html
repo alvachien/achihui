@@ -1,4 +1,4 @@
-<td-layout #layout logo="assets:covalent" sidenavTitle="H.I.H." displayName="{{titleLogin}}" (logout)="logout()">
+<td-layout #layout icon="event_seat" sidenavTitle="H.I.H." displayName="{{titleLogin}}" (logout)="logout()">
   <md-nav-list menu-items>
     <template let-item let-last="last" ngFor [ngForOf]="routes">
       <a md-list-item [routerLink]="[item.route]" (click)="layout.close()">
@@ -6,15 +6,15 @@
     </template>
   </md-nav-list>
   
-  <td-layout-nav logo="assets:covalent" class="white-orange">
+  <td-layout-nav icon="event_seat" class="white-orange">
     <div toolbar-content layout="row" layout-align="start center" flex>
       <span hide-xs>Home Info. Hub, by Alva Chien</span>
       <span flex></span>
       <button md-icon-button [mdMenuTriggerFor]="notificationsMenu">
-      <td-notification-count color="accent">
-        <md-icon>apps</md-icon>
-      </td-notification-count>
-    </button>
+        <td-notification-count color="accent">
+          <md-icon>apps</md-icon>
+        </td-notification-count>
+      </button>
       <md-menu #notificationsMenu="mdMenu">
         <td-menu>
           <div td-menu-header class="md-subhead">Credits</div>
@@ -43,7 +43,8 @@
         <md-icon svgIcon="assets:github"></md-icon>
       </a>
     </div>
-    <router-outlet></router-outlet>
+    <td-layout-card-over cardTitle="Learning Trace" cardSubtitle="{{currentObject}}" cardWidth="90">
+      <router-outlet></router-outlet>
+    </td-layout-card-over>
   </td-layout-nav>
-
 </td-layout>

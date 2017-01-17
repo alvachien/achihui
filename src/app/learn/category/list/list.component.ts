@@ -9,6 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
+import { UIStatusService } from '../../../services/uistatus.service';
 
 @Component({
   selector: 'learn-category-list',
@@ -41,11 +42,18 @@ export class ListComponent implements OnInit {
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 
   constructor(private _http: Http,
-    private _dataTableService: TdDataTableService) {
+     private router: Router,
+     private activateRoute: ActivatedRoute,
+     private uistatus: UIStatusService,
+     private _dataTableService: TdDataTableService) {
     this._apiUrl = environment.ApiUrl + "api/learncategory";
   }
 
   ngOnInit() {
+    if (environment.DebugLogging) {
+      console.log("Entering ngOnInit of LearnCategoryList");
+    }
+    this.uistatus.setLearnSubModule("Category List");
     this.loadCategoryList();
   }
 
@@ -71,7 +79,7 @@ export class ListComponent implements OnInit {
       });
   }
 
-  extractData(res: Response) {
+  private extractData(res: Response) {
     if (environment.DebugLogging) {
       console.log("Entering extractData of LearnCategoryList");
     }
@@ -128,5 +136,12 @@ export class ListComponent implements OnInit {
       newData = this._dataTableService.pageData(newData, this.fromRow, this.currentPage * this.pageSize);
       this.filteredData = newData;
     }
-  }  
+  }
+  
+  public onCreateCategory() {
+    if (environment.DebugLogging) {
+      console.log("Entering onCreateCategory of LearnCategoryList");
+    }
+    this.router.navigate(['/learn/category/create']);
+  }
 }

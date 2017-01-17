@@ -1,4 +1,5 @@
 
+// For credits part
 export class CreditsComponent {
     Name: string;
     Version: string;
@@ -6,6 +7,7 @@ export class CreditsComponent {
     GithubRepo: string;
 }
 
+// For UI controls
 export class UIRadioButton {
     public id:string;
     public name:string;

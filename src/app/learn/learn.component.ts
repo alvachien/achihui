@@ -14,18 +14,13 @@ export class LearnComponent implements OnInit {
   public isLoggedIn: boolean = false;
   public titleLogin: string;
   public routes: any;
+  public currentObject: string;
 
   constructor(private _iconRegistry: MdIconRegistry,
     private _loadingService: TdLoadingService,
     private _domSanitizer: DomSanitizer,
     private _uistatus: UIStatusService,
     viewContainerRef: ViewContainerRef) { 
-
-    // let options: ILoadingOptions = {
-    //   name: 'main',
-    //   type: LoadingType.Circular,
-    // };
-    // this._loadingService.createOverlayComponent(options, viewContainerRef);
 
     this._iconRegistry.addSvgIconInNamespace('assets', 'github',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
@@ -50,18 +45,20 @@ export class LearnComponent implements OnInit {
     this._uistatus.obsTitleLogin.subscribe(x => {
       this.titleLogin = x;
     }, error => {
-
     }, () => {
-
     });
 
     this._uistatus.obsRouteList.subscribe(x => {
       this.routes = x;
     }, error => {
-
     }, () => {
-
     });
+
+    this._uistatus.obsLearnSubModule.subscribe(x => {
+      this.currentObject = x;
+    }, error => {
+    }, () => {
+    });    
   }
 
   ngOnInit() {
