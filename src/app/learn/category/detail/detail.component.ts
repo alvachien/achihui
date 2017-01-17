@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'learn-object-detail',
+  selector: 'learn-category-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css']
 })

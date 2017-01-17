@@ -43,15 +43,21 @@ export class UIStatusService {
         this.arRouteLink.push(rl);
 
         rl = new UIRouteLink();
+        rl.title = "Learn category";
+        rl.route = "/learn/category";
+        rl.icon = "settings_input_composite";
+        this.arRouteLink.push(rl);
+
+        rl = new UIRouteLink();
         rl.title = "Learn Object";
         rl.route = "/learn/object";
-        rl.icon = "library_books";
+        rl.icon = "group_work";
         this.arRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Learn History";
         rl.route = "/learn/history";
-        rl.icon = "library_books";
+        rl.icon = "history";
         this.arRouteLink.push(rl);
 
         rl = new UIRouteLink();
@@ -63,7 +69,7 @@ export class UIStatusService {
         rl = new UIRouteLink();
         rl.title = "Finance Document";
         rl.route = "/finance/document";
-        rl.icon = "library_books";
+        rl.icon = "local_library";
         this.arRouteLink.push(rl);
       } else {
         this.arRouteLink.splice(0);

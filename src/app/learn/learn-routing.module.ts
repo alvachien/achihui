@@ -8,12 +8,29 @@ import { DetailComponent as ObjectDetailComponent } from './object/detail/detail
 import { HistoryComponent } from './history/history.component';
 import { ListComponent as HistoryListComponent } from './history/list/list.component';
 import { DetailComponent as HistoryDetailComponent } from './history/detail/detail.component';
+import { CategoryComponent } from './category/category.component';
+import { ListComponent as CategoryListComponent } from './category/list/list.component';
+import { DetailComponent as CategoryDetailComponent } from './category/detail/detail.component';
 
 const learnRoutes: Routes = [
   {
     path: '',
     component: LearnComponent,
     children: [
+      {
+        path: 'category',
+        component: CategoryComponent,
+        children: [
+          {
+            path:'',
+            component: CategoryListComponent
+          },
+          {
+            path: ':id',
+            component: CategoryDetailComponent
+          }
+        ]
+      },
       {
         path: 'object',
         component: ObjectComponent,

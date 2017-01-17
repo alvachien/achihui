@@ -25,16 +25,15 @@ export class HomeComponent implements OnInit {
         this._uistatus.setTitleLogin(x.getUserName());
       }
     }, error => {
-
+      // Error occurred
     }, () => {
-
+      // Completed
     });
 
     // Register the UI status
     this._uistatus.obsIsLoggedIn.subscribe(x => {
       this.isLoggedIn = x;
     }, error => {
-
     }, () => {
     });
 

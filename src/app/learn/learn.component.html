@@ -1,15 +1,11 @@
-  <td-layout #layout 
-  logo="assets:covalent" 
-  sidenavTitle="H.I.H." 
-  displayName="Firstname Lastname" 
-  (logout)="logout()"
-  >
+<td-layout #layout logo="assets:covalent" sidenavTitle="H.I.H." displayName="{{titleLogin}}" (logout)="logout()">
   <md-nav-list menu-items>
     <template let-item let-last="last" ngFor [ngForOf]="routes">
       <a md-list-item [routerLink]="[item.route]" (click)="layout.close()">
         <md-icon>{{item.icon}}</md-icon>{{item.title}}</a>
     </template>
   </md-nav-list>
+  
   <td-layout-nav logo="assets:covalent" class="white-orange">
     <div toolbar-content layout="row" layout-align="start center" flex>
       <span hide-xs>Home Info. Hub, by Alva Chien</span>
@@ -48,6 +44,6 @@
       </a>
     </div>
     <router-outlet></router-outlet>
-      </td-layout-nav>
+  </td-layout-nav>
 
-  </td-layout>
+</td-layout>

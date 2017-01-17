@@ -17,16 +17,10 @@ const appRoutes: Routes = [
   {
     path: 'learn',
     loadChildren: 'app/learn/learn.module#LearnModule',
-    data: {
-      preload: true
-    }
   },
   {
     path: 'finance',
     loadChildren: 'app/finance/finance.module#FinanceModule',
-    data: {
-      preload: true
-    }
   },
   { path: '**', component: PagenotfoundComponent },
 ];
@@ -34,8 +28,7 @@ const appRoutes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(
-      appRoutes,
-      { preloadingStrategy: PreloadSelectedModules }
+      appRoutes
     )
   ],
   exports: [

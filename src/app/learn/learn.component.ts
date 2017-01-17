@@ -2,6 +2,8 @@ import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MdIconRegistry } from '@angular/material';
 import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
+import { UIStatusService } from '../services/uistatus.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-learn',
@@ -9,10 +11,14 @@ import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
   styleUrls: ['./learn.component.css']
 })
 export class LearnComponent implements OnInit {
+  public isLoggedIn: boolean = false;
+  public titleLogin: string;
+  public routes: any;
 
   constructor(private _iconRegistry: MdIconRegistry,
     private _loadingService: TdLoadingService,
     private _domSanitizer: DomSanitizer,
+    private _uistatus: UIStatusService,
     viewContainerRef: ViewContainerRef) { 
 
     // let options: ILoadingOptions = {
@@ -39,6 +45,23 @@ export class LearnComponent implements OnInit {
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/listener.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'querygrid',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/querygrid.svg'));
+
+    // Register the UI status
+    this._uistatus.obsTitleLogin.subscribe(x => {
+      this.titleLogin = x;
+    }, error => {
+
+    }, () => {
+
+    });
+
+    this._uistatus.obsRouteList.subscribe(x => {
+      this.routes = x;
+    }, error => {
+
+    }, () => {
+
+    });
   }
 
   ngOnInit() {

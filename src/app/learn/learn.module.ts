@@ -12,6 +12,9 @@ import { ObjectComponent } from './object/object.component';
 import { HistoryComponent } from './history/history.component';
 import { ListComponent as HistoryListComponent } from './history/list/list.component';
 import { DetailComponent as HistoryDetailComponent } from './history/detail/detail.component';
+import { CategoryComponent } from './category/category.component';
+import { ListComponent as CategoryListComponent } from './category/list/list.component';
+import { DetailComponent as CategoryDetailComponent } from './category/detail/detail.component';
 
 @NgModule({
   imports: [
@@ -22,6 +25,9 @@ import { DetailComponent as HistoryDetailComponent } from './history/detail/deta
   ],
   declarations: [
     LearnComponent, 
+    CategoryComponent,
+    CategoryListComponent,
+    CategoryDetailComponent,
     ObjectListComponent, 
     ObjectDetailComponent, 
     ObjectComponent, 
