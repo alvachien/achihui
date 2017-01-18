@@ -41,6 +41,7 @@
     "oidc-client": "^1.2.2",
     "rxjs": "^5.0.2",
     "showdown": "1.4.2",
+    "tinymce": "^4.5.2",
     "tslint": "^4.3.1",
     "zone.js": "^0.7.2"
   },

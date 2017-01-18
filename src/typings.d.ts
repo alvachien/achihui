@@ -3,3 +3,5 @@
 
 declare module 'oidc-client';
 declare var Oidc: any;
+declare var tinymce: any;
+

@@ -1,4 +1,4 @@
-<td-layout #layout logo="assets:covalent" sidenavTitle="H.I.H." displayName="{{ titleLogin }}">
+<td-layout #layout icon="event_seat" sidenavTitle="H.I.H." displayName="{{ titleLogin }}">
   <md-nav-list menu-items *ngIf="isLoggedIn">
     <template let-item let-last="last" ngFor [ngForOf]="routes">
       <a md-list-item [routerLink]="[item.route]" (click)="layout.close()">
@@ -9,7 +9,7 @@
     <a md-list-item (click)="onLogin()">Login</a>
   </md-nav-list>
 
-  <td-layout-nav logo="assets:covalent">
+  <td-layout-nav icon="event_seat">
     <div toolbar-content layout="row" layout-align="start center" flex>
       <span hide-xs>Home Info. Hub, by Alva Chien</span>
       <span flex></span>

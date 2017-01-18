@@ -17,11 +17,15 @@ import { UIStatusService } from '../../../services/uistatus.service';
 export class DetailComponent implements OnInit {
   private routerID: number = -1; // Current category ID in routing
   public currentMode: string;
+  public detailObject: HIHLearn.LearnCategory = null;
+  public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
 
   constructor(
     private router: Router,
     private activateRoute: ActivatedRoute,
     private uistatus: UIStatusService) {
+      this.detailObject = new HIHLearn.LearnCategory();
+      this.uiMode = HIHCommon.UIMode.Create;
   }
 
   ngOnInit() {
@@ -34,10 +38,14 @@ export class DetailComponent implements OnInit {
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === "create") {
           this.currentMode = "Create";
+          this.detailObject = new HIHLearn.LearnCategory();
+          this.uiMode = HIHCommon.UIMode.Create;
         } else if (x[0].path === "edit") {
           this.currentMode = "Edit"
+          this.uiMode = HIHCommon.UIMode.Change;
         } else if(x[0].path === "display") {
           this.currentMode = "Display";
+          this.uiMode = HIHCommon.UIMode.Display;
         }
 
         // Update the sub module

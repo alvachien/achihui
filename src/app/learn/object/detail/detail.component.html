@@ -1,3 +1,25 @@
-<p>
-  Object detail works!
-</p>
+<form (ngSubmit)="onSubmit()" #detailForm="ngForm">
+  <div layout="row" layout-margin>
+    <md-input-container flex>
+      <input md-input placeholder="ID" disabled
+             [(ngModel)]="detailObject.Id" name="objid" #objid="ngModel" />
+    </md-input-container>
+    <md-input-container flex>
+      <input md-input placeholder="Category ID" [(ngModel)]="detailObject.CategoryId" name="ctgyid" #ctgyid="ngModel">
+    </md-input-container>
+  </div>
+  <div layout="row" layout-margin>
+    <md-input-container flex>
+      <input md-input placeholder="Name" required [(ngModel)]="detailObject.Name" name="objname" #objname="ngModel">
+    </md-input-container>
+  </div>
+  <div layout="row" layout-margin>
+    <textarea htmlEditor [(ngModel)]="detailObject.Content" name="content"></textarea>
+  </div>
+  <div layout="row" layout-margin>
+    <button type="submit" md-button [disabled]="!detailForm.form.valid">Submit</button>
+    <button type="reset" md-button>Reset</button>
+  </div>
+  <div margin="5px"></div>
+</form>
+

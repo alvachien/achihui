@@ -1,21 +1,26 @@
-<form>
+<form (ngSubmit)="onSubmit()" #detailForm="ngForm">
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input md-input placeholder="ID" disabled value="Google">
+      <input md-input placeholder="ID" disabled
+             [(ngModel)]="detailObject.Id" name="objid" #objid="ngModel" />
     </md-input-container>
     <md-input-container flex>
-      <input md-input placeholder="Parent ID">
+      <input md-input placeholder="Parent ID" [(ngModel)]="detailObject.ParentId" name="parid" #parid="ngModel">
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input md-input placeholder="Name">
+      <input md-input placeholder="Name" required [(ngModel)]="detailObject.Name" name="objname" #objname="ngModel">
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input md-input placeholder="Comment">
+      <input md-input placeholder="Comment" [(ngModel)]="detailObject.Comment" name="objcomment" #objcomment="ngModel">
     </md-input-container>
+  </div>
+  <div layout="row" layout-margin>
+    <button type="submit" md-raised-button [disabled]="!detailForm.form.valid">Submit</button>
+    <button type="reset" md-raised-button>Reset</button>
   </div>
 </form>
 

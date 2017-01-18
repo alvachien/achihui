@@ -1,5 +1,5 @@
 import { NgModule, Type } from '@angular/core';
-import { BrowserModule, Title }  from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 
 import { CovalentCoreModule } from '@covalent/core';
 import { CovalentHttpModule, IHttpInterceptor } from '@covalent/http';
@@ -13,11 +13,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { HttpModule, Http } from '@angular/http';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import 'hammerjs';
-import {
-  TranslateModule, TranslateLoader,
-  TranslateStaticLoader
-} from "ng2-translate";
 
+import { UIRefModule } from './uiref.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
@@ -27,22 +24,14 @@ import { AuthService } from './services/auth.service';
 import { UIStatusService } from './services/uistatus.service';
 import { AppRoutingModule } from './app-routing.module';
 
-export function funcHttpFactory(http: Http) {
-  return new TranslateStaticLoader(http, '/assets/locales/', '.json');
-}
-
 @NgModule({
   imports: [
     MaterialModule.forRoot(),
     BrowserModule,
     FormsModule,
     HttpModule,
+    UIRefModule,
     FlexLayoutModule.forRoot(),
-    TranslateModule.forRoot({
-      provide: TranslateLoader,
-      useFactory: funcHttpFactory,
-      deps: [Http]
-    }),
     AppRoutingModule,
     CovalentCoreModule.forRoot(),
     CovalentChartsModule.forRoot(),

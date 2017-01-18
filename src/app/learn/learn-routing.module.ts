@@ -48,7 +48,15 @@ const learnRoutes: Routes = [
             component: ObjectListComponent
           },
           {
-            path: ':id',
+            path:'create',
+            component: ObjectDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: ObjectDetailComponent
+          },
+          {
+            path: 'edit/:id',
             component: ObjectDetailComponent
           }
         ]

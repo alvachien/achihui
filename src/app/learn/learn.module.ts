@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { MaterialModule } from '@angular/material';
 import { CovalentCoreModule } from '@covalent/core';
+import { UIRefModule } from '../uiref.module';
 
 import { LearnComponent } from './learn.component';
 import { ListComponent as ObjectListComponent } from './object/list/list.component';
@@ -20,6 +21,7 @@ import { DetailComponent as CategoryDetailComponent } from './category/detail/de
   imports: [
     CommonModule,
     LearnRoutingModule,
+    UIRefModule,
     MaterialModule.forRoot(),
     CovalentCoreModule.forRoot()
   ],
