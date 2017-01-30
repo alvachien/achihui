@@ -21,6 +21,9 @@ export class AppComponent implements OnInit {
     private _iconRegistry: MdIconRegistry,
     private _domSanitizer: DomSanitizer,
     viewContainerRef: ViewContainerRef) {
+    if (environment.DebugLogging) {
+      console.log("Entering constructor of AppComponent");
+    }
 
     translateService.addLangs(["en", "zh"]);
     translateService.setDefaultLang('en');
@@ -54,14 +57,6 @@ export class AppComponent implements OnInit {
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/covalent-mark.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'hihlogo',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hihapplogo.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'teradata-ux',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/teradata-ux.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'appcenter',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/appcenter.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'listener',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/listener.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'querygrid',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/querygrid.svg'));
   }
 
   ngOnInit() {

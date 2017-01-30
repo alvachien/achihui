@@ -60,4 +60,7 @@ export class HomeComponent implements OnInit {
   public onLogin() : void {
     this._authService.doLogin();
   }
+  public onLogout(): void {
+    this._authService.doLogout();
+  }
 }

@@ -385,6 +385,10 @@ export class LearnHistory extends hih.BaseModel {
     public LearnDate: Date;
     public Comment: string;
 
+    // Additional info, not need for saving
+    public UserDisplayAs: string;
+    public ObjectName: string;
+
     constructor() {
         super();
         if (environment.DebugLogging) {
@@ -424,6 +428,10 @@ export class LearnHistory extends hih.BaseModel {
         }
 
         super.onSetData(data);
+
+        this.UserId = data.userId;
+        this.ObjectId = data.objectId;
+        // Todo
     }
 }
 

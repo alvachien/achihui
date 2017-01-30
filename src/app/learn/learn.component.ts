@@ -4,6 +4,7 @@ import { MdIconRegistry } from '@angular/material';
 import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
 import { UIStatusService } from '../services/uistatus.service';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-learn',
@@ -19,8 +20,12 @@ export class LearnComponent implements OnInit {
   constructor(private _iconRegistry: MdIconRegistry,
     private _loadingService: TdLoadingService,
     private _domSanitizer: DomSanitizer,
+    private _authService: AuthService,
     private _uistatus: UIStatusService,
     viewContainerRef: ViewContainerRef) { 
+    if (environment.DebugLogging) {
+      console.log("Entering constructor of LearnComponent");
+    }
 
     this._iconRegistry.addSvgIconInNamespace('assets', 'github',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
@@ -32,14 +37,17 @@ export class LearnComponent implements OnInit {
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/covalent-mark.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'hihlogo',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hihapplogo.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'teradata-ux',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/teradata-ux.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'appcenter',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/appcenter.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'listener',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/listener.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'querygrid',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/querygrid.svg'));
+
+    this._authService.authContent.subscribe(x => {
+      this.isLoggedIn = x.isAuthorized;
+      if (this.isLoggedIn)
+        this.titleLogin = x.getUserName();
+      else
+        this.titleLogin = "";
+
+      if (!this.titleLogin)
+        this.titleLogin = 'Login';
+    });
 
     // Register the UI status
     this._uistatus.obsTitleLogin.subscribe(x => {
@@ -62,5 +70,28 @@ export class LearnComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (environment.DebugLogging) {
+      console.log("Entering ngOnInit of LearnComponent");
+    }
+  }
+
+  public onLogin(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onLogin of LearnComponent");
+    }
+
+    if (!this.isLoggedIn) {
+      this._authService.doLogin();
+    }
+  }
+
+  public onLogout(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onLogout of LearnComponent");
+    }
+
+    if (this.isLoggedIn) {
+      this._authService.doLogout();
+    }
   }
 }

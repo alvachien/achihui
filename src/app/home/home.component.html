@@ -1,4 +1,4 @@
-<td-layout #layout icon="event_seat" sidenavTitle="H.I.H." displayName="{{ titleLogin }}">
+<td-layout #layout icon="event_seat" sidenavTitle="H.I.H." displayName="{{ titleLogin }}" (logout)="onLogout()">
   <md-nav-list menu-items *ngIf="isLoggedIn">
     <template let-item let-last="last" ngFor [ngForOf]="routes">
       <a md-list-item [routerLink]="[item.route]" (click)="layout.close()">
@@ -204,6 +204,7 @@
               </md-list>
             </md-card>
           </div>
+
           <div flex-gt-xs="25">
             <md-card>
               <md-toolbar color="accent" class="bgc-deep-orange-700 push-bottom">
@@ -238,6 +239,7 @@
         </div>
       </div>
     </section>
+
     <section class="bgc-blue-600">
       <div layout-gt-xs="row">
         <div flex class="bg-cover" style="background-image:url('https://assets.entrepreneur.com/static/1425478689-vince-vaughn-appearing-free-cheesy-stock-images-you-can-download-getty-2.jpg');background-size:cover;">
@@ -251,6 +253,7 @@
         </div>
       </div>
     </section>
+
     <section class="bgc-blue-grey-800 tc-blue-grey-100">
       <div layout-gt-xs="row" layout-align-gt-xs="center center">
         <div layout-gt-sm="row" flex-gt-xs="75" layout-margin layout-padding>

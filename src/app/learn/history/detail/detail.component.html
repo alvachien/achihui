@@ -1,3 +1,28 @@
-<p>
-  History detail works!
-</p>
+<form (ngSubmit)="onSubmit()" #detailForm="ngForm">
+  <div layout="row" layout-margin>
+    <md-select flex placeholder="User" [(ngModel)]="historyObject.UserId" name="userid" #userid="ngModel">
+      <md-option *ngFor="let user of arUsers" [value]="user.UserId">{{ user.DisplayAs }}</md-option>
+    </md-select>
+  </div>
+  <div layout="row" layout-margin>
+    <md-input-container flex>
+      <input md-input placeholder="Object ID" [(ngModel)]="historyObject.ObjectId" name="objid" #objid="ngModel" (oninput)="onObjectIdChanged()">
+      <md-hint align="end">{{historyObject.ObjectName}}</md-hint>
+    </md-input-container>
+  </div>
+  <div layout="row" layout-margin>
+    <md-input-container flex>
+      <input md-input placeholder="Learn date" type="date" required [(ngModel)]="historyObject.LearnDate" name="lrndate" #lrndate="ngModel">
+    </md-input-container>
+  </div>
+  <div layout="row" layout-margin>
+    <md-input-container flex>
+      <textarea md-input placeholder="Comment" [(ngModel)]="historyObject.Comment" name="cmt" #cmt="ngModel"></textarea>
+    </md-input-container>
+  </div>
+  <div layout="row" layout-margin>
+    <button type="submit" md-button [disabled]="!detailForm.form.valid">Submit</button>
+    <button type="reset" md-button>Reset</button>
+  </div>
+</form>
+

@@ -59,7 +59,7 @@ export class ListComponent implements OnInit {
 
   loadHistoryList(): void {
     if (environment.DebugLogging) {
-      console.log("Entering loadObjectList of LearnHistoryList");
+      console.log("Entering loadHistoryList of LearnHistoryList");
     }
 
     var headers = new Headers();
@@ -100,7 +100,7 @@ export class ListComponent implements OnInit {
 
   private handleError(error: any) {
     if (environment.DebugLogging) {
-      console.log("Entering handleError of LearnObjectList");
+      console.log("Entering handleError of LearnHistoryList");
     }
 
     // In a real world app, we might use a remote logging infrastructure
@@ -140,10 +140,10 @@ export class ListComponent implements OnInit {
     }
   }
   
-  public onCreateObject() {
+  public onCreateHistory() {
     if (environment.DebugLogging) {
-      console.log("Entering onCreateObject of LearnObjectList");
+      console.log("Entering onCreateHistory of LearnHistoryList");
     }
-    this.router.navigate(['/learn/object/create']);
+    this.router.navigate(['/learn/history/create']);
   }
 }
