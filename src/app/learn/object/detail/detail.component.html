@@ -4,8 +4,11 @@
       <input md-input placeholder="ID" disabled
              [(ngModel)]="detailObject.Id" name="objid" #objid="ngModel" />
     </md-input-container>
+  </div>
+  <div layout="row" layout-margin>
     <md-input-container flex>
-      <input md-input placeholder="Category ID" [(ngModel)]="detailObject.CategoryId" name="ctgyid" #ctgyid="ngModel">
+      <input md-input placeholder="Category ID" [(ngModel)]="detailObject.CategoryId" required name="ctgyid" #ctgyid="ngModel" (change)="onCategoryValueChange($event)">
+      <md-hint align="end">{{detailObject.CategoryName}}</md-hint>
     </md-input-container>
   </div>
   <div layout="row" layout-margin>

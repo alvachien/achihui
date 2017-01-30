@@ -321,6 +321,9 @@ export class LearnObject extends hih.BaseModel {
     public Name: string;
     public Content: string;
 
+    // Display name, not necessary for saving
+    public CategoryName: string;
+
     constructor() {
         super();
         if (environment.DebugLogging) {
@@ -351,6 +354,10 @@ export class LearnObject extends hih.BaseModel {
         }
 
         let rstObj = super.writeJSONObject();
+        rstObj.Id = this.Id;
+        rstObj.CategoryId = this.CategoryId;
+        rstObj.Name = this.Name;
+        rstObj.Content = this.Content;
         return rstObj;
     }
 
