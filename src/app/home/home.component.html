@@ -1,13 +1,51 @@
 <td-layout #layout icon="event_seat" sidenavTitle="H.I.H." displayName="{{ titleLogin }}" (logout)="onLogout()">
-  <md-nav-list menu-items *ngIf="isLoggedIn">
-    <template let-item let-last="last" ngFor [ngForOf]="routes">
-      <a md-list-item [routerLink]="[item.route]" (click)="layout.close()">
-        <md-icon>{{item.icon}}</md-icon>{{item.title}}</a>
-    </template>
-  </md-nav-list>
-  <md-nav-list menu-items *ngIf="!isLoggedIn">
-    <a md-list-item (click)="onLogin()">Login</a>
-  </md-nav-list>
+  <div class="td-sidenav-content">
+    <div class="md-body-1" layout="row" *ngIf="isLoggedIn" (click)="toggleLearnMenu()">
+        <span flex>Learning Trace</span>
+        <button md-icon-button class="md-icon-button-mini">
+          <md-icon *ngIf="!learnMenuToggled">arrow_drop_down</md-icon>
+          <md-icon *ngIf="learnMenuToggled">arrow_drop_up</md-icon>
+        </button>
+    </div>
+    <md-nav-list menu-items *ngIf="isLoggedIn && learnMenuToggled">
+      <template let-item let-last="last" ngFor [ngForOf]="learnRoutes">
+        <a md-list-item [routerLink]="[item.route]" (click)="layout.close()">
+          <md-icon>{{item.icon}}</md-icon>{{item.title}}</a>
+      </template>
+    </md-nav-list>
+
+    <div class="md-body-1" layout="row" *ngIf="isLoggedIn" (click)="toggleFinanceMenu()">
+        <span flex>Finance Trace</span>
+        <button md-icon-button class="md-icon-button-mini">
+          <md-icon *ngIf="!financeMenuToggled">arrow_drop_down</md-icon>
+          <md-icon *ngIf="financeMenuToggled">arrow_drop_up</md-icon>
+        </button>
+    </div>
+    <md-nav-list menu-items *ngIf="isLoggedIn && financeMenuToggled">
+      <template let-item let-last="last" ngFor [ngForOf]="financeRoutes">
+        <a md-list-item [routerLink]="[item.route]" (click)="layout.close()">
+          <md-icon>{{item.icon}}</md-icon>{{item.title}}</a>
+      </template>
+    </md-nav-list>
+
+    <div class="md-body-1" layout="row" *ngIf="isLoggedIn" (click)="toggleLibraryMenu()">
+        <span flex>Library Trace</span>
+        <button md-icon-button class="md-icon-button-mini">
+          <md-icon *ngIf="!libraryMenuToggled">arrow_drop_down</md-icon>
+          <md-icon *ngIf="libraryMenuToggled">arrow_drop_up</md-icon>
+        </button>
+    </div>
+    <md-nav-list menu-items *ngIf="isLoggedIn && libraryMenuToggled">
+      <template let-item let-last="last" ngFor [ngForOf]="libraryRoutes">
+        <a md-list-item [routerLink]="[item.route]" (click)="layout.close()">
+          <md-icon>{{item.icon}}</md-icon>{{item.title}}</a>
+      </template>
+    </md-nav-list>
+
+    <md-nav-list menu-items *ngIf="!isLoggedIn">
+      <a md-list-item (click)="onLogin()">Login</a>
+    </md-nav-list>
+  </div>
 
   <td-layout-nav icon="event_seat">
     <div toolbar-content layout="row" layout-align="start center" flex>
