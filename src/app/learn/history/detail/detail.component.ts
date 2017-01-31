@@ -71,9 +71,7 @@ export class DetailComponent implements OnInit {
         this._uistatus.setLearnSubModule(this.currentMode + " History");
       }
     }, error => {
-
     }, () => {
-
     });
 
     // let aid: number = -1;

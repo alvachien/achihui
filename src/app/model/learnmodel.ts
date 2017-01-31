@@ -23,11 +23,11 @@ export class ENPOS extends hih.BaseModel {
         }
     }
 
-    public onVerify(): boolean {
+    public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
             console.log("Entering onVerify of ENPOS");
         }
-        if (!super.onVerify())
+        if (!super.onVerify(context))
             return false;
 
         return true;
@@ -73,11 +73,11 @@ export class ENWordExplain extends hih.BaseModel {
         }
     }
 
-    public onVerify(): boolean {
+    public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
             console.log("Entering onVerify of KnowledgeType");
         }
-        if (!super.onVerify())
+        if (!super.onVerify(context))
             return false;
 
         return true;
@@ -115,11 +115,11 @@ export class EnWord extends hih.BaseModel {
         }
     }
 
-    public onVerify(): boolean {
+    public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
             console.log("Entering onVerify of KnowledgeType");
         }
-        if (!super.onVerify())
+        if (!super.onVerify(context))
             return false;
 
         return true;
@@ -164,11 +164,11 @@ export class EnSentenceExplain extends hih.BaseModel {
         }
     }
 
-    public onVerify(): boolean {
+    public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
             console.log("Entering onVerify of KnowledgeType");
         }
-        if (!super.onVerify())
+        if (!super.onVerify(context))
             return false;
 
         return true;
@@ -207,11 +207,11 @@ export class EnSentence extends hih.BaseModel {
         }
     }
 
-    public onVerify(): boolean {
+    public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
             console.log("Entering onVerify of KnowledgeType");
         }
-        if (!super.onVerify())
+        if (!super.onVerify(context))
             return false;
 
         return true;
@@ -264,11 +264,11 @@ export class LearnCategory extends hih.BaseModel {
         }
     }
 
-    public onVerify(): boolean {
+    public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
             console.log("Entering onVerify of LearnCategory");
         }
-        if (!super.onVerify())
+        if (!super.onVerify(context))
             return false;
 
         return true;
@@ -338,11 +338,11 @@ export class LearnObject extends hih.BaseModel {
         }
     }
 
-    public onVerify(): boolean {
+    public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
             console.log("Entering onVerify of LearnObject");
         }
-        if (!super.onVerify())
+        if (!super.onVerify(context))
             return false;
 
         return true;
@@ -412,11 +412,11 @@ export class LearnHistory extends hih.BaseModel {
         }
     }
 
-    public onVerify(): boolean {
+    public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
             console.log("Entering onVerify of LearnHistory");
         }
-        if (!super.onVerify())
+        if (!super.onVerify(context))
             return false;
 
         return true;
@@ -428,6 +428,10 @@ export class LearnHistory extends hih.BaseModel {
         }
 
         let rstObj = super.writeJSONObject();
+        rstObj.UserId = this.UserId;
+        rstObj.ObjectId = this.ObjectId;
+        rstObj.LearnDate = this.LearnDate;
+        rstObj.Comment = this.Comment;
         return rstObj;
     }
 
@@ -440,7 +444,11 @@ export class LearnHistory extends hih.BaseModel {
 
         this.UserId = data.userId;
         this.ObjectId = data.objectId;
-        // Todo
+        this.LearnDate = data.learnDate;
+        this.Comment = data.comment;
+
+        this.UserDisplayAs = data.userDisplayAs;
+        this.ObjectName = data.objectName;
     }
 }
 
@@ -462,11 +470,11 @@ export class LearnAward extends hih.BaseModel {
         }
     }
 
-    public onVerify(): boolean {
+    public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
             console.log("Entering onVerify of LearnAward");
         }
-        if (!super.onVerify())
+        if (!super.onVerify(context))
             return false;
 
         return true;

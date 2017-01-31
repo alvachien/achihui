@@ -49,7 +49,7 @@ export class BaseModel {
         }
     }
 
-    public onVerify(): boolean {
+    public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
             console.log("Entering onVerify of BaseModel");
         }

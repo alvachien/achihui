@@ -46,6 +46,9 @@ export class ListComponent implements OnInit {
      private activateRoute: ActivatedRoute,
      private uistatus: UIStatusService,
      private _dataTableService: TdDataTableService) {
+    if (environment.DebugLogging) {
+      console.log("Entering constructor of LearnHistoryList");
+    }
     this._apiUrl = environment.ApiUrl + "api/learnhistory";
   }
 
