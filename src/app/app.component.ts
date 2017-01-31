@@ -7,7 +7,7 @@ import { MdIconRegistry } from '@angular/material';
 import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'hih-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

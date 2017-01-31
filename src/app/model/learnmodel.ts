@@ -442,8 +442,8 @@ export class LearnHistory extends hih.BaseModel {
 
         super.onSetData(data);
 
-        this.UserId = data.userId;
-        this.ObjectId = data.objectId;
+        this.UserId = data.userID;
+        this.ObjectId = data.objectID;
         this.LearnDate = data.learnDate;
         this.Comment = data.comment;
 

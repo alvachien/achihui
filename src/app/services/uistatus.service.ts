@@ -23,9 +23,21 @@ export class UIStatusService {
   public subjTitleLogin: BehaviorSubject<string> = new BehaviorSubject(this.titleLogin);
   public obsTitleLogin = this.subjTitleLogin.asObservable();
 
-  private learnSubModule: string = "Sub Module";
+  private learnModule: string = "Learn module";
+  public subjLearnModule: BehaviorSubject<string> = new BehaviorSubject(this.learnModule);
+  public obsLearnModule = this.subjLearnModule.asObservable();
+
+  private learnSubModule: string = "Learn sub module";
   public subjLearnSubModule: BehaviorSubject<string> = new BehaviorSubject(this.learnSubModule);
   public obsLearnSubModule = this.subjLearnSubModule.asObservable();
+
+  private financeModule: string = "Finance module";
+  public subjFinanceModule: BehaviorSubject<string> = new BehaviorSubject(this.financeModule);
+  public obsFinanceModule = this.subjFinanceModule.asObservable();
+
+  private financeSubModule: string = "Finance sub module";
+  public subjFinanceSubModule: BehaviorSubject<string> = new BehaviorSubject(this.financeSubModule);
+  public obsFinanceSubModule = this.subjFinanceSubModule.asObservable();
 
   constructor() {
     if (environment.DebugLogging) {
@@ -65,15 +77,51 @@ export class UIStatusService {
         this.arRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Finance Account";
+        rl.title = "Account Category";
+        rl.route = "/finance/accountcategory";
+        rl.icon = "settings_input_component";
+        this.arRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Document Type";
+        rl.route = "/finance/documenttype";
+        rl.icon = "view_comfy";
+        this.arRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Control Center";
+        rl.route = "/finance/controlcenter";
+        rl.icon = "store";
+        this.arRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Order";
+        rl.route = "/finance/order";
+        rl.icon = "tune";
+        this.arRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Finance Accounts";
         rl.route = "/finance/account";
         rl.icon = "library_books";
         this.arRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Finance Document";
+        rl.title = "Finance Documents";
         rl.route = "/finance/document";
         rl.icon = "local_library";
+        this.arRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Library Books";
+        rl.route = "/library/book";
+        rl.icon = "book";
+        this.arRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Library Movies";
+        rl.route = "/library/movie";
+        rl.icon = "movie";
         this.arRouteLink.push(rl);
       } else {
         this.arRouteLink.splice(0);
@@ -91,11 +139,35 @@ export class UIStatusService {
     this.subjTitleLogin.next(this.titleLogin);
   }
 
-  public setLearnSubModule(learnMod: string) : void {
+  public setLearnModule(learnMod: string): void {
     if (environment.DebugLogging) {
-      console.log("ACHIHUI Log: Entering setLearnSubModule of UIStatusService with " + learnMod);
+      console.log("ACHIHUI Log: Entering setLearnModule of UIStatusService with " + learnMod);
     }
-    this.learnSubModule = learnMod;
+    this.learnModule = learnMod;
+    this.subjLearnModule.next(this.learnModule);
+  }
+
+  public setLearnSubModule(learnSubMod: string): void {
+    if (environment.DebugLogging) {
+      console.log("ACHIHUI Log: Entering setLearnSubModule of UIStatusService with " + learnSubMod);
+    }
+    this.learnSubModule = learnSubMod;
     this.subjLearnSubModule.next(this.learnSubModule);
+  }
+
+  public setFinanceModule(financeMod: string): void {
+    if (environment.DebugLogging) {
+      console.log("ACHIHUI Log: Entering setFinanceModule of UIStatusService with " + financeMod);
+    }
+    this.financeModule = financeMod;
+    this.subjFinanceModule.next(this.financeModule);
+  }
+
+  public setFinanceSubModule(financeSubMod: string): void {
+    if (environment.DebugLogging) {
+      console.log("ACHIHUI Log: Entering setFinanceSubModule of UIStatusService with " + financeSubMod);
+    }
+    this.financeSubModule = financeSubMod;
+    this.subjFinanceSubModule.next(this.financeSubModule);
   }
 }

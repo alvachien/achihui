@@ -3,7 +3,7 @@ import { UIStatusService } from '../services/uistatus.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'hih-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

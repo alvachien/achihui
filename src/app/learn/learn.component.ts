@@ -7,7 +7,7 @@ import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
 
 @Component({
-  selector: 'app-learn',
+  selector: 'hih-learn',
   templateUrl: `./learn.component.html`,
   styleUrls: ['./learn.component.css']
 })

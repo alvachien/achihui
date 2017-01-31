@@ -2,18 +2,41 @@ import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MdIconRegistry } from '@angular/material';
 import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
+import { AuthService } from '../services/auth.service';
+import { UIStatusService } from '../services/uistatus.service';
+import { environment } from '../../environments/environment';
 
 @Component({
-  selector: 'app-finance',
+  selector: 'hih-finance',
   templateUrl: './finance.component.html',
   styleUrls: ['./finance.component.css']
 })
 export class FinanceComponent implements OnInit {
+  public isLoggedIn: boolean = false;
+  public titleLogin: string;
+  public routes: any;
+  public currentObject: string;
 
   constructor(private _iconRegistry: MdIconRegistry,
     private _loadingService: TdLoadingService,
     private _domSanitizer: DomSanitizer,
+    private _authService: AuthService,
+    private _uistatus: UIStatusService,
     viewContainerRef: ViewContainerRef) { 
+    if (environment.DebugLogging) {
+      console.log("Entering constructor of FinanceComponent");
+    }
+
+    this._authService.authContent.subscribe(x => {
+      this.isLoggedIn = x.isAuthorized;
+      if (this.isLoggedIn)
+        this.titleLogin = x.getUserName();
+      else
+        this.titleLogin = "";
+
+      if (!this.titleLogin)
+        this.titleLogin = 'Login';
+    });
 
     // let options: ILoadingOptions = {
     //   name: 'main',
@@ -31,17 +54,44 @@ export class FinanceComponent implements OnInit {
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/covalent-mark.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'hihlogo',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hihapplogo.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'teradata-ux',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/teradata-ux.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'appcenter',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/appcenter.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'listener',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/listener.svg'));
-    this._iconRegistry.addSvgIconInNamespace('assets', 'querygrid',
-      this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/querygrid.svg'));
+
+    // Register the UI status
+    this._uistatus.obsTitleLogin.subscribe(x => {
+      this.titleLogin = x;
+    }, error => {
+    }, () => {
+    });
+
+    this._uistatus.obsRouteList.subscribe(x => {
+      this.routes = x;
+    }, error => {
+    }, () => {
+    });
   }
 
   ngOnInit() {
+    if (environment.DebugLogging) {
+      console.log("Entering ngOnInit of FinanceComponent");
+    }
   }
 
+  public onLogin(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onLogin of FinanceComponent");
+    }
+
+    if (!this.isLoggedIn) {
+      this._authService.doLogin();
+    }
+  }
+
+  public onLogout(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onLogout of FinanceComponent");
+    }
+
+    if (this.isLoggedIn) {
+      this._authService.doLogout();
+    }
+  }
 }
