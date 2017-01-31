@@ -77,6 +77,12 @@ export class UIStatusService {
         this.arRouteLink.push(rl);
 
         rl = new UIRouteLink();
+        rl.title = "Currency";
+        rl.route = "/finance/currency";
+        rl.icon = "euro_symbol";
+        this.arRouteLink.push(rl);
+
+        rl = new UIRouteLink();
         rl.title = "Account Category";
         rl.route = "/finance/accountcategory";
         rl.icon = "settings_input_component";
