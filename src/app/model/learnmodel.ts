@@ -401,6 +401,8 @@ export class LearnHistory extends hih.BaseModel {
         if (environment.DebugLogging) {
             console.log("Entering constructor of LearnHistory");
         }
+
+        this.LearnDate = new Date();
     }
 
     public onInit() {

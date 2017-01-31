@@ -1,7 +1,9 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, Input, Output } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, 
+   EventEmitter, Input, Output, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Headers, Response, RequestOptions, URLSearchParams }
-  from '@angular/http';
+import { Http, Headers, Response, RequestOptions, 
+  URLSearchParams } from '@angular/http';
+import { TdDialogService } from '@covalent/core';
 import * as HIHCommon from '../../../model/common';
 import * as HIHLearn from '../../../model/learnmodel';
 import * as HIHUser from '../../../model/userinfo';
@@ -29,14 +31,19 @@ export class DetailComponent implements OnInit {
   @Input() elementId: String;
 
   constructor(private _http: Http,
-    private router: Router,
-    private activateRoute: ActivatedRoute,
-    private authService: AuthService,
-    private uistatus: UIStatusService) {
+    private _router: Router,
+    private _activateRoute: ActivatedRoute,
+    private _dialogService: TdDialogService,
+    private _viewContainerRef: ViewContainerRef,
+    private _authService: AuthService,
+    private _uistatus: UIStatusService) {
     this.historyObject = new HIHLearn.LearnHistory();
     this.uiMode = HIHCommon.UIMode.Create;
   }
 
+  ////////////////////////////////////////////
+  // Methods for interface methods
+  ////////////////////////////////////////////
   ngOnInit() {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of LearnHistoryDetail");
@@ -46,7 +53,7 @@ export class DetailComponent implements OnInit {
     this.loadObjectList();
 
     // Distinguish current mode
-    this.activateRoute.url.subscribe(x => {
+    this._activateRoute.url.subscribe(x => {
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === "create") {
           this.currentMode = "Create";
@@ -61,7 +68,7 @@ export class DetailComponent implements OnInit {
         }
 
         // Update the sub module
-        this.uistatus.setLearnSubModule(this.currentMode + " History");
+        this._uistatus.setLearnSubModule(this.currentMode + " History");
       }
     }, error => {
 
@@ -81,6 +88,143 @@ export class DetailComponent implements OnInit {
     // }
   }
 
+  ////////////////////////////////////////////
+  // Methods for UI controls
+  ////////////////////////////////////////////
+  onObjectIdChanged(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onObjectIdChanged of LearnHistoryList");
+    }
+
+    for (let obj of this.arObjects) {
+      if (+obj.Id === +this.historyObject.ObjectId) {
+        this.historyObject.ObjectName = obj.Name;
+      }
+    }
+  }
+
+  onSubmit(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onSubmit of LearnObjectDetail");
+    }
+
+    // Checks 
+    if (this.arObjects && this.arObjects.length > 0) {
+      let bObj: boolean = false;
+      for (let obj of this.arObjects) {
+        if (+obj.Id === +this.historyObject.ObjectId) {
+          bObj = true;
+        }
+      }
+
+      if (!bObj) {
+        // Error message
+        this._dialogService.openAlert({
+          message: 'Select an Object before continues!',
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: 'No object selected', //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
+
+        return;
+      }
+    } else {
+      // Error message
+      this._dialogService.openAlert({
+        message: 'Create an object first!',
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: 'No Object', //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+
+      return;
+    }
+
+    if (this.arUsers && this.arUsers.length > 0) {
+      let bFound: boolean = false;
+      for (let usr of this.arUsers) {
+        if (usr.UserId === this.historyObject.UserId) {
+          bFound = true;
+        }
+      }
+
+      if (!bFound) {
+        // Error message
+        this._dialogService.openAlert({
+          message: 'Select an user before continues!',
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: 'No user selected', //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
+
+        return;
+      }
+    } else {
+      // Error message
+      // !!! Shall never happen !!!
+      this._dialogService.openAlert({
+        message: 'Create an user first!',
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: 'No User', //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+
+      return;
+    }
+
+    if (this.historyObject.LearnDate) {
+    } else {
+      // Error message
+      this._dialogService.openAlert({
+        message: 'Learn date is invalid!',
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: 'Invalid learn date', //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+
+      return;
+    }
+
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized) {
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    }
+
+    let dataJSON = this.historyObject.writeJSONString();
+    let apiObject = environment.ApiUrl + "api/learnhistory";
+    this._http.post(apiObject, dataJSON, { headers: headers })
+      .map(response => response.json())
+      .catch(this.handleError)
+      .subscribe(x => {
+        // It returns a new object with ID filled.
+        let nHist = new HIHLearn.LearnHistory();
+        nHist.onSetData(x);
+
+        // Navigate.
+        this._router.navigate(['/learn/hisotry/display/' + nHist.UserId + "_" + nHist.ObjectId.toString() + "_" + nHist.LearnDate.toISOString()]);
+      }, error => {
+        this._dialogService.openAlert({
+          message: 'Error in creating!',
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: 'Create failed', //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
+      }, () => {
+      });
+   
+  }
+
+  ////////////////////////////////////////////
+  // Methods for Utility methods
+  ////////////////////////////////////////////
   loadUserList(): void {
     if (environment.DebugLogging) {
       console.log("Entering loadUserList of LearnHistoryList");
@@ -88,8 +232,8 @@ export class DetailComponent implements OnInit {
 
     let headers = new Headers();
     headers.append('Accept', 'application/json');
-    if (this.authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/userdetail";
 
     this._http.get(usrApi, { headers: headers })
@@ -112,8 +256,8 @@ export class DetailComponent implements OnInit {
 
     let headers = new Headers();
     headers.append('Accept', 'application/json');
-    if (this.authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let objApi = environment.ApiUrl + "api/learnobject";
 
     this._http.get(objApi, { headers: headers })
@@ -121,7 +265,7 @@ export class DetailComponent implements OnInit {
       .catch(this.handleError)
       .subscribe(data => {
         if (data instanceof Array) {
-          this.arUsers = data;
+          this.arObjects = data;
         }
       },
       error => {
@@ -179,18 +323,5 @@ export class DetailComponent implements OnInit {
       error.status ? `${error.status} - ${error.statusText}` : 'Server error';
     console.error(errMsg); // log to console instead
     return Observable.throw(errMsg);
-  }
-
-  // UI method
-  onObjectIdChanged(): void {
-    if (environment.DebugLogging) {
-      console.log("Entering onObjectIdChanged of LearnHistoryList");
-    }
-
-    this.arObjects.forEach((value, index, array) => {
-      if (+value.Id === +this.historyObject.ObjectId) {
-        this.historyObject.ObjectName = value.Name;
-      }
-    });
   }
 }
