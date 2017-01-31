@@ -89,6 +89,12 @@ export class UIStatusService {
         this.arRouteLink.push(rl);
 
         rl = new UIRouteLink();
+        rl.title = "Transaction Type";
+        rl.route = "/finance/transactiontype";
+        rl.icon = "featured_play_list";
+        this.arRouteLink.push(rl);
+
+        rl = new UIRouteLink();
         rl.title = "Control Center";
         rl.route = "/finance/controlcenter";
         rl.icon = "store";
@@ -110,6 +116,12 @@ export class UIStatusService {
         rl.title = "Finance Documents";
         rl.route = "/finance/document";
         rl.icon = "local_library";
+        this.arRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Finance Reports";
+        rl.route = "/finance/report";
+        rl.icon = "pie_chart";
         this.arRouteLink.push(rl);
 
         rl = new UIRouteLink();

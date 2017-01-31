@@ -24,6 +24,14 @@ import { DetailComponent as DocumentDetailComponent } from './document/detail/de
 import { DocumentTypeComponent } from './documenttype/documenttype.component';
 import { ListComponent as DocumentTypeListComponent } from './documenttype/list/list.component';
 import { DetailComponent as DocumentTypeDetailComponent } from './documenttype/detail/detail.component';
+import { TransactionTypeComponent } from './transactiontype/transactiontype.component';
+import { ListComponent as TransactionTypeListComponent } from './transactiontype/list/list.component';
+import { DetailComponent as TransactionTypeDetailComponent } from './transactiontype/detail/detail.component';
+import { ReportComponent } from './report/report.component';
+import { BalanceSheetComponent as ReportBalanceSheetComponent } from './report/balancesheet/balancesheet.component';
+import { ControlCenterComponent as ReportControlCenterComponent } from './report/controlcenter/controlcenter.component';
+import { OrderComponent as ReportOrderComponent } from './report/order/order.component';
+
 
 const financeRoutes: Routes = [
   {
@@ -129,6 +137,38 @@ const financeRoutes: Routes = [
           {
             path: ':id',
             component: DocumentDetailComponent
+          }
+        ]
+      },
+      {
+        path: 'transactiontype',
+        component: TransactionTypeComponent,
+        children: [
+          {
+            path: '',
+            component: TransactionTypeListComponent
+          },
+          {
+            path: ':id',
+            component: TransactionTypeDetailComponent
+          }
+        ]
+      },
+      {
+        path: 'report',
+        component: ReportComponent,
+        children: [
+          {
+            path: '',
+            component: ReportBalanceSheetComponent
+          },
+          {
+            path: 'controlcenter',
+            component: ReportControlCenterComponent
+          },
+          {
+            path: 'order',
+            component: ReportOrderComponent
           }
         ]
       }
