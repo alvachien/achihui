@@ -280,11 +280,19 @@ export class DocumentType extends hih.BaseModel {
     }
 }
 
+export abstract class AccountExtra {
+    public writeJSONObject() : any {
+        return {};
+    }
+}
+
 export class Account extends hih.BaseModel {
     public Id: number;
     public CategoryId: number;
     public Name: string;
     public Comment: string;
+    
+    public CategoryName: string;
 
     public ExtraInfo: AccountExtra;
     constructor() {
@@ -317,6 +325,12 @@ export class Account extends hih.BaseModel {
         }
 
         let rstObj = super.writeJSONObject();
+        rstObj.id = this.Id;
+        rstObj.ctgyId = this.CategoryId;
+        rstObj.name = this.Name;
+        rstObj.comment = this.Comment;
+
+
         return rstObj;
     }
 
@@ -326,10 +340,20 @@ export class Account extends hih.BaseModel {
         }
 
         super.onSetData(data);
-    }
-}
 
-export abstract class AccountExtra {
+        if (data && data.id) {
+            this.Id = +data.id;
+        }
+        if (data && data.name && data.name.length > 0) {
+            this.Name = data.name;
+        }
+        if (data && data.ctgyId) {
+            this.CategoryId = +data.ctgyId;
+        }
+        if (data && data.ctgyName && data.ctgyName.length > 0) {
+            this.CategoryName = data.ctgyName;
+        }
+    }
 }
 
 export class AccountExtraDownpayment extends AccountExtra {
