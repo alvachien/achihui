@@ -52,6 +52,9 @@
         <a *ngFor="let route of userRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
           <md-icon>{{route.icon}}</md-icon>{{route.title}}
         </a>
+        <a md-list-item (click)="layout.close(); onLogout();">
+          <md-icon>exit_to_app</md-icon>Logout
+        </a>
       </md-nav-list>
     </div>
   </td-navigation-drawer>

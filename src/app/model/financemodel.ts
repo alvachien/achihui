@@ -331,7 +331,7 @@ export class Account extends hih.BaseModel {
         rstObj.ctgyId = this.CategoryId;
         rstObj.name = this.Name;
         rstObj.comment = this.Comment;
-        rstObj.ownerId = this.OwnerId;
+        rstObj.owner = this.OwnerId;
 
         return rstObj;
     }
