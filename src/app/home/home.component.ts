@@ -25,7 +25,6 @@ export class HomeComponent implements OnInit {
   ) { 
     // Register the Auth service
     this._authService.authContent.subscribe(x => {
-
       this._uistatus.setIsLogin(x.isAuthorized);
       if (x.isAuthorized) {
         this.titleLogin = x.getUserName();

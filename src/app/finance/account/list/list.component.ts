@@ -18,7 +18,7 @@ import { UIStatusService } from '../../../services/uistatus.service';
 })
 export class ListComponent implements OnInit {
   private _apiUrl: string;
-  public listData: Array<HIHFinance.Currency> = [];
+  public listData: Array<HIHFinance.Account> = [];
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'CategoryId', label: 'Category', tooltip: 'Category ID' },
@@ -93,9 +93,9 @@ export class ListComponent implements OnInit {
 
     let body = res.json();
     if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.AccountCategory>();
+      let sets = new Array<HIHFinance.Account>();
       for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.AccountCategory();
+        let alm2 = new HIHFinance.Account();
         alm2.onSetData(alm);
         sets.push(alm2);
       }

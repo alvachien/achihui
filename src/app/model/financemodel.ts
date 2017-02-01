@@ -291,8 +291,10 @@ export class Account extends hih.BaseModel {
     public CategoryId: number;
     public Name: string;
     public Comment: string;
+    public OwnerId: string;
     
     public CategoryName: string;
+    public OwnerDisplayAs: string;
 
     public ExtraInfo: AccountExtra;
     constructor() {
@@ -329,7 +331,7 @@ export class Account extends hih.BaseModel {
         rstObj.ctgyId = this.CategoryId;
         rstObj.name = this.Name;
         rstObj.comment = this.Comment;
-
+        rstObj.ownerId = this.OwnerId;
 
         return rstObj;
     }
@@ -352,6 +354,15 @@ export class Account extends hih.BaseModel {
         }
         if (data && data.ctgyName && data.ctgyName.length > 0) {
             this.CategoryName = data.ctgyName;
+        }
+        if (data && data.comment && data.comment.length > 0) {
+            this.Comment = data.comment;
+        }
+        if (data && data.userId && data.userId.length > 0) {
+            this.OwnerId = data.ownerId;
+        }
+        if (data && data.ownerDisplayAs && data.ownerDisplayAs.length > 0) {
+            this.OwnerDisplayAs = data.ownerDisplayAs;
         }
     }
 }

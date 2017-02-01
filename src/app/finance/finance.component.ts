@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, NgZone, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MdIconRegistry } from '@angular/material';
 import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
@@ -27,22 +27,25 @@ export class FinanceComponent implements OnInit {
   constructor(private _iconRegistry: MdIconRegistry,
     private _loadingService: TdLoadingService,
     private _domSanitizer: DomSanitizer,
+    private _zone: NgZone,
     private _authService: AuthService,
     private _uistatus: UIStatusService,
-    viewContainerRef: ViewContainerRef) { 
+    viewContainerRef: ViewContainerRef) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceComponent");
     }
 
     this._authService.authContent.subscribe(x => {
-      this.isLoggedIn = x.isAuthorized;
-      if (this.isLoggedIn)
-        this.titleLogin = x.getUserName();
-      else
-        this.titleLogin = "";
+      this._zone.run(() => {
+        this.isLoggedIn = x.isAuthorized;
+        if (this.isLoggedIn)
+          this.titleLogin = x.getUserName();
+        else
+          this.titleLogin = "";
 
-      if (!this.titleLogin)
-        this.titleLogin = 'Login';
+        if (!this.titleLogin)
+          this.titleLogin = 'Login';
+      });
     });
 
     // let options: ILoadingOptions = {
@@ -64,41 +67,53 @@ export class FinanceComponent implements OnInit {
 
     // Register the UI status
     this._uistatus.obsTitleLogin.subscribe(x => {
-      this.titleLogin = x;
+      this._zone.run(() => {
+        this.titleLogin = x;
+      });
     }, error => {
     }, () => {
     });
 
     this._uistatus.obsAppRouteList.subscribe(x => {
-      this.appRoutes = x;
+      this._zone.run(() => {
+        this.appRoutes = x;
+      });
     }, error => {
 
     }, () => {
 
     });
     this._uistatus.obsLearnRouteList.subscribe(x => {
-      this.learnRoutes = x;
+      this._zone.run(() => {
+        this.learnRoutes = x;
+      });
     }, error => {
 
     }, () => {
 
     });
     this._uistatus.obsFinanceRouteList.subscribe(x => {
-      this.financeRoutes = x;
+      this._zone.run(() => {
+        this.financeRoutes = x;
+      });
     }, error => {
 
     }, () => {
 
     });
     this._uistatus.obsLibraryRouteList.subscribe(x => {
-      this.libraryRoutes = x;
+      this._zone.run(() => {
+        this.libraryRoutes = x;
+      });
     }, error => {
 
     }, () => {
 
     });
     this._uistatus.obsUserRouteList.subscribe(x => {
-      this.userRoutes = x;
+      this._zone.run(() => {
+        this.userRoutes = x;
+      });
     }, error => {
 
     }, () => {
@@ -132,13 +147,13 @@ export class FinanceComponent implements OnInit {
     }
   }
 
-  public toggleLearnMenu() : void {
+  public toggleLearnMenu(): void {
     this.learnMenuToggled = !this.learnMenuToggled;
   }
-  public toggleFinanceMenu() : void {
+  public toggleFinanceMenu(): void {
     this.financeMenuToggled = !this.financeMenuToggled;
   }
-  public toggleLibraryMenu() : void {
+  public toggleLibraryMenu(): void {
     this.libraryMenuToggled = !this.libraryMenuToggled;
   }
 }

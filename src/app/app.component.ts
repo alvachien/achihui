@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { UIStatusService } from './services/uistatus.service';
 import { environment } from '../environments/environment';
 import { TranslateService } from 'ng2-translate';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -12,10 +13,9 @@ import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  public isLoggedIn: boolean = false;
-  public titleLogin: string;
 
-  constructor(private authService: AuthService,
+  constructor(private _authService: AuthService,
+    private _uistatus: UIStatusService,
     private translateService: TranslateService,
     private _loadingService: TdLoadingService,
     private _iconRegistry: MdIconRegistry,
@@ -28,15 +28,8 @@ export class AppComponent implements OnInit {
     translateService.addLangs(["en", "zh"]);
     translateService.setDefaultLang('en');
 
-    this.authService.authContent.subscribe(x => {
-      this.isLoggedIn = x.isAuthorized;
-      if (this.isLoggedIn)
-        this.titleLogin = x.getUserName();
-      else
-        this.titleLogin = "";
-
-      if (!this.titleLogin)
-        this.titleLogin = 'Login';
+    this._authService.authContent.subscribe(x => {
+      this._uistatus.setIsLogin(x.isAuthorized);
     });
 
     // let options: ILoadingOptions = {
@@ -65,23 +58,4 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public onLogin(): void {
-    if (environment.DebugLogging) {
-      console.log("Entering onLogin of AppComponent");
-    }
-
-    if (!this.isLoggedIn) {
-      this.authService.doLogin();
-    }
-  }
-
-  public onLogout(): void {
-    if (environment.DebugLogging) {
-      console.log("Entering onLogout of AppComponent");
-    }
-
-    if (this.isLoggedIn) {
-      this.authService.doLogout();
-    }
-  }
 }

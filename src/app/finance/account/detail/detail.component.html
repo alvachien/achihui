@@ -20,6 +20,11 @@
         </md-select>
       </div>
       <div layout="row" layout-margin>
+        <md-select flex placeholder="Owner" [(ngModel)]="accountObject.OwnerId" name="ownerid" #ownerid="ngModel">
+          <md-option *ngFor="let user of arUsers" [value]="user.UserId">{{ user.DisplayAs }}</md-option>
+        </md-select>
+      </div>
+      <div layout="row" layout-margin>
         <md-input-container flex>
           <textarea md-input placeholder="Comment" [(ngModel)]="accountObject.Comment" name="cmt" #cmt="ngModel"></textarea>
         </md-input-container>
