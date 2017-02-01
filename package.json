@@ -23,12 +23,12 @@
     "@angular/platform-browser-dynamic": "^2.4.5",
     "@angular/platform-server": "^2.4.5",
     "@angular/router": "^3.4.5",
-    "@covalent/charts": "0.10.2",
-    "@covalent/core": "0.10.2",
-    "@covalent/dynamic-forms": "0.10.2",
-    "@covalent/highlight": "0.10.2",
-    "@covalent/http": "0.10.2",
-    "@covalent/markdown": "0.10.2",
+    "@covalent/charts": "1.0.0-beta.1",
+    "@covalent/core": "1.0.0-beta.1",
+    "@covalent/dynamic-forms": "1.0.0-beta.1",
+    "@covalent/highlight": "1.0.0-beta.1",
+    "@covalent/http": "1.0.0-beta.1",
+    "@covalent/markdown": "1.0.0-beta.1",
     "@swimlane/ngx-charts": "^3.1.2",
     "babel-polyfill": "^6.20.0",
     "core-js": "^2.4.1",
@@ -51,7 +51,7 @@
     "@types/node": "6.0.34",
     "@types/selenium-webdriver": "2.53.36",
     "angular-cli": "1.0.0-beta.26",
-    "codelyzer": "0.0.26",
+    "codelyzer": "2.0.0-beta.4",
     "ember-cli-inject-live-reload": "1.4.0",
     "jasmine-core": "2.4.1",
     "jasmine-spec-reporter": "2.5.0",
@@ -68,6 +68,6 @@
     "sass-loader": "^4.0.2",
     "ts-node": "1.2.1",
     "tslint": "3.14.0",
-    "typescript": "^2.0.10"
+    "typescript": "^2.1.5"
   }
 }

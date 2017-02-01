@@ -29,6 +29,7 @@ export class AuthService {
     var that = this;
     this.mgr.getUser().then(function (u) {
       if (environment.DebugLogging) {
+        console.log("ACHIHUI Log: AuthService constructor, user get successfully as following ");
         console.log(u);
       }
 
@@ -45,7 +46,7 @@ export class AuthService {
 
     this.mgr.events.addUserUnloaded((e) => {
       if (environment.DebugLogging) {
-        console.log("user unloaded");
+        console.log("ACHIHUI Log: User unloaded");
       }
       that.authSubject.value.cleanContent();
 

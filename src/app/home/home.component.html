@@ -1,13 +1,27 @@
-<td-layout #layout icon="event_seat" sidenavTitle="H.I.H." displayName="{{ titleLogin }}" (logout)="onLogout()">
-  <md-nav-list menu-items *ngIf="isLoggedIn">
-    <template let-item let-last="last" ngFor [ngForOf]="appRoutes">
-      <a md-list-item [routerLink]="[item.route]" (click)="layout.close()">
-        <md-icon>{{item.icon}}</md-icon>{{item.title}}</a>
-    </template>
-  </md-nav-list>
-  <md-nav-list menu-items *ngIf="!isLoggedIn">
-    <a md-list-item (click)="onLogin()">Login</a>
-  </md-nav-list>
+<td-layout #layout>
+  <td-navigation-drawer flex icon="event_seat" sidenavTitle="H.I.H." name="{{ titleLogin }}" (logout)="onLogout()">
+    <div td-sidenav-content>
+      <md-nav-list menu-items *ngIf="isLoggedIn">
+        <template let-item let-last="last" ngFor [ngForOf]="appRoutes">
+          <a md-list-item [routerLink]="[item.route]" (click)="layout.close()">
+            <md-icon>{{item.icon}}</md-icon>{{item.title}}</a>
+        </template>
+      </md-nav-list>
+      <md-nav-list menu-items *ngIf="!isLoggedIn">
+        <a md-list-item (click)="onLogin()">Login</a>
+      </md-nav-list>
+    </div>
+
+    <div td-navigation-drawer-menu>
+      <md-nav-list>
+        <a *ngFor="let item of userRoutes" md-list-item (click)="layout.close()" [routerLink]="[item.route]">
+          <md-icon>{{item.icon}}</md-icon>{{item.title}}</a>
+      </md-nav-list>
+    </div>
+  </td-navigation-drawer>
+  <div td-sidenav-content class="td-layout-footer pad">
+    &copy; 2016 - 2017, Alva Chien.
+  </div>
 
   <td-layout-nav icon="event_seat">
     <div toolbar-content layout="row" layout-align="start center" flex>
