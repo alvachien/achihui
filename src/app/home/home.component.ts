@@ -10,12 +10,8 @@ import { AuthService } from '../services/auth.service';
 export class HomeComponent implements OnInit {
   public isLoggedIn: boolean = false;
   public titleLogin: string;
-  public learnRoutes: any;
-  public learnMenuToggled: boolean = false;
-  public financeRoutes: any;
-  public financeMenuToggled: boolean = false;
-  public libraryRoutes: any;
-  public libraryMenuToggled: boolean = false;
+  public appRoutes: any;
+  public userRoutes: any = [];
 
   constructor(
     private _authService: AuthService,
@@ -50,22 +46,8 @@ export class HomeComponent implements OnInit {
 
     });
 
-    this._uistatus.obsLearnRouteList.subscribe(x => {
-      this.learnRoutes = x;
-    }, error => {
-
-    }, () => {
-
-    });
-    this._uistatus.obsFinanceRouteList.subscribe(x => {
-      this.financeRoutes = x;
-    }, error => {
-
-    }, () => {
-
-    });
-    this._uistatus.obsLibraryRouteList.subscribe(x => {
-      this.libraryRoutes = x;
+    this._uistatus.obsAppRouteList.subscribe(x => {
+      this.appRoutes = x;
     }, error => {
 
     }, () => {
@@ -81,15 +63,5 @@ export class HomeComponent implements OnInit {
   }
   public onLogout(): void {
     this._authService.doLogout();
-  }
-
-  toggleLearnMenu() : void {
-    this.learnMenuToggled = !this.learnMenuToggled;
-  }
-  toggleFinanceMenu(): void {
-    this.financeMenuToggled = !this.financeMenuToggled;
-  }
-  toggleLibraryMenu(): void {
-    this.libraryMenuToggled = !this.libraryMenuToggled;
   }
 }

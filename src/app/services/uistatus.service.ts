@@ -11,17 +11,9 @@ export class UIStatusService {
   // Including the Logged in, the navigation lists and so on
   // It works upon the BehaviorObject.
 
-  private arLearnRouteLink: Array<UIRouteLink> = new Array<UIRouteLink>();
-  public subjLearnRouteList: BehaviorSubject<Object> = new BehaviorSubject(this.arLearnRouteLink);
-  public obsLearnRouteList = this.subjLearnRouteList.asObservable();
-
-  private arFinanceRouteLink: Array<UIRouteLink> = new Array<UIRouteLink>();
-  public subjFinanceRouteList: BehaviorSubject<Object> = new BehaviorSubject(this.arFinanceRouteLink);
-  public obsFinanceRouteList = this.subjFinanceRouteList.asObservable();
-
-  private arLibraryRouteLink: Array<UIRouteLink> = new Array<UIRouteLink>();
-  public subjLibraryRouteList: BehaviorSubject<Object> = new BehaviorSubject(this.arLibraryRouteLink);
-  public obsLibraryRouteList = this.subjFinanceRouteList.asObservable();
+  private arAppRouteLink: Array<UIRouteLink> = new Array<UIRouteLink>();
+  public subjAppRouteList: BehaviorSubject<Object> = new BehaviorSubject(this.arAppRouteLink);
+  public obsAppRouteList = this.subjAppRouteList.asObservable();
 
   private isLoggedIn: boolean = false;
   public subjIsLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject(this.isLoggedIn);
@@ -64,101 +56,97 @@ export class UIStatusService {
         rl.title = "Home";
         rl.route = "/";
         rl.icon = "home";
-        this.arLearnRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Learn category";
         rl.route = "/learn/category";
         rl.icon = "settings_input_composite";
-        this.arLearnRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Learn Object";
         rl.route = "/learn/object";
         rl.icon = "group_work";
-        this.arLearnRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Learn History";
         rl.route = "/learn/history";
         rl.icon = "history";
-        this.arLearnRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Currency";
         rl.route = "/finance/currency";
         rl.icon = "euro_symbol";
-        this.arFinanceRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Account Category";
         rl.route = "/finance/accountcategory";
         rl.icon = "settings_input_component";
-        this.arFinanceRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Document Type";
         rl.route = "/finance/documenttype";
         rl.icon = "view_comfy";
-        this.arFinanceRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Transaction Type";
         rl.route = "/finance/transactiontype";
         rl.icon = "featured_play_list";
-        this.arFinanceRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Control Center";
         rl.route = "/finance/controlcenter";
         rl.icon = "store";
-        this.arFinanceRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Order";
         rl.route = "/finance/order";
         rl.icon = "tune";
-        this.arFinanceRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Finance Accounts";
         rl.route = "/finance/account";
         rl.icon = "library_books";
-        this.arFinanceRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Finance Documents";
         rl.route = "/finance/document";
         rl.icon = "local_library";
-        this.arFinanceRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Finance Reports";
         rl.route = "/finance/report";
         rl.icon = "pie_chart";
-        this.arFinanceRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Library Books";
         rl.route = "/library/book";
         rl.icon = "book";
-        this.arLibraryRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
 
         rl = new UIRouteLink();
         rl.title = "Library Movies";
         rl.route = "/library/movie";
         rl.icon = "movie";
-        this.arLibraryRouteLink.push(rl);
+        this.arAppRouteLink.push(rl);
       } else {
-        this.arLearnRouteLink.splice(0);
-        this.arFinanceRouteLink.splice(0);
-        this.arLibraryRouteLink.splice(0);
+        this.arAppRouteLink.splice(0);
       }
 
       this.subjIsLoggedIn.next(this.isLoggedIn);
-      this.subjLearnRouteList.next(this.arLearnRouteLink);
-      this.subjFinanceRouteList.next(this.arFinanceRouteLink);
-      this.subjLibraryRouteList.next(this.arLibraryRouteLink);
+      this.subjAppRouteList.next(this.arAppRouteLink);
     }
   }
 

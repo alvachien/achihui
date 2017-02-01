@@ -14,7 +14,7 @@ import { environment } from '../../environments/environment';
 export class LearnComponent implements OnInit {
   public isLoggedIn: boolean = false;
   public titleLogin: string;
-  public routes: any;
+  public appRoutes: any;
   public currentObject: string;
 
   constructor(private _iconRegistry: MdIconRegistry,
@@ -56,8 +56,8 @@ export class LearnComponent implements OnInit {
     }, () => {
     });
 
-    this._uistatus.obsRouteList.subscribe(x => {
-      this.routes = x;
+    this._uistatus.obsAppRouteList.subscribe(x => {
+      this.appRoutes = x;
     }, error => {
     }, () => {
     });
