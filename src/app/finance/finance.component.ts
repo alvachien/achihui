@@ -15,6 +15,13 @@ export class FinanceComponent implements OnInit {
   public isLoggedIn: boolean = false;
   public titleLogin: string;
   public appRoutes: any;
+  public learnRoutes: any;
+  public financeRoutes: any;
+  public libraryRoutes: any;
+  public userRoutes: any;
+  public learnMenuToggled: boolean = true;
+  public financeMenuToggled: boolean = true;
+  public libraryMenuToggled: boolean = true;
   public currentObject: string;
 
   constructor(private _iconRegistry: MdIconRegistry,
@@ -65,7 +72,37 @@ export class FinanceComponent implements OnInit {
     this._uistatus.obsAppRouteList.subscribe(x => {
       this.appRoutes = x;
     }, error => {
+
     }, () => {
+
+    });
+    this._uistatus.obsLearnRouteList.subscribe(x => {
+      this.learnRoutes = x;
+    }, error => {
+
+    }, () => {
+
+    });
+    this._uistatus.obsFinanceRouteList.subscribe(x => {
+      this.financeRoutes = x;
+    }, error => {
+
+    }, () => {
+
+    });
+    this._uistatus.obsLibraryRouteList.subscribe(x => {
+      this.libraryRoutes = x;
+    }, error => {
+
+    }, () => {
+
+    });
+    this._uistatus.obsUserRouteList.subscribe(x => {
+      this.userRoutes = x;
+    }, error => {
+
+    }, () => {
+
     });
   }
 
@@ -93,5 +130,15 @@ export class FinanceComponent implements OnInit {
     if (this.isLoggedIn) {
       this._authService.doLogout();
     }
+  }
+
+  public toggleLearnMenu() : void {
+    this.learnMenuToggled = !this.learnMenuToggled;
+  }
+  public toggleFinanceMenu() : void {
+    this.financeMenuToggled = !this.financeMenuToggled;
+  }
+  public toggleLibraryMenu() : void {
+    this.libraryMenuToggled = !this.libraryMenuToggled;
   }
 }

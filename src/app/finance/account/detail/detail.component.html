@@ -1,3 +1,11 @@
-<p>
-  Account detail works!
-</p>
+<form (ngSubmit)="onSubmit()" #detailForm="ngForm">
+  <div layout="row" layout-margin>
+    <md-input-container flex>
+      <input md-input placeholder="ID" required [(ngModel)]="accountObject.Id" name="id" #id="ngModel">
+    </md-input-container>
+  </div>
+  <div layout="row" layout-margin>
+    <button type="submit" md-button [disabled]="!detailForm.form.valid">Submit</button>
+    <button type="reset" md-button>Reset</button>
+  </div>
+</form>
