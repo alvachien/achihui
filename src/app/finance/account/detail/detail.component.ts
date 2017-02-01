@@ -85,6 +85,10 @@ export class DetailComponent implements OnInit {
       console.log("Entering onSubmit of FinanceAccountDetail");
     }
 
+    // Do the checks before submitting
+
+    // Do the real post
+
   }
 
   ////////////////////////////////////////////
