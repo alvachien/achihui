@@ -232,7 +232,7 @@ export class DetailComponent implements OnInit {
 
   private handleError(error: any) {
     if (environment.DebugLogging) {
-      console.log("Entering handleError of LearnHistoryList");
+      console.log("Entering handleError of FinanceAccountDetail");
     }
 
     // In a real world app, we might use a remote logging infrastructure

@@ -419,6 +419,7 @@ export class ControllingCenter extends hih.BaseModel {
     public Name: string;
     public ParentId: number;
     public Comment: string;
+    public Owner: string;
 
     constructor() {
         super();
@@ -451,6 +452,30 @@ export class ControllingCenter extends hih.BaseModel {
 
         let rstObj = super.writeJSONObject();
         return rstObj;
+    }
+
+    public onSetData(data: any) {
+        if (environment.DebugLogging) {
+            console.log("Entering onSetData of ControllingCenter");
+        }
+
+        super.onSetData(data);
+
+        if (data && data.id) {
+            this.Id = +data.id;
+        }
+        if (data && data.name && data.name.length > 0) {
+            this.Name = data.name;
+        }
+        if (data && data.comment && data.comment.length > 0) {
+            this.Comment = data.comment;
+        }
+        if (data && data.parentid) {
+            this.ParentId = +data.parentid;
+        }
+        if (data && data.owner && data.owner.length > 0) {
+            this.Owner = data.owner;
+        }
     }
 }
 

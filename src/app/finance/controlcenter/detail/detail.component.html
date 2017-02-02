@@ -1,3 +1,34 @@
-<p>
-  detail works!
-</p>
+<md-card>
+  <md-card-title>Controlling Center</md-card-title>
+  <md-card-subtitle>{{currentMode}}</md-card-subtitle>
+  <md-divider></md-divider>
+  <md-card-content>
+    <form (ngSubmit)="onSubmit()" #detailForm="ngForm">
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <input md-input placeholder="ID" readonly [(ngModel)]="ccObject.Id" name="id" #id="ngModel">
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <input md-input placeholder="Name" required [(ngModel)]="ccObject.Name" name="name" #name="ngModel">
+        </md-input-container>
+      </div>
+     <div layout="row" layout-margin>
+        <md-select flex placeholder="Owner" [(ngModel)]="ccObject.OwnerId" name="ownerid" #ownerid="ngModel">
+          <md-option *ngFor="let user of arUsers" [value]="user.UserId">{{ user.DisplayAs }}</md-option>
+        </md-select>
+      </div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <textarea md-input placeholder="Comment" [(ngModel)]="ccObject.Comment" name="cmt" #cmt="ngModel"></textarea>
+        </md-input-container>
+      </div>
+    </form>
+  </md-card-content>
+  <md-divider></md-divider>
+  <md-card-actions>
+    <button md-button color="accent" [disabled]="!detailForm.form.valid" (click)="onSubmit()">Submit</button>
+    <button md-button>Cancel</button>
+  </md-card-actions>
+</md-card>

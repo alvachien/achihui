@@ -1,5 +1,8 @@
 <md-card>
-  <div layout="row" layout-align="start center" class="pad-left-sm pad-right-sm">
+  <md-card-title>Document Type</md-card-title>
+  <md-card-subtitle>List View</md-card-subtitle>
+  <md-divider></md-divider>
+  <md-card-content>  <div layout="row" layout-align="start center" class="pad-left-sm pad-right-sm">
     <span *ngIf="!searchBox.searchVisible" class="push-left-sm">    
     <button md-mini-fab color="primary" (click)="onCreateObject()">
       <md-icon>add</md-icon>
@@ -24,4 +27,5 @@
   </td-data-table>
   <td-paging-bar [pageSizes]="[5, 10, 15, 20]" [total]="filteredTotal" (change)="page($event)">
   </td-paging-bar>
+  </md-card-content>
 </md-card>

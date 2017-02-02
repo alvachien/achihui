@@ -6,45 +6,45 @@
       </md-nav-list>
     </div>
     <div td-sidenav-content *ngIf="isLoggedIn">
-	    <div class="md-body-2" layout="row" (click)="toggleLearnMenu()">
-	        <span flex>Learning Trace</span>
-	        <button md-icon-button class="md-icon-button-mini">
+      <div class="md-body-2" layout="row" (click)="toggleLearnMenu()">
+        <span flex>Learning Trace</span>
+        <button md-icon-button class="md-icon-button-mini">
 	          <md-icon *ngIf="!learnMenuToggled">arrow_drop_down</md-icon>
 	          <md-icon *ngIf="learnMenuToggled">arrow_drop_up</md-icon>
 	        </button>
-	    </div>
-	    <md-nav-list menu-items *ngIf="learnMenuToggled">
+      </div>
+      <md-nav-list menu-items *ngIf="learnMenuToggled">
         <a *ngFor="let route of learnRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
           <md-icon>{{route.icon}}</md-icon>{{route.title}}
         </a>
-	    </md-nav-list>
-	
-	    <div class="md-body-2" layout="row" (click)="toggleFinanceMenu()">
-	        <span flex>Finance Trace</span>
-	        <button md-icon-button class="md-icon-button-mini">
+      </md-nav-list>
+
+      <div class="md-body-2" layout="row" (click)="toggleFinanceMenu()">
+        <span flex>Finance Trace</span>
+        <button md-icon-button class="md-icon-button-mini">
 	          <md-icon *ngIf="!financeMenuToggled">arrow_drop_down</md-icon>
 	          <md-icon *ngIf="financeMenuToggled">arrow_drop_up</md-icon>
 	        </button>
-	    </div>
-	    <md-nav-list menu-items *ngIf="financeMenuToggled">
+      </div>
+      <md-nav-list menu-items *ngIf="financeMenuToggled">
         <a *ngFor="let route of financeRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
           <md-icon>{{route.icon}}</md-icon>{{route.title}}
         </a>
-	    </md-nav-list>
-	
-	    <div class="md-body-1" layout="row" (click)="toggleLibraryMenu()">
-	        <span flex>Library Trace</span>
-	        <button md-icon-button class="md-icon-button-mini">
+      </md-nav-list>
+
+      <div class="md-body-1" layout="row" (click)="toggleLibraryMenu()">
+        <span flex>Library Trace</span>
+        <button md-icon-button class="md-icon-button-mini">
 	          <md-icon *ngIf="!libraryMenuToggled">arrow_drop_down</md-icon>
 	          <md-icon *ngIf="libraryMenuToggled">arrow_drop_up</md-icon>
 	        </button>
-	    </div>
+      </div>
 
-	    <md-nav-list menu-items *ngIf="libraryMenuToggled">
+      <md-nav-list menu-items *ngIf="libraryMenuToggled">
         <a *ngFor="let route of libraryRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
           <md-icon>{{route.icon}}</md-icon>{{route.title}}
         </a>
-	    </md-nav-list>
+      </md-nav-list>
     </div>
 
     <div td-navigation-drawer-menu>
@@ -117,7 +117,7 @@
       </nav>
     </md-toolbar>
 
-    <section class="bgc-blue-50">
+    <section class="bgc-blue-50" *ngIf="!isLoggedIn">
       <div layout-gt-xs="row">
         <div flex class="pad" tdMediaToggle="gt-xs" [mediaClasses]="['pad-xl']">
           <div class="push-top-xl" hide-xs></div>
@@ -129,10 +129,9 @@
           </div>
           <div class="push-bottom-xl" hide-xs></div>
         </div>
-        <div flex="55" class="bg-cover" style="background-image:url('assets/images/firework.jpg');background-size:cover;">
-</div>
-</div>
-</section>
+        <div flex="55" class="bg-cover" style="background-image:url('assets/images/firework.jpg');background-size:cover;"></div>
+    </div>
+  </section>
 
 <section class="bgc-light-blue-600 tc-light-blue-50" tdMediaToggle="gt-xs" [mediaClasses]="['pad-top-xl', 'pad-bottom-xl']">
   <h2 class="md-headline text-upper text-center tc-grey-50 push-bottom">Core Features</h2>
