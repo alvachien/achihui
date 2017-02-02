@@ -23,6 +23,7 @@
   </div>
   <md-divider></md-divider>
   <td-data-table [data]="filteredData" [columns]="columns" [sortable]="true" [selectable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
+    [(ngModel)]="selectedRows"
     (sortChange)="sort($event)">
   </td-data-table>
   <td-paging-bar [pageSizes]="[5, 10, 15, 20]" [total]="filteredTotal" (change)="page($event)">

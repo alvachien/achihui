@@ -21,9 +21,10 @@ import { TdDialogService } from '@covalent/core';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  
   private _apiUrl: string;
   public listData: Array<HIHFinance.ControllingCenter> = [];
-  public listSelectRows: Array<number> = [];
+
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'Name', label: 'Name', tooltip: 'Name' },
@@ -137,22 +138,22 @@ export class ListComponent implements OnInit {
     this.filter();
   }
 
-  selectEvent(selectEvent: ITdDataTableSelectEvent): void {
-    if (selectEvent.selected) {
-      this._zone.run(() => {
-        this.listSelectRows.push(selectEvent.row.Id);
-      });
-    } else {
-      this._zone.run(() => {
-        for (let idx = 0; idx < this.listSelectRows.length; idx++) {
-          if (+this.listSelectRows[idx] === +selectEvent.row.Id) {
-            this.listSelectRows.splice(idx);
-            break;
-          }
-        }
-      });
-    }
-  }
+  // selectEvent(selectEvent: ITdDataTableSelectEvent): void {
+  //   if (selectEvent.selected) {
+  //     this._zone.run(() => {
+  //       this.listSelectRows.push(selectEvent.row.Id);
+  //     });
+  //   } else {
+  //     this._zone.run(() => {
+  //       for (let idx = 0; idx < this.listSelectRows.length; idx++) {
+  //         if (+this.listSelectRows[idx] === +selectEvent.row.Id) {
+  //           this.listSelectRows.splice(idx);
+  //           break;
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
 
   page(pagingEvent: IPageChangeEvent): void {
     this.fromRow = pagingEvent.fromRow;
@@ -180,7 +181,7 @@ export class ListComponent implements OnInit {
   }
 
   public onEditControlCenter() {
-    if (this.listSelectRows.length != 1) {
+    if (this.selectedRows.length != 1) {
       this._dialogService.openAlert({
         message: "Select one and only one row to continue!",
         disableClose: false, // defaults to false
@@ -191,11 +192,11 @@ export class ListComponent implements OnInit {
       return;
     }
 
-    this._router.navigate(['/finance/controlcenter/edit/' + this.listSelectRows[0].toString()]);
+    this._router.navigate(['/finance/controlcenter/edit/' + this.selectedRows[0].Id.toString()]);
   }
 
   public onDeleteAccount() : void {
-    if (this.listSelectRows.length <= 0) {
+    if (this.selectedRows.length <= 0) {
       this._dialogService.openAlert({
         message: "Select one and only one row to continue!",
         disableClose: false, // defaults to false
@@ -204,7 +205,6 @@ export class ListComponent implements OnInit {
         closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
       });
       return;
-    }
-    
+    }    
   }
 }

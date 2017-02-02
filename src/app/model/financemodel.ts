@@ -441,8 +441,20 @@ export class ControllingCenter extends hih.BaseModel {
         }
         if (!super.onVerify(context))
             return false;
+        
+        let bRst : boolean = true;
+        if (this.Name && this.Name.length > 0) {            
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTitle = "Name missing";
+            msg.MsgContent = "Name is must!";
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTime = new Date();
+            this.VerifiedMsgs.push(msg);
+            bRst = false;
+        }
 
-        return true;
+        return bRst;
     }
 
     public writeJSONObject(): any {
@@ -451,6 +463,14 @@ export class ControllingCenter extends hih.BaseModel {
         }
 
         let rstObj = super.writeJSONObject();
+        rstObj.id = this.Id;
+        rstObj.name = this.Name;
+        rstObj.comment = this.Comment;
+        if (this.ParentId)
+            rstObj.parId = this.ParentId;
+        if (this.Owner && this.Owner.length > 0)
+            rstObj.owner = this.Owner;
+
         return rstObj;
     }
 
@@ -470,8 +490,8 @@ export class ControllingCenter extends hih.BaseModel {
         if (data && data.comment && data.comment.length > 0) {
             this.Comment = data.comment;
         }
-        if (data && data.parentid) {
-            this.ParentId = +data.parentid;
+        if (data && data.parId) {
+            this.ParentId = +data.parId;
         }
         if (data && data.owner && data.owner.length > 0) {
             this.Owner = data.owner;
@@ -516,13 +536,39 @@ export class Order extends hih.BaseModel {
         }
 
         let rstObj = super.writeJSONObject();
+        rstObj.id = this.Id;
+        rstObj.name = this.Name;
+        rstObj.validFrom = this.ValidFrom;
+        rstObj.validTo = this.ValidTo;
+        rstObj.comment = this.Comment;
+        
         return rstObj;
     }
 
-    public onSetData(data: any) {
+    public onSetData(data: any) : void {
         if (environment.DebugLogging) {
             console.log("Entering onSetData of Order");
         }
+
+        super.onSetData(data);
+
+        if (data && data.id) {
+            this.Id = +data.id;
+        }
+        if (data && data.name && data.name.length > 0) {
+            this.Name = data.name;
+        }
+        if (data && data.comment && data.comment.length > 0) {
+            this.Comment = data.comment;
+        }
+        if (data && data.validFrom) {
+            this.ValidFrom = <Date>data.validFrom;
+        }
+        if (data && data.validTo) {
+            this.ValidTo = <Date>data.validTo;
+        }
+
+        
     }
 }
 

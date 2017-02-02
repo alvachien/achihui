@@ -5,10 +5,10 @@
   <md-card-content>
     <div layout="row" layout-align="start center" class="pad-left-sm pad-right-sm">
       <span *ngIf="!searchBox.searchVisible" class="push-left-sm">    
-    <button md-mini-fab color="primary" (click)="onCreateControlCenter()">
+    <button md-mini-fab color="primary" [disabled]="listSelectRows.length <= 0" (click)="onCreateControlCenter()">
       <md-icon>add</md-icon>
     </button>
-    <button md-mini-fab color="accent" (click)="onEditControlCenter()">
+    <button md-mini-fab color="accent" [disabled]="listSelectRows.length <= 0" (click)="onEditControlCenter()">
       <md-icon>create</md-icon>
     </button>
     <button md-mini-fab color="accent">
@@ -24,6 +24,7 @@
     </div>
     <md-divider></md-divider>
     <td-data-table [data]="filteredData" [columns]="columns" [sortable]="true" [selectable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
+      [(ngModel)]="selectedRows"
       (sortChange)="sort($event)">
     </td-data-table>
     <td-paging-bar [pageSizes]="[5, 10, 15, 20]" [total]="filteredTotal" (change)="page($event)">

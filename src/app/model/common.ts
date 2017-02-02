@@ -74,14 +74,14 @@ export class BaseModel {
             console.log("Entering writeJSONString of BaseModel");
         }
 
-        var forJSON = this.writeJSONObject();
+        let forJSON = this.writeJSONObject();
         if (forJSON) {
             return JSON && JSON.stringify(forJSON);
         }
         return JSON && JSON.stringify(this);
     }
 
-    public onSetData(data: any) {
+    public onSetData(data: any) : void {
         if (environment.DebugLogging) {
             console.log("Entering onSetData of BaseModel");
         }
