@@ -41,6 +41,8 @@ export class DetailComponent implements OnInit {
     private _uistatus: UIStatusService) {
     this.accountObject = new HIHFinance.Account();
     this.uiMode = HIHCommon.UIMode.Create;
+
+    this._apiUrl = environment.ApiUrl + "api/financeaccount";
   }
 
   ////////////////////////////////////////////
@@ -86,9 +88,57 @@ export class DetailComponent implements OnInit {
     }
 
     // Do the checks before submitting
+    let context = {
+      arCategory: this.arCategory
+    };
+    let checkFailed: boolean = false;
+    if (!this.accountObject.onVerify(context)) {      
+      for(let msg of this.accountObject.VerifiedMsgs) {
+        if (msg.MsgType === HIHCommon.MessageType.Error) {
+          checkFailed = true;
+          this._dialogService.openAlert({
+            message: msg.MsgContent,
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: msg.MsgTitle, //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }
+      }
+    }
+    if (checkFailed) {
+      return;
+    }
 
     // Do the real post
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized) {
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    }
 
+    let dataJSON = this.accountObject.writeJSONString();
+    this._http.post(this._apiUrl, dataJSON, { headers: headers })
+      .map(response => response.json())
+      .catch(this.handleError)
+      .subscribe(x => {
+        // It returns a new object with ID filled.
+        let nNewObj = new HIHFinance.Account();
+        nNewObj.onSetData(x);
+
+        // Navigate.
+        this._router.navigate(['/finance/account/display/' + nNewObj.Id.toString() ]);
+      }, error => {
+        this._dialogService.openAlert({
+          message: 'Error in creating!',
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: 'Create failed', //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
+      }, () => {
+      });
   }
 
   ////////////////////////////////////////////

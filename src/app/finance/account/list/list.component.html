@@ -4,10 +4,10 @@
     <button md-mini-fab color="primary" (click)="onCreateAccount()">
       <md-icon>add</md-icon>
     </button>
-    <button md-mini-fab color="accent">
+    <button md-mini-fab color="accent" [disabled]="listSelectRows.length <= 0" (click)="onEditAccount()">
       <md-icon>create</md-icon>
     </button>
-    <button md-mini-fab color="accent">
+    <button md-mini-fab color="accent" [disabled]="listSelectRows.length <= 0" (click)="onDeleteAccount()">
       <md-icon>clear</md-icon>
     </button>
   </span>
@@ -19,9 +19,16 @@
     </td-search-box>
   </div>
   <md-divider></md-divider>
-  <td-data-table [data]="filteredData" [columns]="columns" [sortable]="true" [selectable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
+  <td-data-table 
+    [data]="filteredData" 
+    [columns]="columns" 
+    [sortable]="true" 
+    [selectable]="true" 
+    [sortBy]="sortBy" 
+    (rowSelect)="selectEvent($event)"
+    [sortOrder]="sortOrder"
     (sortChange)="sort($event)">
   </td-data-table>
-  <td-paging-bar [pageSizes]="[5, 10, 15, 20]" [total]="filteredTotal" (change)="page($event)">
+  <td-paging-bar [pageSizes]="[10, 20, 30, 40]" [total]="filteredTotal" (change)="page($event)">
   </td-paging-bar>
 </md-card>

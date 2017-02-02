@@ -51,7 +51,15 @@ const financeRoutes: Routes = [
             component: CurrencyListComponent
           },
           {
-            path: ':id',
+            path:'create',
+            component: CurrencyDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: CurrencyDetailComponent
+          },
+          {
+            path: 'edit/:id',
             component: CurrencyDetailComponent
           }
         ]
@@ -65,7 +73,15 @@ const financeRoutes: Routes = [
             component: AccountCategoryListComponent
           },
           {
-            path: ':id',
+            path:'create',
+            component: AccountCategoryDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: AccountCategoryDetailComponent
+          },
+          {
+            path: 'edit/:id',
             component: AccountCategoryDetailComponent
           }
         ]
@@ -79,7 +95,15 @@ const financeRoutes: Routes = [
             component: AccountListComponent
           },
           {
-            path: ':id',
+            path:'create',
+            component: AccountDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: AccountDetailComponent
+          },
+          {
+            path: 'edit/:id',
             component: AccountDetailComponent
           }
         ]
@@ -93,7 +117,15 @@ const financeRoutes: Routes = [
             component: ControlCenterListComponent
           },
           {
-            path: ':id',
+            path:'create',
+            component: ControlCenterDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: ControlCenterDetailComponent
+          },
+          {
+            path: 'edit/:id',
             component: ControlCenterDetailComponent
           }
         ]
@@ -107,7 +139,15 @@ const financeRoutes: Routes = [
             component: OrderListComponent
           },
           {
-            path: ':id',
+            path:'create',
+            component: OrderDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: OrderDetailComponent
+          },
+          {
+            path: 'edit/:id',
             component: OrderDetailComponent
           }
         ]
@@ -121,7 +161,15 @@ const financeRoutes: Routes = [
             component: DocumentTypeListComponent
           },
           {
-            path: ':id',
+            path:'create',
+            component: DocumentTypeDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: DocumentTypeDetailComponent
+          },
+          {
+            path: 'edit/:id',
             component: DocumentTypeDetailComponent
           }
         ]
@@ -135,7 +183,15 @@ const financeRoutes: Routes = [
             component: DocumentListComponent
           },
           {
-            path: ':id',
+            path:'create',
+            component: DocumentDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: DocumentDetailComponent
+          },
+          {
+            path: 'edit/:id',
             component: DocumentDetailComponent
           }
         ]
@@ -149,7 +205,15 @@ const financeRoutes: Routes = [
             component: TransactionTypeListComponent
           },
           {
-            path: ':id',
+            path:'create',
+            component: TransactionTypeDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: TransactionTypeDetailComponent
+          },
+          {
+            path: 'edit/:id',
             component: TransactionTypeDetailComponent
           }
         ]

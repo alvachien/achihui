@@ -1,4 +1,4 @@
-import { Component, OnInit }  from '@angular/core';
+import { Component, OnInit, ViewContainerRef, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Http, Headers, Response, RequestOptions, URLSearchParams }
   from '@angular/http';
@@ -7,9 +7,13 @@ import * as HIHFinance from '../../../model/financemodel';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
+import {
+  TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent,
+  ITdDataTableColumn, ITdDataTableSelectEvent
+} from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { TdDialogService } from '@covalent/core';
 
 @Component({
   selector: 'finance-account-list',
@@ -19,6 +23,7 @@ import { UIStatusService } from '../../../services/uistatus.service';
 export class ListComponent implements OnInit {
   private _apiUrl: string;
   public listData: Array<HIHFinance.Account> = [];
+  public listSelectRows: Array<number> = [];
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'CategoryId', label: 'Category', tooltip: 'Category ID' },
@@ -40,10 +45,13 @@ export class ListComponent implements OnInit {
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 
   constructor(private _http: Http,
-     private router: Router,
-     private activateRoute: ActivatedRoute,
-     private uistatus: UIStatusService,
-     private _dataTableService: TdDataTableService) {
+    private _router: Router,
+    private _activateRoute: ActivatedRoute,
+    private _zone: NgZone,
+    private _uistatus: UIStatusService,
+    private _dialogService: TdDialogService,
+    private _viewContainerRef: ViewContainerRef,
+    private _dataTableService: TdDataTableService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceAccountList");
     }
@@ -56,8 +64,8 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceAccountList");
     }
 
-    this.uistatus.setFinanceModule("Account");
-    this.uistatus.setFinanceSubModule("List Mode");
+    this._uistatus.setFinanceModule("Account");
+    this._uistatus.setFinanceSubModule("List Mode");
     this.loadAccountCategoryList();
   }
 
@@ -76,7 +84,7 @@ export class ListComponent implements OnInit {
           this.filter();
           // this.filteredData = this.listData;
           // this.filteredTotal = this.listData.length;
-        }          
+        }
       },
       error => {
         // It should be handled already
@@ -128,7 +136,24 @@ export class ListComponent implements OnInit {
     this.searchTerm = searchTerm;
     this.filter();
   }
-  
+
+  selectEvent(selectEvent: ITdDataTableSelectEvent): void {
+    if (selectEvent.selected) {
+      this._zone.run(() => {
+        this.listSelectRows.push(selectEvent.row.Id);
+      });
+    } else {
+      this._zone.run(() => {
+        for (let idx = 0; idx < this.listSelectRows.length; idx++) {
+          if (+this.listSelectRows[idx] === +selectEvent.row.Id) {
+            this.listSelectRows.splice(idx);
+            break;
+          }
+        }
+      });
+    }
+  }
+
   page(pagingEvent: IPageChangeEvent): void {
     this.fromRow = pagingEvent.fromRow;
     this.currentPage = pagingEvent.page;
@@ -146,11 +171,40 @@ export class ListComponent implements OnInit {
       this.filteredData = newData;
     }
   }
-  
+
   public onCreateAccount() {
     if (environment.DebugLogging) {
       console.log("ACHIHUI Log: Entering onCreateAccount of FinanceAccountList");
     }
-    this.router.navigate(['/finance/account/create']);
+    this._router.navigate(['/finance/account/create']);
+  }
+
+  public onEditAccount() {
+    if (this.listSelectRows.length != 1) {
+      this._dialogService.openAlert({
+        message: "Select one and only one row to continue!",
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "Selection error", //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+      return;
+    }
+
+    this._router.navigate(['/finance/account/edit/' + this.listSelectRows[0].toString()]);
+  }
+
+  public onDeleteAccount() : void {
+    if (this.listSelectRows.length <= 0) {
+      this._dialogService.openAlert({
+        message: "Select one and only one row to continue!",
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "Selection error", //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+      return;
+    }
+    
   }
 }

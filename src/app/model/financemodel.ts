@@ -38,7 +38,7 @@ export class Setting extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
-    
+
     public onSetData(data: any) {
         if (environment.DebugLogging) {
             console.log("Entering onSetData of Finance.Setting");
@@ -216,7 +216,7 @@ export class AccountCategory extends hih.BaseModel {
         }
         if (data && data.sysFlag) {
             this.SysFlag = data.sysFlag;
-        }        
+        }
     }
 }
 
@@ -276,12 +276,12 @@ export class DocumentType extends hih.BaseModel {
         }
         if (data && data.sysFlag) {
             this.SysFlag = data.sysFlag;
-        }        
+        }
     }
 }
 
 export abstract class AccountExtra {
-    public writeJSONObject() : any {
+    public writeJSONObject(): any {
         return {};
     }
 }
@@ -292,11 +292,12 @@ export class Account extends hih.BaseModel {
     public Name: string;
     public Comment: string;
     public OwnerId: string;
-    
+
     public CategoryName: string;
     public OwnerDisplayAs: string;
 
-    public ExtraInfo: AccountExtra;
+    public ExtraInfo: AccountExtra = null;
+
     constructor() {
         super();
         if (environment.DebugLogging) {
@@ -318,7 +319,43 @@ export class Account extends hih.BaseModel {
         if (!super.onVerify(context))
             return false;
 
-        return true;
+        let brst: boolean = true;
+        
+        if (context) {
+            // Category
+            if (context.arCategory && context.arCategory.length > 0) {
+                let bCategory: boolean = false;
+                for (let ctgy of context.arCategory) {
+                    if (+ctgy.Id === +this.CategoryId) {
+                        bCategory = true;
+                    }
+                }
+
+                if (!bCategory) {
+                    // Error message
+                    let msg : hih.InfoMessage = new hih.InfoMessage();
+                    msg.MsgType = hih.MessageType.Error;
+                    msg.MsgTitle = "Invalid category";
+                    msg.MsgContent = "Invalid category, please use a valid category!";
+                    msg.MsgTime = new Date();
+                    this.VerifiedMsgs.push(msg);
+                    brst = false;
+                }
+
+            } else {
+                let msg : hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgType = hih.MessageType.Error;
+                msg.MsgTitle = "No category";
+                msg.MsgContent = "No category found in the system!";
+                msg.MsgTime = new Date();
+                this.VerifiedMsgs.push(msg);
+                brst = false;
+            }
+
+            // Owner
+        }
+
+        return brst;
     }
 
     public writeJSONObject(): any {
@@ -576,7 +613,7 @@ export class TranType extends hih.BaseModel {
         }
         if (data && data.sysFlag) {
             this.SysFlag = data.sysFlag;
-        }        
+        }
     }
 }
 
