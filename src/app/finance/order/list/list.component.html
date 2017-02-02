@@ -8,10 +8,10 @@
     <button md-mini-fab color="primary" (click)="onCreateOrder()">
       <md-icon>add</md-icon>
     </button>
-    <button md-mini-fab color="accent" [disabled]="listSelectRows.length <= 0" (click)="onEditOrder()">
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onEditOrder()">
       <md-icon>create</md-icon>
     </button>
-    <button md-mini-fab color="accent" [disabled]="listSelectRows.length <= 0" (click)="onDeleteOrder()">
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDeleteOrder()">
       <md-icon>clear</md-icon>
     </button>
   </span>

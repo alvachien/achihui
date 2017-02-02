@@ -3,6 +3,28 @@
   <md-card-subtitle>Current Mode</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
+    <form (ngSubmit)="onSubmit()" #detailForm="ngForm">
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <input md-input placeholder="ID" readonly [(ngModel)]="orderObject.Id" name="id" #id="ngModel">
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <input md-input placeholder="Name" required [(ngModel)]="orderObject.Name" name="name" #name="ngModel">
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <textarea md-input placeholder="Comment" [(ngModel)]="orderObject.Comment" name="cmt" #cmt="ngModel"></textarea>
+        </md-input-container>
+      </div>
+    </form>
   </md-card-content>
+  <md-divider></md-divider>
+  <md-card-actions>
+    <button md-button color="accent" [disabled]="!detailForm.form.valid" (click)="onSubmit()">Submit</button>
+    <button md-button>Cancel</button>
+  </md-card-actions>
 </md-card>
 
