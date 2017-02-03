@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, OnDestroy, AfterViewInit,
+  Component, OnInit, OnDestroy, AfterViewInit, NgZone,
   EventEmitter, Input, Output, ViewContainerRef
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -34,6 +34,7 @@ export class DetailComponent implements OnInit {
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
 
   constructor(private _http: Http,
+    private _zone: NgZone,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _dialogService: TdDialogService,
@@ -55,7 +56,7 @@ export class DetailComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceOrderDetail");
     }
 
-    this.loadUserList();
+    //this.loadUserList();
     this.loadControlCenterList();
 
     // Distinguish current mode
@@ -84,11 +85,18 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for UI controls
   ////////////////////////////////////////////
-  public onRuleSubmit() : void {
+  public onRuleSubmit(): void {
     if (environment.DebugLogging) {
       console.log("Entering onRuleSubmit of FinanceOrderDetail");
     }
 
+    // Check the rule object
+
+    // Update
+    this._zone.run(() => {
+      this.orderObject.SRules.push(this.sruleObject);
+      this.sruleObject = new HIHFinance.SettlementRule();
+    });
   }
 
   public onSubmit(): void {
@@ -100,8 +108,8 @@ export class DetailComponent implements OnInit {
     let context = {
     };
     let checkFailed: boolean = false;
-    if (!this.orderObject.onVerify(context)) {      
-      for(let msg of this.orderObject.VerifiedMsgs) {
+    if (!this.orderObject.onVerify(context)) {
+      for (let msg of this.orderObject.VerifiedMsgs) {
         if (msg.MsgType === HIHCommon.MessageType.Error) {
           checkFailed = true;
           this._dialogService.openAlert({
@@ -136,7 +144,7 @@ export class DetailComponent implements OnInit {
         nNewObj.onSetData(x);
 
         // Navigate.
-        this._router.navigate(['/finance/order/display/' + nNewObj.Id.toString() ]);
+        this._router.navigate(['/finance/order/display/' + nNewObj.Id.toString()]);
       }, error => {
         this._dialogService.openAlert({
           message: 'Error in creating!',
@@ -168,7 +176,9 @@ export class DetailComponent implements OnInit {
       .catch(this.handleError)
       .subscribe(data => {
         if (data instanceof Array) {
-          this.arUsers = data;
+          this._zone.run(() => {
+            this.arUsers = data;
+          });          
         }
       },
       error => {
@@ -191,7 +201,9 @@ export class DetailComponent implements OnInit {
       .catch(this.handleError)
       .subscribe(data => {
         if (data instanceof Array) {
-          this.arControlCenter = data;
+          this._zone.run(() => {
+            this.arControlCenter = data;
+          });
         }
       },
       error => {
@@ -224,9 +236,9 @@ export class DetailComponent implements OnInit {
     }
 
     let body = res.json();
-    if (body && body instanceof Array) {
+    if (body && body.contentList && body.contentList instanceof Array) {
       let sets = new Array<HIHFinance.ControllingCenter>();
-      for (let alm of body) {
+      for (let alm of body.contentList) {
         let alm2 = new HIHFinance.ControllingCenter();
         alm2.onSetData(alm);
         sets.push(alm2);

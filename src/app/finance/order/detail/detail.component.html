@@ -21,6 +21,16 @@
           </div>
           <div layout="row" layout-margin>
             <md-input-container flex>
+              <input md-input type="date" placeholder="Valid from" required [(ngModel)]="orderObject.ValidFrom" name="validfrom" #validfrom="ngModel">
+            </md-input-container>
+          </div>
+          <div layout="row" layout-margin>
+            <md-input-container flex>
+              <input md-input type="date" placeholder="Valid to" required [(ngModel)]="orderObject.ValidTo" name="validto" #validto="ngModel">
+            </md-input-container>
+          </div>
+          <div layout="row" layout-margin>
+            <md-input-container flex>
               <textarea md-input placeholder="Comment" [(ngModel)]="orderObject.Comment" name="cmt" #cmt="ngModel"></textarea>
             </md-input-container>
           </div>
@@ -33,18 +43,24 @@
         <md-divider></md-divider>
         <md-list>
           <md-list-item>
-            <span md-line class="pad-left md-body-1 tc-grey-500">Rule ID</span>
-            <span hide-xs>Control Center</span>
-            <span flex></span>
-            <span hide-xs flex="30" class="pad-left md-body-1 tc-grey-500">Precentage</span>
+            <div md-line>
+              <span flex="10">Operations</span>
+              <span flex="10">ID</span>
+              <span flex class="pad-left md-body-1 tc-grey-500">Control Center</span>
+              <span flex="30">Desp</span>
+              <span flex="10" class="pad-left md-body-1 tc-grey-500">Precentage</span>
+            </div>
           </md-list-item>
           <md-divider></md-divider>
           <template let-item let-last="last" ngFor [ngForOf]="orderObject.SRules">
             <md-list-item>
-              <span md-line class="pad-left md-body-1 tc-grey-500">{{item.RuleId}}</span>
-              <span hide-xs>{{item.ControlCenterName}}</span>
-              <span flex></span>
-              <span hide-xs flex="30" class="text-right md-body-1 tc-grey-500 pad-right">{{item.Precent}}</span>
+              <div md-line>
+                <span flex="10"><a ><md-icon>pageview</md-icon></a></span>
+                <span flex="10">{{item.RuleId}}</span>
+                <span flex class="pad-left md-body-1 tc-grey-500">{{item.ControlCenterName}}</span>
+                <span flex="30">{{item.Comment}}</span>
+                <span flex="10" class="pad-left md-body-1 tc-grey-500">{{item.Precent}}</span>
+              </div>
             </md-list-item>
             <md-divider *ngIf="!last" md-inset></md-divider>
           </template>
@@ -63,8 +79,8 @@
                 </md-input-container>
               </div>
               <div layout="row" layout-margin>
-                <md-select flex="90" [(ngModel)]="sruleObject.ControlCenterId" name="srulecc">
-                  <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id" (click)="sortBy(sortKey)">
+                <md-select flex="90" placeholder="Control Center" [(ngModel)]="sruleObject.ControlCenterId" name="srulecc">
+                  <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
                     {{cc.Name}}
                   </md-option>
                 </md-select>
@@ -82,8 +98,8 @@
             </form>
           </md-card-content>
           <md-card-actions>
-            <button md-button color="accent" [disabled]="!ruleDetailForm.form.valid" (click)="onRuleSubmit()">Submit</button>
-            <button md-button>Cancel</button>
+            <button md-button color="accent" [disabled]="!ruleDetailForm.form.valid" (click)="onRuleSubmit()">Add Rule</button>
+            <button md-button>Reset current rule</button>
           </md-card-actions>
         </md-card>
       </md-tab>
