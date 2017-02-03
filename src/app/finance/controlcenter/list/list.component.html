@@ -5,13 +5,13 @@
   <md-card-content>
     <div layout="row" layout-align="start center" class="pad-left-sm pad-right-sm">
       <span *ngIf="!searchBox.searchVisible" class="push-left-sm">    
-    <button md-mini-fab color="primary" [disabled]="selectedRows.length <= 0" (click)="onCreateControlCenter()">
+    <button md-mini-fab color="primary" (click)="onCreateControlCenter()">
       <md-icon>add</md-icon>
     </button>
     <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onEditControlCenter()">
       <md-icon>create</md-icon>
     </button>
-    <button md-mini-fab color="accent">
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0">
       <md-icon>clear</md-icon>
     </button>
   </span>

@@ -27,8 +27,10 @@ export class DetailComponent implements OnInit {
   private routerID: string; // Current ID in routing
   private _apiUrl: string;
   private arUsers: Array<HIHUser.UserDetail> = [];
+  private arControlCenter: Array<HIHFinance.ControllingCenter> = [];
   public currentMode: string;
   public orderObject: HIHFinance.Order = null;
+  public sruleObject: HIHFinance.SettlementRule = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
 
   constructor(private _http: Http,
@@ -39,6 +41,7 @@ export class DetailComponent implements OnInit {
     private _authService: AuthService,
     private _uistatus: UIStatusService) {
     this.orderObject = new HIHFinance.Order();
+    this.sruleObject = new HIHFinance.SettlementRule();
     this.uiMode = HIHCommon.UIMode.Create;
 
     this._apiUrl = environment.ApiUrl + "api/financeorder";
@@ -53,6 +56,7 @@ export class DetailComponent implements OnInit {
     }
 
     this.loadUserList();
+    this.loadControlCenterList();
 
     // Distinguish current mode
     this._activateRoute.url.subscribe(x => {
@@ -80,6 +84,13 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for UI controls
   ////////////////////////////////////////////
+  public onRuleSubmit() : void {
+    if (environment.DebugLogging) {
+      console.log("Entering onRuleSubmit of FinanceOrderDetail");
+    }
+
+  }
+
   public onSubmit(): void {
     if (environment.DebugLogging) {
       console.log("Entering onSubmit of FinanceOrderDetail");
@@ -164,6 +175,29 @@ export class DetailComponent implements OnInit {
         // It should be handled already
       });
   }
+  loadControlCenterList(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering loadControlCenterList of FinanceOrderDetail");
+    }
+
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let usrApi = environment.ApiUrl + "api/financecontrollingcenter";
+
+    this._http.get(usrApi, { headers: headers })
+      .map(this.extractControlCenterData)
+      .catch(this.handleError)
+      .subscribe(data => {
+        if (data instanceof Array) {
+          this.arControlCenter = data;
+        }
+      },
+      error => {
+        // It should be handled already
+      });
+  }
 
   private extractUserData(res: Response) {
     if (environment.DebugLogging) {
@@ -175,6 +209,25 @@ export class DetailComponent implements OnInit {
       let sets = new Array<HIHUser.UserDetail>();
       for (let alm of body) {
         let alm2 = new HIHUser.UserDetail();
+        alm2.onSetData(alm);
+        sets.push(alm2);
+      }
+      return sets;
+    }
+
+    return body || {};
+  }
+
+  private extractControlCenterData(res: Response) {
+    if (environment.DebugLogging) {
+      console.log("Entering extractControlCenterData of FinanceOrderDetail");
+    }
+
+    let body = res.json();
+    if (body && body instanceof Array) {
+      let sets = new Array<HIHFinance.ControllingCenter>();
+      for (let alm of body) {
+        let alm2 = new HIHFinance.ControllingCenter();
         alm2.onSetData(alm);
         sets.push(alm2);
       }

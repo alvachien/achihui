@@ -506,6 +506,8 @@ export class Order extends hih.BaseModel {
     public ValidTo: Date;
     public Comment: string;
 
+    public SRules: Array<SettlementRule> = [];
+
     constructor() {
         super();
         if (environment.DebugLogging) {
@@ -578,6 +580,8 @@ export class SettlementRule extends hih.BaseModel {
     public ControlCenterId: number;
     public Precent: number;
     public Comment: string;
+
+    public ControlCenterName: string;
 
     constructor() {
         super();
