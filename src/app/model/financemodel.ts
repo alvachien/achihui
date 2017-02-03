@@ -529,7 +529,87 @@ export class Order extends hih.BaseModel {
         if (!super.onVerify(context))
             return false;
 
-        return true;
+        let chkrst = true;
+
+        // Name
+        if (this.Name && this.Name.length > 0) {            
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "Invalid name";
+            msg.MsgContent = "Name is a must";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+        }
+        // Valid from
+        if (this.ValidFrom && this.ValidFrom instanceof Date) {            
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "Invalid valid from";
+            msg.MsgContent = "Valid from is a must";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+        }
+        // Valid to 
+        if (this.ValidTo && this.ValidTo instanceof Date) {            
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "Invalid valid to";
+            msg.MsgContent = "Valid to is a must";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+        }
+        // Valid to > valid from
+        if (this.ValidTo > this.ValidFrom) {            
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "Invalid valid range";
+            msg.MsgContent = "Valid to must later than valid from";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+        }
+        // Srules
+        if (this.SRules.length > 0) {
+            let ntotal: number = 0;
+            for(let srobj of this.SRules) {
+                ntotal += srobj.Precent;
+
+                srobj.onVerify({});
+                for(let msg2 of srobj.VerifiedMsgs) {
+                    this.VerifiedMsgs.push(msg2);
+                    if (msg2.MsgType === hih.MessageType.Error) {
+                        chkrst = false;
+                    }
+                }
+            }
+
+            if (ntotal != 100) {
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgTime = new Date();
+                msg.MsgType = hih.MessageType.Error;
+                msg.MsgTitle = "No rule";
+                msg.MsgContent = "No rule defined";
+                this.VerifiedMsgs.push(msg);
+                chkrst = false;
+            }
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "No rule";
+            msg.MsgContent = "No rule defined";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+        }
+
+        return chkrst;
     }
 
     public writeJSONObject(): any {
@@ -540,9 +620,16 @@ export class Order extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         rstObj.id = this.Id;
         rstObj.name = this.Name;
-        rstObj.validFrom = this.ValidFrom;
-        rstObj.validTo = this.ValidTo;
+        rstObj.valid_From = this.ValidFrom;
+        rstObj.valid_To = this.ValidTo;
         rstObj.comment = this.Comment;
+        rstObj.sRuleList = [];
+
+        for(let srule of this.SRules) {
+            let sruleinfo = srule.writeJSONObject();
+            sruleinfo.ordId = this.Id;
+            rstObj.sRuleList.push(sruleinfo);
+        }
         
         return rstObj;
     }
@@ -570,7 +657,14 @@ export class Order extends hih.BaseModel {
             this.ValidTo = <Date>data.validTo;
         }
 
-        
+        this.SRules = [];
+        if (data && data.sRuleList && data.sRuleList instanceof Array) {
+            for(let sr of data.sRuleList) {
+                let srule: SettlementRule = new SettlementRule();
+                srule.onSetData(sr);
+                this.SRules.push(srule);
+            }
+        }
     }
 }
 
@@ -603,8 +697,31 @@ export class SettlementRule extends hih.BaseModel {
         }
         if (!super.onVerify(context))
             return false;
+        
+        let brst : boolean = true;
+        // ID 
+        if (this.RuleId <= 0) {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgContent = "Rule Id should larger than 0.";
+            msg.MsgTitle = "Rule Id invalid";
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTime = new Date();
+            this.VerifiedMsgs.push(msg);
+            brst = false;
+        }
 
-        return true;
+        // Precent
+        if (this.Precent <= 0 || this.Precent > 100) {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgContent = "Precent should between 0 and 100.";
+            msg.MsgTitle = "Precent invalid";
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTime = new Date();
+            this.VerifiedMsgs.push(msg);
+            brst = false;
+        }
+
+        return brst;
     }
 
     public writeJSONObject(): any {
@@ -613,12 +730,31 @@ export class SettlementRule extends hih.BaseModel {
         }
 
         let rstObj = super.writeJSONObject();
+        rstObj.ruleId = this.RuleId;
+        rstObj.controlCenterID = this.ControlCenterId;
+        rstObj.precent = this.Precent;
+        rstObj.comment = this.Comment;
         return rstObj;
     }
 
     public onSetData(data: any) {
         if (environment.DebugLogging) {
             console.log("Entering onSetData of SettlementRule");
+        }
+
+        // Not need call for the super class's method, because createdat and modifiedat not required here
+
+        if (data && data.ruleId) {
+            this.RuleId = +data.ruleId;
+        }
+        if (data && data.controlCenterID) {
+            this.ControlCenterId = +data.controlCenterID;
+        }
+        if (data && data.precent) {
+            this.Precent = +data.precent;
+        }
+        if (data && data.comment && data.comment.length > 0) {
+            this.Comment = data.comment;
         }
     }
 }

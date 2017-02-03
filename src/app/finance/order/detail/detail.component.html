@@ -41,32 +41,23 @@
           <md-icon>dvr</md-icon>Settlement Rule
         </template>
         <md-divider></md-divider>
-        <md-list>
-          <md-list-item>
-            <div md-line>
-              <span flex="10">Operations</span>
-              <span flex="10">ID</span>
-              <span flex class="pad-left md-body-1 tc-grey-500">Control Center</span>
-              <span flex="30">Desp</span>
-              <span flex="10" class="pad-left md-body-1 tc-grey-500">Precentage</span>
-            </div>
-          </md-list-item>
-          <md-divider></md-divider>
-          <template let-item let-last="last" ngFor [ngForOf]="orderObject.SRules">
-            <md-list-item>
-              <div md-line>
-                <span flex="10"><a ><md-icon>pageview</md-icon></a></span>
-                <span flex="10">{{item.RuleId}}</span>
-                <span flex class="pad-left md-body-1 tc-grey-500">{{item.ControlCenterName}}</span>
-                <span flex="30">{{item.Comment}}</span>
-                <span flex="10" class="pad-left md-body-1 tc-grey-500">{{item.Precent}}</span>
-              </div>
-            </md-list-item>
-            <md-divider *ngIf="!last" md-inset></md-divider>
-          </template>
-        </md-list>
-        <md-divider></md-divider>
-        <td-paging-bar [pageSizes]="[5, 10, 15, 20]" total="{{orderObject.SRules.length}}"></td-paging-bar>
+        <table td-data-table>
+          <th td-data-table-column>Operations</th>
+          <th td-data-table-column
+              *ngFor="let column of clnRules">
+            {{column.label}}
+          </th>
+          <tr td-data-table-row *ngFor="let row of orderObject.SRules">
+            <td td-data-table-cell>
+              <button md-button>Display</button>
+              <button md-button>Edit</button>
+              <button md-button>Delete</button>
+            </td>
+            <td td-data-table-cell *ngFor="let column of clnRules">
+              {{row[column.name]}}
+            </td>
+          </tr>
+        </table>
         <md-divider></md-divider>
 
         <md-card>

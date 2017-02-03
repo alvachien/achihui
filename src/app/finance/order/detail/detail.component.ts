@@ -7,7 +7,10 @@ import {
   Http, Headers, Response, RequestOptions,
   URLSearchParams
 } from '@angular/http';
-import { TdDialogService } from '@covalent/core';
+import {
+  TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent,
+  ITdDataTableColumn, ITdDataTableSelectEvent, TdDialogService
+} from '@covalent/core';
 import * as HIHCommon from '../../../model/common';
 import * as HIHFinance from '../../../model/financemodel';
 import * as HIHUser from '../../../model/userinfo';
@@ -32,6 +35,13 @@ export class DetailComponent implements OnInit {
   public orderObject: HIHFinance.Order = null;
   public sruleObject: HIHFinance.SettlementRule = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
+  public clnRules: ITdDataTableColumn[] = [
+    { name: 'RuleId', label: '#', tooltip: 'ID' },
+    { name: 'ControlCenterId', label: 'Id', tooltip: 'Name' },
+    { name: 'ControlCenterName', label: 'Control Center', tooltip: 'Control center' },
+    { name: 'Precent', label: 'Precentage', tooltip: 'Precentage' },
+    { name: 'Comment', label: 'Comment' }
+  ];
 
   constructor(private _http: Http,
     private _zone: NgZone,
@@ -91,6 +101,26 @@ export class DetailComponent implements OnInit {
     }
 
     // Check the rule object
+    let context: any = {
+    };
+    let checkFailed: boolean = false;
+    if (!this.sruleObject.onVerify(context)) {
+      for (let msg of this.sruleObject.VerifiedMsgs) {
+        if (msg.MsgType === HIHCommon.MessageType.Error) {
+          checkFailed = true;
+          this._dialogService.openAlert({
+            message: msg.MsgContent,
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: msg.MsgTitle, //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }
+      }
+    }
+    if (checkFailed) {
+      return;
+    }
 
     // Update
     this._zone.run(() => {
@@ -105,8 +135,15 @@ export class DetailComponent implements OnInit {
     }
 
     // Do the checks before submitting
-    let context = {
+    let context:any = {
     };
+    if (this.orderObject.ValidFrom) {
+      this.orderObject.ValidFrom = new Date(this.orderObject.ValidFrom);
+    }
+    if (this.orderObject.ValidTo) {
+      this.orderObject.ValidTo = new Date(this.orderObject.ValidTo);
+    }
+
     let checkFailed: boolean = false;
     if (!this.orderObject.onVerify(context)) {
       for (let msg of this.orderObject.VerifiedMsgs) {

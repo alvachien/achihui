@@ -63,10 +63,21 @@ export class BaseModel {
             console.log("Entering writeJSONObject of BaseModel");
         }
 
-        return {
-            CreatedAt: this.CreatedAt,
-            CreatedBy: this.CreatedBy
-        };
+        let rstobj: any = {};
+        if (this.CreatedAt) {
+            rstobj.createdAt = this.CreatedAt;
+        }
+        if (this.CreatedBy && this.CreatedBy.length > 0) {
+            rstobj.createdBy = this.CreatedBy;
+        }
+        if (this.UpdatedAt) {
+            rstobj.updatedAt = this.UpdatedAt;
+        }
+        if (this.UpdatedBy && this.UpdatedBy.length >0 ) {
+            rstobj.updatedBy = this.UpdatedBy;
+        }
+        
+        return rstobj;
     }
 
     public writeJSONString(): string {
