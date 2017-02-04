@@ -839,6 +839,8 @@ export class Document extends hih.BaseModel {
     public TranCurr2: string;
     public ExgRate2: number;
 
+    public Items: Array<DocumentItem> = [];
+
     constructor() {
         super();
         if (environment.DebugLogging) {
@@ -889,6 +891,54 @@ export class DocumentItem {
     public ControlCenterId: number;
     public OrderId: number;
     public Desp: string;
+
+    public AccountName: string;
+    public ControlCenterName: string;
+    public OrderName: string;
+    public VerifiedMessage: Array<hih.InfoMessage> = [];
+
+    public onVerify(context: any): boolean {
+        if (environment.DebugLogging) {
+            console.log("Entering onVerify of DocumentItem");
+        }
+
+        let chkrst : boolean = true;
+
+        return chkrst;
+    }
+
+    public writeJSONObject(): any {
+        if (environment.DebugLogging) {
+            console.log("Entering writeJSONObject of DocumentItem");
+        }
+
+        let rstObj: any = {};
+        rstObj.itemId = this.ItemId;
+        rstObj.accountId = this.AccountId;
+        rstObj.tranType = this.TranType;
+        rstObj.tranAmount = this.TranAmount;
+
+        return rstObj;
+    }
+
+    public onSetData(data: any) {
+        if (environment.DebugLogging) {
+            console.log("Entering onSetData of DocumentItem");
+        }
+
+        if (data && data.itemId) {
+            this.ItemId = +data.itemId;
+        }
+        if (data && data.accountId) {
+            this.AccountId = +data.accountId;
+        }
+        if (data && data.tranType) {
+            this.TranType = +data.tranType;
+        }
+        if (data && data.tranAmount) {
+            this.TranAmount = +data.tranAmount;
+        }
+    }
 }
 
 export class TemplateDocDP extends hih.BaseModel {

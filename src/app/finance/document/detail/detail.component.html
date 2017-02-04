@@ -1,7 +1,89 @@
 <md-card>
   <md-card-title>Document</md-card-title>
-  <md-card-subtitle>Current Mode</md-card-subtitle>
+  <md-card-subtitle>{{CurrentMode}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
+    <md-tab-group>
+      <md-tab>
+        <template md-tab-label>
+          <md-icon>tune</md-icon>Header
+        </template>
+        <form #detailForm="ngForm">
+          <div layout="row" layout-margin>
+            <md-input-container flex>
+              <input md-input placeholder="ID" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
+            </md-input-container>
+          </div>
+          <div layout="row" layout-margin>
+            <md-input-container flex>
+              <input md-input type="date" placeholder="Transaction Date" required [(ngModel)]="docObject.TranDate" name="trandate" #trandate="ngModel">
+            </md-input-container>
+          </div>
+          <div layout="row" layout-margin>
+            <md-input-container flex>
+              <textarea md-input placeholder="Description" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
+            </md-input-container>
+          </div>
+        </form>
+      </md-tab>
+      <md-tab>
+        <template md-tab-label>
+          <md-icon>dvr</md-icon>Items
+        </template>
+        <md-divider></md-divider>
+        <table td-data-table>
+          <th td-data-table-column>Operations</th>
+          <th td-data-table-column
+              *ngFor="let column of clnItems">
+            {{column.label}}
+          </th>
+          <tr td-data-table-row *ngFor="let row of docObject.Items">
+            <td td-data-table-cell>
+              <button md-button>Display</button>
+              <button md-button>Edit</button>
+              <button md-button>Delete</button>
+            </td>
+            <td td-data-table-cell *ngFor="let column of clnItems">
+              {{row[column.name]}}
+            </td>
+          </tr>
+        </table>
+        <md-divider></md-divider>
+
+        <md-card>
+          <md-card-content>
+            <h3 md-line>Items</h3>
+            <form #itemDetailForm="ngForm">
+              <div layout="row" layout-margin>
+                <md-input-container flex>
+                  <input md-input type="number" placeholder="Rule ID" required [(ngModel)]="itemObject.ItemId" name="itemid" #itemid="ngModel">
+                </md-input-container>
+              </div>
+              <div layout="row" layout-margin>
+                <md-select flex="90" placeholder="Account" [(ngModel)]="itemObject.AccountId" name="itemaccnt">
+                  <md-option *ngFor="let acnt of arAccounts" [value]="acnt.Id">
+                    {{cc.Name}}
+                  </md-option>
+                </md-select>
+              </div>
+              <div layout="row" layout-margin>
+                <md-input-container flex>
+                  <textarea md-input placeholder="Description" [(ngModel)]="itemObject.Desp" name="itemdesp" #itemdesp="ngModel"></textarea>
+                </md-input-container>
+              </div>
+            </form>
+          </md-card-content>
+          <md-card-actions>
+            <button md-button color="accent" [disabled]="!itemDetailForm.form.valid" (click)="onItemSubmit()">Add Item</button>
+            <button md-button>Reset current item</button>
+          </md-card-actions>
+        </md-card>
+      </md-tab>
+    </md-tab-group>
   </md-card-content>
+  <md-divider></md-divider>
+  <md-card-actions>
+    <button md-button color="accent" [disabled]="!detailForm.form.valid" (click)="onSubmit()">Submit</button>
+    <button md-button>Cancel</button>
+  </md-card-actions>
 </md-card>
