@@ -5,18 +5,18 @@
   <md-card-content>
     <div layout="row" layout-align="start center" class="pad-left-sm pad-right-sm">
       <span *ngIf="!searchBox.searchVisible" class="push-left-sm">    
-    <button md-mini-fab color="primary" (click)="onCreateObject()">
+    <button md-mini-fab color="primary" (click)="onCreateDocument()">
       <md-icon>add</md-icon>
     </button>
-    <button md-mini-fab color="accent">
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0">
       <md-icon>create</md-icon>
     </button>
-    <button md-mini-fab color="accent">
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0">
       <md-icon>clear</md-icon>
     </button>
   </span>
       <span *ngIf="!searchBox.searchVisible" class="push-left-sm">
-    <span *ngIf="selectedRows.length &amp;&amp; selectable" class="md-body-1">0 item(s) selected</span>
+    <span *ngIf="selectedRows.length &amp;&amp; selectable" class="md-body-1">{{selectedRows.length}} item(s) selected</span>
       </span>
       <td-search-box #searchBox backIcon="arrow_back" class="push-right-sm" placeholder="Search here" (searchDebounce)="search($event)"
         flex>

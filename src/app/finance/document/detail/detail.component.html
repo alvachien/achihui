@@ -15,6 +15,20 @@
             </md-input-container>
           </div>
           <div layout="row" layout-margin>
+            <md-select flex="90" placeholder="Doc type" [(ngModel)]="docObject.DocType" name="doctype" #doctype="ngModel">
+              <md-option *ngFor="let dt of arDocType" [value]="dt.Id">
+                {{dt.Name}}
+              </md-option>
+            </md-select>
+          </div>
+          <div layout="row" layout-margin>
+            <md-select flex="90" placeholder="Currency" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
+              <md-option *ngFor="let cur of arCurrency" [value]="cur.Currency">
+                {{cur.Symbol}} - {{cur.Name}}
+              </md-option>
+            </md-select>
+          </div>
+          <div layout="row" layout-margin>
             <md-input-container flex>
               <input md-input type="date" placeholder="Transaction Date" required [(ngModel)]="docObject.TranDate" name="trandate" #trandate="ngModel">
             </md-input-container>
@@ -56,20 +70,46 @@
             <form #itemDetailForm="ngForm">
               <div layout="row" layout-margin>
                 <md-input-container flex>
-                  <input md-input type="number" placeholder="Rule ID" required [(ngModel)]="itemObject.ItemId" name="itemid" #itemid="ngModel">
+                  <input md-input type="number" placeholder="Item ID" required [(ngModel)]="itemObject.ItemId" name="itemid" #itemid="ngModel">
                 </md-input-container>
               </div>
               <div layout="row" layout-margin>
-                <md-select flex="90" placeholder="Account" [(ngModel)]="itemObject.AccountId" name="itemaccnt">
-                  <md-option *ngFor="let acnt of arAccounts" [value]="acnt.Id">
-                    {{cc.Name}}
+                <md-select flex="90" placeholder="Transaction type" [(ngModel)]="itemObject.TranType" name="itemtrantype" #itemtrantype="ngModel">
+                  <md-option *ngFor="let dt of arTranType" [value]="dt.Id">
+                    ({{dt.Id}}) - {{dt.Name}}
+                  </md-option>
+                </md-select>
+              </div>
+              <div layout="row" layout-margin>
+                <md-select flex="90" placeholder="Account" [(ngModel)]="itemObject.AccountId" name="itemaccnt" #itemaccnt="ngModel">
+                  <md-option *ngFor="let acnt of arAccount" [value]="acnt.Id">
+                    {{acnt.Name}}
                   </md-option>
                 </md-select>
               </div>
               <div layout="row" layout-margin>
                 <md-input-container flex>
+                  <input md-input type="number" placeholder="Transaction amount" required [(ngModel)]="itemObject.TranAmount" name="itemtranamt" #itemtranamt="ngModel">
+                </md-input-container>
+              </div>
+              <div layout="row" layout-margin>
+                <md-input-container flex>
                   <textarea md-input placeholder="Description" [(ngModel)]="itemObject.Desp" name="itemdesp" #itemdesp="ngModel"></textarea>
                 </md-input-container>
+              </div>
+              <div layout="row" layout-margin>
+                <md-select flex="90" placeholder="Control center" [(ngModel)]="itemObject.ControlCenterId" name="itemcc" #itemcc="ngModel">
+                  <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
+                    {{cc.Name}}
+                  </md-option>
+                </md-select>
+              </div>
+              <div layout="row" layout-margin>
+                <md-select flex="90" placeholder="Order" [(ngModel)]="itemObject.OrderId" name="itemorder" #itemorder="ngModel">
+                  <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
+                    {{ord.Name}}
+                  </md-option>
+                </md-select>
               </div>
             </form>
           </md-card-content>

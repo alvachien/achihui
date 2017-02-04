@@ -862,7 +862,47 @@ export class Document extends hih.BaseModel {
         if (!super.onVerify(context))
             return false;
 
-        return true;
+        let chkrst: boolean = true;
+
+        // Doc type
+        if (context && context.arDocType && context.arDocType instanceof Array) {
+            if (this.DocType > 0) {
+                let bExist : boolean = false;
+                for(let tt of context.arDocType) {
+                    if (+tt.Id === this.DocType) {
+                        bExist = true;
+                    }
+                }
+
+                if (!bExist) {
+                    let msg: hih.InfoMessage = new hih.InfoMessage();
+                    msg.MsgTime = new Date();
+                    msg.MsgType = hih.MessageType.Error;
+                    msg.MsgTitle = "Invalid doc. type id!";
+                    msg.MsgContent = "Invalid doc. type";
+                    this.VerifiedMsgs.push(msg);
+                    chkrst = false;           
+                }
+            } else {
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgTime = new Date();
+                msg.MsgType = hih.MessageType.Error;
+                msg.MsgTitle = "Specify an doc. type first";
+                msg.MsgContent = "No doc. type inputted";
+                this.VerifiedMsgs.push(msg);
+                chkrst = false;           
+            }
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "No doc. type in the system";
+            msg.MsgContent = "No doc. type defined";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;           
+        }
+
+        return chkrst;
     }
 
     public writeJSONObject(): any {
@@ -871,12 +911,49 @@ export class Document extends hih.BaseModel {
         }
 
         let rstObj = super.writeJSONObject();
+        rstObj.iD = this.Id;
+        rstObj.docType = this.DocType;
+        rstObj.tranDate = this.TranDate;
+        rstObj.tranCurr = this.TranCurr;
+        rstObj.desp = this.Desp;
+
+        rstObj.items = [];
+        for(let di of this.Items) {
+            let item: any = di.writeJSONObject();
+            rstObj.items.push(item);
+        }
+
         return rstObj;
     }
 
     public onSetData(data: any) {
         if (environment.DebugLogging) {
             console.log("Entering onSetData of Document");
+        }
+
+        if (data && data.id) {
+            this.Id = +data.id;
+        }
+        if (data && data.docType) {
+            this.DocType = +data.docType;
+        }
+        if (data && data.tranDate) {
+            this.TranDate = new Date(data.tranDate);
+        }
+        if (data && data.tranCurr) {
+            this.TranCurr = data.tranCurr;
+        }
+        if (data && data.desp) {
+            this.Desp = data.desp;
+        }
+
+        this.Items = [];
+        if (data && data.items && data.items instanceof Array) {
+            for(let it of data.items) {
+                let item: DocumentItem = new DocumentItem();
+                item.onSetData(it);
+                this.Items.push(it);
+            }
         }
     }
 }
@@ -895,7 +972,7 @@ export class DocumentItem {
     public AccountName: string;
     public ControlCenterName: string;
     public OrderName: string;
-    public VerifiedMessage: Array<hih.InfoMessage> = [];
+    public VerifiedMsgs: Array<hih.InfoMessage> = [];
 
     public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
@@ -903,6 +980,191 @@ export class DocumentItem {
         }
 
         let chkrst : boolean = true;
+
+        // Item Id
+        if (this.ItemId <= 0) {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgContent = "Item Id should larger than 0.";
+            msg.MsgTitle = "Item Id invalid";
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTime = new Date();
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+        }
+        // Account
+        if (context && context.arAccount && context.arAccount instanceof Array) {
+            if (this.AccountId > 0) {
+                let bAcntExist : boolean = false;
+                for(let acnt of context.arAccount) {
+                    if (+acnt.Id === this.AccountId) {
+                        bAcntExist = true;
+                    }
+                }
+
+                if (!bAcntExist) {
+                    let msg: hih.InfoMessage = new hih.InfoMessage();
+                    msg.MsgTime = new Date();
+                    msg.MsgType = hih.MessageType.Error;
+                    msg.MsgTitle = "Invalid account id!";
+                    msg.MsgContent = "Invalid account id";
+                    this.VerifiedMsgs.push(msg);
+                    chkrst = false;           
+                }
+            } else {
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgTime = new Date();
+                msg.MsgType = hih.MessageType.Error;
+                msg.MsgTitle = "No account inputted";
+                msg.MsgContent = "Specify an account first";
+                this.VerifiedMsgs.push(msg);
+                chkrst = false;           
+            }
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "No account defined";
+            msg.MsgContent = "No account in the system";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;           
+        }
+        // Transaction type
+        if (context && context.arTranType && context.arTranType instanceof Array) {
+            if (this.TranType > 0) {
+                let bExist : boolean = false;
+                for(let tt of context.arTranType) {
+                    if (+tt.Id === this.TranType) {
+                        bExist = true;
+                    }
+                }
+
+                if (!bExist) {
+                    let msg: hih.InfoMessage = new hih.InfoMessage();
+                    msg.MsgTime = new Date();
+                    msg.MsgType = hih.MessageType.Error;
+                    msg.MsgTitle = "Invalid tran. type";
+                    msg.MsgContent = "Invalid tran. type id!";
+                    this.VerifiedMsgs.push(msg);
+                    chkrst = false;           
+                }
+            } else {
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgTime = new Date();
+                msg.MsgType = hih.MessageType.Error;
+                msg.MsgTitle = "No tran. type inputted";
+                msg.MsgContent = "Specify an tran. type first";
+                this.VerifiedMsgs.push(msg);
+                chkrst = false;           
+            }
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "No tran. type defined";
+            msg.MsgContent = "No tran. type in the system!";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;           
+        }
+        // Amount
+        if (this.TranAmount <= 0) {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "No amount";
+            msg.MsgContent = "Amount is a must!";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;           
+        }
+        // Either control center or order must be exist
+        let bccord: boolean = true;
+        if (this.ControlCenterId) {
+            if (this.OrderId) {
+                // Both inputted
+                bccord = false;
+
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgTime = new Date();
+                msg.MsgType = hih.MessageType.Error;
+                msg.MsgTitle = "Duplicated inputs";
+                msg.MsgContent = "Input either control center or order!";
+                this.VerifiedMsgs.push(msg);
+                chkrst = false;           
+            } else {                
+            }
+        } else {
+            if (this.OrderId) {
+            } else {
+                // Neither inputted
+                bccord = false;
+
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgTime = new Date();
+                msg.MsgType = hih.MessageType.Error;
+                msg.MsgTitle = "No inputs";
+                msg.MsgContent = "Input either control center or order";
+                this.VerifiedMsgs.push(msg);
+                chkrst = false;           
+            }
+        }
+        if (bccord) {
+            // Control center
+            if (this.ControlCenterId) {
+                if (context && context.arControlCenter && context.arControlCenter instanceof Array) {
+                    let bExist : boolean = false;
+                    for(let tt of context.arControlCenter) {
+                        if (+tt.Id === this.ControlCenterId) {
+                            bExist = true;
+                        }
+                    }
+
+                    if (!bExist) {
+                        let msg: hih.InfoMessage = new hih.InfoMessage();
+                        msg.MsgTime = new Date();
+                        msg.MsgType = hih.MessageType.Error;
+                        msg.MsgTitle = "Invalid control center";
+                        msg.MsgContent = "Invalid control center id!";
+                        this.VerifiedMsgs.push(msg);
+                        chkrst = false;           
+                    }
+                } else {
+                    let msg: hih.InfoMessage = new hih.InfoMessage();
+                    msg.MsgTime = new Date();
+                    msg.MsgType = hih.MessageType.Error;
+                    msg.MsgTitle = "No control center defined";
+                    msg.MsgContent = "No control center in the system";
+                    this.VerifiedMsgs.push(msg);
+                    chkrst = false;           
+                }
+            } else if (this.OrderId) {
+                // Order
+                if (context && context.arOrder && context.arOrder instanceof Array) {
+                    let bExist : boolean = false;
+                    for(let tt of context.arOrder) {
+                        if (+tt.Id === this.OrderId) {
+                            bExist = true;
+                        }
+                    }
+
+                    if (!bExist) {
+                        let msg: hih.InfoMessage = new hih.InfoMessage();
+                        msg.MsgTime = new Date();
+                        msg.MsgType = hih.MessageType.Error;
+                        msg.MsgTitle = "Invalid order";
+                        msg.MsgContent = "Invalid order id!";
+                        this.VerifiedMsgs.push(msg);
+                        chkrst = false;           
+                    }
+                } else {
+                    let msg: hih.InfoMessage = new hih.InfoMessage();
+                    msg.MsgTime = new Date();
+                    msg.MsgType = hih.MessageType.Error;
+                    msg.MsgTitle = "No order defined";
+                    msg.MsgContent = "No order in the system";
+                    this.VerifiedMsgs.push(msg);
+                    chkrst = false;           
+                }
+            }
+        }
 
         return chkrst;
     }
@@ -913,10 +1175,17 @@ export class DocumentItem {
         }
 
         let rstObj: any = {};
-        rstObj.itemId = this.ItemId;
-        rstObj.accountId = this.AccountId;
+        rstObj.itemID = this.ItemId;
+        rstObj.accountID = this.AccountId;
         rstObj.tranType = this.TranType;
         rstObj.tranAmount = this.TranAmount;
+        if (this.ControlCenterId) {
+            rstObj.controlCenterID = this.ControlCenterId;
+        }
+        if (this.OrderId) {
+            rstObj.orderID = this.OrderId;
+        }
+        rstObj.desp = this.Desp;
 
         return rstObj;
     }
@@ -937,6 +1206,12 @@ export class DocumentItem {
         }
         if (data && data.tranAmount) {
             this.TranAmount = +data.tranAmount;
+        }
+        if (data && data.controlCenterId) {
+            this.ControlCenterId = +data.controlCenterId;
+        }
+        if (data && data.orderId) {
+            this.OrderId = +data.OrderId;
         }
     }
 }

@@ -35,15 +35,18 @@ export class DetailComponent implements OnInit {
   private arAccount: Array<HIHFinance.Account> = [];
   private arControlCenter: Array<HIHFinance.ControllingCenter> = [];
   private arOrder: Array<HIHFinance.Order> = [];
+  private arCurrency: Array<HIHFinance.Currency> = [];
   public currentMode: string;
   public docObject: HIHFinance.Document = null;
   public itemObject: HIHFinance.DocumentItem = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
   public clnItems: ITdDataTableColumn[] = [
     { name: 'ItemId', label: '#', tooltip: 'ID' },
-    { name: 'AccountId', label: 'Id', tooltip: 'Name' },
-    { name: 'AccountName', label: 'Control Center', tooltip: 'Control center' },
+    { name: 'AccountName', label: 'Account', tooltip: 'Account' },
+    { name: 'TranTypeName', label: 'Tran type', tooltip: 'Transaction type' },
     { name: 'TranAmount', label: 'Amount', tooltip: 'Amount' },
+    { name: 'ControlCenterName', label: 'Control Center', tooltip: 'Control center' },
+    { name: 'OrderName', label: 'Order', tooltip: 'Order' },
     { name: 'Desp', label: 'Description' }
   ];
 
@@ -70,8 +73,12 @@ export class DetailComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceDocumentDetail");
     }
 
-    //this.loadUserList();
+    this.loadCurrencyList();
+    this.loadDocTypeList();
     this.loadControlCenterList();
+    this.loadTranTypeList();
+    this.loadAccountList();
+    this.loadOrderList();
 
     // Distinguish current mode
     this._activateRoute.url.subscribe(x => {
@@ -99,17 +106,21 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for UI controls
   ////////////////////////////////////////////
-  public onRuleSubmit(): void {
+  public onItemSubmit(): void {
     if (environment.DebugLogging) {
-      console.log("Entering onRuleSubmit of FinanceDocumentDetail");
+      console.log("Entering onItemSubmit of FinanceDocumentDetail");
     }
 
     // Check the rule object
     let context: any = {
+      arAccount: this.arAccount,
+      arTranType: this.arTranType,
+      arControlCenter: this.arControlCenter,
+      arOrder: this.arOrder
     };
     let checkFailed: boolean = false;
-    if (!this.docObject.onVerify(context)) {
-      for (let msg of this.docObject.VerifiedMsgs) {
+    if (!this.itemObject.onVerify(context)) {
+      for (let msg of this.itemObject.VerifiedMsgs) {
         if (msg.MsgType === HIHCommon.MessageType.Error) {
           checkFailed = true;
           this._dialogService.openAlert({
@@ -138,8 +149,11 @@ export class DetailComponent implements OnInit {
       console.log("Entering onSubmit of FinanceDocumentDetail");
     }
 
+    this.docObject.TranDate = new Date(this.docObject.TranDate);
+
     // Do the checks before submitting
     let context:any = {
+      arDocType: this.arDocType
     };
 
     let checkFailed: boolean = false;
@@ -175,11 +189,11 @@ export class DetailComponent implements OnInit {
       .catch(this.handleError)
       .subscribe(x => {
         // It returns a new object with ID filled.
-        let nNewObj = new HIHFinance.Order();
+        let nNewObj = new HIHFinance.Document();
         nNewObj.onSetData(x);
 
         // Navigate.
-        this._router.navigate(['/finance/order/display/' + nNewObj.Id.toString()]);
+        this._router.navigate(['/finance/document/display/' + nNewObj.Id.toString()]);
       }, error => {
         this._dialogService.openAlert({
           message: 'Error in creating!',
@@ -295,7 +309,32 @@ export class DetailComponent implements OnInit {
         // It should be handled already
       });
   }
-  loaOrderList(): void {
+  loadCurrencyList(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering loadCurrencyList of FinanceDocumentDetail");
+    }
+
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let usrApi = environment.ApiUrl + "api/financecurrency";
+
+    this._http.get(usrApi, { headers: headers })
+      .map(this.extractCurrencyData)
+      .catch(this.handleError)
+      .subscribe(data => {
+        if (data instanceof Array) {
+          this._zone.run(() => {
+            this.arCurrency = data;
+          });
+        }
+      },
+      error => {
+        // It should be handled already
+      });
+  }
+  loadOrderList(): void {
     if (environment.DebugLogging) {
       console.log("Entering loaOrderList of FinanceDocumentDetail");
     }
@@ -313,6 +352,31 @@ export class DetailComponent implements OnInit {
         if (data instanceof Array) {
           this._zone.run(() => {
             this.arOrder = data;
+          });
+        }
+      },
+      error => {
+        // It should be handled already
+      });
+  }
+  loadAccountList(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering loaAccountList of FinanceDocumentDetail");
+    }
+
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let usrApi = environment.ApiUrl + "api/financeaccount";
+
+    this._http.get(usrApi, { headers: headers })
+      .map(this.extractAccountData)
+      .catch(this.handleError)
+      .subscribe(data => {
+        if (data instanceof Array) {
+          this._zone.run(() => {
+            this.arAccount = data;
           });
         }
       },
@@ -378,6 +442,25 @@ export class DetailComponent implements OnInit {
     return body || {};
   }
 
+  private extractCurrencyData(res: Response) {
+    if (environment.DebugLogging) {
+      console.log("Entering extractCurrencyData of FinanceDocumentDetail");
+    }
+
+    let body = res.json();
+    if (body && body.contentList && body.contentList instanceof Array) {
+      let sets = new Array<HIHFinance.Currency>();
+      for (let alm of body.contentList) {
+        let alm2 = new HIHFinance.Currency();
+        alm2.onSetData(alm);
+        sets.push(alm2);
+      }
+      return sets;
+    }
+
+    return body || {};
+  }
+
   private extractTranTypeData(res: Response) {
     if (environment.DebugLogging) {
       console.log("Entering extractTranTypeData of FinanceDocumentDetail");
@@ -407,6 +490,24 @@ export class DetailComponent implements OnInit {
       let sets = new Array<HIHFinance.Order>();
       for (let alm of body.contentList) {
         let alm2 = new HIHFinance.Order();
+        alm2.onSetData(alm);
+        sets.push(alm2);
+      }
+      return sets;
+    }
+
+    return body || {};
+  }
+  private extractAccountData(res: Response) {
+    if (environment.DebugLogging) {
+      console.log("Entering extractAccountData of FinanceDocumentDetail");
+    }
+
+    let body = res.json();
+    if (body && body.contentList && body.contentList instanceof Array) {
+      let sets = new Array<HIHFinance.Account>();
+      for (let alm of body.contentList) {
+        let alm2 = new HIHFinance.Account();
         alm2.onSetData(alm);
         sets.push(alm2);
       }
