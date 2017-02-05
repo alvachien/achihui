@@ -203,7 +203,6 @@ export class ListComponent implements OnInit {
         closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
       });
       return;
-    }
-    
+    }    
   }
 }

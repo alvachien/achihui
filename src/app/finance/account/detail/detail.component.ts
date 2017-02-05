@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, OnDestroy, AfterViewInit,
+  Component, OnInit, OnDestroy, AfterViewInit, NgZone,
   EventEmitter, Input, Output, ViewContainerRef
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -24,7 +24,7 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class DetailComponent implements OnInit {
 
-  private routerID: string; // Current ID in routing
+  private routerID: number; // Current ID in routing
   private _apiUrl: string;
   private arUsers: Array<HIHUser.UserDetail> = [];
   private arCategory: Array<HIHFinance.AccountCategory> = [];
@@ -35,6 +35,7 @@ export class DetailComponent implements OnInit {
   constructor(private _http: Http,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _zone: NgZone,
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
@@ -53,30 +54,55 @@ export class DetailComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceAccountDetail");
     }
 
-    this.loadUserList();
-    this.loadCategoryList();
+    Observable.forkJoin([this.loadUserList(), this.loadCategoryList()]).subscribe(t => {
+      this._zone.run(() => {
+        if (t[0] instanceof Array) {
+          this.arUsers = t[0];
+        }
+        if (t[1] instanceof Array) {
+          this.arCategory = t[1];
+        }
+      });
 
-    // Distinguish current mode
-    this._activateRoute.url.subscribe(x => {
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
-          this.currentMode = "Create";
-          this.accountObject = new HIHFinance.Account();
-          this.uiMode = HIHCommon.UIMode.Create;
-        } else if (x[0].path === "edit") {
-          this.currentMode = "Edit"
-          this.uiMode = HIHCommon.UIMode.Change;
-        } else if (x[0].path === "display") {
-          this.currentMode = "Display";
-          this.uiMode = HIHCommon.UIMode.Display;
+      // Distinguish current mode
+      this._activateRoute.url.subscribe(x => {
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === "create") {
+            this.currentMode = "Create";
+            this.accountObject = new HIHFinance.Account();
+            this.uiMode = HIHCommon.UIMode.Create;
+          } else if (x[0].path === "edit") {
+            this.routerID = +x[1].path;
+
+            this.currentMode = "Edit"
+            this.uiMode = HIHCommon.UIMode.Change;
+          } else if (x[0].path === "display") {
+            this.routerID = +x[1].path;
+
+            this.currentMode = "Display";
+            this.uiMode = HIHCommon.UIMode.Display;
+          }
         }
 
-        // Update the sub module
-        this._uistatus.setFinanceSubModule(this.currentMode);
-      }
-    }, error => {
-    }, () => {
+        if (this.uiMode === HIHCommon.UIMode.Display || this.uiMode === HIHCommon.UIMode.Change) {
+          // Load the account
+          this.readAccount();
+        }
+      }, error => {
+        this._dialogService.openAlert({
+          message: error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "Error", //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
+      }, () => {
+      });
+
     });
+    // this.loadUserList();
+    // this.loadCategoryList();
+
   }
 
   ////////////////////////////////////////////
@@ -92,8 +118,8 @@ export class DetailComponent implements OnInit {
       arCategory: this.arCategory
     };
     let checkFailed: boolean = false;
-    if (!this.accountObject.onVerify(context)) {      
-      for(let msg of this.accountObject.VerifiedMsgs) {
+    if (!this.accountObject.onVerify(context)) {
+      for (let msg of this.accountObject.VerifiedMsgs) {
         if (msg.MsgType === HIHCommon.MessageType.Error) {
           checkFailed = true;
           this._dialogService.openAlert({
@@ -128,7 +154,7 @@ export class DetailComponent implements OnInit {
         nNewObj.onSetData(x);
 
         // Navigate.
-        this._router.navigate(['/finance/account/display/' + nNewObj.Id.toString() ]);
+        this._router.navigate(['/finance/account/display/' + nNewObj.Id.toString()]);
       }, error => {
         this._dialogService.openAlert({
           message: 'Error in creating!',
@@ -144,7 +170,29 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for Utility methods
   ////////////////////////////////////////////
-  loadUserList(): void {
+  readAccount(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering readAccount of FinanceAccountDetail");
+    }
+
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    this._http.get(this._apiUrl + "/" + this.routerID.toString(), { headers: headers })
+      .map(this.extractAccountData)
+      .catch(this.handleError)
+      .subscribe(data => {
+        this._zone.run(() => {
+          this.accountObject = data;
+        });
+      },
+      error => {
+        // It should be handled already
+      });
+  }
+  loadUserList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadUserList of FinanceAccountDetail");
     }
@@ -155,20 +203,20 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/userdetail";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this.arUsers = data;
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this.arUsers = data;
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
 
-  loadCategoryList(): void {
+  loadCategoryList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadCategoryList of FinanceAccountDetail");
     }
@@ -179,17 +227,17 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let objApi = environment.ApiUrl + "api/financeaccountcategory";
 
-    this._http.get(objApi, { headers: headers })
+    return this._http.get(objApi, { headers: headers })
       .map(this.extractCategoryData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this.arCategory = data;
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this.arCategory = data;
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
 
   private extractUserData(res: Response) {
@@ -225,6 +273,20 @@ export class DetailComponent implements OnInit {
       }
 
       return sets;
+    }
+
+    return body || {};
+  }
+  private extractAccountData(res: Response) {
+    if (environment.DebugLogging) {
+      console.log("Entering extractAccountData of FinanceAccountDetail");
+    }
+
+    let body = res.json();
+    if (body) {
+      let data: HIHFinance.Account = new HIHFinance.Account();
+      data.onSetData(body);
+      return data;
     }
 
     return body || {};

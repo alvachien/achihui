@@ -386,8 +386,8 @@ export class Account extends hih.BaseModel {
         if (data && data.name && data.name.length > 0) {
             this.Name = data.name;
         }
-        if (data && data.ctgyId) {
-            this.CategoryId = +data.ctgyId;
+        if (data && data.ctgyID) {
+            this.CategoryId = +data.ctgyID;
         }
         if (data && data.ctgyName && data.ctgyName.length > 0) {
             this.CategoryName = data.ctgyName;
@@ -395,8 +395,8 @@ export class Account extends hih.BaseModel {
         if (data && data.comment && data.comment.length > 0) {
             this.Comment = data.comment;
         }
-        if (data && data.userId && data.userId.length > 0) {
-            this.OwnerId = data.ownerId;
+        if (data && data.owner && data.owner.length > 0) {
+            this.OwnerId = data.owner;
         }
         if (data && data.ownerDisplayAs && data.ownerDisplayAs.length > 0) {
             this.OwnerDisplayAs = data.ownerDisplayAs;
