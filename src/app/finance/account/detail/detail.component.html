@@ -30,6 +30,27 @@
         </md-input-container>
       </div>
     </form>
+
+    <md-divider></md-divider>
+    <md-card *ngIf="accountObject && accountObject.CategoryId && accountObject.CategoryId === ctgyAdvancePayment">
+      <md-card-title>Advance payment information</md-card-title>
+      <md-divider></md-divider>
+      <md-card-content>
+        <form #advpayForm="ngForm">
+          <div layout="row" layout-margin>
+            <md-input-container flex>
+              <input md-input type="date" placeholder="Start date" readonly [(ngModel)]="advpayObject.StartDate" name="advpaystartdt" #advpaystartdt="ngModel">
+            </md-input-container>
+          </div>
+          <div layout="row" layout-margin>
+            <md-input-container flex>
+              <input md-input type="date" placeholder="End date" readonly [(ngModel)]="advpayObject.EndDate" name="advpayenddt" #advpayenddt="ngModel">
+            </md-input-container>
+          </div>
+        </form>        
+      </md-card-content>
+    </md-card>
+      
   </md-card-content>
   <md-divider></md-divider>
   <md-card-actions>

@@ -30,7 +30,9 @@ export class DetailComponent implements OnInit {
   private arCategory: Array<HIHFinance.AccountCategory> = [];
   public currentMode: string;
   public accountObject: HIHFinance.Account = null;
+  public advpayObject: HIHFinance.AccountExtraAdvancePayment = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
+  public ctgyAdvancePayment: number = HIHCommon.FinanceAccountCategory_AdvancePayment;
 
   constructor(private _http: Http,
     private _router: Router,
@@ -41,6 +43,7 @@ export class DetailComponent implements OnInit {
     private _authService: AuthService,
     private _uistatus: UIStatusService) {
     this.accountObject = new HIHFinance.Account();
+    this.advpayObject = new HIHFinance.AccountExtraAdvancePayment();
     this.uiMode = HIHCommon.UIMode.Create;
 
     this._apiUrl = environment.ApiUrl + "api/financeaccount";
@@ -98,11 +101,7 @@ export class DetailComponent implements OnInit {
         });
       }, () => {
       });
-
     });
-    // this.loadUserList();
-    // this.loadCategoryList();
-
   }
 
   ////////////////////////////////////////////

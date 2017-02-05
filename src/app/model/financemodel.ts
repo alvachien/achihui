@@ -404,14 +404,60 @@ export class Account extends hih.BaseModel {
     }
 }
 
-export class AccountExtraDownpayment extends AccountExtra {
-    public Direct: string;
+export class AccountExtraAdvancePayment extends AccountExtra {
+    public Direct: boolean;
     public StartDate: Date;
     public EndDate: Date;
     public RepeatType: number;
     public RefDocId: number;
-    public Others: string;
+    public DeferredDays: string;
+    public Comment: string;
 
+    public writeJSONObject(): any {
+        if (environment.DebugLogging) {
+            console.log("Entering writeJSONObject of AccountExtraAdvancePayment");
+        }
+
+        let rstobj: any = { };
+        rstobj.direct = this.Direct;
+        rstobj.startDate = this.StartDate;
+        rstobj.endDate = this.EndDate;
+        rstobj.rptType = this.RepeatType;
+        rstobj.refDocID = this.RefDocId;
+        rstobj.defrrDays = this.DeferredDays;
+        rstobj.comment = this.Comment;
+
+        return rstobj;
+    }
+    public onSetData(data: any) {
+        if (environment.DebugLogging) {
+            console.log("Entering onSetData of AccountExtraAdvancePayment");
+        }
+
+        if (data && data.direct) {
+            this.Direct = data.direct;
+        } else {
+            this.Direct = false;
+        }
+        if (data && data.startDate) {
+            this.StartDate = new Date(data.startDate);
+        }
+        if (data && data.endDate) {
+            this.EndDate = new Date(data.endDate);
+        }
+        if (data && data.rptType) {
+            this.RepeatType = data.rptType;
+        }
+        if (data && data.refDocID) {
+            this.RefDocId = +data.refDocID;
+        }
+        if (data && data.defrrDays) {
+            this.DeferredDays = data.defrrDays;
+        }
+        if (data && data.comment) {
+            this.Comment = data.comment;
+        }
+    }
 }
 
 export class ControllingCenter extends hih.BaseModel {
