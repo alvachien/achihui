@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, OnDestroy, AfterViewInit,
+  Component, OnInit, OnDestroy, AfterViewInit, NgZone,
   EventEmitter, Input, Output, ViewContainerRef
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -27,6 +27,7 @@ export class DetailComponent implements OnInit {
   private routerID: string; // Current ID in routing
   private _apiUrl: string;
   private arUsers: Array<HIHUser.UserDetail> = [];
+  private arControlCenters: Array<HIHFinance.ControllingCenter> = [];
   public currentMode: string;
   public ccObject: HIHFinance.ControllingCenter = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
@@ -34,6 +35,7 @@ export class DetailComponent implements OnInit {
   constructor(private _http: Http,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _zone: NgZone,
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
@@ -52,28 +54,38 @@ export class DetailComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceControlCenterDetail");
     }
 
-    this.loadUserList();
-
-    // Distinguish current mode
-    this._activateRoute.url.subscribe(x => {
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
-          this.currentMode = "Create";
-          this.ccObject = new HIHFinance.ControllingCenter();
-          this.uiMode = HIHCommon.UIMode.Create;
-        } else if (x[0].path === "edit") {
-          this.currentMode = "Edit"
-          this.uiMode = HIHCommon.UIMode.Change;
-        } else if (x[0].path === "display") {
-          this.currentMode = "Display";
-          this.uiMode = HIHCommon.UIMode.Display;
+    //this.loadUserList();
+    Observable.forkJoin([this.loadUserList(), this.loadControlCenterList()]).subscribe(t => {
+      this._zone.run(() => {
+        if (t[0] instanceof Array) {
+          this.arUsers = t[0];
         }
+        if (t[1] instanceof Array) {
+          this.arControlCenters = t[1];
+        }
+      });
+      
+      // Distinguish current mode
+      this._activateRoute.url.subscribe(x => {
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === "create") {
+            this.currentMode = "Create";
+            this.ccObject = new HIHFinance.ControllingCenter();
+            this.uiMode = HIHCommon.UIMode.Create;
+          } else if (x[0].path === "edit") {
+            this.currentMode = "Edit"
+            this.uiMode = HIHCommon.UIMode.Change;
+          } else if (x[0].path === "display") {
+            this.currentMode = "Display";
+            this.uiMode = HIHCommon.UIMode.Display;
+          }
 
-        // Update the sub module
-        this._uistatus.setFinanceSubModule(this.currentMode);
-      }
-    }, error => {
-    }, () => {
+          // Update the sub module
+          this._uistatus.setFinanceSubModule(this.currentMode);
+        }
+      }, error => {
+      }, () => {
+      });
     });
   }
 
@@ -141,7 +153,7 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for Utility methods
   ////////////////////////////////////////////
-  loadUserList(): void {
+  loadUserList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadUserList of FinanceControlCenterDetail");
     }
@@ -152,17 +164,38 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/userdetail";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this.arUsers = data;
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
+  }
+  loadControlCenterList(): Observable<any> {
+    if (environment.DebugLogging) {
+      console.log("Entering loadControlCenterList of FinanceControlCenterDetail");
+    }
+
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    return this._http.get(this._apiUrl, { headers: headers })
+      .map(this.extractControlCenterData)
       .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this.arUsers = data;
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this.arUsers = data;
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
 
   private extractUserData(res: Response) {
@@ -175,6 +208,24 @@ export class DetailComponent implements OnInit {
       let sets = new Array<HIHUser.UserDetail>();
       for (let alm of body) {
         let alm2 = new HIHUser.UserDetail();
+        alm2.onSetData(alm);
+        sets.push(alm2);
+      }
+      return sets;
+    }
+
+    return body || {};
+  }
+  private extractControlCenterData(res: Response) {
+    if (environment.DebugLogging) {
+      console.log("Entering extractControlCenterData of FinanceControlCenterDetail");
+    }
+
+    let body = res.json();
+    if (body && body.contentList && body.contentList instanceof Array) {
+      let sets = new Array<HIHFinance.ControllingCenter>();
+      for (let alm of body.contentList) {
+        let alm2 = new HIHFinance.ControllingCenter();
         alm2.onSetData(alm);
         sets.push(alm2);
       }

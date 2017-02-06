@@ -144,4 +144,20 @@ export class ListComponent implements OnInit {
     }
     this.router.navigate(['/learn/object/create']);
   }
+
+  public onEditObject() {
+    if (environment.DebugLogging) {
+      console.log("Entering onEditObject of LearnObjectList");
+    }
+
+    this.router.navigate(['/learn/object/edit/' + this.selectedRows[0].Id.toString() ]);
+  }
+
+  public onDeleteObject() {
+    if (environment.DebugLogging) {
+      console.log("Entering onDeleteObject of LearnObjectList");
+    }
+
+    // Todo
+  }
 }

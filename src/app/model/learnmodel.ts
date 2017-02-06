@@ -371,8 +371,8 @@ export class LearnObject extends hih.BaseModel {
         if (data && data.id) {
             this.Id = data.id;
         }
-        if (data && data.category) {
-            this.CategoryId = data.category;
+        if (data && data.categoryID) {
+            this.CategoryId = +data.categoryID;
         }
         if (data && data.name) {
             this.Name = data.name;

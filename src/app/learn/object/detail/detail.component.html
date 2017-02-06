@@ -6,10 +6,9 @@
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
-    <md-input-container flex>
-      <input md-input placeholder="Category ID" [(ngModel)]="detailObject.CategoryId" required name="ctgyid" #ctgyid="ngModel" (change)="onCategoryValueChange($event)">
-      <md-hint align="end">{{detailObject.CategoryName}}</md-hint>
-    </md-input-container>
+    <md-select flex placeholder="Category" [(ngModel)]="detailObject.CategoryId" name="ctgyid" #ctgyid="ngModel">
+      <md-option *ngFor="let ctgy of arCategory" [value]="ctgy.Id">{{ ctgy.Name }}</md-option>
+    </md-select>
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>

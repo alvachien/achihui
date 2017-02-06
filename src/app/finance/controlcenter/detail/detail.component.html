@@ -14,11 +14,16 @@
           <input md-input placeholder="Name" required [(ngModel)]="ccObject.Name" name="name" #name="ngModel">
         </md-input-container>
       </div>
-     <div layout="row" layout-margin>
+      <div layout="row" layout-margin>
         <md-select flex placeholder="Owner" [(ngModel)]="ccObject.OwnerId" name="ownerid" #ownerid="ngModel">
           <md-option *ngFor="let user of arUsers" [value]="user.UserId">{{ user.DisplayAs }}</md-option>
         </md-select>
       </div>
+      <div layout="row" layout-margin>
+        <md-select flex placeholder="Parent" [(ngModel)]="ccObject.ParentId" name="ccid" #ccid="ngModel">
+          <md-option *ngFor="let cc of arControlCenters" [value]="cc.Id">{{ cc.Name  }}</md-option>
+        </md-select>
+      </div>      
       <div layout="row" layout-margin>
         <md-input-container flex>
           <textarea md-input placeholder="Comment" [(ngModel)]="ccObject.Comment" name="cmt" #cmt="ngModel"></textarea>

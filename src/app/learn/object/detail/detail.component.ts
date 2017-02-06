@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef
+  Input, Output, ViewContainerRef, NgZone
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Http, Headers, Response, RequestOptions, URLSearchParams }
@@ -33,6 +33,7 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _http: Http,
+    private _zone: NgZone,
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
@@ -52,43 +53,17 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of LearnObjectDetail");
     }
-
-    this.loadCategoryList();
-
-    // Distinguish current mode
-    this._activateRoute.url.subscribe(x => {
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
-          this.currentMode = "Create";
-          this.detailObject = new HIHLearn.LearnObject();
-          this.uiMode = HIHCommon.UIMode.Create;
-        } else if (x[0].path === "edit") {
-          this.currentMode = "Edit"
-          this.uiMode = HIHCommon.UIMode.Change;
-        } else if (x[0].path === "display") {
-          this.currentMode = "Display";
-          this.uiMode = HIHCommon.UIMode.Display;
-        }
-
-        // Update the sub module
-        this._uistatus.setLearnSubModule(this.currentMode + " Object");
-      }
-    }, error => {
-
-    }, () => {
-
+    tinymce.init({
+      selector: '#' + this.elementId,
+      plugins: ['link', 'paste', 'table'],
+      setup: editor => {
+        this.editor = editor;
+        editor.on('keyup', () => {
+          const content = editor.getContent();
+          this.onEditorKeyup.emit(content);
+        });
+      },
     });
-
-    // let aid: number = -1;
-    // this.activateRoute.params.forEach((next: { id: number }) => {
-    //     aid = next.id;
-    // });
-
-    // if (aid !== -1 && aid != this.routerID) {
-    //     this.routerID = aid;        
-    // } else if (aid === -1) {
-    //   // Create mode
-    // }
   }
 
   private editor: any = null;
@@ -97,17 +72,53 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.DebugLogging) {
       console.log("Entering ngAfterViewInit of LearnObjectDetail");
     }
-    tinymce.init({
-      selector: '#' + this.elementId,
-      plugins: ['link', 'paste', 'table'],
-      skin_url: 'assets/tinymceskins/lightgray',
-      setup: editor => {
-        this.editor = editor;
-        editor.on('keyup', () => {
-          const content = editor.getContent();
-          this.onEditorKeyup.emit(content);
+    
+    this.loadCategoryList().subscribe(x => {
+      // Distinguish current mode
+      this._activateRoute.url.subscribe(x => {
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === "create") {
+            this.currentMode = "Create";
+            this.detailObject = new HIHLearn.LearnObject();
+            this.uiMode = HIHCommon.UIMode.Create;
+          } else if (x[0].path === "edit") {
+            this.currentMode = "Edit"
+            this.uiMode = HIHCommon.UIMode.Change;
+
+            this.routerID = +x[1].path;
+          } else if (x[0].path === "display") {
+            this.currentMode = "Display";
+            this.uiMode = HIHCommon.UIMode.Display;
+
+            this.routerID = +x[1].path;
+          }
+
+          // Update the sub module
+          this._uistatus.setLearnSubModule(this.currentMode + " Object");
+
+          if (this.uiMode === HIHCommon.UIMode.Display || this.uiMode === HIHCommon.UIMode.Change) {
+            this.readObject();
+          }
+        }
+      }, error => {
+        this._dialogService.openAlert({
+          message: error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: 'Error', //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
         });
-      },
+      }, () => {
+      });
+    }, error => {
+      this._dialogService.openAlert({
+        message: error,
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: 'Error', //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+    }, () => {
     });
   }
 
@@ -236,7 +247,30 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
   ////////////////////////////////////////////
   // Utility Methods
   ////////////////////////////////////////////
-  private loadCategoryList(): void {
+  private readObject(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering readObject of LearnObjectDetail");
+    }
+
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let objApi = environment.ApiUrl + "api/learnobject/" + this.routerID.toString();
+
+    this._http.get(objApi, { headers: headers })
+      .map(this.extractObjectData)
+      .catch(this.handleError)
+      .subscribe(data => {
+        this._zone.run(() => {
+          this.detailObject = data;
+        });
+      },
+      error => {
+        // It should be handled already
+      });
+  }
+  private loadCategoryList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadCategoryList of LearnObjectDetail");
     }
@@ -247,17 +281,17 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let objApi = environment.ApiUrl + "api/learncategory";
 
-    this._http.get(objApi, { headers: headers })
+    return this._http.get(objApi, { headers: headers })
       .map(this.extractCategoryData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this.arCategory = data;
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this.arCategory = data;
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
 
   private extractCategoryData(res: Response) {
@@ -274,6 +308,20 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
         sets.push(alm2);
       }
       return sets;
+    }
+
+    return body || {};
+  }
+  private extractObjectData(res: Response) {
+    if (environment.DebugLogging) {
+      console.log("Entering extractObjectData of LearnObjectDetail");
+    }
+
+    let body = res.json();
+    if (body) {
+      let lo : HIHLearn.LearnObject = new HIHLearn.LearnObject();
+      lo.onSetData(body);
+      return lo;
     }
 
     return body || {};
