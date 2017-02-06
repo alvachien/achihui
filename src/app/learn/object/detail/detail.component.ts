@@ -74,6 +74,10 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     
     this.loadCategoryList().subscribe(x => {
+
+      // Data
+      this.arCategory = x;
+
       // Distinguish current mode
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {

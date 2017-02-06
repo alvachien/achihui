@@ -7,7 +7,7 @@
   </div>
   <div layout="row" layout-margin>
     <md-select flex placeholder="Category" [(ngModel)]="detailObject.CategoryId" name="ctgyid" #ctgyid="ngModel">
-      <md-option *ngFor="let ctgy of arCategory" [value]="ctgy.Id">{{ ctgy.Name }}</md-option>
+      <md-option *ngFor="let ctgy of arCategory" [value]="ctgy.Id">{{ ctgy.Name }} ({{ ctgy.Id }}) </md-option>
     </md-select>
   </div>
   <div layout="row" layout-margin>

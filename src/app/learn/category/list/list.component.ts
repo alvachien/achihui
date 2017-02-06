@@ -138,10 +138,23 @@ export class ListComponent implements OnInit {
     }
   }
   
-  public onCreateCategory() {
+  public onCreateCategory():void {
     if (environment.DebugLogging) {
       console.log("Entering onCreateCategory of LearnCategoryList");
     }
+
     this.router.navigate(['/learn/category/create']);
+  }
+  public onEditCategory():void {
+    if (environment.DebugLogging) {
+      console.log("Entering onEditCategory of LearnCategoryList");
+    }
+
+    this.router.navigate(['/learn/category/edit/' + this.selectedRows[0].Id.toString()]);
+  }
+  public onDeleteCategory():void {
+    if (environment.DebugLogging) {
+      console.log("Entering onDeleteCategory of LearnCategoryList");
+    }
   }
 }

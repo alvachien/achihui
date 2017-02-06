@@ -442,13 +442,24 @@ export class LearnHistory extends hih.BaseModel {
 
         super.onSetData(data);
 
-        this.UserId = data.userID;
-        this.ObjectId = data.objectID;
-        this.LearnDate = data.learnDate;
-        this.Comment = data.comment;
-
-        this.UserDisplayAs = data.userDisplayAs;
-        this.ObjectName = data.objectName;
+        if (data && data.userID) {
+            this.UserId = data.userID;
+        }
+        if (data && data.objectID) {
+            this.ObjectId = +data.objectID;
+        }
+        if (data && data.learnDate) {
+            this.LearnDate = new Date(data.learnDate);
+        }
+        if (data && data.comment && data.comment.length > 0) {
+            this.Comment = data.comment;
+        }        
+        if (data && data.userDisplayAs && data.userDisplayAs.length > 0) {
+            this.UserDisplayAs = data.userDisplayAs;
+        }
+        if (data && data.objectName && data.objectName.length > 0) {
+            this.ObjectName = data.objectName;
+        }
     }
 }
 

@@ -3,10 +3,10 @@
     <button md-mini-fab color="accent" (click)="onCreateCategory()">
       <md-icon>add</md-icon>
     </button>
-    <button md-mini-fab color="accent">
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length !== 1" (click)="onEditCategory()">
       <md-icon>create</md-icon>
     </button>
-    <button md-mini-fab color="accent">
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDeleteCategory()">
       <md-icon>clear</md-icon>
     </button>
   </span>
@@ -23,6 +23,7 @@
   [columns]="columns" 
   [sortable]="true"
   [selectable]="true"
+  [(ngModel)]="selectedRows"
   [sortBy]="sortBy" 
   [sortOrder]="sortOrder" 
   (sortChange)="sort($event)">

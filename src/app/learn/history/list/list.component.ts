@@ -1,4 +1,4 @@
-import { Component, OnInit }  from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Http, Headers, Response, RequestOptions, URLSearchParams }
   from '@angular/http';
@@ -18,10 +18,10 @@ import { UIStatusService } from '../../../services/uistatus.service';
 })
 export class ListComponent implements OnInit {
   private _apiUrl: string;
-  public listData: Array<HIHLearn.LearnHistory> ;
+  public listData: Array<HIHLearn.LearnHistory>;
   columns: ITdDataTableColumn[] = [
     { name: 'UserId', label: 'User', tooltip: 'User ID' },
-    { name: 'UserName', label: 'Display As', tooltip: 'Display As' },
+    { name: 'UserDisplayAs', label: 'Display As', tooltip: 'Display As' },
     { name: 'ObjectId', label: 'Object Id', tooltip: 'Object ID' },
     { name: 'ObjectName', label: 'Object Name', tooltip: 'Object Name' },
     { name: 'LearnDate', label: 'Date', tooltip: 'Learn Date' },
@@ -42,13 +42,14 @@ export class ListComponent implements OnInit {
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 
   constructor(private _http: Http,
-     private router: Router,
-     private activateRoute: ActivatedRoute,
-     private uistatus: UIStatusService,
-     private _dataTableService: TdDataTableService) {
+    private _router: Router,
+    private _activateRoute: ActivatedRoute,
+    private _uistatus: UIStatusService,
+    private _dataTableService: TdDataTableService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of LearnHistoryList");
     }
+
     this._apiUrl = environment.ApiUrl + "api/learnhistory";
   }
 
@@ -56,7 +57,7 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of LearnHistoryList");
     }
-    this.uistatus.setLearnSubModule("History List");
+    this._uistatus.setLearnSubModule("History List");
     this.loadHistoryList();
   }
 
@@ -75,7 +76,7 @@ export class ListComponent implements OnInit {
           this.filter();
           // this.filteredData = this.listData;
           // this.filteredTotal = this.listData.length;
-        }          
+        }
       },
       error => {
         // It should be handled already
@@ -124,7 +125,7 @@ export class ListComponent implements OnInit {
     this.searchTerm = searchTerm;
     this.filter();
   }
-  
+
   page(pagingEvent: IPageChangeEvent): void {
     this.fromRow = pagingEvent.fromRow;
     this.currentPage = pagingEvent.page;
@@ -142,11 +143,24 @@ export class ListComponent implements OnInit {
       this.filteredData = newData;
     }
   }
-  
-  public onCreateHistory() {
+
+  public onCreateHistory(): void {
     if (environment.DebugLogging) {
       console.log("Entering onCreateHistory of LearnHistoryList");
     }
-    this.router.navigate(['/learn/history/create']);
+
+    this._router.navigate(['/learn/history/create']);
+  }
+  public onEditHistory(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onEditHistory of LearnHistoryList");
+    }
+
+    this._router.navigate(['/learn/history/edit/']);
+  }
+  public onDeleteHistory(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onDeleteHistory of LearnHistoryList");
+    }
   }
 }

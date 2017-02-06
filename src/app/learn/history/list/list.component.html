@@ -3,10 +3,10 @@
     <button md-mini-fab color="primary" (click)="onCreateHistory()">
       <md-icon>add</md-icon>
     </button>
-    <button md-mini-fab color="accent">
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length !== 1" (click)="onEditHistory()">
       <md-icon>create</md-icon>
     </button>
-    <button md-mini-fab color="accent">
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDeleteHistory()">
       <md-icon>clear</md-icon>
     </button>
   </span>
@@ -23,7 +23,8 @@
   [columns]="columns" 
   [sortable]="true"
   [selectable]="true"
-  [sortBy]="sortBy" 
+  [(ngModel)]="selectedRows"
+  [sortBy]="sortBy"   
   [sortOrder]="sortOrder" 
   (sortChange)="sort($event)">
 </td-data-table>
