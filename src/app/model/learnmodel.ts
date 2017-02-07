@@ -405,6 +405,10 @@ export class LearnHistory extends hih.BaseModel {
         this.LearnDate = new Date();
     }
 
+    public generateKey() : string {
+        return this.UserId + "_" + this.ObjectId.toString() + "_" + this.LearnDate.toDateString(); 
+    }
+
     public onInit() {
         super.onInit();
         if (environment.DebugLogging) {
@@ -419,7 +423,73 @@ export class LearnHistory extends hih.BaseModel {
         if (!super.onVerify(context))
             return false;
 
-        return true;
+        let chkrst: boolean = true;
+        if (context.arObjects && context.arObjects.length > 0) {
+            let bObj: boolean = false;
+            for (let obj of context.arObjects) {
+                if (+obj.Id === +this.ObjectId) {
+                bObj = true;
+                }
+            }
+
+            if (!bObj) {
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgContent = "Select an object before continues";
+                msg.MsgTime = new Date();
+                msg.MsgTitle = "No object selected";
+                msg.MsgType = hih.MessageType.Error;
+                this.VerifiedMsgs.push(msg);
+                chkrst = false;
+            }
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgContent = "No object found in the system";
+            msg.MsgTime = new Date();
+            msg.MsgTitle = "No object found";
+            msg.MsgType = hih.MessageType.Error;
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+        }
+
+        if (context.arUsers && context.arUsers.length > 0) {
+            let bFound: boolean = false;
+            for (let usr of context.arUsers) {
+                if (usr.UserId === this.UserId) {
+                bFound = true;
+                }
+            }
+
+            if (!bFound) {
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgContent = "Select an user before continues!";
+                msg.MsgTime = new Date();
+                msg.MsgTitle = "No user selected";
+                msg.MsgType = hih.MessageType.Error;
+                this.VerifiedMsgs.push(msg);
+                chkrst = false;
+            }
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgContent = "No user found in the system.";
+            msg.MsgTime = new Date();
+            msg.MsgTitle = "No user found";
+            msg.MsgType = hih.MessageType.Error;
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+        }
+
+        if (this.LearnDate) {
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgContent = "Learn date is invalid.";
+            msg.MsgTime = new Date();
+            msg.MsgTitle = "Invalid learn date";
+            msg.MsgType = hih.MessageType.Error;
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+        }
+
+        return chkrst;
     }
 
     public writeJSONObject(): any {
