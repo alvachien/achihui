@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Http, Headers, Response, RequestOptions, URLSearchParams }
   from '@angular/http';
@@ -45,6 +45,7 @@ export class ListComponent implements OnInit {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uistatus: UIStatusService,
+    private _zone: NgZone,
     private _dataTableService: TdDataTableService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of LearnHistoryList");
@@ -156,7 +157,7 @@ export class ListComponent implements OnInit {
       console.log("Entering onEditHistory of LearnHistoryList");
     }
 
-    this._router.navigate(['/learn/history/edit/']);
+    this._router.navigate(['/learn/history/edit/' + this.selectedRows[0].generateKey()]);
   }
   public onDeleteHistory(): void {
     if (environment.DebugLogging) {

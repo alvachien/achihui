@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, 
+import { Component, OnInit, OnDestroy, AfterViewInit, NgZone,
    EventEmitter, Input, Output, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Http, Headers, Response, RequestOptions, 
@@ -33,6 +33,7 @@ export class DetailComponent implements OnInit {
   constructor(private _http: Http,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _zone: NgZone,
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
@@ -49,41 +50,45 @@ export class DetailComponent implements OnInit {
       console.log("Entering ngOnInit of LearnHistoryDetail");
     }
 
-    this.loadUserList();
-    this.loadObjectList();
+    Observable.forkJoin([this.loadUserList(), this.loadObjectList()]).subscribe(x => {
 
-    // Distinguish current mode
-    this._activateRoute.url.subscribe(x => {
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
-          this.currentMode = "Create";
-          this.historyObject = new HIHLearn.LearnHistory();
-          this.uiMode = HIHCommon.UIMode.Create;
-        } else if (x[0].path === "edit") {
-          this.currentMode = "Edit"
-          this.uiMode = HIHCommon.UIMode.Change;
-        } else if (x[0].path === "display") {
-          this.currentMode = "Display";
-          this.uiMode = HIHCommon.UIMode.Display;
+      this._zone.run(() => {
+        this.arUsers = x[0];
+        this.arObjects = x[1];
+      });
+
+      // Distinguish current mode
+      this._activateRoute.url.subscribe(x => {
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === "create") {
+            this.currentMode = "Create";
+            this.historyObject = new HIHLearn.LearnHistory();
+            this.uiMode = HIHCommon.UIMode.Create;
+          } else if (x[0].path === "edit") {
+            this.currentMode = "Edit"
+            this.uiMode = HIHCommon.UIMode.Change;
+
+            this.routerID = x[1].path;
+          } else if (x[0].path === "display") {
+            this.currentMode = "Display";
+            this.uiMode = HIHCommon.UIMode.Display;
+
+            this.routerID = x[1].path;
+          }
+
+          // Update the sub module
+          this._uistatus.setLearnSubModule(this.currentMode + " History");
+
+          this.readHistory();
         }
-
-        // Update the sub module
-        this._uistatus.setLearnSubModule(this.currentMode + " History");
-      }
+      }, error => {
+      }, () => {
+      });
     }, error => {
+
     }, () => {
+
     });
-
-    // let aid: number = -1;
-    // this.activateRoute.params.forEach((next: { id: number }) => {
-    //     aid = next.id;
-    // });
-
-    // if (aid !== -1 && aid != this.routerID) {
-    //     this.routerID = aid;        
-    // } else if (aid === -1) {
-    //   // Create mode
-    // }
   }
 
   ////////////////////////////////////////////
@@ -156,7 +161,7 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for Utility methods
   ////////////////////////////////////////////
-  loadUserList(): void {
+  loadUserList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadUserList of LearnHistoryList");
     }
@@ -167,20 +172,20 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/userdetail";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this.arUsers = data;
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this.arUsers = data;
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
 
-  loadObjectList(): void {
+  loadObjectList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadObjectList of LearnHistoryList");
     }
@@ -191,13 +196,37 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let objApi = environment.ApiUrl + "api/learnobject";
 
-    this._http.get(objApi, { headers: headers })
+    return this._http.get(objApi, { headers: headers })
       .map(this.extractObjectData)
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this.arObjects = data;
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
+  }
+
+  readHistory() : void {
+    if (environment.DebugLogging) {
+      console.log("Entering readHistory of LearnHistoryList");
+    }
+
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let objApi = environment.ApiUrl + "api/learnhistory/" + this.routerID;
+
+    this._http.get(objApi, { headers: headers })
+      .map(this.extractHistoryData)
       .catch(this.handleError)
       .subscribe(data => {
-        if (data instanceof Array) {
-          this.arObjects = data;
-        }
+        this._zone.run(() => {
+          this.historyObject = data;
+        });        
       },
       error => {
         // It should be handled already
@@ -238,6 +267,21 @@ export class DetailComponent implements OnInit {
       }
 
       return sets;
+    }
+
+    return body || {};
+  }
+
+  private extractHistoryData(res: Response) {
+    if (environment.DebugLogging) {
+      console.log("Entering extractHistoryData of LearnHistoryList");
+    }
+
+    let body = res.json();
+    if (body) {
+      let hist : HIHLearn.LearnHistory = new HIHLearn.LearnHistory();
+      hist.onSetData(body);
+      return hist;
     }
 
     return body || {};

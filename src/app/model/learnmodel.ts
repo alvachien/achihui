@@ -406,7 +406,7 @@ export class LearnHistory extends hih.BaseModel {
     }
 
     public generateKey() : string {
-        return this.UserId + "_" + this.ObjectId.toString() + "_" + this.LearnDate.toDateString(); 
+        return this.UserId + "_" + this.ObjectId.toString() + "_" + hih.Utility.Date2String(this.LearnDate); 
     }
 
     public onInit() {
@@ -507,7 +507,7 @@ export class LearnHistory extends hih.BaseModel {
 
     public onSetData(data: any) {
         if (environment.DebugLogging) {
-            console.log("Entering onSetData of Finance.Setting");
+            console.log("Entering onSetData of LearnHistory");
         }
 
         super.onSetData(data);
@@ -572,7 +572,7 @@ export class LearnAward extends hih.BaseModel {
 
     public onSetData(data: any) {
         if (environment.DebugLogging) {
-            console.log("Entering onSetData of Finance.Setting");
+            console.log("Entering onSetData of LearnAward");
         }
 
         super.onSetData(data);
