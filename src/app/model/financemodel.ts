@@ -887,6 +887,9 @@ export class Document extends hih.BaseModel {
 
     public Items: Array<DocumentItem> = [];
 
+    // UI fields
+    public DocTypeName: string;
+
     constructor() {
         super();
         if (environment.DebugLogging) {
@@ -982,6 +985,9 @@ export class Document extends hih.BaseModel {
         }
         if (data && data.docType) {
             this.DocType = +data.docType;
+        }
+        if (data && data.docTypeName) {
+            this.DocTypeName = data.docTypeName;
         }
         if (data && data.tranDate) {
             this.TranDate = new Date(data.tranDate);

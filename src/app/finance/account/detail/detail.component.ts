@@ -174,7 +174,7 @@ export class DetailComponent implements OnInit {
         }, () => {
         });
     } else {
-      this._http.put(this._apiUrl, dataJSON, { headers: headers })
+      this._http.put(this._apiUrl + '/' + this.accountObject.Id, dataJSON, { headers: headers })
         .map(response => response.json())
         .catch(this.handleError)
         .subscribe(x => {

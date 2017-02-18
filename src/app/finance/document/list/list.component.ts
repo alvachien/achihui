@@ -21,9 +21,9 @@ export class ListComponent implements OnInit {
   public listData: Array<HIHFinance.DocumentType> = [];
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID' },
-    { name: 'Name', label: 'Name', tooltip: 'Name' },
-    { name: 'AssetFlag', label: 'Asset Flag', tooltip: 'Asset Flag' },
-    { name: 'Comment', label: 'Comment' },
+    { name: 'DocTypeName', label: 'Doc Type', tooltip: 'Document Type' },
+    { name: 'TranDate', label: 'Tran Date', tooltip: 'Tran. Date' },
+    { name: 'Currecny', label: 'Currency' },
     { name: 'SysFlag', label: 'System Flag' },
   ];
   filteredData: any[];

@@ -27,7 +27,7 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class DetailComponent implements OnInit {
 
-  private routerID: string; // Current ID in routing
+  private routerID: number; // Current ID in routing
   private _apiUrl: string;
   private arUsers: Array<HIHUser.UserDetail> = [];
   private arDocType: Array<HIHFinance.DocumentType> = [];
@@ -73,34 +73,57 @@ export class DetailComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceDocumentDetail");
     }
 
-    this.loadCurrencyList();
-    this.loadDocTypeList();
-    this.loadControlCenterList();
-    this.loadTranTypeList();
-    this.loadAccountList();
-    this.loadOrderList();
+    Observable.forkJoin([
+      this.loadCurrencyList(),
+      this.loadDocTypeList(),
+      this.loadControlCenterList(),
+      this.loadTranTypeList(),
+      this.loadAccountList(),
+      this.loadOrderList()
+    ]).subscribe(data => {
+      this.arCurrency = data[0];
+      this.arDocType = data[1];
+      this.arControlCenter = data[2];
+      this.arTranType = data[3];
+      this.arAccount = data[4];
+      this.arOrder = data[5];
 
-    // Distinguish current mode
-    this._activateRoute.url.subscribe(x => {
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
-          this.currentMode = "Create";
-          this.docObject = new HIHFinance.Document();
-          this.uiMode = HIHCommon.UIMode.Create;
-        } else if (x[0].path === "edit") {
-          this.currentMode = "Edit"
-          this.uiMode = HIHCommon.UIMode.Change;
-        } else if (x[0].path === "display") {
-          this.currentMode = "Display";
-          this.uiMode = HIHCommon.UIMode.Display;
+      // Distinguish current mode
+      this._activateRoute.url.subscribe(x => {
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === "create") {
+            this.currentMode = "Create";
+            this.docObject = new HIHFinance.Document();
+            this.uiMode = HIHCommon.UIMode.Create;
+          } else if (x[0].path === "edit") {
+            this.routerID = +x[1].path;
+
+            this.currentMode = "Edit"
+            this.uiMode = HIHCommon.UIMode.Change;
+          } else if (x[0].path === "display") {
+            this.routerID = +x[1].path;
+
+            this.currentMode = "Display";
+            this.uiMode = HIHCommon.UIMode.Display;
+          }
+
+          // Update the sub module
+          this._uistatus.setFinanceSubModule(this.currentMode);
+
+          if (this.uiMode === HIHCommon.UIMode.Display 
+            || this.uiMode === HIHCommon.UIMode.Change) {
+              this.readDocument();
+          }
         }
-
-        // Update the sub module
-        this._uistatus.setFinanceSubModule(this.currentMode);
-      }
+      }, error => {
+      }, () => {
+      });
     }, error => {
+
     }, () => {
+
     });
+
   }
 
   ////////////////////////////////////////////
@@ -145,6 +168,13 @@ export class DetailComponent implements OnInit {
   }
 
   public onSubmit(): void {
+    if (this.uiMode === HIHCommon.UIMode.Create
+    || this.uiMode === HIHCommon.UIMode.Change ) {      
+    } else {
+      // Todo: show error message here?
+      return;
+    }
+
     if (environment.DebugLogging) {
       console.log("Entering onSubmit of FinanceDocumentDetail");
     }
@@ -184,6 +214,11 @@ export class DetailComponent implements OnInit {
     }
 
     let dataJSON = this.docObject.writeJSONString();
+    if (this.uiMode === HIHCommon.UIMode.Create) {
+
+    } else if (this.uiMode === HIHCommon.UIMode.Change) {
+
+    }
     this._http.post(this._apiUrl, dataJSON, { headers: headers })
       .map(response => response.json())
       .catch(this.handleError)
@@ -209,7 +244,27 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for Utility methods
   ////////////////////////////////////////////
-  loadUserList(): void {
+  readDocument() : void {
+    if (environment.DebugLogging) {
+      console.log("Entering readDocument of FinanceDocumentDetail");
+    }
+    
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    this._http.get(this._apiUrl + '/' + this.routerID, { headers: headers })
+      .catch(this.handleError).subscribe(x => {
+        // Document read successfully
+
+      }, error => {
+
+      }, () => {
+
+      });
+  }
+  loadUserList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadUserList of FinanceDocumentDetail");
     }
@@ -220,21 +275,21 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/userdetail";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this._zone.run(() => {
-            this.arUsers = data;
-          });          
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this._zone.run(() => {
+      //       this.arUsers = data;
+      //     });          
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
-  loadControlCenterList(): void {
+  loadControlCenterList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadControlCenterList of FinanceDocumentDetail");
     }
@@ -245,21 +300,21 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/financecontrollingcenter";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractControlCenterData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this._zone.run(() => {
-            this.arControlCenter = data;
-          });
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this._zone.run(() => {
+      //       this.arControlCenter = data;
+      //     });
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
-  loadDocTypeList(): void {
+  loadDocTypeList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadDocTypeList of FinanceDocumentDetail");
     }
@@ -270,21 +325,21 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/financedoctype";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractDocTypeData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this._zone.run(() => {
-            this.arDocType = data;
-          });
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this._zone.run(() => {
+      //       this.arDocType = data;
+      //     });
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
-  loadTranTypeList(): void {
+  loadTranTypeList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadTranTypeList of FinanceDocumentDetail");
     }
@@ -295,21 +350,21 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/financetrantype";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractTranTypeData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this._zone.run(() => {
-            this.arTranType = data;
-          });
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this._zone.run(() => {
+      //       this.arTranType = data;
+      //     });
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
-  loadCurrencyList(): void {
+  loadCurrencyList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadCurrencyList of FinanceDocumentDetail");
     }
@@ -320,21 +375,21 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/financecurrency";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractCurrencyData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this._zone.run(() => {
-            this.arCurrency = data;
-          });
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this._zone.run(() => {
+      //       this.arCurrency = data;
+      //     });
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
-  loadOrderList(): void {
+  loadOrderList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loaOrderList of FinanceDocumentDetail");
     }
@@ -345,21 +400,21 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/financeorder";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractOrderData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this._zone.run(() => {
-            this.arOrder = data;
-          });
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this._zone.run(() => {
+      //       this.arOrder = data;
+      //     });
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
-  loadAccountList(): void {
+  loadAccountList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loaAccountList of FinanceDocumentDetail");
     }
@@ -370,19 +425,19 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/financeaccount";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractAccountData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this._zone.run(() => {
-            this.arAccount = data;
-          });
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this._zone.run(() => {
+      //       this.arAccount = data;
+      //     });
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
 
   private extractUserData(res: Response) {
