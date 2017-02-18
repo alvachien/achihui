@@ -108,6 +108,13 @@ export class DetailComponent implements OnInit {
   // Methods for UI controls
   ////////////////////////////////////////////
   public onSubmit(): void {
+    if (this.uiMode === HIHCommon.UIMode.Create
+      || this.uiMode === HIHCommon.UIMode.Change) {
+    } else {
+        // For other mode, shall not call to submit!
+        return;
+    } 
+
     if (environment.DebugLogging) {
       console.log("Entering onSubmit of FinanceAccountDetail");
     }
@@ -144,26 +151,50 @@ export class DetailComponent implements OnInit {
     }
 
     let dataJSON = this.accountObject.writeJSONString();
-    this._http.post(this._apiUrl, dataJSON, { headers: headers })
-      .map(response => response.json())
-      .catch(this.handleError)
-      .subscribe(x => {
-        // It returns a new object with ID filled.
-        let nNewObj = new HIHFinance.Account();
-        nNewObj.onSetData(x);
+    if (this.uiMode === HIHCommon.UIMode.Create) {
+      // Create an account
+      this._http.post(this._apiUrl, dataJSON, { headers: headers })
+        .map(response => response.json())
+        .catch(this.handleError)
+        .subscribe(x => {
+          // It returns a new object with ID filled.
+          let nNewObj = new HIHFinance.Account();
+          nNewObj.onSetData(x);
 
-        // Navigate.
-        this._router.navigate(['/finance/account/display/' + nNewObj.Id.toString()]);
-      }, error => {
-        this._dialogService.openAlert({
-          message: 'Error in creating!',
-          disableClose: false, // defaults to false
-          viewContainerRef: this._viewContainerRef, //OPTIONAL
-          title: 'Create failed', //OPTIONAL, hides if not provided
-          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          // Navigate.
+          this._router.navigate(['/finance/account/display/' + nNewObj.Id.toString()]);
+        }, error => {
+          this._dialogService.openAlert({
+            message: 'Error in creating!',
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: 'Create failed', //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }, () => {
         });
-      }, () => {
-      });
+    } else {
+      this._http.put(this._apiUrl, dataJSON, { headers: headers })
+        .map(response => response.json())
+        .catch(this.handleError)
+        .subscribe(x => {
+          // It returns a new object with ID filled.
+          let nNewObj = new HIHFinance.Account();
+          nNewObj.onSetData(x);
+
+          // Navigate.
+          this._router.navigate(['/finance/account/display/' + nNewObj.Id.toString()]);
+        }, error => {
+          this._dialogService.openAlert({
+            message: 'Error in creating!',
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: 'Create failed', //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }, () => {
+        });
+    }
   }
 
   ////////////////////////////////////////////
@@ -191,6 +222,7 @@ export class DetailComponent implements OnInit {
         // It should be handled already
       });
   }
+
   loadUserList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadUserList of FinanceAccountDetail");

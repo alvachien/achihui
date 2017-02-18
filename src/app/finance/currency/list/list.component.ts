@@ -31,7 +31,7 @@ export class ListComponent implements OnInit {
   searchTerm: string = '';
   fromRow: number = 1;
   currentPage: number = 1;
-  pageSize: number = 5;
+  pageSize: number = 10;
   sortBy: string = 'Currency';
   selectable: boolean = true;
   selectedRows: any[] = [];

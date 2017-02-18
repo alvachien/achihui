@@ -130,7 +130,13 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.DebugLogging) {
       console.log("Entering ngOnDestroy of LearnObjectDetail");
     }
-    tinymce.remove(this.editor);
+
+    try {
+      tinymce.remove(this.editor);
+    }
+    catch (e) {
+      console.log(e);
+    }
   }
 
   ////////////////////////////////////////////

@@ -67,29 +67,38 @@ export class DetailComponent implements OnInit {
     }
 
     //this.loadUserList();
-    this.loadControlCenterList();
+    Observable.forkJoin([this.loadControlCenterList(), this.loadUserList()])
+      .subscribe(x => {
+        this.arControlCenter = x[0];
+        this.arUsers = x[1];
 
-    // Distinguish current mode
-    this._activateRoute.url.subscribe(x => {
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === "create") {
-          this.currentMode = "Create";
-          this.orderObject = new HIHFinance.Order();
-          this.uiMode = HIHCommon.UIMode.Create;
-        } else if (x[0].path === "edit") {
-          this.currentMode = "Edit"
-          this.uiMode = HIHCommon.UIMode.Change;
-        } else if (x[0].path === "display") {
-          this.currentMode = "Display";
-          this.uiMode = HIHCommon.UIMode.Display;
-        }
+        // Distinguish current mode
+        this._activateRoute.url.subscribe(x => {
+          if (x instanceof Array && x.length > 0) {
+            if (x[0].path === "create") {
+              this.currentMode = "Create";
+              this.orderObject = new HIHFinance.Order();
+              this.uiMode = HIHCommon.UIMode.Create;
+            } else if (x[0].path === "edit") {
+              this.currentMode = "Edit"
+              this.uiMode = HIHCommon.UIMode.Change;
+            } else if (x[0].path === "display") {
+              this.currentMode = "Display";
+              this.uiMode = HIHCommon.UIMode.Display;
+            }
 
-        // Update the sub module
-        this._uistatus.setFinanceSubModule(this.currentMode);
-      }
+            // Update the sub module
+            this._uistatus.setFinanceSubModule(this.currentMode);
+          }
+        }, error => {
+        }, () => {
+        });
     }, error => {
+
     }, () => {
+
     });
+
   }
 
   ////////////////////////////////////////////
@@ -197,7 +206,7 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for Utility methods
   ////////////////////////////////////////////
-  loadUserList(): void {
+  loadUserList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadUserList of FinanceOrderDetail");
     }
@@ -208,21 +217,22 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/userdetail";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this._zone.run(() => {
-            this.arUsers = data;
-          });          
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this._zone.run(() => {
+      //       this.arUsers = data;
+      //     });          
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
-  loadControlCenterList(): void {
+  
+  loadControlCenterList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadControlCenterList of FinanceOrderDetail");
     }
@@ -233,19 +243,19 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let usrApi = environment.ApiUrl + "api/financecontrollingcenter";
 
-    this._http.get(usrApi, { headers: headers })
+    return this._http.get(usrApi, { headers: headers })
       .map(this.extractControlCenterData)
-      .catch(this.handleError)
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this._zone.run(() => {
-            this.arControlCenter = data;
-          });
-        }
-      },
-      error => {
-        // It should be handled already
-      });
+      .catch(this.handleError);
+      // .subscribe(data => {
+      //   if (data instanceof Array) {
+      //     this._zone.run(() => {
+      //       this.arControlCenter = data;
+      //     });
+      //   }
+      // },
+      // error => {
+      //   // It should be handled already
+      // });
   }
 
   private extractUserData(res: Response) {
