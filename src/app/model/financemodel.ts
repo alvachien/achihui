@@ -893,9 +893,12 @@ export class Document extends hih.BaseModel {
 
     constructor() {
         super();
+
         if (environment.DebugLogging) {
             console.log("Entering constructor of Document");
         }
+
+        this.TranDate = new Date();
     }
 
     public onInit() {

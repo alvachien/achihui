@@ -181,7 +181,6 @@ export class ListComponent implements OnInit {
   public onDeleteDocument() {
     if (environment.DebugLogging) {
       console.log("Entering onDeleteDocument of FinanceDocumentList");
-    }
-    
+    }    
   }
 }

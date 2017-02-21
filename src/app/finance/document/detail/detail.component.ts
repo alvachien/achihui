@@ -110,29 +110,29 @@ export class DetailComponent implements OnInit {
           // Update the sub module
           this._uistatus.setFinanceSubModule(this.currentMode);
 
-          if (this.uiMode === HIHCommon.UIMode.Display 
+          if (this.uiMode === HIHCommon.UIMode.Display
             || this.uiMode === HIHCommon.UIMode.Change) {
-              this.readDocument();
+            this.readDocument();
           }
         }
       }, error => {
-          this._dialogService.openAlert({
-            message: error,
-            disableClose: false, // defaults to false
-            viewContainerRef: this._viewContainerRef, //OPTIONAL
-            title: "Route failed", //OPTIONAL, hides if not provided
-            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
-          });
+        this._dialogService.openAlert({
+          message: error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "Route failed", //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
       }, () => {
       });
     }, error => {
-          this._dialogService.openAlert({
-            message: error,
-            disableClose: false, // defaults to false
-            viewContainerRef: this._viewContainerRef, //OPTIONAL
-            title: "Required info missing", //OPTIONAL, hides if not provided
-            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
-          });
+      this._dialogService.openAlert({
+        message: error,
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "Required info missing", //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
     }, () => {
     });
   }
@@ -180,15 +180,15 @@ export class DetailComponent implements OnInit {
 
   public onSubmit(): void {
     if (this.uiMode === HIHCommon.UIMode.Create
-    || this.uiMode === HIHCommon.UIMode.Change ) {      
+      || this.uiMode === HIHCommon.UIMode.Change) {
     } else {
-        this._dialogService.openAlert({
-          message: "UI mode need require saving",
-          disableClose: false, // defaults to false
-          viewContainerRef: this._viewContainerRef, //OPTIONAL
-          title: "UI mode error", //OPTIONAL, hides if not provided
-          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
-        });
+      this._dialogService.openAlert({
+        message: "UI mode need require saving",
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "UI mode error", //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
       // Todo: show error message here?
       return;
     }
@@ -200,7 +200,7 @@ export class DetailComponent implements OnInit {
     this.docObject.TranDate = new Date(this.docObject.TranDate);
 
     // Do the checks before submitting
-    let context:any = {
+    let context: any = {
       arDocType: this.arDocType
     };
 
@@ -233,40 +233,60 @@ export class DetailComponent implements OnInit {
 
     let dataJSON = this.docObject.writeJSONString();
     if (this.uiMode === HIHCommon.UIMode.Create) {
+      // Create mode
+      this._http.post(this._apiUrl, dataJSON, { headers: headers })
+        .map(response => response.json())
+        .catch(this.handleError)
+        .subscribe(x => {
+          // It returns a new object with ID filled.
+          let nNewObj = new HIHFinance.Document();
+          nNewObj.onSetData(x);
 
-    } else if (this.uiMode === HIHCommon.UIMode.Change) {
-
-    }
-    this._http.post(this._apiUrl, dataJSON, { headers: headers })
-      .map(response => response.json())
-      .catch(this.handleError)
-      .subscribe(x => {
-        // It returns a new object with ID filled.
-        let nNewObj = new HIHFinance.Document();
-        nNewObj.onSetData(x);
-
-        // Navigate.
-        this._router.navigate(['/finance/document/display/' + nNewObj.Id.toString()]);
-      }, error => {
-        this._dialogService.openAlert({
-          message: 'Error in creating!',
-          disableClose: false, // defaults to false
-          viewContainerRef: this._viewContainerRef, //OPTIONAL
-          title: 'Create failed', //OPTIONAL, hides if not provided
-          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          // Navigate.
+          this._router.navigate(['/finance/document/display/' + nNewObj.Id.toString()]);
+        }, error => {
+          this._dialogService.openAlert({
+            message: 'Error in creating!',
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: 'Create failed', //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }, () => {
         });
-      }, () => {
-      });
+    } else if (this.uiMode === HIHCommon.UIMode.Change) {
+      // Change mode
+      this._http.put(this._apiUrl, dataJSON, { headers: headers })
+        .map(response => response.json())
+        .catch(this.handleError)
+        .subscribe(x => {
+          // It returns a new object with ID filled.
+          let nNewObj = new HIHFinance.Document();
+          nNewObj.onSetData(x);
+
+          // Navigate.
+          this._router.navigate(['/finance/document/display/' + nNewObj.Id.toString()]);
+        }, error => {
+          this._dialogService.openAlert({
+            message: 'Error in creating!',
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: 'Create failed', //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }, () => {
+        });
+    }
   }
 
   ////////////////////////////////////////////
   // Methods for Utility methods
   ////////////////////////////////////////////
-  readDocument() : void {
+  readDocument(): void {
     if (environment.DebugLogging) {
       console.log("Entering readDocument of FinanceDocumentDetail");
     }
-    
+
     let headers = new Headers();
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
@@ -277,7 +297,7 @@ export class DetailComponent implements OnInit {
       .catch(this.handleError).subscribe(x => {
         // Document read successfully
         this._zone.run(() => {
-          this.docObject = x;          
+          this.docObject = x;
         });
       }, error => {
         this._dialogService.openAlert({
@@ -288,7 +308,6 @@ export class DetailComponent implements OnInit {
           closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
         });
       }, () => {
-
       });
   }
   loadUserList(): Observable<any> {
@@ -305,16 +324,16 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this._zone.run(() => {
-      //       this.arUsers = data;
-      //     });          
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this._zone.run(() => {
+    //       this.arUsers = data;
+    //     });          
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
   loadControlCenterList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -330,16 +349,16 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractControlCenterData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this._zone.run(() => {
-      //       this.arControlCenter = data;
-      //     });
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this._zone.run(() => {
+    //       this.arControlCenter = data;
+    //     });
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
   loadDocTypeList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -355,16 +374,16 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractDocTypeData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this._zone.run(() => {
-      //       this.arDocType = data;
-      //     });
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this._zone.run(() => {
+    //       this.arDocType = data;
+    //     });
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
   loadTranTypeList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -380,16 +399,16 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractTranTypeData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this._zone.run(() => {
-      //       this.arTranType = data;
-      //     });
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this._zone.run(() => {
+    //       this.arTranType = data;
+    //     });
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
   loadCurrencyList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -405,16 +424,16 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractCurrencyData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this._zone.run(() => {
-      //       this.arCurrency = data;
-      //     });
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this._zone.run(() => {
+    //       this.arCurrency = data;
+    //     });
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
   loadOrderList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -430,16 +449,16 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractOrderData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this._zone.run(() => {
-      //       this.arOrder = data;
-      //     });
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this._zone.run(() => {
+    //       this.arOrder = data;
+    //     });
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
   loadAccountList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -455,16 +474,16 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractAccountData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this._zone.run(() => {
-      //       this.arAccount = data;
-      //     });
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this._zone.run(() => {
+    //       this.arAccount = data;
+    //     });
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
 
   private extractDocumentData(res: Response) {
