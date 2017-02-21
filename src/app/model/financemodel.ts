@@ -889,6 +889,7 @@ export class Document extends hih.BaseModel {
 
     // UI fields
     public DocTypeName: string;
+    public TranAmount: number;
 
     constructor() {
         super();
@@ -997,6 +998,9 @@ export class Document extends hih.BaseModel {
         }
         if (data && data.desp) {
             this.Desp = data.desp;
+        }
+        if (data && data.tranAmount) {
+            this.TranAmount = data.tranAmount;
         }
 
         this.Items = [];
@@ -1247,11 +1251,11 @@ export class DocumentItem {
             console.log("Entering onSetData of DocumentItem");
         }
 
-        if (data && data.itemId) {
-            this.ItemId = +data.itemId;
+        if (data && data.itemID) {
+            this.ItemId = +data.itemID;
         }
-        if (data && data.accountId) {
-            this.AccountId = +data.accountId;
+        if (data && data.accountID) {
+            this.AccountId = +data.accountID;
         }
         if (data && data.tranType) {
             this.TranType = +data.tranType;
@@ -1259,11 +1263,14 @@ export class DocumentItem {
         if (data && data.tranAmount) {
             this.TranAmount = +data.tranAmount;
         }
-        if (data && data.controlCenterId) {
-            this.ControlCenterId = +data.controlCenterId;
+        if (data && data.controlCenterID) {
+            this.ControlCenterId = +data.controlCenterID;
         }
-        if (data && data.orderId) {
-            this.OrderId = +data.OrderId;
+        if (data && data.orderID) {
+            this.OrderId = +data.OrderID;
+        }
+        if (data && data.desp) {
+            this.Desp = data.desp;
         }
     }
 }

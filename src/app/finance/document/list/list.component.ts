@@ -10,6 +10,7 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { TdDialogService } from '@covalent/core';
 
 @Component({
   selector: 'finance-document-list',
@@ -23,8 +24,8 @@ export class ListComponent implements OnInit {
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'DocTypeName', label: 'Doc Type', tooltip: 'Document Type' },
     { name: 'TranDate', label: 'Tran Date', tooltip: 'Tran. Date' },
-    { name: 'Currecny', label: 'Currency' },
-    { name: 'SysFlag', label: 'System Flag' },
+    { name: 'TranAmount', label: 'Amount' },
+    { name: 'TranCurr', label: 'Currency' }
   ];
   filteredData: any[];
   filteredTotal: number;
@@ -44,6 +45,7 @@ export class ListComponent implements OnInit {
      private _router: Router,
      private _activateRoute: ActivatedRoute,
      private _zone: NgZone,
+     private _dialogService: TdDialogService,
      private _viewContainerRef: ViewContainerRef,
      private _uistatus: UIStatusService,
      private _dataTableService: TdDataTableService) {
@@ -96,9 +98,9 @@ export class ListComponent implements OnInit {
 
     let body = res.json();
     if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.DocumentType>();
+      let sets = new Array<HIHFinance.Document>();
       for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.DocumentType();
+        let alm2 = new HIHFinance.Document();
         alm2.onSetData(alm);
         sets.push(alm2);
       }
@@ -155,5 +157,31 @@ export class ListComponent implements OnInit {
       console.log("Entering onCreateDocument of FinanceDocumentList");
     }
     this._router.navigate(['/finance/document/create']);
+  }
+
+  public onEditDocument() {
+    if (environment.DebugLogging) {
+      console.log("Entering onCreateDocument of FinanceDocumentList");
+    }
+
+    if (this.selectedRows.length != 1) {
+      this._dialogService.openAlert({
+        message: "Select one and only one row to continue!",
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "Selection error", //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+      return;
+    }
+
+    this._router.navigate(['/finance/document/edit/' + this.selectedRows[0].Id.toString()]);
+  }
+
+  public onDeleteDocument() {
+    if (environment.DebugLogging) {
+      console.log("Entering onDeleteDocument of FinanceDocumentList");
+    }
+    
   }
 }

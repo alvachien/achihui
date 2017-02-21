@@ -8,10 +8,10 @@
     <button md-mini-fab color="primary" (click)="onCreateDocument()">
       <md-icon>add</md-icon>
     </button>
-    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0">
+    <button md-mini-fab color="accent" (click)="onEditDocument()" [disabled]="selectedRows.length <= 0">
       <md-icon>create</md-icon>
     </button>
-    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0">
+    <button md-mini-fab color="accent" (click)="onDeleteDocument()" [disabled]="selectedRows.length <= 0">
       <md-icon>clear</md-icon>
     </button>
   </span>

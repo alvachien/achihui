@@ -116,14 +116,25 @@ export class DetailComponent implements OnInit {
           }
         }
       }, error => {
+          this._dialogService.openAlert({
+            message: error,
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: "Route failed", //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
       }, () => {
       });
     }, error => {
-
+          this._dialogService.openAlert({
+            message: error,
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: "Required info missing", //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
     }, () => {
-
     });
-
   }
 
   ////////////////////////////////////////////
@@ -171,6 +182,13 @@ export class DetailComponent implements OnInit {
     if (this.uiMode === HIHCommon.UIMode.Create
     || this.uiMode === HIHCommon.UIMode.Change ) {      
     } else {
+        this._dialogService.openAlert({
+          message: "UI mode need require saving",
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "UI mode error", //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
       // Todo: show error message here?
       return;
     }
@@ -255,11 +273,20 @@ export class DetailComponent implements OnInit {
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     this._http.get(this._apiUrl + '/' + this.routerID, { headers: headers })
+      .map(this.extractDocumentData)
       .catch(this.handleError).subscribe(x => {
         // Document read successfully
-
+        this._zone.run(() => {
+          this.docObject = x;          
+        });
       }, error => {
-
+        this._dialogService.openAlert({
+          message: error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: 'Failed in document read', //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
       }, () => {
 
       });
@@ -440,6 +467,20 @@ export class DetailComponent implements OnInit {
       // });
   }
 
+  private extractDocumentData(res: Response) {
+    if (environment.DebugLogging) {
+      console.log("Entering extractDocumentData of FinanceDocumentDetail");
+    }
+
+    let body = res.json();
+    if (body) {
+      let data: HIHFinance.Document = new HIHFinance.Document();
+      data.onSetData(body);
+      return data;
+    }
+
+    return body || {};
+  }
   private extractUserData(res: Response) {
     if (environment.DebugLogging) {
       console.log("Entering extractUserData of FinanceDocumentDetail");
