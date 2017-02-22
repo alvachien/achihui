@@ -152,11 +152,18 @@ export class ListComponent implements OnInit {
     }
   }
   
-  public onCreateDocument() {
+  public onCreateNormalDocument() : void {
     if (environment.DebugLogging) {
-      console.log("Entering onCreateDocument of FinanceDocumentList");
+      console.log("Entering onCreateNormalDocument of FinanceDocumentList");
     }
     this._router.navigate(['/finance/document/create']);
+  }
+
+  public onCreateTransferDocument() : void {
+    if (environment.DebugLogging) {
+      console.log("Entering onCreateTransferDocument of FinanceDocumentList");
+    }
+    this._router.navigate(['/finance/document/createtransfer']);
   }
 
   public onEditDocument() {
@@ -175,6 +182,7 @@ export class ListComponent implements OnInit {
       return;
     }
 
+    
     this._router.navigate(['/finance/document/edit/' + this.selectedRows[0].Id.toString()]);
   }
 
