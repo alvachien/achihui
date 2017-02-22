@@ -195,7 +195,7 @@ export class ListComponent implements OnInit {
     this._router.navigate(['/finance/controlcenter/edit/' + this.selectedRows[0].Id.toString()]);
   }
 
-  public onDeleteAccount() : void {
+  public onDeleteControlCenter() : void {
     if (this.selectedRows.length <= 0) {
       this._dialogService.openAlert({
         message: "Select one and only one row to continue!",

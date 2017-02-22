@@ -28,8 +28,8 @@ export class ListComponent implements OnInit {
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'Name', label: 'Name', tooltip: 'Name' },
-    { name: 'ValidFrom', label: 'From', tooltip: 'Valid from' },
-    { name: 'ValidTo', label: 'To', tooltip: 'Valid to' },
+    { name: 'ValidFromString', label: 'From', tooltip: 'Valid from' },
+    { name: 'ValidToString', label: 'To', tooltip: 'Valid to' },
     { name: 'Comment', label: 'Comment' }
   ];
   filteredData: any[];
@@ -78,7 +78,7 @@ export class ListComponent implements OnInit {
 
     var headers = new Headers();
     this._http.get(this._apiUrl, { headers: headers })
-      .map(this.extractData)
+      .map(this.extractOrderListData)
       .catch(this.handleError)
       .subscribe(data => {
         if (data instanceof Array) {
@@ -96,7 +96,7 @@ export class ListComponent implements OnInit {
       });
   }
 
-  private extractData(res: Response) {
+  private extractOrderListData(res: Response) {
     if (environment.DebugLogging) {
       console.log("Entering extractData of FinanceOrderList");
     }
@@ -178,6 +178,7 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("ACHIHUI Log: Entering onCreateOrder of FinanceOrderList");
     }
+
     this._router.navigate(['/finance/order/create']);
   }
 
@@ -185,6 +186,7 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("ACHIHUI Log: Entering onEditOrder of FinanceOrderList");
     }
+
     if (this.selectedRows.length != 1) {
       this._dialogService.openAlert({
         message: "Select one and only one row to continue!",

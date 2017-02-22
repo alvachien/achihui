@@ -1,8 +1,12 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, NgZone,
-   EventEmitter, Input, Output, ViewContainerRef } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, AfterViewInit, NgZone,
+  EventEmitter, Input, Output, ViewContainerRef
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Headers, Response, RequestOptions, 
-  URLSearchParams } from '@angular/http';
+import {
+  Http, Headers, Response, RequestOptions,
+  URLSearchParams
+} from '@angular/http';
 import { TdDialogService } from '@covalent/core';
 import * as HIHCommon from '../../../model/common';
 import * as HIHLearn from '../../../model/learnmodel';
@@ -88,17 +92,17 @@ export class DetailComponent implements OnInit {
           viewContainerRef: this._viewContainerRef, //OPTIONAL
           title: "Routing error",
           closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
-        });       
+        });
       }, () => {
       });
     }, error => {
-        this._dialogService.openAlert({
-          message: error,
-          disableClose: false, // defaults to false
-          viewContainerRef: this._viewContainerRef, //OPTIONAL
-          title: "Loading data",
-          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
-        });       
+      this._dialogService.openAlert({
+        message: error,
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "Loading data",
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
 
     }, () => {
 
@@ -129,18 +133,18 @@ export class DetailComponent implements OnInit {
     this.historyObject.onComplete();
 
     // Checks
-    let context : any = { };
+    let context: any = {};
     context.arObjects = this.arObjects;
-    context.arUsers = this.arUsers;    
+    context.arUsers = this.arUsers;
     if (!this.historyObject.onVerify(context)) {
-      for(let msg of this.historyObject.VerifiedMsgs) {
+      for (let msg of this.historyObject.VerifiedMsgs) {
         this._dialogService.openAlert({
           message: msg.MsgContent,
           disableClose: false, // defaults to false
           viewContainerRef: this._viewContainerRef, //OPTIONAL
           title: msg.MsgTitle,
           closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
-        });       
+        });
       }
     }
 
@@ -153,26 +157,50 @@ export class DetailComponent implements OnInit {
 
     let dataJSON = this.historyObject.writeJSONString();
     let apiObject = environment.ApiUrl + "api/learnhistory";
-    this._http.post(apiObject, dataJSON, { headers: headers })
-      .map(response => response.json())
-      .catch(this.handleError)
-      .subscribe(x => {
-        // It returns a new object with ID filled.
-        let nHist = new HIHLearn.LearnHistory();
-        nHist.onSetData(x);
 
-        // Navigate.
-        this._router.navigate(['/learn/hisotry/display/' + nHist.generateKey()]);
-      }, error => {
-        this._dialogService.openAlert({
-          message: 'Error in creating!',
-          disableClose: false, // defaults to false
-          viewContainerRef: this._viewContainerRef, //OPTIONAL
-          title: 'Create failed', //OPTIONAL, hides if not provided
-          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+    if (this.uiMode === HIHCommon.UIMode.Create) {
+      this._http.post(apiObject, dataJSON, { headers: headers })
+        .map(response => response.json())
+        .catch(this.handleError)
+        .subscribe(x => {
+          // It returns a new object with ID filled.
+          let nHist = new HIHLearn.LearnHistory();
+          nHist.onSetData(x);
+
+          // Navigate.
+          this._router.navigate(['/learn/hisotry/display/' + nHist.generateKey()]);
+        }, error => {
+          this._dialogService.openAlert({
+            message: 'Error in creating!',
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: 'Create failed', //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }, () => {
         });
-      }, () => {
-      });   
+    } else if (this.uiMode === HIHCommon.UIMode.Change) {
+      this._http.put(apiObject, dataJSON, { headers: headers })
+        .map(response => response.json())
+        .catch(this.handleError)
+        .subscribe(x => {
+          // It returns a new object with ID filled.
+          let nHist = new HIHLearn.LearnHistory();
+          nHist.onSetData(x);
+
+          // Navigate.
+          this._router.navigate(['/learn/hisotry/display/' + nHist.generateKey()]);
+        }, error => {
+          this._dialogService.openAlert({
+            message: 'Error in creating!',
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: 'Create failed', //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }, () => {
+        });
+    }
   }
 
   ////////////////////////////////////////////
@@ -192,14 +220,14 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this.arUsers = data;
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this.arUsers = data;
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
 
   loadObjectList(): Observable<any> {
@@ -216,17 +244,17 @@ export class DetailComponent implements OnInit {
     return this._http.get(objApi, { headers: headers })
       .map(this.extractObjectData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this.arObjects = data;
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this.arObjects = data;
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
 
-  readHistory() : void {
+  readHistory(): void {
     if (environment.DebugLogging) {
       console.log("Entering readHistory of LearnHistoryList");
     }
@@ -243,7 +271,7 @@ export class DetailComponent implements OnInit {
       .subscribe(data => {
         this._zone.run(() => {
           this.historyObject = data;
-        });        
+        });
       },
       error => {
         // It should be handled already
@@ -296,7 +324,7 @@ export class DetailComponent implements OnInit {
 
     let body = res.json();
     if (body) {
-      let hist : HIHLearn.LearnHistory = new HIHLearn.LearnHistory();
+      let hist: HIHLearn.LearnHistory = new HIHLearn.LearnHistory();
       hist.onSetData(body);
       return hist;
     }

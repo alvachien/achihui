@@ -27,7 +27,7 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class DetailComponent implements OnInit {
 
-  private routerID: string; // Current ID in routing
+  private routerID: number; // Current ID in routing
   private _apiUrl: string;
   private arUsers: Array<HIHUser.UserDetail> = [];
   private arControlCenter: Array<HIHFinance.ControllingCenter> = [];
@@ -80,25 +80,45 @@ export class DetailComponent implements OnInit {
               this.orderObject = new HIHFinance.Order();
               this.uiMode = HIHCommon.UIMode.Create;
             } else if (x[0].path === "edit") {
+              this.routerID = +x[1].path;
+
               this.currentMode = "Edit"
               this.uiMode = HIHCommon.UIMode.Change;
             } else if (x[0].path === "display") {
+              this.routerID = +x[1].path;
+
               this.currentMode = "Display";
               this.uiMode = HIHCommon.UIMode.Display;
             }
 
             // Update the sub module
             this._uistatus.setFinanceSubModule(this.currentMode);
+
+            if (this.uiMode === HIHCommon.UIMode.Change
+            || this.uiMode === HIHCommon.UIMode.Display) {
+              this.readOrder();
+            }
           }
         }, error => {
+          this._dialogService.openAlert({
+            message: error,
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: "Error in routing", //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
         }, () => {
         });
-    }, error => {
-
-    }, () => {
-
-    });
-
+      }, error => {
+        this._dialogService.openAlert({
+          message: error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "Error in reading", //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
+      }, () => {
+      });
   }
 
   ////////////////////////////////////////////
@@ -139,19 +159,15 @@ export class DetailComponent implements OnInit {
   }
 
   public onSubmit(): void {
+    this.orderObject.onComplete();
+
     if (environment.DebugLogging) {
       console.log("Entering onSubmit of FinanceOrderDetail");
     }
 
     // Do the checks before submitting
-    let context:any = {
+    let context: any = {
     };
-    if (this.orderObject.ValidFrom) {
-      this.orderObject.ValidFrom = new Date(this.orderObject.ValidFrom);
-    }
-    if (this.orderObject.ValidTo) {
-      this.orderObject.ValidTo = new Date(this.orderObject.ValidTo);
-    }
 
     let checkFailed: boolean = false;
     if (!this.orderObject.onVerify(context)) {
@@ -181,31 +197,83 @@ export class DetailComponent implements OnInit {
     }
 
     let dataJSON = this.orderObject.writeJSONString();
-    this._http.post(this._apiUrl, dataJSON, { headers: headers })
-      .map(response => response.json())
-      .catch(this.handleError)
-      .subscribe(x => {
-        // It returns a new object with ID filled.
-        let nNewObj = new HIHFinance.Order();
-        nNewObj.onSetData(x);
 
-        // Navigate.
-        this._router.navigate(['/finance/order/display/' + nNewObj.Id.toString()]);
-      }, error => {
-        this._dialogService.openAlert({
-          message: 'Error in creating!',
-          disableClose: false, // defaults to false
-          viewContainerRef: this._viewContainerRef, //OPTIONAL
-          title: 'Create failed', //OPTIONAL, hides if not provided
-          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+    if (this.uiMode === HIHCommon.UIMode.Create) {
+      this._http.post(this._apiUrl, dataJSON, { headers: headers })
+        .map(response => response.json())
+        .catch(this.handleError)
+        .subscribe(x => {
+          // It returns a new object with ID filled.
+          let nNewObj = new HIHFinance.Order();
+          nNewObj.onSetData(x);
+
+          // Navigate.
+          this._router.navigate(['/finance/order/display/' + nNewObj.Id.toString()]);
+        }, error => {
+          this._dialogService.openAlert({
+            message: 'Error in creating!',
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: 'Create failed', //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }, () => {
         });
-      }, () => {
-      });
+    } else if (this.uiMode === HIHCommon.UIMode.Change) {
+      this._http.put(this._apiUrl, dataJSON, { headers: headers })
+        .map(response => response.json())
+        .catch(this.handleError)
+        .subscribe(x => {
+          // It returns a new object with ID filled.
+          let nNewObj = new HIHFinance.Order();
+          nNewObj.onSetData(x);
+
+          // Navigate.
+          this._router.navigate(['/finance/order/display/' + nNewObj.Id.toString()]);
+        }, error => {
+          this._dialogService.openAlert({
+            message: 'Error in creating!',
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: 'Create failed', //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }, () => {
+        });
+    }
   }
 
   ////////////////////////////////////////////
   // Methods for Utility methods
   ////////////////////////////////////////////
+  readOrder(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering readOrder of FinanceOrderDetail");
+    }
+
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    this._http.get(this._apiUrl + '/' + this.routerID.toString(), { headers: headers })
+      .map(resp => resp.json())
+      .catch(this.handleError)
+      .subscribe(x => {
+        this._zone.run(() => {
+          this.orderObject.onSetData(x);
+        });
+      }, error => {
+        this._dialogService.openAlert({
+          message: error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: 'Error in reading', //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
+      }, () => {
+      });    
+  }
   loadUserList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadUserList of FinanceOrderDetail");
@@ -220,18 +288,18 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this._zone.run(() => {
-      //       this.arUsers = data;
-      //     });          
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this._zone.run(() => {
+    //       this.arUsers = data;
+    //     });          
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
-  
+
   loadControlCenterList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadControlCenterList of FinanceOrderDetail");
@@ -246,16 +314,16 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractControlCenterData)
       .catch(this.handleError);
-      // .subscribe(data => {
-      //   if (data instanceof Array) {
-      //     this._zone.run(() => {
-      //       this.arControlCenter = data;
-      //     });
-      //   }
-      // },
-      // error => {
-      //   // It should be handled already
-      // });
+    // .subscribe(data => {
+    //   if (data instanceof Array) {
+    //     this._zone.run(() => {
+    //       this.arControlCenter = data;
+    //     });
+    //   }
+    // },
+    // error => {
+    //   // It should be handled already
+    // });
   }
 
   private extractUserData(res: Response) {

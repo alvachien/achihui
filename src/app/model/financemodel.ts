@@ -828,11 +828,14 @@ export class SettlementRule extends hih.BaseModel {
 
         // Not need call for the super class's method, because createdat and modifiedat not required here
 
-        if (data && data.ruleId) {
-            this.RuleId = +data.ruleId;
+        if (data && data.ruleID) {
+            this.RuleId = +data.ruleID;
         }
         if (data && data.controlCenterID) {
             this.ControlCenterId = +data.controlCenterID;
+        }
+        if (data && data.controlCenterName) {
+            this.ControlCenterName = data.controlCenterName;
         }
         if (data && data.precent) {
             this.Precent = +data.precent;
@@ -1083,6 +1086,7 @@ export class DocumentItem {
     public Desp: string;
 
     public AccountName: string;
+    public TranTypeName: string;
     public ControlCenterName: string;
     public OrderName: string;
     public VerifiedMsgs: Array<hih.InfoMessage> = [];
@@ -1314,8 +1318,14 @@ export class DocumentItem {
         if (data && data.accountID) {
             this.AccountId = +data.accountID;
         }
+        if (data && data.accountName) {
+            this.AccountName = data.accountName;
+        }
         if (data && data.tranType) {
             this.TranType = +data.tranType;
+        }
+        if (data && data.tranTypeName) {
+            this.TranTypeName = data.tranTypeName;
         }
         if (data && data.tranAmount) {
             this.TranAmount = +data.tranAmount;
@@ -1323,8 +1333,14 @@ export class DocumentItem {
         if (data && data.controlCenterID) {
             this.ControlCenterId = +data.controlCenterID;
         }
+        if (data && data.controlCenterName) {
+            this.ControlCenterName = data.controlCenterName;
+        }
         if (data && data.orderID) {
             this.OrderId = +data.OrderID;
+        }
+        if (data && data.orderName) {
+            this.OrderName = data.orderName;
         }
         if (data && data.desp) {
             this.Desp = data.desp;

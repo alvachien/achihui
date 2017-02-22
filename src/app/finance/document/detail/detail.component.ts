@@ -200,8 +200,6 @@ export class DetailComponent implements OnInit {
       console.log("Entering onSubmit of FinanceDocumentDetail");
     }
 
-    this.docObject.TranDate = new Date(this.docObject.TranDate);
-
     // Do the checks before submitting
     let context: any = {
       arDocType: this.arDocType
