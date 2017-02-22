@@ -23,7 +23,7 @@ export class ListComponent implements OnInit {
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'DocTypeName', label: 'Doc Type', tooltip: 'Document Type' },
-    { name: 'TranDate', label: 'Tran Date', tooltip: 'Tran. Date' },
+    { name: 'TranDateString', label: 'Tran Date', tooltip: 'Tran. Date' },
     { name: 'TranAmount', label: 'Amount' },
     { name: 'TranCurr', label: 'Currency' }
   ];

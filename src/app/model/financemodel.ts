@@ -554,6 +554,10 @@ export class Order extends hih.BaseModel {
 
     public SRules: Array<SettlementRule> = [];
 
+    // UI part
+    public ValidFromString: string;
+    public ValidToString: string;
+
     constructor() {
         super();
         if (environment.DebugLogging) {
@@ -563,8 +567,20 @@ export class Order extends hih.BaseModel {
 
     public onInit() {
         super.onInit();
+
         if (environment.DebugLogging) {
             console.log("Entering onInit of Order");
+        }
+
+        if (this.ValidFrom) {
+            this.ValidFromString = hih.Utility.Date2String(this.ValidFrom);
+        } else {
+            this.ValidFromString = "";
+        }
+        if (this.ValidTo) {
+            this.ValidToString = hih.Utility.Date2String(this.ValidTo);
+        } else {
+            this.ValidToString = "";
         }
     }
 
@@ -697,10 +713,12 @@ export class Order extends hih.BaseModel {
             this.Comment = data.comment;
         }
         if (data && data.validFrom) {
-            this.ValidFrom = <Date>data.validFrom;
+            this.ValidFrom = new Date(data.validFrom);
+            this.ValidFromString = hih.Utility.Date2String(this.ValidFrom);
         }
         if (data && data.validTo) {
-            this.ValidTo = <Date>data.validTo;
+            this.ValidTo = new Date(data.validTo);
+            this.ValidToString = hih.Utility.Date2String(this.ValidTo);
         }
 
         this.SRules = [];
@@ -710,6 +728,26 @@ export class Order extends hih.BaseModel {
                 srule.onSetData(sr);
                 this.SRules.push(srule);
             }
+        }
+    }
+
+    public onComplete() : void {
+        super.onComplete();
+
+        if (environment.DebugLogging) {
+            console.log("Entering onComplete of Order");
+        }
+
+        if (this.ValidFromString) {
+            this.ValidFrom = hih.Utility.String2Date(this.ValidFromString);
+        } else {
+            this.ValidFrom = null;
+        }
+        
+        if (this.ValidToString) {
+            this.ValidTo = hih.Utility.String2Date(this.ValidToString);
+        } else {
+            this.ValidTo = null;
         }
     }
 }
@@ -890,6 +928,7 @@ export class Document extends hih.BaseModel {
     // UI fields
     public DocTypeName: string;
     public TranAmount: number;
+    public TranDateString: string;
 
     constructor() {
         super();
@@ -984,6 +1023,8 @@ export class Document extends hih.BaseModel {
             console.log("Entering onSetData of Document");
         }
 
+        super.onSetData(data);
+
         if (data && data.id) {
             this.Id = +data.id;
         }
@@ -995,6 +1036,7 @@ export class Document extends hih.BaseModel {
         }
         if (data && data.tranDate) {
             this.TranDate = new Date(data.tranDate);
+            this.TranDateString = hih.Utility.Date2String(this.TranDate);
         }
         if (data && data.tranCurr) {
             this.TranCurr = data.tranCurr;
@@ -1011,8 +1053,20 @@ export class Document extends hih.BaseModel {
             for(let it of data.items) {
                 let item: DocumentItem = new DocumentItem();
                 item.onSetData(it);
-                this.Items.push(it);
+                this.Items.push(item);
             }
+        }
+    }
+
+    public onComplete(): void {
+        super.onComplete();
+
+        if (environment.DebugLogging) {
+            console.log("Entering onSetData of Document");
+        }
+        
+        if (this.TranDateString) {
+            this.TranDate = hih.Utility.String2Date(this.TranDateString);
         }
     }
 }

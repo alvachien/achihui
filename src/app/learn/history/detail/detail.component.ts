@@ -82,9 +82,23 @@ export class DetailComponent implements OnInit {
           this.readHistory();
         }
       }, error => {
+        this._dialogService.openAlert({
+          message: error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "Routing error",
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });       
       }, () => {
       });
     }, error => {
+        this._dialogService.openAlert({
+          message: error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "Loading data",
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });       
 
     }, () => {
 
@@ -111,10 +125,13 @@ export class DetailComponent implements OnInit {
       console.log("Entering onSubmit of LearnObjectDetail");
     }
 
+    // Complete
+    this.historyObject.onComplete();
+
     // Checks
     let context : any = { };
     context.arObjects = this.arObjects;
-    context.arUsers = this.arUsers;
+    context.arUsers = this.arUsers;    
     if (!this.historyObject.onVerify(context)) {
       for(let msg of this.historyObject.VerifiedMsgs) {
         this._dialogService.openAlert({

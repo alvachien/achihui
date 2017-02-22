@@ -24,7 +24,7 @@ export class ListComponent implements OnInit {
     { name: 'UserDisplayAs', label: 'Display As', tooltip: 'Display As' },
     { name: 'ObjectId', label: 'Object Id', tooltip: 'Object ID' },
     { name: 'ObjectName', label: 'Object Name', tooltip: 'Object Name' },
-    { name: 'LearnDate', label: 'Date', tooltip: 'Learn Date' },
+    { name: 'LearnDateString', label: 'Date', tooltip: 'Learn Date' },
     { name: 'UpdatedAt', label: 'Updated at' },
   ];
   filteredData: any[];

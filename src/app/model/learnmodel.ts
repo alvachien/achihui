@@ -395,6 +395,7 @@ export class LearnHistory extends hih.BaseModel {
     // Additional info, not need for saving
     public UserDisplayAs: string;
     public ObjectName: string;
+    public LearnDateString: string;
 
     constructor() {
         super();
@@ -403,6 +404,7 @@ export class LearnHistory extends hih.BaseModel {
         }
 
         this.LearnDate = new Date();
+        //this.LearnDateString = Utility
     }
 
     public generateKey() : string {
@@ -520,6 +522,7 @@ export class LearnHistory extends hih.BaseModel {
         }
         if (data && data.learnDate) {
             this.LearnDate = new Date(data.learnDate);
+            this.LearnDateString = hih.Utility.Date2String(this.LearnDate);
         }
         if (data && data.comment && data.comment.length > 0) {
             this.Comment = data.comment;
@@ -529,6 +532,18 @@ export class LearnHistory extends hih.BaseModel {
         }
         if (data && data.objectName && data.objectName.length > 0) {
             this.ObjectName = data.objectName;
+        }
+    }
+
+    public onComplete() : void {
+        super.onComplete();
+
+        if (environment.DebugLogging) {
+            console.log("Entering onComplete of LearnHistory");
+        }
+
+        if (this.LearnDateString) {
+            this.LearnDate = hih.Utility.String2Date(this.LearnDateString);
         }
     }
 }

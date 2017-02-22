@@ -34,7 +34,12 @@ export class BaseModel {
     public UpdatedAt: Date;
     public UpdatedBy: string;
 
+    // For checking
     public VerifiedMsgs: InfoMessage[];
+
+    // For UI display purpose
+    public CreatedAtString: string;
+    public UpdatedAtString: string;
 
     constructor() {
         if (environment.DebugLogging) {
@@ -43,6 +48,8 @@ export class BaseModel {
 
         this.CreatedAt = new Date();
         this.UpdatedAt = new Date();
+        this.CreatedAtString = Utility.Date2String(this.CreatedAt);
+        this.UpdatedAtString = Utility.Date2String(this.UpdatedAt);
     }
 
     public onInit() {
@@ -58,6 +65,24 @@ export class BaseModel {
         this.VerifiedMsgs = [];
 
         return true;
+    }
+
+    public onComplete(): void {
+        if (environment.DebugLogging) {
+            console.log("Entering onComplete of BaseModel");
+        }
+
+        if (this.CreatedAtString) {
+            this.CreatedAt = Utility.String2Date(this.CreatedAtString);
+        } else {
+            this.CreatedAt = null;
+        }
+
+        if (this.UpdatedAtString) {
+            this.UpdatedAt = Utility.String2Date(this.UpdatedAtString);
+        } else {
+            this.UpdatedAt = null;
+        }
     }
 
     public writeJSONObject(): any {

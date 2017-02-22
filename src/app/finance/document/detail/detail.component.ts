@@ -179,6 +179,9 @@ export class DetailComponent implements OnInit {
   }
 
   public onSubmit(): void {
+
+    this.docObject.onComplete();
+    
     if (this.uiMode === HIHCommon.UIMode.Create
       || this.uiMode === HIHCommon.UIMode.Change) {
     } else {
