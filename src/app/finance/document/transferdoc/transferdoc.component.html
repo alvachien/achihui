@@ -2,8 +2,90 @@
   <md-card-title>Transfer Document</md-card-title>
   <md-card-subtitle>{{CurrentMode}}</md-card-subtitle>
   <md-divider></md-divider>
+
   <md-card-content>
-    <p> Transfer doc.
-    </p>
+    <div layout="column" layout-padding layout-margin>
+      <div flex>
+        <div layout="row" layout-margin>
+          <md-input-container flex>
+            <input md-input placeholder="ID" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
+          </md-input-container>
+        </div>
+        <div layout="row" layout-margin>
+          <md-input-container flex>
+            <input md-input type="number" placeholder="Transaction amount" required [(ngModel)]="itemObject.TranAmount" name="itemtranamt"
+              #itemtranamt="ngModel">
+          </md-input-container>
+        </div>
+        <div layout="row" layout-margin>
+          <md-select flex="90" placeholder="Currency" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
+            <md-option *ngFor="let cur of arCurrency" [value]="cur.Currency">
+              {{cur.Symbol}} - {{cur.Name}}
+            </md-option>
+          </md-select>
+        </div>
+        <div layout="row" layout-margin>
+          <md-input-container flex>
+            <input md-input type="date" placeholder="Transaction Date" required [(ngModel)]="docObject.TranDateString" name="trandate"
+              #trandate="ngModel">
+          </md-input-container>
+        </div>
+        <div layout="row" layout-margin>
+          <md-input-container flex>
+            <textarea md-input placeholder="Description" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
+          </md-input-container>
+        </div>
+      </div>
+
+      <div layout-sm="column" layout-xs="column" layout-gt-sm="row" layout-padding layout-margin>
+        <div flex-gt-sm="50" flex-sm="100" flex-xs="100" style="background: lightblue;">
+          <div layout="row" layout-margin>
+            <md-select flex="90" placeholder="Account" [(ngModel)]="itemObject.AccountId" name="itemaccnt" #itemaccnt="ngModel">
+              <md-option *ngFor="let acnt of arAccount" [value]="acnt.Id">
+                {{acnt.Name}}
+              </md-option>
+            </md-select>
+          </div>
+          <div layout="row" layout-margin>
+            <md-select flex="90" placeholder="Control center" [(ngModel)]="itemObject.ControlCenterId" name="itemcc" #itemcc="ngModel">
+              <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
+                {{cc.Name}}
+              </md-option>
+            </md-select>
+          </div>
+          <div layout="row" layout-margin>
+            <md-select flex="90" placeholder="Order" [(ngModel)]="itemObject.OrderId" name="itemorder" #itemorder="ngModel">
+              <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
+                {{ord.Name}}
+              </md-option>
+            </md-select>
+          </div>
+        </div>
+
+        <div flex-gt-sm="50" flex-sm="100" flex-xs="100" style="background:lightgray">
+          <div layout="row" layout-margin>
+            <md-select flex="90" placeholder="Account" [(ngModel)]="itemObject.AccountId" name="itemaccnt" #itemaccnt="ngModel">
+              <md-option *ngFor="let acnt of arAccount" [value]="acnt.Id">
+                {{acnt.Name}}
+              </md-option>
+            </md-select>
+          </div>
+          <div layout="row" layout-margin>
+            <md-select flex="90" placeholder="Control center" [(ngModel)]="itemObject.ControlCenterId" name="itemcc" #itemcc="ngModel">
+              <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
+                {{cc.Name}}
+              </md-option>
+            </md-select>
+          </div>
+          <div layout="row" layout-margin>
+            <md-select flex="90" placeholder="Order" [(ngModel)]="itemObject.OrderId" name="itemorder" #itemorder="ngModel">
+              <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
+                {{ord.Name}}
+              </md-option>
+            </md-select>
+          </div>
+        </div>
+      </div>
+    </div>
   </md-card-content>
 </md-card>
