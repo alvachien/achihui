@@ -1,7 +1,16 @@
 <md-card>
   <md-card-title>User detail</md-card-title>
+  <md-card-subtitle>User detail</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
-    <p>It's a user detail page.</p>
+    <div layout="column" layout-padding>
+      <div flex>
+        <div layout="row" layout-margin>
+          <md-input-container flex>
+            <input md-input placeholder="User Name" readonly [(ngModel)]="objUserAuthInfo.userName" name="usrname" #usrname="ngModel">
+          </md-input-container>
+        </div>
+      </div>
+    </div>
   </md-card-content>
 </md-card>

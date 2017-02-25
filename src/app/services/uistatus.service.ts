@@ -93,6 +93,12 @@ export class UIStatusService {
         this.arLearnRouteLink.push(rl);
 
         rl = new UIRouteLink();
+        rl.title = "Setting";
+        rl.route = "/finance/setting";
+        rl.icon = "settings_input";
+        this.arFinanceRouteLink.push(rl);
+
+        rl = new UIRouteLink();
         rl.title = "Currencies";
         rl.route = "/finance/currency";
         rl.icon = "euro_symbol";
@@ -160,7 +166,7 @@ export class UIStatusService {
 
         rl = new UIRouteLink();
         rl.title = "User Detail";
-        rl.route = "/user/detail";
+        rl.route = "/userdetail";
         rl.icon = "account_circle";
         this.arUserRouteLink.push(rl);
       } else {

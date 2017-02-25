@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { UserdetailComponent } from './userdetail/userdetail.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
+import { AboutComponent } from './about/about.component';
 
 import { CanDeactivateGuard } from './services/can-deactivate-guard.service';
 import { AuthGuard } from './services/auth-guard.service';
@@ -21,6 +23,14 @@ const appRoutes: Routes = [
   {
     path: 'finance',
     loadChildren: 'app/finance/finance.module#FinanceModule',
+  },
+  {
+    path: 'userdetail',
+    component: UserdetailComponent
+  },
+  {
+    path: 'about',
+    component: AboutComponent
   },
   { path: '**', component: PagenotfoundComponent },
 ];

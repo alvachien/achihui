@@ -37,7 +37,8 @@ export class TransferdocComponent implements OnInit {
   private arCurrency: Array<HIHFinance.Currency> = [];
   public currentMode: string;
   public docObject: HIHFinance.Document = null;
-  public itemObject: HIHFinance.DocumentItem = null;
+  public frmObject: any = {};
+  public toObject: any = {};
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
 
   constructor(private _http: Http,
@@ -49,8 +50,14 @@ export class TransferdocComponent implements OnInit {
     private _authService: AuthService,
     private _uistatus: UIStatusService) {
     this.docObject = new HIHFinance.Document();
-    this.itemObject = new HIHFinance.DocumentItem();
     this.uiMode = HIHCommon.UIMode.Create;
+
+    this.frmObject.AccountId = -1;
+    this.toObject.AccountId = -1;
+    this.frmObject.ControlCenterId = -1;
+    this.toObject.ControlCenterId = -1;
+    this.frmObject.OrderId = -1;
+    this.toObject.OrderId = -1;
 
     this._apiUrl = environment.ApiUrl + "api/financedocument";
   }
@@ -130,7 +137,23 @@ export class TransferdocComponent implements OnInit {
   ////////////////////////////////////////////
   public onSubmit(): void {
 
-    this.docObject.onComplete();
+    switch(this.uiMode) {
+      case HIHCommon.UIMode.Create: {
+        this.docObject.onComplete();
+
+      }
+      break;
+
+      case HIHCommon.UIMode.Change: {
+        this.docObject.onComplete();
+
+
+      }
+      break;
+
+      default:
+      break;      
+    }
   }
 
   ////////////////////////////////////////////
