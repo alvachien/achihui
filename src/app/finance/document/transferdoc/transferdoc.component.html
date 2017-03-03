@@ -19,7 +19,7 @@
         </div>
         <div layout="row" layout-margin>
           <md-input-container flex>
-            <input md-input type="number" placeholder="Transaction amount" required [(ngModel)]="itemObject.TranAmount" name="itemtranamt"
+            <input md-input type="number" placeholder="Transaction amount" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
               #itemtranamt="ngModel">
           </md-input-container>
         </div>
@@ -39,51 +39,71 @@
 
       <div layout-sm="column" layout-xs="column" layout-gt-sm="row" layout-padding layout-margin>
         <div flex-gt-sm="50" flex-sm="100" flex-xs="100" style="border:1px;">
-          <div layout="row" layout-margin>
-            <md-select flex="90" placeholder="Account" [(ngModel)]="frmObject.AccountId" name="frmaccount" #frmaccount="ngModel">
-              <md-option *ngFor="let acnt of arAccount" [value]="acnt.Id">
-                {{acnt.Name}}
-              </md-option>
-            </md-select>
-          </div>
-          <div layout="row" layout-margin>
-            <md-select flex="90" placeholder="Control center" [(ngModel)]="frmObject.ControlCenterId" name="frmccid" #frmccid="ngModel">
-              <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
-                {{cc.Name}}
-              </md-option>
-            </md-select>
-          </div>
-          <div layout="row" layout-margin>
-            <md-select flex="90" placeholder="Order" [(ngModel)]="frmObject.OrderId" name="frmorder" #frmorder="ngModel">
-              <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
-                {{ord.Name}}
-              </md-option>
-            </md-select>
-          </div>
+          <md-card>
+            <md-card-header>
+              <md-card-title>Source</md-card-title>
+              <md-card-subtitle>Transfer from</md-card-subtitle>
+            </md-card-header>
+            <md-card-content>
+              <div flex>
+                <div layout="row" layout-margin>
+                  <md-select flex="90" placeholder="Account" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
+                    <md-option *ngFor="let sacnt of arAccount" [value]="sacnt.Id">
+                      {{acnt.Name}}
+                    </md-option>
+                  </md-select>
+                </div>
+                <div layout="row" layout-margin>
+                  <md-select flex="90" placeholder="Control center" [(ngModel)]="uiObject.SourceControlCenterId" name="frmccid" #frmccid="ngModel">
+                    <md-option *ngFor="let scc of arControlCenter" [value]="scc.Id">
+                      {{cc.Name}}
+                    </md-option>
+                  </md-select>
+                </div>
+                <div layout="row" layout-margin>
+                  <md-select flex="90" placeholder="Order" [(ngModel)]="uiObject.SourceOrderId" name="frmorder" #frmorder="ngModel">
+                    <md-option *ngFor="let sord of arOrder" [value]="sord.Id">
+                      {{ord.Name}}
+                    </md-option>
+                  </md-select>
+                </div>
+              </div>
+            </md-card-content>
+          </md-card>
         </div>
 
         <div flex-gt-sm="50" flex-sm="100" flex-xs="100" style="border: 1px;">
-          <div layout="row" layout-margin>
-            <md-select flex="90" placeholder="Account" [(ngModel)]="toObject.AccountId" name="toaccount" #toaccount="ngModel">
-              <md-option *ngFor="let acnt of arAccount" [value]="acnt.Id">
-                {{acnt.Name}}
-              </md-option>
-            </md-select>
-          </div>
-          <div layout="row" layout-margin>
-            <md-select flex="90" placeholder="Control center" [(ngModel)]="toObject.ControlCenterId" name="toccid" #toccid="ngModel">
-              <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
-                {{cc.Name}}
-              </md-option>
-            </md-select>
-          </div>
-          <div layout="row" layout-margin>
-            <md-select flex="90" placeholder="Order" [(ngModel)]="toObject.OrderId" name="toorder" #toorder="ngModel">
-              <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
-                {{ord.Name}}
-              </md-option>
-            </md-select>
-          </div>
+          <md-card>
+            <md-card-header>
+              <md-card-title>Target</md-card-title>
+              <md-card-subtitle>Transfer to</md-card-subtitle>
+            </md-card-header>
+            <md-card-content>
+              <div flex>
+                <div layout="row" layout-margin>
+                  <md-select flex="90" placeholder="Account" [(ngModel)]="uiObject.TargetAccountId" name="toaccount" #toaccount="ngModel">
+                    <md-option *ngFor="let tacnt of arAccount" [value]="tacnt.Id">
+                      {{acnt.Name}}
+                    </md-option>
+                  </md-select>
+                </div>
+                <div layout="row" layout-margin>
+                  <md-select flex="90" placeholder="Control center" [(ngModel)]="uiObject.TargetControlCenterId" name="toccid" #toccid="ngModel">
+                    <md-option *ngFor="let tcc of arControlCenter" [value]="tcc.Id">
+                      {{cc.Name}}
+                    </md-option>
+                  </md-select>
+                </div>
+                <div layout="row" layout-margin>
+                  <md-select flex="90" placeholder="Order" [(ngModel)]="uiObject.TargetOrderId" name="toorder" #toorder="ngModel">
+                    <md-option *ngFor="let tord of arOrder" [value]="tord.Id">
+                      {{ord.Name}}
+                    </md-option>
+                  </md-select>
+                </div>
+              </div>
+            </md-card-content>
+          </md-card>
         </div>
       </div>
 

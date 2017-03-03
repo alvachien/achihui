@@ -13,6 +13,7 @@ import {
 } from '@covalent/core';
 import * as HIHCommon from '../../../model/common';
 import * as HIHFinance from '../../../model/financemodel';
+import * as HIHUI from '../../../model/uimodel';
 import * as HIHUser from '../../../model/userinfo';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs/Observable';
@@ -37,8 +38,7 @@ export class TransferdocComponent implements OnInit {
   private arCurrency: Array<HIHFinance.Currency> = [];
   public currentMode: string;
   public docObject: HIHFinance.Document = null;
-  public frmObject: any = {};
-  public toObject: any = {};
+  public uiObject: HIHUI.UIFinTransferDocument = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
 
   constructor(private _http: Http,
@@ -49,15 +49,10 @@ export class TransferdocComponent implements OnInit {
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
     private _uistatus: UIStatusService) {
-    this.docObject = new HIHFinance.Document();
-    this.uiMode = HIHCommon.UIMode.Create;
 
-    this.frmObject.AccountId = -1;
-    this.toObject.AccountId = -1;
-    this.frmObject.ControlCenterId = -1;
-    this.toObject.ControlCenterId = -1;
-    this.frmObject.OrderId = -1;
-    this.toObject.OrderId = -1;
+    this.docObject = new HIHFinance.Document();
+    this.uiObject = new HIHUI.UIFinTransferDocument();
+    this.uiMode = HIHCommon.UIMode.Create;
 
     this._apiUrl = environment.ApiUrl + "api/financedocument";
   }
@@ -76,12 +71,14 @@ export class TransferdocComponent implements OnInit {
       this.loadAccountList(),
       this.loadOrderList()
     ]).subscribe(data => {
-      this.arCurrency = data[0];
-      this.arDocType = data[1];
-      this.arControlCenter = data[2];
-      this.arTranType = data[3];
-      this.arAccount = data[4];
-      this.arOrder = data[5];
+      this._zone.run(() => {
+        this.arCurrency = data[0];
+        this.arDocType = data[1];
+        this.arControlCenter = data[2];
+        this.arTranType = data[3];
+        this.arAccount = data[4];
+        this.arOrder = data[5];
+      });
 
       // Distinguish current mode
       this._activateRoute.url.subscribe(x => {
@@ -140,14 +137,11 @@ export class TransferdocComponent implements OnInit {
     switch(this.uiMode) {
       case HIHCommon.UIMode.Create: {
         this.docObject.onComplete();
-
       }
       break;
 
       case HIHCommon.UIMode.Change: {
         this.docObject.onComplete();
-
-
       }
       break;
 
