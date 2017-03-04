@@ -3,5 +3,8 @@
   <md-card-subtitle>List View</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
+    <td-data-table [data]="filteredData" [columns]="columns" [selectable]="true"
+      [(ngModel)]="selectedRows">
+    </td-data-table>
   </md-card-content>
 </md-card>

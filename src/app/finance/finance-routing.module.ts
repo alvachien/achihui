@@ -33,7 +33,6 @@ import { BalanceSheetComponent as ReportBalanceSheetComponent } from './report/b
 import { ControlCenterComponent as ReportControlCenterComponent } from './report/controlcenter/controlcenter.component';
 import { OrderComponent as ReportOrderComponent } from './report/order/order.component';
 
-
 const financeRoutes: Routes = [
   {
     path: '',

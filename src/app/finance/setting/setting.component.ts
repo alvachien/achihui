@@ -27,7 +27,15 @@ import { AuthService } from '../../services/auth.service';
 })
 export class SettingComponent implements OnInit {
 
-  public objSetting: HIHFinance.Setting = null;
+  private _apiUrl: string;
+  columns: ITdDataTableColumn[] = [
+    { name: 'SetId', label: '#', tooltip: 'ID' },
+    { name: 'SetValue', label: 'Value', tooltip: 'Name' },
+    { name: 'Comment', label: 'Comment' }
+  ];
+  filteredData: any[];
+  selectable: boolean = true;
+  selectedRows: any[] = [];
 
   constructor(private _http: Http,
     private _zone: NgZone,
@@ -37,7 +45,11 @@ export class SettingComponent implements OnInit {
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
     private _uistatus: UIStatusService) { 
-      this.objSetting = new HIHFinance.Setting();
+      if (environment.DebugLogging) {
+        console.log("Entering constructor of FinanceOrderList");
+      }
+
+      this._apiUrl = environment.ApiUrl + "api/financesetting";
   }
 
   ////////////////////////////////////////////
@@ -45,7 +57,62 @@ export class SettingComponent implements OnInit {
   ////////////////////////////////////////////
   ngOnInit() {
     if (environment.DebugLogging) {
-      console.log("Entering ngOnInit of TransferdocComponent");
+      console.log("Entering ngOnInit of SettingComponent");
     }
+
+    this.loadSetting();
+  }
+  loadSetting(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering loadSetting of SettingComponent");
+    }
+
+    var headers = new Headers();
+    this._http.get(this._apiUrl, { headers: headers })
+      .map(this.extractSettingData)
+      .catch(this.handleError)
+      .subscribe(data => {
+        if (data instanceof Array) {
+          this.filteredData = data;
+        }
+      },
+      error => {
+        // It should be handled already
+      },
+      () => {
+        // Finished
+      });
+  }
+
+  private extractSettingData(res: Response) {
+    if (environment.DebugLogging) {
+      console.log("Entering extractSettingData of SettingComponent");
+    }
+
+    let body = res.json();
+    if (body && body instanceof Array) {
+      let sets = new Array<HIHFinance.Setting>();
+      for (let alm of body) {
+        let alm2 = new HIHFinance.Setting();
+        alm2.onSetData(alm);
+        sets.push(alm2);
+      }
+      return sets;
+    }
+
+    return body || {};
+  }
+
+  private handleError(error: any) {
+    if (environment.DebugLogging) {
+      console.log("Entering handleError of FinanceOrderList");
+    }
+
+    // In a real world app, we might use a remote logging infrastructure
+    // We'd also dig deeper into the error to get a better message
+    let errMsg = (error.message) ? error.message :
+      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
+    console.error(errMsg); // log to console instead
+    return Observable.throw(errMsg);
   }
 }
