@@ -102,6 +102,12 @@ export class DetailComponent implements OnInit {
   // Methods for UI controls
   ////////////////////////////////////////////
   public onSubmit(): void {
+    if (this.uiMode === HIHCommon.UIMode.Create
+      || this.uiMode === HIHCommon.UIMode.Change) {      
+    } else {
+      return;
+    }
+    
     if (environment.DebugLogging) {
       console.log("Entering onSubmit of FinanceControlCenterDetail");
     }
@@ -222,14 +228,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this.arUsers = data;
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
   loadControlCenterList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -243,14 +241,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(this._apiUrl, { headers: headers })
       .map(this.extractControlCenterData)
       .catch(this.handleError)
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this.arUsers = data;
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
 
   private extractUserData(res: Response) {
