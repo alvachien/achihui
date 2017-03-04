@@ -1,21 +1,21 @@
 <form (ngSubmit)="onSubmit()" #detailForm="ngForm">
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input md-input placeholder="ID" disabled
+      <input mdInput placeholder="ID" disabled
              [(ngModel)]="detailObject.Id" name="objid" #objid="ngModel" />
     </md-input-container>
     <md-input-container flex>
-      <input md-input placeholder="Parent ID" [(ngModel)]="detailObject.ParentId" name="parid" #parid="ngModel">
+      <input mdInput placeholder="Parent ID" [(ngModel)]="detailObject.ParentId" name="parid" #parid="ngModel">
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input md-input placeholder="Name" required [(ngModel)]="detailObject.Name" name="objname" #objname="ngModel">
+      <input mdInput placeholder="Name" required [(ngModel)]="detailObject.Name" name="objname" #objname="ngModel">
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input md-input placeholder="Comment" [(ngModel)]="detailObject.Comment" name="objcomment" #objcomment="ngModel">
+      <input mdInput placeholder="Comment" [(ngModel)]="detailObject.Comment" name="objcomment" #objcomment="ngModel">
     </md-input-container>
   </div>
   <div layout="row" layout-margin>

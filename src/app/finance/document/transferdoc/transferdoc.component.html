@@ -13,13 +13,13 @@
         </div>
         <div layout="row" layout-margin>
           <md-input-container flex>
-            <input md-input type="date" placeholder="Transaction Date" required [(ngModel)]="docObject.TranDateString" name="trandate"
+            <input mdInput type="date" placeholder="Transaction Date" required [(ngModel)]="docObject.TranDateString" name="trandate"
               #trandate="ngModel">
           </md-input-container>
         </div>
         <div layout="row" layout-margin>
           <md-input-container flex>
-            <input md-input type="number" placeholder="Transaction amount" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
+            <input mdInput type="number" placeholder="Transaction amount" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
               #itemtranamt="ngModel">
           </md-input-container>
         </div>
@@ -32,7 +32,7 @@
         </div>
         <div layout="row" layout-margin>
           <md-input-container flex>
-            <textarea md-input placeholder="Description" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
+            <textarea mdInput placeholder="Description" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
           </md-input-container>
         </div>
       </div>

@@ -6,12 +6,12 @@
     <form (ngSubmit)="onSubmit()" #detailForm="ngForm">
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <input md-input placeholder="ID" readonly [(ngModel)]="ccObject.Id" name="id" #id="ngModel">
+          <input mdInput placeholder="ID" readonly [(ngModel)]="ccObject.Id" name="id" #id="ngModel">
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <input md-input placeholder="Name" required [(ngModel)]="ccObject.Name" name="name" #name="ngModel">
+          <input mdInput placeholder="Name" required [(ngModel)]="ccObject.Name" name="name" #name="ngModel">
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
@@ -26,7 +26,7 @@
       </div>      
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <textarea md-input placeholder="Comment" [(ngModel)]="ccObject.Comment" name="cmt" #cmt="ngModel"></textarea>
+          <textarea mdInput placeholder="Comment" [(ngModel)]="ccObject.Comment" name="cmt" #cmt="ngModel"></textarea>
         </md-input-container>
       </div>
     </form>

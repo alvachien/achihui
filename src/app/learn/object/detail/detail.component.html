@@ -1,7 +1,7 @@
 <form (ngSubmit)="onSubmit()" #detailForm="ngForm">
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input md-input placeholder="ID" disabled
+      <input mdInput placeholder="ID" disabled
              [(ngModel)]="detailObject.Id" name="objid" #objid="ngModel" />
     </md-input-container>
   </div>
@@ -12,7 +12,7 @@
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input md-input placeholder="Name" required [(ngModel)]="detailObject.Name" name="objname" #objname="ngModel">
+      <input mdInput placeholder="Name" required [(ngModel)]="detailObject.Name" name="objname" #objname="ngModel">
     </md-input-container>
   </div>
   <div layout="row" layout-margin>

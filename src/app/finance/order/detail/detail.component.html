@@ -11,27 +11,27 @@
         <form #detailForm="ngForm">
           <div layout="row" layout-margin>
             <md-input-container flex>
-              <input md-input placeholder="ID" readonly [(ngModel)]="orderObject.Id" name="id" #id="ngModel">
+              <input mdInput placeholder="ID" readonly [(ngModel)]="orderObject.Id" name="id" #id="ngModel">
             </md-input-container>
           </div>
           <div layout="row" layout-margin>
             <md-input-container flex>
-              <input md-input placeholder="Name" required [(ngModel)]="orderObject.Name" name="name" #name="ngModel">
+              <input mdInput placeholder="Name" required [(ngModel)]="orderObject.Name" name="name" #name="ngModel">
             </md-input-container>
           </div>
           <div layout="row" layout-margin>
             <md-input-container flex>
-              <input md-input type="date" placeholder="Valid from" required [(ngModel)]="orderObject.ValidFromString" name="validfrom" #validfrom="ngModel">
+              <input mdInput type="date" placeholder="Valid from" required [(ngModel)]="orderObject.ValidFromString" name="validfrom" #validfrom="ngModel">
             </md-input-container>
           </div>
           <div layout="row" layout-margin>
             <md-input-container flex>
-              <input md-input type="date" placeholder="Valid to" required [(ngModel)]="orderObject.ValidToString" name="validto" #validto="ngModel">
+              <input mdInput type="date" placeholder="Valid to" required [(ngModel)]="orderObject.ValidToString" name="validto" #validto="ngModel">
             </md-input-container>
           </div>
           <div layout="row" layout-margin>
             <md-input-container flex>
-              <textarea md-input placeholder="Comment" [(ngModel)]="orderObject.Comment" name="cmt" #cmt="ngModel"></textarea>
+              <textarea mdInput placeholder="Comment" [(ngModel)]="orderObject.Comment" name="cmt" #cmt="ngModel"></textarea>
             </md-input-container>
           </div>
         </form>
@@ -66,7 +66,7 @@
             <form #ruleDetailForm="ngForm">
               <div layout="row" layout-margin>
                 <md-input-container flex>
-                  <input md-input type="number" placeholder="Rule ID" required [(ngModel)]="sruleObject.RuleId" name="sruleid" #sruleid="ngModel">
+                  <input mdInput type="number" placeholder="Rule ID" required [(ngModel)]="sruleObject.RuleId" name="sruleid" #sruleid="ngModel">
                 </md-input-container>
               </div>
               <div layout="row" layout-margin>
@@ -78,12 +78,12 @@
               </div>
               <div layout="row" layout-margin>
                 <md-input-container flex>
-                  <input md-input type="number" placeholder="Percentage" required [(ngModel)]="sruleObject.Precent" name="sruleper" #sruleper="ngModel">
+                  <input mdInput type="number" placeholder="Percentage" required [(ngModel)]="sruleObject.Precent" name="sruleper" #sruleper="ngModel">
                 </md-input-container>
               </div>
               <div layout="row" layout-margin>
                 <md-input-container flex>
-                  <textarea md-input placeholder="Comment" [(ngModel)]="sruleObject.Comment" name="srulecmt" #srulecmt="ngModel"></textarea>
+                  <textarea mdInput placeholder="Comment" [(ngModel)]="sruleObject.Comment" name="srulecmt" #srulecmt="ngModel"></textarea>
                 </md-input-container>
               </div>
             </form>

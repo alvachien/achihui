@@ -41,7 +41,7 @@ import { OrderComponent as ReportOrderComponent } from './report/order/order.com
 @NgModule({
   imports: [
     CommonModule,    
-    MaterialModule.forRoot(),
+    MaterialModule,
     CovalentCoreModule.forRoot(),
     UIRefModule,
     FinanceRoutingModule

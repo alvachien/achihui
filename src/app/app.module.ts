@@ -26,7 +26,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   imports: [
-    MaterialModule.forRoot(),
+    MaterialModule,
     BrowserModule,
     FormsModule,
     HttpModule,

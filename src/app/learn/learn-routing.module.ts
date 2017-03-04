@@ -70,6 +70,10 @@ const learnRoutes: Routes = [
             component: HistoryListComponent
           },
           {
+            path:'create',
+            component: HistoryDetailComponent
+          },
+          {
             path: 'display/:id',
             component: HistoryDetailComponent
           },

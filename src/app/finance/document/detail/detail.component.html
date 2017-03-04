@@ -11,7 +11,7 @@
         <form #detailForm="ngForm">
           <div layout="row" layout-margin>
             <md-input-container flex>
-              <input md-input placeholder="ID" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
+              <input mdInput placeholder="ID" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
             </md-input-container>
           </div>
           <div layout="row" layout-margin>
@@ -30,12 +30,12 @@
           </div>
           <div layout="row" layout-margin>
             <md-input-container flex>
-              <input md-input type="date" placeholder="Transaction Date" required [(ngModel)]="docObject.TranDateString" name="trandate" #trandate="ngModel">
+              <input mdInput type="date" placeholder="Transaction Date" required [(ngModel)]="docObject.TranDateString" name="trandate" #trandate="ngModel">
             </md-input-container>
           </div>
           <div layout="row" layout-margin>
             <md-input-container flex>
-              <textarea md-input placeholder="Description" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
+              <textarea mdInput placeholder="Description" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
             </md-input-container>
           </div>
         </form>
@@ -70,7 +70,7 @@
             <form #itemDetailForm="ngForm">
               <div layout="row" layout-margin>
                 <md-input-container flex>
-                  <input md-input type="number" placeholder="Item ID" required [(ngModel)]="itemObject.ItemId" name="itemid" #itemid="ngModel">
+                  <input mdInput type="number" placeholder="Item ID" required [(ngModel)]="itemObject.ItemId" name="itemid" #itemid="ngModel">
                 </md-input-container>
               </div>
               <div layout="row" layout-margin>
@@ -89,12 +89,12 @@
               </div>
               <div layout="row" layout-margin>
                 <md-input-container flex>
-                  <input md-input type="number" placeholder="Transaction amount" required [(ngModel)]="itemObject.TranAmount" name="itemtranamt" #itemtranamt="ngModel">
+                  <input mdInput type="number" placeholder="Transaction amount" required [(ngModel)]="itemObject.TranAmount" name="itemtranamt" #itemtranamt="ngModel">
                 </md-input-container>
               </div>
               <div layout="row" layout-margin>
                 <md-input-container flex>
-                  <textarea md-input placeholder="Description" [(ngModel)]="itemObject.Desp" name="itemdesp" #itemdesp="ngModel"></textarea>
+                  <textarea mdInput placeholder="Description" [(ngModel)]="itemObject.Desp" name="itemdesp" #itemdesp="ngModel"></textarea>
                 </md-input-container>
               </div>
               <div layout="row" layout-margin>

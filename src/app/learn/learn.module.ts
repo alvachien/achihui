@@ -22,7 +22,7 @@ import { DetailComponent as CategoryDetailComponent } from './category/detail/de
     CommonModule,
     LearnRoutingModule,
     UIRefModule,
-    MaterialModule.forRoot(),
+    MaterialModule,
     CovalentCoreModule.forRoot()
   ],
   declarations: [
