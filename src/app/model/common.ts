@@ -4,6 +4,9 @@ export const TypeParentSplitter: string = " > ";
 export const IDSplitChar: string = ",";
 export const DateSplitChar: string = '-';
 export const FinanceAccountCategory_AdvancePayment: number = 8; // Advance payment
+export const FinanceDocType_Transfer: number = 2; // Transfer doc
+export const FinanceTranType_TransferIn: number = 37;
+export const FinanceTranType_TransferOut: number = 60;
 
 export enum AuthorizeScope { All = 1, OnlyOwner = 2 };
 export enum MessageType { Info = 1, Warning = 2, Error = 3 };

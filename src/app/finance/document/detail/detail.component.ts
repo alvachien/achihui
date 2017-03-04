@@ -180,10 +180,9 @@ export class DetailComponent implements OnInit {
 
   public onSubmit(): void {
 
-    this.docObject.onComplete();
-    
     if (this.uiMode === HIHCommon.UIMode.Create
       || this.uiMode === HIHCommon.UIMode.Change) {
+      this.docObject.onComplete();
     } else {
       this._dialogService.openAlert({
         message: "UI mode need require saving",
@@ -325,16 +324,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this._zone.run(() => {
-    //       this.arUsers = data;
-    //     });          
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
   loadControlCenterList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -350,16 +339,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractControlCenterData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this._zone.run(() => {
-    //       this.arControlCenter = data;
-    //     });
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
   loadDocTypeList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -375,16 +354,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractDocTypeData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this._zone.run(() => {
-    //       this.arDocType = data;
-    //     });
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
   loadTranTypeList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -400,16 +369,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractTranTypeData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this._zone.run(() => {
-    //       this.arTranType = data;
-    //     });
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
   loadCurrencyList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -425,16 +384,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractCurrencyData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this._zone.run(() => {
-    //       this.arCurrency = data;
-    //     });
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
   loadOrderList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -450,16 +399,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractOrderData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this._zone.run(() => {
-    //       this.arOrder = data;
-    //     });
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
   loadAccountList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -475,16 +414,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractAccountData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this._zone.run(() => {
-    //       this.arAccount = data;
-    //     });
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
 
   private extractDocumentData(res: Response) {

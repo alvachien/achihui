@@ -100,6 +100,7 @@ export class DetailComponent implements OnInit {
           closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
         });
       }, () => {
+        // Completed
       });
     });
   }
@@ -220,6 +221,8 @@ export class DetailComponent implements OnInit {
       },
       error => {
         // It should be handled already
+      }, () => {
+
       });
   }
 
@@ -237,14 +240,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this.arUsers = data;
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
 
   loadCategoryList(): Observable<any> {
@@ -261,14 +256,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(objApi, { headers: headers })
       .map(this.extractCategoryData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this.arCategory = data;
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
 
   private extractUserData(res: Response) {

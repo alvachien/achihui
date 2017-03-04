@@ -95,7 +95,7 @@ export class UIStatusService {
         rl = new UIRouteLink();
         rl.title = "Setting";
         rl.route = "/finance/setting";
-        rl.icon = "settings_input";
+        rl.icon = "settings_applications";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();

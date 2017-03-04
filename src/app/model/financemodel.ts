@@ -997,6 +997,89 @@ export class Document extends hih.BaseModel {
             chkrst = false;           
         }
 
+        // Currency check
+        if (context && context.arCurrency && context.arCurrency instanceof Array) {
+            if (this.TranCurr) {
+                let bExist : boolean = false;
+                for(let cc of context.arCurrency) {
+                    if (cc.Currency === this.TranCurr) {
+                        bExist = true;
+                    }
+                }
+
+                if (!bExist) {
+                    let msg: hih.InfoMessage = new hih.InfoMessage();
+                    msg.MsgTime = new Date();
+                    msg.MsgType = hih.MessageType.Error;
+                    msg.MsgTitle = "Invalid currency!";
+                    msg.MsgContent = "Invalid currency";
+                    this.VerifiedMsgs.push(msg);
+                    chkrst = false;           
+                }
+            } else {
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgTime = new Date();
+                msg.MsgType = hih.MessageType.Error;
+                msg.MsgTitle = "Specify an currency first";
+                msg.MsgContent = "No currency inputted";
+                this.VerifiedMsgs.push(msg);
+                chkrst = false;           
+            }
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "No currency in the system";
+            msg.MsgContent = "No currency defined";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;           
+        }
+
+        // Items 
+        let amtTotal: number = 0;
+        if (this.Items instanceof Array && this.Items.length > 0) {
+            for(let fit of this.Items) {
+                //amtTotal += fit.TranAmount;
+                if (!fit.onVerify(context)) {
+                    for(let imsg of fit.VerifiedMsgs) {
+                        this.VerifiedMsgs.push(imsg);
+                    }
+                    chkrst = false;
+                } else {
+                    for(let tt of context.arTranType) {
+                        let ftt: TranType = <TranType>tt;
+                        if (ftt.Id === fit.TranType) {
+                            if (ftt.Expense) {
+                                amtTotal += (-1) * fit.TranAmount;
+                            } else {
+                                amtTotal += fit.TranAmount;
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            let msg: hih.InfoMessage = new hih.InfoMessage();
+            msg.MsgTime = new Date();
+            msg.MsgType = hih.MessageType.Error;
+            msg.MsgTitle = "No items";
+            msg.MsgContent = "No doc. items";
+            this.VerifiedMsgs.push(msg);
+            chkrst = false;
+        }
+
+        if (this.DocType === hih.FinanceDocType_Transfer){
+            if (amtTotal !== 0) {
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgTime = new Date();
+                msg.MsgType = hih.MessageType.Error;
+                msg.MsgTitle = "Item amount is not correct in transfer doc";
+                msg.MsgContent = "Amount error";
+                this.VerifiedMsgs.push(msg);
+                chkrst = false;
+            }
+        } 
+
         return chkrst;
     }
 

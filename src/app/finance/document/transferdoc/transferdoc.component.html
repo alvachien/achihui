@@ -49,21 +49,21 @@
                 <div layout="row" layout-margin>
                   <md-select flex="90" placeholder="Account" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
                     <md-option *ngFor="let sacnt of arAccount" [value]="sacnt.Id">
-                      {{acnt.Name}}
+                      {{sacnt.Name}}
                     </md-option>
                   </md-select>
                 </div>
                 <div layout="row" layout-margin>
                   <md-select flex="90" placeholder="Control center" [(ngModel)]="uiObject.SourceControlCenterId" name="frmccid" #frmccid="ngModel">
                     <md-option *ngFor="let scc of arControlCenter" [value]="scc.Id">
-                      {{cc.Name}}
+                      {{scc.Name}}
                     </md-option>
                   </md-select>
                 </div>
                 <div layout="row" layout-margin>
                   <md-select flex="90" placeholder="Order" [(ngModel)]="uiObject.SourceOrderId" name="frmorder" #frmorder="ngModel">
                     <md-option *ngFor="let sord of arOrder" [value]="sord.Id">
-                      {{ord.Name}}
+                      {{sord.Name}}
                     </md-option>
                   </md-select>
                 </div>
@@ -83,21 +83,21 @@
                 <div layout="row" layout-margin>
                   <md-select flex="90" placeholder="Account" [(ngModel)]="uiObject.TargetAccountId" name="toaccount" #toaccount="ngModel">
                     <md-option *ngFor="let tacnt of arAccount" [value]="tacnt.Id">
-                      {{acnt.Name}}
+                      {{tacnt.Name}}
                     </md-option>
                   </md-select>
                 </div>
                 <div layout="row" layout-margin>
                   <md-select flex="90" placeholder="Control center" [(ngModel)]="uiObject.TargetControlCenterId" name="toccid" #toccid="ngModel">
                     <md-option *ngFor="let tcc of arControlCenter" [value]="tcc.Id">
-                      {{cc.Name}}
+                      {{tcc.Name}}
                     </md-option>
                   </md-select>
                 </div>
                 <div layout="row" layout-margin>
                   <md-select flex="90" placeholder="Order" [(ngModel)]="uiObject.TargetOrderId" name="toorder" #toorder="ngModel">
                     <md-option *ngFor="let tord of arOrder" [value]="tord.Id">
-                      {{ord.Name}}
+                      {{tord.Name}}
                     </md-option>
                   </md-select>
                 </div>

@@ -27,7 +27,8 @@ export class ListComponent implements OnInit {
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'CategoryId', label: 'Category', tooltip: 'Category ID' },
     { name: 'CategoryName', label: 'Category Name', tooltip: 'Category' },
-    { name: 'Comment', label: 'Comment' }
+    { name: 'Name', label: 'Name', tooltip: 'Name' },
+    { name: 'Comment', label: 'Comment', tooltip: 'Comment' }
   ];
   filteredData: any[];
   filteredTotal: number;
@@ -35,7 +36,7 @@ export class ListComponent implements OnInit {
   fromRow: number = 1;
   currentPage: number = 1;
   pageSize: number = 10;
-  sortBy: string = 'Id';
+  sortBy: string = 'Name';
   selectable: boolean = true;
   selectedRows: any[] = [];
   searchBox = {

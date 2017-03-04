@@ -31,11 +31,11 @@ export class TransferdocComponent implements OnInit {
   private _apiUrl: string;
   private arUsers: Array<HIHUser.UserDetail> = [];
   private arDocType: Array<HIHFinance.DocumentType> = [];
-  private arTranType: Array<HIHFinance.TranType> = [];
   private arAccount: Array<HIHFinance.Account> = [];
   private arControlCenter: Array<HIHFinance.ControllingCenter> = [];
   private arOrder: Array<HIHFinance.Order> = [];
   private arCurrency: Array<HIHFinance.Currency> = [];
+  private arTranType: Array<HIHFinance.TranType> = [];
   public currentMode: string;
   public docObject: HIHFinance.Document = null;
   public uiObject: HIHUI.UIFinTransferDocument = null;
@@ -67,17 +67,19 @@ export class TransferdocComponent implements OnInit {
 
     Observable.forkJoin([
       this.loadCurrencyList(),
-      this.loadControlCenterList(),
+      this.loadDocTypeList(),
       this.loadAccountList(),
-      this.loadOrderList()
+      this.loadControlCenterList(),
+      this.loadOrderList(),
+      this.loadTranTypeList()
     ]).subscribe(data => {
       this._zone.run(() => {
         this.arCurrency = data[0];
         this.arDocType = data[1];
-        this.arControlCenter = data[2];
-        this.arTranType = data[3];
-        this.arAccount = data[4];
-        this.arOrder = data[5];
+        this.arAccount = data[2];
+        this.arControlCenter = data[3];
+        this.arOrder = data[4];
+        this.arTranType = data[5];
       });
 
       // Distinguish current mode
@@ -133,15 +135,142 @@ export class TransferdocComponent implements OnInit {
   // Methods for UI controls
   ////////////////////////////////////////////
   public onSubmit(): void {
+    let context: any = {
+      arDocType: this.arDocType,
+      arCurrency: this.arCurrency,
+      arAccount: this.arAccount,
+      arTranType: this.arTranType,
+      arControlCenter: this.arControlCenter,
+      arOrder: this.arOrder
+    };
+
+    let checkFailed: boolean = false;
 
     switch(this.uiMode) {
       case HIHCommon.UIMode.Create: {
-        this.docObject.onComplete();
+        // Fulfill the data
+        this.docObject.DocType = HIHCommon.FinanceDocType_Transfer;
+        this.docObject.Items = [];
+        let fitem: HIHFinance.DocumentItem = new HIHFinance.DocumentItem();
+        fitem.ItemId = 1;
+        fitem.AccountId = this.uiObject.SourceAccountId;
+        fitem.ControlCenterId = this.uiObject.SourceControlCenterId;
+        fitem.OrderId = this.uiObject.SourceOrderId;
+        fitem.TranType = HIHCommon.FinanceTranType_TransferOut;
+        fitem.TranAmount = this.uiObject.TranAmount;
+        this.docObject.Items.push(fitem);
+
+        fitem = new HIHFinance.DocumentItem();
+        fitem.ItemId = 2;
+        fitem.AccountId = this.uiObject.TargetAccountId;
+        fitem.ControlCenterId = this.uiObject.TargetControlCenterId;
+        fitem.OrderId = this.uiObject.TargetOrderId;
+        fitem.TranType = HIHCommon.FinanceTranType_TransferIn;
+        fitem.TranAmount = this.uiObject.TranAmount;
+        this.docObject.Items.push(fitem);
+
+        this.docObject.onComplete();        
+
+        if (!this.docObject.onVerify(context)) {
+          for (let msg of this.docObject.VerifiedMsgs) {
+            if (msg.MsgType === HIHCommon.MessageType.Error) {
+              checkFailed = true;
+              this._dialogService.openAlert({
+                message: msg.MsgContent,
+                disableClose: false, // defaults to false
+                viewContainerRef: this._viewContainerRef, //OPTIONAL
+                title: msg.MsgTitle, //OPTIONAL, hides if not provided
+                closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+              });
+            }
+          }
+        }
+        if (checkFailed) {
+          return;
+        }
+
+        // Do the real post
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        if (this._authService.authSubject.getValue().isAuthorized) {
+          headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        }
+
+        let dataJSON = this.docObject.writeJSONString();
+        this._http.post(this._apiUrl, dataJSON, { headers: headers })
+          .map(response => response.json())
+          .catch(this.handleError)
+          .subscribe(x => {
+            // It returns a new object with ID filled.
+            let nNewObj = new HIHFinance.Document();
+            nNewObj.onSetData(x);
+
+            // Navigate.
+            this._router.navigate(['/finance/document/display/' + nNewObj.Id.toString()]);
+          }, error => {
+            this._dialogService.openAlert({
+              message: 'Error in creating!',
+              disableClose: false, // defaults to false
+              viewContainerRef: this._viewContainerRef, //OPTIONAL
+              title: 'Create failed', //OPTIONAL, hides if not provided
+              closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+            });
+          }, () => {
+          });
       }
       break;
 
       case HIHCommon.UIMode.Change: {
         this.docObject.onComplete();
+
+        if (!this.docObject.onVerify(context)) {
+          for (let msg of this.docObject.VerifiedMsgs) {
+            if (msg.MsgType === HIHCommon.MessageType.Error) {
+              checkFailed = true;
+              this._dialogService.openAlert({
+                message: msg.MsgContent,
+                disableClose: false, // defaults to false
+                viewContainerRef: this._viewContainerRef, //OPTIONAL
+                title: msg.MsgTitle, //OPTIONAL, hides if not provided
+                closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+              });
+            }
+          }
+        }
+        if (checkFailed) {
+          return;
+        }
+
+        // Do the real post
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        if (this._authService.authSubject.getValue().isAuthorized) {
+          headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        }
+
+        let dataJSON = this.docObject.writeJSONString();
+        this._http.put(this._apiUrl, dataJSON, { headers: headers })
+          .map(response => response.json())
+          .catch(this.handleError)
+          .subscribe(x => {
+            // It returns a new object with ID filled.
+            let nNewObj = new HIHFinance.Document();
+            nNewObj.onSetData(x);
+
+            // Navigate.
+            this._router.navigate(['/finance/document/display/' + nNewObj.Id.toString()]);
+          }, error => {
+            this._dialogService.openAlert({
+              message: 'Error in creating!',
+              disableClose: false, // defaults to false
+              viewContainerRef: this._viewContainerRef, //OPTIONAL
+              title: 'Create failed', //OPTIONAL, hides if not provided
+              closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+            });
+          }, () => {
+          });
       }
       break;
 
