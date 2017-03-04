@@ -181,9 +181,12 @@ export class ListComponent implements OnInit {
       });
       return;
     }
-
     
-    this._router.navigate(['/finance/document/edit/' + this.selectedRows[0].Id.toString()]);
+    if (this.selectedRows[0].DocType === HIHCommon.FinanceDocType_Transfer) {
+      this._router.navigate(['/finance/document/edittransfer/' + this.selectedRows[0].Id.toString()]);
+    } else {
+      this._router.navigate(['/finance/document/edit/' + this.selectedRows[0].Id.toString()]);
+    }    
   }
 
   public onDeleteDocument() {

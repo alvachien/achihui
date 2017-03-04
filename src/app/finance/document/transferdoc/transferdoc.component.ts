@@ -85,16 +85,16 @@ export class TransferdocComponent implements OnInit {
       // Distinguish current mode
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === "create") {
+          if (x[0].path === "createtransfer") {
             this.currentMode = "Create";
             this.docObject = new HIHFinance.Document();
             this.uiMode = HIHCommon.UIMode.Create;
-          } else if (x[0].path === "edit") {
+          } else if (x[0].path === "edittransfer") {
             this.routerID = +x[1].path;
 
             this.currentMode = "Edit"
             this.uiMode = HIHCommon.UIMode.Change;
-          } else if (x[0].path === "display") {
+          } else if (x[0].path === "displaytransfer") {
             this.routerID = +x[1].path;
 
             this.currentMode = "Display";
@@ -207,7 +207,7 @@ export class TransferdocComponent implements OnInit {
             nNewObj.onSetData(x);
 
             // Navigate.
-            this._router.navigate(['/finance/document/display/' + nNewObj.Id.toString()]);
+            this._router.navigate(['/finance/document/displaytransfer/' + nNewObj.Id.toString()]);
           }, error => {
             this._dialogService.openAlert({
               message: 'Error in creating!',
@@ -260,7 +260,7 @@ export class TransferdocComponent implements OnInit {
             nNewObj.onSetData(x);
 
             // Navigate.
-            this._router.navigate(['/finance/document/display/' + nNewObj.Id.toString()]);
+            this._router.navigate(['/finance/document/displaytransfer/' + nNewObj.Id.toString()]);
           }, error => {
             this._dialogService.openAlert({
               message: 'Error in creating!',
@@ -298,6 +298,21 @@ export class TransferdocComponent implements OnInit {
         // Document read successfully
         this._zone.run(() => {
           this.docObject = x;
+
+          // Also need prepare the UI uiObject
+          for(let fi of this.docObject.Items) {
+            if (fi.TranType === HIHCommon.FinanceTranType_TransferOut) {
+              this.uiObject.SourceAccountId = fi.AccountId;
+              this.uiObject.SourceControlCenterId = fi.ControlCenterId;
+              this.uiObject.SourceOrderId = fi.OrderId;
+              
+              this.uiObject.TranAmount = fi.TranAmount;              
+            } else if (fi.TranType === HIHCommon.FinanceTranType_TransferIn) {
+              this.uiObject.TargetAccountId = fi.AccountId;
+              this.uiObject.TargetControlCenterId = fi.ControlCenterId;
+              this.uiObject.TargetOrderId = fi.OrderId;
+            }
+          }
         });
       }, error => {
         this._dialogService.openAlert({
