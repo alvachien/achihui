@@ -1,8 +1,62 @@
 <md-card>
-  <md-card-title>Advance payment Document</md-card-title>
-  <md-card-subtitle>{{CurrentMode}}</md-card-subtitle>
+  <md-card-title>Advance payment</md-card-title>
+  <md-card-subtitle>{{currentMode}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
-    <p>Advance payment</p>
+    <div layout="column" layout-padding>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <input mdInput placeholder="ID" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <input mdInput type="date" placeholder="Transaction Date" required [(ngModel)]="docObject.TranDateString" name="trandate"
+              #trandate="ngModel">
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <input mdInput type="number" placeholder="Transaction amount" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
+              #itemtranamt="ngModel">
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-select flex="90" placeholder="Currency" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
+          <md-option *ngFor="let cur of arCurrency" [value]="cur.Currency">
+              {{cur.Symbol}} - {{cur.Name}}
+          </md-option>
+        </md-select>
+      </div>
+      <div layout="row" layout-margin>
+          <md-input-container flex>
+            <textarea mdInput placeholder="Description" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
+          </md-input-container>
+      </div>
+      <div layout="row" layout-padding>
+        <md-card flex>
+          <md-card-title>Detail Info</md-card-title>
+          <md-divider></md-divider>
+          <md-card-content>
+            <div layout="column" layout-padding>
+              <div layout="row" layout-margin>
+                <md-input-container flex>
+                  <input mdInput type="date" placeholder="Start" required [(ngModel)]="uiObject.AdvPayAccount.StartDateString" name="startdate" #startdate="ngModel">
+                </md-input-container>
+              </div>
+              <div layout="row" layout-margin>
+                <md-input-container flex>
+                  <input mdInput type="date" placeholder="End" required [(ngModel)]="uiObject.AdvPayAccount.EndDateString" name="enddate" #enddate="ngModel">
+                </md-input-container>
+              </div>
+            </div>
+          </md-card-content>
+        </md-card>
+      </div>
+      <div layout="row" layout-padding>
+        <button md-button color="accent" (click)="onSubmit()">Submit</button>
+        <button md-button>Cancel</button>
+      </div>       
+    </div>
   </md-card-content>
 </md-card>

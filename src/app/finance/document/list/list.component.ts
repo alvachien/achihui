@@ -166,6 +166,13 @@ export class ListComponent implements OnInit {
     this._router.navigate(['/finance/document/createtransfer']);
   }
 
+  public onCreateAdvPayDocument() : void {
+    if (environment.DebugLogging) {
+      console.log("Entering onCreateAdvPayDocument of FinanceDocumentList");
+    }
+    this._router.navigate(['/finance/document/createadvpay']);
+  }
+
   public onEditDocument() {
     if (environment.DebugLogging) {
       console.log("Entering onCreateDocument of FinanceDocumentList");

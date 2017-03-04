@@ -6,6 +6,7 @@
     <md-menu #createMenu="mdMenu">
       <button md-menu-item (click)="onCreateNormalDocument()">Normal Document</button>
       <button md-menu-item (click)="onCreateTransferDocument()">Transfer Document</button>
+      <button md-menu-item (click)="onCreateAdvPayDocument()">Advance Payment</button>
     </md-menu>
     <div layout="row" layout-align="start center" class="pad-left-sm pad-right-sm">
       <span *ngIf="!searchBox.searchVisible" class="push-left-sm">

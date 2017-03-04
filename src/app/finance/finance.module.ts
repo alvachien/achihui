@@ -26,6 +26,7 @@ import { DocumentComponent } from './document/document.component';
 import { ListComponent as DocumentListComponent } from './document/list/list.component';
 import { DetailComponent as DocumentDetailComponent } from './document/detail/detail.component';
 import { TransferdocComponent as DocumentTransferDetailComponent } from './document/transferdoc/transferdoc.component';
+import { AdvpaydocComponent as DocumentAdvpaydocDetailComponent } from './document/advpaydoc/advpaydoc.component';
 import { DocumentTypeComponent } from './documenttype/documenttype.component';
 import { ListComponent as DocumentTypeListComponent } from './documenttype/list/list.component';
 import { DetailComponent as DocumentTypeDetailComponent } from './documenttype/detail/detail.component';
@@ -70,6 +71,7 @@ import { OrderComponent as ReportOrderComponent } from './report/order/order.com
     DocumentListComponent, 
     DocumentDetailComponent, 
     DocumentTransferDetailComponent,
+    DocumentAdvpaydocDetailComponent,
     
     ControlCenterComponent,     
     ControlCenterListComponent, 

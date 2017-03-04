@@ -1,5 +1,6 @@
 import { environment } from '../../environments/environment';
 import * as hih from './common';
+import * as HIHFinance from './financemodel';
 
 export class UIFinTransferDocument {
     public TranAmount: number;
@@ -16,4 +17,19 @@ export class UIFinTransferDocument {
     public TargetControlCenterName: string;
     public SourceOrderName: string;
     public TargetOrderName: string;
+}
+
+export class UIFinAdvPayDocument {
+    public TranAmuont: number;
+
+    public SourceAccountId: number;
+    public SourceControlCenterId: number;
+    public SourceOrderId: number;
+
+    public AdvPayAccount: HIHFinance.AccountExtraAdvancePayment;
+    public TmpDocs: Array<HIHFinance.TemplateDocADP> = [];
+
+    constructor() {
+        this.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
+    }
 }

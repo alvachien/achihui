@@ -284,6 +284,12 @@ export abstract class AccountExtra {
     public writeJSONObject(): any {
         return {};
     }
+    public onInit(): void {        
+    }
+    public onComplete(): void {        
+    }
+    public onSetData(data: any): void {        
+    }
 }
 
 export class Account extends hih.BaseModel {
@@ -413,12 +419,45 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     public DeferredDays: string;
     public Comment: string;
 
+    // UI part
+    public StartDateString: string;
+    public EndDateString: string;
+
+    constructor() {
+        super();
+
+        this.StartDate = new Date();
+        this.EndDate = new Date();
+
+        this.StartDateString = hih.Utility.Date2String(this.StartDate);
+        this.EndDateString = hih.Utility.Date2String(this.EndDate);
+    }
+
+    public onInit() {
+        super.onInit();
+
+        if (environment.DebugLogging) {
+            console.log("Entering onInit of Order");
+        }
+
+        if (this.StartDate) {
+            this.StartDateString = hih.Utility.Date2String(this.StartDate);
+        } else {
+            this.StartDateString = "";
+        }
+        if (this.EndDate) {
+            this.EndDateString = hih.Utility.Date2String(this.EndDate);
+        } else {
+            this.EndDateString = "";
+        }
+    }
+
     public writeJSONObject(): any {
         if (environment.DebugLogging) {
             console.log("Entering writeJSONObject of AccountExtraAdvancePayment");
         }
 
-        let rstobj: any = { };
+        let rstobj: any = super.writeJSONObject();
         rstobj.direct = this.Direct;
         rstobj.startDate = this.StartDate;
         rstobj.endDate = this.EndDate;
@@ -429,10 +468,13 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 
         return rstobj;
     }
+
     public onSetData(data: any) {
         if (environment.DebugLogging) {
             console.log("Entering onSetData of AccountExtraAdvancePayment");
         }
+
+        super.onSetData(data);
 
         if (data && data.direct) {
             this.Direct = data.direct;
@@ -441,9 +483,11 @@ export class AccountExtraAdvancePayment extends AccountExtra {
         }
         if (data && data.startDate) {
             this.StartDate = new Date(data.startDate);
+            this.StartDateString = hih.Utility.Date2String(this.StartDate);
         }
         if (data && data.endDate) {
             this.EndDate = new Date(data.endDate);
+            this.EndDateString = hih.Utility.Date2String(this.EndDate);
         }
         if (data && data.rptType) {
             this.RepeatType = data.rptType;
@@ -456,6 +500,26 @@ export class AccountExtraAdvancePayment extends AccountExtra {
         }
         if (data && data.comment) {
             this.Comment = data.comment;
+        }
+    }
+
+    public onComplete() : void {
+        super.onComplete();
+
+        if (environment.DebugLogging) {
+            console.log("Entering onComplete of AccountExtraAdvancePayment");
+        }
+
+        if (this.StartDateString) {
+            this.StartDate = hih.Utility.String2Date(this.StartDateString);
+        } else {
+            this.StartDate = null;
+        }
+        
+        if (this.EndDateString) {
+            this.EndDate = hih.Utility.String2Date(this.EndDateString);
+        } else {
+            this.EndDate = null;
         }
     }
 }
@@ -563,6 +627,11 @@ export class Order extends hih.BaseModel {
         if (environment.DebugLogging) {
             console.log("Entering constructor of Order");
         }
+
+        this.ValidFrom = new Date();
+        this.ValidTo = new Date();
+        this.ValidFromString = hih.Utility.Date2String(this.ValidFrom);
+        this.ValidToString = hih.Utility.Date2String(this.ValidTo);
     }
 
     public onInit() {
@@ -941,6 +1010,7 @@ export class Document extends hih.BaseModel {
         }
 
         this.TranDate = new Date();
+        this.TranDateString = hih.Utility.Date2String(this.TranDate);
     }
 
     public onInit() {
@@ -1431,7 +1501,7 @@ export class DocumentItem {
     }
 }
 
-export class TemplateDocDP extends hih.BaseModel {
+export class TemplateDocADP extends hih.BaseModel {
     public DocId: number;
     public RefDocId: number;
     public AccountId: number;
@@ -1445,20 +1515,20 @@ export class TemplateDocDP extends hih.BaseModel {
     constructor() {
         super();
         if (environment.DebugLogging) {
-            console.log("Entering constructor of TemplateDocDP");
+            console.log("Entering constructor of TemplateDocADP");
         }
     }
 
     public onInit() {
         super.onInit();
         if (environment.DebugLogging) {
-            console.log("Entering onInit of TemplateDocDP");
+            console.log("Entering onInit of TemplateDocADP");
         }
     }
 
     public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
-            console.log("Entering onVerify of TemplateDocDP");
+            console.log("Entering onVerify of TemplateDocADP");
         }
         if (!super.onVerify(context))
             return false;
@@ -1468,7 +1538,7 @@ export class TemplateDocDP extends hih.BaseModel {
 
     public writeJSONObject(): any {
         if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of TemplateDocDP");
+            console.log("Entering writeJSONObject of TemplateDocADP");
         }
 
         let rstObj = super.writeJSONObject();
@@ -1477,7 +1547,7 @@ export class TemplateDocDP extends hih.BaseModel {
 
     public onSetData(data: any) {
         if (environment.DebugLogging) {
-            console.log("Entering onSetData of TemplateDocDP");
+            console.log("Entering onSetData of TemplateDocADP");
         }
     }
 }

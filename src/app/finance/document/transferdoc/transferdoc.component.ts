@@ -49,6 +49,9 @@ export class TransferdocComponent implements OnInit {
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
     private _uistatus: UIStatusService) {
+    if (environment.DebugLogging) {
+      console.log("Entering constructor of TransferdocComponent");
+    }
 
     this.docObject = new HIHFinance.Document();
     this.uiObject = new HIHUI.UIFinTransferDocument();
