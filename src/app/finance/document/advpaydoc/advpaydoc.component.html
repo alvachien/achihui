@@ -34,24 +34,56 @@
           </md-input-container>
       </div>
       <div layout="row" layout-padding>
-        <md-card flex>
-          <md-card-title>Detail Info</md-card-title>
-          <md-divider></md-divider>
-          <md-card-content>
+        <md-tab-group flex>
+          <md-tab>
+            <template md-tab-label>
+              <em>Detail</em> Info
+            </template>
             <div layout="column" layout-padding>
-              <div layout="row" layout-margin>
-                <md-input-container flex>
-                  <input mdInput type="date" placeholder="Start" required [(ngModel)]="uiObject.AdvPayAccount.StartDateString" name="startdate" #startdate="ngModel">
-                </md-input-container>
+                <div layout="row" layout-margin>
+                  <md-slide-toggle [(ngModel)]="uiObject.AdvPayAccount.Direct" name="dir">Direct</md-slide-toggle>
+                </div>
+                <div layout="row" layout-margin>
+                  <md-input-container flex>
+                    <input mdInput type="date" placeholder="Start" required [(ngModel)]="uiObject.AdvPayAccount.StartDateString" name="startdate" #startdate="ngModel">
+                  </md-input-container>
+                </div>
+                <div layout="row" layout-margin>
+                  <md-input-container flex>
+                    <input mdInput type="date" placeholder="End" required [(ngModel)]="uiObject.AdvPayAccount.EndDateString" name="enddate" #enddate="ngModel">
+                  </md-input-container>
+                </div>
+                <div layout="row" layout-margin>
+                  <md-select placeholder="Repeat frequency" [(ngModel)]="uiObject.AdvPayAccount.RepeatType" name="rpttype" flex>
+                    <md-option *ngFor="let rt of arRepeatFrequency" [value]="rt.Id">
+                      {{rt.DisplayString}}
+                    </md-option>
+                  </md-select>
+                </div>
+                <div layout="row" layout-margin>
+                  <md-input-container flex>
+                    <input mdInput type="number" placeholder="Deferred days" [(ngModel)]="uiObject.AdvPayAccount.DeferredDays" name="dfrrdays" #dfrrdays="ngModel">
+                  </md-input-container>
+                </div>
+                <div layout="row" layout-margin>
+                  <md-input-container flex>
+                    <input mdInput type="text" placeholder="Comment" [(ngModel)]="uiObject.AdvPayAccount.Comment" name="advacntcmt" #advacntcmt="ngModel">
+                  </md-input-container>
+                </div>
+                <div layout="row" layout-padding>
+                  <button md-button color="accent" (click)="onSync()">Sync</button>
+                </div>       
               </div>
-              <div layout="row" layout-margin>
-                <md-input-container flex>
-                  <input mdInput type="date" placeholder="End" required [(ngModel)]="uiObject.AdvPayAccount.EndDateString" name="enddate" #enddate="ngModel">
-                </md-input-container>
-              </div>
-            </div>
-          </md-card-content>
-        </md-card>
+          </md-tab>
+          <md-tab>
+            <template md-tab-label>
+              <md-icon>list</md-icon>Template Docs
+            </template>
+            <td-data-table [data]="tmpDocs" [columns]="clnTmpDocs" [selectable]="true"
+              [(ngModel)]="selectedTmpDocs">
+            </td-data-table>
+          </md-tab>
+        </md-tab-group>
       </div>
       <div layout="row" layout-padding>
         <button md-button color="accent" (click)="onSubmit()">Submit</button>

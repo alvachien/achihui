@@ -67,6 +67,16 @@
     "ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",
     "SearchViaName": "根据名字来搜索项..."
   },
+  "RepeatFrequency": {
+    "Month": "月",
+    "Fortnight": "两周",
+    "Week": "周",
+    "Day": "日",
+    "Quarter": "季度",
+    "HalfYear": "半年",
+    "Year": "年",
+    "Manual": "自定义"
+  },
   "Login": {
     "User": "用户",
     "Password": "密码",

@@ -67,6 +67,16 @@
     "ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",
     "SearchViaName": "Select an item via the name..."
   },
+  "RepeatFrequency": {
+    "Month": "Month",
+    "Fortnight": "Fortnight",
+    "Week": "Week",
+    "Day": "Day",
+    "Quarter": "Quarter",
+    "HalfYear": "Half year",
+    "Year": "Year",
+    "Manual": "Manual"
+  },
   "Login": {
     "User": "User",
     "Password": "Password",

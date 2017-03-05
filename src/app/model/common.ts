@@ -23,6 +23,16 @@ export enum UIMode {
     Change = 2,
     Display = 3
 };
+export enum RepeatFrequency {
+	Month       = 0,
+	Fortnight   = 1,
+	Week        = 2,
+    Day         = 3,
+    Quarter     = 4,
+    HalfYear    = 5,
+    Year        = 6,
+    Manual      = 7
+};
 
 export class InfoMessage {
     public MsgType: MessageType;

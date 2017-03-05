@@ -38,8 +38,18 @@ export class AdvpaydocComponent implements OnInit {
   private arTranType: Array<HIHFinance.TranType> = [];
   public currentMode: string;
   public docObject: HIHFinance.Document = null;
-  public uiObject: HIHUI.UIFinAdvPayDocument = null;
+  public uiObject: HIHUI.UIFinAdvPayDocument = null;  
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
+  public tmpDocs: any[];
+  public clnTmpDocs: ITdDataTableColumn[] = [
+    { name: 'DocId', label: '#', tooltip: 'ID' },
+    { name: 'RefDocId', label: 'Ref Doc', tooltip: 'Ref Document' },
+    { name: 'TranDateString', label: 'Tran Date', tooltip: 'Tran. Date' },
+    { name: 'AccountId', label: 'Account' },
+    { name: 'TranAmount', label: 'Amount' }
+  ];
+  public selectedTmpDocs: any[] = [];
+  public arRepeatFrequency: Array<HIHUI.UIRepeatFrequency> = [];
 
   constructor(private _http: Http,
     private _zone: NgZone,
@@ -56,6 +66,7 @@ export class AdvpaydocComponent implements OnInit {
     this.docObject = new HIHFinance.Document();
     this.uiObject = new HIHUI.UIFinAdvPayDocument();
     this.uiMode = HIHCommon.UIMode.Create;
+    this.arRepeatFrequency = HIHUI.UIRepeatFrequency.getRepeatFrequencies();
 
     this._apiUrl = environment.ApiUrl + "api/financedocument";      
   }
@@ -134,6 +145,106 @@ export class AdvpaydocComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for UI controls
   ////////////////////////////////////////////
+  public onSync(): void {
+    this.uiObject.AdvPayAccount.onComplete();
+
+		let rtype: HIHCommon.RepeatFrequency = this.uiObject.AdvPayAccount.RepeatType;    
+		let ndays: number = HIHCommon.Utility.DaysBetween(this.uiObject.AdvPayAccount.StartDate, this.uiObject.AdvPayAccount.EndDate);
+		let ntimes: number = 0;
+		let i: number = 0;
+		let arDays = [];
+			
+		switch(rtype) {
+				case HIHCommon.RepeatFrequency.Month:
+					ntimes = Math.floor(ndays / 30);
+					for(i = 0; i < ntimes; i ++) {
+						let nDate = new Date(this.uiObject.AdvPayAccount.StartDate);
+						nDate.setMonth(nDate.getMonth() + i);
+						arDays.push(nDate);
+					}
+				break;
+				
+				case HIHCommon.RepeatFrequency.Fortnight:
+					ntimes = Math.floor(ndays / 14);
+					for(i = 0; i < ntimes; i ++) {
+						let nDate = new Date(this.uiObject.AdvPayAccount.StartDate);
+						nDate.setDate(nDate.getDate() + 14 * i);
+						arDays.push(nDate);
+					}
+				break;
+				
+				case HIHCommon.RepeatFrequency.Week:
+					ntimes = Math.floor(ndays / 7);
+					for(i = 0; i < ntimes; i ++) {
+						let nDate = new Date(this.uiObject.AdvPayAccount.StartDate);
+						nDate.setDate(nDate.getDate() + 7 * i);
+						arDays.push(nDate);
+					}
+				break;
+				
+				case HIHCommon.RepeatFrequency.Day:
+					ntimes = ndays;
+					for(i = 0; i < ntimes; i ++) {
+						let nDate = new Date(this.uiObject.AdvPayAccount.StartDate);
+						nDate.setDate(nDate.getDate() + i);
+						arDays.push(nDate);
+					}
+				break;
+				
+				case HIHCommon.RepeatFrequency.Quarter:
+					ntimes = Math.floor(ndays / 91);
+					for(i = 0; i < ntimes; i ++) {
+						let nDate = new Date(this.uiObject.AdvPayAccount.StartDate);
+						nDate.setMonth(nDate.getMonth() + 3 * (i + 1));
+						arDays.push(nDate);
+					}
+				break;
+				
+				case HIHCommon.RepeatFrequency.HalfYear:
+					ntimes = Math.floor(ndays / 182);
+					for(i = 0; i < ntimes; i ++) {
+						let nDate = new Date(this.uiObject.AdvPayAccount.StartDate);
+						nDate.setMonth(nDate.getMonth() + 6 * (i + 1));
+						arDays.push(nDate);
+					}
+				break;
+				
+				case HIHCommon.RepeatFrequency.Year:
+					ntimes = Math.floor(ndays / 365);
+					for(i = 0; i < ntimes; i ++) {
+						let nDate = new Date(this.uiObject.AdvPayAccount.StartDate);
+						nDate.setFullYear(nDate.getFullYear() + i);
+						arDays.push(nDate);
+					}
+				break;
+				
+				case HIHCommon.RepeatFrequency.Manual:
+					ntimes = 0;
+				break;
+				
+				default:
+				break;
+			}
+
+      for(i = 0; i < ntimes; i ++) {
+        let item: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
+        item.DocId = i + 1;
+        item.TranDate = arDays[i];
+        item.TranAmount = this.uiObject.TranAmuont / ntimes;
+        this.uiObject.TmpDocs.push(item);
+      }
+      
+      if (ntimes === 0) {
+        let item = new HIHFinance.TemplateDocADP();
+        item.DocId = 1;
+        item.TranDate = this.uiObject.AdvPayAccount.StartDate;
+        item.TranAmount = this.uiObject.TranAmuont;
+        this.uiObject.TmpDocs.push(item);				
+      }
+      this._zone.run(() => {
+        this.tmpDocs = this.uiObject.TmpDocs;
+      });
+  }
   public onSubmit(): void {
     let context: any = {
       arDocType: this.arDocType,

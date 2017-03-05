@@ -414,7 +414,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     public Direct: boolean;
     public StartDate: Date;
     public EndDate: Date;
-    public RepeatType: number;
+    public RepeatType: hih.RepeatFrequency;
     public RefDocId: number;
     public DeferredDays: string;
     public Comment: string;
@@ -1512,11 +1512,17 @@ export class TemplateDocADP extends hih.BaseModel {
     public OrderId: number;
     public Desp: string;
 
+    // UI part
+    public TranDateString: string;
+
     constructor() {
         super();
         if (environment.DebugLogging) {
             console.log("Entering constructor of TemplateDocADP");
         }
+
+        this.TranDate = new Date();
+        this.TranDateString = hih.Utility.Date2String(this.TranDate);
     }
 
     public onInit() {
@@ -1524,6 +1530,9 @@ export class TemplateDocADP extends hih.BaseModel {
         if (environment.DebugLogging) {
             console.log("Entering onInit of TemplateDocADP");
         }
+
+        this.TranDate = new Date();
+        this.TranDateString = hih.Utility.Date2String(this.TranDate);
     }
 
     public onVerify(context: any): boolean {
@@ -1542,6 +1551,8 @@ export class TemplateDocADP extends hih.BaseModel {
         }
 
         let rstObj = super.writeJSONObject();
+        // Todo
+
         return rstObj;
     }
 
@@ -1549,5 +1560,7 @@ export class TemplateDocADP extends hih.BaseModel {
         if (environment.DebugLogging) {
             console.log("Entering onSetData of TemplateDocADP");
         }
+
+        // Todo
     }
 }
