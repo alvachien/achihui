@@ -2,8 +2,8 @@ import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { UIStatusService } from './services/uistatus.service';
 import { environment } from '../environments/environment';
-import { TranslateService } from 'ng2-translate';
 import { DomSanitizer } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
 import { MdIconRegistry } from '@angular/material';
 import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
 
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
 
   constructor(private _authService: AuthService,
     private _uistatus: UIStatusService,
-    private translateService: TranslateService,
+    private _translateService: TranslateService,
     private _loadingService: TdLoadingService,
     private _iconRegistry: MdIconRegistry,
     private _domSanitizer: DomSanitizer,
@@ -25,8 +25,8 @@ export class AppComponent implements OnInit {
       console.log("Entering constructor of AppComponent");
     }
 
-    translateService.addLangs(["en", "zh"]);
-    translateService.setDefaultLang('en');
+    this._translateService.addLangs(["en", "zh"]);
+    this._translateService.setDefaultLang('en');
 
     this._authService.authContent.subscribe(x => {
       this._uistatus.setIsLogin(x.isAuthorized);

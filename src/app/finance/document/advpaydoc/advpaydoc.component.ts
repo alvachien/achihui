@@ -20,6 +20,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { AuthService } from '../../../services/auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-advpaydoc',
@@ -29,13 +30,15 @@ import { AuthService } from '../../../services/auth.service';
 export class AdvpaydocComponent implements OnInit {
   private routerID: number; // Current ID in routing
   private _apiUrl: string;
-  private arUsers: Array<HIHUser.UserDetail> = [];
-  private arDocType: Array<HIHFinance.DocumentType> = [];
-  private arAccount: Array<HIHFinance.Account> = [];
-  private arControlCenter: Array<HIHFinance.ControllingCenter> = [];
-  private arOrder: Array<HIHFinance.Order> = [];
-  private arCurrency: Array<HIHFinance.Currency> = [];
-  private arTranType: Array<HIHFinance.TranType> = [];
+
+  public arUsers: Array<HIHUser.UserDetail> = [];
+  public arDocType: Array<HIHFinance.DocumentType> = [];
+  public arAccount: Array<HIHFinance.Account> = [];
+  public arControlCenter: Array<HIHFinance.ControllingCenter> = [];
+  public arOrder: Array<HIHFinance.Order> = [];
+  public arCurrency: Array<HIHFinance.Currency> = [];
+  public arTranType: Array<HIHFinance.TranType> = [];
+
   public currentMode: string;
   public docObject: HIHFinance.Document = null;
   public uiObject: HIHUI.UIFinAdvPayDocument = null;  
@@ -57,6 +60,7 @@ export class AdvpaydocComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
+    private _tranService: TranslateService,
     private _authService: AuthService,
     private _uistatus: UIStatusService) { 
     if (environment.DebugLogging) {
@@ -76,13 +80,19 @@ export class AdvpaydocComponent implements OnInit {
       console.log("Entering ngOnInit of AdvpaydocComponent");
     }
 
+    let strar: string[] = [];
+    for(let rf of this.arRepeatFrequency) {
+      strar.push(rf.DisplayString);
+    }
+
     Observable.forkJoin([
       this.loadCurrencyList(),
       this.loadDocTypeList(),
       this.loadAccountList(),
       this.loadControlCenterList(),
       this.loadOrderList(),
-      this.loadTranTypeList()
+      this.loadTranTypeList(),
+      this._tranService.get(strar)
     ]).subscribe(data => {
       this._zone.run(() => {
         this.arCurrency = data[0];
@@ -91,6 +101,11 @@ export class AdvpaydocComponent implements OnInit {
         this.arControlCenter = data[3];
         this.arOrder = data[4];
         this.arTranType = data[5];
+
+        let j: number = 0;
+        for(let rf2 of this.arRepeatFrequency) {
+          rf2.DisplayString = data[6][j++];
+        }
       });
 
       // Distinguish current mode
