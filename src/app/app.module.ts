@@ -23,6 +23,7 @@ import { UserdetailComponent } from './userdetail/userdetail.component';
 import { AuthService } from './services/auth.service';
 import { UIStatusService } from './services/uistatus.service';
 import { AppRoutingModule } from './app-routing.module';
+import { TranslateService } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -47,7 +48,8 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   providers: [
     AuthService,
-    UIStatusService
+    UIStatusService,
+    TranslateService
   ],
   bootstrap: [AppComponent]
 })

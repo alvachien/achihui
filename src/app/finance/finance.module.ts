@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '@angular/material';
 import { CovalentCoreModule } from '@covalent/core';
 import { UIRefModule } from '../uiref.module';
+import { TranslateService } from '@ngx-translate/core';
 
 import { FinanceComponent } from './finance.component';
 import { SettingComponent } from './setting/setting.component';
@@ -89,6 +90,9 @@ import { OrderComponent as ReportOrderComponent } from './report/order/order.com
     ReportBalanceSheetComponent, 
     ReportControlCenterComponent, 
     ReportOrderComponent
+  ],
+  providers: [
+    TranslateService
   ]
 })
 export class FinanceModule { }
