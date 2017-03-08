@@ -102,9 +102,8 @@ export class AdvpaydocComponent implements OnInit {
         this.arOrder = data[4];
         this.arTranType = data[5];
 
-        let j: number = 0;
         for(let rf2 of this.arRepeatFrequency) {
-          rf2.DisplayString = data[6][j++];
+          rf2.DisplayString = data[6][rf2.DisplayString];
         }
       });
 
@@ -245,6 +244,7 @@ export class AdvpaydocComponent implements OnInit {
         let item: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
         item.DocId = i + 1;
         item.TranDate = arDays[i];
+        item.TranDateString = HIHCommon.Utility.Date2String(item.TranDate);
         item.TranAmount = this.uiObject.TranAmuont / ntimes;
         this.uiObject.TmpDocs.push(item);
       }
@@ -253,6 +253,7 @@ export class AdvpaydocComponent implements OnInit {
         let item = new HIHFinance.TemplateDocADP();
         item.DocId = 1;
         item.TranDate = this.uiObject.AdvPayAccount.StartDate;
+        item.TranDateString = HIHCommon.Utility.Date2String(item.TranDate);
         item.TranAmount = this.uiObject.TranAmuont;
         this.uiObject.TmpDocs.push(item);				
       }

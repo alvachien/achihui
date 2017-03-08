@@ -5,6 +5,7 @@ import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
 import { AuthService } from '../services/auth.service';
 import { UIStatusService } from '../services/uistatus.service';
 import { environment } from '../../environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'hih-finance',
@@ -30,6 +31,7 @@ export class FinanceComponent implements OnInit {
     private _zone: NgZone,
     private _authService: AuthService,
     private _uistatus: UIStatusService,
+    private _translateService: TranslateService,
     viewContainerRef: ViewContainerRef) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceComponent");
@@ -47,6 +49,9 @@ export class FinanceComponent implements OnInit {
           this.titleLogin = 'Login';
       });
     });
+
+    this._translateService.addLangs(["en", "zh"]);
+    this._translateService.setDefaultLang('en');
 
     // let options: ILoadingOptions = {
     //   name: 'main',
