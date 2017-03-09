@@ -5,6 +5,7 @@ export const IDSplitChar: string = ",";
 export const DateSplitChar: string = '-';
 export const FinanceAccountCategory_AdvancePayment: number = 8; // Advance payment
 export const FinanceDocType_Transfer: number = 2; // Transfer doc
+export const FinanceDocType_AdvancePayment: number = 5;
 export const FinanceTranType_TransferIn: number = 37;
 export const FinanceTranType_TransferOut: number = 60;
 
