@@ -33,6 +33,20 @@
             <textarea mdInput placeholder="Description" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
           </md-input-container>
       </div>
+      <div layout="row" layout-margin>
+        <md-select flex="90" placeholder="Control center" [(ngModel)]="uiObject.ControlCenterId" name="srccc" #srccc="ngModel">
+          <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
+            {{cc.Name}}
+          </md-option>
+        </md-select>
+      </div>
+      <div layout="row" layout-margin>
+        <md-select flex="90" placeholder="Order" [(ngModel)]="uiObject.OrderId" name="srcorder" #srcorder="ngModel">
+          <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
+            {{ord.Name}}
+          </md-option>
+        </md-select>
+      </div>
       <div layout="row" layout-padding>
         <md-tab-group flex>
           <md-tab>

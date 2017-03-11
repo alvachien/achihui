@@ -161,6 +161,7 @@ export class AdvpaydocComponent implements OnInit {
   ////////////////////////////////////////////
   public onSync(): void {
     this.uiObject.AdvPayAccount.onComplete();
+    this.uiObject.TmpDocs = [];
 
 		let rtype: HIHCommon.RepeatFrequency = this.uiObject.AdvPayAccount.RepeatType;    
 		let ndays: number = HIHCommon.Utility.DaysBetween(this.uiObject.AdvPayAccount.StartDate, this.uiObject.AdvPayAccount.EndDate);
@@ -245,7 +246,8 @@ export class AdvpaydocComponent implements OnInit {
         item.DocId = i + 1;
         item.TranDate = arDays[i];
         item.TranDateString = HIHCommon.Utility.Date2String(item.TranDate);
-        item.TranAmount = this.uiObject.TranAmuont / ntimes;
+        item.AccountId = this.uiObject.SourceAccountId;
+        item.TranAmount = this.uiObject.TranAmount / ntimes;
         this.uiObject.TmpDocs.push(item);
       }
       
@@ -254,13 +256,15 @@ export class AdvpaydocComponent implements OnInit {
         item.DocId = 1;
         item.TranDate = this.uiObject.AdvPayAccount.StartDate;
         item.TranDateString = HIHCommon.Utility.Date2String(item.TranDate);
-        item.TranAmount = this.uiObject.TranAmuont;
+        item.AccountId = this.uiObject.SourceAccountId;
+        item.TranAmount = this.uiObject.TranAmount;
         this.uiObject.TmpDocs.push(item);				
       }
       this._zone.run(() => {
         this.tmpDocs = this.uiObject.TmpDocs;
       });
   }
+
   public onSubmit(): void {
     let context: any = {
       arDocType: this.arDocType,
@@ -276,6 +280,17 @@ export class AdvpaydocComponent implements OnInit {
     switch(this.uiMode) {
       case HIHCommon.UIMode.Create: {
         // Fulfill the data
+        this.docObject.DocType = HIHCommon.FinanceDocType_AdvancePayment;
+        this.docObject.Items = [];
+
+        let fitem: HIHFinance.DocumentItem = new HIHFinance.DocumentItem();
+        fitem.ItemId = 1;
+        fitem.AccountId = this.uiObject.SourceAccountId;
+        fitem.ControlCenterId = this.uiObject.SourceControlCenterId;
+        fitem.OrderId = this.uiObject.SourceOrderId;
+        fitem.TranType = HIHCommon.FinanceTranType_TransferOut;
+        fitem.TranAmount = this.uiObject.TranAmount;
+        this.docObject.Items.push(fitem);
 
         this.docObject.onComplete();
 
@@ -305,7 +320,29 @@ export class AdvpaydocComponent implements OnInit {
           headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
         }
 
-        let dataJSON = this.docObject.writeJSONString();
+        // Build the JSON file to API
+        let sobj = this.docObject.writeJSONObject(); // Document first
+        let acntobj: HIHFinance.Account = new HIHFinance.Account();        
+
+        //acntobj.ExtraInfo = new HIHFinance.AccountExtraAdvancePayment();        
+        acntobj.CategoryId = HIHCommon.FinanceAccountCategory_AdvancePayment;
+        acntobj.Name = this.docObject.Desp;
+        acntobj.Comment = this.docObject.Desp;
+        this.uiObject.AdvPayAccount.onComplete();        
+        acntobj.ExtraInfo = this.uiObject.AdvPayAccount;
+        sobj.AccountVM = acntobj;
+
+        sobj.TmpDocs = [];
+        for(let td of this.uiObject.TmpDocs) {
+          td.AccountId = this.uiObject.SourceAccountId;
+          td.ControlCenterId = this.uiObject.SourceControlCenterId;
+          td.OrderId = this.uiObject.SourceOrderId;
+          td.onComplete();
+
+          sobj.TmpDocs.push(td);
+        }
+
+        let dataJSON = JSON.stringify(sobj);
         this._http.post(this._apiUrl, dataJSON, { headers: headers })
           .map(response => response.json())
           .catch(this.handleError)
@@ -358,7 +395,10 @@ export class AdvpaydocComponent implements OnInit {
           headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
         }
 
-        let dataJSON = this.docObject.writeJSONString();
+        // Build the JSON file to API
+        let sobj = this.docObject.writeJSONObject(); // Document first
+
+        let dataJSON = JSON.stringify(sobj);
         this._http.put(this._apiUrl, dataJSON, { headers: headers })
           .map(response => response.json())
           .catch(this.handleError)

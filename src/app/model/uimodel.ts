@@ -62,7 +62,7 @@ export class UIRepeatFrequency {
 }
 
 export class UIFinAdvPayDocument {
-    public TranAmuont: number;
+    public TranAmount: number;
 
     public SourceAccountId: number;
     public SourceControlCenterId: number;
