@@ -376,6 +376,10 @@ export class Account extends hih.BaseModel {
         rstObj.comment = this.Comment;
         rstObj.owner = this.OwnerId;
 
+        if (this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && this.ExtraInfo) {
+            rstObj.AdvancePaymentInfo = this.ExtraInfo.writeJSONObject();
+        }
+
         return rstObj;
     }
 
@@ -1551,7 +1555,15 @@ export class TemplateDocADP extends hih.BaseModel {
         }
 
         let rstObj = super.writeJSONObject();
-        // Todo
+        rstObj.docID = this.DocId;
+        rstObj.refDocID = this.RefDocId;
+        rstObj.accountID = this.AccountId;
+        rstObj.tranDate = this.TranDate;
+        rstObj.tranType = this.TranType;
+        rstObj.tranAmount = this.TranAmount;
+        rstObj.controlCenterID = this.ControlCenterId;
+        rstObj.orderID = this.OrderId;
+        rstObj.desp = this.Desp;
 
         return rstObj;
     }

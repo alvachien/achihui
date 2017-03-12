@@ -64,6 +64,7 @@ export class UIRepeatFrequency {
 export class UIFinAdvPayDocument {
     public TranAmount: number;
 
+    public SourceTranType: number;
     public SourceAccountId: number;
     public SourceControlCenterId: number;
     public SourceOrderId: number;

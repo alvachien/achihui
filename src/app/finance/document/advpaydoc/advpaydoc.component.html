@@ -16,6 +16,20 @@
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
+        <md-select flex="90" placeholder="Account" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
+          <md-option *ngFor="let sacnt of arAccount" [value]="sacnt.Id">
+            {{sacnt.Name}}
+          </md-option>
+        </md-select>
+      </div>
+      <div layout="row" layout-margin>
+        <md-select flex="90" placeholder="Transaction type" [(ngModel)]="uiObject.SourceTranType" name="srctrantype" #srctrantype="ngModel">
+          <md-option *ngFor="let dt of arTranType" [value]="dt.Id">
+            ({{dt.Id}}) - {{dt.Name}}
+          </md-option>
+        </md-select>
+      </div>
+      <div layout="row" layout-margin>
         <md-input-container flex>
           <input mdInput type="number" placeholder="Transaction amount" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
               #itemtranamt="ngModel">
@@ -34,14 +48,14 @@
           </md-input-container>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="90" placeholder="Control center" [(ngModel)]="uiObject.ControlCenterId" name="srccc" #srccc="ngModel">
+        <md-select flex="96" placeholder="Control center" [(ngModel)]="uiObject.SourceControlCenterId" name="srccc" #srccc="ngModel">
           <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
             {{cc.Name}}
           </md-option>
         </md-select>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="90" placeholder="Order" [(ngModel)]="uiObject.OrderId" name="srcorder" #srcorder="ngModel">
+        <md-select flex="96" placeholder="Order" [(ngModel)]="uiObject.SourceOrderId" name="srcorder" #srcorder="ngModel">
           <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
             {{ord.Name}}
           </md-option>
@@ -93,9 +107,44 @@
             <template md-tab-label>
               <md-icon>list</md-icon>Template Docs
             </template>
+
             <td-data-table [data]="tmpDocs" [columns]="clnTmpDocs" [selectable]="true"
               [(ngModel)]="selectedTmpDocs">
             </td-data-table>
+            <div *ngIf="selectedTmpDocs.length > 0">
+              <md-divider></md-divider>
+              <md-card>
+                <md-card-content>
+                  <h3 md-line>Template Detail</h3>
+                  <form #tmpDocDetailForm="ngForm">
+                    <div layout="row" layout-margin>
+                      <md-input-container flex>
+                        <input mdInput type="number" placeholder="Doc ID"  [(ngModel)]="selectedTmpDocs[0].DocId" name="tmpdocid" #tmpdocid="ngModel">
+                      </md-input-container>
+                    </div>
+                    <div layout="row" layout-margin>
+                      <md-input-container flex>
+                        <input mdInput type="number" placeholder="Ref Doc ID" [(ngModel)]="selectedTmpDocs[0].RefDocId" name="tmprefdocid" #tmprefdocid="ngModel">
+                      </md-input-container>
+                    </div>
+                    <div layout="row" layout-margin>
+                      <md-input-container flex>
+                        <input mdInput type="date" placeholder="Tran Date" required [(ngModel)]="selectedTmpDocs[0].TranDateString" name="tmptrandate" #tmptrandate="ngModel">
+                      </md-input-container>
+                    </div>
+                    <div layout="row" layout-margin>
+                      <md-input-container flex>
+                        <input mdInput type="number" placeholder="Transaction amount" required [(ngModel)]="selectedTmpDocs[0].TranAmount" name="tmptranamt" #tmptranamt="ngModel">
+                      </md-input-container>
+                    </div>
+                  </form>
+                </md-card-content>
+                <md-card-actions>
+                  <button md-button color="accent" [disabled]="!tmpDocDetailForm.form.valid" (click)="onTmpDocSubmit()">Update Tmp Doc</button>
+                  <button md-button>Reset current tmp</button>
+                </md-card-actions>
+              </md-card>
+            </div>
           </md-tab>
         </md-tab-group>
       </div>

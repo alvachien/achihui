@@ -244,6 +244,7 @@ export class AdvpaydocComponent implements OnInit {
       for(i = 0; i < ntimes; i ++) {
         let item: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
         item.DocId = i + 1;
+        item.TranType = this.uiObject.SourceTranType;
         item.TranDate = arDays[i];
         item.TranDateString = HIHCommon.Utility.Date2String(item.TranDate);
         item.AccountId = this.uiObject.SourceAccountId;
@@ -254,6 +255,7 @@ export class AdvpaydocComponent implements OnInit {
       if (ntimes === 0) {
         let item = new HIHFinance.TemplateDocADP();
         item.DocId = 1;
+        item.TranType = this.uiObject.SourceTranType;
         item.TranDate = this.uiObject.AdvPayAccount.StartDate;
         item.TranDateString = HIHCommon.Utility.Date2String(item.TranDate);
         item.AccountId = this.uiObject.SourceAccountId;
@@ -288,7 +290,7 @@ export class AdvpaydocComponent implements OnInit {
         fitem.AccountId = this.uiObject.SourceAccountId;
         fitem.ControlCenterId = this.uiObject.SourceControlCenterId;
         fitem.OrderId = this.uiObject.SourceOrderId;
-        fitem.TranType = HIHCommon.FinanceTranType_TransferOut;
+        fitem.TranType = this.uiObject.SourceTranType;
         fitem.TranAmount = this.uiObject.TranAmount;
         this.docObject.Items.push(fitem);
 
@@ -328,9 +330,9 @@ export class AdvpaydocComponent implements OnInit {
         acntobj.CategoryId = HIHCommon.FinanceAccountCategory_AdvancePayment;
         acntobj.Name = this.docObject.Desp;
         acntobj.Comment = this.docObject.Desp;
-        this.uiObject.AdvPayAccount.onComplete();        
+        this.uiObject.AdvPayAccount.onComplete();
         acntobj.ExtraInfo = this.uiObject.AdvPayAccount;
-        sobj.AccountVM = acntobj;
+        sobj.AccountVM = acntobj.writeJSONObject();
 
         sobj.TmpDocs = [];
         for(let td of this.uiObject.TmpDocs) {
@@ -339,7 +341,7 @@ export class AdvpaydocComponent implements OnInit {
           td.OrderId = this.uiObject.SourceOrderId;
           td.onComplete();
 
-          sobj.TmpDocs.push(td);
+          sobj.TmpDocs.push(td.writeJSONObject());
         }
 
         let dataJSON = JSON.stringify(sobj);
