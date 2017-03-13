@@ -329,7 +329,7 @@ export class AdvpaydocComponent implements OnInit {
         //acntobj.ExtraInfo = new HIHFinance.AccountExtraAdvancePayment();        
         acntobj.CategoryId = HIHCommon.FinanceAccountCategory_AdvancePayment;
         acntobj.Name = this.docObject.Desp;
-        acntobj.Comment = this.docObject.Desp;
+        acntobj.Comment = this.docObject.Desp;        
         this.uiObject.AdvPayAccount.onComplete();
         acntobj.ExtraInfo = this.uiObject.AdvPayAccount;
         sobj.AccountVM = acntobj.writeJSONObject();
@@ -445,10 +445,15 @@ export class AdvpaydocComponent implements OnInit {
     this._http.get(this._apiUrl + '/' + this.routerID, { headers: headers })
       .map(this.extractDocumentData)
       .catch(this.handleError).subscribe(x => {
-        // Document read successfully
+        // Document read successfully        
         this._zone.run(() => {
           this.docObject = x;
         });
+
+        // Then, read the accounts
+
+
+        // After that, load the template docs.
       }, error => {
         this._dialogService.openAlert({
           message: error,
