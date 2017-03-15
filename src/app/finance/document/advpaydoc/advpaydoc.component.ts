@@ -72,7 +72,7 @@ export class AdvpaydocComponent implements OnInit {
     this.uiMode = HIHCommon.UIMode.Create;
     this.arRepeatFrequency = HIHUI.UIRepeatFrequency.getRepeatFrequencies();
 
-    this._apiUrl = environment.ApiUrl + "api/financedocument";      
+    this._apiUrl = environment.ApiUrl + "api/financeadpdocument";      
   }
 
   ngOnInit() {
@@ -447,13 +447,23 @@ export class AdvpaydocComponent implements OnInit {
       .catch(this.handleError).subscribe(x => {
         // Document read successfully        
         this._zone.run(() => {
-          this.docObject = x;
+          this.docObject = new HIHFinance.Document();
+          this.docObject.onSetData(x);
+          
+          // Account
+          let acnt: HIHFinance.Account = new HIHFinance.Account();
+          acnt.onSetData(x.accountVM);
+          this.uiObject.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
+          this.uiObject.AdvPayAccount.onSetData(x.accountVM.advancePaymentInfo);
+
+          // Tmp docs
+          this.uiObject.TmpDocs = [];
+          for(let tdoc of x.tmpDocs) {
+            let tmpdoc: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
+            tmpdoc.onSetData(tdoc);
+            this.uiObject.TmpDocs.push(tmpdoc);
+          }
         });
-
-        // Then, read the accounts
-
-
-        // After that, load the template docs.
       }, error => {
         this._dialogService.openAlert({
           message: error,
@@ -577,12 +587,6 @@ export class AdvpaydocComponent implements OnInit {
     }
 
     let body = res.json();
-    if (body) {
-      let data: HIHFinance.Document = new HIHFinance.Document();
-      data.onSetData(body);
-      return data;
-    }
-
     return body || {};
   }
   private extractUserData(res: Response) {
