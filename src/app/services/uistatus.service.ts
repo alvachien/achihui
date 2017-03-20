@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
+import { AppLanguage } from '../model/common';
 import { UIRouteLink } from '../model/uicommon';
 
 @Injectable()
@@ -10,6 +11,11 @@ export class UIStatusService {
   // This class served for the UI status
   // Including the Logged in, the navigation lists and so on
   // It works upon the BehaviorObject.
+
+  public arLang: Array<AppLanguage>;
+  public curLang: string;
+  public subjCurLanguage: BehaviorSubject<string> = new BehaviorSubject(this.curLang);
+  public obsCurLanguage = this.subjCurLanguage.asObservable();
 
   private arAppRouteLink: Array<UIRouteLink> = new Array<UIRouteLink>();
   public subjAppRouteList: BehaviorSubject<Object> = new BehaviorSubject(this.arAppRouteLink);
@@ -59,6 +65,19 @@ export class UIStatusService {
     if (environment.DebugLogging) {
       console.log("ACHIHUI Log: Entering constructor of UIStatusService");
     }
+
+    this.arLang = new Array<AppLanguage>();
+
+    let ap:AppLanguage = new AppLanguage();
+    ap.IsoName = "en";
+    ap.NativeName = "Nav.English";
+    this.arLang.push(ap);
+    ap = new AppLanguage();
+    ap.IsoName = "zh";
+    ap.NativeName = "Nav.SimplifiedChinese";
+    this.arLang.push(ap);
+
+    this.curLang = "en"; // Default is English
   }
 
   public setIsLogin(isLogin: boolean): void {
@@ -224,5 +243,23 @@ export class UIStatusService {
     }
     this.financeSubModule = financeSubMod;
     this.subjFinanceSubModule.next(this.financeSubModule);
+  }
+
+  public setCurrentLanguage(curlang: string): void {
+    if (curlang !== this.curLang) {
+      // Check whether the new value is valid
+      let bValid: boolean = false;
+      for(let ap of this.arLang) {
+        if (ap.IsoName === curlang) {
+          bValid = true;
+          break;
+        }
+      }
+
+      if (bValid) {
+        this.curLang = curlang;
+        this.subjCurLanguage.next(this.curLang);
+      }
+    }
   }
 }

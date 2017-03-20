@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { HttpModule, Http } from '@angular/http';
-//import { TranslateModule, TranslateLoader, TranslateStaticLoader } from "ng2-translate/ng2-translate";
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TinyMceDirective } from './directives/tinymce.directive';

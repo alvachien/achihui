@@ -5,6 +5,7 @@ import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
 import { UIStatusService } from '../services/uistatus.service';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'hih-learn',
@@ -29,10 +30,22 @@ export class LearnComponent implements OnInit {
     private _domSanitizer: DomSanitizer,
     private _authService: AuthService,
     private _uistatus: UIStatusService,
+    private _translateService: TranslateService,
     viewContainerRef: ViewContainerRef) { 
     if (environment.DebugLogging) {
       console.log("Entering constructor of LearnComponent");
     }
+
+    let arlang: string[] = [];
+    for(let ap of this._uistatus.arLang)
+      arlang.push(ap.IsoName);
+    this._translateService.addLangs(arlang);
+    this._translateService.setDefaultLang(this._uistatus.curLang);
+    this._uistatus.obsCurLanguage.subscribe(x => {
+      this._translateService.setDefaultLang(x);
+    }, error => {
+    }, () => {
+    });
 
     this._iconRegistry.addSvgIconInNamespace('assets', 'github',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));

@@ -66,12 +66,27 @@
     <div toolbar-content layout="row" layout-align="start center" flex>
       <span hide-xs>Home Info. Hub, by Alva Chien</span>
       <span flex></span>
-      <button md-icon-button [mdMenuTriggerFor]="notificationsMenu">
+      <button md-icon-button [mdMenuTriggerFor]="langsMenu">
+        <td-notification-count color="accent">
+          <md-icon>translate</md-icon>
+        </td-notification-count>
+      </button>
+      <md-menu #langsMenu="mdMenu">
+        <td-menu>
+          <div td-menu-header class="md-subhead">Available Languages</div>          
+          <md-nav-list dense>
+            <a md-list-item *ngFor="let lang of arLanguages" (click)="onLanguageClick(lang)" >
+              <h4 md-line><span class="text-wrap">{{lang.NativeName | translate}}</span></h4>
+            </a>
+          </md-nav-list>
+        </td-menu>
+      </md-menu>
+      <button md-icon-button [mdMenuTriggerFor]="creditsMenu">
         <td-notification-count color="accent">
           <md-icon>apps</md-icon>
         </td-notification-count>
       </button>
-      <md-menu #notificationsMenu="mdMenu">
+      <md-menu #creditsMenu="mdMenu">
         <td-menu>
           <div td-menu-header class="md-subhead">Credits</div>
           <md-nav-list dense>
@@ -95,7 +110,7 @@
           </md-nav-list>
         </td-menu>
       </md-menu>
-      <a md-icon-button mdTooltip="View this code" href="https://github.com/alvachien/achihui" target="_blank">
+      <a md-icon-button mdTooltip="Github" href="https://github.com/alvachien/achihui" target="_blank">
         <md-icon svgIcon="assets:github"></md-icon>
       </a>
     </div>

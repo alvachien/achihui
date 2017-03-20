@@ -25,8 +25,16 @@ export class AppComponent implements OnInit {
       console.log("Entering constructor of AppComponent");
     }
 
-    this._translateService.addLangs(["en", "zh"]);
-    this._translateService.setDefaultLang('en');
+    let arlang: string[] = [];
+    for(let ap of this._uistatus.arLang)
+      arlang.push(ap.IsoName);
+    this._translateService.addLangs(arlang);
+    this._translateService.setDefaultLang(this._uistatus.curLang);
+    this._uistatus.obsCurLanguage.subscribe(x => {
+      this._translateService.setDefaultLang(x);
+    }, error => {
+    }, () => {
+    });
 
     this._authService.authContent.subscribe(x => {
       this._uistatus.setIsLogin(x.isAuthorized);

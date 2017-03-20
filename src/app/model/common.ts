@@ -34,6 +34,13 @@ export enum RepeatFrequency {
     Year        = 6,
     Manual      = 7
 };
+export enum LogLevel {
+    Crash = 0,
+    Error = 1,
+    Warning = 2,
+    Info = 3,
+    Debug = 4
+}
 
 export class InfoMessage {
     public MsgType: MessageType;
