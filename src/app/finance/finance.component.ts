@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { UIStatusService } from '../services/uistatus.service';
 import { environment } from '../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { AppLanguage } from '../model/common';
 
 @Component({
   selector: 'hih-finance',
@@ -24,6 +25,7 @@ export class FinanceComponent implements OnInit {
   public financeMenuToggled: boolean = true;
   public libraryMenuToggled: boolean = true;
   public currentObject: string;
+  public arLanguages: Array<AppLanguage>;
 
   constructor(private _iconRegistry: MdIconRegistry,
     private _loadingService: TdLoadingService,
@@ -36,6 +38,7 @@ export class FinanceComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceComponent");
     }
+    this.arLanguages = new Array<AppLanguage>();
 
     this._authService.authContent.subscribe(x => {
       this._zone.run(() => {
@@ -51,22 +54,18 @@ export class FinanceComponent implements OnInit {
     });
 
     let arlang: string[] = [];
-    for(let ap of this._uistatus.arLang)
+    for (let ap of this._uistatus.arLang) {
+      this.arLanguages.push(ap);
       arlang.push(ap.IsoName);
+    }
     this._translateService.addLangs(arlang);
     this._translateService.setDefaultLang(this._uistatus.curLang);
-    
+
     this._uistatus.obsCurLanguage.subscribe(x => {
       this._translateService.setDefaultLang(x);
     }, error => {
     }, () => {
     });
-
-    // let options: ILoadingOptions = {
-    //   name: 'main',
-    //   type: LoadingType.Circular,
-    // };
-    // this._loadingService.createOverlayComponent(options, viewContainerRef);
 
     this._iconRegistry.addSvgIconInNamespace('assets', 'github',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
@@ -93,45 +92,35 @@ export class FinanceComponent implements OnInit {
         this.appRoutes = x;
       });
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsLearnRouteList.subscribe(x => {
       this._zone.run(() => {
         this.learnRoutes = x;
       });
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsFinanceRouteList.subscribe(x => {
       this._zone.run(() => {
         this.financeRoutes = x;
       });
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsLibraryRouteList.subscribe(x => {
       this._zone.run(() => {
         this.libraryRoutes = x;
       });
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsUserRouteList.subscribe(x => {
       this._zone.run(() => {
         this.userRoutes = x;
       });
     }, error => {
-
     }, () => {
-
     });
   }
 
@@ -169,5 +158,8 @@ export class FinanceComponent implements OnInit {
   }
   public toggleLibraryMenu(): void {
     this.libraryMenuToggled = !this.libraryMenuToggled;
+  }
+  public onLanguageClick(lang: AppLanguage) : void {
+    this._uistatus.setCurrentLanguage(lang.IsoName);
   }
 }

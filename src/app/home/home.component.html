@@ -2,12 +2,12 @@
   <td-navigation-drawer flex icon="event_seat" sidenavTitle="H.I.H." name="{{ titleLogin }}" (logout)="onLogout()">
     <div td-sidenav-content *ngIf="!isLoggedIn">
       <md-nav-list menu-items>
-        <a md-list-item (click)="onLogin()">Login</a>
+        <a md-list-item (click)="onLogin()">{{"Login.Login" | translate }</a>
       </md-nav-list>
     </div>
     <div td-sidenav-content *ngIf="isLoggedIn">
       <div class="md-body-2" layout="row" (click)="toggleLearnMenu()">
-        <span flex>Learning Trace</span>
+        <span flex>{{"Nav.LearningTrace" | translate}}</span>
         <button md-icon-button class="md-icon-button-mini">
 	          <md-icon *ngIf="!learnMenuToggled">arrow_drop_down</md-icon>
 	          <md-icon *ngIf="learnMenuToggled">arrow_drop_up</md-icon>
@@ -20,7 +20,7 @@
       </md-nav-list>
 
       <div class="md-body-2" layout="row" (click)="toggleFinanceMenu()">
-        <span flex>Finance Trace</span>
+        <span flex>{{"Nav.FinanceTrace" | translate}}</span>
         <button md-icon-button class="md-icon-button-mini">
 	          <md-icon *ngIf="!financeMenuToggled">arrow_drop_down</md-icon>
 	          <md-icon *ngIf="financeMenuToggled">arrow_drop_up</md-icon>
@@ -33,7 +33,7 @@
       </md-nav-list>
 
       <div class="md-body-1" layout="row" (click)="toggleLibraryMenu()">
-        <span flex>Library Trace</span>
+        <span flex>{{"Nav.LibraryTrace" | translate}}</span>
         <button md-icon-button class="md-icon-button-mini">
 	          <md-icon *ngIf="!libraryMenuToggled">arrow_drop_down</md-icon>
 	          <md-icon *ngIf="libraryMenuToggled">arrow_drop_up</md-icon>
@@ -88,7 +88,7 @@
       </button>
       <md-menu #creditsMenu="mdMenu">
         <td-menu>
-          <div td-menu-header class="md-subhead">Credits</div>
+          <div td-menu-header class="md-subhead">{{"Nav.Credits" | translate}}</div>
           <md-nav-list dense>
             <a md-list-item href="https://github.com/angular/angular" target="_blank">
               <md-icon md-list-avatar svgIcon="assets:angular"></md-icon>
@@ -137,10 +137,10 @@
         <div flex class="pad" tdMediaToggle="gt-xs" [mediaClasses]="['pad-xl']">
           <div class="push-top-xl" hide-xs></div>
           <div tdMediaToggle="gt-sm" [mediaClasses]="['push-lg']">
-            <h1 class="md-display-1 tc-grey-800 push-top-xs push-bottom-sm">Login</h1>
+            <h1 class="md-display-1 tc-grey-800 push-top-xs push-bottom-sm">{{"Login.Login" | translate}}</h1>
             <p class="md-title tc-grey-600">To take a journal around the functionalities provided by this app, you need login.
             </p>
-            <button md-raised-button color="accent" class="push-bottom md-button-lg" (click)="onLogin()">Login</button>
+            <button md-raised-button color="accent" class="push-bottom md-button-lg" (click)="onLogin()">{{"Login.Login" | translate}}</button>
           </div>
           <div class="push-bottom-xl" hide-xs></div>
         </div>
@@ -154,11 +154,11 @@
         <div flex-gt-xs="80" layout="row" layout-wrap>
           <div class="text-center" flex-xs="50" flex-gt-xs="25">
             <md-icon class="tc-grey-50 md-display-2">system_update_alt</md-icon>
-            <div class="pad-bottom-md">Learning Trace</div>
+            <div class="pad-bottom-md">{{"Nav.LearningTrace" | translate}}</div>
           </div>
           <div class="text-center" flex-xs="50" flex-gt-xs="25">
             <md-icon class="tc-grey-50 md-display-2 ">dashboard</md-icon>
-            <div class="pad-bottom-md">Finance Trace</div>
+            <div class="pad-bottom-md">{{"Nav.FinanceTrace" | translate}}</div>
           </div>
           <div class="text-center" flex-xs="50" flex-gt-xs="25">
             <md-icon class="tc-grey-50 md-display-2">email</md-icon>
@@ -166,7 +166,7 @@
           </div>
           <div class="text-center" flex-xs="50" flex-gt-xs="25">
             <md-icon class="tc-grey-50 md-display-2">view_array</md-icon>
-            <div class="pad-bottom-md">Library</div>
+            <div class="pad-bottom-md">{{"Nav.LibraryTrace" | translate}}</div>
           </div>
         </div>
       </div>
@@ -179,7 +179,7 @@
           <div flex-gt-xs="25">
             <md-card>
               <md-toolbar color="accent" class="bgc-light-blue-500 push-bottom">
-                <span class="text-upper">Learning Trace</span>
+                <span class="text-upper">{{"Nav.LearningTrace" | translate}}</span>
               </md-toolbar>
               <md-card-subtitle>Trace the learning relevant activities.</md-card-subtitle>
               <md-divider></md-divider>
@@ -211,7 +211,7 @@
           <div flex-gt-xs="25">
             <md-card>
               <md-toolbar color="accent" class="bgc-light-blue-800 push-bottom">
-                <span class="text-upper">Finance Trace</span>
+                <span class="text-upper">{{"Nav.FinanceTrace" | translate}}</span>
               </md-toolbar>
               <md-card-subtitle>Trace the finance activities.</md-card-subtitle>
               <md-divider></md-divider>
@@ -275,7 +275,7 @@
           <div flex-gt-xs="25">
             <md-card>
               <md-toolbar color="accent" class="bgc-deep-orange-700 push-bottom">
-                <span class="text-upper">Library</span>
+                <span class="text-upper">{{"Nav.LibraryTrace" | translate}}</span>
               </md-toolbar>
               <md-card-subtitle>All content of Library.</md-card-subtitle>
               <md-divider></md-divider>
@@ -326,7 +326,7 @@
         <div layout-gt-sm="row" flex-gt-xs="75" layout-margin layout-padding>
           <div flex>
             <md-nav-list>
-              <h3 md-subheader class="text-upper tc-blue-grey-100">Learning Trace</h3>
+              <h3 md-subheader class="text-upper tc-blue-grey-100">{{"Nav.LearningTrace" | translate}}</h3>
               <md-list-item>
                 <p md-line md-caption class="md-body-2">Learn Object</p>
               </md-list-item>
@@ -343,7 +343,7 @@
           </div>
           <div flex>
             <md-nav-list>
-              <h3 md-subheader class="text-upper tc-blue-grey-100">Finance Trace</h3>
+              <h3 md-subheader class="text-upper tc-blue-grey-100">{{"Nav.FinanceTrace" | translate}}</h3>
               <md-list-item>
                 <p md-line>Finance Account</p>
               </md-list-item>
@@ -360,7 +360,7 @@
           </div>
           <div flex>
             <md-nav-list>
-              <h3 md-subheader class="text-upper tc-blue-grey-100">Library</h3>
+              <h3 md-subheader class="text-upper tc-blue-grey-100">{{"Nav.LibraryTrace" | translate}}</h3>
               <md-list-item>
                 <p md-line>Books</p>
               </md-list-item>
