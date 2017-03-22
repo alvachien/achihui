@@ -7,8 +7,7 @@ import * as HIHFinance from '../../../model/financemodel';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import {
-  TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent,
+import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent,
   ITdDataTableColumn, ITdDataTableSelectEvent
 } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
@@ -25,9 +24,9 @@ export class ListComponent implements OnInit {
   public listData: Array<HIHFinance.Account> = [];
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID' },
-    { name: 'CategoryId', label: 'Category', tooltip: 'Category ID' },
+    { name: 'CategoryId', label: "{{'Common.Category' | translate }}", tooltip: 'Category ID' },
     { name: 'CategoryName', label: 'Category Name', tooltip: 'Category' },
-    { name: 'Name', label: 'Name', tooltip: 'Name' },
+    { name: 'Name', label: "{{'Common.Name' | translate }}", tooltip: 'Name' },
     { name: 'Comment', label: 'Comment', tooltip: 'Comment' }
   ];
   filteredData: any[];

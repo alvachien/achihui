@@ -3,6 +3,7 @@
     "OK": "OK",
     "Cancel": "取消",
     "Language": "语言",
+    "Languages": "语言",
     "Clear": "清除",
     "Submit": "提交",
     "Copyright": "版权所有",
@@ -34,6 +35,7 @@
     
     "ID": "ID",
     "Category": "类别",
+    "Categories": "类别",
     "Type": "类型",
     "Name": "名称",
     "Content": "内容",
@@ -44,6 +46,8 @@
     "Text": "文本",
     "ValidFrom": "有效期始",
     "ValidTo": "有效期至",
+    "StartDate": "开始日期",
+    "EndDate": "结束日期",
     "Description": "描述",
     "Header": "头信息",
     "Detail": "详细信息",
@@ -114,10 +118,12 @@
     "English": "英文",
     "SimplifiedChinese": "简体中文"
   },
-  "Learing": {
+  "Learning": {
     "LearningCategory": "学习种类",
     "LearningObject": "学习对象",
+    "LearningObjects": "学习对象",
     "LearningHistory": "学习记录",
+    "LearningHistories": "学习记录",
     "LearningAward": "学习成绩",
     "LearningPlan": "学习计划"
   },
@@ -125,19 +131,31 @@
     "Accounts": "账户",
     "Account": "账户",
     "AccountCategory": "账户种类",
+    "AccountCategories": "账户种类",
     "Documents": "财务凭证",
     "Document": "财务凭证",
     "PostDocument": "记账",
     "Controlling": "财务控制",
     "ControlCenter": "控制中心",
+    "ControlCenters": "控制中心",
     "InternalOrder": "内部订单",
     "Order": "订单",
+    "Orders": "订单",
     "SettlementRule": "结算规则",
     "ConfigObjects": "可配置对象",
     "Currency": "货币",
+    "Currencies": "货币",
     "CurrencySymbol": "货币符号",
     "TransactionType": "交易类型",
+    "TransactionTypes": "交易类型",
     "DocumentType": "凭证类型",
+    "DocumentTypes": "凭证类型",
     "Reports": "报表"
+  },
+  "Library": {
+    "Books": "书籍",
+    "Book": "书籍",
+    "Movies": "影视剧",
+    "Movie": "影视剧"
   }
 }

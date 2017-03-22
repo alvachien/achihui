@@ -6,7 +6,7 @@
     <form (ngSubmit)="onSubmit()" #detailForm="ngForm">
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <input mdInput placeholder="ID" readonly [(ngModel)]="accountObject.Id" name="id" #id="ngModel">
+          <input mdInput placeholder="{{'Common.ID' | translate}}" readonly [(ngModel)]="accountObject.Id" name="id" #id="ngModel">
         </md-input-container>
       </div>
       <div layout="row" layout-margin>

@@ -15,7 +15,7 @@
       </div>
       <md-nav-list menu-items *ngIf="learnMenuToggled">
         <a *ngFor="let route of learnRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
-          <md-icon>{{route.icon}}</md-icon>{{route.title}}
+          <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
         </a>
       </md-nav-list>
 
@@ -28,12 +28,12 @@
       </div>
       <md-nav-list menu-items *ngIf="financeMenuToggled">
         <a *ngFor="let route of financeRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
-          <md-icon>{{route.icon}}</md-icon>{{route.title}}
+          <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
         </a>
       </md-nav-list>
 
       <div class="md-body-1" layout="row" (click)="toggleLibraryMenu()">
-        <span flex>Library Trace</span>
+        <span flex>{{"Nav.LibraryTrace" | translate}</span>
         <button md-icon-button class="md-icon-button-mini">
 	          <md-icon *ngIf="!libraryMenuToggled">arrow_drop_down</md-icon>
 	          <md-icon *ngIf="libraryMenuToggled">arrow_drop_up</md-icon>
@@ -42,7 +42,7 @@
 
       <md-nav-list menu-items *ngIf="libraryMenuToggled">
         <a *ngFor="let route of libraryRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
-          <md-icon>{{route.icon}}</md-icon>{{route.title}}
+          <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
         </a>
       </md-nav-list>
     </div>
@@ -50,10 +50,10 @@
     <div td-navigation-drawer-menu>
       <md-nav-list>
         <a *ngFor="let route of userRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
-          <md-icon>{{route.icon}}</md-icon>{{route.title}}
+          <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
         </a>
         <a md-list-item (click)="layout.close(); onLogout();">
-          <md-icon>exit_to_app</md-icon>Logout
+          <md-icon>exit_to_app</md-icon>{{ "Login.Logout" | translate}}
         </a>
       </md-nav-list>
     </div>
@@ -73,7 +73,7 @@
       </button>
       <md-menu #langsMenu="mdMenu">
         <td-menu>
-          <div td-menu-header class="md-subhead">Available Languages</div>
+          <div td-menu-header class="md-subhead">{{"Common.Languages" | translate}}</div>
           <md-nav-list dense>
             <a md-list-item *ngFor="let lang of arLanguages" (click)="onLanguageClick(lang)">
               <h4 md-line><span class="text-wrap">{{lang.NativeName | translate}}</span></h4>

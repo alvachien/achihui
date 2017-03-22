@@ -84,107 +84,113 @@ export class UIStatusService {
     if (environment.DebugLogging) {
       console.log("ACHIHUI Log: Entering setIsLogin of UIStatusService with " + isLogin);
     }
+
     if (this.isLoggedIn !== isLogin) {
       this.isLoggedIn = isLogin;
       if (this.isLoggedIn) {
+        // App. routes
         let rl: UIRouteLink = new UIRouteLink();
-        rl.title = "Home";
+        rl.title = "Nav.Home";
         rl.route = "/";
         rl.icon = "home";
         this.arAppRouteLink.push(rl);
 
+        // Learning routes
         rl = new UIRouteLink();
-        rl.title = "Categories";
+        rl.title = "Common.Categories";
         rl.route = "/learn/category";
         rl.icon = "settings_input_composite";
         this.arLearnRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Objects";
+        rl.title = "Learning.LearningObjects";
         rl.route = "/learn/object";
         rl.icon = "group_work";
         this.arLearnRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Histories";
+        rl.title = "Learning.LearningHistories";
         rl.route = "/learn/history";
         rl.icon = "history";
         this.arLearnRouteLink.push(rl);
 
+        // Finance routes
         rl = new UIRouteLink();
-        rl.title = "Setting";
+        rl.title = "Common.Setting";
         rl.route = "/finance/setting";
         rl.icon = "settings_applications";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Currencies";
+        rl.title = "Finance.Currencies";
         rl.route = "/finance/currency";
         rl.icon = "euro_symbol";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Account Categories";
+        rl.title = "Finance.AccountCategories";
         rl.route = "/finance/accountcategory";
         rl.icon = "settings_input_component";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Document Types";
+        rl.title = "Finance.DocumentTypes";
         rl.route = "/finance/documenttype";
         rl.icon = "view_comfy";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Transaction Types";
+        rl.title = "Finance.TransactionTypes";
         rl.route = "/finance/transactiontype";
         rl.icon = "featured_play_list";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Control Centers";
+        rl.title = "Finance.ControlCenters";
         rl.route = "/finance/controlcenter";
         rl.icon = "store";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Orders";
+        rl.title = "Finance.Orders";
         rl.route = "/finance/order";
         rl.icon = "tune";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Accounts";
+        rl.title = "Finance.Accounts";
         rl.route = "/finance/account";
         rl.icon = "library_books";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Documents";
+        rl.title = "Finance.Documents";
         rl.route = "/finance/document";
         rl.icon = "local_library";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Reports";
+        rl.title = "Finance.Reports";
         rl.route = "/finance/report";
         rl.icon = "pie_chart";
         this.arFinanceRouteLink.push(rl);
 
+        // Library routes
         rl = new UIRouteLink();
-        rl.title = "Library Books";
+        rl.title = "Library.Books";
         rl.route = "/library/book";
         rl.icon = "book";
         this.arLibraryRouteLink.push(rl);
 
         rl = new UIRouteLink();
-        rl.title = "Library Movies";
+        rl.title = "Library.Movies";
         rl.route = "/library/movie";
         rl.icon = "movie";
         this.arLibraryRouteLink.push(rl);
 
+        // User detail routes
         rl = new UIRouteLink();
-        rl.title = "User Detail";
+        rl.title = "Nav.UserDetail";
         rl.route = "/userdetail";
         rl.icon = "account_circle";
         this.arUserRouteLink.push(rl);

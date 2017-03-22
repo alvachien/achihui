@@ -3,6 +3,7 @@
     "OK": "OK",
     "Cancel": "Cancel",
     "Language": "Language",
+    "Languages": "Languages",
     "Clear": "Clear",
     "Submit": "Submit",
     "Copyright": "Copyright",
@@ -34,6 +35,7 @@
     
     "ID": "ID",
     "Category": "Category",
+    "Categories": "Categories",
     "Type": "Type",
     "Name": "Name",
     "Content": "Content",
@@ -44,6 +46,8 @@
     "Text": "Text",
     "ValidFrom": "Valid From",
     "ValidTo": "Valid To",
+    "StartDate": "Start Date",
+    "EndDate": "End Date",
     "Description": "Description",
     "Header": "Header",
     "Detail": "Detail",
@@ -114,10 +118,12 @@
     "English": "English",
     "SimplifiedChinese": "Simplified Chinese"
   },
-  "Learing": {
+  "Learning": {
     "LearningCategory": "Learning Category",
     "LearningObject": "Learning Object",
+    "LearningObjects": "Learning Objects",
     "LearningHistory": "Learning History",
+    "LearningHistories": "Learning Histories",
     "LearningAward": "Learning Award",
     "LearningPlan": "Learning Plan"
   },
@@ -125,19 +131,31 @@
     "Accounts": "Accounts",
     "Account": "Account",
     "AccountCategory": "Account Category",
+    "AccountCategories": "Account Categories",
     "Documents": "Documents",
     "Document": "Document",
     "PostDocument": "Post Document",
     "Controlling": "Controlling",
     "ControlCenter": "Control Center",
+    "ControlCenters": "Control Centers",
     "InternalOrder": "Internal Order",
     "Order": "Order",
+    "Orders": "Order",
     "SettlementRule": "Settlement Rule",
     "ConfigObjects": "Config Objects",
     "Currency": "Currency",
+    "Currencies": "Currencies",
     "CurrencySymbol": "Currency Symbol",
     "TransactionType": "Transaction Type",
+    "TransactionTypes": "Transaction Types",
     "DocumentType": "Document Type",
+    "DocumentTypes": "Document Type",
     "Reports": "Reports"
+  },
+  "Library": {
+    "Books": "Books",
+    "Book": "Book",
+    "Movies": "Movies",
+    "Movie": "Movie"
   }
 }
