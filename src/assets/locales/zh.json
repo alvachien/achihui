@@ -18,6 +18,7 @@
     "Themes": "主题",
     "Default": "默认",
     "BackToList": "返回列表视图",
+    "Back": "返回",
     "GoDetail": "查看详细",
     "New": "新建",
     "Change": "修改",
@@ -67,7 +68,8 @@
     "Setting": "设置",
     "DeleteConfirmation": "确认删除操作",
     "ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",
-    "SearchViaName": "根据名字来搜索项..."
+    "SearchViaName": "根据名字来搜索项...",
+    "SystemFlag": "系统标志"
   },
   "RepeatFrequency": {
     "Month": "月",
@@ -145,7 +147,8 @@
     "ConfigObjects": "可配置对象",
     "Currency": "货币",
     "Currencies": "货币",
-    "CurrencySymbol": "货币符号",
+    "CurrencySymbol": "符号",
+    "LocalCurrency": "本币",
     "TransactionType": "交易类型",
     "TransactionTypes": "交易类型",
     "DocumentType": "凭证类型",

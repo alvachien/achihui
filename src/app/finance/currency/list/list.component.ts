@@ -1,4 +1,4 @@
-import { Component, OnInit }  from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef }  from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Http, Headers, Response, RequestOptions, URLSearchParams }
   from '@angular/http';
@@ -10,22 +10,22 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { BufferService } from '../../../services/buff.service';
+import { TranslateService } from '@ngx-translate/core';
+import { TdDialogService } from '@covalent/core';
 
 @Component({
   selector: 'finance-currency-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent implements OnInit {
+export class ListComponent implements OnInit, OnDestroy {
   private _apiUrl: string;
   public listData: Array<HIHFinance.Currency> = [];
-  columns: ITdDataTableColumn[] = [
-    { name: 'Currency', label: 'Currency', tooltip: 'Currency' },
-    { name: 'Name', label: 'Name', tooltip: 'Name' },
-    { name: 'Symbol', label: 'Symbol', tooltip: 'Symbol' },
-    { name: 'IsLocalCurrency', label: 'Local Currency' },
-    { name: 'SysFlag', label: 'System Flag' },
-  ];
+
+  clnhdrstring: string[] = ["Finance.Currency", "Common.Name", "Finance.CurrencySymbol", "Finance.LocalCurrency", "Common.SystemFlag"];
+  columns: ITdDataTableColumn[];
+
   filteredData: any[];
   filteredTotal: number;
   searchTerm: string = '';
@@ -41,11 +41,24 @@ export class ListComponent implements OnInit {
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 
   constructor(private _http: Http,
-     private router: Router,
+     private _router: Router,
      private activateRoute: ActivatedRoute,
      private uistatus: UIStatusService,
-     private _dataTableService: TdDataTableService) {
+     private _dataTableService: TdDataTableService,
+     private _tranService: TranslateService,
+     private _buffService: BufferService,
+     private _viewContainerRef: ViewContainerRef,
+     private _dialogService: TdDialogService) {
     this._apiUrl = environment.ApiUrl + "api/financecurrency";
+    this.columns = [
+      { name: 'Currency', label: 'Currency', tooltip: 'Currency' },
+      { name: 'Name', label: 'Name', tooltip: 'Name' },
+      { name: 'Symbol', label: 'Symbol', tooltip: 'Symbol' },
+      { name: 'IsLocalCurrency', label: 'Local Currency' },
+      { name: 'SysFlag', label: 'System Flag' },
+    ];
+
+    this.loadHeaderString();
   }
 
   ngOnInit() {
@@ -55,6 +68,22 @@ export class ListComponent implements OnInit {
     this.uistatus.setFinanceModule("Currency");
     this.uistatus.setFinanceSubModule("List Mode");
     this.loadCurrencyList();
+
+    // Subscribe for language change
+    this._tranService.onDefaultLangChange.subscribe(x => {
+      this.loadHeaderString();
+    }, error => {
+    }, () => {
+    });
+  }
+
+  ngOnDestroy() {
+    if (environment.DebugLogging) {
+      console.log("Entering ngOnDestroy of FinanceCurrencyList");
+    }
+
+    // Unsubscribe -> Code line behind bring issues, commented it out!
+    //this._tranService.onDefaultLangChange.unsubscribe();
   }
 
   loadCurrencyList(): void {
@@ -69,10 +98,12 @@ export class ListComponent implements OnInit {
       .subscribe(data => {
         if (data instanceof Array) {
           this.listData = data;
+          this._buffService.bufferCurrencies(this.listData);
+
           this.filter();
           // this.filteredData = this.listData;
           // this.filteredTotal = this.listData.length;
-        }          
+        }
       },
       error => {
         // It should be handled already
@@ -147,6 +178,34 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering onCreateCurrency of FinanceCurrencyList");
     }
-    this.router.navigate(['/finance/currency/create']);
+    this._router.navigate(['/finance/currency/create']);
+  }
+
+  public onDisplayCurrency() {
+    if (this.selectedRows.length != 1) {
+      this._dialogService.openAlert({
+        message: "Select one and only one row to continue!",
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "Selection error", //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+      return;
+    }
+
+    this._router.navigate(['/finance/currency/display/' + this.selectedRows[0].Currency]);
+  }
+
+  private loadHeaderString() : void {
+    
+    this._tranService.get(this.clnhdrstring).subscribe(x => {
+      this.columns[0].label = x[this.clnhdrstring[0]];
+      this.columns[1].label = x[this.clnhdrstring[1]];
+      this.columns[2].label = x[this.clnhdrstring[2]];
+      this.columns[3].label = x[this.clnhdrstring[3]];
+      this.columns[4].label = x[this.clnhdrstring[4]];
+    }, error => {
+    }, () => {
+    });    
   }
 }

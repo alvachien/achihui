@@ -71,18 +71,18 @@ export class DetailComponent implements OnInit {
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === "create") {
-            this.currentMode = "Create";
+            this.currentMode = "Common.Create";
             this.accountObject = new HIHFinance.Account();
             this.uiMode = HIHCommon.UIMode.Create;
           } else if (x[0].path === "edit") {
             this.routerID = +x[1].path;
 
-            this.currentMode = "Edit"
+            this.currentMode = "Common.Edit"
             this.uiMode = HIHCommon.UIMode.Change;
           } else if (x[0].path === "display") {
             this.routerID = +x[1].path;
 
-            this.currentMode = "Display";
+            this.currentMode = "Common.Display";
             this.uiMode = HIHCommon.UIMode.Display;
           }
         }

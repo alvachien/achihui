@@ -26,7 +26,6 @@
       "scripts": [
         "../node_modules/hammerjs/hammer.min.js",
         "../node_modules/showdown/dist/showdown.js",
-        "../node_modules/oidc-client/dist/oidc-client.min.js",     
         "../node_modules/tinymce/tinymce.js",
         "../node_modules/tinymce/themes/modern/theme.js",
         "../node_modules/tinymce/plugins/link/plugin.js",

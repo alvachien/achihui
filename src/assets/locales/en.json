@@ -18,6 +18,7 @@
     "Themes": "Themes",
     "Default": "Default",
     "BackToList": "Back to List",
+    "Back": "Back",
     "GoDetail": "Go Detail",
     "New": "New",
     "Change": "Change",
@@ -67,7 +68,8 @@
     "Setting": "Setting",
     "DeleteConfirmation": "Delete Confirmation",
     "ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",
-    "SearchViaName": "Select an item via the name..."
+    "SearchViaName": "Select an item via the name...",
+    "SystemFlag": "System Flag"
   },
   "RepeatFrequency": {
     "Month": "Month",
@@ -145,7 +147,8 @@
     "ConfigObjects": "Config Objects",
     "Currency": "Currency",
     "Currencies": "Currencies",
-    "CurrencySymbol": "Currency Symbol",
+    "CurrencySymbol": "Symbol",
+    "LocalCurrency": "Local Currency",
     "TransactionType": "Transaction Type",
     "TransactionTypes": "Transaction Types",
     "DocumentType": "Document Type",

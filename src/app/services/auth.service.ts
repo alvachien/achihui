@@ -4,6 +4,7 @@ import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { UserAuthInfo } from '../model/userinfo';
+import { UserManager } from 'oidc-client';
 
 @Injectable()
 export class AuthService {
@@ -16,16 +17,7 @@ export class AuthService {
       console.log("ACHIHUI Log: Entering AuthService constructor...");
     }
 
-    let settings = {
-      authority: environment.IDServerUrl,
-      client_id: "achihui.js",
-      redirect_uri: environment.AppLoginCallbackUrl,
-      response_type: "id_token token",
-      scope: "openid profile api.hihapi",
-      post_logout_redirect_uri: environment.AppLogoutCallbackUrl
-    };
-
-    this.mgr = new Oidc.UserManager(settings);
+    this.mgr = new UserManager(AuthSettings);
     var that = this;
     this.mgr.getUser().then(function (u) {
       if (environment.DebugLogging) {
@@ -92,3 +84,20 @@ export class AuthService {
     }
   }
 }
+
+const AuthSettings: any = {
+
+  authority: environment.IDServerUrl,
+  client_id: "achihui.js",
+  redirect_uri: environment.AppLoginCallbackUrl,
+  post_logout_redirect_uri: environment.AppLogoutCallbackUrl,
+  response_type: "id_token token",
+  scope: "openid profile api.acgallery api.galleryapi",
+
+  silent_redirect_uri: environment.AppHost,
+  automaticSilentRenew: true,
+  //silentRequestTimeout:10000,
+
+  filterProtocolClaims: true,
+  loadUserInfo: true
+};

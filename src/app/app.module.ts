@@ -22,6 +22,7 @@ import { AboutComponent } from './about/about.component';
 import { UserdetailComponent } from './userdetail/userdetail.component';
 import { AuthService } from './services/auth.service';
 import { UIStatusService } from './services/uistatus.service';
+import { BufferService } from './services/buff.service';
 import { AppRoutingModule } from './app-routing.module';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -49,7 +50,8 @@ import { TranslateService } from '@ngx-translate/core';
   providers: [
     AuthService,
     UIStatusService,
-    TranslateService
+    TranslateService,
+    BufferService
   ],
   bootstrap: [AppComponent]
 })

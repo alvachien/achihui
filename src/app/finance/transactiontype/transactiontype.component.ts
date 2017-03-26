@@ -11,5 +11,4 @@ export class TransactionTypeComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

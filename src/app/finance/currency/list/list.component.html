@@ -1,5 +1,5 @@
 <md-card>
-  <md-card-title>Currency</md-card-title>
+  <md-card-title>{{"Finance.Currency" | translate}}</md-card-title>
   <md-card-subtitle>{{"Common.ListView" | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
@@ -8,7 +8,7 @@
     <button md-mini-fab color="primary" (click)="onCreateObject()">
       <md-icon>add</md-icon>
     </button>
-    <button md-mini-fab color="accent">
+    <button md-mini-fab color="accent" (click)="onDisplayCurrency()">
       <md-icon>create</md-icon>
     </button>
     <button md-mini-fab color="accent">

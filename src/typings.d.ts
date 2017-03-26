@@ -2,7 +2,6 @@
 // https://www.typescriptlang.org/docs/handbook/writing-declaration-files.html
 
 declare module 'oidc-client';
-declare var Oidc: any;
 declare var tinymce: any;
 declare var System: any;
 declare var require: any;
