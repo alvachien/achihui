@@ -19,7 +19,7 @@ import { TdDialogService } from '@covalent/core';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent implements OnInit, OnDestroy {
+export class ListComponent implements OnInit {
   private _apiUrl: string;
   public listData: Array<HIHFinance.Currency> = [];
 
@@ -38,7 +38,7 @@ export class ListComponent implements OnInit, OnDestroy {
   searchBox = {
     searchVisible: false
   };
-  sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
+  sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Ascending;
 
   constructor(private _http: Http,
      private _router: Router,
@@ -75,15 +75,6 @@ export class ListComponent implements OnInit, OnDestroy {
     }, error => {
     }, () => {
     });
-  }
-
-  ngOnDestroy() {
-    if (environment.DebugLogging) {
-      console.log("Entering ngOnDestroy of FinanceCurrencyList");
-    }
-
-    // Unsubscribe -> Code line behind bring issues, commented it out!
-    //this._tranService.onDefaultLangChange.unsubscribe();
   }
 
   loadCurrencyList(): void {

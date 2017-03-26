@@ -1,6 +1,6 @@
 <md-card>
   <md-card-title>{{"Finance.Currency" | translate}}</md-card-title>
-  <md-card-subtitle>{{currentMode}}</md-card-subtitle>
+  <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
     <form #detailForm="ngForm">
@@ -21,12 +21,12 @@
       </div>
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <md-slide-toggle [(ngModel)]="currObject.IsLocalCurrency" name="loccurr">{{'Finance.LocalCurrency' | translate}}</md-slide-toggle>
+          <md-slide-toggle readonly [(ngModel)]="currObject.IsLocalCurrency" name="loccurr">{{'Finance.LocalCurrency' | translate}}</md-slide-toggle>
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <md-slide-toggle [(ngModel)]="currObject.SysFlag" name="syflag">{{'Common.SystemFlag' | translate}}</md-slide-toggle>
+          <md-slide-toggle readonly [(ngModel)]="currObject.SysFlag" name="syflag">{{'Common.SystemFlag' | translate}}</md-slide-toggle>
         </md-input-container>
       </div>
     </form>

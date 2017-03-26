@@ -25,7 +25,9 @@ export class DetailComponent implements OnInit {
     private _zone: NgZone,
     private _tranService: TranslateService,
     private _buffService: BufferService) {
+
     this.currentMode = "Common.Display";
+    this.currObject = new HIHFinance.Currency();
   }
 
   ngOnInit() {

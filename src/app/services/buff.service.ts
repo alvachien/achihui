@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as HIHFinance from '../../../model/financemodel';
+import * as HIHFinance from '../model/financemodel';
 
 @Injectable()
 export class BufferService {
