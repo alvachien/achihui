@@ -213,18 +213,21 @@ export class DetailComponent implements OnInit {
 
     this._http.get(this._apiUrl + "/" + this.routerID.toString(), { headers: headers })
       .map(this.extractAccountData)
-      .catch(this.handleError)
+      //.catch(this.handleError)
       .subscribe(data => {
         this._zone.run(() => {
           this.accountObject = data;
         });
       },
       error => {
-        // It should be handled already
-        if (error) {
-          this.uiMode = HIHCommon.UIMode.Invalid;
-        }
-      }, () => {
+        this._dialogService.openAlert({
+          message: error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "Error", //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
+        }, () => {
       });
   }
 
@@ -320,8 +323,9 @@ export class DetailComponent implements OnInit {
     // In a real world app, we might use a remote logging infrastructure
     // We'd also dig deeper into the error to get a better message
     let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
+      error.status ? `${error.status} - ${error.statusText}` : `Server error`;
     console.error(errMsg); // log to console instead
+
     return Observable.throw(errMsg);
   }
 }
