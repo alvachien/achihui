@@ -3,7 +3,7 @@
   <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
-    <form #detailForm="ngForm">
+    <div>
       <div layout="row" layout-margin>
         <md-input-container flex>
           <input mdInput placeholder="{{'Finance.Currency' | translate}}" readonly [(ngModel)]="currObject.Currency" name="curr" #curr="ngModel">
@@ -29,7 +29,7 @@
           <md-slide-toggle readonly [(ngModel)]="currObject.SysFlag" name="syflag">{{'Common.SystemFlag' | translate}}</md-slide-toggle>
         </md-input-container>
       </div>
-    </form>
+    </div>
   </md-card-content>
   <md-divider></md-divider>
   <md-card-actions>

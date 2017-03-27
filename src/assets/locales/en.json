@@ -71,6 +71,17 @@
     "SearchViaName": "Select an item via the name...",
     "SystemFlag": "System Flag"
   },
+  "Sys":{
+    "Currency": {
+      "CNY": "Chinese Yuan",
+      "EUR": "Euro",
+      "HKD": "Hong Kong Dollar",
+      "JPY": "Japan Yen",
+      "KRW": "South Korean Won",
+      "TWD": "TaiWan New Dollar",
+      "USD": "Dollar"
+    }
+  },
   "RepeatFrequency": {
     "Month": "Month",
     "Fortnight": "Fortnight",

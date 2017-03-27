@@ -221,8 +221,10 @@ export class DetailComponent implements OnInit {
       },
       error => {
         // It should be handled already
+        if (error) {
+          this.uiMode = HIHCommon.UIMode.Invalid;
+        }
       }, () => {
-
       });
   }
 

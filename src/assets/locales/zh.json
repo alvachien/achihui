@@ -71,6 +71,17 @@
     "SearchViaName": "根据名字来搜索项...",
     "SystemFlag": "系统标志"
   },
+  "Sys":{
+    "Currency": {
+      "CNY": "人民币",
+      "EUR": "欧元",
+      "HKD": "港币",
+      "JPY": "日币",
+      "KRW": "韩币",
+      "TWD": "新台币",
+      "USD": "美元"
+    }
+  },
   "RepeatFrequency": {
     "Month": "月",
     "Fortnight": "两周",

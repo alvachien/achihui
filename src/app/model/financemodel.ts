@@ -99,10 +99,13 @@ export class ExchangeRate extends hih.BaseModel {
 
 export class Currency extends hih.BaseModel {
     public Currency: string;
-    public Name: String;
-    public Symbol: String;
+    public Name: string;
+    public Symbol: string;
     public IsLocalCurrency: boolean;
     public SysFlag: boolean;
+
+    // Display purpose
+    public DisplayName: string;
 
     constructor() {
         super();

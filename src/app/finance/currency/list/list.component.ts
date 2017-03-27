@@ -52,7 +52,7 @@ export class ListComponent implements OnInit {
     this._apiUrl = environment.ApiUrl + "api/financecurrency";
     this.columns = [
       { name: 'Currency', label: 'Currency', tooltip: 'Currency' },
-      { name: 'Name', label: 'Name', tooltip: 'Name' },
+      { name: 'DisplayName', label: 'Name', tooltip: 'Name' },
       { name: 'Symbol', label: 'Symbol', tooltip: 'Symbol' },
       { name: 'IsLocalCurrency', label: 'Local Currency' },
       { name: 'SysFlag', label: 'System Flag' },
@@ -65,6 +65,7 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of FinanceCurrencyList");
     }
+
     this.uistatus.setFinanceModule("Currency");
     this.uistatus.setFinanceSubModule("List Mode");
     this.loadCurrencyList();
@@ -88,12 +89,24 @@ export class ListComponent implements OnInit {
       .catch(this.handleError)
       .subscribe(data => {
         if (data instanceof Array) {
-          this.listData = data;
-          this._buffService.bufferCurrencies(this.listData);
+          let ardisp: string[] = [];
+          for(let ci of data) {
+            ardisp.push(ci.Name);
+          }
 
-          this.filter();
-          // this.filteredData = this.listData;
-          // this.filteredTotal = this.listData.length;
+          this.listData = data;
+          this._tranService.get(ardisp).subscribe(str => {
+            for(let ci2 of this.listData) {
+              ci2.DisplayName = str[ci2.Name];
+            }
+          }, error => {
+            for(let ci2 of this.listData) {
+              ci2.DisplayName = ci2.Name;
+            }
+          }, () => {
+            this._buffService.bufferCurrencies(this.listData);
+            this.filter();
+          });
         }
       },
       error => {
@@ -187,8 +200,7 @@ export class ListComponent implements OnInit {
     this._router.navigate(['/finance/currency/display/' + this.selectedRows[0].Currency]);
   }
 
-  private loadHeaderString() : void {
-    
+  private loadHeaderString() : void {    
     this._tranService.get(this.clnhdrstring).subscribe(x => {
       this.columns[0].label = x[this.clnhdrstring[0]];
       this.columns[1].label = x[this.clnhdrstring[1]];
