@@ -8,6 +8,9 @@
     <button md-mini-fab color="primary" (click)="onCreateControlCenter()">
       <md-icon>add</md-icon>
     </button>
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDisplayControlCenter()">
+      <md-icon>pageview</md-icon>
+    </button>
     <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onEditControlCenter()">
       <md-icon>create</md-icon>
     </button>

@@ -5,6 +5,7 @@ import * as HIHFinance from '../model/financemodel';
 export class BufferService {
   public arrayCurrency: HIHFinance.Currency[] = [];
   public arrayAccountCategory: HIHFinance.AccountCategory[] = [];
+  public arrayDocumentType: HIHFinance.DocumentType[] = [];
 
   constructor() {
   }

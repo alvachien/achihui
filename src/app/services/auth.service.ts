@@ -57,11 +57,11 @@ export class AuthService {
           console.info("redirecting for login...");
         }
       })
-        .catch(function (er) {
-          if (environment.DebugLogging) {
-            console.error("Sign-in error", er);
-          }
-        });
+      .catch(function (er) {
+        if (environment.DebugLogging) {
+          console.error("Sign-in error", er);
+        }
+      });
     }
   }
 
@@ -76,11 +76,11 @@ export class AuthService {
           console.info("redirecting for logout...");
         }
       })
-        .catch(function (er) {
-          if (environment.DebugLogging) {
-            console.error("Sign-out error", er);
-          }
-        });
+      .catch(function (er) {
+        if (environment.DebugLogging) {
+          console.error("Sign-out error", er);
+        }
+      });
     }
   }
 }
