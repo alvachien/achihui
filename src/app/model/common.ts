@@ -23,6 +23,7 @@ export enum UIMode {
     Create = 1,
     Change = 2,
     Display = 3,
+    
     Invalid = 9
 };
 export enum RepeatFrequency {

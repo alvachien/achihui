@@ -182,6 +182,7 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering onCreateCurrency of FinanceCurrencyList");
     }
+    
     this._router.navigate(['/finance/currency/create']);
   }
 
@@ -202,11 +203,9 @@ export class ListComponent implements OnInit {
 
   private loadHeaderString() : void {    
     this._tranService.get(this.clnhdrstring).subscribe(x => {
-      this.columns[0].label = x[this.clnhdrstring[0]];
-      this.columns[1].label = x[this.clnhdrstring[1]];
-      this.columns[2].label = x[this.clnhdrstring[2]];
-      this.columns[3].label = x[this.clnhdrstring[3]];
-      this.columns[4].label = x[this.clnhdrstring[4]];
+      for(let i = 0; i < this.columns.length; i++) {
+        this.columns[i].label = x[this.clnhdrstring[i]];
+      }
     }, error => {
     }, () => {
     });    

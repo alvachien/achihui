@@ -164,7 +164,8 @@
     "TransactionTypes": "交易类型",
     "DocumentType": "凭证类型",
     "DocumentTypes": "凭证类型",
-    "Reports": "报表"
+    "Reports": "报表",
+    "AssetFlag": "资产类标志"
   },
   "Library": {
     "Books": "书籍",

@@ -20,14 +20,10 @@
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
-        <md-input-container flex>
-          <md-slide-toggle readonly [(ngModel)]="currObject.IsLocalCurrency" name="loccurr">{{'Finance.LocalCurrency' | translate}}</md-slide-toggle>
-        </md-input-container>
+        <md-slide-toggle disabled [(ngModel)]="currObject.IsLocalCurrency" name="loccurr">{{'Finance.LocalCurrency' | translate}}</md-slide-toggle>
       </div>
       <div layout="row" layout-margin>
-        <md-input-container flex>
-          <md-slide-toggle readonly [(ngModel)]="currObject.SysFlag" name="syflag">{{'Common.SystemFlag' | translate}}</md-slide-toggle>
-        </md-input-container>
+        <md-slide-toggle disabled [(ngModel)]="currObject.SysFlag" name="syflag">{{'Common.SystemFlag' | translate}}</md-slide-toggle>
       </div>
     </div>
   </md-card-content>

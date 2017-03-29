@@ -164,7 +164,8 @@
     "TransactionTypes": "Transaction Types",
     "DocumentType": "Document Type",
     "DocumentTypes": "Document Type",
-    "Reports": "Reports"
+    "Reports": "Reports",
+    "AssetFlag": "Asset Flag"
   },
   "Library": {
     "Books": "Books",

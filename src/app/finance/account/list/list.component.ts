@@ -63,14 +63,12 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceAccountList");
     }
 
-    this._uistatus.setFinanceModule("Account");
-    this._uistatus.setFinanceSubModule("List Mode");
-    this.loadAccountCategoryList();
+    this.loadAccountList();
   }
 
-  loadAccountCategoryList(): void {
+  loadAccountList(): void {
     if (environment.DebugLogging) {
-      console.log("Entering loadAccountCategoryList of FinanceAccountList");
+      console.log("Entering loadAccountList of FinanceAccountList");
     }
 
     var headers = new Headers();
