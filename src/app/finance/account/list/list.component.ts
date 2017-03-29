@@ -13,6 +13,7 @@ import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEven
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { TdDialogService } from '@covalent/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'finance-account-list',
@@ -22,13 +23,9 @@ import { TdDialogService } from '@covalent/core';
 export class ListComponent implements OnInit {
   private _apiUrl: string;
   public listData: Array<HIHFinance.Account> = [];
-  columns: ITdDataTableColumn[] = [
-    { name: 'Id', label: '#', tooltip: 'ID' },
-    { name: 'CategoryId', label: "{{'Common.Category' | translate }}", tooltip: 'Category ID' },
-    { name: 'CategoryName', label: 'Category Name', tooltip: 'Category' },
-    { name: 'Name', label: "{{'Common.Name' | translate }}", tooltip: 'Name' },
-    { name: 'Comment', label: 'Comment', tooltip: 'Comment' }
-  ];
+
+  clnhdrstring: string[] = ["Common.ID", "Common.Category", "Common.Category", "Common.Name", "Common.Comment"];
+  columns: ITdDataTableColumn[] = [];
   filteredData: any[];
   filteredTotal: number;
   searchTerm: string = '';
@@ -50,12 +47,21 @@ export class ListComponent implements OnInit {
     private _uistatus: UIStatusService,
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
-    private _dataTableService: TdDataTableService) {
+    private _dataTableService: TdDataTableService,
+    private _tranService: TranslateService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceAccountList");
     }
 
     this._apiUrl = environment.ApiUrl + "api/financeaccount";
+    this.columns = [
+      { name: 'Id', label: '#', tooltip: 'ID' },
+      { name: 'CategoryId', label: 'Category', tooltip: 'Category ID' },
+      { name: 'CategoryName', label: 'Category Name', tooltip: 'Category' },
+      { name: 'Name', label: 'Name', tooltip: 'Name' },
+      { name: 'Comment', label: 'Comment', tooltip: 'Comment' }
+    ];
+    this.loadHeaderString();
   }
 
   ngOnInit() {
@@ -79,8 +85,6 @@ export class ListComponent implements OnInit {
         if (data instanceof Array) {
           this.listData = data;
           this.filter();
-          // this.filteredData = this.listData;
-          // this.filteredTotal = this.listData.length;
         }
       },
       error => {
@@ -134,23 +138,6 @@ export class ListComponent implements OnInit {
     this.filter();
   }
 
-  // selectEvent(selectEvent: ITdDataTableSelectEvent): void {
-  //   if (selectEvent.selected) {
-  //     this._zone.run(() => {
-  //       this.listSelectRows.push(selectEvent.row.Id);
-  //     });
-  //   } else {
-  //     this._zone.run(() => {
-  //       for (let idx = 0; idx < this.listSelectRows.length; idx++) {
-  //         if (+this.listSelectRows[idx] === +selectEvent.row.Id) {
-  //           this.listSelectRows.splice(idx);
-  //           break;
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
-
   page(pagingEvent: IPageChangeEvent): void {
     this.fromRow = pagingEvent.fromRow;
     this.currentPage = pagingEvent.page;
@@ -202,5 +189,15 @@ export class ListComponent implements OnInit {
       });
       return;
     }    
+  }
+
+  private loadHeaderString(): void {
+    this._tranService.get(this.clnhdrstring).subscribe(x => {
+      for(let i = 0; i < this.columns.length; i ++) {
+        this.columns[i].label = x[this.clnhdrstring[i]];
+      }
+    }, error => {
+    }, () => {
+    });    
   }
 }

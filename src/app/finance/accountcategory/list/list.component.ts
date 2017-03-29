@@ -168,7 +168,7 @@ export class ListComponent implements OnInit {
     this._router.navigate(['/finance/accountcategory/display/' + this.selectedRows[0].Currency]);
   }
 
-  private loadHeaderString() : void {    
+  private loadHeaderString() : void {
     this._tranService.get(this.clnhdrstring).subscribe(x => {
       for(let i = 0; i < this.columns.length; i ++) {
         this.columns[i].label = x[this.clnhdrstring[i]];

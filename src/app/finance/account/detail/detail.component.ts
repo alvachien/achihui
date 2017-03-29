@@ -10,6 +10,7 @@ import {
 import { TdDialogService } from '@covalent/core';
 import * as HIHCommon from '../../../model/common';
 import * as HIHFinance from '../../../model/financemodel';
+import * as HIHUI from '../../../model/uimodel';
 import * as HIHUser from '../../../model/userinfo';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs/Observable';
@@ -30,9 +31,9 @@ export class DetailComponent implements OnInit {
   private arCategory: Array<HIHFinance.AccountCategory> = [];
   public currentMode: string;
   public accountObject: HIHFinance.Account = null;
-  public advpayObject: HIHFinance.AccountExtraAdvancePayment = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
   public ctgyAdvancePayment: number = HIHCommon.FinanceAccountCategory_AdvancePayment;
+  public arRepeatFrequency: Array<HIHUI.UIRepeatFrequency> = [];
 
   constructor(private _http: Http,
     private _router: Router,
@@ -43,8 +44,8 @@ export class DetailComponent implements OnInit {
     private _authService: AuthService,
     private _uistatus: UIStatusService) {
     this.accountObject = new HIHFinance.Account();
-    this.advpayObject = new HIHFinance.AccountExtraAdvancePayment();
     this.uiMode = HIHCommon.UIMode.Create;
+    this.arRepeatFrequency = HIHUI.UIRepeatFrequency.getRepeatFrequencies();
 
     this._apiUrl = environment.ApiUrl + "api/financeaccount";
   }
@@ -202,7 +203,7 @@ export class DetailComponent implements OnInit {
   // Methods for Utility methods
   ////////////////////////////////////////////
   readAccount(): void {
-    if (environment.DebugLogging) {
+    if (environment.LoggingLevel >= 4) {
       console.log("Entering readAccount of FinanceAccountDetail");
     }
 

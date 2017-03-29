@@ -1,12 +1,12 @@
 <md-card>
-  <md-card-title>Advance payment</md-card-title>
-  <md-card-subtitle>{{currentMode}}</md-card-subtitle>
+  <md-card-title>{{"Finance.AdvancePayment" | translate}}</md-card-title>
+  <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
     <div layout="column" layout-padding>
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <input mdInput placeholder="ID" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
+          <input mdInput placeholder="{{'Common.ID' | translate}}" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
@@ -16,7 +16,7 @@
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="90" placeholder="Account" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
+        <md-select flex="90" placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
           <md-option *ngFor="let sacnt of arAccount" [value]="sacnt.Id">
             {{sacnt.Name}}
           </md-option>

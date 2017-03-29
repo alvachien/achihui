@@ -165,7 +165,9 @@
     "DocumentType": "Document Type",
     "DocumentTypes": "Document Type",
     "Reports": "Reports",
-    "AssetFlag": "Asset Flag"
+    "AssetFlag": "Asset Flag",
+    "AdvancePayment": "Advance Payment",
+    "Owner": "Owner"
   },
   "Library": {
     "Books": "Books",

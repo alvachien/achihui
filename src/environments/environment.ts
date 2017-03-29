@@ -7,6 +7,7 @@ export const environment = {
   production: false,
 
   DebugLogging: true,
+  LoggingLevel: 4,
   IDServerUrl: 'http://localhost:41016/',
   AppLoginCallbackUrl: 'http://localhost:29521/logincallback.html',
   AppLogoutCallbackUrl: 'http://localhost:29521/',

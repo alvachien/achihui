@@ -414,6 +414,13 @@ export class Account extends hih.BaseModel {
         if (data && data.ownerDisplayAs && data.ownerDisplayAs.length > 0) {
             this.OwnerDisplayAs = data.ownerDisplayAs;
         }
+
+        if (data && this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && data.advancePaymentInfo) {
+            let ei = new AccountExtraAdvancePayment();
+            ei.onSetData(data.advancePaymentInfo);
+
+            this.ExtraInfo = ei;
+        }
     }
 }
 

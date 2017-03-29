@@ -165,7 +165,9 @@
     "DocumentType": "凭证类型",
     "DocumentTypes": "凭证类型",
     "Reports": "报表",
-    "AssetFlag": "资产类标志"
+    "AssetFlag": "资产类标志",
+    "AdvancePayment": "预付款",
+    "Owner": "所有者"
   },
   "Library": {
     "Books": "书籍",
