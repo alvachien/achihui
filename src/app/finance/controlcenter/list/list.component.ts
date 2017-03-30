@@ -166,6 +166,21 @@ export class ListComponent implements OnInit {
     this._router.navigate(['/finance/controlcenter/create']);
   }
 
+  public onDisplayControlCenter() {
+    if (this.selectedRows.length != 1) {
+      this._dialogService.openAlert({
+        message: "Select one and only one row to continue!",
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "Selection error", //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+      return;
+    }
+
+    this._router.navigate(['/finance/controlcenter/display/' + this.selectedRows[0].Id.toString()]);
+  }
+
   public onEditControlCenter() {
     if (this.selectedRows.length != 1) {
       this._dialogService.openAlert({

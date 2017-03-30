@@ -1,5 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, NgZone,
+import { Component, OnInit, OnDestroy, AfterViewInit, NgZone,
   EventEmitter, Input, Output, ViewContainerRef
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -22,13 +21,12 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss']
 })
-export class DetailComponent implements OnInit {
+export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
 
   private routerID: number; // Current ID in routing
   private _apiUrl: string;
   private arUsers: Array<HIHUser.UserDetail> = [];
   private arControlCenters: Array<HIHFinance.ControllingCenter> = [];
-  public currentMode: string;
   public ccObject: HIHFinance.ControllingCenter = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
 
@@ -49,6 +47,16 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for interface methods
   ////////////////////////////////////////////
+  IsUIEditable() {
+    return HIHCommon.isUIEditable(this.currentUIMode());
+  }
+  currentUIMode() {
+    return this.uiMode;
+  }
+  currentUIModeString() {
+    return HIHCommon.getUIModeString(this.currentUIMode());
+  }
+
   ngOnInit() {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of FinanceControlCenterDetail");
@@ -69,23 +77,17 @@ export class DetailComponent implements OnInit {
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === "create") {
-            this.currentMode = "Create";
             this.ccObject = new HIHFinance.ControllingCenter();
             this.uiMode = HIHCommon.UIMode.Create;
           } else if (x[0].path === "edit") {
             this.routerID = +x[1].path;
 
-            this.currentMode = "Edit"
             this.uiMode = HIHCommon.UIMode.Change;
           } else if (x[0].path === "display") {
             this.routerID = +x[1].path;
             
-            this.currentMode = "Display";
             this.uiMode = HIHCommon.UIMode.Display;
           }
-
-          // Update the sub module
-          this._uistatus.setFinanceSubModule(this.currentMode);
 
           if (this.uiMode === HIHCommon.UIMode.Display
             || this.uiMode === HIHCommon.UIMode.Change) {
@@ -93,8 +95,24 @@ export class DetailComponent implements OnInit {
           }
         }
       }, error => {
+        this._dialogService.openAlert({
+          message: "Failed to parse URL: " + error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "Error", //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
       }, () => {
       });
+    }, error => {
+        this._dialogService.openAlert({
+          message: "Failed to load user and control center: " + error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "Error", //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
+    }, () => {      
     });
   }
 
@@ -105,6 +123,13 @@ export class DetailComponent implements OnInit {
     if (this.uiMode === HIHCommon.UIMode.Create
       || this.uiMode === HIHCommon.UIMode.Change) {      
     } else {
+        this._dialogService.openAlert({
+          message: "Cannot save in this mode " + this.uiMode,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "Error", //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
       return;
     }
     
@@ -147,7 +172,7 @@ export class DetailComponent implements OnInit {
     if (this.uiMode === HIHCommon.UIMode.Create) {
       this._http.post(this._apiUrl, dataJSON, { headers: headers })
         .map(response => response.json())
-        .catch(this.handleError)
+        //.catch(this.handleError)
         .subscribe(x => {
           // It returns a new object with ID filled.
           let nNewObj = new HIHFinance.ControllingCenter();
@@ -168,7 +193,7 @@ export class DetailComponent implements OnInit {
     } else if (this.uiMode === HIHCommon.UIMode.Change) {
       this._http.put(this._apiUrl, dataJSON, { headers: headers })
         .map(response => response.json())
-        .catch(this.handleError)
+        //.catch(this.handleError)
         .subscribe(x => {
           // It returns a new object with ID filled.
           let nNewObj = new HIHFinance.ControllingCenter();

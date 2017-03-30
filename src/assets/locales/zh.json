@@ -69,7 +69,8 @@
     "DeleteConfirmation": "确认删除操作",
     "ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",
     "SearchViaName": "根据名字来搜索项...",
-    "SystemFlag": "系统标志"
+    "SystemFlag": "系统标志",
+    "PleaseSelect": "请选择"
   },
   "Sys":{
     "Currency": {

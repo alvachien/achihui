@@ -26,6 +26,33 @@ export enum UIMode {
     
     Invalid = 9
 };
+
+export function isUIEditable(mode: UIMode): boolean {
+    return mode === UIMode.Create || mode === UIMode.Change;
+}
+
+export function getUIModeString(mode: UIMode): string {
+    switch(mode) {
+        case UIMode.Create:
+            return "Common.Create";
+
+        case UIMode.Change:
+            return "Common.Change";
+
+        case UIMode.Display:
+            return "Common.Display";
+
+        default:
+            return "";
+    }
+}
+
+export declare abstract class IUIDetailPage {
+    public IsUIEditable(): boolean;
+    public currentUIMode(): UIMode;
+    public currentUIModeString(): string;
+}
+
 export enum RepeatFrequency {
 	Month       = 0,
 	Fortnight   = 1,

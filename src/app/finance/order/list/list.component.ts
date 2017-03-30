@@ -14,6 +14,7 @@ import {
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { TdDialogService } from '@covalent/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'finance-order-list',
@@ -66,8 +67,6 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceOrderList");
     }
 
-    this._uistatus.setFinanceModule("Order");
-    this._uistatus.setFinanceSubModule("List Mode");
     this.loadOrderList();
   }
 
