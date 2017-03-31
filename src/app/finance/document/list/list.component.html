@@ -1,5 +1,5 @@
 <md-card>
-  <md-card-title>Document</md-card-title>
+  <md-card-title>{{'Finance.Documents' | translate}}</md-card-title>
   <md-card-subtitle>{{"Common.ListView" | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
@@ -12,6 +12,9 @@
       <span *ngIf="!searchBox.searchVisible" class="push-left-sm">
         <button md-mini-fab color="primary" [mdMenuTriggerFor]="createMenu">
           <md-icon>add</md-icon>
+        </button>
+        <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDisplayDocument()">
+          <md-icon>pageview</md-icon>
         </button>
         <button md-mini-fab color="accent" (click)="onEditDocument()" [disabled]="selectedRows.length <= 0">
           <md-icon>create</md-icon>

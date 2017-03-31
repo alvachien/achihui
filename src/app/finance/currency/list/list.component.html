@@ -8,8 +8,8 @@
     <button md-mini-fab color="primary" (click)="onCreateCurrency()">
       <md-icon>add</md-icon>
     </button>
-    <button md-mini-fab color="accent" (click)="onDisplayCurrency()">
-      <md-icon>create</md-icon>
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDisplayCurrency()">
+      <md-icon>pageview</md-icon>
     </button>
     <button md-mini-fab color="accent">
       <md-icon>clear</md-icon>

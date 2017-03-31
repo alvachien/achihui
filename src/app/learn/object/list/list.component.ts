@@ -145,6 +145,14 @@ export class ListComponent implements OnInit {
     this.router.navigate(['/learn/object/create']);
   }
 
+  public onDisplayObject() {
+    if (environment.DebugLogging) {
+      console.log("Entering onDisplayObject of LearnObjectList");
+    }
+
+    this.router.navigate(['/learn/object/display/' + this.selectedRows[0].Id.toString() ]);
+  }
+
   public onEditObject() {
     if (environment.DebugLogging) {
       console.log("Entering onEditObject of LearnObjectList");

@@ -152,6 +152,13 @@ export class ListComponent implements OnInit {
 
     this._router.navigate(['/learn/history/create']);
   }
+  public onDisplayHistory(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onDisplayHistory of LearnHistoryList");
+    }
+
+    this._router.navigate(['/learn/history/display/' + this.selectedRows[0].generateKey()]);
+  }
   public onEditHistory(): void {
     if (environment.DebugLogging) {
       console.log("Entering onEditHistory of LearnHistoryList");

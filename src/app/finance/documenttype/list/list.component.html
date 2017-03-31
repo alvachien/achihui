@@ -7,6 +7,9 @@
     <button md-mini-fab color="primary" (click)="onCreateObject()">
       <md-icon>add</md-icon>
     </button>
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDisplayDocumentType()">
+      <md-icon>pageview</md-icon>
+    </button>
     <button md-mini-fab color="accent">
       <md-icon>create</md-icon>
     </button>

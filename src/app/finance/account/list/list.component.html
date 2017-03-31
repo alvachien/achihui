@@ -8,6 +8,9 @@
         <button md-mini-fab color="primary" (click)="onCreateAccount()">
           <md-icon>add</md-icon>
         </button>
+        <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDisplayAccount()">
+          <md-icon>pageview</md-icon>
+        </button>
         <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onEditAccount()">
           <md-icon>create</md-icon>
         </button>

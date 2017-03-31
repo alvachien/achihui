@@ -3,6 +3,9 @@
     <button md-mini-fab color="primary" (click)="onCreateHistory()">
       <md-icon>add</md-icon>
     </button>
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDisplayHistory()">
+      <md-icon>pageview</md-icon>
+    </button>
     <button md-mini-fab color="accent" [disabled]="selectedRows.length !== 1" (click)="onEditHistory()">
       <md-icon>create</md-icon>
     </button>

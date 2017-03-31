@@ -145,6 +145,13 @@ export class ListComponent implements OnInit {
 
     this.router.navigate(['/learn/category/create']);
   }
+  public onDisplayCategory():void {
+    if (environment.DebugLogging) {
+      console.log("Entering onDisplayCategory of LearnCategoryList");
+    }
+
+    this.router.navigate(['/learn/category/display/' + this.selectedRows[0].Id.toString()]);
+  }
   public onEditCategory():void {
     if (environment.DebugLogging) {
       console.log("Entering onEditCategory of LearnCategoryList");

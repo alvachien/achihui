@@ -6,6 +6,9 @@
     <button md-mini-fab color="accent" [disabled]="selectedRows.length !== 1" (click)="onEditCategory()">
       <md-icon>create</md-icon>
     </button>
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDisplayCategory()">
+      <md-icon>pageview</md-icon>
+    </button>
     <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDeleteCategory()">
       <md-icon>clear</md-icon>
     </button>
