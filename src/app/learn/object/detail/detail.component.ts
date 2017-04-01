@@ -1,10 +1,8 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef, NgZone
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Headers, Response, RequestOptions, URLSearchParams }
-  from '@angular/http';
+import { Http, Headers, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import { TdDialogService } from '@covalent/core';
 import * as HIHCommon from '../../../model/common';
 import * as HIHLearn from '../../../model/learnmodel';
@@ -13,6 +11,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { AuthService } from '../../../services/auth.service';
+import { tinymce } from "tinymce";
 
 @Component({
   selector: 'learn-object-detail',
@@ -25,6 +24,7 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
   public currentMode: string;
   public detailObject: HIHLearn.LearnObject = null;
   public arCategory: Array<HIHLearn.LearnCategory> = [];
+  private editor: tinymce.Editor;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
   @Input() elementId: String;
   @Output() onEditorKeyup = new EventEmitter<any>();
@@ -57,6 +57,7 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
       selector: '#' + this.elementId,
       plugins: ['link', 'paste', 'table'],
       setup: editor => {
+
         this.editor = editor;
         editor.on('keyup', () => {
           const content = editor.getContent();
@@ -65,8 +66,6 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
       },
     });
   }
-
-  private editor: any = null;
 
   ngAfterViewInit() {
     if (environment.DebugLogging) {
@@ -131,8 +130,9 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log("Entering ngOnDestroy of LearnObjectDetail");
     }
 
-    try {
-      tinymce.remove(this.editor);
+    try {      
+      //tinymce.remove(this.editor);
+      this.editor.remove();
     }
     catch (e) {
       console.log(e);

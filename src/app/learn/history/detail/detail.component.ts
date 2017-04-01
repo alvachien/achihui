@@ -220,14 +220,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this.arUsers = data;
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
 
   loadObjectList(): Observable<any> {
@@ -244,14 +236,6 @@ export class DetailComponent implements OnInit {
     return this._http.get(objApi, { headers: headers })
       .map(this.extractObjectData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this.arObjects = data;
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
 
   readHistory(): void {
