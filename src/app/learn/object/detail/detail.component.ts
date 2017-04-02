@@ -11,7 +11,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { AuthService } from '../../../services/auth.service';
-import { tinymce } from "tinymce";
+declare var tinymce: any;
 
 @Component({
   selector: 'learn-object-detail',
@@ -24,7 +24,7 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
   public currentMode: string;
   public detailObject: HIHLearn.LearnObject = null;
   public arCategory: Array<HIHLearn.LearnCategory> = [];
-  private editor: tinymce.Editor;
+  private editor: any;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
   @Input() elementId: String;
   @Output() onEditorKeyup = new EventEmitter<any>();
@@ -53,6 +53,13 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of LearnObjectDetail");
     }
+  }
+
+  ngAfterViewInit() {
+    if (environment.DebugLogging) {
+      console.log("Entering ngAfterViewInit of LearnObjectDetail");
+    }
+    
     tinymce.init({
       selector: '#' + this.elementId,
       plugins: ['link', 'paste', 'table'],
@@ -61,17 +68,11 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
         this.editor = editor;
         editor.on('keyup', () => {
           const content = editor.getContent();
-          this.onEditorKeyup.emit(content);
+          //this.onEditorKeyup.emit(content);
         });
       },
     });
-  }
 
-  ngAfterViewInit() {
-    if (environment.DebugLogging) {
-      console.log("Entering ngAfterViewInit of LearnObjectDetail");
-    }
-    
     this.loadCategoryList().subscribe(x => {
 
       // Data

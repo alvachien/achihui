@@ -380,6 +380,10 @@ export class LearnObject extends hih.BaseModel {
         if (data && data.content) {
             this.Content = data.content;
         }
+
+        if (data && data.categoryName) {
+            this.CategoryName = data.categoryName;
+        }
     }
 }
 

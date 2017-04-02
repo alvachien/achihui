@@ -1,7 +1,6 @@
 import { Component, OnInit }  from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Headers, Response, RequestOptions, URLSearchParams }
-  from '@angular/http';
+import { Http, Headers, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import * as HIHCommon from '../../../model/common';
 import * as HIHLearn from '../../../model/learnmodel';
 import { environment } from '../../../../environments/environment';
@@ -21,7 +20,7 @@ export class ListComponent implements OnInit {
   public listData: Array<HIHLearn.LearnObject> ;
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID of the Category' },
-    { name: 'CategoryId', label: 'Parent', tooltip: 'Parent ID' },
+    { name: 'CategoryName', label: 'Category', tooltip: 'Category' },
     { name: 'Name', label: 'Name', tooltip: 'Name of the category' },
     { name: 'UpdatedAt', label: 'Updated at' },
   ];
@@ -68,8 +67,6 @@ export class ListComponent implements OnInit {
         if (data instanceof Array) {
           this.listData = data;
           this.filter();
-          // this.filteredData = this.listData;
-          // this.filteredTotal = this.listData.length;
         }          
       },
       error => {
