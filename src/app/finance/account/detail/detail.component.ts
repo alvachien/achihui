@@ -23,7 +23,7 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css']
 })
-export class DetailComponent implements OnInit {
+export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
 
   private routerID: number; // Current ID in routing
   private _apiUrl: string;
@@ -53,6 +53,16 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for interface methods
   ////////////////////////////////////////////
+  IsUIEditable() {
+    return HIHCommon.isUIEditable(this.currentUIMode());
+  }
+  currentUIMode() {
+    return this.uiMode;
+  }
+  currentUIModeString() {
+    return HIHCommon.getUIModeString(this.currentUIMode());
+  }
+  
   ngOnInit() {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of FinanceAccountDetail");

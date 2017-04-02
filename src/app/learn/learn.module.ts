@@ -6,7 +6,6 @@ import { CovalentCoreModule } from '@covalent/core';
 import { UIRefModule } from '../uiref.module';
 
 import { LearnComponent } from './learn.component';
-import { SimpleTinyComponent } from './object/detail/simpletiny.component';
 import { ListComponent as ObjectListComponent } from './object/list/list.component';
 import { DetailComponent as ObjectDetailComponent } from './object/detail/detail.component';
 import { LearnRoutingModule } from './learn-routing.module';
@@ -32,7 +31,6 @@ import { DetailComponent as CategoryDetailComponent } from './category/detail/de
     CategoryListComponent,
     CategoryDetailComponent,
     ObjectListComponent, 
-    SimpleTinyComponent,
     ObjectDetailComponent, 
     ObjectComponent, 
     HistoryComponent, 
