@@ -45,6 +45,17 @@ The TypeScript UI app consists lots of the interfaces:
 
 (See wiki page)
 
+## Buffer service
+
+To save the working load the API, also increase the performance of the app from the UI layer, the following part are bufferred automatically:
+* User
+* Currency
+* Document Type
+* Account Category
+* Transaction
+* Learn Category
+
+
 ## Authority control
 
 Authority control applys to all objects.

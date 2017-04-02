@@ -16,6 +16,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { AuthService } from '../../../services/auth.service';
+import { BufferService } from '../../../services/buff.service';
 
 @Component({
   selector: 'learn-history-detail',
@@ -32,7 +33,6 @@ export class DetailComponent implements OnInit {
   public currentMode: string;
   public historyObject: HIHLearn.LearnHistory = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
-  @Input() elementId: String;
 
   constructor(private _http: Http,
     private _router: Router,
@@ -41,6 +41,7 @@ export class DetailComponent implements OnInit {
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
+    private _buffService: BufferService,
     private _uistatus: UIStatusService) {
     this.historyObject = new HIHLearn.LearnHistory();
     this.uiMode = HIHCommon.UIMode.Create;
@@ -55,9 +56,10 @@ export class DetailComponent implements OnInit {
     }
 
     Observable.forkJoin([this.loadUserList(), this.loadObjectList()]).subscribe(x => {
-
       this._zone.run(() => {
         this.arUsers = x[0];
+        this._buffService.bufferUser(this.arUsers);
+        
         this.arObjects = x[1];
       });
 
@@ -83,7 +85,10 @@ export class DetailComponent implements OnInit {
           // Update the sub module
           this._uistatus.setLearnSubModule(this.currentMode + " History");
 
-          this.readHistory();
+          if (this.uiMode === HIHCommon.UIMode.Change 
+            || this.uiMode === HIHCommon.UIMode.Display) {
+            this.readHistory();
+          }
         }
       }, error => {
         this._dialogService.openAlert({
@@ -103,9 +108,7 @@ export class DetailComponent implements OnInit {
         title: "Loading data",
         closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
       });
-
     }, () => {
-
     });
   }
 
@@ -114,7 +117,7 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   onObjectIdChanged(): void {
     if (environment.DebugLogging) {
-      console.log("Entering onObjectIdChanged of LearnHistoryList");
+      console.log("Entering onObjectIdChanged of LearnHistoryDetail");
     }
 
     for (let obj of this.arObjects) {
@@ -125,8 +128,14 @@ export class DetailComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.uiMode === HIHCommon.UIMode.Change
+      || this.uiMode === HIHCommon.UIMode.Create) {
+    } else {
+      return;
+    }
+
     if (environment.DebugLogging) {
-      console.log("Entering onSubmit of LearnObjectDetail");
+      console.log("Entering onSubmit of LearnHistoryDetail");
     }
 
     // Complete
@@ -192,10 +201,10 @@ export class DetailComponent implements OnInit {
           this._router.navigate(['/learn/hisotry/display/' + nHist.generateKey()]);
         }, error => {
           this._dialogService.openAlert({
-            message: 'Error in creating!',
+            message: 'Error in Changing!',
             disableClose: false, // defaults to false
             viewContainerRef: this._viewContainerRef, //OPTIONAL
-            title: 'Create failed', //OPTIONAL, hides if not provided
+            title: 'Change failed', //OPTIONAL, hides if not provided
             closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
           });
         }, () => {
@@ -209,6 +218,10 @@ export class DetailComponent implements OnInit {
   loadUserList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadUserList of LearnHistoryList");
+    }
+
+    if (this._buffService.isUserBufferred) {
+      return Observable.create(this._buffService.arrayUser);
     }
 
     let headers = new Headers();

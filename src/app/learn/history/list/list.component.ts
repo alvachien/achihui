@@ -1,7 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Headers, Response, RequestOptions, URLSearchParams }
-  from '@angular/http';
+import { Http, Headers, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import * as HIHCommon from '../../../model/common';
 import * as HIHLearn from '../../../model/learnmodel';
 import { environment } from '../../../../environments/environment';
@@ -32,7 +31,7 @@ export class ListComponent implements OnInit {
   searchTerm: string = '';
   fromRow: number = 1;
   currentPage: number = 1;
-  pageSize: number = 5;
+  pageSize: number = 10;
   sortBy: string = 'UpdatedAt';
   selectable: boolean = true;
   selectedRows: any[] = [];
@@ -58,6 +57,7 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of LearnHistoryList");
     }
+
     this._uistatus.setLearnSubModule("History List");
     this.loadHistoryList();
   }
@@ -75,8 +75,6 @@ export class ListComponent implements OnInit {
         if (data instanceof Array) {
           this.listData = data;
           this.filter();
-          // this.filteredData = this.listData;
-          // this.filteredTotal = this.listData.length;
         }
       },
       error => {

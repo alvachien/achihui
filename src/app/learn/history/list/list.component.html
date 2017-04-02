@@ -21,15 +21,8 @@
   </td-search-box>
 </div>
 <md-divider></md-divider>
-<td-data-table 
-  [data]="filteredData" 
-  [columns]="columns" 
-  [sortable]="true"
-  [selectable]="true"
-  [(ngModel)]="selectedRows"
-  [sortBy]="sortBy"   
-  [sortOrder]="sortOrder" 
-  (sortChange)="sort($event)">
+<td-data-table [data]="filteredData" [columns]="columns" [sortable]="true" [selectable]="true" [(ngModel)]="selectedRows"
+  [sortBy]="sortBy" [sortOrder]="sortOrder" (sortChange)="sort($event)">
 </td-data-table>
-<td-paging-bar [pageSizes]="[5, 10, 15, 20]" [total]="filteredTotal" (change)="page($event)">  
+<td-paging-bar [pageSizes]="[10, 20, 30, 40]" [total]="filteredTotal" (change)="page($event)">
 </td-paging-bar>

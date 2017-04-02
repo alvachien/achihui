@@ -132,8 +132,7 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     try {      
-      //tinymce.remove(this.editor);
-      this.editor.remove();
+      tinymce.remove(this.editor);
     }
     catch (e) {
       console.log(e);
@@ -158,6 +157,12 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSubmit(): void {
+    if (this.uiMode === HIHCommon.UIMode.Create 
+    || this.uiMode === HIHCommon.UIMode.Change) { 
+    } else {
+      return;
+    }
+
     if (environment.DebugLogging) {
       console.log("Entering onSubmit of LearnObjectDetail");
     }
@@ -233,26 +238,47 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
     let dataJSON = this.detailObject.writeJSONString();
     let apiObject = environment.ApiUrl + "api/learnobject";
-    this._http.post(apiObject, dataJSON, { headers: headers })
-      .map(response => response.json())
-      .catch(this.handleError)
-      .subscribe(x => {
-        // It returns a new object with ID filled.
-        let nObj = new HIHLearn.LearnObject();
-        nObj.onSetData(x);
 
-        // Navigate.
-        this._router.navigate(['/learn/object/display/' + nObj.Id]);
-      }, error => {
-        this._dialogService.openAlert({
-          message: 'Error in creating!',
-          disableClose: false, // defaults to false
-          viewContainerRef: this._viewContainerRef, //OPTIONAL
-          title: 'Create failed', //OPTIONAL, hides if not provided
-          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+    if (this.uiMode === HIHCommon.UIMode.Create) {
+      // Create 
+      this._http.post(apiObject, dataJSON, { headers: headers })
+        .map(response => response.json())
+        .catch(this.handleError)
+        .subscribe(x => {
+          // It returns a new object with ID filled.
+          let nObj = new HIHLearn.LearnObject();
+          nObj.onSetData(x);
+
+          // Navigate.
+          this._router.navigate(['/learn/object/display/' + nObj.Id]);
+        }, error => {
+          this._dialogService.openAlert({
+            message: 'Error in creating!',
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: 'Create failed', //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }, () => {
         });
-      }, () => {
-      });
+    } else if (this.uiMode === HIHCommon.UIMode.Change) {
+      this._http.put(apiObject + '/' + this.detailObject.Id.toString(), dataJSON, { headers: headers })
+        .map(response => response.json())
+        .catch(this.handleError)
+        .subscribe(x => {
+          // Navigate.
+          this._router.navigate(['/learn/object/display/' + this.detailObject.Id.toString()]);
+        }, error => {
+          this._dialogService.openAlert({
+            message: 'Error in changing!',
+            disableClose: false, // defaults to false
+            viewContainerRef: this._viewContainerRef, //OPTIONAL
+            title: 'Change failed', //OPTIONAL, hides if not provided
+            closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+          });
+        }, () => {
+        });
+    }
   }
 
   ////////////////////////////////////////////
@@ -295,14 +321,6 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._http.get(objApi, { headers: headers })
       .map(this.extractCategoryData)
       .catch(this.handleError);
-    // .subscribe(data => {
-    //   if (data instanceof Array) {
-    //     this.arCategory = data;
-    //   }
-    // },
-    // error => {
-    //   // It should be handled already
-    // });
   }
 
   private extractCategoryData(res: Response) {

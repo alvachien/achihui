@@ -17,11 +17,11 @@
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <textarea mdInput placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="historyObject.Comment" name="cmt" #cmt="ngModel"></textarea>
+      <input mdInput type="text" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="historyObject.Comment" name="cmt" #cmt="ngModel"></input>
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
     <button type="submit" md-button [disabled]="!detailForm.form.valid">{{'Common.Submit' | translate}}</button>
-    <button type="reset" md-button>{{'Common.Reset' | translate}}</button>
+    <button type="reset" md-button>{{'Common.Cancel' | translate}}</button>
   </div>
 </form>
