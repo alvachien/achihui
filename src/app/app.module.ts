@@ -33,7 +33,7 @@ import { TranslateService } from '@ngx-translate/core';
     FormsModule,
     HttpModule,
     UIRefModule,
-    FlexLayoutModule.forRoot(),
+    FlexLayoutModule,
     AppRoutingModule,
     CovalentCoreModule.forRoot(),
     CovalentChartsModule.forRoot(),
