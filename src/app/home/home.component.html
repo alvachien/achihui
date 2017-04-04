@@ -6,6 +6,12 @@
       </md-nav-list>
     </div>
     <div td-sidenav-content *ngIf="isLoggedIn">
+      <md-nav-list menu-items>
+        <a *ngFor="let route of appRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
+          <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
+        </a>
+      </md-nav-list>
+      
       <div class="md-body-2" layout="row" (click)="toggleLearnMenu()">
         <span flex>{{"Nav.LearningTrace" | translate}}</span>
         <button md-icon-button class="md-icon-button-mini">

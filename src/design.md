@@ -35,15 +35,17 @@ public string generateKey()
 
 ## UI part
 
-The TypeScript UI app consists lots of the interfaces:
+The TypeScript UI app consists lots of the interfaces.
 
 ### Detail page
 
-(See wiki page)
+See wiki page for UI Development: https://github.com/alvachien/achihui/wiki/UI-development
+
 
 ### List page
 
-(See wiki page)
+See wiki page for UI Development: https://github.com/alvachien/achihui/wiki/UI-development
+
 
 ## Buffer service
 
@@ -60,16 +62,19 @@ To save the working load the API, also increase the performance of the app from 
 
 Authority control applys to all objects.
 
-* Finance Account; 
+* Finance Account (Claim: FinanceAccountScope); 
     - OnlyOwnerAndDisplay: Only access the account which Owner is current user, it can only display it;
     - OnlyOwnerFullControl: Only access the account which Owner is current user, but with full control;
     - All: Can access all accounts.
 * Finance Document;
-    - OnlyOwner
+    - Display;
+    - All
+* Finance Balance Sheet Report
+    - Display;
 * Learn Object;
     - Display: Can display the learn object;
     - All: Can access all objects;
-* Learn History;
+* Learn History (Claim: LearnHistoryScope);
     - OnlyOwnerAndDisplay: Only access the history which belongs to current user, it can only display it;
     - OnlyOwnerFullControl: Only access the history which belongs to current user, but with full control;
     - All: can access all histories;
