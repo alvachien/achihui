@@ -9,6 +9,7 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'learn-history-list',
@@ -45,6 +46,7 @@ export class ListComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     private _uistatus: UIStatusService,
     private _zone: NgZone,
+    private _authService: AuthService,
     private _dataTableService: TdDataTableService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of LearnHistoryList");
@@ -68,6 +70,9 @@ export class ListComponent implements OnInit {
     }
 
     var headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     this._http.get(this._apiUrl, { headers: headers })
       .map(this.extractData)
       .catch(this.handleError)
