@@ -64,7 +64,6 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
       selector: '#' + this.elementId,
       plugins: ['link', 'paste', 'table'],
       setup: editor => {
-
         this.editor = editor;
         editor.on('keyup', () => {
           const content = editor.getContent();

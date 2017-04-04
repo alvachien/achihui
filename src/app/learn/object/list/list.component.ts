@@ -18,11 +18,12 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class ListComponent implements OnInit {
   private _apiUrl: string;
-  public listData: Array<HIHLearn.LearnObject> ;
+  public listData: Array<HIHLearn.LearnObject>;
+  
   columns: ITdDataTableColumn[] = [
-    { name: 'Id', label: '#', tooltip: 'ID of the Category' },
+    { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'CategoryName', label: 'Category', tooltip: 'Category' },
-    { name: 'Name', label: 'Name', tooltip: 'Name of the category' },
+    { name: 'Name', label: 'Name', tooltip: 'Name' },
     { name: 'UpdatedAt', label: 'Updated at' },
   ];
   filteredData: any[];
