@@ -10,6 +10,7 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { AuthService } from '../../../services/auth.service';
 import { TdDialogService } from '@covalent/core';
 
 @Component({
@@ -48,6 +49,7 @@ export class ListComponent implements OnInit {
      private _dialogService: TdDialogService,
      private _viewContainerRef: ViewContainerRef,
      private _uistatus: UIStatusService,
+     private _authService: AuthService,
      private _dataTableService: TdDataTableService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceDocumentList");
@@ -71,7 +73,12 @@ export class ListComponent implements OnInit {
       console.log("Entering loadDocumentList of FinanceDocumentList");
     }
 
-    var headers = new Headers();
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized) {
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    }
     this._http.get(this._apiUrl, { headers: headers })
       .map(this.extractData)
       .catch(this.handleError)

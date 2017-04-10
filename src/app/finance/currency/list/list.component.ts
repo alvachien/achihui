@@ -11,6 +11,7 @@ import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEven
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { BufferService } from '../../../services/buff.service';
+import { AuthService } from '../../../services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TdDialogService } from '@covalent/core';
 
@@ -47,6 +48,7 @@ export class ListComponent implements OnInit {
      private _dataTableService: TdDataTableService,
      private _tranService: TranslateService,
      private _buffService: BufferService,
+     private _authService: AuthService,
      private _viewContainerRef: ViewContainerRef,
      private _dialogService: TdDialogService) {
     this._apiUrl = environment.ApiUrl + "api/financecurrency";
@@ -83,12 +85,17 @@ export class ListComponent implements OnInit {
       console.log("Entering loadCurrencyList of FinanceCurrencyList");
     }
 
-    var headers = new Headers();
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized) {
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    }
     this._http.get(this._apiUrl, { headers: headers })
       .map(this.extractData)
       .catch(this.handleError)
       .subscribe(data => {
-        if (data instanceof Array) {
+        if (data instanceof Array && data.length > 0) {
           let ardisp: string[] = [];
           for(let ci of data) {
             ardisp.push(ci.Name);

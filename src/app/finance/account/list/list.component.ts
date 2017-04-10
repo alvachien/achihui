@@ -12,6 +12,7 @@ import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEven
 } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { AuthService } from '../../../services/auth.service';
 import { TdDialogService } from '@covalent/core';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -45,6 +46,7 @@ export class ListComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     private _zone: NgZone,
     private _uistatus: UIStatusService,
+    private _authService: AuthService,
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _dataTableService: TdDataTableService,
@@ -77,7 +79,12 @@ export class ListComponent implements OnInit {
       console.log("Entering loadAccountList of FinanceAccountList");
     }
 
-    var headers = new Headers();
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized) {
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    }
     this._http.get(this._apiUrl, { headers: headers })
       .map(this.extractData)
       .catch(this.handleError)
