@@ -99,10 +99,13 @@ export class ExchangeRate extends hih.BaseModel {
 
 export class Currency extends hih.BaseModel {
     public Currency: string;
-    public Name: String;
-    public Symbol: String;
+    public Name: string;
+    public Symbol: string;
     public IsLocalCurrency: boolean;
     public SysFlag: boolean;
+
+    // Display purpose
+    public DisplayName: string;
 
     constructor() {
         super();
@@ -410,6 +413,13 @@ export class Account extends hih.BaseModel {
         }
         if (data && data.ownerDisplayAs && data.ownerDisplayAs.length > 0) {
             this.OwnerDisplayAs = data.ownerDisplayAs;
+        }
+
+        if (data && this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && data.advancePaymentInfo) {
+            let ei = new AccountExtraAdvancePayment();
+            ei.onSetData(data.advancePaymentInfo);
+
+            this.ExtraInfo = ei;
         }
     }
 }

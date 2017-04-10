@@ -22,8 +22,37 @@ export enum UserHistType {
 export enum UIMode {
     Create = 1,
     Change = 2,
-    Display = 3
+    Display = 3,
+    
+    Invalid = 9
 };
+
+export function isUIEditable(mode: UIMode): boolean {
+    return mode === UIMode.Create || mode === UIMode.Change;
+}
+
+export function getUIModeString(mode: UIMode): string {
+    switch(mode) {
+        case UIMode.Create:
+            return "Common.Create";
+
+        case UIMode.Change:
+            return "Common.Change";
+
+        case UIMode.Display:
+            return "Common.Display";
+
+        default:
+            return "";
+    }
+}
+
+export declare abstract class IUIDetailPage {
+    public IsUIEditable(): boolean;
+    public currentUIMode(): UIMode;
+    public currentUIModeString(): string;
+}
+
 export enum RepeatFrequency {
 	Month       = 0,
 	Fortnight   = 1,
@@ -34,6 +63,13 @@ export enum RepeatFrequency {
     Year        = 6,
     Manual      = 7
 };
+export enum LogLevel {
+    Crash = 0,
+    Error = 1,
+    Warning = 2,
+    Info = 3,
+    Debug = 4
+}
 
 export class InfoMessage {
     public MsgType: MessageType;

@@ -9,8 +9,6 @@ import {
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 
-declare var tinymce: any;
-
 export const TinyMceValueAccessor: Provider = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => TinyMceDirective),
@@ -97,6 +95,8 @@ export class TinyMceDirective implements OnDestroy, AfterViewInit, ControlValueA
     }
 
     ngOnDestroy(): void {
-        if (this.init) tinymce.remove(`[data-tinymce-uniqueid=${this.uniqueId}]`);
+        if (this.init) {            
+            tinymce.remove(`[data-tinymce-uniqueid=${this.uniqueId}]`);
+        }
     }
 }

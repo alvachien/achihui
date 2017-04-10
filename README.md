@@ -20,6 +20,14 @@ For version 0.5, it supports the Finance Traces and Learning Traces. The detail 
 ## Credits
 This project was generated with [angular-cli](https://github.com/angular/angular-cli).
 
+This project also require the following components:
+* Material 2
+* Ngx-translate
+* Covalent
+* TinyMce
+* Angular 2
+* TypeScript
+* Oidc-Client
 
 ## Contact me
 **Alva Chien | 钱红俊**

@@ -1,7 +1,34 @@
 <md-card>
-  <md-card-title>Currency</md-card-title>
-  <md-card-subtitle>Current Mode</md-card-subtitle>
+  <md-card-title>{{"Finance.Currency" | translate}}</md-card-title>
+  <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
+    <div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <input mdInput placeholder="{{'Finance.Currency' | translate}}" readonly [(ngModel)]="currObject.Currency" name="curr" #curr="ngModel">
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <input mdInput placeholder="{{'Common.Name' | translate}}" readonly [(ngModel)]="currObject.Name" name="name" #name="ngModel">
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+          <input mdInput placeholder="{{'Finance.CurrencySymbol' | translate}}" readonly [(ngModel)]="currObject.Symbol" name="symbol" #symbol="ngModel">
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-slide-toggle disabled [(ngModel)]="currObject.IsLocalCurrency" name="loccurr">{{'Finance.LocalCurrency' | translate}}</md-slide-toggle>
+      </div>
+      <div layout="row" layout-margin>
+        <md-slide-toggle disabled [(ngModel)]="currObject.SysFlag" name="syflag">{{'Common.SystemFlag' | translate}}</md-slide-toggle>
+      </div>
+    </div>
   </md-card-content>
+  <md-divider></md-divider>
+  <md-card-actions>
+    <button md-button color="accent" (click)="onBack()">{{'Common.Back' | translate}}</button>
+  </md-card-actions>
 </md-card>

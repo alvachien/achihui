@@ -1,6 +1,7 @@
 import { Component, OnInit }  from '@angular/core';
 import { UIStatusService } from '../services/uistatus.service';
 import { AuthService } from '../services/auth.service';
+import { AppLanguage } from '../model/common';
 
 @Component({
   selector: 'hih-home',
@@ -18,11 +19,14 @@ export class HomeComponent implements OnInit {
   public learnMenuToggled: boolean = true;
   public financeMenuToggled: boolean = true;
   public libraryMenuToggled: boolean = true;
+  public arLanguages: Array<AppLanguage>;
 
   constructor(
     private _authService: AuthService,
     private _uistatus: UIStatusService
   ) { 
+    this.arLanguages = new Array<AppLanguage>();
+
     // Register the Auth service
     this._authService.authContent.subscribe(x => {
       this._uistatus.setIsLogin(x.isAuthorized);
@@ -46,24 +50,18 @@ export class HomeComponent implements OnInit {
     this._uistatus.obsTitleLogin.subscribe(x => {
       this.titleLogin = x;
     }, error => {
-
     }, () => {
-
     });
 
     this._uistatus.obsAppRouteList.subscribe(x => {
       this.appRoutes = x;
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsLearnRouteList.subscribe(x => {
       this.learnRoutes = x;
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsFinanceRouteList.subscribe(x => {
       this.financeRoutes = x;
@@ -75,17 +73,17 @@ export class HomeComponent implements OnInit {
     this._uistatus.obsLibraryRouteList.subscribe(x => {
       this.libraryRoutes = x;
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsUserRouteList.subscribe(x => {
       this.userRoutes = x;
     }, error => {
-
     }, () => {
-
     });
+
+    for(let ap of this._uistatus.arLang) {
+      this.arLanguages.push(ap);
+    }
   }
 
   ngOnInit() {
@@ -106,5 +104,9 @@ export class HomeComponent implements OnInit {
   }
   public toggleLibraryMenu() : void {
     this.libraryMenuToggled = !this.libraryMenuToggled;
+  }
+
+  public onLanguageClick(lang: AppLanguage) : void {
+    this._uistatus.setCurrentLanguage(lang.IsoName);
   }
 }

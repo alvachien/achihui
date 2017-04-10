@@ -10,6 +10,7 @@ import {
 import { TdDialogService } from '@covalent/core';
 import * as HIHCommon from '../../../model/common';
 import * as HIHFinance from '../../../model/financemodel';
+import * as HIHUI from '../../../model/uimodel';
 import * as HIHUser from '../../../model/userinfo';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs/Observable';
@@ -22,7 +23,7 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css']
 })
-export class DetailComponent implements OnInit {
+export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
 
   private routerID: number; // Current ID in routing
   private _apiUrl: string;
@@ -30,9 +31,9 @@ export class DetailComponent implements OnInit {
   private arCategory: Array<HIHFinance.AccountCategory> = [];
   public currentMode: string;
   public accountObject: HIHFinance.Account = null;
-  public advpayObject: HIHFinance.AccountExtraAdvancePayment = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
   public ctgyAdvancePayment: number = HIHCommon.FinanceAccountCategory_AdvancePayment;
+  public arRepeatFrequency: Array<HIHUI.UIRepeatFrequency> = [];
 
   constructor(private _http: Http,
     private _router: Router,
@@ -43,8 +44,8 @@ export class DetailComponent implements OnInit {
     private _authService: AuthService,
     private _uistatus: UIStatusService) {
     this.accountObject = new HIHFinance.Account();
-    this.advpayObject = new HIHFinance.AccountExtraAdvancePayment();
     this.uiMode = HIHCommon.UIMode.Create;
+    this.arRepeatFrequency = HIHUI.UIRepeatFrequency.getRepeatFrequencies();
 
     this._apiUrl = environment.ApiUrl + "api/financeaccount";
   }
@@ -52,6 +53,16 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for interface methods
   ////////////////////////////////////////////
+  IsUIEditable() {
+    return HIHCommon.isUIEditable(this.currentUIMode());
+  }
+  currentUIMode() {
+    return this.uiMode;
+  }
+  currentUIModeString() {
+    return HIHCommon.getUIModeString(this.currentUIMode());
+  }
+  
   ngOnInit() {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of FinanceAccountDetail");
@@ -71,18 +82,18 @@ export class DetailComponent implements OnInit {
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === "create") {
-            this.currentMode = "Create";
+            this.currentMode = "Common.Create";
             this.accountObject = new HIHFinance.Account();
             this.uiMode = HIHCommon.UIMode.Create;
           } else if (x[0].path === "edit") {
             this.routerID = +x[1].path;
 
-            this.currentMode = "Edit"
+            this.currentMode = "Common.Edit"
             this.uiMode = HIHCommon.UIMode.Change;
           } else if (x[0].path === "display") {
             this.routerID = +x[1].path;
 
-            this.currentMode = "Display";
+            this.currentMode = "Common.Display";
             this.uiMode = HIHCommon.UIMode.Display;
           }
         }
@@ -202,7 +213,7 @@ export class DetailComponent implements OnInit {
   // Methods for Utility methods
   ////////////////////////////////////////////
   readAccount(): void {
-    if (environment.DebugLogging) {
+    if (environment.LoggingLevel >= 4) {
       console.log("Entering readAccount of FinanceAccountDetail");
     }
 
@@ -213,16 +224,21 @@ export class DetailComponent implements OnInit {
 
     this._http.get(this._apiUrl + "/" + this.routerID.toString(), { headers: headers })
       .map(this.extractAccountData)
-      .catch(this.handleError)
+      //.catch(this.handleError)
       .subscribe(data => {
         this._zone.run(() => {
           this.accountObject = data;
         });
       },
       error => {
-        // It should be handled already
-      }, () => {
-
+        this._dialogService.openAlert({
+          message: error,
+          disableClose: false, // defaults to false
+          viewContainerRef: this._viewContainerRef, //OPTIONAL
+          title: "Error", //OPTIONAL, hides if not provided
+          closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+        });
+        }, () => {
       });
   }
 
@@ -318,8 +334,9 @@ export class DetailComponent implements OnInit {
     // In a real world app, we might use a remote logging infrastructure
     // We'd also dig deeper into the error to get a better message
     let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
+      error.status ? `${error.status} - ${error.statusText}` : `Server error`;
     console.error(errMsg); // log to console instead
+
     return Observable.throw(errMsg);
   }
 }

@@ -1,12 +1,12 @@
 <md-card>
-  <md-card-title>Advance payment</md-card-title>
-  <md-card-subtitle>{{currentMode}}</md-card-subtitle>
+  <md-card-title>{{"Finance.AdvancePayment" | translate}}</md-card-title>
+  <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
     <div layout="column" layout-padding>
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <input mdInput placeholder="ID" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
+          <input mdInput placeholder="{{'Common.ID' | translate}}" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
@@ -16,7 +16,7 @@
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="90" placeholder="Account" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
+        <md-select flex="90" placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
           <md-option *ngFor="let sacnt of arAccount" [value]="sacnt.Id">
             {{sacnt.Name}}
           </md-option>
@@ -36,7 +36,7 @@
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="90" placeholder="Currency" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
+        <md-select flex="90" placeholder="{{'Finance.Currency' | translate}}" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
           <md-option *ngFor="let cur of arCurrency" [value]="cur.Currency">
               {{cur.Symbol}} - {{cur.Name}}
           </md-option>
@@ -44,7 +44,7 @@
       </div>
       <div layout="row" layout-margin>
           <md-input-container flex>
-            <textarea mdInput placeholder="Description" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
+            <textarea mdInput placeholder="{{'Common.Description' | translate}}" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
           </md-input-container>
       </div>
       <div layout="row" layout-margin>
@@ -55,7 +55,7 @@
         </md-select>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="96" placeholder="Order" [(ngModel)]="uiObject.SourceOrderId" name="srcorder" #srcorder="ngModel">
+        <md-select flex="96" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.SourceOrderId" name="srcorder" #srcorder="ngModel">
           <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
             {{ord.Name}}
           </md-option>
@@ -149,9 +149,9 @@
         </md-tab-group>
       </div>
       <div layout="row" layout-padding>
-        <button md-button color="accent" (click)="onSubmit()">Submit</button>
-        <button md-button>Cancel</button>
-      </div>       
+        <button md-button color="accent" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+        <button md-button>{{'Common.Cancel' | translate}}</button>
+      </div>
     </div>
   </md-card-content>
 </md-card>

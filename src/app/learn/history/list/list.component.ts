@@ -1,7 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Headers, Response, RequestOptions, URLSearchParams }
-  from '@angular/http';
+import { Http, Headers, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import * as HIHCommon from '../../../model/common';
 import * as HIHLearn from '../../../model/learnmodel';
 import { environment } from '../../../../environments/environment';
@@ -10,6 +9,7 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'learn-history-list',
@@ -32,7 +32,7 @@ export class ListComponent implements OnInit {
   searchTerm: string = '';
   fromRow: number = 1;
   currentPage: number = 1;
-  pageSize: number = 5;
+  pageSize: number = 10;
   sortBy: string = 'UpdatedAt';
   selectable: boolean = true;
   selectedRows: any[] = [];
@@ -46,6 +46,7 @@ export class ListComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     private _uistatus: UIStatusService,
     private _zone: NgZone,
+    private _authService: AuthService,
     private _dataTableService: TdDataTableService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of LearnHistoryList");
@@ -58,6 +59,7 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of LearnHistoryList");
     }
+
     this._uistatus.setLearnSubModule("History List");
     this.loadHistoryList();
   }
@@ -68,6 +70,9 @@ export class ListComponent implements OnInit {
     }
 
     var headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     this._http.get(this._apiUrl, { headers: headers })
       .map(this.extractData)
       .catch(this.handleError)
@@ -75,8 +80,6 @@ export class ListComponent implements OnInit {
         if (data instanceof Array) {
           this.listData = data;
           this.filter();
-          // this.filteredData = this.listData;
-          // this.filteredTotal = this.listData.length;
         }
       },
       error => {
@@ -151,6 +154,13 @@ export class ListComponent implements OnInit {
     }
 
     this._router.navigate(['/learn/history/create']);
+  }
+  public onDisplayHistory(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onDisplayHistory of LearnHistoryList");
+    }
+
+    this._router.navigate(['/learn/history/display/' + this.selectedRows[0].generateKey()]);
   }
   public onEditHistory(): void {
     if (environment.DebugLogging) {

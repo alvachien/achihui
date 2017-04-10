@@ -2,58 +2,64 @@
   <td-navigation-drawer flex icon="event_seat" sidenavTitle="H.I.H." name="{{ titleLogin }}" (logout)="onLogout()">
     <div td-sidenav-content *ngIf="!isLoggedIn">
       <md-nav-list menu-items>
-        <a md-list-item (click)="onLogin()">Login</a>
+        <a md-list-item (click)="onLogin()">{{"Login.Login" | translate}}</a>
       </md-nav-list>
     </div>
     <div td-sidenav-content *ngIf="isLoggedIn">
-	    <div class="md-body-2" layout="row" (click)="toggleLearnMenu()">
-	        <span flex>Learning Trace</span>
-	        <button md-icon-button class="md-icon-button-mini">
+      <md-nav-list menu-items>
+        <a *ngFor="let route of appRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
+          <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
+        </a>
+      </md-nav-list>
+      
+      <div class="md-body-2" layout="row" (click)="toggleLearnMenu()">
+        <span flex>{{"Nav.LearningTrace" | translate}}</span>
+        <button md-icon-button class="md-icon-button-mini">
 	          <md-icon *ngIf="!learnMenuToggled">arrow_drop_down</md-icon>
 	          <md-icon *ngIf="learnMenuToggled">arrow_drop_up</md-icon>
 	        </button>
-	    </div>
-	    <md-nav-list menu-items *ngIf="learnMenuToggled">
+      </div>
+      <md-nav-list menu-items *ngIf="learnMenuToggled">
         <a *ngFor="let route of learnRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
-          <md-icon>{{route.icon}}</md-icon>{{route.title}}
+          <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
         </a>
-	    </md-nav-list>
-	
-	    <div class="md-body-2" layout="row" (click)="toggleFinanceMenu()">
-	        <span flex>Finance Trace</span>
-	        <button md-icon-button class="md-icon-button-mini">
+      </md-nav-list>
+
+      <div class="md-body-2" layout="row" (click)="toggleFinanceMenu()">
+        <span flex>{{"Nav.FinanceTrace" | translate}}</span>
+        <button md-icon-button class="md-icon-button-mini">
 	          <md-icon *ngIf="!financeMenuToggled">arrow_drop_down</md-icon>
 	          <md-icon *ngIf="financeMenuToggled">arrow_drop_up</md-icon>
 	        </button>
-	    </div>
-	    <md-nav-list menu-items *ngIf="financeMenuToggled">
+      </div>
+      <md-nav-list menu-items *ngIf="financeMenuToggled">
         <a *ngFor="let route of financeRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
-          <md-icon>{{route.icon}}</md-icon>{{route.title}}
+          <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
         </a>
-	    </md-nav-list>
-	
-	    <div class="md-body-1" layout="row" (click)="toggleLibraryMenu()">
-	        <span flex>Library Trace</span>
-	        <button md-icon-button class="md-icon-button-mini">
+      </md-nav-list>
+
+      <div class="md-body-1" layout="row" (click)="toggleLibraryMenu()">
+        <span flex>{{"Nav.LibraryTrace" | translate}}</span>
+        <button md-icon-button class="md-icon-button-mini">
 	          <md-icon *ngIf="!libraryMenuToggled">arrow_drop_down</md-icon>
 	          <md-icon *ngIf="libraryMenuToggled">arrow_drop_up</md-icon>
 	        </button>
-	    </div>
+      </div>
 
-	    <md-nav-list menu-items *ngIf="libraryMenuToggled">
+      <md-nav-list menu-items *ngIf="libraryMenuToggled">
         <a *ngFor="let route of libraryRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
-          <md-icon>{{route.icon}}</md-icon>{{route.title}}
+          <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
         </a>
-	    </md-nav-list>
+      </md-nav-list>
     </div>
 
     <div td-navigation-drawer-menu>
       <md-nav-list>
         <a *ngFor="let route of userRoutes" md-list-item (click)="layout.close()" [routerLink]="[route.route]">
-          <md-icon>{{route.icon}}</md-icon>{{route.title}}
+          <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
         </a>
         <a md-list-item (click)="layout.close(); onLogout();">
-          <md-icon>exit_to_app</md-icon>Logout
+          <md-icon>exit_to_app</md-icon>{{ "Login.Logout" | translate}}
         </a>
       </md-nav-list>
     </div>
@@ -61,19 +67,34 @@
   <div td-sidenav-content class="td-layout-footer pad">
     &copy; 2016 - 2017, Alva Chien.
   </div>
-    
+
   <td-layout-nav icon="event_seat" class="white-orange">
     <div toolbar-content layout="row" layout-align="start center" flex>
       <span hide-xs>Home Info. Hub, by Alva Chien</span>
       <span flex></span>
-      <button md-icon-button [mdMenuTriggerFor]="notificationsMenu">
+      <button md-icon-button [mdMenuTriggerFor]="langsMenu">
+        <td-notification-count color="accent">
+          <md-icon>translate</md-icon>
+        </td-notification-count>
+      </button>
+      <md-menu #langsMenu="mdMenu">
+        <td-menu>
+          <div td-menu-header class="md-subhead">{{"Common.Languages" | translate}}</div>
+          <md-nav-list dense>
+            <a md-list-item *ngFor="let lang of arLanguages" (click)="onLanguageClick(lang)">
+              <h4 md-line><span class="text-wrap">{{lang.NativeName | translate}}</span></h4>
+            </a>
+          </md-nav-list>
+        </td-menu>
+      </md-menu>
+      <button md-icon-button [mdMenuTriggerFor]="creditsMenu">
         <td-notification-count color="accent">
           <md-icon>apps</md-icon>
         </td-notification-count>
       </button>
-      <md-menu #notificationsMenu="mdMenu">
+      <md-menu #creditsMenu="mdMenu">
         <td-menu>
-          <div td-menu-header class="md-subhead">Credits</div>
+          <div td-menu-header class="md-subhead">{{"Nav.Credits" | translate}}</div>
           <md-nav-list dense>
             <a md-list-item href="https://github.com/angular/angular" target="_blank">
               <md-icon md-list-avatar svgIcon="assets:angular"></md-icon>
@@ -95,7 +116,7 @@
           </md-nav-list>
         </td-menu>
       </md-menu>
-      <a md-icon-button mdTooltip="View this code" href="https://github.com/alvachien/achihui" target="_blank">
+      <a md-icon-button mdTooltip="Github" href="https://github.com/alvachien/achihui" target="_blank">
         <md-icon svgIcon="assets:github"></md-icon>
       </a>
     </div>

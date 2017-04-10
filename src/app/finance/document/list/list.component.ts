@@ -173,6 +173,31 @@ export class ListComponent implements OnInit {
     this._router.navigate(['/finance/document/createadvpay']);
   }
 
+  public onDisplayDocument() {
+    if (environment.DebugLogging) {
+      console.log("Entering onDisplayDocument of FinanceDocumentList");
+    }
+
+    if (this.selectedRows.length != 1) {
+      this._dialogService.openAlert({
+        message: "Select one and only one row to continue!",
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "Selection error", //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+      return;
+    }
+    
+    if (this.selectedRows[0].DocType === HIHCommon.FinanceDocType_Transfer) {
+      this._router.navigate(['/finance/document/displaytransfer/' + this.selectedRows[0].Id.toString()]);
+    } else if (this.selectedRows[0].DocType === HIHCommon.FinanceDocType_AdvancePayment) {
+      this._router.navigate(['/finance/document/displayadvpay/' + this.selectedRows[0].Id.toString()]);
+    } else {
+      this._router.navigate(['/finance/document/display/' + this.selectedRows[0].Id.toString()]);
+    }    
+  }
+
   public onEditDocument() {
     if (environment.DebugLogging) {
       console.log("Entering onCreateDocument of FinanceDocumentList");
@@ -191,6 +216,8 @@ export class ListComponent implements OnInit {
     
     if (this.selectedRows[0].DocType === HIHCommon.FinanceDocType_Transfer) {
       this._router.navigate(['/finance/document/edittransfer/' + this.selectedRows[0].Id.toString()]);
+    } else if (this.selectedRows[0].DocType === HIHCommon.FinanceDocType_AdvancePayment) {
+      this._router.navigate(['/finance/document/editadvpay/' + this.selectedRows[0].Id.toString()]);
     } else {
       this._router.navigate(['/finance/document/edit/' + this.selectedRows[0].Id.toString()]);
     }    

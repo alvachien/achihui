@@ -3,6 +3,7 @@
     "OK": "OK",
     "Cancel": "取消",
     "Language": "语言",
+    "Languages": "语言",
     "Clear": "清除",
     "Submit": "提交",
     "Copyright": "版权所有",
@@ -17,8 +18,8 @@
     "Themes": "主题",
     "Default": "默认",
     "BackToList": "返回列表视图",
+    "Back": "返回",
     "GoDetail": "查看详细",
-
     "New": "新建",
     "Change": "修改",
     "Delete": "删除",
@@ -32,9 +33,10 @@
     "Warning": "警告",
     "Activities": "活动",
     "Module": "模块",
-
+    
     "ID": "ID",
     "Category": "类别",
+    "Categories": "类别",
     "Type": "类型",
     "Name": "名称",
     "Content": "内容",
@@ -45,6 +47,8 @@
     "Text": "文本",
     "ValidFrom": "有效期始",
     "ValidTo": "有效期至",
+    "StartDate": "开始日期",
+    "EndDate": "结束日期",
     "Description": "描述",
     "Header": "头信息",
     "Detail": "详细信息",
@@ -62,10 +66,22 @@
     "Tags": "标签",
     "Tag": "标签",
     "Setting": "设置",
-
     "DeleteConfirmation": "确认删除操作",
     "ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",
-    "SearchViaName": "根据名字来搜索项..."
+    "SearchViaName": "根据名字来搜索项...",
+    "SystemFlag": "系统标志",
+    "PleaseSelect": "请选择"
+  },
+  "Sys":{
+    "Currency": {
+      "CNY": "人民币",
+      "EUR": "欧元",
+      "HKD": "港币",
+      "JPY": "日币",
+      "KRW": "韩币",
+      "TWD": "新台币",
+      "USD": "美元"
+    }
   },
   "RepeatFrequency": {
     "Month": "月",
@@ -107,10 +123,57 @@
     "LearningTrace": "学习记录系统",
     "EventTrace": "事务记录系统",
     "FinanceTrace": "财务记录系统",
+    "LibraryTrace": "资料记录系统",
     "About": "关于",
     "Acknowledgements": "致谢",
     "Credits": "Credits",
     "Version": "版本",
-    "Libraries": "资料库"
+    "Libraries": "资料库",
+    "English": "英文",
+    "SimplifiedChinese": "简体中文"
+  },
+  "Learning": {
+    "LearningCategory": "学习种类",
+    "LearningObject": "学习对象",
+    "LearningObjects": "学习对象",
+    "LearningHistory": "学习记录",
+    "LearningHistories": "学习记录",
+    "LearningAward": "学习成绩",
+    "LearningPlan": "学习计划"
+  },
+  "Finance": {
+    "Accounts": "账户",
+    "Account": "账户",
+    "AccountCategory": "账户种类",
+    "AccountCategories": "账户种类",
+    "Documents": "财务凭证",
+    "Document": "财务凭证",
+    "PostDocument": "记账",
+    "Controlling": "财务控制",
+    "ControlCenter": "控制中心",
+    "ControlCenters": "控制中心",
+    "InternalOrder": "内部订单",
+    "Order": "订单",
+    "Orders": "订单",
+    "SettlementRule": "结算规则",
+    "ConfigObjects": "可配置对象",
+    "Currency": "货币",
+    "Currencies": "货币",
+    "CurrencySymbol": "符号",
+    "LocalCurrency": "本币",
+    "TransactionType": "交易类型",
+    "TransactionTypes": "交易类型",
+    "DocumentType": "凭证类型",
+    "DocumentTypes": "凭证类型",
+    "Reports": "报表",
+    "AssetFlag": "资产类标志",
+    "AdvancePayment": "预付款",
+    "Owner": "所有者"
+  },
+  "Library": {
+    "Books": "书籍",
+    "Book": "书籍",
+    "Movies": "影视剧",
+    "Movie": "影视剧"
   }
 }

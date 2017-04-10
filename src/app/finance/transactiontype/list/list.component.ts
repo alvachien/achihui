@@ -10,6 +10,7 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'finance-transactiontype-list',
@@ -44,7 +45,8 @@ export class ListComponent implements OnInit {
      private router: Router,
      private activateRoute: ActivatedRoute,
      private uistatus: UIStatusService,
-     private _dataTableService: TdDataTableService) {
+     private _dataTableService: TdDataTableService,
+     private _tranService: TranslateService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceTransactionTypeList");
     }

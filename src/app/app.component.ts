@@ -26,21 +26,21 @@ export class AppComponent implements OnInit {
       console.log("Entering constructor of AppComponent");
     }
 
-    this._translateService.addLangs(["en", "zh"]);
-    this._translateService.setDefaultLang('en');
+    let arlang: string[] = [];
+    for(let ap of this._uistatus.arLang)
+      arlang.push(ap.IsoName);
+    this._translateService.addLangs(arlang);
+    this._translateService.setDefaultLang(this._uistatus.curLang);
+    this._uistatus.obsCurLanguage.subscribe(x => {
+      this._translateService.setDefaultLang(x);
+    }, error => {
+    }, () => {
+    });
 
     this._authService.authContent.subscribe(x => {
       this._uistatus.setIsLogin(x.isAuthorized);
     });
 
-    // let options: ILoadingOptions = {
-    //   name: 'main',
-    //   type: LoadingType.Circular,
-    // };
-    // this._loadingService.createOverlayComponent(options, viewContainerRef);
-
-    // this._iconRegistry.addSvgIconInNamespace('assets', 'teradata',
-    //   this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/teradata.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'github',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'angular',

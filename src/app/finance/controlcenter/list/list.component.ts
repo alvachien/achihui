@@ -14,6 +14,7 @@ import {
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { TdDialogService } from '@covalent/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'finance-controlcenter-list',
@@ -24,13 +25,8 @@ export class ListComponent implements OnInit {
   
   private _apiUrl: string;
   public listData: Array<HIHFinance.ControllingCenter> = [];
-
-  columns: ITdDataTableColumn[] = [
-    { name: 'Id', label: '#', tooltip: 'ID' },
-    { name: 'Name', label: 'Name', tooltip: 'Name' },
-    { name: 'ParentId', label: 'Parent Id', tooltip: 'Parent' },
-    { name: 'Comment', label: 'Comment' }
-  ];
+  clnhdrstring: string[] = ["Common.ID", "Common.Name", "Common.Parent", "Common.Comment"];
+  columns: ITdDataTableColumn[] = [];
   filteredData: any[];
   filteredTotal: number;
   searchTerm: string = '';
@@ -52,12 +48,21 @@ export class ListComponent implements OnInit {
     private _uistatus: UIStatusService,
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
-    private _dataTableService: TdDataTableService) {
+    private _dataTableService: TdDataTableService,
+    private _tranService: TranslateService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceControlCenterList");
     }
 
     this._apiUrl = environment.ApiUrl + "api/financecontrollingcenter";
+    this.columns = [
+      { name: 'Id', label: '#', tooltip: 'ID' },
+      { name: 'Name', label: 'Name', tooltip: 'Name' },
+      { name: 'ParentId', label: 'Parent Id', tooltip: 'Parent' },
+      { name: 'Comment', label: 'Comment' }
+    ];
+
+    this.loadHeaderString();
   }
 
   ngOnInit() {
@@ -65,8 +70,6 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceControlCenterList");
     }
 
-    this._uistatus.setFinanceModule("Controlling Center");
-    this._uistatus.setFinanceSubModule("List Mode");
     this.loadControlCenterList();
   }
 
@@ -138,23 +141,6 @@ export class ListComponent implements OnInit {
     this.filter();
   }
 
-  // selectEvent(selectEvent: ITdDataTableSelectEvent): void {
-  //   if (selectEvent.selected) {
-  //     this._zone.run(() => {
-  //       this.listSelectRows.push(selectEvent.row.Id);
-  //     });
-  //   } else {
-  //     this._zone.run(() => {
-  //       for (let idx = 0; idx < this.listSelectRows.length; idx++) {
-  //         if (+this.listSelectRows[idx] === +selectEvent.row.Id) {
-  //           this.listSelectRows.splice(idx);
-  //           break;
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
-
   page(pagingEvent: IPageChangeEvent): void {
     this.fromRow = pagingEvent.fromRow;
     this.currentPage = pagingEvent.page;
@@ -178,6 +164,21 @@ export class ListComponent implements OnInit {
       console.log("ACHIHUI Log: Entering onCreateControlCenter of FinanceControlCenterList");
     }
     this._router.navigate(['/finance/controlcenter/create']);
+  }
+
+  public onDisplayControlCenter() {
+    if (this.selectedRows.length != 1) {
+      this._dialogService.openAlert({
+        message: "Select one and only one row to continue!",
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "Selection error", //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+      return;
+    }
+
+    this._router.navigate(['/finance/controlcenter/display/' + this.selectedRows[0].Id.toString()]);
   }
 
   public onEditControlCenter() {
@@ -206,5 +207,15 @@ export class ListComponent implements OnInit {
       });
       return;
     }    
+  }
+
+  private loadHeaderString() : void {
+    this._tranService.get(this.clnhdrstring).subscribe(x => {
+      for(let i = 0; i < this.columns.length; i ++) {
+        this.columns[i].label = x[this.clnhdrstring[i]];
+      }
+    }, error => {
+    }, () => {
+    });    
   }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Headers, Response, RequestOptions, URLSearchParams }
-  from '@angular/http';
+import { Http, Headers, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import * as HIHCommon from '../../../model/common';
 import * as HIHLearn from '../../../model/learnmodel';
 import { environment } from '../../../../environments/environment';
@@ -20,10 +19,10 @@ export class DetailComponent implements OnInit {
   public detailObject: HIHLearn.LearnCategory = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
 
-  constructor(
-    private router: Router,
-    private activateRoute: ActivatedRoute,
-    private uistatus: UIStatusService) {
+  constructor(private _router: Router,
+    private _activateRoute: ActivatedRoute,
+    private _http: Http,
+    private _uistatus: UIStatusService) {
       this.detailObject = new HIHLearn.LearnCategory();
       this.uiMode = HIHCommon.UIMode.Create;
   }
@@ -34,38 +33,37 @@ export class DetailComponent implements OnInit {
     }
     
     // Distinguish current mode
-    this.activateRoute.url.subscribe(x => {
+    this._activateRoute.url.subscribe(x => {
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === "create") {
           this.currentMode = "Create";
           this.detailObject = new HIHLearn.LearnCategory();
           this.uiMode = HIHCommon.UIMode.Create;
         } else if (x[0].path === "edit") {
+          this.routerID = +x[1].path;
+
           this.currentMode = "Edit"
           this.uiMode = HIHCommon.UIMode.Change;
         } else if(x[0].path === "display") {
+          this.routerID = +x[1].path;
+
           this.currentMode = "Display";
           this.uiMode = HIHCommon.UIMode.Display;
         }
 
+        if (this.uiMode === HIHCommon.UIMode.Display || this.uiMode === HIHCommon.UIMode.Change) {
+          this.readCategory();
+        }
+
         // Update the sub module
-        this.uistatus.setLearnSubModule(this.currentMode + " Category");
+        this._uistatus.setLearnSubModule(this.currentMode + " Category");
       }
     }, error => {
-
     }, () => {
-
     });
+  }
 
-    // let aid: number = -1;
-    // this.activateRoute.params.forEach((next: { id: number }) => {
-    //     aid = next.id;
-    // });
+  private readCategory(): void {
 
-    // if (aid !== -1 && aid != this.routerID) {
-    //     this.routerID = aid;        
-    // } else if (aid === -1) {
-    //   // Create mode
-    // }
   }
 }

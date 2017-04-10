@@ -10,6 +10,9 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { BufferService } from '../../../services/buff.service';
+import { TranslateService } from '@ngx-translate/core';
+import { TdDialogService } from '@covalent/core';
 
 @Component({
   selector: 'finance-accountcategory-list',
@@ -18,14 +21,10 @@ import { UIStatusService } from '../../../services/uistatus.service';
 })
 export class ListComponent implements OnInit {
   private _apiUrl: string;
-  public listData: Array<HIHFinance.Currency> = [];
-  columns: ITdDataTableColumn[] = [
-    { name: 'Id', label: '#', tooltip: 'ID' },
-    { name: 'Name', label: 'Name', tooltip: 'Name' },
-    { name: 'AssetFlag', label: 'Asset Flag', tooltip: 'Asset Flag' },
-    { name: 'Comment', label: 'Comment' },
-    { name: 'SysFlag', label: 'System Flag' },
-  ];
+  public listData: Array<HIHFinance.AccountCategory> = [];
+
+  clnhdrstring: string[] = ["Common.ID", "Common.Name", "Finance.AssetFlag", "Common.Comment", "Common.SystemFlag"];
+  columns: ITdDataTableColumn[];
   filteredData: any[];
   filteredTotal: number;
   searchTerm: string = '';
@@ -41,15 +40,24 @@ export class ListComponent implements OnInit {
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 
   constructor(private _http: Http,
-     private router: Router,
-     private activateRoute: ActivatedRoute,
-     private uistatus: UIStatusService,
-     private _dataTableService: TdDataTableService) {
+     private _router: Router,
+     private _activateRoute: ActivatedRoute,
+     private _uistatus: UIStatusService,
+     private _dataTableService: TdDataTableService,
+     private _tranService: TranslateService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceAccountCategoryList");
     }
 
     this._apiUrl = environment.ApiUrl + "api/financeaccountcategory";
+    this.columns = [
+      { name: 'Id', label: '#', tooltip: 'ID' },
+      { name: 'Name', label: 'Name', tooltip: 'Name' },
+      { name: 'AssetFlag', label: 'Asset Flag', tooltip: 'Asset Flag' },
+      { name: 'Comment', label: 'Comment' },
+      { name: 'SysFlag', label: 'System Flag' },
+    ];
+    this.loadHeaderString();
   }
 
   ngOnInit() {
@@ -57,8 +65,6 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceAccountCategoryList");
     }
 
-    this.uistatus.setFinanceModule("Account Category");
-    this.uistatus.setFinanceSubModule("List Mode");
     this.loadAccountCategoryList();
   }
 
@@ -152,6 +158,23 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering onCreateAccountCategory of FinanceAccountCategoryList");
     }
-    this.router.navigate(['/finance/accountcategory/create']);
+    this._router.navigate(['/finance/accountcategory/create']);
+  }
+
+  public onDisplayAccountCategory() {
+    if (environment.DebugLogging) {
+      console.log("Entering onDisplayAccountCategory of FinanceAccountCategoryList");
+    }
+    this._router.navigate(['/finance/accountcategory/display/' + this.selectedRows[0].Currency]);
+  }
+
+  private loadHeaderString() : void {
+    this._tranService.get(this.clnhdrstring).subscribe(x => {
+      for(let i = 0; i < this.columns.length; i ++) {
+        this.columns[i].label = x[this.clnhdrstring[i]];
+      }
+    }, error => {
+    }, () => {
+    });    
   }
 }

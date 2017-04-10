@@ -3,6 +3,7 @@
     "OK": "OK",
     "Cancel": "Cancel",
     "Language": "Language",
+    "Languages": "Languages",
     "Clear": "Clear",
     "Submit": "Submit",
     "Copyright": "Copyright",
@@ -17,8 +18,8 @@
     "Themes": "Themes",
     "Default": "Default",
     "BackToList": "Back to List",
+    "Back": "Back",
     "GoDetail": "Go Detail",
-
     "New": "New",
     "Change": "Change",
     "Delete": "Delete",
@@ -32,9 +33,10 @@
     "Warning": "Warning",
     "Activities": "Activities",
     "Module": "Module",
-
+    
     "ID": "ID",
     "Category": "Category",
+    "Categories": "Categories",
     "Type": "Type",
     "Name": "Name",
     "Content": "Content",
@@ -45,6 +47,8 @@
     "Text": "Text",
     "ValidFrom": "Valid From",
     "ValidTo": "Valid To",
+    "StartDate": "Start Date",
+    "EndDate": "End Date",
     "Description": "Description",
     "Header": "Header",
     "Detail": "Detail",
@@ -62,10 +66,22 @@
     "Tags": "Tags",
     "Tag": "Tag",
     "Setting": "Setting",
-
     "DeleteConfirmation": "Delete Confirmation",
     "ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",
-    "SearchViaName": "Select an item via the name..."
+    "SearchViaName": "Select an item via the name...",
+    "SystemFlag": "System Flag",
+    "PleaseSelect": "Please select"
+  },
+  "Sys":{
+    "Currency": {
+      "CNY": "Chinese Yuan",
+      "EUR": "Euro",
+      "HKD": "Hong Kong Dollar",
+      "JPY": "Japan Yen",
+      "KRW": "South Korean Won",
+      "TWD": "TaiWan New Dollar",
+      "USD": "Dollar"
+    }
   },
   "RepeatFrequency": {
     "Month": "Month",
@@ -106,11 +122,58 @@
     "TakeALookAtUserDetail": "Take a look at User Detail",
     "LearningTrace": "Learning Trace",
     "FinanceTrace": "Finance Trace",
+    "LibraryTrace": "Library Trace",
     "EventTrace": "Event Trace",
     "About": "About",
     "Acknowledgements": "Acknowledgements",
     "Credits": "Credits",
     "Version": "Version",
-    "Libraries": "Libraries"
+    "Libraries": "Libraries",
+    "English": "English",
+    "SimplifiedChinese": "Simplified Chinese"
+  },
+  "Learning": {
+    "LearningCategory": "Learning Category",
+    "LearningObject": "Learning Object",
+    "LearningObjects": "Learning Objects",
+    "LearningHistory": "Learning History",
+    "LearningHistories": "Learning Histories",
+    "LearningAward": "Learning Award",
+    "LearningPlan": "Learning Plan"
+  },
+  "Finance": {
+    "Accounts": "Accounts",
+    "Account": "Account",
+    "AccountCategory": "Account Category",
+    "AccountCategories": "Account Categories",
+    "Documents": "Documents",
+    "Document": "Document",
+    "PostDocument": "Post Document",
+    "Controlling": "Controlling",
+    "ControlCenter": "Control Center",
+    "ControlCenters": "Control Centers",
+    "InternalOrder": "Internal Order",
+    "Order": "Order",
+    "Orders": "Order",
+    "SettlementRule": "Settlement Rule",
+    "ConfigObjects": "Config Objects",
+    "Currency": "Currency",
+    "Currencies": "Currencies",
+    "CurrencySymbol": "Symbol",
+    "LocalCurrency": "Local Currency",
+    "TransactionType": "Transaction Type",
+    "TransactionTypes": "Transaction Types",
+    "DocumentType": "Document Type",
+    "DocumentTypes": "Document Type",
+    "Reports": "Reports",
+    "AssetFlag": "Asset Flag",
+    "AdvancePayment": "Advance Payment",
+    "Owner": "Owner"
+  },
+  "Library": {
+    "Books": "Books",
+    "Book": "Book",
+    "Movies": "Movies",
+    "Movie": "Movie"
   }
 }

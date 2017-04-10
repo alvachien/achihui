@@ -72,7 +72,7 @@ export class AdvpaydocComponent implements OnInit {
     this.uiMode = HIHCommon.UIMode.Create;
     this.arRepeatFrequency = HIHUI.UIRepeatFrequency.getRepeatFrequencies();
 
-    this._apiUrl = environment.ApiUrl + "api/financedocument";      
+    this._apiUrl = environment.ApiUrl + "api/financeadpdocument";      
   }
 
   ngOnInit() {
@@ -329,7 +329,7 @@ export class AdvpaydocComponent implements OnInit {
         //acntobj.ExtraInfo = new HIHFinance.AccountExtraAdvancePayment();        
         acntobj.CategoryId = HIHCommon.FinanceAccountCategory_AdvancePayment;
         acntobj.Name = this.docObject.Desp;
-        acntobj.Comment = this.docObject.Desp;
+        acntobj.Comment = this.docObject.Desp;        
         this.uiObject.AdvPayAccount.onComplete();
         acntobj.ExtraInfo = this.uiObject.AdvPayAccount;
         sobj.AccountVM = acntobj.writeJSONObject();
@@ -445,9 +445,24 @@ export class AdvpaydocComponent implements OnInit {
     this._http.get(this._apiUrl + '/' + this.routerID, { headers: headers })
       .map(this.extractDocumentData)
       .catch(this.handleError).subscribe(x => {
-        // Document read successfully
+        // Document read successfully        
         this._zone.run(() => {
-          this.docObject = x;
+          this.docObject = new HIHFinance.Document();
+          this.docObject.onSetData(x);
+          
+          // Account
+          let acnt: HIHFinance.Account = new HIHFinance.Account();
+          acnt.onSetData(x.accountVM);
+          this.uiObject.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
+          this.uiObject.AdvPayAccount.onSetData(x.accountVM.advancePaymentInfo);
+
+          // Tmp docs
+          this.uiObject.TmpDocs = [];
+          for(let tdoc of x.tmpDocs) {
+            let tmpdoc: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
+            tmpdoc.onSetData(tdoc);
+            this.uiObject.TmpDocs.push(tmpdoc);
+          }
         });
       }, error => {
         this._dialogService.openAlert({
@@ -572,12 +587,6 @@ export class AdvpaydocComponent implements OnInit {
     }
 
     let body = res.json();
-    if (body) {
-      let data: HIHFinance.Document = new HIHFinance.Document();
-      data.onSetData(body);
-      return data;
-    }
-
     return body || {};
   }
   private extractUserData(res: Response) {

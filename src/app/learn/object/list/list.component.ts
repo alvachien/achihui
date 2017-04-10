@@ -1,7 +1,6 @@
 import { Component, OnInit }  from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Headers, Response, RequestOptions, URLSearchParams }
-  from '@angular/http';
+import { Http, Headers, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import * as HIHCommon from '../../../model/common';
 import * as HIHLearn from '../../../model/learnmodel';
 import { environment } from '../../../../environments/environment';
@@ -10,6 +9,7 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'learn-object-list',
@@ -18,11 +18,12 @@ import { UIStatusService } from '../../../services/uistatus.service';
 })
 export class ListComponent implements OnInit {
   private _apiUrl: string;
-  public listData: Array<HIHLearn.LearnObject> ;
+  public listData: Array<HIHLearn.LearnObject>;
+  
   columns: ITdDataTableColumn[] = [
-    { name: 'Id', label: '#', tooltip: 'ID of the Category' },
-    { name: 'CategoryId', label: 'Parent', tooltip: 'Parent ID' },
-    { name: 'Name', label: 'Name', tooltip: 'Name of the category' },
+    { name: 'Id', label: '#', tooltip: 'ID' },
+    { name: 'CategoryName', label: 'Category', tooltip: 'Category' },
+    { name: 'Name', label: 'Name', tooltip: 'Name' },
     { name: 'UpdatedAt', label: 'Updated at' },
   ];
   filteredData: any[];
@@ -30,7 +31,7 @@ export class ListComponent implements OnInit {
   searchTerm: string = '';
   fromRow: number = 1;
   currentPage: number = 1;
-  pageSize: number = 5;
+  pageSize: number = 10;
   sortBy: string = 'UpdatedAt';
   selectable: boolean = true;
   selectedRows: any[] = [];
@@ -43,6 +44,7 @@ export class ListComponent implements OnInit {
      private router: Router,
      private activateRoute: ActivatedRoute,
      private uistatus: UIStatusService,
+     private _authService: AuthService,
      private _dataTableService: TdDataTableService) {
     this._apiUrl = environment.ApiUrl + "api/learnobject";
   }
@@ -61,6 +63,8 @@ export class ListComponent implements OnInit {
     }
 
     var headers = new Headers();
+    if (this._authService.authSubject.getValue().isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     this._http.get(this._apiUrl, { headers: headers })
       .map(this.extractData)
       .catch(this.handleError)
@@ -68,8 +72,6 @@ export class ListComponent implements OnInit {
         if (data instanceof Array) {
           this.listData = data;
           this.filter();
-          // this.filteredData = this.listData;
-          // this.filteredTotal = this.listData.length;
         }          
       },
       error => {
@@ -143,6 +145,14 @@ export class ListComponent implements OnInit {
       console.log("Entering onCreateObject of LearnObjectList");
     }
     this.router.navigate(['/learn/object/create']);
+  }
+
+  public onDisplayObject() {
+    if (environment.DebugLogging) {
+      console.log("Entering onDisplayObject of LearnObjectList");
+    }
+
+    this.router.navigate(['/learn/object/display/' + this.selectedRows[0].Id.toString() ]);
   }
 
   public onEditObject() {

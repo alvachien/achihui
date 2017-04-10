@@ -3,6 +3,9 @@
     <button md-mini-fab color="primary" (click)="onCreateObject()">
       <md-icon>add</md-icon>
     </button>
+    <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDisplayObject()">
+      <md-icon>pageview</md-icon>
+    </button>
     <button md-mini-fab color="accent" [disabled]="selectedRows.length !== 1" (click)="onEditObject()">
       <md-icon>create</md-icon>
     </button>
@@ -28,5 +31,5 @@
   [sortOrder]="sortOrder" 
   (sortChange)="sort($event)">
 </td-data-table>
-<td-paging-bar [pageSizes]="[5, 10, 15, 20]" [total]="filteredTotal" (change)="page($event)">  
+<td-paging-bar [pageSizes]="[10, 20, 30, 40]" [total]="filteredTotal" (change)="page($event)">  
 </td-paging-bar>

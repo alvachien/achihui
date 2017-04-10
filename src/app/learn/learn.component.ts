@@ -5,6 +5,8 @@ import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
 import { UIStatusService } from '../services/uistatus.service';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
+import { TranslateService } from '@ngx-translate/core';
+import { AppLanguage } from '../model/common';
 
 @Component({
   selector: 'hih-learn',
@@ -23,16 +25,33 @@ export class LearnComponent implements OnInit {
   public financeMenuToggled: boolean = true;
   public libraryMenuToggled: boolean = true;
   public currentObject: string;
+  public arLanguages: Array<AppLanguage>;
 
   constructor(private _iconRegistry: MdIconRegistry,
     private _loadingService: TdLoadingService,
     private _domSanitizer: DomSanitizer,
     private _authService: AuthService,
     private _uistatus: UIStatusService,
+    private _translateService: TranslateService,
     viewContainerRef: ViewContainerRef) { 
     if (environment.DebugLogging) {
       console.log("Entering constructor of LearnComponent");
     }
+
+    this.arLanguages = new Array<AppLanguage>();
+    let arlang: string[] = [];
+    for(let ap of this._uistatus.arLang) {
+      this.arLanguages.push(ap);
+      arlang.push(ap.IsoName);
+    }
+
+    this._translateService.addLangs(arlang);
+    this._translateService.setDefaultLang(this._uistatus.curLang);
+    this._uistatus.obsCurLanguage.subscribe(x => {
+      this._translateService.setDefaultLang(x);
+    }, error => {
+    }, () => {
+    });
 
     this._iconRegistry.addSvgIconInNamespace('assets', 'github',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
@@ -140,5 +159,8 @@ export class LearnComponent implements OnInit {
   }
   public toggleLibraryMenu() : void {
     this.libraryMenuToggled = !this.libraryMenuToggled;
+  }
+  public onLanguageClick(lang: AppLanguage) : void {
+    this._uistatus.setCurrentLanguage(lang.IsoName);
   }
 }

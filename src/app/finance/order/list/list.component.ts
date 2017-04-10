@@ -14,6 +14,7 @@ import {
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { TdDialogService } from '@covalent/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'finance-order-list',
@@ -24,14 +25,10 @@ export class ListComponent implements OnInit {
 
   private _apiUrl: string;
   public listData: Array<HIHFinance.Order> = [];
-
+  clnhdrstring: string[] = ["Common.ID", "Common.Name", "Common.ValidFrom", "Common.ValidTo", "Common.Comment"];
   columns: ITdDataTableColumn[] = [
-    { name: 'Id', label: '#', tooltip: 'ID' },
-    { name: 'Name', label: 'Name', tooltip: 'Name' },
-    { name: 'ValidFromString', label: 'From', tooltip: 'Valid from' },
-    { name: 'ValidToString', label: 'To', tooltip: 'Valid to' },
-    { name: 'Comment', label: 'Comment' }
   ];
+
   filteredData: any[];
   filteredTotal: number;
   searchTerm: string = '';
@@ -52,13 +49,22 @@ export class ListComponent implements OnInit {
     private _zone: NgZone,
     private _uistatus: UIStatusService,
     private _dialogService: TdDialogService,
+    private _tranService: TranslateService,
     private _viewContainerRef: ViewContainerRef,
     private _dataTableService: TdDataTableService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceOrderList");
     }
 
+    this.columns = [
+      { name: 'Id', label: '#', tooltip: 'ID' },
+      { name: 'Name', label: 'Name', tooltip: 'Name' },
+      { name: 'ValidFromString', label: 'From', tooltip: 'Valid from' },
+      { name: 'ValidToString', label: 'To', tooltip: 'Valid to' },
+      { name: 'Comment', label: 'Comment' }
+    ];
     this._apiUrl = environment.ApiUrl + "api/financeorder";
+    this.loadHeaderString();
   }
 
   ngOnInit() {
@@ -66,8 +72,6 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceOrderList");
     }
 
-    this._uistatus.setFinanceModule("Order");
-    this._uistatus.setFinanceSubModule("List Mode");
     this.loadOrderList();
   }
 
@@ -139,23 +143,6 @@ export class ListComponent implements OnInit {
     this.filter();
   }
 
-  // selectEvent(selectEvent: ITdDataTableSelectEvent): void {
-  //   if (selectEvent.selected) {
-  //     this._zone.run(() => {
-  //       this.listSelectRows.push(selectEvent.row.Id);
-  //     });
-  //   } else {
-  //     this._zone.run(() => {
-  //       for (let idx = 0; idx < this.listSelectRows.length; idx++) {
-  //         if (+this.listSelectRows[idx] === +selectEvent.row.Id) {
-  //           this.listSelectRows.splice(idx);
-  //           break;
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
-
   page(pagingEvent: IPageChangeEvent): void {
     this.fromRow = pagingEvent.fromRow;
     this.currentPage = pagingEvent.page;
@@ -180,6 +167,25 @@ export class ListComponent implements OnInit {
     }
 
     this._router.navigate(['/finance/order/create']);
+  }
+
+  public onDisplayOrder() {
+    if (environment.DebugLogging) {
+      console.log("ACHIHUI Log: Entering onDisplayOrder of FinanceOrderList");
+    }
+
+    if (this.selectedRows.length != 1) {
+      this._dialogService.openAlert({
+        message: "Select one and only one row to continue!",
+        disableClose: false, // defaults to false
+        viewContainerRef: this._viewContainerRef, //OPTIONAL
+        title: "Selection error", //OPTIONAL, hides if not provided
+        closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+      });
+      return;
+    }
+
+    this._router.navigate(['/finance/order/display/' + this.selectedRows[0].Id.toString()]);
   }
 
   public onEditOrder() {
@@ -215,5 +221,15 @@ export class ListComponent implements OnInit {
       });
       return;
     }    
+  }
+
+  private loadHeaderString() : void {
+    this._tranService.get(this.clnhdrstring).subscribe(x => {
+      for(let i = 0; i < this.columns.length; i ++) {
+        this.columns[i].label = x[this.clnhdrstring[i]];
+      }
+    }, error => {
+    }, () => {
+    });    
   }
 }

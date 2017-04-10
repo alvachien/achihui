@@ -1,12 +1,15 @@
 <md-card>
-  <md-card-title>Accounts</md-card-title>
-  <md-card-subtitle>List View</md-card-subtitle>
+  <md-card-title>{{"Finance.Accounts" | translate}}</md-card-title>
+  <md-card-subtitle>{{"Common.ListView" | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
     <div layout="row" layout-align="start center" class="pad-left-sm pad-right-sm">
       <span *ngIf="!searchBox.searchVisible" class="push-left-sm">    
         <button md-mini-fab color="primary" (click)="onCreateAccount()">
           <md-icon>add</md-icon>
+        </button>
+        <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onDisplayAccount()">
+          <md-icon>pageview</md-icon>
         </button>
         <button md-mini-fab color="accent" [disabled]="selectedRows.length <= 0" (click)="onEditAccount()">
           <md-icon>create</md-icon>

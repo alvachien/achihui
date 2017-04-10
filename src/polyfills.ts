@@ -53,7 +53,7 @@ import 'core-js/es7/reflect';
 /***************************************************************************************************
  * Zone JS is required by Angular itself.
  */
-// import 'zone.js/dist/zone';  // Included with Angular CLI.
+import 'zone.js/dist/zone';  // Included with Angular CLI.
 
 
 
@@ -66,3 +66,7 @@ import 'core-js/es7/reflect';
  * Needed for: All but Chrome, Firefox, Edge, IE11 and Safari 10
  */
 // import 'intl';  // Run `npm install --save intl`.
+
+// Oidc
+import 'oidc-client';
+
