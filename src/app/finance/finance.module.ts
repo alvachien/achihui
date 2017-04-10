@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '@angular/material';
 import { CovalentCoreModule } from '@covalent/core';
 import { UIRefModule } from '../uiref.module';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { FinanceComponent } from './finance.component';
@@ -46,6 +47,7 @@ import { OrderComponent as ReportOrderComponent } from './report/order/order.com
     MaterialModule,
     CovalentCoreModule.forRoot(),
     UIRefModule,
+    TranslateModule,
     FinanceRoutingModule
   ],
   declarations: [
@@ -90,9 +92,6 @@ import { OrderComponent as ReportOrderComponent } from './report/order/order.com
     ReportBalanceSheetComponent, 
     ReportControlCenterComponent, 
     ReportOrderComponent
-  ],
-  providers: [
-    TranslateService
   ]
 })
 export class FinanceModule { }

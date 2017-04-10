@@ -1,3 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('~@angular/material/core/theming/prebuilt/deeppurple-amber.css');
+
+html {
+  position: relative;
+  min-height: 100%;
+  margin: 10;
+  font-family: Roboto, sans-serif;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 70px;
+
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  color: #5a5a5a;
+}
+
 // Custom style for loading elements without height
 .will-load {
     min-height: 80px;

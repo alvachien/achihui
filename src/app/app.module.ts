@@ -24,6 +24,12 @@ import { AuthService } from './services/auth.service';
 import { UIStatusService } from './services/uistatus.service';
 import { AppRoutingModule } from './app-routing.module';
 import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function funcHttpLoaderFactory(http: Http) {
+    return new TranslateHttpLoader(http, '/assets/locales/', '.json');
+}
 
 @NgModule({
   imports: [
@@ -38,6 +44,13 @@ import { TranslateService } from '@ngx-translate/core';
     CovalentChartsModule.forRoot(),
     CovalentHighlightModule.forRoot(),
     CovalentMarkdownModule.forRoot(),
+    TranslateModule.forRoot({
+        loader: {
+            provide: TranslateLoader,
+            useFactory: funcHttpLoaderFactory,
+            deps: [Http]
+        }
+    })
   ],
   declarations: [
     AppComponent,

@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '@angular/material';
 import { CovalentCoreModule } from '@covalent/core';
 import { UIRefModule } from '../uiref.module';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 import { LearnComponent } from './learn.component';
 import { ListComponent as ObjectListComponent } from './object/list/list.component';
@@ -22,6 +24,7 @@ import { DetailComponent as CategoryDetailComponent } from './category/detail/de
     CommonModule,
     LearnRoutingModule,
     UIRefModule,
+    TranslateModule,
     MaterialModule,
     CovalentCoreModule.forRoot()
   ],
@@ -36,6 +39,6 @@ import { DetailComponent as CategoryDetailComponent } from './category/detail/de
     HistoryComponent, 
     HistoryListComponent, 
     HistoryDetailComponent
-    ]
+  ]
 })
 export class LearnModule { }

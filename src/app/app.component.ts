@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MdIconRegistry } from '@angular/material';
 import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
 
+
 @Component({
   selector: 'hih-root',
   templateUrl: './app.component.html',
