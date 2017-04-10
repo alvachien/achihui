@@ -2,6 +2,7 @@ import { Component, OnInit }  from '@angular/core';
 import { UIStatusService } from '../services/uistatus.service';
 import { AuthService } from '../services/auth.service';
 import { AppLanguage } from '../model/common';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'hih-home',
@@ -23,7 +24,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private _authService: AuthService,
-    private _uistatus: UIStatusService
+    private _uistatus: UIStatusService,
+    private _translateService: TranslateService
   ) { 
     this.arLanguages = new Array<AppLanguage>();
 
@@ -66,9 +68,7 @@ export class HomeComponent implements OnInit {
     this._uistatus.obsFinanceRouteList.subscribe(x => {
       this.financeRoutes = x;
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsLibraryRouteList.subscribe(x => {
       this.libraryRoutes = x;
@@ -107,6 +107,8 @@ export class HomeComponent implements OnInit {
   }
 
   public onLanguageClick(lang: AppLanguage) : void {
-    this._uistatus.setCurrentLanguage(lang.IsoName);
+    if (lang.IsoName !== this._uistatus.curLang) {
+      this._uistatus.setCurrentLanguage(lang.IsoName);
+    }
   }
 }

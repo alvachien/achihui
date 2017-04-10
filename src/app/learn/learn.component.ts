@@ -45,14 +45,6 @@ export class LearnComponent implements OnInit {
       arlang.push(ap.IsoName);
     }
 
-    this._translateService.addLangs(arlang);
-    this._translateService.setDefaultLang(this._uistatus.curLang);
-    this._uistatus.obsCurLanguage.subscribe(x => {
-      this._translateService.setDefaultLang(x);
-    }, error => {
-    }, () => {
-    });
-
     this._iconRegistry.addSvgIconInNamespace('assets', 'github',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
     this._iconRegistry.addSvgIconInNamespace('assets', 'angular',
@@ -161,6 +153,8 @@ export class LearnComponent implements OnInit {
     this.libraryMenuToggled = !this.libraryMenuToggled;
   }
   public onLanguageClick(lang: AppLanguage) : void {
-    this._uistatus.setCurrentLanguage(lang.IsoName);
+    if (lang.IsoName !== this._uistatus.curLang) {
+      this._uistatus.setCurrentLanguage(lang.IsoName);
+    }
   }
 }

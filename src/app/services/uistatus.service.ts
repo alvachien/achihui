@@ -247,12 +247,17 @@ export class UIStatusService {
     if (environment.DebugLogging) {
       console.log("ACHIHUI Log: Entering setFinanceSubModule of UIStatusService with " + financeSubMod);
     }
+
     this.financeSubModule = financeSubMod;
     this.subjFinanceSubModule.next(this.financeSubModule);
   }
 
   public setCurrentLanguage(curlang: string): void {
-    if (curlang !== this.curLang) {
+    if (environment.DebugLogging) {
+      console.log("ACHIHUI Log: Entering setCurrentLanguage of UIStatusService with " + curlang);
+    }
+
+    if (curlang && curlang !== this.curLang) {
       // Check whether the new value is valid
       let bValid: boolean = false;
       for(let ap of this.arLang) {

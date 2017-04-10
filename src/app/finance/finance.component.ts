@@ -36,7 +36,7 @@ export class FinanceComponent implements OnInit {
     private _translateService: TranslateService,
     viewContainerRef: ViewContainerRef) {
     if (environment.DebugLogging) {
-      console.log("Entering constructor of FinanceComponent");
+      console.log("ACHIHUI Log: Entering constructor of FinanceComponent");
     }
     this.arLanguages = new Array<AppLanguage>();
 
@@ -58,14 +58,6 @@ export class FinanceComponent implements OnInit {
       this.arLanguages.push(ap);
       arlang.push(ap.IsoName);
     }
-    this._translateService.addLangs(arlang);
-    this._translateService.setDefaultLang(this._uistatus.curLang);
-
-    this._uistatus.obsCurLanguage.subscribe(x => {
-      this._translateService.setDefaultLang(x);
-    }, error => {
-    }, () => {
-    });
 
     this._iconRegistry.addSvgIconInNamespace('assets', 'github',
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
@@ -160,6 +152,8 @@ export class FinanceComponent implements OnInit {
     this.libraryMenuToggled = !this.libraryMenuToggled;
   }
   public onLanguageClick(lang: AppLanguage) : void {
-    this._uistatus.setCurrentLanguage(lang.IsoName);
+    if (lang.IsoName !== this._uistatus.curLang) {
+      this._uistatus.setCurrentLanguage(lang.IsoName);
+    }
   }
 }

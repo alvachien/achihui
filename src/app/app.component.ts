@@ -23,21 +23,31 @@ export class AppComponent implements OnInit {
     private _domSanitizer: DomSanitizer,
     viewContainerRef: ViewContainerRef) {
     if (environment.DebugLogging) {
-      console.log("Entering constructor of AppComponent");
+      console.log("ACHIHUI Log: Entering constructor of AppComponent");
     }
 
     let arlang: string[] = [];
     for(let ap of this._uistatus.arLang)
       arlang.push(ap.IsoName);
     this._translateService.addLangs(arlang);
-    this._translateService.setDefaultLang(this._uistatus.curLang);
+    this._translateService.setDefaultLang(this._uistatus.curLang ? this._uistatus.curLang : "en");
+
     this._uistatus.obsCurLanguage.subscribe(x => {
-      this._translateService.setDefaultLang(x);
+      if (environment.DebugLogging) {
+        console.log("ACHIHUI Log: Entering current language change in AppComponent: " + x);
+      }
+      if (x) {
+        this._translateService.use(x);
+      }      
     }, error => {
     }, () => {
     });
 
     this._authService.authContent.subscribe(x => {
+      if (environment.DebugLogging) {
+        console.log("ACHIHUI Log: Entering subscribe of authContent in AppComponent");
+      }
+
       this._uistatus.setIsLogin(x.isAuthorized);
     });
 
@@ -55,7 +65,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     if (environment.DebugLogging) {
-      console.log("Entering ngOnInit of AppComponent");
+      console.log("ACHIHUI Log: Entering ngOnInit of AppComponent");
     }
   }
 }
