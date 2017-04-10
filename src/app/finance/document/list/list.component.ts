@@ -25,7 +25,7 @@ export class ListComponent implements OnInit {
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'DocTypeName', label: 'Doc Type', tooltip: 'Document Type' },
     { name: 'TranDateString', label: 'Tran Date', tooltip: 'Tran. Date' },
-    { name: 'TranAmount', label: 'Amount' },
+    { name: 'TranAmount', label: 'Amount', numeric: true, format: (value) => { if (value) return value.toFixed(2); return 0.0;  } },
     { name: 'TranCurr', label: 'Currency' }
   ];
   filteredData: any[];
