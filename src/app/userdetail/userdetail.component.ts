@@ -26,7 +26,9 @@ import { AuthService } from '../services/auth.service';
 })
 export class UserdetailComponent implements OnInit {
 
-  public objUserAuthInfo: HIHUser.UserAuthInfo = new HIHUser.UserAuthInfo();
+  public objUserAuthInfo: HIHUser.UserAuthInfo; 
+  public usrDetail: HIHUser.UserDetail;
+  private usrApi: string;
 
   constructor(private _http: Http,
     private _zone: NgZone,
@@ -35,6 +37,8 @@ export class UserdetailComponent implements OnInit {
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService) {
+      this.objUserAuthInfo = new HIHUser.UserAuthInfo();
+      this.usrDetail = new HIHUser.UserDetail();
   }
 
   ////////////////////////////////////////////
