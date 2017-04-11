@@ -107,9 +107,6 @@ export class DetailComponent implements OnInit {
             this.uiMode = HIHCommon.UIMode.Display;
           }
 
-          // Update the sub module
-          this._uistatus.setFinanceSubModule(this.currentMode);
-
           if (this.uiMode === HIHCommon.UIMode.Display
             || this.uiMode === HIHCommon.UIMode.Change) {
             this.readDocument();
@@ -201,7 +198,12 @@ export class DetailComponent implements OnInit {
 
     // Do the checks before submitting
     let context: any = {
-      arDocType: this.arDocType
+      arDocType: this.arDocType,
+      arCurrency: this.arCurrency,
+      arAccount: this.arAccount,
+      arTranType: this.arTranType,
+      arControlCenter: this.arControlCenter,
+      arOrder: this.arOrder
     };
 
     let checkFailed: boolean = false;

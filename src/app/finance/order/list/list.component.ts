@@ -64,7 +64,10 @@ export class ListComponent implements OnInit {
       { name: 'Comment', label: 'Comment' }
     ];
     this._apiUrl = environment.ApiUrl + "api/financeorder";
-    this.loadHeaderString();
+
+    this._uistatus.subjCurLanguage.subscribe(x => {
+      this.loadHeaderString();
+    });    
   }
 
   ngOnInit() {

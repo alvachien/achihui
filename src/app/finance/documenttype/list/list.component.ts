@@ -10,6 +10,7 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'finance-document-type-list',
@@ -19,6 +20,7 @@ import { UIStatusService } from '../../../services/uistatus.service';
 export class ListComponent implements OnInit {
   private _apiUrl: string;
   public listData: Array<HIHFinance.DocumentType> = [];
+  clnhdrstring: string[] = ["Common.ID", "Common.Name", "Finance.AssetFlag", "Common.Comment", "Common.SystemFlag"];
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'Name', label: 'Name', tooltip: 'Name' },
@@ -41,15 +43,20 @@ export class ListComponent implements OnInit {
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 
   constructor(private _http: Http,
-     private router: Router,
-     private activateRoute: ActivatedRoute,
-     private uistatus: UIStatusService,
+     private _router: Router,
+     private _activateRoute: ActivatedRoute,
+     private _uistatus: UIStatusService,
+     private _tranService: TranslateService,
      private _dataTableService: TdDataTableService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceDocumentTypeList");
     }
 
     this._apiUrl = environment.ApiUrl + "api/financedoctype";
+
+    this._uistatus.subjCurLanguage.subscribe(x => {
+      this.loadHeaderString();
+    });
   }
 
   ngOnInit() {
@@ -57,8 +64,6 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceDocumentTypeList");
     }
 
-    this.uistatus.setFinanceModule("Account Category");
-    this.uistatus.setFinanceSubModule("List Mode");
     this.loadDocumentTypeList();
   }
 
@@ -152,6 +157,16 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering onCreateDocumentType of FinanceDocumentTypeList");
     }
-    this.router.navigate(['/finance/documenttype/create']);
+    this._router.navigate(['/finance/documenttype/create']);
+  }
+
+  private loadHeaderString(): void {
+    this._tranService.get(this.clnhdrstring).subscribe(x => {
+      for(let i = 0; i < this.columns.length; i ++) {
+        this.columns[i].label = x[this.clnhdrstring[i]];
+      }
+    }, error => {
+    }, () => {
+    });    
   }
 }

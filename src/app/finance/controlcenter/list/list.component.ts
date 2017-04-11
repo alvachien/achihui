@@ -62,7 +62,9 @@ export class ListComponent implements OnInit {
       { name: 'Comment', label: 'Comment' }
     ];
 
-    this.loadHeaderString();
+    this._uistatus.subjCurLanguage.subscribe(x => {
+      this.loadHeaderString();
+    });
   }
 
   ngOnInit() {

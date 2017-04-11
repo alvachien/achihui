@@ -168,7 +168,14 @@
     "Reports": "报表",
     "AssetFlag": "资产类标志",
     "AdvancePayment": "预付款",
-    "Owner": "所有者"
+    "Owner": "所有者",
+    "Amount": "金额",
+    "TransactionDate": "交易日期",
+    "Header": "头信息",
+    "Items": "行项目",
+    "TransferDocument": "转账凭证",
+    "TransferFrom": "转自",
+    "TransferTo": "转至"
   },
   "Library": {
     "Books": "书籍",

@@ -11,19 +11,19 @@
       </div>
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <input mdInput type="date" placeholder="Transaction Date" required [(ngModel)]="docObject.TranDateString" name="trandate"
+          <input mdInput type="date" placeholder="{{'Finance.TransactionDate' | translate}}" required [(ngModel)]="docObject.TranDateString" name="trandate"
               #trandate="ngModel">
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
         <md-select flex="90" placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
           <md-option *ngFor="let sacnt of arAccount" [value]="sacnt.Id">
-            {{sacnt.Name}}
+            {{sacnt.Id}} - {{sacnt.Name}}
           </md-option>
         </md-select>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="90" placeholder="Transaction type" [(ngModel)]="uiObject.SourceTranType" name="srctrantype" #srctrantype="ngModel">
+        <md-select flex="90" placeholder="{{'Finance.TransactionType' | translate}}" [(ngModel)]="uiObject.SourceTranType" name="srctrantype" #srctrantype="ngModel">
           <md-option *ngFor="let dt of arTranType" [value]="dt.Id">
             ({{dt.Id}}) - {{dt.Name}}
           </md-option>
@@ -31,7 +31,7 @@
       </div>
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <input mdInput type="number" placeholder="Transaction amount" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
+          <input mdInput type="number" placeholder="{{'Finance.Amount' | translate}}" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
               #itemtranamt="ngModel">
         </md-input-container>
       </div>
@@ -48,16 +48,16 @@
           </md-input-container>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="96" placeholder="Control center" [(ngModel)]="uiObject.SourceControlCenterId" name="srccc" #srccc="ngModel">
+        <md-select flex="96" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="uiObject.SourceControlCenterId" name="srccc" #srccc="ngModel">
           <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
-            {{cc.Name}}
+            {{cc.Id}} - {{cc.Name}}
           </md-option>
         </md-select>
       </div>
       <div layout="row" layout-margin>
         <md-select flex="96" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.SourceOrderId" name="srcorder" #srcorder="ngModel">
           <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
-            {{ord.Name}}
+            {{ord.Id}} - {{ord.Name}}
           </md-option>
         </md-select>
       </div>
@@ -73,7 +73,7 @@
                 </div>
                 <div layout="row" layout-margin>
                   <md-input-container flex>
-                    <input mdInput type="date" placeholder="Start" required [(ngModel)]="uiObject.AdvPayAccount.StartDateString" name="startdate" #startdate="ngModel">
+                    <input mdInput type="date" placeholder="{{'Common.Start' | translate}}" required [(ngModel)]="uiObject.AdvPayAccount.StartDateString" name="startdate" #startdate="ngModel">
                   </md-input-container>
                 </div>
                 <div layout="row" layout-margin>
@@ -129,7 +129,7 @@
                     </div>
                     <div layout="row" layout-margin>
                       <md-input-container flex>
-                        <input mdInput type="date" placeholder="Tran Date" required [(ngModel)]="selectedTmpDocs[0].TranDateString" name="tmptrandate" #tmptrandate="ngModel">
+                        <input mdInput type="date" placeholder="{{'Finance.TransactionDate' | translate}}" required [(ngModel)]="selectedTmpDocs[0].TranDateString" name="tmptrandate" #tmptrandate="ngModel">
                       </md-input-container>
                     </div>
                     <div layout="row" layout-margin>

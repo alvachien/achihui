@@ -1,6 +1,6 @@
 <md-card>
-  <md-card-title>Transfer Document</md-card-title>
-  <md-card-subtitle>{{CurrentMode}}</md-card-subtitle>
+  <md-card-title>{{'Finance.TransferDocument' | translate}}</md-card-title>
+  <md-card-subtitle>{{CurrentMode | translate}}</md-card-subtitle>
   <md-divider></md-divider>
 
   <md-card-content>
@@ -8,23 +8,23 @@
       <div flex>
         <div layout="row" layout-margin>
           <md-input-container flex>
-            <input mdInput placeholder="ID" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
+            <input mdInput placeholder="#" readonly [(ngModel)]="docObject.Id" name="id" #id="ngModel">
           </md-input-container>
         </div>
         <div layout="row" layout-margin>
           <md-input-container flex>
-            <input mdInput type="date" placeholder="Transaction Date" required [(ngModel)]="docObject.TranDateString" name="trandate"
+            <input mdInput type="date" placeholder="{{'Finance.TransactionDate' | translate}}" required [(ngModel)]="docObject.TranDateString" name="trandate"
               #trandate="ngModel">
           </md-input-container>
         </div>
         <div layout="row" layout-margin>
           <md-input-container flex>
-            <input mdInput type="number" placeholder="Transaction amount" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
+            <input mdInput type="number" placeholder="{{'Finance.Amount' | translate}}" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
               #itemtranamt="ngModel">
           </md-input-container>
         </div>
         <div layout="row" layout-margin>
-          <md-select flex="90" placeholder="Currency" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
+          <md-select flex="90" placeholder="{{'Finance.Currency' | translate}}" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
             <md-option *ngFor="let cur of arCurrency" [value]="cur.Currency">
               {{cur.Symbol}} - {{cur.Name}}
             </md-option>
@@ -32,7 +32,7 @@
         </div>
         <div layout="row" layout-margin>
           <md-input-container flex>
-            <textarea mdInput placeholder="Description" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
+            <textarea mdInput placeholder="{{'Common.Description' | translate}}" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
           </md-input-container>
         </div>
       </div>
@@ -41,29 +41,29 @@
         <div flex-gt-sm="50" flex-sm="100" flex-xs="100" style="border:1px;">
           <md-card>
             <md-card-header>
-              <md-card-title>Source</md-card-title>
-              <md-card-subtitle>Transfer from</md-card-subtitle>
+              <md-card-title>{{'Finance.TransferFrom' | translate}}</md-card-title>
+              <md-card-subtitle>{{'Finance.TransferFrom' | translate}}</md-card-subtitle>
             </md-card-header>
             <md-card-content>
               <div flex>
                 <div layout="row" layout-margin>
-                  <md-select flex="90" placeholder="Account" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
+                  <md-select flex="90" placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
                     <md-option *ngFor="let sacnt of arAccount" [value]="sacnt.Id">
-                      {{sacnt.Name}}
+                      {{sacnt.Id}} - {{sacnt.Name}}
                     </md-option>
                   </md-select>
                 </div>
                 <div layout="row" layout-margin>
-                  <md-select flex="90" placeholder="Control center" [(ngModel)]="uiObject.SourceControlCenterId" name="frmccid" #frmccid="ngModel">
+                  <md-select flex="90" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="uiObject.SourceControlCenterId" name="frmccid" #frmccid="ngModel">
                     <md-option *ngFor="let scc of arControlCenter" [value]="scc.Id">
-                      {{scc.Name}}
+                      {{scc.Id}} - {{scc.Name}}
                     </md-option>
                   </md-select>
                 </div>
                 <div layout="row" layout-margin>
-                  <md-select flex="90" placeholder="Order" [(ngModel)]="uiObject.SourceOrderId" name="frmorder" #frmorder="ngModel">
+                  <md-select flex="90" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.SourceOrderId" name="frmorder" #frmorder="ngModel">
                     <md-option *ngFor="let sord of arOrder" [value]="sord.Id">
-                      {{sord.Name}}
+                      {{sord.Id}} - {{sord.Name}}
                     </md-option>
                   </md-select>
                 </div>
@@ -75,29 +75,29 @@
         <div flex-gt-sm="50" flex-sm="100" flex-xs="100" style="border: 1px;">
           <md-card>
             <md-card-header>
-              <md-card-title>Target</md-card-title>
-              <md-card-subtitle>Transfer to</md-card-subtitle>
+              <md-card-title>{{'Finance.TransferTo' | translate}}</md-card-title>
+              <md-card-subtitle>{{'Finance.TransferTo' | translate}}</md-card-subtitle>
             </md-card-header>
             <md-card-content>
               <div flex>
                 <div layout="row" layout-margin>
-                  <md-select flex="90" placeholder="Account" [(ngModel)]="uiObject.TargetAccountId" name="toaccount" #toaccount="ngModel">
+                  <md-select flex="90" placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="uiObject.TargetAccountId" name="toaccount" #toaccount="ngModel">
                     <md-option *ngFor="let tacnt of arAccount" [value]="tacnt.Id">
-                      {{tacnt.Name}}
+                      {{tacnt.Id}} - {{tacnt.Name}}
                     </md-option>
                   </md-select>
                 </div>
                 <div layout="row" layout-margin>
-                  <md-select flex="90" placeholder="Control center" [(ngModel)]="uiObject.TargetControlCenterId" name="toccid" #toccid="ngModel">
+                  <md-select flex="90" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="uiObject.TargetControlCenterId" name="toccid" #toccid="ngModel">
                     <md-option *ngFor="let tcc of arControlCenter" [value]="tcc.Id">
-                      {{tcc.Name}}
+                      {{tcc.Id}} - {{tcc.Name}}
                     </md-option>
                   </md-select>
                 </div>
                 <div layout="row" layout-margin>
-                  <md-select flex="90" placeholder="Order" [(ngModel)]="uiObject.TargetOrderId" name="toorder" #toorder="ngModel">
+                  <md-select flex="90" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.TargetOrderId" name="toorder" #toorder="ngModel">
                     <md-option *ngFor="let tord of arOrder" [value]="tord.Id">
-                      {{tord.Name}}
+                      {{tord.Id}} - {{tord.Name}}
                     </md-option>
                   </md-select>
                 </div>
@@ -108,8 +108,8 @@
       </div>
 
       <div layout="row" layout-padding>
-        <button md-button color="accent" (click)="onSubmit()">Submit</button>
-        <button md-button>Cancel</button>
+        <button md-button color="accent" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+        <button md-button>{{'Common.Cancel' | translate}}</button>
       </div>
     </div>
   </md-card-content>

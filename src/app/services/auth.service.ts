@@ -10,7 +10,7 @@ import { UserManager } from 'oidc-client';
 export class AuthService {
   public authSubject: BehaviorSubject<UserAuthInfo> = new BehaviorSubject(new UserAuthInfo());
   public authContent: Observable<UserAuthInfo> = this.authSubject.asObservable();
-  private mgr: any;
+  private mgr: UserManager;
 
   constructor() {
     if (environment.DebugLogging) {
@@ -43,6 +43,19 @@ export class AuthService {
       that.authSubject.value.cleanContent();
 
       that.authSubject.next(that.authSubject.value);
+    });
+
+    this.mgr.events.addAccessTokenExpiring(function () {
+      if (environment.DebugLogging) {
+        console.log("token expiring");
+      }
+    });
+    this.mgr.events.addAccessTokenExpired(function () {
+      if (environment.DebugLogging) {
+        console.log("token expired");
+      }
+      this.authSubject.value.cleanContent();
+      this.authSubject.next(this.authSubject.value);
     });
   }
 

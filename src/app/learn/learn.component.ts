@@ -24,7 +24,8 @@ export class LearnComponent implements OnInit {
   public learnMenuToggled: boolean = true;
   public financeMenuToggled: boolean = true;
   public libraryMenuToggled: boolean = true;
-  public currentObject: string;
+  public strLearnModule: string;
+  public strLearnSubModule: string;
   public arLanguages: Array<AppLanguage>;
 
   constructor(private _iconRegistry: MdIconRegistry,
@@ -77,41 +78,38 @@ export class LearnComponent implements OnInit {
     this._uistatus.obsAppRouteList.subscribe(x => {
       this.appRoutes = x;
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsLearnRouteList.subscribe(x => {
       this.learnRoutes = x;
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsFinanceRouteList.subscribe(x => {
       this.financeRoutes = x;
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsLibraryRouteList.subscribe(x => {
       this.libraryRoutes = x;
     }, error => {
-
     }, () => {
-
     });
     this._uistatus.obsUserRouteList.subscribe(x => {
       this.userRoutes = x;
     }, error => {
-
     }, () => {
-
     });
 
+    this._uistatus.obsLearnModule.subscribe(x => {
+      if (x) {
+        this.strLearnModule = x;
+      }
+    });
     this._uistatus.obsLearnSubModule.subscribe(x => {
-      this.currentObject = x;
+      if (x) {
+        this.strLearnSubModule = x;
+      }
     }, error => {
     }, () => {
     });    
@@ -152,6 +150,7 @@ export class LearnComponent implements OnInit {
   public toggleLibraryMenu() : void {
     this.libraryMenuToggled = !this.libraryMenuToggled;
   }
+  
   public onLanguageClick(lang: AppLanguage) : void {
     if (lang.IsoName !== this._uistatus.curLang) {
       this._uistatus.setCurrentLanguage(lang.IsoName);

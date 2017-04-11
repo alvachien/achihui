@@ -81,23 +81,23 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === "create") {
-            this.currentMode = "Create";
+            this.currentMode = "Common.Create";
             this.detailObject = new HIHLearn.LearnObject();
             this.uiMode = HIHCommon.UIMode.Create;
           } else if (x[0].path === "edit") {
-            this.currentMode = "Edit"
+            this.currentMode = "Common.Edit";
             this.uiMode = HIHCommon.UIMode.Change;
 
             this.routerID = +x[1].path;
           } else if (x[0].path === "display") {
-            this.currentMode = "Display";
+            this.currentMode = "Common.Display";
             this.uiMode = HIHCommon.UIMode.Display;
 
             this.routerID = +x[1].path;
           }
 
-          // Update the sub module
-          this._uistatus.setLearnSubModule(this.currentMode + " Object");
+          this._uistatus.setLearnModule("Learning.LearningObject");
+          this._uistatus.setLearnSubModule(this.currentMode);
 
           if (this.uiMode === HIHCommon.UIMode.Display || this.uiMode === HIHCommon.UIMode.Change) {
             this.readObject();

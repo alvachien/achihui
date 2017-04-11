@@ -168,7 +168,14 @@
     "Reports": "Reports",
     "AssetFlag": "Asset Flag",
     "AdvancePayment": "Advance Payment",
-    "Owner": "Owner"
+    "Owner": "Owner",
+    "Amount": "Amount",
+    "TransactionDate": "Transaction Date",
+    "Header": "Header",
+    "Items": "Items",
+    "TransferDocument": "Transfer Document",
+    "TransferFrom": "Transfer From",
+    "TransferTo": "Transfer To"
   },
   "Library": {
     "Books": "Books",

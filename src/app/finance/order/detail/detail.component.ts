@@ -91,9 +91,6 @@ export class DetailComponent implements OnInit {
               this.uiMode = HIHCommon.UIMode.Display;
             }
 
-            // Update the sub module
-            this._uistatus.setFinanceSubModule(this.currentMode);
-
             if (this.uiMode === HIHCommon.UIMode.Change
             || this.uiMode === HIHCommon.UIMode.Display) {
               this.readOrder();

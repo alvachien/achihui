@@ -60,7 +60,12 @@ export class ListComponent implements OnInit {
       { name: 'SysFlag', label: 'System Flag' },
     ];
 
-    this.loadHeaderString();
+    // Subscribe for language change
+    this._tranService.onDefaultLangChange.subscribe(x => {
+      this.loadHeaderString();
+    }, error => {
+    }, () => {
+    });
   }
 
   ngOnInit() {
@@ -68,16 +73,7 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceCurrencyList");
     }
 
-    this.uistatus.setFinanceModule("Currency");
-    this.uistatus.setFinanceSubModule("List Mode");
     this.loadCurrencyList();
-
-    // Subscribe for language change
-    this._tranService.onDefaultLangChange.subscribe(x => {
-      this.loadHeaderString();
-    }, error => {
-    }, () => {
-    });
   }
 
   loadCurrencyList(): void {

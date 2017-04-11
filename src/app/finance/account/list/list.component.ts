@@ -63,7 +63,14 @@ export class ListComponent implements OnInit {
       { name: 'Name', label: 'Name', tooltip: 'Name' },
       { name: 'Comment', label: 'Comment', tooltip: 'Comment' }
     ];
-    this.loadHeaderString();
+
+    this._uistatus.subjCurLanguage.subscribe(x => {
+      if (environment.DebugLogging) {
+        console.log("Language changed in FinanceAccountList:" + x);
+      }
+      
+      this.loadHeaderString();
+    });
   }
 
   ngOnInit() {

@@ -12,6 +12,7 @@ import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { AuthService } from '../../../services/auth.service';
 import { TdDialogService } from '@covalent/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'finance-document-list',
@@ -21,6 +22,7 @@ import { TdDialogService } from '@covalent/core';
 export class ListComponent implements OnInit {
   private _apiUrl: string;
   public listData: Array<HIHFinance.DocumentType> = [];
+  clnhdrstring: string[] = ["Common.ID", "Finance.DocumentType", "Finance.TransactionDate", "Finance.Amount", "Finance.Currency"];
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'DocTypeName', label: 'Doc Type', tooltip: 'Document Type' },
@@ -50,12 +52,20 @@ export class ListComponent implements OnInit {
      private _viewContainerRef: ViewContainerRef,
      private _uistatus: UIStatusService,
      private _authService: AuthService,
+     private _tranService: TranslateService,
      private _dataTableService: TdDataTableService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceDocumentList");
     }
-
     this._apiUrl = environment.ApiUrl + "api/financedocument";
+
+    this._uistatus.subjCurLanguage.subscribe(x => {
+      if (environment.DebugLogging) {
+        console.log("Language changed in FinanceDocumentList:" + x);
+      }
+      
+      this.loadHeaderString();
+    });
   }
 
   ngOnInit() {
@@ -63,8 +73,6 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceDocumentList");
     }
 
-    this._uistatus.setFinanceModule("Document");
-    this._uistatus.setFinanceSubModule("List Mode");
     this.loadDocumentList();
   }
 
@@ -234,5 +242,15 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering onDeleteDocument of FinanceDocumentList");
     }    
+  }
+
+  private loadHeaderString(): void {
+    this._tranService.get(this.clnhdrstring).subscribe(x => {
+      for(let i = 0; i < this.columns.length; i ++) {
+        this.columns[i].label = x[this.clnhdrstring[i]];
+      }
+    }, error => {
+    }, () => {
+    });    
   }
 }

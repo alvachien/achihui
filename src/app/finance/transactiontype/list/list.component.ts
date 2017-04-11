@@ -59,8 +59,6 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of FinanceTransactionTypeList");
     }
 
-    this.uistatus.setFinanceModule("Account Category");
-    this.uistatus.setFinanceSubModule("List Mode");
     this.loadTransactionTypeList();
   }
 

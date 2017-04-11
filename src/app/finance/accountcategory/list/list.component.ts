@@ -57,7 +57,10 @@ export class ListComponent implements OnInit {
       { name: 'Comment', label: 'Comment' },
       { name: 'SysFlag', label: 'System Flag' },
     ];
-    this.loadHeaderString();
+
+    this._uistatus.subjCurLanguage.subscribe(x => {
+      this.loadHeaderString();
+    });
   }
 
   ngOnInit() {
@@ -81,8 +84,6 @@ export class ListComponent implements OnInit {
         if (data instanceof Array) {
           this.listData = data;
           this.filter();
-          // this.filteredData = this.listData;
-          // this.filteredTotal = this.listData.length;
         }          
       },
       error => {

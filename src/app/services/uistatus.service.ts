@@ -235,23 +235,6 @@ export class UIStatusService {
     this.subjLearnSubModule.next(this.learnSubModule);
   }
 
-  public setFinanceModule(financeMod: string): void {
-    if (environment.DebugLogging) {
-      console.log("ACHIHUI Log: Entering setFinanceModule of UIStatusService with " + financeMod);
-    }
-    this.financeModule = financeMod;
-    this.subjFinanceModule.next(this.financeModule);
-  }
-
-  public setFinanceSubModule(financeSubMod: string): void {
-    if (environment.DebugLogging) {
-      console.log("ACHIHUI Log: Entering setFinanceSubModule of UIStatusService with " + financeSubMod);
-    }
-
-    this.financeSubModule = financeSubMod;
-    this.subjFinanceSubModule.next(this.financeSubModule);
-  }
-
   public setCurrentLanguage(curlang: string): void {
     if (environment.DebugLogging) {
       console.log("ACHIHUI Log: Entering setCurrentLanguage of UIStatusService with " + curlang);

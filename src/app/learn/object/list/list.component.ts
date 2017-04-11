@@ -53,7 +53,9 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of LearnObjectList");
     }
-    this.uistatus.setLearnSubModule("Object List");
+
+    this.uistatus.setLearnModule("Learning.LearningObject");
+    this.uistatus.setLearnSubModule("Common.ListView");
     this.loadObjectList();
   }
 

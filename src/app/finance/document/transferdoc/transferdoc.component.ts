@@ -104,9 +104,6 @@ export class TransferdocComponent implements OnInit {
             this.uiMode = HIHCommon.UIMode.Display;
           }
 
-          // Update the sub module
-          this._uistatus.setFinanceSubModule(this.currentMode);
-
           if (this.uiMode === HIHCommon.UIMode.Display
             || this.uiMode === HIHCommon.UIMode.Change) {
             this.readDocument();

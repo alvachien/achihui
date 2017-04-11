@@ -60,7 +60,8 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of LearnHistoryList");
     }
 
-    this._uistatus.setLearnSubModule("History List");
+    this._uistatus.setLearnModule("Learning.LearningHistory");
+    this._uistatus.setLearnSubModule("Common.ListView");
     this.loadHistoryList();
   }
 
