@@ -47,7 +47,7 @@ export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
     this.uiMode = HIHCommon.UIMode.Create;
     this.arRepeatFrequency = HIHUI.UIRepeatFrequency.getRepeatFrequencies();
 
-    this._apiUrl = environment.ApiUrl + "api/financeaccount";
+    this._apiUrl = environment.ApiUrl + "/api/financeaccount";
   }
 
   ////////////////////////////////////////////
@@ -251,7 +251,7 @@ export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/userdetail";
+    let usrApi = environment.ApiUrl + "/api/userdetail";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
@@ -267,7 +267,7 @@ export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let objApi = environment.ApiUrl + "api/financeaccountcategory";
+    let objApi = environment.ApiUrl + "/api/financeaccountcategory";
 
     return this._http.get(objApi, { headers: headers })
       .map(this.extractCategoryData)

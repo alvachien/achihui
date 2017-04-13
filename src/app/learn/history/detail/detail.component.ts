@@ -165,7 +165,7 @@ export class DetailComponent implements OnInit {
     }
 
     let dataJSON = this.historyObject.writeJSONString();
-    let apiObject = environment.ApiUrl + "api/learnhistory";
+    let apiObject = environment.ApiUrl + "/api/learnhistory";
 
     if (this.uiMode === HIHCommon.UIMode.Create) {
       this._http.post(apiObject, dataJSON, { headers: headers })
@@ -228,7 +228,7 @@ export class DetailComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/userdetail";
+    let usrApi = environment.ApiUrl + "/api/userdetail";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
@@ -244,7 +244,7 @@ export class DetailComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let objApi = environment.ApiUrl + "api/learnobject";
+    let objApi = environment.ApiUrl + "/api/learnobject";
 
     return this._http.get(objApi, { headers: headers })
       .map(this.extractObjectData)
@@ -260,7 +260,7 @@ export class DetailComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let objApi = environment.ApiUrl + "api/learnhistory/" + this.routerID;
+    let objApi = environment.ApiUrl + "/api/learnhistory/" + this.routerID;
 
     this._http.get(objApi, { headers: headers })
       .map(this.extractHistoryData)

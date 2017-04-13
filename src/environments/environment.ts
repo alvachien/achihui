@@ -8,9 +8,9 @@ export const environment = {
 
   DebugLogging: true,
   LoggingLevel: 4,
-  IDServerUrl: 'http://localhost:41016/',
+  IDServerUrl: 'http://localhost:41016',
   AppLoginCallbackUrl: 'http://localhost:29521/logincallback.html',
-  AppLogoutCallbackUrl: 'http://localhost:29521/',
-  AppHost: 'http://localhost:29521/',
-  ApiUrl: 'http://localhost:25688/'
+  AppLogoutCallbackUrl: 'http://localhost:29521',
+  AppHost: 'http://localhost:29521',
+  ApiUrl: 'http://localhost:25688'
 };

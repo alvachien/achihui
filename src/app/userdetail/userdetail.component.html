@@ -11,7 +11,23 @@
       </div>
       <div layout="row" layout-margin>
         <md-input-container flex>
-            <input mdInput placeholder="Alias" [(ngModel)]="usrDetail.DisplayAs" name="alias" #alias="ngModel">
+            <input mdInput type="text" placeholder="Alias" required maxlength="20" [(ngModel)]="usrDetail.DisplayAs" name="alias"
+                #alias="ngModel" [disabled]="!isFieldChangable()">
+            <md-hint align="end">{{usrDetail.DisplayAs && usrDetail.DisplayAs.length}} / 20</md-hint>
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+            <input mdInput type="email" placeholder="Email" required maxlength="50" [(ngModel)]="usrDetail.Email" name="email"
+                #email="ngModel" [disabled]="!isFieldChangable()">
+            <md-hint align="end">{{usrDetail.Email && usrDetail.Email.length}} / 50</md-hint>
+        </md-input-container>
+      </div>
+      <div layout="row" layout-margin>
+        <md-input-container flex>
+            <input mdInput type="text" placeholder="Others" required maxlength="100" [(ngModel)]="usrDetail.Others" name="others"
+                #others="ngModel" [disabled]="!isFieldChangable()">
+            <md-hint align="end">{{usrDetail.Others && usrDetail.Others.length}} / 100</md-hint>
         </md-input-container>
       </div>
     </form>

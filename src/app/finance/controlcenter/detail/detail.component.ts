@@ -41,7 +41,7 @@ export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
     this.ccObject = new HIHFinance.ControllingCenter();
     this.uiMode = HIHCommon.UIMode.Create;
 
-    this._apiUrl = environment.ApiUrl + "api/financecontrollingcenter";
+    this._apiUrl = environment.ApiUrl + "/api/financecontrollingcenter";
   }
 
   ////////////////////////////////////////////
@@ -248,7 +248,7 @@ export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/userdetail";
+    let usrApi = environment.ApiUrl + "/api/userdetail";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)

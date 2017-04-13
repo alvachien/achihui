@@ -52,7 +52,7 @@ export class ListComponent implements OnInit {
       console.log("Entering constructor of LearnHistoryList");
     }
 
-    this._apiUrl = environment.ApiUrl + "api/learnhistory";
+    this._apiUrl = environment.ApiUrl + "/api/learnhistory";
   }
 
   ngOnInit() {

@@ -236,7 +236,7 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     let dataJSON = this.detailObject.writeJSONString();
-    let apiObject = environment.ApiUrl + "api/learnobject";
+    let apiObject = environment.ApiUrl + "/api/learnobject";
 
     if (this.uiMode === HIHCommon.UIMode.Create) {
       // Create 
@@ -292,7 +292,7 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let objApi = environment.ApiUrl + "api/learnobject/" + this.routerID.toString();
+    let objApi = environment.ApiUrl + "/api/learnobject/" + this.routerID.toString();
 
     this._http.get(objApi, { headers: headers })
       .map(this.extractObjectData)
@@ -315,7 +315,7 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let objApi = environment.ApiUrl + "api/learncategory";
+    let objApi = environment.ApiUrl + "/api/learncategory";
 
     return this._http.get(objApi, { headers: headers })
       .map(this.extractCategoryData)

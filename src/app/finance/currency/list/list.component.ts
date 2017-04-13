@@ -51,7 +51,7 @@ export class ListComponent implements OnInit {
      private _authService: AuthService,
      private _viewContainerRef: ViewContainerRef,
      private _dialogService: TdDialogService) {
-    this._apiUrl = environment.ApiUrl + "api/financecurrency";
+    this._apiUrl = environment.ApiUrl + "/api/financecurrency";
     this.columns = [
       { name: 'Currency', label: 'Currency', tooltip: 'Currency' },
       { name: 'DisplayName', label: 'Name', tooltip: 'Name' },

@@ -57,7 +57,7 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering constructor of FinanceDocumentList");
     }
-    this._apiUrl = environment.ApiUrl + "api/financedocument";
+    this._apiUrl = environment.ApiUrl + "/api/financedocument";
 
     this._uistatus.subjCurLanguage.subscribe(x => {
       if (environment.DebugLogging) {

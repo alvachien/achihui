@@ -43,6 +43,7 @@ export class UserAuthInfo {
     public isAuthorized: boolean;
     private currentUser: User;
     private userName: string;
+    private userId: string;
     private accessToken: string;
 
     public setContent(user: User) : void {
@@ -51,6 +52,7 @@ export class UserAuthInfo {
             this.isAuthorized = true;
 
             this.userName = user.profile.name;
+            this.userId = user.profile.sub;
             this.accessToken = user.access_token;
         } else {
             this.cleanContent();
@@ -64,6 +66,9 @@ export class UserAuthInfo {
 
     public getUserName(): string {
         return this.userName;
+    }
+    public getUserId(): string {
+        return this.userId;
     }
     public getAccessToken(): string {
         return this.accessToken;

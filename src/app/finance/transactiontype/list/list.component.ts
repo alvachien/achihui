@@ -51,7 +51,7 @@ export class ListComponent implements OnInit {
       console.log("Entering constructor of FinanceTransactionTypeList");
     }
 
-    this._apiUrl = environment.ApiUrl + "api/financetrantype";
+    this._apiUrl = environment.ApiUrl + "/api/financetrantype";
   }
 
   ngOnInit() {

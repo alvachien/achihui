@@ -29,6 +29,7 @@ export class UserdetailComponent implements OnInit {
   public objUserAuthInfo: HIHUser.UserAuthInfo; 
   public usrDetail: HIHUser.UserDetail;
   private usrApi: string;
+  private uiMode: HIHCommon.UIMode;
 
   constructor(private _http: Http,
     private _zone: NgZone,
@@ -50,5 +51,54 @@ export class UserdetailComponent implements OnInit {
     }
 
     this.objUserAuthInfo = this._authService.authSubject.getValue();
+    this.loadCurrentUser().subscribe(x => {
+      console.log(x);
+    }, error => {
+      // Error occurred
+      if (error.status === 404) {
+        this.uiMode = HIHCommon.UIMode.Create;
+      } else {
+        this.uiMode = HIHCommon.UIMode.Invalid;
+        console.log(error);
+      }
+    }, () => {
+    });
+  }
+
+  private loadCurrentUser(): Observable<any> {
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this.objUserAuthInfo.isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this.objUserAuthInfo.getAccessToken());
+    let usrApi = environment.ApiUrl + "/api/userdetail/" + this.objUserAuthInfo.getUserId();
+
+    return this._http.get(usrApi, { headers: headers })
+      .map(resp => resp.json());
+  }
+
+  public isFieldChangable(): boolean {
+    return this.uiMode === HIHCommon.UIMode.Create || this.uiMode === HIHCommon.UIMode.Change;
+  }
+
+  private saveUserDetail(): Observable<any> {
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this.objUserAuthInfo.isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this.objUserAuthInfo.getAccessToken());
+    let usrApi = environment.ApiUrl + "/api/userdetail/" + this.objUserAuthInfo.getUserId();
+
+    return this._http.post(usrApi, { headers: headers })
+      .map(resp => resp.json());
+  }
+
+  public onsubmit(): void {
+    if (this.uiMode === HIHCommon.UIMode.Create) {
+      // Create
+
+    } else if(this.uiMode === HIHCommon.UIMode.Change) {
+      // Change
+    } else {
+      // Do nothing
+    }
   }
 }

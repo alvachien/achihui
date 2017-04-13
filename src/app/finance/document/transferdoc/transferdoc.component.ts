@@ -57,7 +57,7 @@ export class TransferdocComponent implements OnInit {
     this.uiObject = new HIHUI.UIFinTransferDocument();
     this.uiMode = HIHCommon.UIMode.Create;
 
-    this._apiUrl = environment.ApiUrl + "api/financedocument";
+    this._apiUrl = environment.ApiUrl + "/api/financedocument";
   }
 
   ////////////////////////////////////////////
@@ -334,7 +334,7 @@ export class TransferdocComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/userdetail";
+    let usrApi = environment.ApiUrl + "/api/userdetail";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
@@ -349,7 +349,7 @@ export class TransferdocComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/financecontrollingcenter";
+    let usrApi = environment.ApiUrl + "/api/financecontrollingcenter";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractControlCenterData)
@@ -364,7 +364,7 @@ export class TransferdocComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/financedoctype";
+    let usrApi = environment.ApiUrl + "/api/financedoctype";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractDocTypeData)
@@ -379,7 +379,7 @@ export class TransferdocComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/financetrantype";
+    let usrApi = environment.ApiUrl + "/api/financetrantype";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractTranTypeData)
@@ -394,7 +394,7 @@ export class TransferdocComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/financecurrency";
+    let usrApi = environment.ApiUrl + "/api/financecurrency";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractCurrencyData)
@@ -409,7 +409,7 @@ export class TransferdocComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/financeorder";
+    let usrApi = environment.ApiUrl + "/api/financeorder";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractOrderData)
@@ -424,7 +424,7 @@ export class TransferdocComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/financeaccount";
+    let usrApi = environment.ApiUrl + "/api/financeaccount";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractAccountData)

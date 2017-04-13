@@ -55,7 +55,7 @@ export class DetailComponent implements OnInit {
     this.sruleObject = new HIHFinance.SettlementRule();
     this.uiMode = HIHCommon.UIMode.Create;
 
-    this._apiUrl = environment.ApiUrl + "api/financeorder";
+    this._apiUrl = environment.ApiUrl + "/api/financeorder";
   }
 
   ////////////////////////////////////////////
@@ -280,7 +280,7 @@ export class DetailComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/userdetail";
+    let usrApi = environment.ApiUrl + "/api/userdetail";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractUserData)
@@ -306,7 +306,7 @@ export class DetailComponent implements OnInit {
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "api/financecontrollingcenter";
+    let usrApi = environment.ApiUrl + "/api/financecontrollingcenter";
 
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractControlCenterData)

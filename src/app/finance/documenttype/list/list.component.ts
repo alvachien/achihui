@@ -52,7 +52,7 @@ export class ListComponent implements OnInit {
       console.log("Entering constructor of FinanceDocumentTypeList");
     }
 
-    this._apiUrl = environment.ApiUrl + "api/financedoctype";
+    this._apiUrl = environment.ApiUrl + "/api/financedoctype";
 
     this._uistatus.subjCurLanguage.subscribe(x => {
       this.loadHeaderString();

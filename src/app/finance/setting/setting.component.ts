@@ -49,7 +49,7 @@ export class SettingComponent implements OnInit {
         console.log("Entering constructor of FinanceOrderList");
       }
 
-      this._apiUrl = environment.ApiUrl + "api/financesetting";
+      this._apiUrl = environment.ApiUrl + "/api/financesetting";
   }
 
   ////////////////////////////////////////////

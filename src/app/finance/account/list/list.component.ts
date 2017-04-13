@@ -55,7 +55,7 @@ export class ListComponent implements OnInit {
       console.log("Entering constructor of FinanceAccountList");
     }
 
-    this._apiUrl = environment.ApiUrl + "api/financeaccount";
+    this._apiUrl = environment.ApiUrl + "/api/financeaccount";
     this.columns = [
       { name: 'Id', label: '#', tooltip: 'ID' },
       { name: 'CategoryId', label: 'Category', tooltip: 'Category ID' },

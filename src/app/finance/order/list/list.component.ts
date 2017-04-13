@@ -63,7 +63,7 @@ export class ListComponent implements OnInit {
       { name: 'ValidToString', label: 'To', tooltip: 'Valid to' },
       { name: 'Comment', label: 'Comment' }
     ];
-    this._apiUrl = environment.ApiUrl + "api/financeorder";
+    this._apiUrl = environment.ApiUrl + "/api/financeorder";
 
     this._uistatus.subjCurLanguage.subscribe(x => {
       this.loadHeaderString();

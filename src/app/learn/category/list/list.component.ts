@@ -46,7 +46,7 @@ export class ListComponent implements OnInit {
      private activateRoute: ActivatedRoute,
      private uistatus: UIStatusService,
      private _dataTableService: TdDataTableService) {
-    this._apiUrl = environment.ApiUrl + "api/learncategory";
+    this._apiUrl = environment.ApiUrl + "/api/learncategory";
   }
 
   ngOnInit() {
