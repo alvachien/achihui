@@ -80,7 +80,7 @@ export class UserdetailComponent implements OnInit {
     return this.uiMode === HIHCommon.UIMode.Create || this.uiMode === HIHCommon.UIMode.Change;
   }
 
-  private saveUserDetail(): Observable<any> {
+  private saveUserDetail(dataJSON: any): Observable<any> {
     let headers = new Headers();
     headers.append('Accept', 'application/json');
     if (this.objUserAuthInfo.isAuthorized)
@@ -94,7 +94,8 @@ export class UserdetailComponent implements OnInit {
   public onsubmit(): void {
     if (this.uiMode === HIHCommon.UIMode.Create) {
       // Create
-
+      let data: any;
+      data = this.usrDetail;
     } else if(this.uiMode === HIHCommon.UIMode.Change) {
       // Change
     } else {

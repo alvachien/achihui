@@ -15,15 +15,15 @@
             </md-input-container>
           </div>
           <div layout="row" layout-margin>
-            <md-select flex="90" placeholder="{{'Finance.DocumentType' | translate}}" [(ngModel)]="docObject.DocType" name="doctype" #doctype="ngModel">
-              <md-option *ngFor="let dt of arDocType" [value]="dt.Id">
+            <md-select flex placeholder="{{'Finance.DocumentType' | translate}}" [(ngModel)]="docObject.DocType" name="doctype" #doctype="ngModel">
+              <md-option flex *ngFor="let dt of arDocType" [value]="dt.Id">
                {{dt.Id}} - {{dt.Name}}
               </md-option>
             </md-select>
           </div>
           <div layout="row" layout-margin>
-            <md-select flex="90" placeholder="{{'Finance.Currency' | translate}}" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
-              <md-option *ngFor="let cur of arCurrency" [value]="cur.Currency">
+            <md-select flex placeholder="{{'Finance.Currency' | translate}}" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
+              <md-option flex *ngFor="let cur of arCurrency" [value]="cur.Currency">
                 {{cur.Symbol}} - {{cur.Name}}
               </md-option>
             </md-select>
