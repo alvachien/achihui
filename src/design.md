@@ -1,6 +1,6 @@
 # Overview
 
-HIH consists of three building blocks:
+HIH consists of three major building blocks:
 * Identity Server
 * API
 * UI app (Javascript/Typescript app)
