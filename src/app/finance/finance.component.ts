@@ -41,6 +41,10 @@ export class FinanceComponent implements OnInit {
     this.arLanguages = new Array<AppLanguage>();
 
     this._authService.authContent.subscribe(x => {
+      if (environment.DebugLogging) {
+        console.log("ACHIHUI Log: Entering AuthService subscribition in FinanceComponent's constructor: ");
+        console.log(x);
+      }
       this._zone.run(() => {
         this.isLoggedIn = x.isAuthorized;
         if (this.isLoggedIn)

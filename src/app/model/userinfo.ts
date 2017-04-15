@@ -8,14 +8,24 @@ export class UserDetail {
     public Others: string;
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of UserDetail");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of UserDetail");
+        // }
 
         this.UserId = data.userID;
         this.DisplayAs = data.displayAs;
         this.Email = data.email;
         this.Others = data.others;
+    }
+
+    public onGetData() : any {
+        let data : any = {};
+        data.userID = this.UserId;
+        data.displayAs = this.DisplayAs;
+        data.email = this.Email;
+        data.others = this.Others;
+
+        return data;
     }
 }
 
@@ -27,9 +37,9 @@ export class UserHistory {
     public Others: string;
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of UserHistory");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of UserHistory");
+        // }
 
         this.UserId = data.userId;
         this.SeqNo = data.seqNo;

@@ -28,7 +28,6 @@ export class UserdetailComponent implements OnInit {
 
   public objUserAuthInfo: HIHUser.UserAuthInfo; 
   public usrDetail: HIHUser.UserDetail;
-  private usrApi: string;
   private uiMode: HIHCommon.UIMode;
 
   constructor(private _http: Http,
@@ -51,8 +50,9 @@ export class UserdetailComponent implements OnInit {
     }
 
     this.objUserAuthInfo = this._authService.authSubject.getValue();
-    this.loadCurrentUser().subscribe(x => {
+    this.loadCurrentUser().subscribe(x => {      
       console.log(x);
+      this.usrDetail.onSetData(x);
     }, error => {
       // Error occurred
       if (error.status === 404) {
@@ -80,24 +80,45 @@ export class UserdetailComponent implements OnInit {
     return this.uiMode === HIHCommon.UIMode.Create || this.uiMode === HIHCommon.UIMode.Change;
   }
 
-  private saveUserDetail(dataJSON: any): Observable<any> {
+  private createUserDetail(): Observable<any> {
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this.objUserAuthInfo.isAuthorized)
+      headers.append('Authorization', 'Bearer ' + this.objUserAuthInfo.getAccessToken());
+    let usrApi = environment.ApiUrl;
+    let dataJSON = this.usrDetail.onGetData();
+
+    return this._http.post(usrApi, dataJSON, { headers: headers })
+      .map(resp => resp.json());
+  }
+
+  private changeUserDetail(): Observable<any> {
     let headers = new Headers();
     headers.append('Accept', 'application/json');
     if (this.objUserAuthInfo.isAuthorized)
       headers.append('Authorization', 'Bearer ' + this.objUserAuthInfo.getAccessToken());
     let usrApi = environment.ApiUrl + "/api/userdetail/" + this.objUserAuthInfo.getUserId();
+    let dataJSON = this.usrDetail.onGetData();
 
-    return this._http.post(usrApi, { headers: headers })
+    return this._http.put(usrApi, dataJSON, { headers: headers })
       .map(resp => resp.json());
   }
 
   public onsubmit(): void {
     if (this.uiMode === HIHCommon.UIMode.Create) {
-      // Create
-      let data: any;
-      data = this.usrDetail;
+      this.createUserDetail().subscribe(x => {
+      }, error => {
+      }, () => {
+      });
     } else if(this.uiMode === HIHCommon.UIMode.Change) {
       // Change
+      this.changeUserDetail().subscribe(x => {
+
+      }, error => {
+
+      }, () => {
+
+      });
     } else {
       // Do nothing
     }

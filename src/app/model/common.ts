@@ -92,9 +92,9 @@ export class BaseModel {
     public UpdatedAtString: string;
 
     constructor() {
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of BaseModel");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of BaseModel");
+        // }
 
         this.CreatedAt = new Date();
         this.UpdatedAt = new Date();
@@ -103,24 +103,24 @@ export class BaseModel {
     }
 
     public onInit() {
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of BaseModel");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of BaseModel");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of BaseModel");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of BaseModel");
+        // }
         this.VerifiedMsgs = [];
 
         return true;
     }
 
     public onComplete(): void {
-        if (environment.DebugLogging) {
-            console.log("Entering onComplete of BaseModel");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onComplete of BaseModel");
+        // }
 
         if (this.CreatedAtString) {
             this.CreatedAt = Utility.String2Date(this.CreatedAtString);
@@ -136,9 +136,9 @@ export class BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of BaseModel");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of BaseModel");
+        // }
 
         let rstobj: any = {};
         if (this.CreatedAt) {
@@ -158,9 +158,9 @@ export class BaseModel {
     }
 
     public writeJSONString(): string {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONString of BaseModel");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONString of BaseModel");
+        // }
 
         let forJSON = this.writeJSONObject();
         if (forJSON) {
@@ -170,9 +170,9 @@ export class BaseModel {
     }
 
     public onSetData(data: any) : void {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of BaseModel");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of BaseModel");
+        // }
 
         if (data && data.createdBy) {
             this.CreatedBy = data.createdBy;

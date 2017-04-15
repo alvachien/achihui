@@ -25,7 +25,7 @@
       </div>
       <div layout="row" layout-margin>
         <md-input-container flex>
-            <input mdInput type="text" placeholder="Others" required maxlength="100" [(ngModel)]="usrDetail.Others" name="others"
+            <input mdInput type="text" placeholder="Others" maxlength="100" [(ngModel)]="usrDetail.Others" name="others"
                 #others="ngModel" [disabled]="!isFieldChangable()">
             <md-hint align="end">{{usrDetail.Others && usrDetail.Others.length}} / 100</md-hint>
         </md-input-container>

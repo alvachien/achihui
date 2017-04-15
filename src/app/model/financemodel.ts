@@ -8,22 +8,22 @@ export class Setting extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of Finance.Setting");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of Finance.Setting");
+        // }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of Finance.Setting");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of Finance.Setting");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of Finance.Setting");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of Finance.Setting");
+        // }
         if (!super.onVerify(context))
             return false;
 
@@ -31,18 +31,18 @@ export class Setting extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of Finance.Setting");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of Finance.Setting");
+        // }
 
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of Finance.Setting");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of Finance.Setting");
+        // }
 
         super.onSetData(data);
         if (data && data.setID) {
@@ -65,22 +65,22 @@ export class ExchangeRate extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of KnowledgeType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of KnowledgeType");
+        // }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of KnowledgeType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of KnowledgeType");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of KnowledgeType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of KnowledgeType");
+        // }
         if (!super.onVerify(context))
             return false;
 
@@ -88,9 +88,9 @@ export class ExchangeRate extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of KnowledgeType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of KnowledgeType");
+        // }
 
         let rstObj = super.writeJSONObject();
         return rstObj;
@@ -109,22 +109,22 @@ export class Currency extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of Currency");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of Currency");
+        // }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of Currency");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of Currency");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of Currency");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of Currency");
+        // }
         if (!super.onVerify(context))
             return false;
 
@@ -132,18 +132,18 @@ export class Currency extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of Currency");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of Currency");
+        // }
 
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of Currency");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of Currency");
+        // }
 
         super.onSetData(data);
         if (data && data.curr)
@@ -168,22 +168,22 @@ export class AccountCategory extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of AccountCategory");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of AccountCategory");
+        // }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of AccountCategory");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of AccountCategory");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of AccountCategory");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of AccountCategory");
+        // }
         if (!super.onVerify(context))
             return false;
 
@@ -191,18 +191,18 @@ export class AccountCategory extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of AccountCategory");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of AccountCategory");
+        // }
 
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of AccountCategory");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of AccountCategory");
+        // }
 
         super.onSetData(data);
         if (data && data.id) {
@@ -231,22 +231,22 @@ export class DocumentType extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of DocumentType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of DocumentType");
+        // }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of DocumentType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of DocumentType");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of DocumentType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of DocumentType");
+        // }
         if (!super.onVerify(context))
             return false;
 
@@ -254,18 +254,18 @@ export class DocumentType extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of DocumentType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of DocumentType");
+        // }
 
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of DocumentType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of DocumentType");
+        // }
 
         super.onSetData(data);
         if (data && data.id) {
@@ -309,22 +309,23 @@ export class Account extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of Account");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of Account");
+        // }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of Account");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of Account");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of Account");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of Account");
+        // }
+
         if (!super.onVerify(context))
             return false;
 
@@ -368,9 +369,9 @@ export class Account extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of Account");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of Account");
+        // }
 
         let rstObj = super.writeJSONObject();
         rstObj.id = this.Id;
@@ -387,9 +388,9 @@ export class Account extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of Account");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of Account");
+        // }
 
         super.onSetData(data);
 
@@ -450,9 +451,9 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     public onInit() {
         super.onInit();
 
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of Order");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of AccountExtraAdvancePayment");
+        // }
 
         if (this.StartDate) {
             this.StartDateString = hih.Utility.Date2String(this.StartDate);
@@ -467,9 +468,9 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of AccountExtraAdvancePayment");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of AccountExtraAdvancePayment");
+        // }
 
         let rstobj: any = super.writeJSONObject();
         rstobj.direct = this.Direct;
@@ -484,9 +485,9 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of AccountExtraAdvancePayment");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of AccountExtraAdvancePayment");
+        // }
 
         super.onSetData(data);
 
@@ -520,9 +521,9 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     public onComplete() : void {
         super.onComplete();
 
-        if (environment.DebugLogging) {
-            console.log("Entering onComplete of AccountExtraAdvancePayment");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onComplete of AccountExtraAdvancePayment");
+        // }
 
         if (this.StartDateString) {
             this.StartDate = hih.Utility.String2Date(this.StartDateString);
@@ -547,22 +548,22 @@ export class ControllingCenter extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of ControllingCenter");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of ControllingCenter");
+        // }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of ControllingCenter");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of ControllingCenter");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of ControllingCenter");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of ControllingCenter");
+        // }
         if (!super.onVerify(context))
             return false;
         
@@ -582,9 +583,9 @@ export class ControllingCenter extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of ControllingCenter");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of ControllingCenter");
+        // }
 
         let rstObj = super.writeJSONObject();
         rstObj.id = this.Id;
@@ -599,9 +600,9 @@ export class ControllingCenter extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of ControllingCenter");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of ControllingCenter");
+        // }
 
         super.onSetData(data);
 
@@ -638,9 +639,9 @@ export class Order extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of Order");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of Order");
+        // }
 
         this.ValidFrom = new Date();
         this.ValidTo = new Date();
@@ -651,9 +652,9 @@ export class Order extends hih.BaseModel {
     public onInit() {
         super.onInit();
 
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of Order");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of Order");
+        // }
 
         if (this.ValidFrom) {
             this.ValidFromString = hih.Utility.Date2String(this.ValidFrom);
@@ -668,9 +669,9 @@ export class Order extends hih.BaseModel {
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of Order");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of Order");
+        // }
         if (!super.onVerify(context))
             return false;
 
@@ -758,9 +759,9 @@ export class Order extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of Order");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of Order");
+        // }
 
         let rstObj = super.writeJSONObject();
         rstObj.id = this.Id;
@@ -780,9 +781,9 @@ export class Order extends hih.BaseModel {
     }
 
     public onSetData(data: any) : void {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of Order");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of Order");
+        // }
 
         super.onSetData(data);
 
@@ -817,9 +818,9 @@ export class Order extends hih.BaseModel {
     public onComplete() : void {
         super.onComplete();
 
-        if (environment.DebugLogging) {
-            console.log("Entering onComplete of Order");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onComplete of Order");
+        // }
 
         if (this.ValidFromString) {
             this.ValidFrom = hih.Utility.String2Date(this.ValidFromString);
@@ -846,22 +847,22 @@ export class SettlementRule extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of SettlementRule");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of SettlementRule");
+        // }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of SettlementRule");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of SettlementRule");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of SettlementRule");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of SettlementRule");
+        // }
         if (!super.onVerify(context))
             return false;
         
@@ -892,9 +893,9 @@ export class SettlementRule extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of SettlementRule");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of SettlementRule");
+        // }
 
         let rstObj = super.writeJSONObject();
         rstObj.ruleId = this.RuleId;
@@ -905,9 +906,9 @@ export class SettlementRule extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of SettlementRule");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of SettlementRule");
+        // }
 
         // Not need call for the super class's method, because createdat and modifiedat not required here
 
@@ -939,22 +940,22 @@ export class TranType extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of TranType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of TranType");
+        // }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of TranType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of TranType");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of TranType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of TranType");
+        // }
         if (!super.onVerify(context))
             return false;
 
@@ -962,18 +963,18 @@ export class TranType extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of TranType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of TranType");
+        // }
 
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of TranType");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of TranType");
+        // }
 
         super.onSetData(data);
 
@@ -1019,9 +1020,9 @@ export class Document extends hih.BaseModel {
     constructor() {
         super();
 
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of Document");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of Document");
+        // }
 
         this.TranDate = new Date();
         this.TranDateString = hih.Utility.Date2String(this.TranDate);
@@ -1029,15 +1030,15 @@ export class Document extends hih.BaseModel {
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of Document");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of Document");
+        // }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of Document");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of Document");
+        // }
         if (!super.onVerify(context))
             return false;
 
@@ -1168,9 +1169,9 @@ export class Document extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of Document");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of Document");
+        // }
 
         let rstObj = super.writeJSONObject();
         rstObj.iD = this.Id;
@@ -1189,9 +1190,9 @@ export class Document extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of Document");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of Document");
+        // }
 
         super.onSetData(data);
 
@@ -1231,9 +1232,9 @@ export class Document extends hih.BaseModel {
     public onComplete(): void {
         super.onComplete();
 
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of Document");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of Document");
+        // }
         
         if (this.TranDateString) {
             this.TranDate = hih.Utility.String2Date(this.TranDateString);
@@ -1259,9 +1260,9 @@ export class DocumentItem {
     public VerifiedMsgs: Array<hih.InfoMessage> = [];
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of DocumentItem");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of DocumentItem");
+        // }
 
         let chkrst : boolean = true;
 
@@ -1454,9 +1455,9 @@ export class DocumentItem {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of DocumentItem");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of DocumentItem");
+        // }
 
         let rstObj: any = {};
         rstObj.itemID = this.ItemId;
@@ -1475,9 +1476,9 @@ export class DocumentItem {
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of DocumentItem");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of DocumentItem");
+        // }
 
         if (data && data.itemID) {
             this.ItemId = +data.itemID;
@@ -1531,9 +1532,9 @@ export class TemplateDocADP extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log("Entering constructor of TemplateDocADP");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering constructor of TemplateDocADP");
+        // }
 
         this.TranDate = new Date();
         this.TranDateString = hih.Utility.Date2String(this.TranDate);
@@ -1541,18 +1542,18 @@ export class TemplateDocADP extends hih.BaseModel {
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log("Entering onInit of TemplateDocADP");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onInit of TemplateDocADP");
+        // }
 
         this.TranDate = new Date();
         this.TranDateString = hih.Utility.Date2String(this.TranDate);
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log("Entering onVerify of TemplateDocADP");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onVerify of TemplateDocADP");
+        // }
         if (!super.onVerify(context))
             return false;
 
@@ -1560,9 +1561,9 @@ export class TemplateDocADP extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of TemplateDocADP");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering writeJSONObject of TemplateDocADP");
+        // }
 
         let rstObj = super.writeJSONObject();
         rstObj.docID = this.DocId;
@@ -1579,9 +1580,9 @@ export class TemplateDocADP extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log("Entering onSetData of TemplateDocADP");
-        }
+        // if (environment.DebugLogging) {
+        //     console.log("Entering onSetData of TemplateDocADP");
+        // }
 
         // Todo
     }
