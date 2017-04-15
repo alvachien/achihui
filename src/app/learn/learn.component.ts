@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, NgZone } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MdIconRegistry } from '@angular/material';
 import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
@@ -27,8 +27,10 @@ export class LearnComponent implements OnInit {
   public strLearnModule: string;
   public strLearnSubModule: string;
   public arLanguages: Array<AppLanguage>;
+  private isAuthInitial: boolean;
 
   constructor(private _iconRegistry: MdIconRegistry,
+    private _zone: NgZone,
     private _loadingService: TdLoadingService,
     private _domSanitizer: DomSanitizer,
     private _authService: AuthService,
@@ -58,14 +60,20 @@ export class LearnComponent implements OnInit {
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hihapplogo.svg'));
 
     this._authService.authContent.subscribe(x => {
-      this.isLoggedIn = x.isAuthorized;
-      if (this.isLoggedIn)
-        this.titleLogin = x.getUserName();
-      else
-        this.titleLogin = "";
+      if (this.isAuthInitial) {
+        this.isAuthInitial = false;
+      } else {
+        this._zone.run(()=> {
+          this.isLoggedIn = x.isAuthorized;
+          if (this.isLoggedIn)
+            this.titleLogin = x.getUserName();
+          else
+            this.titleLogin = "";
 
-      if (!this.titleLogin)
-        this.titleLogin = 'Login';
+          if (!this.titleLogin)
+            this.titleLogin = 'Login';
+          });
+      }
     });
 
     // Register the UI status

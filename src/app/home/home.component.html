@@ -65,7 +65,7 @@
     </div>
   </td-navigation-drawer>
   <div td-sidenav-content class="td-layout-footer pad">
-    &copy; 2016 - 2017, Alva Chien.
+    &copy; 2015 - 2017, Alva Chien.
   </div>
 
   <td-layout-nav icon="event_seat">
@@ -123,18 +123,15 @@
 
     <md-toolbar color="primary" class="pad-none pull-top">
       <nav md-tab-nav-bar class="pull-bottom">
-        <a md-tab-link [routerLink]="['/learn/object']" class="active">
-        Learn Objects
-      </a>
-        <a md-tab-link [routerLink]="['/finance/account']" class="active">
-        Finance Accounts 
-      </a>
-        <a md-tab-link [routerLink]="['/templates/email']" class="active">
-        To-Do Monitor
-      </a>
-        <a md-tab-link [routerLink]="['/templates/editor']" class="active">
-        Library
-      </a>
+        <a md-tab-link [routerLink]="['/home']" class="active">
+          {{'Nav.Home' | translate}}
+        </a>
+        <a md-tab-link [routerLink]="['/userdetail']" class="active">
+          {{'Nav.UserDetail' | translate}}
+        </a>
+        <a md-tab-link [routerLink]="['/about']" class="active">
+          {{'Nav.About' | translate}}
+        </a>
       </nav>
     </md-toolbar>
 
@@ -195,12 +192,12 @@
                 <h3 md-subheader>Features</h3>
                 <md-list-item>
                   <md-icon md-list-icon class="fill-grey-700">description</md-icon>
-                  <h4 md-line>Learn Objects</h4>
+                  <h4 md-line>{{'Learning.LearningObject' | translate}}</h4>
                 </md-list-item>
                 <md-divider md-inset></md-divider>
                 <md-list-item>
                   <md-icon md-list-icon class="fill-grey-700">description</md-icon>
-                  <h4 md-line>Learn Histories</h4>
+                  <h4 md-line>{{'Learning.LearningHistory' | translate}}</h4>
                 </md-list-item>
                 <md-divider md-inset></md-divider>
                 <md-list-item>
@@ -227,17 +224,17 @@
                 <h3 md-subheader>Finance Accounts</h3>
                 <md-list-item>
                   <md-icon md-list-icon class="fill-grey-700">description</md-icon>
-                  <h4 md-line>Accounts</h4>
+                  <h4 md-line>{{'Finance.Accounts' | translate}}</h4>
                 </md-list-item>
                 <md-divider md-inset></md-divider>
                 <md-list-item>
                   <md-icon md-list-icon class="fill-grey-700">description</md-icon>
-                  <h4 md-line>Documents</h4>
+                  <h4 md-line>{{'Finance.Documents' | translate}}</h4>
                 </md-list-item>
                 <md-divider md-inset></md-divider>
                 <md-list-item>
                   <md-icon md-list-icon class="fill-grey-700">description</md-icon>
-                  <h4 md-line>Reports</h4>
+                  <h4 md-line>{{'Finance.Reports' | translate}}</h4>
                 </md-list-item>
                 <md-divider md-inset></md-divider>
                 <md-list-item>
@@ -337,10 +334,10 @@
             <md-nav-list>
               <h3 md-subheader class="text-upper tc-blue-grey-100">{{"Nav.LearningTrace" | translate}}</h3>
               <md-list-item>
-                <p md-line md-caption class="md-body-2">Learn Object</p>
+                <p md-line md-caption class="md-body-2">{{'Learning.LearningObject' | translate}}</p>
               </md-list-item>
               <md-list-item>
-                <p md-line>Learn History</p>
+                <p md-line>{{'Learning.LearningHistory' | translate}}</p>
               </md-list-item>
               <md-list-item>
                 <p md-line>Learn Plan</p>
@@ -354,13 +351,13 @@
             <md-nav-list>
               <h3 md-subheader class="text-upper tc-blue-grey-100">{{"Nav.FinanceTrace" | translate}}</h3>
               <md-list-item>
-                <p md-line>Finance Account</p>
+                <p md-line>{{'Finance.Accounts' | translate}}</p>
               </md-list-item>
               <md-list-item>
-                <p md-line>Finance Document</p>
+                <p md-line>{{'Finance.Documents' | translate}}</p>
               </md-list-item>
               <md-list-item>
-                <p md-line>Finance Reports</p>
+                <p md-line>{{'Finance.Reports' | translate}}</p>
               </md-list-item>
               <md-list-item>
                 <p md-line>Others</p>

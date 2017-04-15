@@ -1,5 +1,5 @@
 <td-layout #layout>
-  <td-navigation-drawer flex icon="event_seat" sidenavTitle="H.I.H." name="{{ titleLogin }}" (logout)="onLogout()">
+  <td-navigation-drawer flex icon="event_seat" sidenavTitle="H.I.H." name="{{titleLogin}}" (logout)="onLogout()">
     <div td-sidenav-content *ngIf="!isLoggedIn">
       <md-nav-list menu-items>
         <a md-list-item (click)="onLogin()">{{"Login.Login" | translate}}</a>

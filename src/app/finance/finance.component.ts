@@ -26,6 +26,7 @@ export class FinanceComponent implements OnInit {
   public libraryMenuToggled: boolean = true;
   public currentObject: string;
   public arLanguages: Array<AppLanguage>;
+  private isAuthInitial: boolean;
 
   constructor(private _iconRegistry: MdIconRegistry,
     private _loadingService: TdLoadingService,
@@ -39,22 +40,28 @@ export class FinanceComponent implements OnInit {
       console.log("ACHIHUI Log: Entering constructor of FinanceComponent");
     }
     this.arLanguages = new Array<AppLanguage>();
+    this.isAuthInitial = true;
 
     this._authService.authContent.subscribe(x => {
       if (environment.DebugLogging) {
         console.log("ACHIHUI Log: Entering AuthService subscribition in FinanceComponent's constructor: ");
         console.log(x);
       }
-      this._zone.run(() => {
-        this.isLoggedIn = x.isAuthorized;
-        if (this.isLoggedIn)
-          this.titleLogin = x.getUserName();
-        else
-          this.titleLogin = "";
 
-        if (!this.titleLogin)
-          this.titleLogin = 'Login';
-      });
+      if (this.isAuthInitial) {
+        this.isAuthInitial = false;
+      } else {
+        this._zone.run(() => {
+          this.isLoggedIn = x.isAuthorized;
+          if (this.isLoggedIn)
+            this.titleLogin = x.getUserName();
+          else
+            this.titleLogin = "";
+
+          if (!this.titleLogin)
+            this.titleLogin = 'Login';
+        });
+      }
     });
 
     let arlang: string[] = [];
