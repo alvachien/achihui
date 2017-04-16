@@ -40,6 +40,7 @@ export class DetailComponent implements OnInit {
   public docObject: HIHFinance.Document = null;
   public itemObject: HIHFinance.DocumentItem = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
+  private clnhdrstring: string[] = ["Common.ID", "Finance.Account", "Finance.TransactionType", "Finance.Amount", "Finance.ControlCenter", "Finance.Order", "Common.Description"];
   public clnItems: ITdDataTableColumn[] = [
     { name: 'ItemId', label: '#', tooltip: 'ID' },
     { name: 'AccountName', label: 'Account', tooltip: 'Account' },
@@ -173,6 +174,10 @@ export class DetailComponent implements OnInit {
       this.docObject.Items.push(this.itemObject);
       this.itemObject = new HIHFinance.DocumentItem();
     });
+  }
+
+  public resetCurrentItem(): void {
+
   }
 
   public onSubmit(): void {

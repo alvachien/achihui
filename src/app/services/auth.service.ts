@@ -54,8 +54,11 @@ export class AuthService {
       if (environment.DebugLogging) {
         console.log("token expired");
       }
-      this.authSubject.value.cleanContent();
-      this.authSubject.next(this.authSubject.value);
+      that.authSubject.value.cleanContent();
+      that.authSubject.next(this.authSubject.value);
+
+      // Let' go the login
+      that.doLogin();
     });
   }
 

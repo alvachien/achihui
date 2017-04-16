@@ -74,14 +74,14 @@
                 </md-input-container>
               </div>
               <div layout="row" layout-margin>
-                <md-select flex="90" placeholder="{{'Finance.TransactionType' | translate}}" [(ngModel)]="itemObject.TranType" name="itemtrantype" #itemtrantype="ngModel">
+                <md-select flex placeholder="{{'Finance.TransactionType' | translate}}" [(ngModel)]="itemObject.TranType" name="itemtrantype" #itemtrantype="ngModel">
                   <md-option *ngFor="let dt of arTranType" [value]="dt.Id">
                     ({{dt.Id}}) - {{dt.Name}}
                   </md-option>
                 </md-select>
               </div>
               <div layout="row" layout-margin>
-                <md-select flex="90" placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="itemObject.AccountId" name="itemaccnt" #itemaccnt="ngModel">
+                <md-select flex placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="itemObject.AccountId" name="itemaccnt" #itemaccnt="ngModel">
                   <md-option *ngFor="let acnt of arAccount" [value]="acnt.Id">
                     {{acnt.Id}} - {{acnt.Name}}
                   </md-option>
@@ -98,14 +98,16 @@
                 </md-input-container>
               </div>
               <div layout="row" layout-margin>
-                <md-select flex="90" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="itemObject.ControlCenterId" name="itemcc" #itemcc="ngModel">
+                <md-select flex placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="itemObject.ControlCenterId" name="itemcc" #itemcc="ngModel">
+                  <md-option value="0">{{'Common.PleaseSelect' | translate}}</md-option>
                   <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
                     {{cc.Id}} - {{cc.Name}}
                   </md-option>
                 </md-select>
               </div>
               <div layout="row" layout-margin>
-                <md-select flex="90" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="itemObject.OrderId" name="itemorder" #itemorder="ngModel">
+                <md-select flex placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="itemObject.OrderId" name="itemorder" #itemorder="ngModel">
+                  <md-option value="0">{{'Common.PleaseSelect' | translate}}</md-option>
                   <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
                    {{ord.Id}} - {{ord.Name}}
                   </md-option>
@@ -115,7 +117,7 @@
           </md-card-content>
           <md-card-actions>
             <button md-button color="accent" [disabled]="!itemDetailForm.form.valid" (click)="onItemSubmit()">Add Item</button>
-            <button md-button>Reset current item</button>
+            <button md-button (click)="resetCurrentItem()">Reset current item</button>
           </md-card-actions>
         </md-card>
       </md-tab>

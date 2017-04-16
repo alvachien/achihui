@@ -14,6 +14,7 @@ import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  //private isAuthInitial: boolean;
 
   constructor(private _authService: AuthService,
     private _uistatus: UIStatusService,
@@ -44,11 +45,15 @@ export class AppComponent implements OnInit {
     });
 
     this._authService.authContent.subscribe(x => {
-      if (environment.DebugLogging) {
-        console.log("ACHIHUI Log: Entering subscribe of authContent in AppComponent");
-      }
+      // if (this.isAuthInitial) {
+      //   this.isAuthInitial = false;
+      // } else {
+        if (environment.DebugLogging) {
+          console.log("ACHIHUI Log: Entering subscribe of authContent in AppComponent");
+        }
 
-      this._uistatus.setIsLogin(x.isAuthorized);
+        this._uistatus.setIsLogin(x.isAuthorized);
+      //}
     });
 
     this._iconRegistry.addSvgIconInNamespace('assets', 'github',

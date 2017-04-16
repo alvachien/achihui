@@ -27,7 +27,7 @@ export class LearnComponent implements OnInit {
   public strLearnModule: string;
   public strLearnSubModule: string;
   public arLanguages: Array<AppLanguage>;
-  private isAuthInitial: boolean;
+  //private isAuthInitial: boolean;
 
   constructor(private _iconRegistry: MdIconRegistry,
     private _zone: NgZone,
@@ -60,9 +60,9 @@ export class LearnComponent implements OnInit {
       this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/hihapplogo.svg'));
 
     this._authService.authContent.subscribe(x => {
-      if (this.isAuthInitial) {
-        this.isAuthInitial = false;
-      } else {
+      // if (this.isAuthInitial) {
+      //   this.isAuthInitial = false;
+      // } else {
         this._zone.run(()=> {
           this.isLoggedIn = x.isAuthorized;
           if (this.isLoggedIn)
@@ -71,9 +71,9 @@ export class LearnComponent implements OnInit {
             this.titleLogin = "";
 
           if (!this.titleLogin)
-            this.titleLogin = 'Login';
+            this.titleLogin = 'Login.Login';
           });
-      }
+      //}
     });
 
     // Register the UI status
