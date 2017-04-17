@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { BrowserModule, Title } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '@angular/material';
 import { CovalentCoreModule } from '@covalent/core';
 import { UIRefModule } from '../uiref.module';
@@ -22,6 +23,8 @@ import { DetailComponent as CategoryDetailComponent } from './category/detail/de
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     LearnRoutingModule,
     UIRefModule,
     TranslateModule,

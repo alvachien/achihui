@@ -274,7 +274,7 @@ export class DetailComponent implements OnInit {
   }
 
   public displayFn(obj: HIHLearn.LearnObject): string {
-    return obj ? obj.Name : "";
+    return obj && obj instanceof HIHLearn.LearnObject ? obj.Name : "";
   }
 
   private extractObjectData(res: Response) {

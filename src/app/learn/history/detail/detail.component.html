@@ -5,12 +5,12 @@
     </md-select>
   </div>
   <div layout="row" layout-margin>
-    <md-input-container>
-      <input type="text" mdInput [formControl]="controlObjectID" [mdAutocomplete]="objid">
+    <md-input-container flex>
+      <input type="text" mdInput placeholder="Object ID" [mdAutocomplete]="objid" [formControl]="controlObjectID">
     </md-input-container>
 
-    <md-autocomplete #objid="mdAutocomplete" [displayWith]="displayFn">
-      <md-option *ngFor="let obj of filteredOptions | async" [value]="Id">
+    <md-autocomplete flex #objid="mdAutocomplete" [displayWith]="displayFn">
+      <md-option *ngFor="let obj of filteredObjects | async" [value]="Id">
           {{obj}}
       </md-option>
     </md-autocomplete>

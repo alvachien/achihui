@@ -45,7 +45,6 @@ import { OrderComponent as ReportOrderComponent } from './report/order/order.com
 @NgModule({
   imports: [
     CommonModule,
-    BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
