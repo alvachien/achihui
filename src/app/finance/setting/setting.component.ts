@@ -19,6 +19,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { UIStatusService } from '../../services/uistatus.service';
 import { AuthService } from '../../services/auth.service';
+import { BufferService } from '../../services/buff.service';
 
 @Component({
   selector: 'finance-setting',
@@ -44,12 +45,11 @@ export class SettingComponent implements OnInit {
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
+    private _buffService: BufferService,
     private _uistatus: UIStatusService) { 
       if (environment.DebugLogging) {
         console.log("Entering constructor of FinanceOrderList");
       }
-
-      this._apiUrl = environment.ApiUrl + "/api/financesetting";
   }
 
   ////////////////////////////////////////////
@@ -67,10 +67,7 @@ export class SettingComponent implements OnInit {
       console.log("Entering loadSetting of SettingComponent");
     }
 
-    var headers = new Headers();
-    this._http.get(this._apiUrl, { headers: headers })
-      .map(this.extractSettingData)
-      .catch(this.handleError)
+    this._buffService.getFinanceSettings()
       .subscribe(data => {
         if (data instanceof Array) {
           this.filteredData = data;
@@ -82,37 +79,5 @@ export class SettingComponent implements OnInit {
       () => {
         // Finished
       });
-  }
-
-  private extractSettingData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractSettingData of SettingComponent");
-    }
-
-    let body = res.json();
-    if (body && body instanceof Array) {
-      let sets = new Array<HIHFinance.Setting>();
-      for (let alm of body) {
-        let alm2 = new HIHFinance.Setting();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
-
-  private handleError(error: any) {
-    if (environment.DebugLogging) {
-      console.log("Entering handleError of FinanceOrderList");
-    }
-
-    // In a real world app, we might use a remote logging infrastructure
-    // We'd also dig deeper into the error to get a better message
-    let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-    console.error(errMsg); // log to console instead
-    return Observable.throw(errMsg);
   }
 }

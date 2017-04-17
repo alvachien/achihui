@@ -72,9 +72,9 @@ export class BufferService {
       headers.append('Accept', 'application/json');
       if (this._authService.authSubject.getValue().isAuthorized)
         headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-      let usrApi = environment.ApiUrl + "/api/financecurrency";
+      let strApi = environment.ApiUrl + "/api/financecurrency";
 
-      return this._http.get(usrApi, { headers: headers })
+      return this._http.get(strApi, { headers: headers })
         .map(res => this.internalBufferCurrencyData(res, this));
     }
   }
@@ -116,9 +116,9 @@ export class BufferService {
       headers.append('Accept', 'application/json');
       if (this._authService.authSubject.getValue().isAuthorized)
         headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-      let objApi = environment.ApiUrl + "/api/financeaccountcategory";
+      let strApi = environment.ApiUrl + "/api/financeaccountcategory";
 
-      return this._http.get(objApi, { headers: headers })
+      return this._http.get(strApi, { headers: headers })
         .map(res => this.internalBufferAccountCategoryData(res, this));
     }    
   }
@@ -160,9 +160,9 @@ export class BufferService {
       headers.append('Accept', 'application/json');
       if (this._authService.authSubject.getValue().isAuthorized)
         headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-      let usrApi = environment.ApiUrl + "/api/financedoctype";
+      let strApi = environment.ApiUrl + "/api/financedoctype";
 
-      return this._http.get(usrApi, { headers: headers })
+      return this._http.get(strApi, { headers: headers })
         .map(res => this.internalBufferDocTypeData(res, this));
     }
   }
@@ -204,9 +204,9 @@ export class BufferService {
       headers.append('Accept', 'application/json');
       if (this._authService.authSubject.getValue().isAuthorized)
         headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-      let usrApi = environment.ApiUrl + "/api/financetrantype";
+      let strApi = environment.ApiUrl + "/api/financetrantype";
 
-      return this._http.get(usrApi, { headers: headers })
+      return this._http.get(strApi, { headers: headers })
         .map(res => this.internalBufferTranTypeData(res, this));
     }
   }
@@ -222,9 +222,37 @@ export class BufferService {
   }
 
   // Finance setting
-  public bufferFinanceSettings(arFinSetting: HIHFinance.Setting[]) {
-    this.arrayFinanceSetting = arFinSetting;
-    this._isFinanceSettingBufferred = true;
+  public bufferFinanceSettings(arFinSetting?: HIHFinance.Setting[]): Observable<HIHFinance.Setting[]> | void {
+    if (environment.DebugLogging) {
+      console.log("Entering bufferFinanceSettings of BufferService");
+    }
+
+    if (arFinSetting && arFinSetting.length > 0){
+      this.arrayFinanceSetting = arFinSetting;
+      this._isFinanceSettingBufferred = true;
+
+      // Return nothing!
+    } else {
+      return this.getFinanceSettings();
+    }
+  }
+  public getFinanceSettings(): Observable<HIHFinance.Setting[]> {
+    if (environment.DebugLogging) {
+      console.log("Entering getFinanceSettings of BufferService");
+    }
+
+    if (this._isFinanceSettingBufferred) {
+      return Observable.of(this.arrayFinanceSetting);
+    } else {
+      let headers = new Headers();
+      headers.append('Accept', 'application/json');
+      if (this._authService.authSubject.getValue().isAuthorized)
+        headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let strApi = environment.ApiUrl + "/api/financesetting";
+
+      return this._http.get(strApi, { headers: headers })
+        .map(res => this.internalBufferFinanceSettingData(res, this));
+    }
   }
   public resetFinanceSettings(): void {
     this.arrayFinanceSetting = [];
@@ -354,7 +382,7 @@ export class BufferService {
     }
 
     that.arrayUser = [];
-    that._isUserBufferred = true;
+    that.isUserBufferred = true;
 
     let body = res.json();
     if (body && body instanceof Array) {      
@@ -375,7 +403,7 @@ export class BufferService {
     }
 
     that.arrayAccountCategory = [];
-    that._isAccountCategoryBufferred = true;
+    that.isAccountCategoryBufferred = true;
     let body = res.json();
     if (body && body.contentList && body.contentList instanceof Array) {
       for (let alm of body.contentList) {
@@ -395,7 +423,7 @@ export class BufferService {
     }
 
     that.arrayDocumentType = [];
-    that._isDocumentTypeBufferred = true;
+    that.isDocumentTypeBufferred = true;
     let body = res.json();
     if (body && body.contentList && body.contentList instanceof Array) {
       for (let alm of body.contentList) {
@@ -415,7 +443,7 @@ export class BufferService {
     }
 
     that.arrayTransactionType = [];
-    that._isTransactionTypeBufferred = true;
+    that.isTransactionTypeBufferred = true;
     let body = res.json();
     if (body && body.contentList && body.contentList instanceof Array) {
       
@@ -436,7 +464,7 @@ export class BufferService {
     }
 
     that.arrayLearnCategory = [];
-    that._isLearnCategoryBufferred = true;
+    that.isLearnCategoryBufferred = true;
     let body = res.json();
     if (body && body.contentList && body.contentList instanceof Array) {      
       for (let alm of body.contentList) {
@@ -449,5 +477,24 @@ export class BufferService {
 
     return body || {};
   }
+  private internalBufferFinanceSettingData(res: Response, that: BufferService) {
+    if (environment.DebugLogging) {
+      console.log("Entering internalBufferFinanceSettingData of SettingComponent");
+    }
+
+    that.arrayFinanceSetting = [];
+    that.isFinanceSettingBufferred = true;
+    let body = res.json();
+    if (body && body instanceof Array) {
+      for (let alm of body) {
+        let alm2 = new HIHFinance.Setting();
+        alm2.onSetData(alm);
+        that.arrayFinanceSetting.push(alm2);
+      }
+      return that.arrayFinanceSetting;
+    }
+
+    return body || {};
+  }  
 }
 

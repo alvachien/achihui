@@ -1,12 +1,13 @@
 import {
   Component, OnInit, OnDestroy, AfterViewInit, NgZone,
-  EventEmitter, Input, Output, ViewContainerRef
+  EventEmitter, Input, Output, ViewContainerRef 
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
   Http, Headers, Response, RequestOptions,
   URLSearchParams
 } from '@angular/http';
+import { FormControl } from '@angular/forms';
 import { TdDialogService } from '@covalent/core';
 import * as HIHCommon from '../../../model/common';
 import * as HIHLearn from '../../../model/learnmodel';
@@ -33,6 +34,8 @@ export class DetailComponent implements OnInit {
   public currentMode: string;
   public historyObject: HIHLearn.LearnHistory = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
+  public controlObjectID: FormControl; 
+  public filteredObjects: Observable<HIHLearn.LearnObject[]>;
 
   constructor(private _http: Http,
     private _router: Router,
@@ -45,6 +48,7 @@ export class DetailComponent implements OnInit {
     private _uistatus: UIStatusService) {
     this.historyObject = new HIHLearn.LearnHistory();
     this.uiMode = HIHCommon.UIMode.Create;
+    this.controlObjectID = new FormControl();
   }
 
   ////////////////////////////////////////////
@@ -54,6 +58,11 @@ export class DetailComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of LearnHistoryDetail");
     }
+
+    this.filteredObjects = this.controlObjectID.valueChanges
+         .startWith(null)
+         .map(lrnobj => lrnobj && lrnobj instanceof HIHLearn.LearnObject ? lrnobj.Name : lrnobj)
+         .map(name => name ? this.filter(name) : this.arObjects.slice());
 
     Observable.forkJoin([this.loadUserList(), this.loadObjectList()]).subscribe(x => {
       this._zone.run(() => {
@@ -259,6 +268,13 @@ export class DetailComponent implements OnInit {
       error => {
         // It should be handled already
       });
+  }
+  private filter(name: string): HIHLearn.LearnObject[] {
+    return this.arObjects.filter(obj => new RegExp(`^${name}`, 'gi').test(obj.Name)); 
+  }
+
+  public displayFn(obj: HIHLearn.LearnObject): string {
+    return obj ? obj.Name : "";
   }
 
   private extractObjectData(res: Response) {

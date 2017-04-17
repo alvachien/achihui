@@ -7,7 +7,7 @@ import { CovalentHighlightModule } from '@covalent/highlight';
 import { CovalentMarkdownModule } from '@covalent/markdown';
 import { CovalentChartsModule } from '@covalent/charts';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '@angular/material';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpModule, Http } from '@angular/http';
@@ -34,10 +34,11 @@ export function funcHttpLoaderFactory(http: Http) {
 
 @NgModule({
   imports: [
-    MaterialModule,
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
+    MaterialModule,
     UIRefModule,
     FlexLayoutModule,
     AppRoutingModule,

@@ -5,10 +5,20 @@
     </md-select>
   </div>
   <div layout="row" layout-margin>
-    <md-input-container flex>
+    <md-input-container>
+      <input type="text" mdInput [formControl]="controlObjectID" [mdAutocomplete]="objid">
+    </md-input-container>
+
+    <md-autocomplete #objid="mdAutocomplete" [displayWith]="displayFn">
+      <md-option *ngFor="let obj of filteredOptions | async" [value]="Id">
+          {{obj}}
+      </md-option>
+    </md-autocomplete>
+
+    <!--<md-input-container flex>
       <input mdInput placeholder="Object ID" required [(ngModel)]="historyObject.ObjectId" name="objid" #objid="ngModel" (change)="onObjectIdChanged()">
       <md-hint align="start">{{historyObject.ObjectName}}</md-hint>
-    </md-input-container>
+    </md-input-container>-->
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>

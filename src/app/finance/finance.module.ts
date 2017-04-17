@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '@angular/material';
 import { CovalentCoreModule } from '@covalent/core';
 import { UIRefModule } from '../uiref.module';
@@ -43,7 +44,10 @@ import { OrderComponent as ReportOrderComponent } from './report/order/order.com
 
 @NgModule({
   imports: [
-    CommonModule,    
+    CommonModule,
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
     MaterialModule,
     CovalentCoreModule.forRoot(),
     UIRefModule,
