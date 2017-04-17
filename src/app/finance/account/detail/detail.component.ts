@@ -17,6 +17,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { AuthService } from '../../../services/auth.service';
+import { BufferService } from '../../../services/buff.service';
 
 @Component({
   selector: 'finance-account-detail',
@@ -42,6 +43,7 @@ export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
+    private _buffService: BufferService,
     private _uistatus: UIStatusService) {
     this.accountObject = new HIHFinance.Account();
     this.uiMode = HIHCommon.UIMode.Create;
@@ -247,15 +249,7 @@ export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
       console.log("Entering loadUserList of FinanceAccountDetail");
     }
 
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "/api/userdetail";
-
-    return this._http.get(usrApi, { headers: headers })
-      .map(this.extractUserData)
-      .catch(this.handleError);
+    return this._buffService.getUsers();
   }
 
   loadCategoryList(): Observable<any> {
@@ -263,54 +257,9 @@ export class DetailComponent implements OnInit, HIHCommon.IUIDetailPage {
       console.log("Entering loadCategoryList of FinanceAccountDetail");
     }
 
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let objApi = environment.ApiUrl + "/api/financeaccountcategory";
-
-    return this._http.get(objApi, { headers: headers })
-      .map(this.extractCategoryData)
-      .catch(this.handleError);
+    return this._buffService.getAccountCategories();
   }
 
-  private extractUserData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractUserData of FinanceAccountDetail");
-    }
-
-    let body = res.json();
-    if (body && body instanceof Array) {
-      let sets = new Array<HIHUser.UserDetail>();
-      for (let alm of body) {
-        let alm2 = new HIHUser.UserDetail();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
-  private extractCategoryData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractCategoryData of FinanceAccountDetail");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.AccountCategory>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.AccountCategory();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-
-      return sets;
-    }
-
-    return body || {};
-  }
   private extractAccountData(res: Response) {
     if (environment.DebugLogging) {
       console.log("Entering extractAccountData of FinanceAccountDetail");

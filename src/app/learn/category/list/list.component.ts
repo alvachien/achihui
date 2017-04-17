@@ -10,6 +10,7 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { BufferService } from '../../../services/buff.service';
 
 @Component({
   selector: 'learn-category-list',
@@ -42,9 +43,10 @@ export class ListComponent implements OnInit {
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 
   constructor(private _http: Http,
-     private router: Router,
-     private activateRoute: ActivatedRoute,
-     private uistatus: UIStatusService,
+     private _router: Router,
+     private _activateRoute: ActivatedRoute,
+     private _uistatus: UIStatusService,
+     private _buffService: BufferService,
      private _dataTableService: TdDataTableService) {
     this._apiUrl = environment.ApiUrl + "/api/learncategory";
   }
@@ -54,8 +56,8 @@ export class ListComponent implements OnInit {
       console.log("Entering ngOnInit of LearnCategoryList");
     }
 
-    this.uistatus.setLearnModule("Learning.LearningCategory");
-    this.uistatus.setLearnSubModule("Common.ListView");
+    this._uistatus.setLearnModule("Learning.LearningCategory");
+    this._uistatus.setLearnSubModule("Common.ListView");
     this.loadCategoryList();
   }
 
@@ -64,53 +66,15 @@ export class ListComponent implements OnInit {
       console.log("Entering loadCategoryList of LearnCategoryList");
     }
 
-    var headers = new Headers();
-    this._http.get(this._apiUrl, { headers: headers })
-      .map(this.extractData)
-      .catch(this.handleError)
-      .subscribe(data => {
+    this._buffService.getLearnCategories().subscribe(data => {
         if (data instanceof Array) {
           this.listData = data;
           this.filter();
-          // this.filteredData = this.listData;
-          // this.filteredTotal = this.listData.length;
         }          
       },
       error => {
         // It should be handled already
       });
-  }
-
-  private extractData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractData of LearnCategoryList");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHLearn.LearnCategory>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHLearn.LearnCategory();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
-
-  private handleError(error: any) {
-    if (environment.DebugLogging) {
-      console.log("Entering handleError of LearnCategoryList");
-    }
-
-    // In a real world app, we might use a remote logging infrastructure
-    // We'd also dig deeper into the error to get a better message
-    let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-    console.error(errMsg); // log to console instead
-    return Observable.throw(errMsg);
   }
 
   sort(sortEvent: ITdDataTableSortChangeEvent): void {
@@ -145,21 +109,21 @@ export class ListComponent implements OnInit {
       console.log("Entering onCreateCategory of LearnCategoryList");
     }
 
-    this.router.navigate(['/learn/category/create']);
+    this._router.navigate(['/learn/category/create']);
   }
   public onDisplayCategory():void {
     if (environment.DebugLogging) {
       console.log("Entering onDisplayCategory of LearnCategoryList");
     }
 
-    this.router.navigate(['/learn/category/display/' + this.selectedRows[0].Id.toString()]);
+    this._router.navigate(['/learn/category/display/' + this.selectedRows[0].Id.toString()]);
   }
   public onEditCategory():void {
     if (environment.DebugLogging) {
       console.log("Entering onEditCategory of LearnCategoryList");
     }
 
-    this.router.navigate(['/learn/category/edit/' + this.selectedRows[0].Id.toString()]);
+    this._router.navigate(['/learn/category/edit/' + this.selectedRows[0].Id.toString()]);
   }
   public onDeleteCategory():void {
     if (environment.DebugLogging) {

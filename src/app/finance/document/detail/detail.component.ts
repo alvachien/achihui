@@ -19,6 +19,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { AuthService } from '../../../services/auth.service';
+import { BufferService } from '../../../services/buff.service';
 
 @Component({
   selector: 'finance-document-detail',
@@ -58,6 +59,7 @@ export class DetailComponent implements OnInit {
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
+    private _buffService: BufferService,
     private _uistatus: UIStatusService) {
     this.docObject = new HIHFinance.Document();
     this.itemObject = new HIHFinance.DocumentItem();
@@ -95,6 +97,8 @@ export class DetailComponent implements OnInit {
           if (x[0].path === "create") {
             this.currentMode = "Create";
             this.docObject = new HIHFinance.Document();
+            this.docObject.DocType = HIHCommon.FinanceDocType_Normal;
+
             this.uiMode = HIHCommon.UIMode.Create;
           } else if (x[0].path === "edit") {
             this.routerID = +x[1].path;
@@ -317,21 +321,6 @@ export class DetailComponent implements OnInit {
       }, () => {
       });
   }
-  loadUserList(): Observable<any> {
-    if (environment.DebugLogging) {
-      console.log("Entering loadUserList of FinanceDocumentDetail");
-    }
-
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "/api/userdetail";
-
-    return this._http.get(usrApi, { headers: headers })
-      .map(this.extractUserData)
-      .catch(this.handleError);
-  }
   loadControlCenterList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadControlCenterList of FinanceDocumentDetail");
@@ -352,45 +341,21 @@ export class DetailComponent implements OnInit {
       console.log("Entering loadDocTypeList of FinanceDocumentDetail");
     }
 
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "/api/financedoctype";
-
-    return this._http.get(usrApi, { headers: headers })
-      .map(this.extractDocTypeData)
-      .catch(this.handleError);
+    return this._buffService.getDocumentTypes();
   }
   loadTranTypeList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadTranTypeList of FinanceDocumentDetail");
     }
 
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "/api/financetrantype";
-
-    return this._http.get(usrApi, { headers: headers })
-      .map(this.extractTranTypeData)
-      .catch(this.handleError);
+    return this._buffService.getTransactionTypes();
   }
   loadCurrencyList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadCurrencyList of FinanceDocumentDetail");
     }
 
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "/api/financecurrency";
-
-    return this._http.get(usrApi, { headers: headers })
-      .map(this.extractCurrencyData)
-      .catch(this.handleError);
+    return this._buffService.getCurrencies();
   }
   loadOrderList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -437,24 +402,6 @@ export class DetailComponent implements OnInit {
 
     return body || {};
   }
-  private extractUserData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractUserData of FinanceDocumentDetail");
-    }
-
-    let body = res.json();
-    if (body && body instanceof Array) {
-      let sets = new Array<HIHUser.UserDetail>();
-      for (let alm of body) {
-        let alm2 = new HIHUser.UserDetail();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
 
   private extractControlCenterData(res: Response) {
     if (environment.DebugLogging) {
@@ -466,63 +413,6 @@ export class DetailComponent implements OnInit {
       let sets = new Array<HIHFinance.ControllingCenter>();
       for (let alm of body.contentList) {
         let alm2 = new HIHFinance.ControllingCenter();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
-
-  private extractDocTypeData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractDocTypeData of FinanceDocumentDetail");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.DocumentType>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.DocumentType();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
-
-  private extractCurrencyData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractCurrencyData of FinanceDocumentDetail");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.Currency>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.Currency();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
-
-  private extractTranTypeData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractTranTypeData of FinanceDocumentDetail");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.TranType>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.TranType();
         alm2.onSetData(alm);
         sets.push(alm2);
       }
@@ -550,6 +440,7 @@ export class DetailComponent implements OnInit {
 
     return body || {};
   }
+  
   private extractAccountData(res: Response) {
     if (environment.DebugLogging) {
       console.log("Entering extractAccountData of FinanceDocumentDetail");

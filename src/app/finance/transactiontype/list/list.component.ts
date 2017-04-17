@@ -10,6 +10,7 @@ import { Subject } from 'rxjs/Subject';
 import { TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent, ITdDataTableColumn } from '@covalent/core';
 import { IPageChangeEvent } from '@covalent/core';
 import { UIStatusService } from '../../../services/uistatus.service';
+import { BufferService } from '../../../services/buff.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -42,9 +43,10 @@ export class ListComponent implements OnInit {
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 
   constructor(private _http: Http,
-     private router: Router,
-     private activateRoute: ActivatedRoute,
-     private uistatus: UIStatusService,
+     private _router: Router,
+     private _activateRoute: ActivatedRoute,
+     private _uistatus: UIStatusService,
+     private _buffService: BufferService,
      private _dataTableService: TdDataTableService,
      private _tranService: TranslateService) {
     if (environment.DebugLogging) {
@@ -67,16 +69,11 @@ export class ListComponent implements OnInit {
       console.log("Entering loadTransactionTypeList of FinanceTransactionTypeList");
     }
 
-    var headers = new Headers();
-    this._http.get(this._apiUrl, { headers: headers })
-      .map(this.extractData)
-      .catch(this.handleError)
+    this._buffService.getTransactionTypes()
       .subscribe(data => {
         if (data instanceof Array) {
           this.listData = data;
           this.filter();
-          // this.filteredData = this.listData;
-          // this.filteredTotal = this.listData.length;
         }          
       },
       error => {
@@ -85,25 +82,6 @@ export class ListComponent implements OnInit {
       () => {
         // Finished
       });
-  }
-
-  private extractData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractData of FinanceTransactionTypeList");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.TranType>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.TranType();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
   }
 
   private handleError(error: any) {
@@ -152,6 +130,6 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering onCreateTransactionType of FinanceTransactionTypeList");
     }
-    this.router.navigate(['/finance/transactiontype/create']);
+    this._router.navigate(['/finance/transactiontype/create']);
   }
 }

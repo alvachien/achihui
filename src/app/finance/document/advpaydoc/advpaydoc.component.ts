@@ -20,6 +20,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { AuthService } from '../../../services/auth.service';
+import { BufferService } from '../../../services/buff.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -62,6 +63,7 @@ export class AdvpaydocComponent implements OnInit {
     private _viewContainerRef: ViewContainerRef,
     private _tranService: TranslateService,
     private _authService: AuthService,
+    private _buffService: BufferService,
     private _uistatus: UIStatusService) { 
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of AdvpaydocComponent");
@@ -477,15 +479,7 @@ export class AdvpaydocComponent implements OnInit {
       console.log("Entering loadUserList of AdvpaydocComponent");
     }
 
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "/api/userdetail";
-
-    return this._http.get(usrApi, { headers: headers })
-      .map(this.extractUserData)
-      .catch(this.handleError);
+    return this._buffService.getUsers();
   }
   loadControlCenterList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -507,45 +501,21 @@ export class AdvpaydocComponent implements OnInit {
       console.log("Entering loadDocTypeList of AdvpaydocComponent");
     }
 
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "/api/financedoctype";
-
-    return this._http.get(usrApi, { headers: headers })
-      .map(this.extractDocTypeData)
-      .catch(this.handleError);
+    return this._buffService.getDocumentTypes();
   }
   loadTranTypeList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadTranTypeList of AdvpaydocComponent");
     }
 
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "/api/financetrantype";
-
-    return this._http.get(usrApi, { headers: headers })
-      .map(this.extractTranTypeData)
-      .catch(this.handleError);
+    return this._buffService.getTransactionTypes();
   }
   loadCurrencyList(): Observable<any> {
     if (environment.DebugLogging) {
       console.log("Entering loadCurrencyList of AdvpaydocComponent");
     }
 
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "/api/financecurrency";
-
-    return this._http.get(usrApi, { headers: headers })
-      .map(this.extractCurrencyData)
-      .catch(this.handleError);
+    return this._buffService.getCurrencies();
   }
   loadOrderList(): Observable<any> {
     if (environment.DebugLogging) {
@@ -586,24 +556,6 @@ export class AdvpaydocComponent implements OnInit {
     let body = res.json();
     return body || {};
   }
-  private extractUserData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractUserData of AdvpaydocComponent");
-    }
-
-    let body = res.json();
-    if (body && body instanceof Array) {
-      let sets = new Array<HIHUser.UserDetail>();
-      for (let alm of body) {
-        let alm2 = new HIHUser.UserDetail();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
 
   private extractControlCenterData(res: Response) {
     if (environment.DebugLogging) {
@@ -615,63 +567,6 @@ export class AdvpaydocComponent implements OnInit {
       let sets = new Array<HIHFinance.ControllingCenter>();
       for (let alm of body.contentList) {
         let alm2 = new HIHFinance.ControllingCenter();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
-
-  private extractDocTypeData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractDocTypeData of AdvpaydocComponent");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.DocumentType>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.DocumentType();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
-
-  private extractCurrencyData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractCurrencyData of AdvpaydocComponent");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.Currency>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.Currency();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
-
-  private extractTranTypeData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractTranTypeData of AdvpaydocComponent");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.TranType>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.TranType();
         alm2.onSetData(alm);
         sets.push(alm2);
       }

@@ -58,8 +58,6 @@ export class DetailComponent implements OnInit {
     Observable.forkJoin([this.loadUserList(), this.loadObjectList()]).subscribe(x => {
       this._zone.run(() => {
         this.arUsers = x[0];
-        this._buffService.bufferUser(this.arUsers);
-        
         this.arObjects = x[1];
       });
 
@@ -220,19 +218,7 @@ export class DetailComponent implements OnInit {
       console.log("Entering loadUserList of LearnHistoryList");
     }
 
-    if (this._buffService.isUserBufferred) {
-      return Observable.create(this._buffService.arrayUser);
-    }
-
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let usrApi = environment.ApiUrl + "/api/userdetail";
-
-    return this._http.get(usrApi, { headers: headers })
-      .map(this.extractUserData)
-      .catch(this.handleError);
+    return this._buffService.getUsers();
   }
 
   loadObjectList(): Observable<any> {
@@ -273,25 +259,6 @@ export class DetailComponent implements OnInit {
       error => {
         // It should be handled already
       });
-  }
-
-  private extractUserData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractUserData of LearnHistoryList");
-    }
-
-    let body = res.json();
-    if (body && body instanceof Array) {
-      let sets = new Array<HIHUser.UserDetail>();
-      for (let alm of body) {
-        let alm2 = new HIHUser.UserDetail();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
   }
 
   private extractObjectData(res: Response) {

@@ -43,6 +43,7 @@ export class ListComponent implements OnInit {
      private _router: Router,
      private _activateRoute: ActivatedRoute,
      private _uistatus: UIStatusService,
+     private _buffService: BufferService,
      private _dataTableService: TdDataTableService,
      private _tranService: TranslateService) {
     if (environment.DebugLogging) {
@@ -76,10 +77,7 @@ export class ListComponent implements OnInit {
       console.log("Entering loadAccountCategoryList of FinanceAccountCategoryList");
     }
 
-    var headers = new Headers();
-    this._http.get(this._apiUrl, { headers: headers })
-      .map(this.extractData)
-      .catch(this.handleError)
+    this._buffService.getAccountCategories()
       .subscribe(data => {
         if (data instanceof Array) {
           this.listData = data;
@@ -92,25 +90,6 @@ export class ListComponent implements OnInit {
       () => {
         // Finished
       });
-  }
-
-  private extractData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractData of FinanceAccountCategoryList");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.AccountCategory>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.AccountCategory();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
   }
 
   private handleError(error: any) {

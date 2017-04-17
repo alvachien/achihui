@@ -11,6 +11,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { AuthService } from '../../../services/auth.service';
+import { BufferService } from '../../../services/buff.service';
 declare var tinymce: any;
 
 @Component({
@@ -37,6 +38,7 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
+    private _buffService: BufferService,
     private _uistatus: UIStatusService) {
     if (environment.DebugLogging) {
       console.log("Entering constructor of LearnObjectDetail");
@@ -311,35 +313,9 @@ export class DetailComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log("Entering loadCategoryList of LearnObjectDetail");
     }
 
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized)
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let objApi = environment.ApiUrl + "/api/learncategory";
-
-    return this._http.get(objApi, { headers: headers })
-      .map(this.extractCategoryData)
-      .catch(this.handleError);
+    return this._buffService.getLearnCategories();
   }
 
-  private extractCategoryData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractCategoryData of LearnObjectDetail");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHLearn.LearnCategory>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHLearn.LearnCategory();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
-  }
   private extractObjectData(res: Response) {
     if (environment.DebugLogging) {
       console.log("Entering extractObjectData of LearnObjectDetail");

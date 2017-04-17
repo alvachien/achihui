@@ -81,16 +81,7 @@ export class ListComponent implements OnInit {
       console.log("Entering loadCurrencyList of FinanceCurrencyList");
     }
 
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/json');
-    if (this._authService.authSubject.getValue().isAuthorized) {
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    }
-    this._http.get(this._apiUrl, { headers: headers })
-      .map(this.extractData)
-      .catch(this.handleError)
-      .subscribe(data => {
+    this._buffService.getCurrencies().subscribe(data => {
         if (data instanceof Array && data.length > 0) {
           let ardisp: string[] = [];
           for(let ci of data) {
@@ -107,7 +98,6 @@ export class ListComponent implements OnInit {
               ci2.DisplayName = ci2.Name;
             }
           }, () => {
-            this._buffService.bufferCurrencies(this.listData);
             this.filter();
           });
         }
@@ -118,25 +108,6 @@ export class ListComponent implements OnInit {
       () => {
         // Finished
       });
-  }
-
-  private extractData(res: Response) {
-    if (environment.DebugLogging) {
-      console.log("Entering extractData of FinanceCurrencyList");
-    }
-
-    let body = res.json();
-    if (body && body.contentList && body.contentList instanceof Array) {
-      let sets = new Array<HIHFinance.Currency>();
-      for (let alm of body.contentList) {
-        let alm2 = new HIHFinance.Currency();
-        alm2.onSetData(alm);
-        sets.push(alm2);
-      }
-      return sets;
-    }
-
-    return body || {};
   }
 
   private handleError(error: any) {
