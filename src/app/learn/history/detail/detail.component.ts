@@ -59,16 +59,15 @@ export class DetailComponent implements OnInit {
       console.log("Entering ngOnInit of LearnHistoryDetail");
     }
 
-    this.filteredObjects = this.controlObjectID.valueChanges
-         .startWith(null)
-         .map(lrnobj => lrnobj && lrnobj instanceof HIHLearn.LearnObject ? lrnobj.Name : lrnobj)
-         .map(name => name ? this.filter(name) : this.arObjects.slice());
-
     Observable.forkJoin([this.loadUserList(), this.loadObjectList()]).subscribe(x => {
       this._zone.run(() => {
         this.arUsers = x[0];
         this.arObjects = x[1];
       });
+
+      this.filteredObjects = this.controlObjectID.valueChanges
+         .startWith(null)
+         .map(name => name ? this.filter(name) : this.arObjects);
 
       // Distinguish current mode
       this._activateRoute.url.subscribe(x => {
@@ -269,12 +268,12 @@ export class DetailComponent implements OnInit {
         // It should be handled already
       });
   }
-  private filter(name: string): HIHLearn.LearnObject[] {
-    return this.arObjects.filter(obj => new RegExp(`^${name}`, 'gi').test(obj.Name)); 
+  private filter(val: string): HIHLearn.LearnObject[] {
+    return this.arObjects.filter(obj => new RegExp(`^${val}`, 'gi').test(obj.Name)); 
   }
 
   public displayFn(obj: HIHLearn.LearnObject): string {
-    return obj && obj instanceof HIHLearn.LearnObject ? obj.Name : "";
+    return obj && obj instanceof HIHLearn.LearnObject ? obj.Id.toString() + " - " + obj.Name : "";
   }
 
   private extractObjectData(res: Response) {

@@ -11,7 +11,7 @@
 
     <md-autocomplete flex #objid="mdAutocomplete" [displayWith]="displayFn">
       <md-option *ngFor="let obj of filteredObjects | async" [value]="Id">
-          {{obj}}
+          {{obj.Id}} - {{obj.Name}}
       </md-option>
     </md-autocomplete>
 
