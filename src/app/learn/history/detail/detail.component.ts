@@ -36,6 +36,7 @@ export class DetailComponent implements OnInit {
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
   public controlObjectID: FormControl; 
   public filteredObjects: Observable<HIHLearn.LearnObject[]>;
+  public seledoptions: any;
 
   constructor(private _http: Http,
     private _router: Router,
@@ -67,6 +68,9 @@ export class DetailComponent implements OnInit {
 
       this.filteredObjects = this.controlObjectID.valueChanges
          .startWith(null)
+         .map(lrnobj => {
+            return lrnobj && lrnobj instanceof HIHLearn.LearnObject ? lrnobj.Name : lrnobj;
+         })
          .map(name => this.filter(name));
 
       // Distinguish current mode

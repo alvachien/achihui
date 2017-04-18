@@ -6,12 +6,11 @@
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input type="text" mdInput required placeholder="Object ID" [(ngModel)]="historyObject.ObjectId" [mdAutocomplete]="objid" [formControl]="controlObjectID">
-      <md-hint align="start">{{historyObject.ObjectName}}</md-hint>
+      <input type="text" mdInput required placeholder="Object ID" [mdAutocomplete]="objid" [formControl]="controlObjectID">
     </md-input-container>
 
-    <md-autocomplete flex #objid="mdAutocomplete"> <!--[displayWith]="displayFn"-->
-      <md-option (change)="onObjectSelectionChanged(lrnobj)"  *ngFor="let lrnobj of filteredObjects | async" [value]="lrnobj.Id">
+    <md-autocomplete flex #objid="mdAutocomplete" [displayWith]="displayFn">
+      <md-option *ngFor="let lrnobj of filteredObjects | async" [value]="lrnobj">
           {{lrnobj.Id}} - {{lrnobj.Name}}
       </md-option>
     </md-autocomplete>
@@ -20,6 +19,7 @@
       <input mdInput placeholder="Object ID" required [(ngModel)]="historyObject.ObjectId" name="objid" #objid="ngModel" (change)="onObjectIdChanged()">
       <md-hint align="start">{{historyObject.ObjectName}}</md-hint>
     </md-input-container>-->
+
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
