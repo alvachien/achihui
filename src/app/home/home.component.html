@@ -1,5 +1,5 @@
 <td-layout #layout>
-  <td-navigation-drawer flex icon="event_seat" sidenavTitle="H.I.H." name="{{ titleLogin }}" (logout)="onLogout()">
+  <td-navigation-drawer flex icon="event_seat" sidenavTitle="H.I.H." name="{{titleLogin}}" (logout)="onLogout()">
     <div td-sidenav-content *ngIf="!isLoggedIn">
       <md-nav-list menu-items>
         <a md-list-item (click)="onLogin()">{{"Login.Login" | translate }}</a>
@@ -11,7 +11,7 @@
           <md-icon>{{route.icon}}</md-icon>{{route.title | translate}}
         </a>
       </md-nav-list>
-      
+
       <div class="md-body-2" layout="row" (click)="toggleLearnMenu()">
         <span flex>{{"Nav.LearningTrace" | translate}}</span>
         <button md-icon-button class="md-icon-button-mini">
@@ -68,8 +68,8 @@
     &copy; 2015 - 2017, Alva Chien.
   </div>
 
-  <td-layout-nav icon="event_seat">
-    <div toolbar-content layout="row" layout-align="start center" flex>
+  <td-layout-nav class="white-orange">
+    <div td-toolbar-content layout="row" layout-align="start center" flex>
       <span hide-xs>Home Info. Hub, by Alva Chien</span>
       <span flex></span>
       <button md-icon-button [mdMenuTriggerFor]="langsMenu">
@@ -87,7 +87,7 @@
           </md-nav-list>
         </td-menu>
       </md-menu>
-      <button md-icon-button [mdMenuTriggerFor]="creditsMenu">
+            <button md-icon-button [mdMenuTriggerFor]="creditsMenu">
         <td-notification-count color="accent">
           <md-icon>apps</md-icon>
         </td-notification-count>
@@ -135,7 +135,7 @@
       </nav>
     </md-toolbar>
 
-    <section class="bgc-blue-50" *ngIf="!isLoggedIn">
+    <section class="bgc-blue-50">
       <div layout-gt-xs="row">
         <div flex class="pad" tdMediaToggle="gt-xs" [mediaClasses]="['pad-xl']">
           <div class="push-top-xl" hide-xs></div>
@@ -143,7 +143,7 @@
             <h1 class="md-display-1 tc-grey-800 push-top-xs push-bottom-sm">{{"Login.Login" | translate}}</h1>
             <p class="md-title tc-grey-600">To take a journal around the functionalities provided by this app, you need login.
             </p>
-            <button md-raised-button color="accent" class="push-bottom md-button-lg" (click)="onLogin()">{{"Login.Login" | translate}}</button>
+            <button *ngIf="!isLoggedIn" md-raised-button color="accent" class="push-bottom md-button-lg" (click)="onLogin()">{{"Login.Login" | translate}}</button>
           </div>
           <div class="push-bottom-xl" hide-xs></div>
         </div>
@@ -176,9 +176,9 @@
         </div>
       </div>
     </section>
-
+    
     <!--Product Card code starts here-->
-    <section class="bgc-blue-grey-50" tdMediaToggle="gt-xs" [mediaClasses]="['pad-top-xl', 'pad-bottom-xl']">
+    <section class="bgc-grey-50" tdMediaToggle="gt-xs" [mediaClasses]="['pad-top-xl', 'pad-bottom-xl']">
       <div layout-gt-xs="row" layout-align-gt-xs="center center">
         <div layout-gt-sm="row" flex-gt-xs="75" layout-margin>
           <div flex-gt-xs="25">
@@ -312,21 +312,21 @@
       </div>
     </section>
 
-    <section class="bgc-blue-600">
+    <section class="bgc-blue-grey-600">
       <div layout-gt-xs="row">
         <div flex class="bg-cover">
           <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==">
         </div>
         <div flex class="pad" tdMediaToggle="gt-xs" [mediaClasses]="['pad-xxl']">
           <div class="push-top-xxl" hide-xs></div>
-          <h3 class="md-display-1 tc-white push-top-xs push-bottom-sm">Contact </h3>
-          <p class="md-title tc-blue-50">See more in the contact part!</p>
+          <h3 class="md-display-1 tc-white push-top-xs push-bottom-sm">About</h3>
+          <p class="md-title tc-blue-50">About this App</p>
           <button md-raised-button color="accent" class="push-bottom">Contact Us</button>
           <div class="push-top-xxl" hide-xs></div>
         </div>
       </div>
     </section>
-
+    
     <section class="bgc-blue-grey-800 tc-blue-grey-100">
       <div layout-gt-xs="row" layout-align-gt-xs="center center">
         <div layout-gt-sm="row" flex-gt-xs="75" layout-margin layout-padding>
@@ -391,4 +391,9 @@
       </div>
     </section>
   </td-layout-nav>
+
+  <a md-fab color="accent" class="md-fab-position-bottom-right" style="bottom:20px;" href="https://github.com/alvachien/achihui/issues"
+    target="_blank">
+    <md-icon>code</md-icon>
+  </a>
 </td-layout>

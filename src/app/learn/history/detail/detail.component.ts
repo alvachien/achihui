@@ -67,7 +67,7 @@ export class DetailComponent implements OnInit {
 
       this.filteredObjects = this.controlObjectID.valueChanges
          .startWith(null)
-         .map(name => name ? this.filter(name) : this.arObjects);
+         .map(name => this.filter(name));
 
       // Distinguish current mode
       this._activateRoute.url.subscribe(x => {
@@ -121,13 +121,17 @@ export class DetailComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for UI controls
   ////////////////////////////////////////////
-  onObjectIdChanged(): void {
+  onObjectSelectionChanged(lrnobj: HIHLearn.LearnObject): void {
     if (environment.DebugLogging) {
-      console.log("Entering onObjectIdChanged of LearnHistoryDetail");
+      console.log("Entering onObjectSelectionChanged of LearnHistoryDetail");
     }
 
+    if (!lrnobj)
+      return;
+
     for (let obj of this.arObjects) {
-      if (+obj.Id === +this.historyObject.ObjectId) {
+      if (+obj.Id === +lrnobj.Id) {
+        this.historyObject.ObjectId = obj.Id;
         this.historyObject.ObjectName = obj.Name;
       }
     }
@@ -268,8 +272,9 @@ export class DetailComponent implements OnInit {
         // It should be handled already
       });
   }
-  private filter(val: string): HIHLearn.LearnObject[] {
-    return this.arObjects.filter(obj => new RegExp(`^${val}`, 'gi').test(obj.Name)); 
+  private filter(val: string) {
+    return val ? this.arObjects.filter(obj => new RegExp(`^${val}`, 'gi').test(obj.Name))
+               : this.arObjects; 
   }
 
   public displayFn(obj: HIHLearn.LearnObject): string {
