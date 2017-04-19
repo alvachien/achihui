@@ -75,10 +75,10 @@
               </div>
               <div layout="row" layout-margin>
                 <md-select flex placeholder="{{'Finance.TransactionType' | translate}}" [(ngModel)]="itemObject.TranType" name="itemtrantype" #itemtrantype="ngModel">
-                  <md-option *ngFor="let dt of arTranType" [value]="dt.Id">
+                  <md-option *ngFor="let dt of arTranType" [value]="dt.Id" [class.bgc-green-300]="dt.Expense" [class.bgc-red-300]="!dt.Expense">
                     ({{dt.Id}}) - {{dt.Name}}
                   </md-option>
-                </md-select>
+                 </md-select>
               </div>
               <div layout="row" layout-margin>
                 <md-select flex placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="itemObject.AccountId" name="itemaccnt" #itemaccnt="ngModel">
