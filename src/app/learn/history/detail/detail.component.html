@@ -1,12 +1,12 @@
 <form (ngSubmit)="onSubmit()" #detailForm="ngForm">
   <div layout="row" layout-margin>
-    <md-select flex placeholder="User" [(ngModel)]="historyObject.UserId" name="userid" #userid="ngModel">
+    <md-select flex placeholder="User" [disabled]="!IsUIEditable()" [(ngModel)]="historyObject.UserId" name="userid" #userid="ngModel">
       <md-option *ngFor="let user of arUsers" [value]="user.UserId">{{ user.DisplayAs }}</md-option>
     </md-select>
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input type="text" mdInput required placeholder="Object ID" [mdAutocomplete]="objid" [formControl]="controlObjectID">
+      <input type="text" mdInput required placeholder="Object ID" [disabled]="!IsUIEditable()" [mdAutocomplete]="objid" [formControl]="controlObjectID">
     </md-input-container>
 
     <md-autocomplete flex #objid="mdAutocomplete" [displayWith]="displayFn">
@@ -23,16 +23,17 @@
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input mdInput placeholder="Learn date" type="date" required [(ngModel)]="historyObject.LearnDateString" name="lrndate" #lrndate="ngModel">
+      <input mdInput placeholder="Learn date" type="date" required [disabled]="!IsUIEditable()" [(ngModel)]="historyObject.LearnDateString" name="lrndate" #lrndate="ngModel">
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input mdInput type="text" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="historyObject.Comment" name="cmt" #cmt="ngModel">
+      <input mdInput type="text" placeholder="{{'Common.Comment' | translate}}" [disabled]="!IsUIEditable()" [(ngModel)]="historyObject.Comment" name="cmt" #cmt="ngModel">
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
-    <button type="submit" md-button [disabled]="!detailForm.form.valid">{{'Common.Submit' | translate}}</button>
-    <button type="reset" md-button>{{'Common.Cancel' | translate}}</button>
+    <button type="submit" md-button [disabled]="!IsUIEditable() && !detailForm.form.valid">{{'Common.Submit' | translate}}</button>
+    <button type="reset" md-button [disabled]="!IsUIEditable()">{{'Common.Reset' | translate}}</button>
+    <button md-button (click)="onBack()">{{'Common.Back' | translate}}</button>
   </div>
 </form>

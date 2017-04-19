@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import {
   Component, OnInit, OnDestroy, AfterViewInit, NgZone,
   EventEmitter, Input, Output, ViewContainerRef 
@@ -36,9 +37,9 @@ export class DetailComponent implements OnInit {
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
   public controlObjectID: FormControl; 
   public filteredObjects: Observable<HIHLearn.LearnObject[]>;
-  public seledoptions: any;
 
   constructor(private _http: Http,
+    private _location: Location,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _zone: NgZone,
@@ -47,6 +48,7 @@ export class DetailComponent implements OnInit {
     private _authService: AuthService,
     private _buffService: BufferService,
     private _uistatus: UIStatusService) {
+    this._apiUrl = environment.ApiUrl + "/api/learnhistory"
     this.historyObject = new HIHLearn.LearnHistory();
     this.uiMode = HIHCommon.UIMode.Create;
     this.controlObjectID = new FormControl();
@@ -153,6 +155,9 @@ export class DetailComponent implements OnInit {
     }
 
     // Complete
+    if (this.controlObjectID.value && this.controlObjectID.value instanceof HIHLearn.LearnObject) {
+      this.historyObject.ObjectId = this.controlObjectID.value.Id;
+    }
     this.historyObject.onComplete();
 
     // Checks
@@ -179,10 +184,9 @@ export class DetailComponent implements OnInit {
     }
 
     let dataJSON = this.historyObject.writeJSONString();
-    let apiObject = environment.ApiUrl + "/api/learnhistory";
 
     if (this.uiMode === HIHCommon.UIMode.Create) {
-      this._http.post(apiObject, dataJSON, { headers: headers })
+      this._http.post(this._apiUrl, dataJSON, { headers: headers })
         .map(response => response.json())
         .catch(this.handleError)
         .subscribe(x => {
@@ -191,7 +195,7 @@ export class DetailComponent implements OnInit {
           nHist.onSetData(x);
 
           // Navigate.
-          this._router.navigate(['/learn/hisotry/display/' + nHist.generateKey()]);
+          this._router.navigate(['/learn/history/display/' + nHist.generateKey()]);
         }, error => {
           this._dialogService.openAlert({
             message: 'Error in creating!',
@@ -203,7 +207,7 @@ export class DetailComponent implements OnInit {
         }, () => {
         });
     } else if (this.uiMode === HIHCommon.UIMode.Change) {
-      this._http.put(apiObject, dataJSON, { headers: headers })
+      this._http.put(this._apiUrl, dataJSON, { headers: headers })
         .map(response => response.json())
         .catch(this.handleError)
         .subscribe(x => {
@@ -212,7 +216,7 @@ export class DetailComponent implements OnInit {
           nHist.onSetData(x);
 
           // Navigate.
-          this._router.navigate(['/learn/hisotry/display/' + nHist.generateKey()]);
+          this._router.navigate(['/learn/history/display/' + nHist.generateKey()]);
         }, error => {
           this._dialogService.openAlert({
             message: 'Error in Changing!',
@@ -226,12 +230,24 @@ export class DetailComponent implements OnInit {
     }
   }
 
+  onBack(): void {
+    if (environment.DebugLogging) {
+      console.log("Entering onBack of LearnHistoryDetail");
+    }
+
+    this._location.back();
+  }
+
   ////////////////////////////////////////////
   // Methods for Utility methods
   ////////////////////////////////////////////
+  IsUIEditable() {
+    return HIHCommon.isUIEditable(this.uiMode);
+  }
+
   loadUserList(): Observable<any> {
     if (environment.DebugLogging) {
-      console.log("Entering loadUserList of LearnHistoryList");
+      console.log("Entering loadUserList of LearnHistoryDetail");
     }
 
     return this._buffService.getUsers();
@@ -239,7 +255,7 @@ export class DetailComponent implements OnInit {
 
   loadObjectList(): Observable<any> {
     if (environment.DebugLogging) {
-      console.log("Entering loadObjectList of LearnHistoryList");
+      console.log("Entering loadObjectList of LearnHistoryDetail");
     }
 
     let headers = new Headers();
@@ -255,14 +271,14 @@ export class DetailComponent implements OnInit {
 
   readHistory(): void {
     if (environment.DebugLogging) {
-      console.log("Entering readHistory of LearnHistoryList");
+      console.log("Entering readHistory of LearnHistoryDetail");
     }
 
     let headers = new Headers();
     headers.append('Accept', 'application/json');
     if (this._authService.authSubject.getValue().isAuthorized)
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let objApi = environment.ApiUrl + "/api/learnhistory/" + this.routerID;
+    let objApi = this._apiUrl + "/" + this.routerID;
 
     this._http.get(objApi, { headers: headers })
       .map(this.extractHistoryData)
@@ -270,6 +286,12 @@ export class DetailComponent implements OnInit {
       .subscribe(data => {
         this._zone.run(() => {
           this.historyObject = data;
+          for(let lo of this.arObjects) {
+            if (lo.Id === this.historyObject.ObjectId) {
+              this.controlObjectID.setValue(lo);
+              break;
+            }
+          }
         });
       },
       error => {
@@ -287,7 +309,7 @@ export class DetailComponent implements OnInit {
 
   private extractObjectData(res: Response) {
     if (environment.DebugLogging) {
-      console.log("Entering extractObjectData of LearnHistoryList");
+      console.log("Entering extractObjectData of LearnHistoryDetail");
     }
 
     let body = res.json();
@@ -307,7 +329,7 @@ export class DetailComponent implements OnInit {
 
   private extractHistoryData(res: Response) {
     if (environment.DebugLogging) {
-      console.log("Entering extractHistoryData of LearnHistoryList");
+      console.log("Entering extractHistoryData of LearnHistoryDetail");
     }
 
     let body = res.json();
@@ -322,7 +344,7 @@ export class DetailComponent implements OnInit {
 
   private handleError(error: any) {
     if (environment.DebugLogging) {
-      console.log("Entering handleError of LearnHistoryList");
+      console.log("Entering handleError of LearnHistoryDetail");
     }
 
     // In a real world app, we might use a remote logging infrastructure
