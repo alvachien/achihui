@@ -6,7 +6,7 @@
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input type="text" mdInput required placeholder="Object ID" [disabled]="!IsUIEditable()" [mdAutocomplete]="objid" [formControl]="controlObjectID">
+      <input type="text" mdInput required placeholder="Object ID" [mdAutocomplete]="objid" [formControl]="controlObjectID">
     </md-input-container>
 
     <md-autocomplete flex #objid="mdAutocomplete" [displayWith]="displayFn">

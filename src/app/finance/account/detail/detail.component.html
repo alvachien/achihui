@@ -3,7 +3,7 @@
   <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
-    <form (ngSubmit)="onSubmit()" #detailForm="ngForm">
+    <div>
       <div layout="row" layout-margin>
         <md-input-container flex>
           <input mdInput placeholder="{{'Common.ID' | translate}}" readonly [(ngModel)]="accountObject.Id" name="id" #id="ngModel">
@@ -21,6 +21,7 @@
       </div>
       <div layout="row" layout-margin>
         <md-select flex placeholder="{{'Finance.Owner' | translate}}" [(ngModel)]="accountObject.OwnerId" name="ownerid" #ownerid="ngModel">
+          <md-option value="0">{{'Common.PleaseSelect' | translate}}</md-option>
           <md-option *ngFor="let user of arUsers" [value]="user.UserId">{{ user.DisplayAs }}</md-option>
         </md-select>
       </div>
@@ -29,14 +30,14 @@
           <textarea mdInput placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="accountObject.Comment" name="cmt" #cmt="ngModel"></textarea>
         </md-input-container>
       </div>
-    </form>
+    </div>
 
     <md-divider *ngIf="accountObject && accountObject.CategoryId && accountObject.CategoryId === ctgyAdvancePayment"></md-divider>
     <md-card *ngIf="accountObject && accountObject.CategoryId && accountObject.CategoryId === ctgyAdvancePayment">
       <md-card-title>{{"Finance.AdvancePayment" | translate}}</md-card-title>
       <md-divider></md-divider>
       <md-card-content>
-        <form #advpayForm="ngForm">
+        <div>
           <div layout="row" layout-margin>
             <md-input-container flex>
               <input mdInput type="date" placeholder="{{'Common.StartDate' | translate}}" readonly [(ngModel)]="accountObject.ExtraInfo.StartDateString" name="advpaystartdt" #advpaystartdt="ngModel">
@@ -69,13 +70,13 @@
               <input mdInput type="text" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="accountObject.ExtraInfo.Comment" name="advpaycmt" #advpaycmt="ngModel">
             </md-input-container>
           </div>
-        </form>
+        </div>
       </md-card-content>
     </md-card>      
   </md-card-content>
   <md-divider></md-divider>
   <md-card-actions>
-    <button md-button color="accent" [disabled]="!detailForm.form.valid" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button md-button color="accent" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
     <button md-button>{{'Common.Cancel' | translate}}</button>
   </md-card-actions>
 </md-card>

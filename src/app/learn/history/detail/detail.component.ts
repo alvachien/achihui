@@ -48,7 +48,8 @@ export class DetailComponent implements OnInit {
     private _authService: AuthService,
     private _buffService: BufferService,
     private _uistatus: UIStatusService) {
-    this._apiUrl = environment.ApiUrl + "/api/learnhistory"
+
+    this._apiUrl = environment.ApiUrl + "/api/learnhistory";
     this.historyObject = new HIHLearn.LearnHistory();
     this.uiMode = HIHCommon.UIMode.Create;
     this.controlObjectID = new FormControl();
@@ -79,17 +80,20 @@ export class DetailComponent implements OnInit {
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === "create") {
-            this.currentMode = "CommonCreate";
+            this.currentMode = "Common.Create";
             this.historyObject = new HIHLearn.LearnHistory();
             this.uiMode = HIHCommon.UIMode.Create;
+            this.controlObjectID.enable();
           } else if (x[0].path === "edit") {
             this.currentMode = "Common.Edit"
             this.uiMode = HIHCommon.UIMode.Change;
+            this.controlObjectID.enable();
 
             this.routerID = x[1].path;
           } else if (x[0].path === "display") {
             this.currentMode = "Common.Display";
             this.uiMode = HIHCommon.UIMode.Display;
+            this.controlObjectID.disable();
 
             this.routerID = x[1].path;
           }
