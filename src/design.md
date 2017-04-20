@@ -2,7 +2,7 @@
 
 HIH consists of three major building blocks:
 * Identity Server
-* API
+* API (Web API)
 * UI app (Javascript/Typescript app)
 
 ## Common
@@ -19,19 +19,20 @@ To make it survive in WebAPI part, there should be a combined key used for commu
 
 For UI layer (Typescript codes):
 
-`   public generateKey() : string {
-        return this.UserId + "_" + this.ObjectId.toString() + "_" + hih.Utility.Date2String(this.LearnDate); 
-    }
-`
+```typescript
+public generateKey() : string {
+  return this.UserId + "_" + this.ObjectId.toString() + "_" + hih.Utility.Date2String(this.LearnDate); 
+}
+```
 
 For API layer (C# codes):
 
-`
+```csharp
 public string generateKey() 
 {
-    return this.UserID +"_" + this.ObjectID.ToString() + "_" + String.Format("0:yyyy-MM-dd", this.LearnDate);
+  return this.UserID +"_" + this.ObjectID.ToString() + "_" + String.Format("0:yyyy-MM-dd", this.LearnDate);
 }
-`
+```
 
 ## UI part
 
@@ -39,12 +40,12 @@ The TypeScript UI app consists lots of the interfaces.
 
 ### Detail page
 
-See wiki page for UI Development: https://github.com/alvachien/achihui/wiki/UI-development
+See wiki page for UI Development: [Wiki page](https://github.com/alvachien/achihui/wiki/UI-development)
 
 
 ### List page
 
-See wiki page for UI Development: https://github.com/alvachien/achihui/wiki/UI-development
+See wiki page for UI Development: [Wiki page](https://github.com/alvachien/achihui/wiki/UI-development)
 
 
 ## Buffer service

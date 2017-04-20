@@ -8,15 +8,15 @@
 As it name indicates, HIH shall be used inside the family network. So, ideally, it runs on a NAS or Family Server with HTTP/PHP enabling.  
 
 ## Live Demo / Example
-***Live application***  hosted in [Azure (will be obseleted soon)](http://achihui.azurewebsites.net).
+***Live application***  hosted in [Azure Link (will be obseleted soon)](http://achihui.azurewebsites.net).
 
 ### Snapshot
 ![Image of Index page](https://github.com/alvachien/achihui/blob/master/docs/images/index.JPG)
 
 ### Relevant API/App used
 The live demo used the following API/App:
-- AC ID Server [Github Project](https://github.com/alvachien/acidserver) : an Identity service hosted in [Azure (will be obseleted soon)](http://acidserver.azurewebsites.net);
-- AC HIH API [Github Project](https://github.com/alvachien/achihapi) : an Web API hosted in [Azure (will be obseleted soon)](http://achihapi.azurewebsites.net).
+- AC ID Server [Github Project Link](https://github.com/alvachien/acidserver) : an Identity service hosted in [Azure Link (will be obseleted soon)](http://acidserver.azurewebsites.net);
+- AC HIH API [Github Project Link](https://github.com/alvachien/achihapi) : an Web API hosted in [Azure Link (will be obseleted soon)](http://achihapi.azurewebsites.net).
 
 
 ## What's HIH
@@ -24,7 +24,7 @@ The live demo used the following API/App:
 For version 0.5, it supports the Finance Traces and Learning Traces. The detail explaination of the modules listed below. 
 
 ## Histories
-This project is the UI layer of new HIH, and it continues the HIH development since the previous HIH [Project] (https://github.com/alvachien/hih);
+This project is the UI layer of new HIH, and it continues the HIH development since the previous HIH [Github Project](https://github.com/alvachien/hih);
 
 This project used tons of new project, including: ASP.NET Core 1.0, Angular 2, TypeScript 2, BootStrap 4.0 Alpha, etc;
 
