@@ -16,13 +16,13 @@
       </div>
       <div layout="row" layout-margin>
         <md-select flex placeholder="{{'Finance.Owner' | translate}}" [disabled]="!IsUIEditable()" [(ngModel)]="ccObject.OwnerId" name="ownerid" #ownerid="ngModel">
-          <md-option value="">{{'Common.PleaseSelect' | translate}}</md-option>
+          <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
           <md-option *ngFor="let user of arUsers" [value]="user.UserId">{{ user.DisplayAs }}</md-option>
         </md-select>
       </div>
       <div layout="row" layout-margin>
         <md-select flex placeholder="{{'Common.Parent' | translate}}" [disabled]="!IsUIEditable()" [(ngModel)]="ccObject.ParentId" name="ccid" #ccid="ngModel">
-          <md-option value="">{{'Common.PleaseSelect' | translate}}</md-option>
+          <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
           <md-option *ngFor="let cc of arControlCenters" [value]="cc.Id">{{ cc.Name  }}</md-option>
         </md-select>
       </div>      

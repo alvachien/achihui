@@ -99,7 +99,7 @@
               </div>
               <div layout="row" layout-margin>
                 <md-select flex placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="itemObject.ControlCenterId" name="itemcc" #itemcc="ngModel">
-                  <md-option value="0">{{'Common.PleaseSelect' | translate}}</md-option>
+                  <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
                   <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
                     {{cc.Id}} - {{cc.Name}}
                   </md-option>
@@ -107,7 +107,7 @@
               </div>
               <div layout="row" layout-margin>
                 <md-select flex placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="itemObject.OrderId" name="itemorder" #itemorder="ngModel">
-                  <md-option value="0">{{'Common.PleaseSelect' | translate}}</md-option>
+                  <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
                   <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
                    {{ord.Id}} - {{ord.Name}}
                   </md-option>

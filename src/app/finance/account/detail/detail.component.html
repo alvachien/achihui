@@ -21,7 +21,7 @@
       </div>
       <div layout="row" layout-margin>
         <md-select flex placeholder="{{'Finance.Owner' | translate}}" [(ngModel)]="accountObject.OwnerId" name="ownerid" #ownerid="ngModel">
-          <md-option value="0">{{'Common.PleaseSelect' | translate}}</md-option>
+          <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
           <md-option *ngFor="let user of arUsers" [value]="user.UserId">{{ user.DisplayAs }}</md-option>
         </md-select>
       </div>

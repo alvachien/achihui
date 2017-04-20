@@ -54,14 +54,16 @@
                   </md-select>
                 </div>
                 <div layout="row" layout-margin>
-                  <md-select flex="90" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="uiObject.SourceControlCenterId" name="frmccid" #frmccid="ngModel">
+                  <md-select flex="95" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="uiObject.SourceControlCenterId" name="frmccid" #frmccid="ngModel">
+                    <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
                     <md-option *ngFor="let scc of arControlCenter" [value]="scc.Id">
                       {{scc.Id}} - {{scc.Name}}
                     </md-option>
                   </md-select>
                 </div>
                 <div layout="row" layout-margin>
-                  <md-select flex="90" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.SourceOrderId" name="frmorder" #frmorder="ngModel">
+                  <md-select flex="95" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.SourceOrderId" name="frmorder" #frmorder="ngModel">
+                    <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
                     <md-option *ngFor="let sord of arOrder" [value]="sord.Id">
                       {{sord.Id}} - {{sord.Name}}
                     </md-option>
@@ -89,6 +91,7 @@
                 </div>
                 <div layout="row" layout-margin>
                   <md-select flex="90" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="uiObject.TargetControlCenterId" name="toccid" #toccid="ngModel">
+                    <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
                     <md-option *ngFor="let tcc of arControlCenter" [value]="tcc.Id">
                       {{tcc.Id}} - {{tcc.Name}}
                     </md-option>
@@ -96,6 +99,7 @@
                 </div>
                 <div layout="row" layout-margin>
                   <md-select flex="90" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.TargetOrderId" name="toorder" #toorder="ngModel">
+                    <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
                     <md-option *ngFor="let tord of arOrder" [value]="tord.Id">
                       {{tord.Id}} - {{tord.Name}}
                     </md-option>

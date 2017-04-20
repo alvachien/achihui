@@ -32,7 +32,7 @@
       <div layout="row" layout-margin>
         <md-input-container flex>
           <input mdInput type="number" placeholder="{{'Finance.Amount' | translate}}" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
-              #itemtranamt="ngModel">
+                #itemtranamt="ngModel">
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
@@ -48,15 +48,17 @@
           </md-input-container>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="96" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="uiObject.SourceControlCenterId" name="srccc" #srccc="ngModel">
+        <md-select flex="95" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="uiObject.SourceControlCenterId" name="srccc" #srccc="ngModel">
+          <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
           <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
             {{cc.Id}} - {{cc.Name}}
           </md-option>
         </md-select>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="96" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.SourceOrderId" name="srcorder" #srcorder="ngModel">
-          <md-option *ngFor="let ord of arOrder" [value]="ord.Id">
+        <md-select flex="95" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.SourceOrderId" name="srcorder" #srcorder="ngModel">
+          <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
+          <md-option *ngFor="let ord of arOrder" [value]="ord.Id">            
             {{ord.Id}} - {{ord.Name}}
           </md-option>
         </md-select>
@@ -95,7 +97,7 @@
                 </div>
                 <div layout="row" layout-margin>
                   <md-input-container flex>
-                    <input mdInput type="text" placeholder="Comment" [(ngModel)]="uiObject.AdvPayAccount.Comment" name="advacntcmt" #advacntcmt="ngModel">
+                    <input mdInput type="text" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="uiObject.AdvPayAccount.Comment" name="advacntcmt" #advacntcmt="ngModel">
                   </md-input-container>
                 </div>
                 <div layout="row" layout-padding>
@@ -134,7 +136,7 @@
                     </div>
                     <div layout="row" layout-margin>
                       <md-input-container flex>
-                        <input mdInput type="number" placeholder="Transaction amount" required [(ngModel)]="selectedTmpDocs[0].TranAmount" name="tmptranamt" #tmptranamt="ngModel">
+                        <input mdInput type="number" placeholder="{{'Finance.Amount' | translate}}" required [(ngModel)]="selectedTmpDocs[0].TranAmount" name="tmptranamt" #tmptranamt="ngModel">
                       </md-input-container>
                     </div>
                   </form>
