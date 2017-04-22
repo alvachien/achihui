@@ -71,7 +71,9 @@
     "ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",
     "SearchViaName": "根据名字来搜索项...",
     "SystemFlag": "系统标志",
-    "PleaseSelect": "请选择"
+    "PleaseSelect": "请选择",
+    "NoResultToDisplay": "无显示结果",
+    "RowPerPage": "每页行数"
   },
   "Sys":{
     "Currency": {
@@ -176,7 +178,13 @@
     "Items": "行项目",
     "TransferDocument": "转账凭证",
     "TransferFrom": "转自",
-    "TransferTo": "转至"
+    "TransferTo": "转至",
+    "Debit": "借",
+    "Credit": "贷",
+    "Balance": "余额",
+    "BalanceSheetReport": "资产负债表",
+    "ControlCenterReport": "控制中心报表",
+    "OrderReport": "订单报表"
   },
   "Library": {
     "Books": "书籍",

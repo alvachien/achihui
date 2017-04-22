@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '@angular/material';
 import { CovalentCoreModule } from '@covalent/core';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { UIRefModule } from '../uiref.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -49,6 +50,7 @@ import { OrderComponent as ReportOrderComponent } from './report/order/order.com
     ReactiveFormsModule,
     MaterialModule,
     CovalentCoreModule.forRoot(),
+    NgxChartsModule,
     UIRefModule,
     TranslateModule,
     FinanceRoutingModule

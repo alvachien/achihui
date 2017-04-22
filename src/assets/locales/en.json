@@ -71,7 +71,9 @@
     "ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",
     "SearchViaName": "Select an item via the name...",
     "SystemFlag": "System Flag",
-    "PleaseSelect": "Please select"
+    "PleaseSelect": "Please select",
+    "NoResultToDisplay": "No results to display",
+    "RowPerPage": "Row per page"
   },
   "Sys":{
     "Currency": {
@@ -176,7 +178,13 @@
     "Items": "Items",
     "TransferDocument": "Transfer Document",
     "TransferFrom": "Transfer From",
-    "TransferTo": "Transfer To"
+    "TransferTo": "Transfer To",
+    "Debit": "Debit",
+    "Credit": "Credit",
+    "Balance": "Balance",
+    "BalanceSheetReport": "Balance Sheet",
+    "ControlCenterReport": "Control Center Report",
+    "OrderReport": "Order Report"
   },
   "Library": {
     "Books": "Books",

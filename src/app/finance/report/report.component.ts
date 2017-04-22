@@ -6,10 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./report.component.scss']
 })
 export class ReportComponent implements OnInit {
+  public tabLinks: any[] = [];
 
-  constructor() { }
+  activeLinkIndex = 0;
+  constructor() { 
+    this.  tabLinks = [
+      {label: 'Balance Sheet', link: '/finance/report'},
+      {label: 'Control Center', link: '/finance/report/controlcenter'},
+      {label: 'Order', link: '/finance/report/order'},
+    ];
+  }
 
   ngOnInit() {
   }
-
 }

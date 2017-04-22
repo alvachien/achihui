@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewContainerRef, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Headers, Response, RequestOptions, URLSearchParams }
-  from '@angular/http';
+import { Http, Headers, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import * as HIHCommon from '../../../model/common';
 import * as HIHFinance from '../../../model/financemodel';
 import { environment } from '../../../../environments/environment';

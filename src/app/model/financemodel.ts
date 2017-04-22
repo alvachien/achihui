@@ -1587,3 +1587,83 @@ export class TemplateDocADP extends hih.BaseModel {
         // Todo
     }
 }
+
+export class FinanceReportBase {
+    public DebitBalance: number;
+    public CreditBalance: number;
+    public Balance: number;
+
+    public onSetData(data: any) {
+        if (data && data.debitBalance) {
+            this.DebitBalance = +data.debitBalance;
+        } else {
+            this.DebitBalance = 0;
+        }
+
+        if (data && data.creditBalance) {
+            this.CreditBalance = +data.creditBalance;
+        } else {
+            this.CreditBalance = 0;
+        }
+
+        if (data && data.balance) {
+            this.Balance = +data.balance;
+        } else {
+            this.Balance = 0;
+        }
+    }
+}
+
+export class BalanceSheetReport extends FinanceReportBase {
+    public AccountId: number;
+    public AccountName: string;
+    public AccountCategoryId: number;
+    public AccountCategoryName: string;
+    public onSetData(data: any) {
+        super.onSetData(data);
+        
+        if (data && data.accountID) {
+            this.AccountId = +data.accountID;
+        }
+        if (data && data.accountName) {
+            this.AccountName = data.accountName;
+        }
+        if (data && data.accountCategoryID) {
+            this.AccountCategoryId = +data.accountCategoryID;
+        }
+        if (data && data.accountCategoryName) {
+            this.AccountCategoryName = data.accountCategoryName;
+        }
+    }
+}
+
+export class ControlCenterReport extends FinanceReportBase {
+    public ControlCenterId: number;
+    public ControlCenterName: string;
+    public onSetData(data: any) {
+        super.onSetData(data);
+        
+        if (data && data.controlCenterID) {
+            this.ControlCenterId = +data.controlCenterID;
+        }
+        if (data && data.controlCenterName) {
+            this.ControlCenterName = data.controlCenterName;
+        }
+    }
+}
+
+export class OrderReport extends FinanceReportBase {
+    public OrderId: number;
+    public OrderName: string;
+
+    public onSetData(data: any) {
+        super.onSetData(data);
+
+        if (data && data.orderID) {
+            this.OrderId = +data.orderID;
+        }
+        if (data && data.orderName) {
+            this.OrderName = data.orderName;
+        }
+    }
+}

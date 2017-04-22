@@ -1,7 +1,43 @@
 <md-card>  
-  <md-card-title>Controlling Center Report</md-card-title>
-  <md-card-subtitle>List View</md-card-subtitle>
+  <md-card-title>{{'Finance.ControlCenterReport' | translate}}</md-card-title>
   <md-divider></md-divider>
   <md-card-content>
+    <td-data-table #dataTable [data]="filteredData" [columns]="columns" [sortable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
+      (sortChange)="sort($event)">
+    </td-data-table>
+    <div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">
+      <h3>{{'Common.NoResultToDisplay' | translate}}</h3>
+    </div>
+    <td-paging-bar #pagingBar [pageSizes]="[20, 40, 60, 80]" [total]="filteredTotal" (change)="page($event)">
+      <span td-paging-bar-label hide-xs>{{'Common.RowPerPage' | translate}}</span> {{pagingBar.range}} <span hide-xs>of {{pagingBar.total}}</span>
+    </td-paging-bar>
   </md-card-content>
 </md-card>
+
+<md-divider></md-divider>
+
+<ngx-charts-pie-chart
+      [view]="view"
+      [scheme]="colorScheme"
+      [results]="single"
+      [legend]="showLegend"
+      [explodeSlices]="explodeSlices"
+      [labels]="showLabels"
+      [doughnut]="doughnut"
+      [gradient]="gradient"
+      (select)="onSelect($event)">
+    </ngx-charts-pie-chart>
+
+<md-divider></md-divider>
+<ngx-charts-pie-chart
+      [view]="view"
+      [scheme]="colorScheme"
+      [results]="single"
+      [legend]="showLegend"
+      [explodeSlices]="explodeSlices"
+      [labels]="showLabels"
+      [doughnut]="doughnut"
+      [gradient]="gradient"
+      (select)="onSelect($event)">
+    </ngx-charts-pie-chart>
+        
