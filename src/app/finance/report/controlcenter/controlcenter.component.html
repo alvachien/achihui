@@ -1,43 +1,42 @@
-<md-card>  
+<md-card>
   <md-card-title>{{'Finance.ControlCenterReport' | translate}}</md-card-title>
   <md-divider></md-divider>
   <md-card-content>
-    <td-data-table #dataTable [data]="filteredData" [columns]="columns" [sortable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
-      (sortChange)="sort($event)">
-    </td-data-table>
-    <div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">
-      <h3>{{'Common.NoResultToDisplay' | translate}}</h3>
+    <div layout-gt-xs="row">
+      <div flex-gt-xs="50">
+        <md-card>
+          <md-card-title>{{'Finance.Incoming' | translate}}</md-card-title>
+          <md-divider></md-divider>
+          <div style="height:300px;">
+            <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="rstDebit" (select)="onSelect($event)">
+            </ngx-charts-advanced-pie-chart>
+          </div>
+        </md-card>
+      </div>
+      <div flex-gt-xs="50">
+        <md-card>
+          <md-card-title>{{'Finance.Outgoing' | translate}}</md-card-title>
+          <md-divider></md-divider>
+          <div style="height:300px;">
+            <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="rstCredit" (select)="onSelect($event)">
+            </ngx-charts-advanced-pie-chart>
+          </div>
+        </md-card>
+      </div>
     </div>
-    <td-paging-bar #pagingBar [pageSizes]="[20, 40, 60, 80]" [total]="filteredTotal" (change)="page($event)">
-      <span td-paging-bar-label hide-xs>{{'Common.RowPerPage' | translate}}</span> {{pagingBar.range}} <span hide-xs>of {{pagingBar.total}}</span>
-    </td-paging-bar>
+    
+    <md-divider></md-divider>
+
+    <div layout-gt-xs="column">
+      <td-data-table #dataTable [data]="filteredData" [columns]="columns" [sortable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
+        (sortChange)="sort($event)">
+      </td-data-table>
+      <div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">
+        <h3>{{'Common.NoResultToDisplay' | translate}}</h3>
+      </div>
+      <td-paging-bar #pagingBar [pageSizes]="[20, 40, 60, 80]" [total]="filteredTotal" (change)="page($event)">
+        <span td-paging-bar-label hide-xs>{{'Common.RowPerPage' | translate}}</span> {{pagingBar.range}} <span hide-xs>of {{pagingBar.total}}</span>
+      </td-paging-bar>
+    </div>
   </md-card-content>
 </md-card>
-
-<md-divider></md-divider>
-
-<ngx-charts-pie-chart
-      [view]="view"
-      [scheme]="colorScheme"
-      [results]="single"
-      [legend]="showLegend"
-      [explodeSlices]="explodeSlices"
-      [labels]="showLabels"
-      [doughnut]="doughnut"
-      [gradient]="gradient"
-      (select)="onSelect($event)">
-    </ngx-charts-pie-chart>
-
-<md-divider></md-divider>
-<ngx-charts-pie-chart
-      [view]="view"
-      [scheme]="colorScheme"
-      [results]="single"
-      [legend]="showLegend"
-      [explodeSlices]="explodeSlices"
-      [labels]="showLabels"
-      [doughnut]="doughnut"
-      [gradient]="gradient"
-      (select)="onSelect($event)">
-    </ngx-charts-pie-chart>
-        

@@ -23,9 +23,9 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class OrderComponent implements OnInit {
   private _apiUrl: string;
-  public listData: Array<HIHFinance.BalanceSheetReport> = [];
+  public listData: Array<HIHFinance.OrderReport> = [];
 
-  clnhdrstring: string[] = ["Finance.Order", "Finance.Debit", "Finance.Credit", "Finance.Balance"];
+  clnhdrstring: string[] = ["Finance.Order", "Finance.Incoming", "Finance.Outgoing", "Finance.Balance"];
   columns: ITdDataTableColumn[] = [];
   filteredData: any[];
   filteredTotal: number;
@@ -35,6 +35,14 @@ export class OrderComponent implements OnInit {
   pageSize: number = 10;
   selectedRows: any[] = [];
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
+
+  showLegend = true;
+  colorScheme = {
+    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA', '#FAEBD7', '#7FFFD4', '#8A2BE2', 'A52A2A', '993300', '9966FF', '#6495ED']
+  };
+  showLabels = true;
+  rstDebit: any[] = [];
+  rstCredit: any[] = [];
 
   constructor(private _http: Http,
     private _router: Router,
@@ -84,6 +92,23 @@ export class OrderComponent implements OnInit {
         if (data instanceof Array) {
           this.listData = data;
           this.filter();
+        }
+
+        this.rstDebit = [];
+        this.rstCredit = [];
+        for(let ld of this.listData) {
+          if (ld.DebitBalance > 0) {
+            this.rstDebit.push({
+              name: ld.OrderName,
+              value: ld.DebitBalance
+            });
+          }
+          if (ld.CreditBalance > 0) {
+            this.rstCredit.push({
+              name: ld.OrderName,
+              value: ld.CreditBalance
+            });
+          }
         }
       },
       error => {

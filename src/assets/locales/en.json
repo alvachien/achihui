@@ -184,7 +184,9 @@
     "Balance": "Balance",
     "BalanceSheetReport": "Balance Sheet",
     "ControlCenterReport": "Control Center Report",
-    "OrderReport": "Order Report"
+    "OrderReport": "Order Report",
+    "Incoming": "Incoming",
+    "Outgoing": "Outgoing"
   },
   "Library": {
     "Books": "Books",

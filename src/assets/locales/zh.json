@@ -184,7 +184,9 @@
     "Balance": "余额",
     "BalanceSheetReport": "资产负债表",
     "ControlCenterReport": "控制中心报表",
-    "OrderReport": "订单报表"
+    "OrderReport": "订单报表",
+    "Incoming": "收入",
+    "Outgoing": "支出"
   },
   "Library": {
     "Books": "书籍",
