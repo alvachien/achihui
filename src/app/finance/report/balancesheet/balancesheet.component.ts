@@ -32,17 +32,24 @@ export class BalanceSheetComponent implements OnInit {
   searchTerm: string = '';
   fromRow: number = 1;
   currentPage: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 20;
   selectedRows: any[] = [];
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 
   showLegend = true;
   colorScheme = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA', '#FAEBD7', '#7FFFD4', '#8A2BE2', 'A52A2A', '993300', '9966FF', '#6495ED']
+    domain: [
+      '#5AA454', '#A10A28', '#C7B42C', '#AAAAAA',
+      '#D2691E', '#FF7F50', '#6495ED', '#FFF8DC', '#DC143C', '#00FFFF', '#00008B',
+      '#F0F8FF', '#FAEBD7', '#00FFFF', '#7FFFD4', '#F0FFFF', '#F5F5DC', '#FFE4C4', // '#000000'
+      '#FFEBCD', '#0000FF', '#8A2BE2', '#A52A2A', '#DEB887', '#5F9EA0', '#7FFF00'
+      ]
   };
   showLabels = true;
   rstDebit: any[] = [];
   rstCredit: any[] = [];
+  rstAssets: any[] = [];
+  rstLiabilities: any[] = [];
 
   constructor(private _http: Http,
     private _router: Router,
@@ -96,6 +103,8 @@ export class BalanceSheetComponent implements OnInit {
 
         this.rstDebit = [];
         this.rstCredit = [];
+        this.rstAssets = [];
+        this.rstLiabilities = [];
         for(let ld of this.listData) {
           if (ld.DebitBalance > 0) {
             this.rstDebit.push({
@@ -109,7 +118,19 @@ export class BalanceSheetComponent implements OnInit {
               value: ld.CreditBalance
             });
           }
-        }        
+
+          if (ld.Balance > 0) {
+            this.rstAssets.push({
+              name: ld.AccountName,
+              value: ld.Balance
+            });
+          } else if(ld.Balance < 0) {
+            this.rstLiabilities.push({
+              name: ld.AccountName,
+              value: ld.Balance * (-1)
+            });
+          }          
+        }
       },
       error => {
         // It should be handled already
@@ -162,7 +183,7 @@ export class BalanceSheetComponent implements OnInit {
       }
     }, error => {
     }, () => {
-    });    
+    });
   }
 }
 

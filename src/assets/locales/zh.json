@@ -186,7 +186,9 @@
     "ControlCenterReport": "控制中心报表",
     "OrderReport": "订单报表",
     "Incoming": "收入",
-    "Outgoing": "支出"
+    "Outgoing": "支出",
+    "Assets": "资产",
+    "Liabilities": "负债"
   },
   "Library": {
     "Books": "书籍",

@@ -5,6 +5,37 @@
     <div layout-gt-xs="row">
       <div flex-gt-xs="50">
         <md-card>
+          <md-card-title>{{'Finance.Assets' | translate}}</md-card-title>
+          <md-divider></md-divider>
+          <div style="height:300px;">
+            <ngx-charts-advanced-pie-chart
+              [scheme]="colorScheme"
+              [results]="rstAssets"
+              (select)="onSelect($event)">
+            </ngx-charts-advanced-pie-chart>
+          </div>
+        </md-card>
+      </div>
+      <div flex-gt-xs="50">
+        <md-card>
+          <md-card-title>{{'Finance.Liabilities' | translate}}</md-card-title>
+          <md-divider></md-divider>
+          <div style="height:300px;">
+            <ngx-charts-advanced-pie-chart
+              [scheme]="colorScheme"
+              [results]="rstLiabilities"
+              (select)="onSelect($event)">
+            </ngx-charts-advanced-pie-chart>
+          </div>
+        </md-card>
+      </div>
+    </div>
+
+    <md-divider></md-divider>
+
+    <div layout-gt-xs="row">
+      <div flex-gt-xs="50">
+        <md-card>
           <md-card-title>{{'Finance.Incoming' | translate}}</md-card-title>
           <md-divider></md-divider>
           <div style="height:300px;">

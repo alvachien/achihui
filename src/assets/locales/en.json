@@ -186,7 +186,9 @@
     "ControlCenterReport": "Control Center Report",
     "OrderReport": "Order Report",
     "Incoming": "Incoming",
-    "Outgoing": "Outgoing"
+    "Outgoing": "Outgoing",
+    "Assets": "Assets",
+    "Liabilities": "Liabilities"
   },
   "Library": {
     "Books": "Books",
