@@ -43,6 +43,12 @@ import { ReportComponent } from './report/report.component';
 import { BalanceSheetComponent as ReportBalanceSheetComponent } from './report/balancesheet/balancesheet.component';
 import { ControlCenterComponent as ReportControlCenterComponent } from './report/controlcenter/controlcenter.component';
 import { OrderComponent as ReportOrderComponent } from './report/order/order.component';
+import { TransactionsComponent } from './transactions/transactions.component';
+import { AccountlistComponent as TransactionsAccountlistComponent } from './transactions/accountlist/accountlist.component';
+import { AccounthierarchyComponent as TransactionsAccounthierarchyComponent } from './transactions/accounthierarchy/accounthierarchy.component';
+import { ControlcenterlistComponent as TransactionsControlcenterlistComponent } from './transactions/controlcenterlist/controlcenterlist.component';
+import { ControlcenterhierarchyComponent as TransactionsControlcenterhierarchyComponent } from './transactions/controlcenterhierarchy/controlcenterhierarchy.component';
+import { OrderlistComponent as TransactionsOrderlistComponent } from './transactions/orderlist/orderlist.component';
 
 @NgModule({
   imports: [
@@ -97,7 +103,14 @@ import { OrderComponent as ReportOrderComponent } from './report/order/order.com
     ReportComponent, 
     ReportBalanceSheetComponent, 
     ReportControlCenterComponent, 
-    ReportOrderComponent
+    ReportOrderComponent, 
+    
+    TransactionsComponent, 
+    TransactionsAccountlistComponent, 
+    TransactionsAccounthierarchyComponent, 
+    TransactionsControlcenterlistComponent, 
+    TransactionsControlcenterhierarchyComponent, 
+    TransactionsOrderlistComponent
   ]
 })
 export class FinanceModule { }

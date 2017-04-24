@@ -122,6 +122,42 @@ export class UIStatusService {
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();
+        rl.title = "Finance.Accounts";
+        rl.route = "/finance/account";
+        rl.icon = "library_books";
+        this.arFinanceRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Finance.Documents";
+        rl.route = "/finance/document";
+        rl.icon = "poll";
+        this.arFinanceRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Finance.Transactions";
+        rl.route = "/finance/transactions";
+        rl.icon = "blue_linear";
+        this.arFinanceRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Finance.Reports";
+        rl.route = "/finance/report";
+        rl.icon = "pie_chart";
+        this.arFinanceRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Finance.ControlCenters";
+        rl.route = "/finance/controlcenter";
+        rl.icon = "store";
+        this.arFinanceRouteLink.push(rl);
+
+        rl = new UIRouteLink();
+        rl.title = "Finance.Orders";
+        rl.route = "/finance/order";
+        rl.icon = "tune";
+        this.arFinanceRouteLink.push(rl);
+
+        rl = new UIRouteLink();
         rl.title = "Finance.Currencies";
         rl.route = "/finance/currency";
         rl.icon = "euro_symbol";
@@ -143,36 +179,6 @@ export class UIStatusService {
         rl.title = "Finance.TransactionTypes";
         rl.route = "/finance/transactiontype";
         rl.icon = "featured_play_list";
-        this.arFinanceRouteLink.push(rl);
-
-        rl = new UIRouteLink();
-        rl.title = "Finance.ControlCenters";
-        rl.route = "/finance/controlcenter";
-        rl.icon = "store";
-        this.arFinanceRouteLink.push(rl);
-
-        rl = new UIRouteLink();
-        rl.title = "Finance.Orders";
-        rl.route = "/finance/order";
-        rl.icon = "tune";
-        this.arFinanceRouteLink.push(rl);
-
-        rl = new UIRouteLink();
-        rl.title = "Finance.Accounts";
-        rl.route = "/finance/account";
-        rl.icon = "library_books";
-        this.arFinanceRouteLink.push(rl);
-
-        rl = new UIRouteLink();
-        rl.title = "Finance.Documents";
-        rl.route = "/finance/document";
-        rl.icon = "local_library";
-        this.arFinanceRouteLink.push(rl);
-
-        rl = new UIRouteLink();
-        rl.title = "Finance.Reports";
-        rl.route = "/finance/report";
-        rl.icon = "pie_chart";
         this.arFinanceRouteLink.push(rl);
 
         // Library routes
