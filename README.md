@@ -13,6 +13,9 @@ As it name indicates, HIH shall be used inside the family network. So, ideally, 
 ### Snapshot
 ![Image of Index page](https://github.com/alvachien/achihui/blob/master/docs/images/index.JPG)
 
+![Image of Finance report](https://github.com/alvachien/achihui/blob/master/docs/images/finance_report.JPG)
+
+
 ### Relevant API/App used
 The live demo used the following API/App:
 - AC ID Server [Github Project Link](https://github.com/alvachien/acidserver) : an Identity service hosted in [Azure Link (will be obseleted soon)](http://acidserver.azurewebsites.net);
