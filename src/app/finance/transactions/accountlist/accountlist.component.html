@@ -3,16 +3,28 @@
   <md-divider></md-divider>
   <md-card-content>
     <div layout-gt-xs="row">
-      <div flex-gt-xs="50">
+      <div flex-gt-xs="30">
         <md-card>
           <md-card-title>{{'Finance.Accounts' | translate}}</md-card-title>
           <md-divider></md-divider>
           <md-card-content>
-
+            <md-list dense>
+              <md-list-item *ngFor="let acnt of arAccounts">
+                <h3 md-line> {{acnt.Name}} </h3>
+                <p md-line>
+                  <span>{{acnt.CategoryName}} </span>
+                  <span>{{acnt.OwnerDisplayAs}}</span>
+                  <button md-icon-button (click)="showDocItems($event)">
+                      <md-icon>info</md-icon>
+                  </button>
+                </p>
+              </md-list-item>
+            </md-list>
           </md-card-content>
         </md-card>
       </div>
-      <div flex-gt-xs="50">
+
+      <div flex-gt-xs="70">
         <md-card>
           <md-card-title>{{'Finance.Transactions' | translate}}</md-card-title>
           <md-divider></md-divider>

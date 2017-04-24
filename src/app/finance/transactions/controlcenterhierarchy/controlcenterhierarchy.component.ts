@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-controlcenterhierarchy',
+  selector: 'finance-transactions-controlcenterhierarchy',
   templateUrl: './controlcenterhierarchy.component.html',
   styleUrls: ['./controlcenterhierarchy.component.scss']
 })
