@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MdIconRegistry } from '@angular/material';
-import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
+import { TdLoadingService, LoadingType } from '@covalent/core';
 import { AuthService } from '../services/auth.service';
 import { UIStatusService } from '../services/uistatus.service';
 import { environment } from '../../environments/environment';

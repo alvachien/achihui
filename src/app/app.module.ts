@@ -1,11 +1,9 @@
 import { NgModule, Type } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CovalentCoreModule } from '@covalent/core';
 import { CovalentHttpModule, IHttpInterceptor } from '@covalent/http';
-import { CovalentHighlightModule } from '@covalent/highlight';
-import { CovalentMarkdownModule } from '@covalent/markdown';
-import { CovalentChartsModule } from '@covalent/charts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -36,6 +34,7 @@ export function funcHttpLoaderFactory(http: Http) {
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
@@ -44,9 +43,6 @@ export function funcHttpLoaderFactory(http: Http) {
     FlexLayoutModule,
     AppRoutingModule,
     CovalentCoreModule.forRoot(),
-    CovalentChartsModule.forRoot(),
-    CovalentHighlightModule.forRoot(),
-    CovalentMarkdownModule.forRoot(),
     NgxChartsModule,
     TranslateModule.forRoot({
         loader: {

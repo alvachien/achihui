@@ -5,7 +5,7 @@ import { environment } from '../environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { MdIconRegistry } from '@angular/material';
-import { TdLoadingService, LoadingType, ILoadingOptions } from '@covalent/core';
+import { TdLoadingService, LoadingType } from '@covalent/core';
 
 
 @Component({
