@@ -1667,3 +1667,92 @@ export class OrderReport extends FinanceReportBase {
         }
     }
 }
+
+export class DocumentItemWithBalance {
+    public TranType_Exp: boolean;
+    public TranCurr: string;
+    public TranAmount: number;
+    public TranAmount_Org: number;
+    public TranAmount_LC: number;
+    public Balance: number;
+    public TranDate: Date;
+    public DocDesp: string;
+    public DocId: number;
+    public ItemId: number;
+    public AccountId: number;
+    public TranType: number;
+    public ControlCenterId: number;
+    public OrderId: number;
+    public UseCurr2: boolean;
+    public Desp: string;
+
+    public TranDateString: string;
+    public AccountName: string;
+    public TranTypeName: string;
+    public ControlCenterName: string;
+    public OrderName: string;
+
+    public onSetData(data: any) {
+        if (data && data.tranType_Exp) {
+            this.TranType_Exp = data.tranType_Exp;
+        }
+        if (data && data.tranCurr) {
+            this.TranCurr = data.tranCurr;
+        }
+        if (data && data.tranAmount_org) {
+            this.TranAmount_Org = data.tranAmount_org;
+        }
+        if (data && data.tranAmount_LC) {
+            this.TranAmount_LC = data.tranAmount_LC;
+        }
+        if (data && data.balance) {
+            this.Balance = data.balance;
+        }
+        if (data && data.accountName) {
+            this.AccountName = data.accountName;
+        }
+        if (data && data.tranTypeName) {
+            this.TranTypeName = data.tranTypeName;
+        }
+        if (data && data.controlCenterName) {
+            this.ControlCenterName = data.controlCenterName;
+        }
+        if (data && data.orderName) {
+            this.OrderName = data.orderName;
+        }
+        if (data && data.tranDate) {
+            this.TranDate = new Date(data.tranDate);
+            this.TranDateString = hih.Utility.Date2String(this.TranDate);
+        }
+        if (data && data.docDesp) {
+            this.DocDesp = data.docDesp;
+        }
+        if (data && data.docID) {
+            this.DocId = +data.docID;
+        }
+        if (data && data.itemID) {
+            this.ItemId = +data.itemID;
+        }
+        if (data && data.accountID) {
+            this.AccountId = + data.accountID;
+        }
+        if (data && data.tranType) {
+            this.TranType = +data.tranType;
+        }
+        if (data && data.tranAmount) {
+            this.TranAmount = +data.tranAmount;
+        }
+        if (data && data.useCurr2) {
+            this.UseCurr2 = data.useCurr2;
+        }
+        if (data && data.controlCenterID) {
+            this.ControlCenterId = +data.controlCenterID;
+        }
+        if (data && data.orderID) {
+            this.OrderId = +data.orderID;
+        }
+        if (data && data.desp) {
+            this.Desp = data.desp;
+        }
+    }
+} 

@@ -32,7 +32,7 @@ export class OrderComponent implements OnInit {
   searchTerm: string = '';
   fromRow: number = 1;
   currentPage: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 20;
   selectedRows: any[] = [];
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 

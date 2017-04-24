@@ -32,8 +32,8 @@ export class ListComponent implements OnInit {
   searchTerm: string = '';
   fromRow: number = 1;
   currentPage: number = 1;
-  pageSize: number = 10;
-  sortBy: string = 'UpdatedAt';
+  pageSize: number = 20;
+  sortBy: string = 'LearnDateString';
   selectable: boolean = true;
   selectedRows: any[] = [];
   searchBox = {

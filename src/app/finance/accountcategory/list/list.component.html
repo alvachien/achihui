@@ -29,7 +29,8 @@
     <td-data-table [data]="filteredData" [columns]="columns" [sortable]="true" [selectable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
       [(ngModel)]="selectedRows" (sortChange)="sort($event)">
     </td-data-table>
-    <td-paging-bar [pageSizes]="[5, 10, 15, 20]" [total]="filteredTotal" (change)="page($event)">
+    <td-paging-bar #pagingBar [pageSizes]="[20, 40, 60, 80]" [total]="filteredTotal" (change)="page($event)">
+      <span td-paging-bar-label hide-xs>{{'Common.RowPerPage' | translate}}</span> {{pagingBar.range}} <span hide-xs>of {{pagingBar.total}}</span>
     </td-paging-bar>
   </md-card-content>
 </md-card>

@@ -36,7 +36,7 @@ export class ListComponent implements OnInit {
   fromRow: number = 1;
   currentPage: number = 1;
   pageSize: number = 20;
-  sortBy: string = 'Id';
+  sortBy: string = 'TranDateString';
   selectable: boolean = true;
   selectedRows: any[] = [];
   searchBox = {

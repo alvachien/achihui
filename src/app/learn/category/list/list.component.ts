@@ -33,14 +33,14 @@ export class ListComponent implements OnInit {
   searchTerm: string = '';
   fromRow: number = 1;
   currentPage: number = 1;
-  pageSize: number = 5;
-  sortBy: string = 'UpdatedAt';
+  pageSize: number = 20;
+  sortBy: string = 'Name';
   selectable: boolean = true;
   selectedRows: any[] = [];
   searchBox = {
     searchVisible: false
   };
-  sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
+  sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Ascending;
 
   constructor(private _http: Http,
      private _router: Router,
