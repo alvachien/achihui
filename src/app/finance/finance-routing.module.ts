@@ -273,11 +273,15 @@ const financeRoutes: Routes = [
         children: [
           {
             path: '',
-            component: TransactionsAccounthierarchyComponent
+            component: TransactionsAccountlistComponent
           },
           {
-            path:'accountlist',
+            path: 'accountlist',
             component: TransactionsAccountlistComponent
+          },
+          {
+            path:'accounthierarchy',
+            component: TransactionsAccounthierarchyComponent
           },
           {
             path: 'cchierarchy',

@@ -5,17 +5,17 @@
     <div layout-gt-xs="row">
       <div flex-gt-xs="30">
         <md-card>
-          <md-card-title>{{'Finance.Accounts' | translate}}</md-card-title>
+          <md-card-title>{{'Finance.Accounts' | translate}} - {{'Common.ListView' | translate}}</md-card-title>
           <md-divider></md-divider>
           <md-card-content>
             <md-list dense>
               <md-list-item *ngFor="let acnt of arAccounts">
-                <h3 md-line> {{acnt.Name}} </h3>
+                <a md-line (click)="showDocItems(acnt)">{{acnt.Name}}</a>
                 <p md-line>
                   <span>{{acnt.CategoryName}} </span>
                   <span>{{acnt.OwnerDisplayAs}}</span>
                   <button md-icon-button (click)="showDocItems(acnt)">
-                      <md-icon>info</md-icon>
+                      <md-icon>view_list</md-icon>
                   </button>
                 </p>
               </md-list-item>
@@ -29,9 +29,17 @@
           <md-card-title>{{currentAccountName}}</md-card-title>
           <md-divider></md-divider>
           <md-card-content>
-            <td-data-table [data]="filteredData" [columns]="columns" [sortable]="true" [selectable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
-              [(ngModel)]="selectedRows" (sortChange)="sort($event)">
+            <td-data-table
+              #dataTable
+              [data]="filteredData"
+              [columns]="columns"
+              [sortable]="true"
+              [selectable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
+              (sortChange)="sort($event)">
             </td-data-table>
+            <div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">
+              <h3>No results to display.</h3>
+            </div>
             <td-paging-bar #pagingBar [pageSizes]="[20, 40, 60, 80]" [total]="filteredTotal" (change)="page($event)">
               <span td-paging-bar-label hide-xs>{{'Common.RowPerPage' | translate}}</span> {{pagingBar.range}} <span hide-xs>of {{pagingBar.total}}</span>
             </td-paging-bar>

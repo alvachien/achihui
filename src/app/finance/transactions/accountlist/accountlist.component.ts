@@ -27,8 +27,9 @@ export class AccountlistComponent implements OnInit {
 
   clnhdrstring: string[] = ["Common.ID", "Common.ID", "Finance.TransactionDate", "Finance.Amount", "Finance.Amount", "Common.Comment"];
   columns: ITdDataTableColumn[] = [];
-  filteredData: any[];
-  filteredTotal: number;
+
+  filteredData: any[] = [];
+  filteredTotal: number = 0;
   searchTerm: string = '';
   fromRow: number = 1;
   currentPage: number = 1;
@@ -51,8 +52,11 @@ export class AccountlistComponent implements OnInit {
       { name: 'DocId', label: '#', tooltip: 'ID' },
       { name: 'ItemId', label: 'Item Id', tooltip: 'Item ID' },
       { name: 'TranDateString', label: 'Tran. Date', tooltip: 'Tran. Date' },
+      { name: 'TranTypeName', label: 'Tran. type', tooltip: 'Tran. type' },
       { name: 'TranAmount_LC', label: 'Amount', tooltip: 'Amount', numeric: true, format: (value) => { if (value) return value.toFixed(2); return 0.0;  } },
       { name: 'Balance', label: 'Balance', tooltip: 'Balance', numeric: true, format: (value) => { if (value) return value.toFixed(2); return 0.0;  } },
+      { name: 'ControlCenterName', label: 'Control center', tooltip: 'control center' },
+      { name: 'OrderName', label: 'Order', tooltip: 'Order' },
       { name: 'Desp', label: 'Desp', tooltip: 'Desp' }
     ];
   }
@@ -157,14 +161,12 @@ export class AccountlistComponent implements OnInit {
   }
 
   filter(): void {
-    if (this.listData) {
-      let newData: any[] = this.listData;
-      newData = this._dataTableService.filterData(newData, this.searchTerm, true);
-      this.filteredTotal = newData.length;
-      newData = this._dataTableService.sortData(newData, this.sortBy, this.sortOrder);
-      newData = this._dataTableService.pageData(newData, this.fromRow, this.currentPage * this.pageSize);
-      this.filteredData = newData;
-    }
+    let newData: any[] = this.listData;
+    newData = this._dataTableService.filterData(newData, this.searchTerm, true);
+    this.filteredTotal = newData.length;
+    newData = this._dataTableService.sortData(newData, this.sortBy, this.sortOrder);
+    newData = this._dataTableService.pageData(newData, this.fromRow, this.currentPage * this.pageSize);
+    this.filteredData = newData;
   }
 
   private extractData(res: Response) {

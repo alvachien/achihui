@@ -136,7 +136,7 @@ export class UIStatusService {
         rl = new UIRouteLink();
         rl.title = "Finance.Transactions";
         rl.route = "/finance/transactions";
-        rl.icon = "blue_linear";
+        rl.icon = "subject";
         this.arFinanceRouteLink.push(rl);
 
         rl = new UIRouteLink();

@@ -66,9 +66,9 @@
       <div layout="row" layout-padding>
         <md-tab-group flex>
           <md-tab>
-            <template md-tab-label>
+            <ng-template md-tab-label>
               <em>Detail</em> Info
-            </template>
+            </ng-template>
             <div layout="column" layout-padding>
                 <div layout="row" layout-margin>
                   <md-slide-toggle [(ngModel)]="uiObject.AdvPayAccount.Direct" name="dir">Direct</md-slide-toggle>
@@ -106,9 +106,9 @@
               </div>
           </md-tab>
           <md-tab>
-            <template md-tab-label>
+            <ng-template md-tab-label>
               <md-icon>list</md-icon>Template Docs
-            </template>
+            </ng-template>
 
             <td-data-table [data]="tmpDocs" [columns]="clnTmpDocs" [selectable]="true"
               [(ngModel)]="selectedTmpDocs">

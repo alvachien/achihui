@@ -5,9 +5,9 @@
   <md-card-content>
     <md-tab-group>
       <md-tab>
-        <template md-tab-label>
+        <ng-template md-tab-label>
           <md-icon>tune</md-icon>{{'Finance.Header' | translate}}
-        </template>
+        </ng-template>
         <form #detailForm="ngForm">
           <div layout="row" layout-margin>
             <md-input-container flex>
@@ -41,9 +41,9 @@
         </form>
       </md-tab>
       <md-tab>
-        <template md-tab-label>
+        <ng-template md-tab-label>
           <md-icon>dvr</md-icon>{{'Finance.Items' | translate}}
-        </template>
+        </ng-template>
         <md-divider></md-divider>
         <table td-data-table>
           <th td-data-table-column>{{'Common.Operations' | translate}}</th>
@@ -75,7 +75,7 @@
               </div>
               <div layout="row" layout-margin>
                 <md-select flex placeholder="{{'Finance.TransactionType' | translate}}" [(ngModel)]="itemObject.TranType" name="itemtrantype" #itemtrantype="ngModel">
-                  <md-option *ngFor="let dt of arTranType" [value]="dt.Id" [class.bgc-green-300]="dt.Expense" [class.bgc-red-300]="!dt.Expense">
+                  <md-option *ngFor="let dt of arTranType" [value]="dt.Id" [class.bgc-green-300]="!dt.Expense" [class.bgc-red-300]="dt.Expense">
                     ({{dt.Id}}) - {{dt.Name}}
                   </md-option>
                  </md-select>

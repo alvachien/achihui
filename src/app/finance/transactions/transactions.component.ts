@@ -9,14 +9,13 @@ export class TransactionsComponent implements OnInit {
 
   public tabLinks: any[] = [];
 
-  activeLinkIndex = 0;
   constructor() { 
-    this.  tabLinks = [
-      {label: 'Account Hierarchy View', link: '/finance/transactions/'},
-      {label: 'Account List View', link: '/finance/transactions/accountlist'},
-      {label: 'Control Center Hierarchy View', link: '/finance/transactions/cchierarchy'},
-      {label: 'Control Center List View', link: '/finance/transactions/cclist'},
-      {label: 'Order List View', link: '/finance/transactions/orderlist'}
+    this.tabLinks = [
+      { label: 'Account List', link: '/finance/transactions/accountlist'},
+      { label: 'Control Center List', link: '/finance/transactions/cclist'},
+      { label: 'Order List', link: '/finance/transactions/orderlist'},
+      { label: 'Account Hierarchy', link: '/finance/transactions/accounthierarchy'},
+      { label: 'Control Center Hierarchy', link: '/finance/transactions/cchierarchy'}
     ];
   }
 
