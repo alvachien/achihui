@@ -1,6 +1,6 @@
 <md-card>
   <md-card-title>{{'Finance.Order' | translate}}</md-card-title>
-  <md-card-subtitle>{{CurrentMode}}</md-card-subtitle>
+  <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
     <md-tab-group>
@@ -49,9 +49,9 @@
           </th>
           <tr td-data-table-row *ngFor="let row of orderObject.SRules">
             <td td-data-table-cell>
-              <button md-button>Display</button>
-              <button md-button>Edit</button>
-              <button md-button>Delete</button>
+              <button md-button (click)="onDisplayRule(row)">{{'Common.Display' | translate}}</button>
+              <button md-button (click)="onEditRule(row)">{{'Common.Edit' | translate}}</button>
+              <button md-button (click)="onDeleteRule(row)">{{'Common.Delete' | translate}}</button>
             </td>
             <td td-data-table-cell *ngFor="let column of clnRules">
               {{row[column.name]}}
@@ -70,9 +70,9 @@
                 </md-input-container>
               </div>
               <div layout="row" layout-margin>
-                <md-select flex="90" placeholder="Control Center" [(ngModel)]="sruleObject.ControlCenterId" name="srulecc">
-                  <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
-                    {{cc.Name}}
+                <md-select flex placeholder="Control Center" [(ngModel)]="sruleObject.ControlCenterId" name="srulecc">
+                  <md-option flex *ngFor="let cc of arControlCenter" [value]="cc.Id">
+                    {{cc.Id}} - {{cc.Name}}
                   </md-option>
                 </md-select>
               </div>

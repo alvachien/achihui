@@ -140,10 +140,14 @@
         <div flex class="pad" tdMediaToggle="gt-xs" [mediaClasses]="['pad-xl']">
           <div class="push-top-xl" hide-xs></div>
           <div tdMediaToggle="gt-sm" [mediaClasses]="['push-lg']">
-            <h1 class="md-display-1 tc-grey-800 push-top-xs push-bottom-sm">{{"Login.Login" | translate}}</h1>
-            <p class="md-title tc-grey-600">To take a journal around the functionalities provided by this app, you need login.
+            <h1 *ngIf="!isLoggedIn" class="md-display-1 tc-grey-800 push-top-xs push-bottom-sm">{{"Login.Login" | translate}}</h1>
+            <h1 *ngIf="isLoggedIn" class="md-display-1 tc-grey-800 push-top-xs push-bottom-sm">{{"Login.Logout" | translate}}</h1>
+            <p *ngIf="!isLoggedIn" class="md-title tc-grey-600">To take a journal around the functionalities provided by this app, you need login.
+            </p>
+            <p *ngIf="isLoggedIn" class="md-title tc-grey-600">You can logout from the application for further processing.
             </p>
             <button *ngIf="!isLoggedIn" md-raised-button color="accent" class="push-bottom md-button-lg" (click)="onLogin()">{{"Login.Login" | translate}}</button>
+            <button *ngIf="isLoggedIn" md-raised-button color="warn" class="push-bottom md-button-lg" (click)="onLogout()">{{"Login.Logout" | translate}}</button>
           </div>
           <div class="push-bottom-xl" hide-xs></div>
         </div>
@@ -188,7 +192,7 @@
               </md-toolbar>
               <md-card-subtitle>Trace the learning relevant activities.</md-card-subtitle>
               <md-divider></md-divider>
-              <md-list>
+              <md-list dense>
                 <h3 md-subheader>Features</h3>
                 <md-list-item>
                   <md-icon md-list-icon class="fill-grey-700">description</md-icon>
@@ -220,7 +224,7 @@
               </md-toolbar>
               <md-card-subtitle>Trace the finance activities.</md-card-subtitle>
               <md-divider></md-divider>
-              <md-list>
+              <md-list dense>
                 <h3 md-subheader>Finance Accounts</h3>
                 <md-list-item>
                   <md-icon md-list-icon class="fill-grey-700">description</md-icon>
@@ -252,7 +256,7 @@
               </md-toolbar>
               <md-card-subtitle>Make To-Do transparency.</md-card-subtitle>
               <md-divider></md-divider>
-              <md-list>
+              <md-list dense>
                 <h3 md-subheader>Features</h3>
                 <md-list-item>
                   <md-icon md-list-icon class="fill-grey-700">description</md-icon>
@@ -284,7 +288,7 @@
               </md-toolbar>
               <md-card-subtitle>All content of Library.</md-card-subtitle>
               <md-divider></md-divider>
-              <md-list>
+              <md-list dense>
                 <h3 md-subheader>Features</h3>
                 <md-list-item>
                   <md-icon md-list-icon class="fill-grey-700">description</md-icon>

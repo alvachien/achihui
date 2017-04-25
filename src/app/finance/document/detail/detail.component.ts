@@ -37,6 +37,9 @@ export class DetailComponent implements OnInit {
   private arControlCenter: Array<HIHFinance.ControllingCenter> = [];
   private arOrder: Array<HIHFinance.Order> = [];
   private arCurrency: Array<HIHFinance.Currency> = [];
+  private arSetting: Array<HIHFinance.Setting> = [];
+  private localCurrency: string;
+
   public currentMode: string;
   public docObject: HIHFinance.Document = null;
   public itemObject: HIHFinance.DocumentItem = null;
@@ -82,7 +85,8 @@ export class DetailComponent implements OnInit {
       this.loadControlCenterList(),
       this.loadTranTypeList(),
       this.loadAccountList(),
-      this.loadOrderList()
+      this.loadOrderList(),
+      this.loadFinSetting()
     ]).subscribe(data => {
       this.arCurrency = data[0];
       this.arDocType = data[1];
@@ -90,6 +94,14 @@ export class DetailComponent implements OnInit {
       this.arTranType = data[3];
       this.arAccount = data[4];
       this.arOrder = data[5];
+      this.arSetting = data[6]; // Finance setting
+
+      for(let aset of this.arSetting) {
+        if (aset.SetId === 'LocalCurrency') {
+          this.localCurrency = aset.SetValue;
+          break;
+        }
+      }
 
       // Distinguish current mode
       this._activateRoute.url.subscribe(x => {
@@ -98,6 +110,9 @@ export class DetailComponent implements OnInit {
             this.currentMode = "Create";
             this.docObject = new HIHFinance.Document();
             this.docObject.DocType = HIHCommon.FinanceDocType_Normal;
+            if (this.localCurrency) {
+              this.docObject.TranCurr = this.localCurrency;
+            }
 
             this.uiMode = HIHCommon.UIMode.Create;
           } else if (x[0].path === "edit") {
@@ -335,6 +350,13 @@ export class DetailComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractControlCenterData)
       .catch(this.handleError);
+  }
+  loadFinSetting(): Observable<any> {
+    if (environment.DebugLogging) {
+      console.log("Entering loadFinSetting of FinanceDocumentDetail");
+    }
+
+    return this._buffService.getFinanceSettings();
   }
   loadDocTypeList(): Observable<any> {
     if (environment.DebugLogging) {

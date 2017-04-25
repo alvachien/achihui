@@ -766,8 +766,8 @@ export class Order extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         rstObj.id = this.Id;
         rstObj.name = this.Name;
-        rstObj.valid_From = this.ValidFrom;
-        rstObj.valid_To = this.ValidTo;
+        rstObj.validFrom = this.ValidFrom;
+        rstObj.validTo = this.ValidTo;
         rstObj.comment = this.Comment;
         rstObj.sRuleList = [];
 

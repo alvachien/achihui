@@ -3,7 +3,7 @@
   <md-divider></md-divider>
   <md-card-content>
     <div layout-gt-xs="row">
-      <div flex-gt-xs="30">
+      <div flex-gt-xs="25">
         <md-card>
           <md-card-title>{{'Finance.Accounts' | translate}} - {{'Common.ListView' | translate}}</md-card-title>
           <md-divider></md-divider>
@@ -24,11 +24,56 @@
         </md-card>
       </div>
 
-      <div flex-gt-xs="70">
+      <div flex-gt-xs="75">
         <md-card>
           <md-card-title>{{currentAccountName}}</md-card-title>
           <md-divider></md-divider>
           <md-card-content>
+            <!--<div layout-gt-xs="row">
+              <div flex-gt-xs="50">
+                <md-card>
+                  <md-card-title>{{'Finance.Incoming' | translate}}</md-card-title>
+                  <md-divider></md-divider>
+                  <div style="height:250px;">
+                    <ngx-charts-gauge
+                      [view]="view"
+                      [scheme]="colorScheme"
+                      [results]="data"
+                      [min]="0"
+                      [max]="100"
+                      [angleSpan]="240"
+                      [startAngle]="-120"
+                      [units]="'alerts'"
+                      [bigSegments]="10"
+                      [smallSegments]="5"
+                      (select)="onSelect($event)">
+                    </ngx-charts-gauge>
+                  </div>
+                </md-card>
+              </div>
+              <div flex-gt-xs="50">
+                <md-card>
+                  <md-card-title>{{'Finance.Outgoing' | translate}}</md-card-title>
+                  <md-divider></md-divider>
+                  <div style="height:250px;">
+                    <ngx-charts-gauge
+                      [view]="view"
+                      [scheme]="colorScheme"
+                      [results]="data"
+                      [min]="0"
+                      [max]="100"
+                      [angleSpan]="240"
+                      [startAngle]="-120"
+                      [units]="'alerts'"
+                      [bigSegments]="10"
+                      [smallSegments]="5"
+                      (select)="onSelect($event)">
+                    </ngx-charts-gauge>
+                  </div>
+                </md-card>
+              </div>
+            </div>-->
+            
             <td-data-table
               #dataTable
               [data]="filteredData"

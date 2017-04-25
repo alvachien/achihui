@@ -11,7 +11,7 @@ export class ReportComponent implements OnInit {
   activeLinkIndex = 0;
   constructor() { 
     this.  tabLinks = [
-      {label: 'Balance Sheet', link: '/finance/report'},
+      {label: 'Balance Sheet', link: '/finance/report/bs'},
       {label: 'Control Center', link: '/finance/report/controlcenter'},
       {label: 'Order', link: '/finance/report/order'},
     ];

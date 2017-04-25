@@ -258,6 +258,10 @@ const financeRoutes: Routes = [
             component: ReportBalanceSheetComponent
           },
           {
+            path: 'bs',
+            component: ReportBalanceSheetComponent
+          },
+          {
             path: 'controlcenter',
             component: ReportControlCenterComponent
           },
