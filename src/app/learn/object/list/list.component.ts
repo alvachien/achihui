@@ -26,12 +26,13 @@ export class ListComponent implements OnInit {
     { name: 'Name', label: 'Name', tooltip: 'Name' },
     { name: 'UpdatedAt', label: 'Updated at' },
   ];
+
   filteredData: any[];
-  filteredTotal: number;
+  filteredTotal: number = 0;
   searchTerm: string = '';
   fromRow: number = 1;
   currentPage: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 20;
   sortBy: string = 'Name';
   selectable: boolean = true;
   selectedRows: any[] = [];

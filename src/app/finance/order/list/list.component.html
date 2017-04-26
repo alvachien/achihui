@@ -26,14 +26,18 @@
       </td-search-box>
     </div>
     <md-divider></md-divider>
-      <td-data-table
-        #dataTable
-        [data]="filteredData"
-        [columns]="columns"
-        [sortable]="true"
-        [selectable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
-        (sortChange)="sort($event)">
-      </td-data-table>
+    <td-data-table
+      #dataTable
+      [data]="filteredData"
+      [columns]="columns"
+      selectable="true"
+      multiple="false"
+      sortable="true"
+      [sortBy]="sortBy"
+      [(ngModel)]="selectedRows"
+      [sortOrder]="sortOrder"
+      (sortChange)="sort($event)">
+    </td-data-table>
       <div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">
         <h3>{{'Common.NoResultToDisplay' | translate}}</h3>
       </div>

@@ -73,7 +73,8 @@
     "SystemFlag": "System Flag",
     "PleaseSelect": "Please select",
     "NoResultToDisplay": "No results to display",
-    "RowPerPage": "Row per page"
+    "RowPerPage": "Row per page",
+    "WelcomeBack": "Welcome back!"
   },
   "Sys":{
     "Currency": {

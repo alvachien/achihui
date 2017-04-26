@@ -73,7 +73,8 @@
     "SystemFlag": "系统标志",
     "PleaseSelect": "请选择",
     "NoResultToDisplay": "无显示结果",
-    "RowPerPage": "每页行数"
+    "RowPerPage": "每页行数",
+    "WelcomeBack": "欢迎回来!"
   },
   "Sys":{
     "Currency": {

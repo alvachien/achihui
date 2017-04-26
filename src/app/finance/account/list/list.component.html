@@ -3,7 +3,7 @@
   <md-card-subtitle>{{"Common.ListView" | translate}}</md-card-subtitle>
   <md-divider></md-divider>
   <md-card-content>
-    <div layout="row" layout-align="start center" class="pad-left-sm pad-right-sm">
+    <div layout="row" layout-align="start center" class="pad-left-sm pad-right-sm" [class.mat-selected-title]="selectedRows.length && selectable">
       <span *ngIf="!searchBox.searchVisible" class="push-left-sm">    
         <button md-mini-fab color="primary" (click)="onCreateAccount()">
           <md-icon>add</md-icon>
@@ -30,8 +30,12 @@
       #dataTable
       [data]="filteredData"
       [columns]="columns"
-      [sortable]="true"
-      [selectable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
+      selectable="true"
+      multiple="false"
+      sortable="true"
+      [sortBy]="sortBy"
+      [(ngModel)]="selectedRows"
+      [sortOrder]="sortOrder"
       (sortChange)="sort($event)">
     </td-data-table>
     <div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">

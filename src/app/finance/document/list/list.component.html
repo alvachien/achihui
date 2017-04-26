@@ -35,8 +35,12 @@
       #dataTable
       [data]="filteredData"
       [columns]="columns"
-      [sortable]="true"
-      [selectable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
+      selectable="true"
+      multiple="false"
+      sortable="true"
+      [sortBy]="sortBy"
+      [(ngModel)]="selectedRows"
+      [sortOrder]="sortOrder"
       (sortChange)="sort($event)">
     </td-data-table>
     <div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">
