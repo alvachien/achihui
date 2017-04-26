@@ -22,13 +22,14 @@ import { TranslateService } from '@ngx-translate/core';
 export class ListComponent implements OnInit {
   private _apiUrl: string;
   public listData: Array<HIHFinance.DocumentType> = [];
-  clnhdrstring: string[] = ["Common.ID", "Finance.DocumentType", "Finance.TransactionDate", "Finance.Amount", "Finance.Currency"];
+  clnhdrstring: string[] = ["Common.ID", "Finance.DocumentType", "Finance.TransactionDate", "Finance.Amount", "Finance.Currency", "Common.Description"];
   columns: ITdDataTableColumn[] = [
     { name: 'Id', label: '#', tooltip: 'ID' },
     { name: 'DocTypeName', label: 'Doc Type', tooltip: 'Document Type' },
     { name: 'TranDateString', label: 'Tran Date', tooltip: 'Tran. Date' },
     { name: 'TranAmount', label: 'Amount', numeric: true, format: (value) => { if (value) return value.toFixed(2); return 0.0;  } },
-    { name: 'TranCurr', label: 'Currency' }
+    { name: 'TranCurr', label: 'Currency' },
+    { name: 'Desp', label: 'Desp' }
   ];
   filteredData: any[];
   filteredTotal: number;

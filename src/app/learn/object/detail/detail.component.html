@@ -6,21 +6,20 @@
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
-    <md-select flex placeholder="Category" [(ngModel)]="detailObject.CategoryId" name="ctgyid" #ctgyid="ngModel">
-      <md-option *ngFor="let ctgy of arCategory" [value]="ctgy.Id">{{ ctgy.Name }} ({{ ctgy.Id }}) </md-option>
+    <md-select flex placeholder="{{'Common.Category' | translate}}" [(ngModel)]="detailObject.CategoryId" name="ctgyid" #ctgyid="ngModel">
+      <md-option *ngFor="let ctgy of arCategory" [value]="ctgy.Id">{{ ctgy.Name }} - ({{ ctgy.Id }}) </md-option>
     </md-select>
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input mdInput placeholder="Name" required [(ngModel)]="detailObject.Name" name="objname" #objname="ngModel">
+      <input mdInput placeholder="{{'Common.Name' | translate}}" required [(ngModel)]="detailObject.Name" name="objname" #objname="ngModel">
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
     <textarea htmlEditor [(ngModel)]="detailObject.Content" name="content"></textarea>
   </div>
   <div layout="row" layout-margin>
-    <button type="submit" md-button [disabled]="!detailForm.form.valid">Submit</button>
-    <button type="reset" md-button>Reset</button>
+    <button type="submit" md-button [disabled]="!detailForm.form.valid">{{'Common.Submit' | translate}}</button>
+    <button type="reset" md-button>{{'Common.Reset' | translate}}</button>
   </div>
-  <div margin="5px"></div>
 </form>

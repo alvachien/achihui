@@ -408,7 +408,7 @@ export class LearnHistory extends hih.BaseModel {
         // }
 
         this.LearnDate = new Date();
-        //this.LearnDateString = Utility
+        this.LearnDateString = hih.Utility.Date2String(this.LearnDate);
     }
 
     public generateKey() : string {
@@ -504,10 +504,10 @@ export class LearnHistory extends hih.BaseModel {
         // }
 
         let rstObj = super.writeJSONObject();
-        rstObj.UserId = this.UserId;
-        rstObj.ObjectId = this.ObjectId;
-        rstObj.LearnDate = this.LearnDate;
-        rstObj.Comment = this.Comment;
+        rstObj.userID = this.UserId;
+        rstObj.objectID = this.ObjectId;
+        rstObj.learnDate = this.LearnDate;
+        rstObj.comment = this.Comment;
         return rstObj;
     }
 

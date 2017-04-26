@@ -1,12 +1,13 @@
 <form (ngSubmit)="onSubmit()" #detailForm="ngForm">
   <div layout="row" layout-margin>
-    <md-select flex placeholder="User" [disabled]="!IsUIEditable()" [(ngModel)]="historyObject.UserId" name="userid" #userid="ngModel">
+    <md-select flex placeholder="{{'Login.User' | translate}}" [disabled]="!IsUIEditable()" [(ngModel)]="historyObject.UserId" name="userid" #userid="ngModel">
       <md-option *ngFor="let user of arUsers" [value]="user.UserId">{{ user.DisplayAs }}</md-option>
     </md-select>
   </div>
+
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input type="text" mdInput required placeholder="Object ID" [mdAutocomplete]="objid" [formControl]="controlObjectID">
+      <input type="text" mdInput required placeholder="{{'Learning.LearningObject' | translate}}" [mdAutocomplete]="objid" [formControl]="controlObjectID">
     </md-input-container>
 
     <md-autocomplete flex #objid="mdAutocomplete" [displayWith]="displayFn">
@@ -23,7 +24,7 @@
   </div>
   <div layout="row" layout-margin>
     <md-input-container flex>
-      <input mdInput placeholder="Learn date" type="date" required [disabled]="!IsUIEditable()" [(ngModel)]="historyObject.LearnDateString" name="lrndate" #lrndate="ngModel">
+      <input mdInput placeholder="{{'Common.Date' | translate}}" type="date" required [disabled]="!IsUIEditable()" [(ngModel)]="historyObject.LearnDateString" name="lrndate" #lrndate="ngModel">
     </md-input-container>
   </div>
   <div layout="row" layout-margin>
