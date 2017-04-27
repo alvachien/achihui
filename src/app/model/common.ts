@@ -79,10 +79,10 @@ export class InfoMessage {
     public MsgContent: string;
 }
 
-export class BaseModel {        
-    public CreatedAt: Date;
+export class BaseModel {
+    protected _createdAt: Date;
     public CreatedBy: string;
-    public UpdatedAt: Date;
+    protected _updatedAt: Date;
     public UpdatedBy: string;
 
     // For checking
@@ -92,6 +92,21 @@ export class BaseModel {
     public CreatedAtString: string;
     public UpdatedAtString: string;
 
+    get CreatedAt(): Date {
+        return this._createdAt;
+    }
+    set CreatedAt(ca: Date) {        
+        this._createdAt = ca;
+        this.CreatedAtString = Utility.Date2String(this._createdAt);
+    }
+    get UpdatedAt(): Date {
+        return this._updatedAt;
+    }
+    set UpdatedAt(ua: Date) {
+        this._updatedAt = ua;
+        this.UpdatedAtString = Utility.Date2String(this._updatedAt);
+    }
+
     constructor() {
         // if (environment.DebugLogging) {
         //     console.log("Entering constructor of BaseModel");
@@ -99,8 +114,6 @@ export class BaseModel {
 
         this.CreatedAt = new Date();
         this.UpdatedAt = new Date();
-        this.CreatedAtString = Utility.Date2String(this.CreatedAt);
-        this.UpdatedAtString = Utility.Date2String(this.UpdatedAt);
     }
 
     public onInit() {
@@ -142,14 +155,16 @@ export class BaseModel {
         // }
 
         let rstobj: any = {};
-        if (this.CreatedAt) {
-            rstobj.createdAt = this.CreatedAt;
+        if (this._createdAt) {
+            //rstobj.createdAt = this.CreatedAt;
+            rstobj.createdAt = this.CreatedAtString;
         }
         if (this.CreatedBy && this.CreatedBy.length > 0) {
             rstobj.createdBy = this.CreatedBy;
         }
-        if (this.UpdatedAt) {
-            rstobj.updatedAt = this.UpdatedAt;
+        if (this._updatedAt) {
+            //rstobj.updatedAt = this.UpdatedAt;
+            rstobj.updatedAt = this.UpdatedAtString;
         }
         if (this.UpdatedBy && this.UpdatedBy.length >0 ) {
             rstobj.updatedBy = this.UpdatedBy;
@@ -179,13 +194,15 @@ export class BaseModel {
             this.CreatedBy = data.createdBy;
         }
         if (data && data.createdAt) {
-            this.CreatedAt = data.createdAt;
+            //this.CreatedAt = data.createdAt;
+            this.CreatedAt = Utility.String2Date(data.createdAt);
         }
         if (data && data.updatedBy) {
             this.UpdatedBy = data.updatedBy;
         }
         if (data && data.updatedAt) {
-            this.UpdatedAt = data.updatedAt;
+            //this.UpdatedAt = data.updatedAt;
+            this.UpdatedAt = Utility.String2Date(data.updatedAt);
         }
     }
 }

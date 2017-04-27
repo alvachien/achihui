@@ -58,16 +58,27 @@ export class Setting extends hih.BaseModel {
 }
 
 export class ExchangeRate extends hih.BaseModel {
-    public TranDate: Date;
+    private _tranDate: Date;
     public ForeignCurrency: string;
     public Rate: number;
     public RefDocId: number;
+
+    public TranDateString: string;
+    get TranDate() : Date {
+        return this._tranDate;
+    }
+    set TranDate(td: Date) {
+        this._tranDate = td;
+        this.TranDateString = hih.Utility.Date2String(this._tranDate);
+    }
 
     constructor() {
         super();
         // if (environment.DebugLogging) {
         //     console.log("Entering constructor of KnowledgeType");
         // }
+
+        this.TranDate = new Date();
     }
 
     public onInit() {
@@ -427,8 +438,8 @@ export class Account extends hih.BaseModel {
 
 export class AccountExtraAdvancePayment extends AccountExtra {
     public Direct: boolean;
-    public StartDate: Date;
-    public EndDate: Date;
+    private _startDate: Date;
+    private _endDate: Date;
     public RepeatType: hih.RepeatFrequency;
     public RefDocId: number;
     public DeferredDays: string;
@@ -438,14 +449,27 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     public StartDateString: string;
     public EndDateString: string;
 
+    get StartDate(): Date {
+        return this._startDate;
+    }
+    set StartDate(sd: Date) {
+        this._startDate = sd;
+        this.StartDateString = hih.Utility.Date2String(sd);
+    }
+
+    get EndDate(): Date {
+        return this._endDate;
+    }
+    set EndDate(ed: Date) {
+        this._endDate = ed;
+        this.EndDateString = hih.Utility.Date2String(ed);
+    }
+
     constructor() {
         super();
 
         this.StartDate = new Date();
         this.EndDate = new Date();
-
-        this.StartDateString = hih.Utility.Date2String(this.StartDate);
-        this.EndDateString = hih.Utility.Date2String(this.EndDate);
     }
 
     public onInit() {

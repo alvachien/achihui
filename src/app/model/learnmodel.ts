@@ -393,8 +393,8 @@ export class LearnObject extends hih.BaseModel {
 export class LearnHistory extends hih.BaseModel {
     public UserId: string;
     public ObjectId: number;
-    public LearnDate: Date;
     public Comment: string;
+    private _learnDate: Date;
 
     // Additional info, not need for saving
     public UserDisplayAs: string;
@@ -408,11 +408,18 @@ export class LearnHistory extends hih.BaseModel {
         // }
 
         this.LearnDate = new Date();
-        this.LearnDateString = hih.Utility.Date2String(this.LearnDate);
     }
 
     public generateKey() : string {
         return this.UserId + "_" + this.ObjectId.toString() + "_" + hih.Utility.Date2String(this.LearnDate); 
+    }
+
+    get LearnDate(): Date {
+        return this._learnDate;
+    }
+    set LearnDate(ld: Date) {
+        this._learnDate = ld;
+        this.LearnDateString = hih.Utility.Date2String(this._learnDate);
     }
 
     public onInit() {
@@ -506,7 +513,7 @@ export class LearnHistory extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         rstObj.userID = this.UserId;
         rstObj.objectID = this.ObjectId;
-        rstObj.learnDate = this.LearnDate;
+        rstObj.learnDate = this.LearnDateString;
         rstObj.comment = this.Comment;
         return rstObj;
     }
@@ -525,8 +532,7 @@ export class LearnHistory extends hih.BaseModel {
             this.ObjectId = +data.objectID;
         }
         if (data && data.learnDate) {
-            this.LearnDate = new Date(data.learnDate);
-            this.LearnDateString = hih.Utility.Date2String(this.LearnDate);
+            this.LearnDate = hih.Utility.String2Date(data.learnDate);
         }
         if (data && data.comment && data.comment.length > 0) {
             this.Comment = data.comment;
