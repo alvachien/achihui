@@ -479,16 +479,8 @@ export class AccountExtraAdvancePayment extends AccountExtra {
         //     console.log("Entering onInit of AccountExtraAdvancePayment");
         // }
 
-        if (this.StartDate) {
-            this.StartDateString = hih.Utility.Date2String(this.StartDate);
-        } else {
-            this.StartDateString = "";
-        }
-        if (this.EndDate) {
-            this.EndDateString = hih.Utility.Date2String(this.EndDate);
-        } else {
-            this.EndDateString = "";
-        }
+        this.StartDate = new Date();
+        this.EndDate = new Date();
     }
 
     public writeJSONObject(): any {
@@ -498,8 +490,8 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 
         let rstobj: any = super.writeJSONObject();
         rstobj.direct = this.Direct;
-        rstobj.startDate = this.StartDate;
-        rstobj.endDate = this.EndDate;
+        rstobj.startDate = this.StartDateString;
+        rstobj.endDate = this.EndDateString;
         rstobj.rptType = this.RepeatType;
         rstobj.refDocID = this.RefDocId;
         rstobj.defrrDays = this.DeferredDays;
@@ -521,12 +513,10 @@ export class AccountExtraAdvancePayment extends AccountExtra {
             this.Direct = false;
         }
         if (data && data.startDate) {
-            this.StartDate = new Date(data.startDate);
-            this.StartDateString = hih.Utility.Date2String(this.StartDate);
+            this.StartDate = hih.Utility.String2Date(data.startDate);
         }
         if (data && data.endDate) {
-            this.EndDate = new Date(data.endDate);
-            this.EndDateString = hih.Utility.Date2String(this.EndDate);
+            this.EndDate = hih.Utility.String2Date(data.endDate);
         }
         if (data && data.rptType) {
             this.RepeatType = data.rptType;
@@ -651,8 +641,8 @@ export class ControllingCenter extends hih.BaseModel {
 export class Order extends hih.BaseModel {
     public Id: number;
     public Name: string;
-    public ValidFrom: Date;
-    public ValidTo: Date;
+    public _validFrom: Date;
+    public _validTo: Date;
     public Comment: string;
 
     public SRules: Array<SettlementRule> = [];
@@ -660,6 +650,20 @@ export class Order extends hih.BaseModel {
     // UI part
     public ValidFromString: string;
     public ValidToString: string;
+    get ValidFrom(): Date {
+        return this._validFrom;
+    }
+    set ValidFrom(vf: Date) {
+        this._validFrom = vf;
+        this.ValidFromString = hih.Utility.Date2String(this._validFrom);
+    }
+    get ValidTo(): Date {
+        return this._validTo;
+    }
+    set ValidTo(vt: Date) {
+        this._validTo = vt;
+        this.ValidToString = hih.Utility.Date2String(this._validTo);
+    }
 
     constructor() {
         super();
@@ -669,8 +673,6 @@ export class Order extends hih.BaseModel {
 
         this.ValidFrom = new Date();
         this.ValidTo = new Date();
-        this.ValidFromString = hih.Utility.Date2String(this.ValidFrom);
-        this.ValidToString = hih.Utility.Date2String(this.ValidTo);
     }
 
     public onInit() {
@@ -680,16 +682,8 @@ export class Order extends hih.BaseModel {
         //     console.log("Entering onInit of Order");
         // }
 
-        if (this.ValidFrom) {
-            this.ValidFromString = hih.Utility.Date2String(this.ValidFrom);
-        } else {
-            this.ValidFromString = "";
-        }
-        if (this.ValidTo) {
-            this.ValidToString = hih.Utility.Date2String(this.ValidTo);
-        } else {
-            this.ValidToString = "";
-        }
+        this.ValidFrom = new Date();
+        this.ValidTo = new Date();
     }
 
     public onVerify(context: any): boolean {
@@ -790,8 +784,8 @@ export class Order extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         rstObj.id = this.Id;
         rstObj.name = this.Name;
-        rstObj.validFrom = this.ValidFrom;
-        rstObj.validTo = this.ValidTo;
+        rstObj.validFrom = this.ValidFromString;
+        rstObj.validTo = this.ValidToString;
         rstObj.comment = this.Comment;
         rstObj.sRuleList = [];
 
@@ -821,12 +815,10 @@ export class Order extends hih.BaseModel {
             this.Comment = data.comment;
         }
         if (data && data.validFrom) {
-            this.ValidFrom = new Date(data.validFrom);
-            this.ValidFromString = hih.Utility.Date2String(this.ValidFrom);
+            this.ValidFrom = hih.Utility.String2Date(data.validFrom);
         }
         if (data && data.validTo) {
-            this.ValidTo = new Date(data.validTo);
-            this.ValidToString = hih.Utility.Date2String(this.ValidTo);
+            this.ValidTo = hih.Utility.String2Date(data.validTo);
         }
 
         this.SRules = [];
@@ -1026,7 +1018,7 @@ export class TranType extends hih.BaseModel {
 export class Document extends hih.BaseModel {
     public Id: number;
     public DocType: number;
-    public TranDate: Date;
+    public _tranDate: Date;
     public TranCurr: string;
     public Desp: string;
     public ExgRate: number;
@@ -1040,6 +1032,13 @@ export class Document extends hih.BaseModel {
     public DocTypeName: string;
     public TranAmount: number;
     public TranDateString: string;
+    get TranDate(): Date {
+        return this._tranDate;
+    }
+    set TranDate(td: Date) {
+        this._tranDate = td;
+        this.TranDateString = hih.Utility.Date2String(td);
+    }
 
     constructor() {
         super();
@@ -1049,7 +1048,6 @@ export class Document extends hih.BaseModel {
         // }
 
         this.TranDate = new Date();
-        this.TranDateString = hih.Utility.Date2String(this.TranDate);
     }
 
     public onInit() {
@@ -1200,7 +1198,7 @@ export class Document extends hih.BaseModel {
         let rstObj = super.writeJSONObject();
         rstObj.iD = this.Id;
         rstObj.docType = this.DocType;
-        rstObj.tranDate = this.TranDate;
+        rstObj.tranDate = this.TranDateString;
         rstObj.tranCurr = this.TranCurr;
         rstObj.desp = this.Desp;
 
@@ -1230,8 +1228,7 @@ export class Document extends hih.BaseModel {
             this.DocTypeName = data.docTypeName;
         }
         if (data && data.tranDate) {
-            this.TranDate = new Date(data.tranDate);
-            this.TranDateString = hih.Utility.Date2String(this.TranDate);
+            this.TranDate = hih.Utility.String2Date(data.tranDate);
         }
         if (data && data.tranCurr) {
             this.TranCurr = data.tranCurr;
@@ -1544,7 +1541,7 @@ export class TemplateDocADP extends hih.BaseModel {
     public DocId: number;
     public RefDocId: number;
     public AccountId: number;
-    public TranDate: Date;
+    private _tranDate: Date;
     public TranType: number;
     public TranAmount: number;
     public ControlCenterId: number;
@@ -1553,6 +1550,13 @@ export class TemplateDocADP extends hih.BaseModel {
 
     // UI part
     public TranDateString: string;
+    get TranDate(): Date {
+        return this._tranDate;
+    }
+    set TranDate(td: Date) {
+        this._tranDate = td;
+        this.TranDateString = hih.Utility.Date2String(td);
+    }
 
     constructor() {
         super();
@@ -1561,7 +1565,6 @@ export class TemplateDocADP extends hih.BaseModel {
         // }
 
         this.TranDate = new Date();
-        this.TranDateString = hih.Utility.Date2String(this.TranDate);
     }
 
     public onInit() {
@@ -1571,7 +1574,6 @@ export class TemplateDocADP extends hih.BaseModel {
         // }
 
         this.TranDate = new Date();
-        this.TranDateString = hih.Utility.Date2String(this.TranDate);
     }
 
     public onVerify(context: any): boolean {
@@ -1593,7 +1595,7 @@ export class TemplateDocADP extends hih.BaseModel {
         rstObj.docID = this.DocId;
         rstObj.refDocID = this.RefDocId;
         rstObj.accountID = this.AccountId;
-        rstObj.tranDate = this.TranDate;
+        rstObj.tranDate = this.TranDateString;
         rstObj.tranType = this.TranType;
         rstObj.tranAmount = this.TranAmount;
         rstObj.controlCenterID = this.ControlCenterId;
@@ -1699,7 +1701,7 @@ export class DocumentItemWithBalance {
     public TranAmount_Org: number;
     public TranAmount_LC: number;
     public Balance: number;
-    public TranDate: Date;
+    private _tranDate: Date;
     public DocDesp: string;
     public DocId: number;
     public ItemId: number;
@@ -1715,6 +1717,13 @@ export class DocumentItemWithBalance {
     public TranTypeName: string;
     public ControlCenterName: string;
     public OrderName: string;
+    get TranDate() : Date {
+        return this._tranDate;
+    }
+    set TranDate(td: Date) {
+        this._tranDate = td;
+        this.TranDateString = hih.Utility.Date2String(td);
+    }
 
     public onSetData(data: any) {
         if (data && data.tranType_Exp) {
@@ -1745,8 +1754,7 @@ export class DocumentItemWithBalance {
             this.OrderName = data.orderName;
         }
         if (data && data.tranDate) {
-            this.TranDate = new Date(data.tranDate);
-            this.TranDateString = hih.Utility.Date2String(this.TranDate);
+            this.TranDate = hih.Utility.String2Date(data.tranDate);
         }
         if (data && data.docDesp) {
             this.DocDesp = data.docDesp;
