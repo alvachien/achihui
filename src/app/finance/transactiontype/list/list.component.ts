@@ -130,6 +130,13 @@ export class ListComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering onCreateTransactionType of FinanceTransactionTypeList");
     }
+
     this._router.navigate(['/finance/transactiontype/create']);
+  }
+  public onDisplayTransactionType() {
+  }
+  public onEditTransactionType() {
+  }
+  public onDeleteTransactionType() {
   }
 }

@@ -22,7 +22,7 @@
 </div>
 <md-divider></md-divider>
 <td-data-table
-  #dataTable
+  #dataTableLearnObject
   [data]="filteredData"
   [columns]="columns"
   selectable="true"
@@ -33,10 +33,10 @@
   [sortOrder]="sortOrder"
   (sortChange)="sort($event)">
 </td-data-table>
-<div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">
+<div class="md-padding" *ngIf="!dataTableLearnObject.hasData" layout="row" layout-align="center center">
   <h3>{{'Common.NoResultToDisplay' | translate}}</h3>
 </div>
-<td-paging-bar #pagingBar [pageSizes]="[5, 10, 15, 20]" [total]="filteredTotal" (change)="page($event)">
+<td-paging-bar #pagingBar [pageSizes]="[20, 40, 60, 80]" [total]="filteredTotal" (change)="page($event)">
   <span td-paging-bar-label hide-xs>{{'Common.RowPerPage' | translate}}</span>
   {{pagingBar.range}} <span hide-xs>of {{pagingBar.total}}</span>
 </td-paging-bar>

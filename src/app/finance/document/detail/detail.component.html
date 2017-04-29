@@ -67,7 +67,7 @@
         <md-card>
           <md-card-content>
             <h3 md-line>Items</h3>
-            <div>
+            <form #itemDetailForm="ngForm">
               <div layout="row" layout-margin>
                 <md-input-container flex>
                   <input mdInput type="number" placeholder="#" required [(ngModel)]="itemObject.ItemId" name="itemid" #itemid="ngModel">
@@ -113,11 +113,11 @@
                   </md-option>
                 </md-select>
               </div>
-            </div>
+            </form>
           </md-card-content>
           <md-card-actions>
             <button md-button color="accent" [disabled]="!itemDetailForm.form.valid" (click)="onItemSubmit()">Add Item</button>
-            <button md-button (click)="resetCurrentItem()">Reset current item</button>
+            <button md-button formnovalidate (click)="resetCurrentItem()">Reset current item</button>
           </md-card-actions>
         </md-card>
       </md-tab>

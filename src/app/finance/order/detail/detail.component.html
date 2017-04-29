@@ -8,7 +8,7 @@
         <ng-template md-tab-label>
           <md-icon>tune</md-icon> Header
         </ng-template>
-        <form #detailForm="ngForm">
+        <form #orderForm="ngForm">
           <div layout="row" layout-margin>
             <md-input-container flex>
               <input mdInput placeholder="{{'Common.ID' | translate}}" readonly [(ngModel)]="orderObject.Id" name="id" #id="ngModel">
@@ -90,7 +90,7 @@
           </md-card-content>
           <md-card-actions>
             <button md-button color="accent" [disabled]="!ruleDetailForm.form.valid" (click)="onRuleSubmit()">Add Rule</button>
-            <button md-button>Reset current rule</button>
+            <button md-button (click)="onRuleReset()">Reset current rule</button>
           </md-card-actions>
         </md-card>
       </md-tab>
@@ -98,7 +98,7 @@
   </md-card-content>
   <md-divider></md-divider>
   <md-card-actions>
-    <button md-button color="accent" [disabled]="!detailForm.form.valid" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button md-button color="accent" [disabled]="!orderForm.form.valid" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
     <button md-button>{{'Common.Cancel' | translate}}</button>
   </md-card-actions>
 </md-card>

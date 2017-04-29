@@ -1,12 +1,10 @@
 import {
   Component, OnInit, OnDestroy, AfterViewInit, NgZone,
-  EventEmitter, Input, Output, ViewContainerRef
+  EventEmitter, Input, Output, ViewContainerRef, ViewChild
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import {
-  Http, Headers, Response, RequestOptions,
-  URLSearchParams
-} from '@angular/http';
+import { Http, Headers, Response, RequestOptions, URLSearchParams } from '@angular/http';
+import { NgForm } from '@angular/forms';
 import {
   TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent,
   ITdDataTableColumn, ITdDataTableSelectEvent, TdDialogService
@@ -19,6 +17,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { UIStatusService } from '../../../services/uistatus.service';
 import { AuthService } from '../../../services/auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'finance-order-detail',
@@ -36,6 +35,8 @@ export class DetailComponent implements OnInit {
   public orderObject: HIHFinance.Order = null;
   public sruleObject: HIHFinance.SettlementRule = null;
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
+  private clnhdrstring: string[] = [ "Common.ID", "Finance.ControlCenter", "Finance.ControlCenter", "Finance.Amount", "Common.Comment"];
+  public uiRuleMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
   public clnRules: ITdDataTableColumn[] = [
     { name: 'RuleId', label: '#', tooltip: 'ID' },
     { name: 'ControlCenterId', label: 'Id', tooltip: 'Name' },
@@ -43,6 +44,7 @@ export class DetailComponent implements OnInit {
     { name: 'Precent', label: 'Precentage', tooltip: 'Precentage' },
     { name: 'Comment', label: 'Comment' }
   ];
+  @ViewChild('ruleDetailForm') ruleDetailForm: NgForm;
 
   constructor(private _http: Http,
     private _zone: NgZone,
@@ -51,10 +53,12 @@ export class DetailComponent implements OnInit {
     private _dialogService: TdDialogService,
     private _viewContainerRef: ViewContainerRef,
     private _authService: AuthService,
+    private _tranService: TranslateService,
     private _uistatus: UIStatusService) {
     this.orderObject = new HIHFinance.Order();
     this.sruleObject = new HIHFinance.SettlementRule();
     this.uiMode = HIHCommon.UIMode.Create;
+    this.uiRuleMode = HIHCommon.UIMode.Create;
 
     this._apiUrl = environment.ApiUrl + "/api/financeorder";
   }
@@ -66,6 +70,8 @@ export class DetailComponent implements OnInit {
     if (environment.DebugLogging) {
       console.log("Entering ngOnInit of FinanceOrderDetail");
     }
+
+    this.loadHeaderString();
 
     //this.loadUserList();
     Observable.forkJoin([this.loadControlCenterList(), this.loadUserList()])
@@ -154,6 +160,23 @@ export class DetailComponent implements OnInit {
       this.orderObject.SRules.push(this.sruleObject);
       this.sruleObject = new HIHFinance.SettlementRule();
     });
+
+    this.ruleDetailForm.form.reset();
+  }
+
+  public onDisplayRule(row: any) {
+    this.sruleObject = row;
+    this.uiRuleMode = HIHCommon.UIMode.Display;
+  }
+  public onEditRule(row: any) {
+    this.sruleObject = row;
+    this.uiRuleMode = HIHCommon.UIMode.Change;
+  }
+  public onDeleteRule(row: any) {    
+    // Todo
+  }
+  public onRuleReset() {
+    this.ruleDetailForm.form.reset();
   }
 
   public onSubmit(): void {
@@ -353,5 +376,15 @@ export class DetailComponent implements OnInit {
       error.status ? `${error.status} - ${error.statusText}` : 'Server error';
     console.error(errMsg); // log to console instead
     return Observable.throw(errMsg);
+  }
+
+  private loadHeaderString(): void {
+    this._tranService.get(this.clnhdrstring).subscribe(x => {
+      for(let i = 0; i < this.clnRules.length; i ++) {
+        this.clnRules[i].label = x[this.clnhdrstring[i]];
+      }
+    }, error => {
+    }, () => {
+    });    
   }
 }

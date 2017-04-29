@@ -36,9 +36,8 @@
                   <md-divider></md-divider>
                   <div style="height:250px;">
                     <ngx-charts-gauge
-                      [view]="view"
                       [scheme]="colorScheme"
-                      [results]="data"
+                      [results]="arIncoming"
                       [min]="0"
                       [max]="100"
                       [angleSpan]="240"
@@ -57,9 +56,8 @@
                   <md-divider></md-divider>
                   <div style="height:250px;">
                     <ngx-charts-gauge
-                      [view]="view"
                       [scheme]="colorScheme"
-                      [results]="data"
+                      [results]="arOutgoing"
                       [min]="0"
                       [max]="100"
                       [angleSpan]="240"
@@ -75,14 +73,16 @@
             </div>-->
             
             <td-data-table
-              #dataTable
+              #dataTableTranAccountList
               [data]="filteredData"
               [columns]="columns"
-              [sortable]="true"
-              [selectable]="true" [sortBy]="sortBy" [sortOrder]="sortOrder"
+              sortable="true"
+              selectable="true"
+              [sortBy]="sortBy"
+              [sortOrder]="sortOrder"
               (sortChange)="sort($event)">
             </td-data-table>
-            <div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">
+            <div class="md-padding" *ngIf="!dataTableTranAccountList.hasData" layout="row" layout-align="center center">
               <h3>{{'Common.NoResultToDisplay' | translate}}</h3>
             </div>
             <td-paging-bar #pagingBar [pageSizes]="[20, 40, 60, 80]" [total]="filteredTotal" (change)="page($event)">

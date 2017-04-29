@@ -34,7 +34,7 @@
   </div>
   <div layout="row" layout-margin>
     <button type="submit" md-button [disabled]="!IsUIEditable() && !detailForm.form.valid">{{'Common.Submit' | translate}}</button>
-    <button type="reset" md-button [disabled]="!IsUIEditable()">{{'Common.Reset' | translate}}</button>
-    <button md-button (click)="onBack()">{{'Common.Back' | translate}}</button>
+    <button formnovalidate type="reset" md-button [disabled]="!IsUIEditable()">{{'Common.Reset' | translate}}</button>
+    <button formnovalidate md-button (click)="onBack()">{{'Common.Back' | translate}}</button>
   </div>
 </form>

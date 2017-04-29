@@ -42,6 +42,17 @@ export class AccountlistComponent implements OnInit {
   };
   sortOrder: TdDataTableSortingOrder = TdDataTableSortingOrder.Descending;
 
+  colorScheme = {
+    domain: [
+      '#5AA454', '#A10A28', '#C7B42C', '#AAAAAA',
+      '#D2691E', '#FF7F50', '#6495ED', '#FFF8DC', '#DC143C', '#00FFFF', '#00008B',
+      '#F0F8FF', '#FAEBD7', '#00FFFF', '#7FFFD4', '#F0FFFF', '#F5F5DC', '#FFE4C4', // '#000000'
+      '#FFEBCD', '#0000FF', '#8A2BE2', '#A52A2A', '#DEB887', '#5F9EA0', '#7FFF00'
+      ]
+  };
+  // rstIncoming: any[] = [];
+  // rstOutgoing: any[] = [];
+
   constructor(private _http: Http,
     private _uistatus: UIStatusService,
     private _authService: AuthService,
@@ -130,6 +141,38 @@ export class AccountlistComponent implements OnInit {
       .catch(this.handleError)
       .subscribe(data => {
         if (data instanceof Array) {
+          // Chart
+          // this.rstIncoming = [];
+          // this.rstOutgoing = [];
+
+          // for(let ld of this.listData) {            
+          //   if (ld.TranAmount > 0) {
+          //     this.rstDebit.push({
+          //       name: ld.AccountName,
+          //       value: ld.DebitBalance
+          //     });
+          //   }
+          //   if (ld.CreditBalance > 0) {
+          //     this.rstCredit.push({
+          //       name: ld.AccountName,
+          //       value: ld.CreditBalance
+          //     });
+          //   }
+
+          //   if (ld.Balance > 0) {
+          //     this.rstAssets.push({
+          //       name: ld.AccountName,
+          //       value: ld.Balance
+          //     });
+          //   } else if(ld.Balance < 0) {
+          //     this.rstLiabilities.push({
+          //       name: ld.AccountName,
+          //       value: ld.Balance * (-1)
+          //     });
+          //   }          
+          // }
+
+          // Table
           this.listData = data;
           this.filter();
         }

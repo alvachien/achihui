@@ -1,12 +1,10 @@
 import {
-  Component, OnInit, OnDestroy, AfterViewInit, NgZone,
-  EventEmitter, Input, Output, ViewContainerRef
+  Component, OnInit, OnDestroy, AfterViewInit, AfterViewChecked, NgZone,
+  EventEmitter, Input, Output, ViewContainerRef, ViewChild
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import {
-  Http, Headers, Response, RequestOptions,
-  URLSearchParams
-} from '@angular/http';
+import { Http, Headers, Response, RequestOptions, URLSearchParams } from '@angular/http';
+import { NgForm } from '@angular/forms';
 import {
   TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent,
   ITdDataTableColumn, ITdDataTableSelectEvent, TdDialogService
@@ -26,7 +24,7 @@ import { BufferService } from '../../../services/buff.service';
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css']
 })
-export class DetailComponent implements OnInit {
+export class DetailComponent implements OnInit, AfterViewChecked {
 
   private routerID: number; // Current ID in routing
   private _apiUrl: string;
@@ -54,6 +52,7 @@ export class DetailComponent implements OnInit {
     { name: 'OrderName', label: 'Order', tooltip: 'Order' },
     { name: 'Desp', label: 'Description' }
   ];
+  @ViewChild('itemDetailForm') itemDetailForm: NgForm;
 
   constructor(private _http: Http,
     private _zone: NgZone,
@@ -154,6 +153,10 @@ export class DetailComponent implements OnInit {
     });
   }
 
+  ngAfterViewChecked() {
+    //this.formChanged();
+  }
+
   ////////////////////////////////////////////
   // Methods for UI controls
   ////////////////////////////////////////////
@@ -193,10 +196,37 @@ export class DetailComponent implements OnInit {
       this.docObject.Items.push(this.itemObject);
       this.itemObject = new HIHFinance.DocumentItem();
     });
+
+    this.itemDetailForm.form.reset();
   }
 
   public resetCurrentItem(): void {
+    this.itemDetailForm.form.reset();    
+  }
 
+  public onDisplayItem(row: any) {
+    if (row) {
+      this.itemObject = row;
+    }
+  }
+
+  public onEditItem(row: any) {
+    if (row) {
+      this.itemObject = row;
+    }
+  }
+
+  public onDeleteItem(row: any) {
+    // Todo!
+  }
+
+  formChanged() {
+    // if (this.currentForm === this.heroForm) { return; }
+    // this.heroForm = this.currentForm;
+    // if (this.heroForm) {
+    //   this.heroForm.valueChanges
+    //     .subscribe(data => this.onValueChanged(data));
+    // }
   }
 
   public onSubmit(): void {

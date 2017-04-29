@@ -266,6 +266,10 @@ export class AdvpaydocComponent implements OnInit {
       });
   }
 
+  public onTmpDocReset() {
+    
+  }
+
   public onSubmit(): void {
     let context: any = {
       arDocType: this.arDocType,

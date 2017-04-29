@@ -129,7 +129,7 @@ export class BalanceSheetComponent implements OnInit {
               name: ld.AccountName,
               value: ld.Balance * (-1)
             });
-          }          
+          }
         }
       },
       error => {

@@ -1,14 +1,13 @@
 import { Location } from '@angular/common';
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, NgZone,
-  EventEmitter, Input, Output, ViewContainerRef 
+import { Component, OnInit, OnDestroy, AfterViewInit, NgZone,
+  EventEmitter, Input, Output, ViewContainerRef, ViewChild
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
   Http, Headers, Response, RequestOptions,
   URLSearchParams
 } from '@angular/http';
-import { FormControl } from '@angular/forms';
+import { NgForm, FormControl } from '@angular/forms';
 import { TdDialogService } from '@covalent/core';
 import * as HIHCommon from '../../../model/common';
 import * as HIHLearn from '../../../model/learnmodel';
@@ -37,6 +36,8 @@ export class DetailComponent implements OnInit {
   public uiMode: HIHCommon.UIMode = HIHCommon.UIMode.Create;
   public controlObjectID: FormControl; 
   public filteredObjects: Observable<HIHLearn.LearnObject[]>;
+
+  @ViewChild('detailForm') detailForm: NgForm;
 
   constructor(private _http: Http,
     private _location: Location,

@@ -143,7 +143,7 @@
                 </md-card-content>
                 <md-card-actions>
                   <button md-button color="accent" [disabled]="!tmpDocDetailForm.form.valid" (click)="onTmpDocSubmit()">Update Tmp Doc</button>
-                  <button md-button>Reset current tmp</button>
+                  <button md-button formnovalidate (click)="onTmpDocReset()">Reset current tmp</button>
                 </md-card-actions>
               </md-card>
             </div>
@@ -152,7 +152,7 @@
       </div>
       <div layout="row" layout-padding>
         <button md-button color="accent" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
-        <button md-button>{{'Common.Cancel' | translate}}</button>
+        <button md-button formnovalidate>{{'Common.Cancel' | translate}}</button>
       </div>
     </div>
   </md-card-content>
