@@ -63,7 +63,7 @@
           </md-option>
         </md-select>
       </div>
-      <div layout="row" layout-padding>
+      <div layout="row" layout-padding style="border:2px solid grey;">
         <md-tab-group flex>
           <md-tab>
             <ng-template md-tab-label>
@@ -110,7 +110,11 @@
               <md-icon>list</md-icon>Template Docs
             </ng-template>
 
-            <td-data-table [data]="tmpDocs" [columns]="clnTmpDocs" [selectable]="true"
+            <td-data-table 
+              [data]="tmpDocs" 
+              [columns]="clnTmpDocs" 
+              selectable="true"
+              multiple="false"
               [(ngModel)]="selectedTmpDocs">
             </td-data-table>
             <div *ngIf="selectedTmpDocs.length > 0">

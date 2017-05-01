@@ -31,6 +31,8 @@ export class BufferService {
   // Learn category
   public arrayLearnCategory: Array<HIHLearn.LearnCategory> = [];
   private _isLearnCategoryBufferred: boolean;
+  // Frequency type
+  
 
   constructor(
     private _http: Http,

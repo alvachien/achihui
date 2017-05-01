@@ -23,7 +23,7 @@ import { AuthService } from '../../../services/auth.service';
 import { BufferService } from '../../../services/buff.service';
 
 @Component({
-  selector: 'app-transferdoc',
+  selector: 'finance-document-transferdoc',
   templateUrl: './transferdoc.component.html',
   styleUrls: ['./transferdoc.component.scss']
 })

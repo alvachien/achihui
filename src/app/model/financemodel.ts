@@ -520,6 +520,8 @@ export class AccountExtraAdvancePayment extends AccountExtra {
         }
         if (data && data.rptType) {
             this.RepeatType = data.rptType;
+        } else {
+            this.RepeatType = hih.RepeatFrequency.Month;
         }
         if (data && data.refDocID) {
             this.RefDocId = +data.refDocID;

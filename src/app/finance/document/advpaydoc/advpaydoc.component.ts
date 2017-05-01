@@ -3,10 +3,7 @@ import {
   EventEmitter, Input, Output, ViewContainerRef
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import {
-  Http, Headers, Response, RequestOptions,
-  URLSearchParams
-} from '@angular/http';
+import { Http, Headers, Response, RequestOptions, URLSearchParams } from '@angular/http';
 import {
   TdDataTableService, TdDataTableSortingOrder, ITdDataTableSortChangeEvent,
   ITdDataTableColumn, ITdDataTableSelectEvent, TdDialogService
@@ -24,7 +21,7 @@ import { BufferService } from '../../../services/buff.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-advpaydoc',
+  selector: 'finance-document-advpaydoc',
   templateUrl: './advpaydoc.component.html',
   styleUrls: ['./advpaydoc.component.scss']
 })
@@ -39,6 +36,8 @@ export class AdvpaydocComponent implements OnInit {
   public arOrder: Array<HIHFinance.Order> = [];
   public arCurrency: Array<HIHFinance.Currency> = [];
   public arTranType: Array<HIHFinance.TranType> = [];
+  private arSetting: Array<HIHFinance.Setting> = [];
+  private localCurrency: string;
 
   public currentMode: string;
   public docObject: HIHFinance.Document = null;
@@ -94,6 +93,7 @@ export class AdvpaydocComponent implements OnInit {
       this.loadControlCenterList(),
       this.loadOrderList(),
       this.loadTranTypeList(),
+      this.loadFinSetting(),
       this._tranService.get(strar)
     ]).subscribe(data => {
       this._zone.run(() => {
@@ -103,28 +103,40 @@ export class AdvpaydocComponent implements OnInit {
         this.arControlCenter = data[3];
         this.arOrder = data[4];
         this.arTranType = data[5];
+        this.arSetting = data[6];
 
         for(let rf2 of this.arRepeatFrequency) {
-          rf2.DisplayString = data[6][rf2.DisplayString];
+          rf2.DisplayString = data[7][rf2.DisplayString];
         }
       });
+
+      for(let aset of this.arSetting) {
+        if (aset.SetId === 'LocalCurrency') {
+          this.localCurrency = aset.SetValue;
+          break;
+        }
+      }
 
       // Distinguish current mode
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === "createadvpay") {
-            this.currentMode = "Create";
+            this.currentMode = "Common.Create";
             this.docObject = new HIHFinance.Document();
             this.uiMode = HIHCommon.UIMode.Create;
+            this.docObject.DocType = HIHCommon.FinanceDocType_AdvancePayment;
+            if (this.localCurrency) {
+              this.docObject.TranCurr = this.localCurrency;
+            }
           } else if (x[0].path === "editadvpay") {
             this.routerID = +x[1].path;
 
-            this.currentMode = "Edit"
+            this.currentMode = "Common.Edit";
             this.uiMode = HIHCommon.UIMode.Change;
           } else if (x[0].path === "displayadvpay") {
             this.routerID = +x[1].path;
 
-            this.currentMode = "Display";
+            this.currentMode = "Common.Display";
             this.uiMode = HIHCommon.UIMode.Display;
           }
 
@@ -456,15 +468,28 @@ export class AdvpaydocComponent implements OnInit {
           // Account
           let acnt: HIHFinance.Account = new HIHFinance.Account();
           acnt.onSetData(x.accountVM);
+          this.uiObject.SourceAccountId = acnt.Id;
+          this.uiObject.SourceTranType = this.docObject.Items[0].TranType;
+          if (this.docObject.Items[0].ControlCenterId) {
+            this.uiObject.SourceControlCenterId = this.docObject.Items[0].ControlCenterId;
+          }
+          if (this.docObject.Items[0].OrderId) {
+            this.uiObject.SourceOrderId = this.docObject.Items[0].OrderId;
+          }
+          this.uiObject.TranAmount = this.docObject.Items[0].TranAmount;
+          
+          //this.uiObject.SourceControlCenterId = this.docObject.
           this.uiObject.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
           this.uiObject.AdvPayAccount.onSetData(x.accountVM.advancePaymentInfo);
 
           // Tmp docs
           this.uiObject.TmpDocs = [];
+          this.tmpDocs = [];
           for(let tdoc of x.tmpDocs) {
             let tmpdoc: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
             tmpdoc.onSetData(tdoc);
             this.uiObject.TmpDocs.push(tmpdoc);
+            this.tmpDocs.push(tmpdoc);
           }
         });
       }, error => {
@@ -499,6 +524,13 @@ export class AdvpaydocComponent implements OnInit {
     return this._http.get(usrApi, { headers: headers })
       .map(this.extractControlCenterData)
       .catch(this.handleError);
+  }
+  loadFinSetting(): Observable<any> {
+    if (environment.DebugLogging) {
+      console.log("Entering loadFinSetting of AdvpaydocComponent");
+    }
+
+    return this._buffService.getFinanceSettings();
   }
   loadDocTypeList(): Observable<any> {
     if (environment.DebugLogging) {
