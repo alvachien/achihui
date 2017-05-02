@@ -81,15 +81,8 @@ export class BufferService {
         strar.push(rf.DisplayString);
       }
 
-      this._tranService.get(strar).subscribe(x => {
-        this._isUIRepeatFrequencyBufferred = true;
-
-        for(let rf2 of this.arrayUIRepeatFrequency) {
-          rf2.DisplayString = x[rf2.DisplayString];
-        }
-
-        return Observable.of(this.arrayUIRepeatFrequency);
-      });
+      return this._tranService.get(strar)
+        .map(data => this.internalBufferFrequency(data, this));
     }
   }
   public resetRepeatFrequencies(): void {
@@ -413,6 +406,19 @@ export class BufferService {
   /*
   * Private methods
   */
+  private internalBufferFrequency(data: any, that: BufferService) {
+    if (environment.DebugLogging) {
+      console.log("Entering internalBufferFrequency of BufferService");
+    }
+
+    that._isUIRepeatFrequencyBufferred = true;
+
+    for(let rf2 of that.arrayUIRepeatFrequency) {
+      rf2.DisplayString = data[rf2.DisplayString];
+    }
+
+    return that.arrayUIRepeatFrequency;
+  }
   private internalBufferCurrencyData(res: Response, that: BufferService) {
     if (environment.DebugLogging) {
       console.log("Entering internalBufferCurrencyData of BufferService");

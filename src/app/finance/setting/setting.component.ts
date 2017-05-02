@@ -29,14 +29,15 @@ import { BufferService } from '../../services/buff.service';
 export class SettingComponent implements OnInit {
 
   private _apiUrl: string;
+  public localCurrency: string;
+  public arCurrency: Array<HIHFinance.Currency>;
+
   columns: ITdDataTableColumn[] = [
     { name: 'SetId', label: '#', tooltip: 'ID' },
     { name: 'SetValue', label: 'Value', tooltip: 'Name' },
     { name: 'Comment', label: 'Comment' }
   ];
   filteredData: any[];
-  selectable: boolean = true;
-  selectedRows: any[] = [];
 
   constructor(private _http: Http,
     private _zone: NgZone,
@@ -48,7 +49,7 @@ export class SettingComponent implements OnInit {
     private _buffService: BufferService,
     private _uistatus: UIStatusService) { 
       if (environment.DebugLogging) {
-        console.log("Entering constructor of FinanceOrderList");
+        console.log("Entering constructor of SettingComponent");
       }
   }
 
@@ -60,24 +61,20 @@ export class SettingComponent implements OnInit {
       console.log("Entering ngOnInit of SettingComponent");
     }
 
-    this.loadSetting();
-  }
-  loadSetting(): void {
-    if (environment.DebugLogging) {
-      console.log("Entering loadSetting of SettingComponent");
-    }
+    Observable.forkJoin([
+      this._buffService.getCurrencies(),
+      this._buffService.getFinanceSettings()
+    ]).subscribe(data => {
+      this.arCurrency = data[0];
+      if (data[1] instanceof Array) {
+        this.filteredData = data[1];
+      }
 
-    this._buffService.getFinanceSettings()
-      .subscribe(data => {
-        if (data instanceof Array) {
-          this.filteredData = data;
+      for(let sv of data[1]) {
+        if (sv.SetId === "LocalCurrency") {
+          this.localCurrency = sv.SetValue;
         }
-      },
-      error => {
-        // It should be handled already
-      },
-      () => {
-        // Finished
-      });
+      }
+    });
   }
 }

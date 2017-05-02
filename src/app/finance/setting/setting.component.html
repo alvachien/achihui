@@ -1,19 +1,38 @@
 <md-card>
-  <md-card-title>Setting</md-card-title>
-  <md-card-subtitle>List View</md-card-subtitle>
+  <md-card-title>{{'Common.Setting' | translate}}</md-card-title>
   <md-divider></md-divider>
   <md-card-content>
+    <form (ngSubmit)="onSubmit()" #settingForm="ngForm">
+      <div layout="row" layout-margin>
+        <md-select flex placeholder="{{'Finance.LocalCurrency' | translate}}" [(ngModel)]="localCurrency" name="localcurr" #loccur="ngModel">
+          <md-option flex *ngFor="let cur of arCurrency" [value]="cur.Currency">
+            {{cur.Symbol}} - {{cur.Name}}
+          </md-option>
+        </md-select>
+      </div>
+
+      <!--<div layout="row" layout-margin>
+        <md-input-container flex>
+          <input mdInput type="text" placeholder="{{'Common.Comment' | translate}}" name="cmt" #cmt="ngModel">
+        </md-input-container>
+      </div>-->
+
+      <div layout="row" layout-margin>
+        <button type="submit" md-button [disabled]="!settingForm.form.valid">{{'Common.Submit' | translate}}</button>
+        <button formnovalidate type="reset" md-button>{{'Common.Reset' | translate}}</button>
+        <button formnovalidate md-button (click)="onBack()">{{'Common.Back' | translate}}</button>
+      </div>
+    </form>
+
+    <md-divider></md-divider>
+    
     <td-data-table
-      #dataTable
+      #dataTableSetting
       [data]="filteredData"
       [columns]="columns"
-      selectable="true"
+      selectable="false"
       multiple="false"
-      sortable="true"
-      [sortBy]="sortBy"
-      [(ngModel)]="selectedRows"
-      [sortOrder]="sortOrder"
-      (sortChange)="sort($event)">
+      sortable="false">
     </td-data-table>
   </md-card-content>
 </md-card>
