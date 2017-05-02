@@ -235,6 +235,12 @@ export class AppLanguage {
     public AppFlag: boolean;
 }
 
+export class MultipleNamesObject {
+    public LangName: string;
+    public IsOrigin: boolean;
+    public Name: string;
+}
+
 export class Utility {
     public static Date2String(dt: Date) : string {
         // From: http://stackoverflow.com/questions/1056728/where-can-i-find-documentation-on-formatting-a-date-in-javascript

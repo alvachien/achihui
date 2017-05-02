@@ -71,7 +71,6 @@ export class AdvpaydocComponent implements OnInit {
     this.docObject = new HIHFinance.Document();
     this.uiObject = new HIHUI.UIFinAdvPayDocument();
     this.uiMode = HIHCommon.UIMode.Create;
-    this.arRepeatFrequency = HIHUI.UIRepeatFrequency.getRepeatFrequencies();
 
     this._apiUrl = environment.ApiUrl + "/api/financeadpdocument";      
   }
@@ -94,7 +93,7 @@ export class AdvpaydocComponent implements OnInit {
       this.loadOrderList(),
       this.loadTranTypeList(),
       this.loadFinSetting(),
-      this._tranService.get(strar)
+      this.loadUIFrequency()
     ]).subscribe(data => {
       this._zone.run(() => {
         this.arCurrency = data[0];
@@ -104,10 +103,7 @@ export class AdvpaydocComponent implements OnInit {
         this.arOrder = data[4];
         this.arTranType = data[5];
         this.arSetting = data[6];
-
-        for(let rf2 of this.arRepeatFrequency) {
-          rf2.DisplayString = data[7][rf2.DisplayString];
-        }
+        this.arRepeatFrequency = data[7];
       });
 
       for(let aset of this.arSetting) {
@@ -447,6 +443,10 @@ export class AdvpaydocComponent implements OnInit {
   ////////////////////////////////////////////
   // Methods for Utility methods
   ////////////////////////////////////////////
+  IsUIEditable() {
+    return HIHCommon.isUIEditable(this.uiMode);
+  }
+
   readDocument(): void {
     if (environment.DebugLogging) {
       console.log("Entering readDocument of AdvpaydocComponent");
@@ -489,6 +489,32 @@ export class AdvpaydocComponent implements OnInit {
             let tmpdoc: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
             tmpdoc.onSetData(tdoc);
             this.uiObject.TmpDocs.push(tmpdoc);
+
+            if (tmpdoc.AccountId) {
+              for(let aid of this.arAccount) {
+                if (aid.Id === tmpdoc.AccountId) {
+                  tmpdoc.AccountName = aid.Name;
+                  break;
+                }
+              }
+            }
+            if (tmpdoc.ControlCenterId) {
+              for(let cid of this.arControlCenter) {
+                if (cid.Id === tmpdoc.ControlCenterId) {
+                  tmpdoc.ControlCenterName = cid.Name;
+                  break;
+                }
+              }
+            }
+            if (tmpdoc.OrderId) {
+              for(let oid of this.arOrder) {
+                if (oid.Id === tmpdoc.OrderId) {
+                  tmpdoc.OrderName = oid.Name;
+                  break;
+                }
+              }
+            }
+
             this.tmpDocs.push(tmpdoc);
           }
         });
@@ -502,6 +528,13 @@ export class AdvpaydocComponent implements OnInit {
         });
       }, () => {
       });
+  }
+  loadUIFrequency(): Observable<any> {
+    if (environment.DebugLogging) {
+      console.log("Entering loadUIFrequency of AdvpaydocComponent");
+    }
+
+    return this._buffService.getRepeatFrequencies();
   }
   loadUserList(): Observable<any> {
     if (environment.DebugLogging) {

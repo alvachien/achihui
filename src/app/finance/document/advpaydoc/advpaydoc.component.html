@@ -11,19 +11,19 @@
       </div>
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <input mdInput type="date" placeholder="{{'Finance.TransactionDate' | translate}}" required [(ngModel)]="docObject.TranDateString" name="trandate"
+          <input mdInput type="date" [disabled]="!IsUIEditable()" placeholder="{{'Finance.TransactionDate' | translate}}" required [(ngModel)]="docObject.TranDateString" name="trandate"
               #trandate="ngModel">
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="90" placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
+        <md-select flex [disabled]="!IsUIEditable()" placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="uiObject.SourceAccountId" name="frmaccount" #frmaccount="ngModel">
           <md-option *ngFor="let sacnt of arAccount" [value]="sacnt.Id">
             {{sacnt.Id}} - {{sacnt.Name}}
           </md-option>
         </md-select>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="90" placeholder="{{'Finance.TransactionType' | translate}}" [(ngModel)]="uiObject.SourceTranType" name="srctrantype" #srctrantype="ngModel">
+        <md-select flex [disabled]="!IsUIEditable()" placeholder="{{'Finance.TransactionType' | translate}}" [(ngModel)]="uiObject.SourceTranType" name="srctrantype" #srctrantype="ngModel">
           <md-option *ngFor="let dt of arTranType" [value]="dt.Id" [class.bgc-green-300]="dt.Expense" [class.bgc-red-300]="!dt.Expense">
             ({{dt.Id}}) - {{dt.Name}}
           </md-option>
@@ -31,12 +31,12 @@
       </div>
       <div layout="row" layout-margin>
         <md-input-container flex>
-          <input mdInput type="number" placeholder="{{'Finance.Amount' | translate}}" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
+          <input mdInput type="number" [disabled]="!IsUIEditable()" placeholder="{{'Finance.Amount' | translate}}" required [(ngModel)]="uiObject.TranAmount" name="itemtranamt"
                 #itemtranamt="ngModel">
         </md-input-container>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="90" placeholder="{{'Finance.Currency' | translate}}" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
+        <md-select flex [disabled]="!IsUIEditable()" placeholder="{{'Finance.Currency' | translate}}" [(ngModel)]="docObject.TranCurr" name="trancurr" #trancurr="ngModel">
           <md-option *ngFor="let cur of arCurrency" [value]="cur.Currency">
               {{cur.Symbol}} - {{cur.Name}}
           </md-option>
@@ -44,20 +44,20 @@
       </div>
       <div layout="row" layout-margin>
           <md-input-container flex>
-            <textarea mdInput placeholder="{{'Common.Description' | translate}}" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
+            <textarea mdInput [disabled]="!IsUIEditable()" placeholder="{{'Common.Description' | translate}}" [(ngModel)]="docObject.Desp" name="desp" #desp="ngModel"></textarea>
           </md-input-container>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="95" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="uiObject.SourceControlCenterId" name="srccc" #srccc="ngModel">
-          <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
+        <md-select flex [disabled]="!IsUIEditable()" placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="uiObject.SourceControlCenterId" name="srccc" #srccc="ngModel">
+          <md-option value="" class="bgc-grey-300">{{'Common.PleaseSelect' | translate}}</md-option>
           <md-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
             {{cc.Id}} - {{cc.Name}}
           </md-option>
         </md-select>
       </div>
       <div layout="row" layout-margin>
-        <md-select flex="95" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.SourceOrderId" name="srcorder" #srcorder="ngModel">
-          <md-option value="" class="bgc-grey-800">{{'Common.PleaseSelect' | translate}}</md-option>
+        <md-select flex [disabled]="!IsUIEditable()" placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="uiObject.SourceOrderId" name="srcorder" #srcorder="ngModel">
+          <md-option value="" class="bgc-grey-300">{{'Common.PleaseSelect' | translate}}</md-option>
           <md-option *ngFor="let ord of arOrder" [value]="ord.Id">            
             {{ord.Id}} - {{ord.Name}}
           </md-option>
@@ -67,24 +67,24 @@
         <md-tab-group flex>
           <md-tab>
             <ng-template md-tab-label>
-              <em>Detail</em> Info
+              <em>details</em> Info
             </ng-template>
             <div layout="column" layout-padding>
                 <div layout="row" layout-margin>
-                  <md-slide-toggle [(ngModel)]="uiObject.AdvPayAccount.Direct" name="dir">Direct</md-slide-toggle>
+                  <md-slide-toggle [disabled]="!IsUIEditable()" [(ngModel)]="uiObject.AdvPayAccount.Direct" name="dir">Direct</md-slide-toggle>
                 </div>
                 <div layout="row" layout-margin>
                   <md-input-container flex>
-                    <input mdInput type="date" placeholder="{{'Common.Start' | translate}}" required [(ngModel)]="uiObject.AdvPayAccount.StartDateString" name="startdate" #startdate="ngModel">
+                    <input mdInput type="date" [disabled]="!IsUIEditable()" placeholder="{{'Common.StartDate' | translate}}" required [(ngModel)]="uiObject.AdvPayAccount.StartDateString" name="startdate" #startdate="ngModel">
                   </md-input-container>
                 </div>
                 <div layout="row" layout-margin>
                   <md-input-container flex>
-                    <input mdInput type="date" placeholder="End" required [(ngModel)]="uiObject.AdvPayAccount.EndDateString" name="enddate" #enddate="ngModel">
+                    <input mdInput type="date" [disabled]="!IsUIEditable()" placeholder="{{'Common.EndDate' | translate}}" required [(ngModel)]="uiObject.AdvPayAccount.EndDateString" name="enddate" #enddate="ngModel">
                   </md-input-container>
                 </div>
                 <div layout="row" layout-margin>
-                  <md-select placeholder="Repeat frequency" [(ngModel)]="uiObject.AdvPayAccount.RepeatType" name="rpttype" flex>
+                  <md-select placeholder="Repeat frequency" [disabled]="!IsUIEditable()" [(ngModel)]="uiObject.AdvPayAccount.RepeatType" name="rpttype" flex>
                     <md-option *ngFor="let rt of arRepeatFrequency" [value]="rt.Id">
                       {{rt.DisplayString}}
                     </md-option>
@@ -92,16 +92,16 @@
                 </div>
                 <div layout="row" layout-margin>
                   <md-input-container flex>
-                    <input mdInput type="number" placeholder="Deferred days" [(ngModel)]="uiObject.AdvPayAccount.DeferredDays" name="dfrrdays" #dfrrdays="ngModel">
+                    <input mdInput type="number" [disabled]="!IsUIEditable()" placeholder="Deferred days" [(ngModel)]="uiObject.AdvPayAccount.DeferredDays" name="dfrrdays" #dfrrdays="ngModel">
                   </md-input-container>
                 </div>
                 <div layout="row" layout-margin>
                   <md-input-container flex>
-                    <input mdInput type="text" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="uiObject.AdvPayAccount.Comment" name="advacntcmt" #advacntcmt="ngModel">
+                    <input mdInput type="text" [disabled]="!IsUIEditable()" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="uiObject.AdvPayAccount.Comment" name="advacntcmt" #advacntcmt="ngModel">
                   </md-input-container>
                 </div>
                 <div layout="row" layout-padding>
-                  <button md-button color="accent" (click)="onSync()">Sync</button>
+                  <button md-button [disabled]="!IsUIEditable()" color="accent" (click)="onSync()">Sync</button>
                 </div>       
               </div>
           </md-tab>
@@ -113,9 +113,8 @@
             <td-data-table 
               [data]="tmpDocs" 
               [columns]="clnTmpDocs" 
-              selectable="true"
-              multiple="false"
-              [(ngModel)]="selectedTmpDocs">
+              selectable="false"
+              multiple="false">
             </td-data-table>
             <div *ngIf="selectedTmpDocs.length > 0">
               <md-divider></md-divider>
@@ -125,7 +124,7 @@
                   <form #tmpDocDetailForm="ngForm">
                     <div layout="row" layout-margin>
                       <md-input-container flex>
-                        <input mdInput type="number" placeholder="Doc ID"  [(ngModel)]="selectedTmpDocs[0].DocId" name="tmpdocid" #tmpdocid="ngModel">
+                        <input mdInput type="number" placeholder="#"  [(ngModel)]="selectedTmpDocs[0].DocId" name="tmpdocid" #tmpdocid="ngModel">
                       </md-input-container>
                     </div>
                     <div layout="row" layout-margin>
@@ -155,7 +154,7 @@
         </md-tab-group>
       </div>
       <div layout="row" layout-padding>
-        <button md-button color="accent" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+        <button md-button [disabled]="!IsUIEditable()" color="accent" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
         <button md-button formnovalidate>{{'Common.Cancel' | translate}}</button>
       </div>
     </div>

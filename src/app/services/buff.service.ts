@@ -3,10 +3,12 @@ import { Http, Headers, Response } from '@angular/http';
 import * as HIHFinance from '../model/financemodel';
 import * as HIHLearn from '../model/learnmodel';
 import * as HIHUser from '../model/userinfo';
+import * as HIHUI from '../model/uimodel';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class BufferService {
@@ -32,10 +34,12 @@ export class BufferService {
   public arrayLearnCategory: Array<HIHLearn.LearnCategory> = [];
   private _isLearnCategoryBufferred: boolean;
   // Frequency type
-  
+  public arrayUIRepeatFrequency: Array<HIHUI.UIRepeatFrequency> = [];
+  private _isUIRepeatFrequencyBufferred: boolean;
 
   constructor(
     private _http: Http,
+    private _tranService: TranslateService,
     private _authService: AuthService
   ) {
     this._isCurrencyBufferred = false;
@@ -45,6 +49,58 @@ export class BufferService {
     this._isTransactionTypeBufferred = false;
     this._isFinanceSettingBufferred = false;
     this._isLearnCategoryBufferred = false;
+    this._isUIRepeatFrequencyBufferred = false;
+  }
+
+  // Repeat frequency
+  public bufferRepeatFrequencies(arFrq?: HIHUI.UIRepeatFrequency[]): Observable<HIHUI.UIRepeatFrequency[]> | void  {
+    if (environment.DebugLogging) {
+      console.log("Entering bufferRepeatFrequencies of BufferService");
+    }
+
+    if (arFrq && arFrq instanceof Array) {
+      this.arrayUIRepeatFrequency = arFrq;
+      this._isUIRepeatFrequencyBufferred = true;
+
+      // Return nothing!
+    } else {
+      return this.getRepeatFrequencies();
+    }
+  }
+  public getRepeatFrequencies() : Observable<HIHUI.UIRepeatFrequency[]> {
+    if (environment.DebugLogging) {
+      console.log("Entering getRepeatFrequencies of BufferService");
+    }
+
+    if (this._isUIRepeatFrequencyBufferred) {
+      return Observable.of(this.arrayUIRepeatFrequency);
+    } else {
+      this.arrayUIRepeatFrequency = HIHUI.UIRepeatFrequency.getRepeatFrequencies();
+      let strar: string[] = [];
+      for(let rf of this.arrayUIRepeatFrequency) {
+        strar.push(rf.DisplayString);
+      }
+
+      this._tranService.get(strar).subscribe(x => {
+        this._isUIRepeatFrequencyBufferred = true;
+
+        for(let rf2 of this.arrayUIRepeatFrequency) {
+          rf2.DisplayString = x[rf2.DisplayString];
+        }
+
+        return Observable.of(this.arrayUIRepeatFrequency);
+      });
+    }
+  }
+  public resetRepeatFrequencies(): void {
+    this.arrayUIRepeatFrequency = [];
+    this._isUIRepeatFrequencyBufferred = false;
+  }
+  get isRepeatFrequencyBufferred(): boolean {
+    return this._isUIRepeatFrequencyBufferred;
+  }
+  set isRepeatFrequencyBufferred(buf: boolean) {
+    this._isUIRepeatFrequencyBufferred = buf;
   }
 
   // Currency

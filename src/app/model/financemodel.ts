@@ -1559,6 +1559,9 @@ export class TemplateDocADP extends hih.BaseModel {
         this._tranDate = td;
         this.TranDateString = hih.Utility.Date2String(td);
     }
+    public AccountName: string;
+    public ControlCenterName: string;
+    public OrderName: string;
 
     constructor() {
         super();
@@ -1612,7 +1615,35 @@ export class TemplateDocADP extends hih.BaseModel {
         //     console.log("Entering onSetData of TemplateDocADP");
         // }
 
-        // Todo
+        super.onSetData(data);
+
+        if (data && data.docID) {
+            this.DocId = +data.docID;
+        }
+        if (data && data.refDocID) {
+            this.RefDocId = +data.refDocID;
+        }
+        if (data && data.accountID) {
+            this.AccountId = +data.accountID;
+        }
+        if (data && data.tranDate) {
+            this.TranDate = hih.Utility.String2Date(data.tranDate);
+        }
+        if (data && data.tranType) {
+            this.TranType = +data.tranType;
+        }
+        if (data && data.tranAmount) {
+            this.TranAmount = +data.tranAmount;
+        }
+        if (data && data.controlCenterID) {
+            this.ControlCenterId = +data.controlCenterID;
+        }
+        if (data && data.orderID) {
+            this.OrderId = +data.orderID;
+        }
+        if (data && data.desp) {
+            this.Desp = data.desp;
+        }
     }
 }
 
