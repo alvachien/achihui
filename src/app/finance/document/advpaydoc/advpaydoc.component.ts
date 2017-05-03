@@ -69,6 +69,7 @@ export class AdvpaydocComponent implements OnInit {
     }
 
     this.docObject = new HIHFinance.Document();
+    this.docObject.DocType = HIHCommon.FinanceDocType_AdvancePayment;
     this.uiObject = new HIHUI.UIFinAdvPayDocument();
     this.uiMode = HIHCommon.UIMode.Create;
 
@@ -254,7 +255,8 @@ export class AdvpaydocComponent implements OnInit {
         item.TranType = this.uiObject.SourceTranType;
         item.TranDate = arDays[i];
         item.TranDateString = HIHCommon.Utility.Date2String(item.TranDate);
-        item.AccountId = this.uiObject.SourceAccountId;
+        // It should post to the new created account, not the origin account!
+        //item.AccountId = this.uiObject.SourceAccountId;
         item.TranAmount = this.uiObject.TranAmount / ntimes;
         this.uiObject.TmpDocs.push(item);
       }
@@ -265,7 +267,8 @@ export class AdvpaydocComponent implements OnInit {
         item.TranType = this.uiObject.SourceTranType;
         item.TranDate = this.uiObject.AdvPayAccount.StartDate;
         item.TranDateString = HIHCommon.Utility.Date2String(item.TranDate);
-        item.AccountId = this.uiObject.SourceAccountId;
+        // It should post to the new created account, not the origin account!
+        //item.AccountId = this.uiObject.SourceAccountId;
         item.TranAmount = this.uiObject.TranAmount;
         this.uiObject.TmpDocs.push(item);				
       }
@@ -292,8 +295,19 @@ export class AdvpaydocComponent implements OnInit {
 
     switch(this.uiMode) {
       case HIHCommon.UIMode.Create: {
+
+        // Check the template docs
+        if (!this.uiObject.TmpDocs) {
+            this._dialogService.openAlert({
+              message: "No template docs, sync it first!",
+              disableClose: false, // defaults to false
+              viewContainerRef: this._viewContainerRef, //OPTIONAL
+              title: "Error", //OPTIONAL, hides if not provided
+              closeButton: 'Close', //OPTIONAL, defaults to 'CLOSE'
+            });
+            return;
+        }
         // Fulfill the data
-        this.docObject.DocType = HIHCommon.FinanceDocType_AdvancePayment;
         this.docObject.Items = [];
 
         let fitem: HIHFinance.DocumentItem = new HIHFinance.DocumentItem();
@@ -347,7 +361,7 @@ export class AdvpaydocComponent implements OnInit {
 
         sobj.TmpDocs = [];
         for(let td of this.uiObject.TmpDocs) {
-          td.AccountId = this.uiObject.SourceAccountId;
+          //td.AccountId = this.uiObject.SourceAccountId;
           td.ControlCenterId = this.uiObject.SourceControlCenterId;
           td.OrderId = this.uiObject.SourceOrderId;
           td.onComplete();
