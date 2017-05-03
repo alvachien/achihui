@@ -270,7 +270,7 @@ export class AdvpaydocComponent implements OnInit {
         // It should post to the new created account, not the origin account!
         //item.AccountId = this.uiObject.SourceAccountId;
         item.TranAmount = this.uiObject.TranAmount;
-        this.uiObject.TmpDocs.push(item);				
+        this.uiObject.TmpDocs.push(item);
       }
       this._zone.run(() => {
         this.tmpDocs = this.uiObject.TmpDocs;

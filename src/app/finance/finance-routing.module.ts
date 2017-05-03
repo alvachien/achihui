@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { FinanceComponent } from './finance.component';
 import { SettingComponent } from './setting/setting.component';
+import { OverviewComponent } from './overview/overview.component';
 import { CurrencyComponent } from './currency/currency.component';
 import { ListComponent as CurrencyListComponent } from './currency/list/list.component';
 import { DetailComponent as CurrencyDetailComponent } from './currency/detail/detail.component';
@@ -45,6 +46,14 @@ const financeRoutes: Routes = [
     path: '',
     component: FinanceComponent,
     children: [
+      {
+        path: '',
+        component: OverviewComponent
+      },
+      {
+        path: 'overview',
+        component: OverviewComponent
+      },
       {
         path: 'setting',
         component: SettingComponent

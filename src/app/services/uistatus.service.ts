@@ -116,6 +116,12 @@ export class UIStatusService {
 
         // Finance routes
         rl = new UIRouteLink();
+        rl.title = "Common.Overview";
+        rl.route = "/finance/overview";
+        rl.icon = "today";
+        this.arFinanceRouteLink.push(rl);
+        
+        rl = new UIRouteLink();
         rl.title = "Common.Setting";
         rl.route = "/finance/setting";
         rl.icon = "settings_applications";

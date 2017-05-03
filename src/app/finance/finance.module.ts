@@ -49,6 +49,7 @@ import { AccounthierarchyComponent as TransactionsAccounthierarchyComponent } fr
 import { ControlcenterlistComponent as TransactionsControlcenterlistComponent } from './transactions/controlcenterlist/controlcenterlist.component';
 import { ControlcenterhierarchyComponent as TransactionsControlcenterhierarchyComponent } from './transactions/controlcenterhierarchy/controlcenterhierarchy.component';
 import { OrderlistComponent as TransactionsOrderlistComponent } from './transactions/orderlist/orderlist.component';
+import { OverviewComponent } from './overview/overview.component';
 
 @NgModule({
   imports: [
@@ -63,7 +64,8 @@ import { OrderlistComponent as TransactionsOrderlistComponent } from './transact
     FinanceRoutingModule
   ],
   declarations: [
-    FinanceComponent, 
+    FinanceComponent,
+    OverviewComponent, 
     SettingComponent,
 
     CurrencyComponent,
@@ -110,7 +112,7 @@ import { OrderlistComponent as TransactionsOrderlistComponent } from './transact
     TransactionsAccounthierarchyComponent, 
     TransactionsControlcenterlistComponent, 
     TransactionsControlcenterhierarchyComponent, 
-    TransactionsOrderlistComponent
+    TransactionsOrderlistComponent 
   ]
 })
 export class FinanceModule { }
