@@ -144,7 +144,21 @@
     "LearningHistory": "Learning History",
     "LearningHistories": "Learning Histories",
     "LearningAward": "Learning Award",
-    "LearningPlan": "Learning Plan"
+    "LearningPlan": "Learning Plan",
+    "Ctgy_LAL": "Literature and Language",
+    "Ctgy_Poem": "Poem",
+    "Ctgy_TangSongPoem": "Tang poem Song jambic verse",
+    "Ctgy_Literacy": "Literacy",
+    "Ctgy_AncientChineseProse": "Ancient Chinese Prose",
+    "Ctgy_Classical": "Classical",
+    "Ctgy_Math": "Math",
+    "Ctgy_Arithmetic": "Arithmetic",
+    "Ctgy_Algebra": "Algebra",
+    "Ctgy_Geometry": "Geometry",
+    "Ctgy_English": "English",
+    "Ctgy_Vocabulary": "Vocabulary",
+    "Ctgy_Grammar": "Grammar",
+    "Ctgy_Japanese": "Japanese"
   },
   "Finance": {
     "Accounts": "Accounts",

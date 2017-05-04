@@ -144,7 +144,21 @@
     "LearningHistory": "学习记录",
     "LearningHistories": "学习记录",
     "LearningAward": "学习成绩",
-    "LearningPlan": "学习计划"
+    "LearningPlan": "学习计划",
+    "Ctgy_LAL": "语文",
+    "Ctgy_Poem": "诗词",
+    "Ctgy_TangSongPoem": "唐诗宋词",
+    "Ctgy_Literacy": "识字",
+    "Ctgy_AncientChineseProse": "文言文",
+    "Ctgy_Classical": "古典名著",
+    "Ctgy_Math": "数学",
+    "Ctgy_Arithmetic": "算术",
+    "Ctgy_Algebra": "代数",
+    "Ctgy_Geometry": "几何",
+    "Ctgy_English": "英文",
+    "Ctgy_Vocabulary": "词汇",
+    "Ctgy_Grammar": "语法",
+    "Ctgy_Japanese": "日文"
   },
   "Finance": {
     "Accounts": "账户",
