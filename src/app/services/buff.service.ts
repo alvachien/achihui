@@ -42,6 +42,11 @@ export class BufferService {
     private _tranService: TranslateService,
     private _authService: AuthService
   ) {
+    this.cleanAllContent();
+  }
+
+  // Overview
+  public cleanAllContent() : void {
     this._isCurrencyBufferred = false;
     this._isUserBufferred = false;
     this._isAccountCategoryBufferred = false;
@@ -50,6 +55,15 @@ export class BufferService {
     this._isFinanceSettingBufferred = false;
     this._isLearnCategoryBufferred = false;
     this._isUIRepeatFrequencyBufferred = false;
+
+    this.arrayCurrency = [];
+    this.arrayAccountCategory = [];
+    this.arrayDocumentType = [];
+    this.arrayTransactionType = [];
+    this.arrayFinanceSetting = [];
+    this.arrayUser = [];
+    this.arrayLearnCategory = [];
+    this.arrayUIRepeatFrequency = [];
   }
 
   // Repeat frequency

@@ -25,6 +25,7 @@
 npm-debug.log
 testem.log
 /typings
+/elder_app
 
 # e2e
 /e2e/*.js
