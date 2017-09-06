@@ -21,24 +21,10 @@
       "styles": [
         "assets/fonts/material-icons.css",
         "styles.scss",
-        "theme.scss",
-        "../node_modules/@covalent/core/common/platform.css"
+        "theme.scss"
       ],
       "scripts": [
-        "../node_modules/hammerjs/hammer.min.js",
-        "../node_modules/showdown/dist/showdown.js",
-        "../node_modules/tinymce/tinymce.js",
-        "../node_modules/tinymce/themes/modern/theme.js",
-        "../node_modules/tinymce/plugins/link/plugin.js",
-        "../node_modules/tinymce/plugins/paste/plugin.js",
-        "../node_modules/tinymce/plugins/table/plugin.js",
-        "../node_modules/tinymce/plugins/advlist/plugin.js",
-        "../node_modules/tinymce/plugins/autolink/plugin.js",
-        "../node_modules/tinymce/plugins/image/plugin.js",
-        "../node_modules/tinymce/plugins/lists/plugin.js",
-        "../node_modules/tinymce/plugins/charmap/plugin.js",
-        "../node_modules/tinymce/plugins/print/plugin.js",
-        "../node_modules/tinymce/plugins/preview/plugin.js"
+        "../node_modules/hammerjs/hammer.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
