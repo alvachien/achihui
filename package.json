@@ -12,7 +12,7 @@
     "lint": "ng lint",
     "serve": "ng serve",
     "reinstall": "rm -rf node_modules tmp deploy dist && npm i",
-    "postinstall": "webdriver-manager update --proxy=http://proxy.wdf.sap.corp:8080 --ignore_ssl",
+    "postinstall": "webdriver-manager update --ignore_ssl",
     "test": "ng test --code-coverage --single-run"
   },
   "engines": {
