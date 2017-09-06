@@ -1,11 +1,7 @@
 import { NgModule, Type } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-import { CovalentCoreModule } from '@covalent/core';
-import { CovalentHttpModule, IHttpInterceptor } from '@covalent/http';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '@angular/material';
 import { Routes, RouterModule } from '@angular/router';
@@ -42,7 +38,6 @@ export function funcHttpLoaderFactory(http: Http) {
     UIRefModule,
     FlexLayoutModule,
     AppRoutingModule,
-    CovalentCoreModule.forRoot(),
     NgxChartsModule,
     TranslateModule.forRoot({
         loader: {
