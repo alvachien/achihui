@@ -121,6 +121,8 @@
   },
   "Nav": {
     "Home": "Home",
+    "HomeList": "Home List",
+    "HomeDetail": "Home Detail",
     "Users": "Users",
     "UserList": "User List",
     "UserDetail": "User Detail",

@@ -9,7 +9,8 @@
       "outDir": "dist",
       "assets": [
         "assets",
-        "logincallback.html"
+        "logincallback.html",
+        "silentnewcallback.html"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -24,7 +25,6 @@
         "theme.scss"
       ],
       "scripts": [
-        "../node_modules/hammerjs/hammer.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
@@ -55,7 +55,7 @@
     }
   },
   "defaults": {
-    "styleExt": "css",
+    "styleExt": "scss",
     "serve": {
         "port": 29521,
         "host": "localhost"

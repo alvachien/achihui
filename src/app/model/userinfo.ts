@@ -1,6 +1,9 @@
 import { environment } from '../../environments/environment';
 import { User } from 'oidc-client';
 
+/**
+ * User detail
+ */
 export class UserDetail {
     public UserId: string;
     public DisplayAs: string;
@@ -29,31 +32,16 @@ export class UserDetail {
     }
 }
 
-export class UserHistory {
-    public UserId: string;
-    public SeqNo: number;
-    public HistType: number;
-    public TimePoint: Date;
-    public Others: string;
 
-    public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of UserHistory");
-        // }
-
-        this.UserId = data.userId;
-        this.SeqNo = data.seqNo;
-        this.HistType = data.histType;
-        this.TimePoint = data.timePoint;
-        this.Others = data.others;
-    }
-}
-
+/**
+ * User Auth Info
+ */
 export class UserAuthInfo {
     public isAuthorized: boolean;
     private currentUser: User;
     private userName: string;
     private userId: string;
+    private userMailbox: string;
     private accessToken: string;
 
     public setContent(user: User) : void {
@@ -63,6 +51,7 @@ export class UserAuthInfo {
 
             this.userName = user.profile.name;
             this.userId = user.profile.sub;
+            this.userMailbox = user.profile.mail;
             this.accessToken = user.access_token;
         } else {
             this.cleanContent();
@@ -82,5 +71,8 @@ export class UserAuthInfo {
     }
     public getAccessToken(): string {
         return this.accessToken;
+    }
+    public getUserMailbox(): string {
+        return this.userMailbox;
     }
 }

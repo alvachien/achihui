@@ -1,1 +1,49 @@
-<router-outlet></router-outlet>
+<md-sidenav-container fullscreen>
+    <md-sidenav #start>
+        <div *ngIf="isLoggedIn" class="card">
+            <div class="card-body">
+                <h4 class="card-title text-muted">{{titleLogin}}</h4>
+                <h6 class="card-subtitle mb-2 text-muted">{{userDisplayAs}}</h6>
+                <button (click)="onLogout()" md-button style="background: #525252;">{{'Login.Logout' | translate}}</button>
+            </div>
+        </div>
+
+        <md-nav-list>
+            <a *ngFor="let navItem of navItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
+                {{i}} - {{navItem.name | translate}}
+            </a>
+        </md-nav-list>
+        <hr />
+        <button md-button (click)="start.close()">{{'Common.Close' | translate}}</button>
+    </md-sidenav>
+
+    <div>
+        <md-toolbar color="primary">
+            <button md-icon-button (click)="start.open()">
+                <md-icon class="md-24">menu</md-icon>
+            </button>
+            <div class="hih-toolbar">
+                <h1>H.I.H., by Alva Chien</h1>
+                <div>
+                    <button md-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon">{{'Login.Login' | translate }}</button>
+                    <button md-button *ngIf="isLoggedIn" (click)="onUserDetail()">{{titleLogin}}</button>
+                    <md-select [(ngModel)]="selectedLanguage" name="lang">
+                        <md-option *ngFor="let lang of availableLanguages" [value]="lang.value">
+                            {{lang.displayas | translate}}
+                        </md-option>
+                    </md-select>
+                    <button md-icon-button (click)="toggleFullscreen()" title="Toggle fullscreen">
+                        <md-icon class="md-24">fullscreen</md-icon>
+                    </button>
+                    <a md-icon-button href="https://github.com/alvachien/achihui" target="_blank" title="Go to Source repo">
+                        <md-icon class="md-24">code</md-icon>
+                    </a>
+                </div>
+            </div>
+        </md-toolbar>
+
+        <div class="hih-content">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</md-sidenav-container>
