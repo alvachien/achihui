@@ -1,0 +1,40 @@
+<md-card>
+    <md-card-header>
+      <div></div>
+      <md-card-title>{{'Finance.Currencies' | translate}}</md-card-title>
+      <md-card-subtitle>{{'Common.ListView' | translate}}</md-card-subtitle>
+    </md-card-header>
+    <md-card-content>
+      <div class="table-container mat-elevation-z8">
+        <md-table #table [dataSource]="dataSource">
+          <!-- ID Column -->
+          <ng-container mdColumnDef="curr">
+            <md-header-cell *mdHeaderCellDef>{{'Finance.Currency' | translate}}</md-header-cell>
+            <md-cell *mdCellDef="let row">
+              {{row.Currency}}
+            </md-cell>
+          </ng-container>
+  
+          <!-- Name Column -->
+          <ng-container mdColumnDef="name">
+            <md-header-cell *mdHeaderCellDef>{{'Common.Name' | translate}}</md-header-cell>
+            <md-cell *mdCellDef="let row"> {{row.Name | translate}} </md-cell>
+          </ng-container>
+  
+          <!-- Symbol Column -->
+          <ng-container mdColumnDef="symbol">
+            <md-header-cell *mdHeaderCellDef> {{'Finance.CurrencySymbol' | translate}} </md-header-cell>
+            <md-cell *mdCellDef="let row"> {{row.Symbol}} </md-cell>
+          </ng-container>
+  
+          <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
+          <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
+        </md-table>
+        <md-paginator #paginator [length]="_currService.Currencies.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+        </md-paginator>
+      </div>
+    </md-card-content>
+    <md-card-actions>
+    </md-card-actions>
+  </md-card>
+  
