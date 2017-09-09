@@ -17,17 +17,9 @@ import { AppRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
 import { PageHomeListComponent } from './page-home-list';
 import { PageHomeDetailComponent } from './page-home-detail';
-import { LearnObjectCategoryComponent } from './learn-object-category';
-import { LearnObjectComponent } from './learn-object';
-import { LearnHistoryComponent } from './learn-history';
-import { FinanceAccountCategoryComponent } from './finance-account-category';
-import { FinanceDocumentTypeComponent } from './finance-document-type';
-import { FinanceTranTypeComponent } from './finance-tran-type';
-import { FinanceAccountComponent } from './finance-account';
+import { LearnModule } from './learn';
+import { FinanceModule } from './finance';
 import { FinanceCurrencyComponent } from './finance-currency';
-import { FinanceControlCenterComponent } from './finance-control-center';
-import { FinanceOrderComponent } from './finance-order';
-import { FinanceDocumentComponent } from './finance-document';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -49,36 +41,26 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     }),
     HttpModule,
-    UIDependModule,
+    UIDependModule
   ],
   declarations: [
     AppComponent,
     PageInitialComponent,
     PageHomeListComponent,
     PageHomeDetailComponent,
-    FinanceAccountCategoryComponent,
-    FinanceDocumentTypeComponent,
-    FinanceTranTypeComponent,
-    FinanceAccountComponent,
-    FinanceCurrencyComponent,
-    LearnObjectCategoryComponent,
-    LearnObjectComponent,
-    LearnHistoryComponent,
-    FinanceControlCenterComponent,
-    FinanceOrderComponent,
-    FinanceDocumentComponent,
+    FinanceCurrencyComponent
   ],
   providers: [
-    AuthService, 
-    AuthGuardService,
-    FinCurrencyService,
-    UserDetailService,
-    HomeChoseGuardService,
-    HomeDefDetailService,
-    CanDeactivateGuardService,
-    FinanceStorageService,
-    LearnStorageService,
+      AuthService,
+      AuthGuardService,
+      FinCurrencyService,
+      UserDetailService,
+      HomeChoseGuardService,
+      HomeDefDetailService,
+      CanDeactivateGuardService,
+      FinanceStorageService,
+      LearnStorageService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [ AppComponent ]
 })
 export class AppModule { }

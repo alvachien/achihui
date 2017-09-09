@@ -60,8 +60,6 @@ export class HomeDefDetailService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHomeDef in HomeDefDetailService: ${response}`);
           }
 
-          this._islistLoaded = true;
-
           const rjs = response.json();
           let _listHomeDef = [];
 
@@ -78,6 +76,8 @@ export class HomeDefDetailService {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllHomeDef in HomeDefDetailService: ${x}`);
           }
+          
+          this._islistLoaded = true;
           let copiedData = x;
           this.listDataChange.next(copiedData);
         }, error => {

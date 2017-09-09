@@ -1,4 +1,5 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders, Optional, SkipSelf } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
     MdAutocompleteModule,
     MdButtonModule,
@@ -42,8 +43,28 @@ import { PlatformModule } from '@angular/cdk/platform';
 import { ObserversModule } from '@angular/cdk/observers';
 import { PortalModule } from '@angular/cdk/portal';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import {
+    AuthService, AuthGuardService, UserDetailService,
+    FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
+    HomeDefDetailService, CanDeactivateGuardService
+} from './services';
 
 @NgModule({
+    imports: [CommonModule],
+    // declarations: [
+
+    // ],
+    // providers: [
+    //     AuthService,
+    //     AuthGuardService,
+    //     FinCurrencyService,
+    //     UserDetailService,
+    //     HomeChoseGuardService,
+    //     HomeDefDetailService,
+    //     CanDeactivateGuardService,
+    //     FinanceStorageService,
+    //     LearnStorageService,
+    // ],
     exports: [
         MdAutocompleteModule,
         MdButtonModule,
@@ -89,5 +110,28 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     ]
 })
 export class UIDependModule {
+    // constructor( @Optional() @SkipSelf() parentModule: UIDependModule) {
+    //     if (parentModule) {
+    //         throw new Error(
+    //             'UIDependModule is already loaded. Import it in the AppModule only');
+    //     }
+    // }
+
+    // static forRoot(): ModuleWithProviders {
+    //     return {
+    //         ngModule: UIDependModule,
+    //         providers: [
+    //             AuthService,
+    //             AuthGuardService,
+    //             FinCurrencyService,
+    //             UserDetailService,
+    //             HomeChoseGuardService,
+    //             HomeDefDetailService,
+    //             CanDeactivateGuardService,
+    //             FinanceStorageService,
+    //             LearnStorageService,
+    //         ]
+    //     };
+    // }
 }
 

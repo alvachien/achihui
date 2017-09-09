@@ -34,7 +34,7 @@ export class AuthService {
 
   constructor(private http: Http) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI Log [Debug]: Entering AuthService constructor...');
+      console.log('AC_HIH_UI [Debug]: Entering AuthService constructor...');
     }
 
     this.mgr = new UserManager(AuthSettings);
@@ -43,7 +43,7 @@ export class AuthService {
     this.mgr.getUser().then(function (u) {
       if (u) {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI Log [Debug]: AuthService constructor, user get successfully as following: ');
+          console.log('AC_HIH_UI [Debug]: AuthService constructor, user get successfully as following: ');
           console.log(u);
         }
 
@@ -60,14 +60,14 @@ export class AuthService {
       that.authSubject.next(that.authSubject.value);
     }, function (reason) {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.log('AC_HIH_UI Log [Error]: AuthService failed to fetch user:');
+        console.log('AC_HIH_UI [Error]: AuthService failed to fetch user:');
         console.log(reason);
       }
     });
 
     this.mgr.events.addUserUnloaded((e) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI Log [Debug]: User unloaded');
+        console.log('AC_HIH_UI [Debug]: User unloaded');
       }
       that.authSubject.value.cleanContent();
 
@@ -76,12 +76,12 @@ export class AuthService {
 
     this.mgr.events.addAccessTokenExpiring(function () {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.warn('AC_HIH_UI Log: token expiring');
+        console.warn('AC_HIH_UI [Debug]: token expiring');
       }
     });
     this.mgr.events.addAccessTokenExpired(function () {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.error('AC_HIH_UI Log: token expired');
+        console.error('AC_HIH_UI [Debug]: token expired');
       }
 
       that.doLogin();
@@ -90,19 +90,19 @@ export class AuthService {
 
   public doLogin() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI Log [Debug]: Start the login...');
+      console.log('AC_HIH_UI [Debug]: Start the login...');
     }
 
     if (this.mgr) {
       this.mgr.signinRedirect().then(function () {
       //this.mgr.signinSilent().then(function(){
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.info('AC_HIH_UI Log [Debug]: Redirecting for login...');
+          console.info('AC_HIH_UI [Debug]: Redirecting for login...');
         }
       })
       .catch(function (er) {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error('AC_HIH_UI Log [Error]: Sign-in error', er);
+          console.error('AC_HIH_UI [Error]: Sign-in error', er);
         }
       });
     }
@@ -110,18 +110,18 @@ export class AuthService {
 
   public doLogout() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI Log [Debug]: Start the logout...');
+      console.log('AC_HIH_UI [Debug]: Start the logout...');
     }
 
     if (this.mgr) {
       this.mgr.signoutRedirect().then(function () {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.info('AC_HIH_UI Log [Debug]: redirecting for logout...');
+          console.info('AC_HIH_UI [Debug]: redirecting for logout...');
         }
       })
         .catch(function (er) {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error('AC_HIH_UI Log [Error]: Sign-out error', er);
+            console.error('AC_HIH_UI [Error]: Sign-out error', er);
           }
         });
     }
@@ -130,11 +130,11 @@ export class AuthService {
   clearState() {
     this.mgr.clearStaleState().then(function () {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI Log [Debug]: clearStateState success');
+        console.log('AC_HIH_UI [Debug]: clearStateState success');
       }
     }).catch(function (e) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI Log [Debug]: clearStateState error', e.message);
+        console.log('AC_HIH_UI [Debug]: clearStateState error', e.message);
       }
     });
   }
@@ -142,7 +142,7 @@ export class AuthService {
   getUser() {
     this.mgr.getUser().then((user) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI Log [Debug]: got user', user);
+        console.log('AC_HIH_UI [Debug]: got user', user);
       }
 
       this.userLoadededEvent.emit(user);
@@ -155,7 +155,7 @@ export class AuthService {
     this.mgr.removeUser().then(() => {
       this.userLoadededEvent.emit(null);
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI Log [Debug]: user removed');
+        console.log('AC_HIH_UI [Debug]: user removed');
       }
     }).catch(function (err) {
       console.log(err);
@@ -165,7 +165,7 @@ export class AuthService {
   startSigninMainWindow() {
     this.mgr.signinRedirect({ data: 'some data' }).then(function () {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI Log [Debug]: signinRedirect done');
+        console.log('AC_HIH_UI [Debug]: signinRedirect done');
       }
     }).catch(function (err) {
       console.log(err);
@@ -175,7 +175,7 @@ export class AuthService {
   endSigninMainWindow() {
     this.mgr.signinRedirectCallback().then(function (user) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI Log [Debug]: signed in', user);
+        console.log('AC_HIH_UI [Debug]: signed in', user);
       }
     }).catch(function (err) {
       console.log(err);
@@ -185,10 +185,10 @@ export class AuthService {
   startSignoutMainWindow() {
     this.mgr.signoutRedirect().then(function (resp) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI Log [Debug]: signed out', resp);
+        console.log('AC_HIH_UI [Debug]: signed out', resp);
       }
       setTimeout(5000, () => {
-        console.log('AC_HIH_UI Log [Debug]: testing to see if fired...');
+        console.log('AC_HIH_UI [Debug]: testing to see if fired...');
       });
     }).catch(function (err) {
       console.log(err);
@@ -198,7 +198,7 @@ export class AuthService {
   endSignoutMainWindow() {
     this.mgr.signoutRedirectCallback().then(function (resp) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI Log [Debug]: signed out', resp);
+        console.log('AC_HIH_UI [Debug]: signed out', resp);
       }
     }).catch(function (err) {
       console.log(err);

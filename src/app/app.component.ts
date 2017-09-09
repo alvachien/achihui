@@ -55,7 +55,7 @@ export class AppComponent implements OnInit {
       { name: 'Nav.HomeList', route: 'homelist' },
       //{ name: 'Nav.HomeDetail', route: 'homedetail' },
       { name: 'Finance.Currency', route: 'currency' },
-      { name: 'Learning.LearningCategory', route: 'learn-obj-ctgy' },
+      { name: 'Learning.LearningCategory', route: 'learn/category' },
     ];
 
     // Register the Auth service
