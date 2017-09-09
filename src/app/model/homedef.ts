@@ -69,6 +69,7 @@ export interface HomeDefJson {
     name: string;
     details: string;
     host: string;
+    baseCurrency: string;
     creatorDisplayAs?: string; // For creation
 }
 
@@ -77,6 +78,7 @@ export class HomeDef {
     private _name: string;
     private _details: string;
     private _host: string;
+    private _basecurr: string;
     private _creatorDisplayAs: string;
     private _listMembers: HomeMember[];
 
@@ -104,6 +106,12 @@ export class HomeDef {
     set Host(host: string) {
         this._host = host;
     }
+    get BaseCurrency(): string {
+        return this._basecurr;
+    }
+    set BaseCurrency(curr: string) {
+        this._basecurr = curr;
+    }
     get CreatorDisplayAs(): string {
         return this._creatorDisplayAs;
     }
@@ -124,6 +132,7 @@ export class HomeDef {
         this._name = data.name;
         this._details = data.details;
         this._host = data.host;
+        this._basecurr = data.baseCurrency;
     }
 
     public generateJSONData(createmode?: boolean): HomeDefJson {
@@ -131,7 +140,8 @@ export class HomeDef {
             id: this._id,
             name: this._name,
             details: this._details,
-            host: this._host
+            host: this._host,
+            baseCurrency: this._basecurr
         };
         if (createmode) {
             jdata.creatorDisplayAs = this._creatorDisplayAs;

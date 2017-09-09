@@ -31,8 +31,11 @@ export class HomeChoseGuardService {
       return false;
     }
 
+    // Has logged in but no home chosen yet.
     if (this.homedefService.ChosedHome === null
       || this.homedefService.ChosedHome === undefined) {
+        // Navigate to other page
+        this.router.navigate(['/homelist']);
       return false;
     }
 
@@ -43,15 +46,16 @@ export class HomeChoseGuardService {
 
     if (this.authService.authSubject.getValue().isAuthorized) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: entering checkLogin of AuthGuard with TRUE');
+        console.log('AC_HIH_UI [Debug]: entering checkLogin of HomeChoseGuardService with TRUE');
       }
       return true;
     }
 
     // Navigate to the login page with extras
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: entering checkLogin of AuthGuard with FALSE, therefore redirecting...');
+      console.log('AC_HIH_UI [Debug]: entering checkLogin of HomeChoseGuardService with FALSE, therefore redirecting...');
     }
+
     this.authService.doLogin();
 
     return false;

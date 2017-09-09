@@ -22,15 +22,23 @@ export class HomeDefDetailService {
     return this.curHomeSelected.value;
   }
   set ChosedHome(hd: HomeDef) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Setting ChosedHome in HomeDefDetailService: ${hd}`);
+    }
+
     this.curHomeSelected.next(hd);
   }
 
+  // Buffer
   private _islistLoaded: boolean;
+
+  // Event
+  createEvent: EventEmitter<boolean> = new EventEmitter(null);
 
   constructor(private _http: Http,
     private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering UserDetailService constructor...');
+      console.log('AC_HIH_UI [Debug]: Entering HomeDefDetailService constructor...');
     }
 
     this._islistLoaded = false; // Performance improvement
@@ -111,10 +119,16 @@ export class HomeDefDetailService {
         const copiedData = this.HomeDefs.slice();
         copiedData.push(x);
         this.listDataChange.next(copiedData);
+
+        // Broadcast event
+        this.createEvent.emit(true);
       }, error => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.log(`AC_HIH_UI [Error]: Error occurred in createHomeDef in HomeDefDetailService:  ${error}`);
         }
+
+        // Broadcast event: failed
+        this.createEvent.emit(false);
       }, () => {
       });
   }

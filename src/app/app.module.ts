@@ -10,12 +10,24 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
-import { AuthService, AuthGuardService, UserDetailService, HomeChoseGuardService,
-  HomeDefDetailService } from './services';
+import { AuthService, AuthGuardService, UserDetailService, 
+  FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
+  HomeDefDetailService, CanDeactivateGuardService } from './services';
 import { AppRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
 import { PageHomeListComponent } from './page-home-list';
 import { PageHomeDetailComponent } from './page-home-detail';
+import { LearnObjectCategoryComponent } from './learn-object-category';
+import { LearnObjectComponent } from './learn-object';
+import { LearnHistoryComponent } from './learn-history';
+import { FinanceAccountCategoryComponent } from './finance-account-category';
+import { FinanceDocumentTypeComponent } from './finance-document-type';
+import { FinanceTranTypeComponent } from './finance-tran-type';
+import { FinanceAccountComponent } from './finance-account';
+import { FinanceCurrencyComponent } from './finance-currency';
+import { FinanceControlCenterComponent } from './finance-control-center';
+import { FinanceOrderComponent } from './finance-order';
+import { FinanceDocumentComponent } from './finance-document';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -44,13 +56,28 @@ export function HttpLoaderFactory(http: HttpClient) {
     PageInitialComponent,
     PageHomeListComponent,
     PageHomeDetailComponent,
+    FinanceAccountCategoryComponent,
+    FinanceDocumentTypeComponent,
+    FinanceTranTypeComponent,
+    FinanceAccountComponent,
+    FinanceCurrencyComponent,
+    LearnObjectCategoryComponent,
+    LearnObjectComponent,
+    LearnHistoryComponent,
+    FinanceControlCenterComponent,
+    FinanceOrderComponent,
+    FinanceDocumentComponent,
   ],
   providers: [
     AuthService, 
     AuthGuardService,
+    FinCurrencyService,
     UserDetailService,
     HomeChoseGuardService,
     HomeDefDetailService,
+    CanDeactivateGuardService,
+    FinanceStorageService,
+    LearnStorageService,
   ],
   bootstrap: [AppComponent]
 })

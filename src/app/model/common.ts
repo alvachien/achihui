@@ -79,6 +79,16 @@ export class InfoMessage {
     public MsgContent: string;
 }
 
+export interface BaseModelJson {
+    createdAt: string;
+    createdBy: string;
+    updatedAt: string;
+    updatedBy: string;
+}
+
+/**
+ * Base model
+ */
 export class BaseModel {
     protected _createdAt: Date;
     public CreatedBy: string;

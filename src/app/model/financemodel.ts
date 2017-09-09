@@ -108,34 +108,51 @@ export class ExchangeRate extends hih.BaseModel {
     }
 }
 
+/**
+ * Currency definition in HIH
+ */
+export interface CurrencyJson {
+    curr: string;
+    name: string;
+    symbol: string;
+}
+
 export class Currency extends hih.BaseModel {
-    public Currency: string;
-    public Name: string;
-    public Symbol: string;
-    public IsLocalCurrency: boolean;
-    public SysFlag: boolean;
+    private _curr: string;
+    get Currency(): string {
+        return this._curr;
+    }
+    set Currency(curr: string) {
+        this._curr = curr;
+    }
+    private _name: string;
+    get Name(): string {
+        return this._name;
+    }
+    set Name(nm: string) {
+        this._name = nm;
+    }
+
+    private _symbol: string;
+    get Symbol(): string {
+        return this._symbol;
+    }
+    set Symbol(sy: string) {
+        this._symbol = sy;
+    }
 
     // Display purpose
     public DisplayName: string;
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of Currency");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of Currency");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of Currency");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -143,19 +160,11 @@ export class Currency extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of Currency");
-        // }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of Currency");
-        // }
-
         super.onSetData(data);
         if (data && data.curr)
             this.Currency = data.curr;
@@ -163,9 +172,6 @@ export class Currency extends hih.BaseModel {
             this.Name = data.name;
         if (data && data.symbol) {
             this.Symbol = data.symbol;
-        }
-        if (data && data.sysFlag) {
-            this.SysFlag = data.sysFlag;
         }
     }
 }
