@@ -69,6 +69,7 @@ export interface HomeDefJson {
     name: string;
     details: string;
     host: string;
+    creatorDisplayAs?: string; // For creation
 }
 
 export class HomeDef {
@@ -76,6 +77,7 @@ export class HomeDef {
     private _name: string;
     private _details: string;
     private _host: string;
+    private _creatorDisplayAs: string;
     private _listMembers: HomeMember[];
 
     get ID(): number {
@@ -102,6 +104,13 @@ export class HomeDef {
     set Host(host: string) {
         this._host = host;
     }
+    get CreatorDisplayAs(): string {
+        return this._creatorDisplayAs;
+    }
+    set CreatorDisplayAs(ds: string) {
+        this._creatorDisplayAs = ds;
+    }
+    
     get Members(): HomeMember[] {
         return this._listMembers;
     }
@@ -117,13 +126,17 @@ export class HomeDef {
         this._host = data.host;
     }
 
-    public generateJSONData(): HomeDefJson {
+    public generateJSONData(createmode?: boolean): HomeDefJson {
         let jdata: HomeDefJson = {
             id: this._id,
             name: this._name,
             details: this._details,
             host: this._host
         };
+        if (createmode) {
+            jdata.creatorDisplayAs = this._creatorDisplayAs;
+        }
+
         return jdata;
     }
 }

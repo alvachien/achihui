@@ -5,7 +5,25 @@
     <md-card-subtitle>Home Detail</md-card-subtitle>
   </md-card-header>
   <md-card-content>
+    <div class="demo-full-width">
+      <md-form-field>
+        <input mdInput type="text" placeholder="ID" readonly [(ngModel)]="currentHomeDef.displayas">
+      </md-form-field>
+    </div>
+
+    <md-form-field class="demo-full-width">
+      <input mdInput type="text" placeholder="Name" [(ngModel)]="currentHomeDef.Name">
+    </md-form-field>
+
+    <md-form-field class="demo-full-width">
+      <input mdInput type="text" placeholder="Display As" [(ngModel)]="currentHomeDef.CreatorDisplayAs">
+    </md-form-field>
+  
+    <md-form-field class="demo-full-width">
+      <input mdInput type="text" placeholder="Details" [(ngModel)]="currentHomeDef.Details">
+    </md-form-field>
   </md-card-content>
   <md-card-actions>
+    <button md-button [disabled]="!canSubmit()" (click)="onSubmit()">Submit</button>
   </md-card-actions>
 </md-card>

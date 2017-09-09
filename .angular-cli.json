@@ -21,10 +21,12 @@
       "prefix": "app",
       "styles": [
         "assets/fonts/material-icons.css",
-        "styles.scss",
-        "theme.scss"
+        "styles.scss"
       ],
       "scripts": [
+        "../node_modules/jquery/dist/jquery.slim.min.js",
+        "../node_modules/popper.js/dist/umd/popper.min.js",
+        "../node_modules/bootstrap/dist/js/bootstrap.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

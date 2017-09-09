@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
-import { appNavItems, appLanguage, LogLevel } from './model';
+import { appNavItems, appLanguage, LogLevel, UIStatusEnum } from './model';
 import { AuthService, HomeDefDetailService } from './services';
 
 @Component({
@@ -19,6 +19,11 @@ export class AppComponent implements OnInit {
   public isLoggedIn: boolean;
   public titleLogin: string;
   public userDisplayAs: string;
+
+  private _curStatus: UIStatusEnum;
+  get CurrentStatus(): UIStatusEnum {
+    return this._curStatus;
+  }
 
   private _selLanguage: string;
   get selectedLanguage(): string {
@@ -43,23 +48,24 @@ export class AppComponent implements OnInit {
     this._translate.setDefaultLang(this._selLanguage);
     this._translate.use(this._selLanguage);
     this.userDisplayAs = '';
+    this._curStatus = UIStatusEnum.NotLogin;
 
     this.navItems = [
       { name: 'Nav.Home', route: '' },
       { name: 'Nav.HomeList', route: 'homelist' },
-      { name: 'Nav.HomeDetail', route: 'homedetail' },
+      //{ name: 'Nav.HomeDetail', route: 'homedetail' },
     ];
 
     // Register the Auth service
     if (environment.LoginRequired) {
       this._authService.authContent.subscribe(x => {
         this._zone.run(() => {
+          this._curStatus = UIStatusEnum.LoggedinNoHomeChosen;
           this.isLoggedIn = x.isAuthorized;
           if (this.isLoggedIn) {
             this.titleLogin = x.getUserName();
 
-            this._homeDefService.fetchAllHomeDef().subscribe((x2) => {
-            });
+            this._homeDefService.fetchAllHomeDef();
           }
         });
       }, error => {
@@ -119,8 +125,8 @@ export class AppComponent implements OnInit {
   }
 
   private updateDocumentTitle() {
-    this._translate.get('Home.AppTitle').subscribe(x => {
-      document.title = x;
-    });
+    // this._translate.get('Home.AppTitle').subscribe(x => {
+    //   document.title = x;
+    // });
   }
 }
