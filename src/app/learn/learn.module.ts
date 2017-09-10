@@ -13,6 +13,9 @@ import { ObjectDetailComponent } from './object-detail';
 import { CategoryComponent } from './category';
 import { CategoryListComponent } from './category-list';
 import { CategoryDetailComponent } from './category-detail';
+import { HistoryComponent } from './history';
+import { HistoryListComponent } from './history-list';
+import { HistoryDetailComponent } from './history-detail';
 
 @NgModule({
   imports: [
@@ -28,7 +31,10 @@ import { CategoryDetailComponent } from './category-detail';
     ObjectDetailComponent, 
     CategoryComponent, 
     CategoryListComponent, 
-    CategoryDetailComponent
+    CategoryDetailComponent, 
+    HistoryComponent, 
+    HistoryListComponent, 
+    HistoryDetailComponent
   ],
   providers: [
   ]

@@ -9,7 +9,7 @@ import { LogLevel, AccountCategory } from '../../model';
 import { FinanceStorageService } from '../../services';
 
 /**
- * Data source of Home def.
+ * Data source of Account category
  */
 export class AccountCategoryDataSource extends DataSource<any> {
   constructor(private _storageService: FinanceStorageService, 

@@ -7,6 +7,9 @@ import { CategoryDetailComponent } from './category-detail';
 import { ObjectComponent } from './object';
 import { ObjectListComponent } from './object-list';
 import { ObjectDetailComponent } from './object-detail';
+import { HistoryComponent } from './history';
+import { HistoryListComponent } from './history-list';
+import { HistoryDetailComponent } from './history-detail';
 
 const routes: Routes = [
   {
@@ -57,20 +60,28 @@ const routes: Routes = [
           }
         ]
       },
-      // {
-      //   path: 'history',
-      //   component: HistoryComponent,
-      //   children: [
-      //     {
-      //       path: '',
-      //       component: HistoryListComponent
-      //     },
-      //     {
-      //       path: ':id',
-      //       component: HistoryDetailComponent
-      //     }
-      //   ]
-      // }
+      {
+        path: 'history',
+        component: HistoryComponent,
+        children: [
+          {
+            path: '',
+            component: HistoryListComponent
+          },
+          {
+            path:'create',
+            component: HistoryDetailComponent
+          },
+          {
+            path: 'display/:id',
+            component: HistoryDetailComponent
+          },
+          {
+            path: 'edit/:id',
+            component: HistoryDetailComponent
+          }
+        ]
+      },
     ]
   }  
 ];

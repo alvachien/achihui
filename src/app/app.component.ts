@@ -62,11 +62,18 @@ export class AppComponent implements OnInit {
     ];
     this.navLearnItems = [
       { name: 'Learning.LearningCategory', route: 'learn/category' },
+      { name: 'Learning.LearningObjects', route: 'learn/object' },
+      { name: 'Learning.LearningHistories', route: 'learn/history' },
     ];
     this.navFinItems = [
       { name: 'Finance.AccountCategories', route: 'finance/acntctgy' },
       { name: 'Finance.DocumentTypes', route: 'finance/doctype' },
       { name: 'Finance.TransactionTypes', route: 'finance/trantype' },
+      { name: 'Finance.Accounts', route: 'finance/account' },
+      { name: 'Finance.ControlCenters', route: 'finance/controlcenter' },
+      { name: 'Finance.Orders', route: 'finance/order' },
+      { name: 'Finance.Documents', route: 'finance/document' },
+      { name: 'Finance.Reports', route: 'finance/report' },
     ];
 
     // Register the Auth service
