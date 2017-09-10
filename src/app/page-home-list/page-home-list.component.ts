@@ -45,7 +45,7 @@ export class HomeDefDataSource extends DataSource<any> {
   styleUrls: ['./page-home-list.component.scss']
 })
 export class PageHomeListComponent implements OnInit {
-  displayedColumns = ['id', 'name', 'host', 'details'];
+  displayedColumns = ['id', 'name', 'host', 'currency', 'details'];
   dataSource: HomeDefDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 

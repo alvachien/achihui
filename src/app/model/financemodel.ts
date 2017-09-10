@@ -345,6 +345,7 @@ export abstract class AccountExtra {
 
 export class Account extends hih.BaseModel {
     public Id: number;
+    public HID: number;
     public CategoryId: number;
     public Name: string;
     public Comment: string;
@@ -357,23 +358,13 @@ export class Account extends hih.BaseModel {
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of Account");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of Account");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of Account");
-        // }
-
         if (!super.onVerify(context))
             return false;
 
@@ -417,12 +408,9 @@ export class Account extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of Account");
-        // }
-
         let rstObj = super.writeJSONObject();
         rstObj.id = this.Id;
+        rstObj.hid = this.HID;
         rstObj.ctgyId = this.CategoryId;
         rstObj.name = this.Name;
         rstObj.comment = this.Comment;
@@ -436,14 +424,13 @@ export class Account extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of Account");
-        // }
-
         super.onSetData(data);
 
         if (data && data.id) {
             this.Id = +data.id;
+        }
+        if (data && data.hid) {
+            this.HID = +data.hid;
         }
         if (data && data.name && data.name.length > 0) {
             this.Name = data.name;
@@ -512,19 +499,11 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     public onInit() {
         super.onInit();
 
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of AccountExtraAdvancePayment");
-        // }
-
         this.StartDate = new Date();
         this.EndDate = new Date();
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of AccountExtraAdvancePayment");
-        // }
-
         let rstobj: any = super.writeJSONObject();
         rstobj.direct = this.Direct;
         rstobj.startDate = this.StartDateString;
@@ -538,10 +517,6 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of AccountExtraAdvancePayment");
-        // }
-
         super.onSetData(data);
 
         if (data && data.direct) {
@@ -574,10 +549,6 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     public onComplete() : void {
         super.onComplete();
 
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onComplete of AccountExtraAdvancePayment");
-        // }
-
         if (this.StartDateString) {
             this.StartDate = hih.Utility.String2Date(this.StartDateString);
         } else {
@@ -592,7 +563,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     }
 }
 
-export class ControllingCenter extends hih.BaseModel {
+export class ControlCenter extends hih.BaseModel {
     public Id: number;
     public Name: string;
     public ParentId: number;
@@ -601,22 +572,13 @@ export class ControllingCenter extends hih.BaseModel {
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of ControllingCenter");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of ControllingCenter");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of ControllingCenter");
-        // }
         if (!super.onVerify(context))
             return false;
         
@@ -636,10 +598,6 @@ export class ControllingCenter extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of ControllingCenter");
-        // }
-
         let rstObj = super.writeJSONObject();
         rstObj.id = this.Id;
         rstObj.name = this.Name;
@@ -653,10 +611,6 @@ export class ControllingCenter extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of ControllingCenter");
-        // }
-
         super.onSetData(data);
 
         if (data && data.id) {

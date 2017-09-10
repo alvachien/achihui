@@ -55,5 +55,4 @@ export class DocumentTypeListComponent implements OnInit {
     
     this._storageService.fetchAllDocTypes();
   }
-
 }

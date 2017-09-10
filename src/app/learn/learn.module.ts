@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,6 +22,8 @@ import { HistoryDetailComponent } from './history-detail';
   imports: [
     CommonModule,
     LearnRoutingModule,
+    FormsModule, 
+    ReactiveFormsModule,
     UIDependModule,
     TranslateModule.forChild()
   ],
