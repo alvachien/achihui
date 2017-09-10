@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
@@ -33,7 +33,7 @@ export class LearnStorageService {
   private _isObjListLoaded: boolean;
   private _isHistListLoaded: boolean;
 
-  constructor(private _http: Http,
+  constructor(private _http: HttpClient,
     private _authService: AuthService,
     private _homeService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -50,21 +50,24 @@ export class LearnStorageService {
     if (!this._isCtgyListLoaded) {
       const apiurl = environment.ApiUrl + '/api/learncategory';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                .append('Accept', 'application/json')
+                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const params: URLSearchParams = new URLSearchParams();
-      params.set('hid', this._homeService.ChosedHome.ID.toString());
-      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCategories in LearnStorageService: ${response}`);
           }
 
-          const rjs = response.json();
+          const rjs = <any>response;
           let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -100,21 +103,24 @@ export class LearnStorageService {
     if (!this._isCtgyListLoaded) {
       const apiurl = environment.ApiUrl + '/api/learnobject';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                .append('Accept', 'application/json')
+                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const params: URLSearchParams = new URLSearchParams();
-      params.set('hid', this._homeService.ChosedHome.ID.toString());
-      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService: ${response}`);
           }
 
-          const rjs = response.json();
+          const rjs = <any>response;
           let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -150,21 +156,24 @@ export class LearnStorageService {
     if (!this._isCtgyListLoaded) {
       const apiurl = environment.ApiUrl + '/api/learnhistory';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                .append('Accept', 'application/json')
+                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const params: URLSearchParams = new URLSearchParams();
-      params.set('hid', this._homeService.ChosedHome.ID.toString());
-      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHistories in LearnStorageService: ${response}`);
           }
 
-          const rjs = response.json();
+          const rjs = <any>response;
           let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {

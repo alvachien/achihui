@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
@@ -54,7 +54,7 @@ export class FinanceStorageService {
   private _isConctrolCenterListLoaded: boolean;
   private _isOrderListLoaded: boolean;
 
-  constructor(private _http: Http,
+  constructor(private _http: HttpClient,
     private _authService: AuthService,
     private _homeService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -74,21 +74,24 @@ export class FinanceStorageService {
     if (!this._isAcntCtgyListLoaded) {
       const apiurl = environment.ApiUrl + '/api/FinanceAccountCategory';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')  
+                       .append('Accept', 'application/json')
+                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const params: URLSearchParams = new URLSearchParams();
-      params.set('hid', this._homeService.ChosedHome.ID.toString());
-      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAccountCategories in FinanceStorageService: ${response}`);
           }
 
-          const rjs = response.json();
+          const rjs = <any>response;
           let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -124,21 +127,24 @@ export class FinanceStorageService {
     if (!this._isAcntCtgyListLoaded) {
       const apiurl = environment.ApiUrl + '/api/FinanceDocType';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                .append('Accept', 'application/json')
+                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const params: URLSearchParams = new URLSearchParams();
-      params.set('hid', this._homeService.ChosedHome.ID.toString());
-      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceStorageService: ${response}`);
           }
 
-          const rjs = response.json();
+          const rjs = <any>response;
           let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -174,21 +180,24 @@ export class FinanceStorageService {
     if (!this._isAcntCtgyListLoaded) {
       const apiurl = environment.ApiUrl + '/api/FinanceTranType';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                .append('Accept', 'application/json')
+                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const params: URLSearchParams = new URLSearchParams();
-      params.set('hid', this._homeService.ChosedHome.ID.toString());
-      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceStorageService: ${response}`);
           }
 
-          const rjs = response.json();
+          const rjs = <any>response;
           let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -224,21 +233,24 @@ export class FinanceStorageService {
     if (!this._isAccountListLoaded) {
       const apiurl = environment.ApiUrl + '/api/FinanceAccount';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                .append('Accept', 'application/json')
+                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const params: URLSearchParams = new URLSearchParams();
-      params.set('hid', this._homeService.ChosedHome.ID.toString());
-      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceStorageService: ${response}`);
           }
 
-          const rjs = response.json();
+          const rjs = <any>response;
           let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -270,22 +282,25 @@ export class FinanceStorageService {
   }
 
   public createAccount(objAcnt: Account) {
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/json');
-    headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    const options = new RequestOptions({ headers: headers }); // Create a request option
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+              .append('Accept', 'application/json')
+              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
     let apiurl = environment.ApiUrl + '/api/FinanceAccount';
 
     const jdata: string = objAcnt.writeJSONString();
-    this._http.post(apiurl, jdata, options)
-      .map((response: Response) => {
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log('AC_HIH_UI [Debug]:' + response);
         }
 
         let hd: Account = new Account();
-        hd.onSetData(response.json());
+        hd.onSetData(response);
         return hd;
       })
       .subscribe((x) => {
@@ -315,21 +330,24 @@ export class FinanceStorageService {
     if (!this._isConctrolCenterListLoaded) {
       const apiurl = environment.ApiUrl + '/api/FinanceControllingCenter';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                  .append('Accept', 'application/json')
+                  .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const params: URLSearchParams = new URLSearchParams();
-      params.set('hid', this._homeService.ChosedHome.ID.toString());
-      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      let params: HttpParams = new HttpParams();
+      params = params.set('hid', this._homeService.ChosedHome.ID.toString());
+      this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceStorageService: ${response}`);
           }
 
-          const rjs = response.json();
+          const rjs = <any>response;
           let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -365,21 +383,24 @@ export class FinanceStorageService {
     if (!this._isOrderListLoaded) {
       const apiurl = environment.ApiUrl + '/api/FinanceOrder';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                  .append('Accept', 'application/json')
+                  .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const params: URLSearchParams = new URLSearchParams();
-      params.set('hid', this._homeService.ChosedHome.ID.toString());
-      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());      
+      this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceStorageService: ${response}`);
           }
 
-          const rjs = response.json();
+          const rjs = response.body;
           let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {

@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
@@ -20,7 +20,7 @@ export class LanguageService {
   // Buffer
   private _islistLoaded: boolean;
 
-  constructor(private _http: Http) {
+  constructor(private _http: HttpClient) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering LanguageService constructor...');
     }
@@ -32,18 +32,19 @@ export class LanguageService {
     if (!this._islistLoaded) {
       const apiurl = environment.ApiUrl + '/api/Language';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')  
+                       .append('Accept', 'application/json');
 
-      const options = new RequestOptions({ headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      this._http.get(apiurl, {
+          headers: headers
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllLanguages in LanguageService: ${response}`);
           }
 
-          const rjs = response.json();
+          const rjs = <any>response;
           let _listRst = [];
 
           if (rjs instanceof Array && rjs.length > 0) {

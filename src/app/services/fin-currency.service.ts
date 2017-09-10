@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
@@ -19,7 +19,7 @@ export class FinCurrencyService {
 
   private _islistLoaded: boolean;
 
-  constructor(private _http: Http,
+  constructor(private _http: HttpClient,
     private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering FinCurrencyService constructor...');
@@ -32,21 +32,23 @@ export class FinCurrencyService {
     if (!this._islistLoaded) {
       const apiurl = environment.ApiUrl + '/api/FinanceCurrency';
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                .append('Accept', 'application/json')
+                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const options = new RequestOptions({ headers: headers }); // Create a request option
-      this._http.get(apiurl, options)
-        .map((response: Response) => {
+      this._http.get(apiurl, {
+          headers: headers,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinCurrencyService: ${response}`);
           }
 
           this._islistLoaded = true;
 
-          const rjs = response.json();
+          const rjs = <any>response;
           let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {

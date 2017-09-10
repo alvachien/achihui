@@ -167,7 +167,7 @@ export class HomeDefDetailService {
 
       const params: URLSearchParams = new URLSearchParams();
       params.set('hid', this.ChosedHome.ID.toString());
-      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
+      const options = new RequestOptions({ params: params, headers: headers }); // Create a request option
       this._http.get(apiurl, options)
         .map((response: Response) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
