@@ -117,6 +117,9 @@ export interface CurrencyJson {
     symbol: string;
 }
 
+/**
+ * Currency
+ */
 export class Currency extends hih.BaseModel {
     private _curr: string;
     get Currency(): string {
@@ -176,31 +179,70 @@ export class Currency extends hih.BaseModel {
     }
 }
 
+/**
+ * Account category in JSON format
+ */
+export interface AccountCategoryJson {
+    id: number;
+    hid?: number;
+    name: string;
+    assetFlag: boolean;
+    comment: string;
+}
+
+/**
+ * Account category
+ */
 export class AccountCategory extends hih.BaseModel {
-    public Id: number;
-    public Name: string;
-    public AssetFlag: boolean;
-    public Comment: string;
-    public SysFlag: boolean;
+    private _id: number;
+    get ID(): number {
+        return this._id;
+    }
+    set ID(id: number) {
+        this._id = id;
+    }    
+
+    private _hid: number;
+    get HID(): number {
+        return this._hid;
+    }
+    set HID(hid: number) {
+        this._hid = hid;
+    }
+
+    private _name: string;
+    get Name(): string {
+        return this._name;
+    }
+    set Name(nm: string) {
+        this._name = nm;
+    }
+
+    private _assetFlag: boolean;
+    get AssetFlag(): boolean {
+        return this._assetFlag;
+    }
+    set AssetFlag(af: boolean) {
+        this._assetFlag = af;
+    }
+
+    private _comment: string;
+    get Comment(): string {
+        return this._comment;
+    }
+    set Comment(cmt: string) {
+        this._comment = cmt;
+    }
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of AccountCategory");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of AccountCategory");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of AccountCategory");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -208,22 +250,14 @@ export class AccountCategory extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of AccountCategory");
-        // }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of AccountCategory");
-        // }
-
         super.onSetData(data);
         if (data && data.id) {
-            this.Id = data.id;
+            this.ID = +data.id;
         }
         if (data && data.name) {
             this.Name = data.name;
@@ -233,9 +267,6 @@ export class AccountCategory extends hih.BaseModel {
         }
         if (data && data.comment) {
             this.Comment = data.comment;
-        }
-        if (data && data.sysFlag) {
-            this.SysFlag = data.sysFlag;
         }
     }
 }

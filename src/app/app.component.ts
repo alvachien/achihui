@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
-import { appNavItems, appLanguage, LogLevel, UIStatusEnum } from './model';
+import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef } from './model';
 import { AuthService, HomeDefDetailService } from './services';
 
 @Component({
@@ -12,6 +12,8 @@ import { AuthService, HomeDefDetailService } from './services';
 })
 export class AppComponent implements OnInit {
   public navItems: appNavItems[] = [];
+  public navLearnItems: appNavItems[] = [];
+  public navFinItems: appNavItems[] = [];
   public availableLanguages: appLanguage[] = [
     { displayas: 'Nav.English', value: 'en' },
     { displayas: 'Nav.SimplifiedChinese', value: 'zh' }
@@ -19,6 +21,7 @@ export class AppComponent implements OnInit {
   public isLoggedIn: boolean;
   public titleLogin: string;
   public userDisplayAs: string;
+  public curChosenHome: HomeDef;
 
   private _curStatus: UIStatusEnum;
   get CurrentStatus(): UIStatusEnum {
@@ -49,17 +52,29 @@ export class AppComponent implements OnInit {
     this._translate.use(this._selLanguage);
     this.userDisplayAs = '';
     this._curStatus = UIStatusEnum.NotLogin;
+    this.curChosenHome = null;
 
     this.navItems = [
       { name: 'Nav.Home', route: '' },
       { name: 'Nav.HomeList', route: 'homelist' },
       //{ name: 'Nav.HomeDetail', route: 'homedetail' },
       { name: 'Finance.Currency', route: 'currency' },
+    ];
+    this.navLearnItems = [
       { name: 'Learning.LearningCategory', route: 'learn/category' },
+    ];
+    this.navFinItems = [
+      { name: 'Finance.AccountCategories', route: 'finance/acntctgy' },
+      { name: 'Finance.DocumentTypes', route: 'finance/doctype' },
+      { name: 'Finance.TransactionTypes', route: 'finance/trantype' },
     ];
 
     // Register the Auth service
     if (environment.LoginRequired) {
+      this._homeDefService.curHomeSelected.subscribe(x => {
+        this.curChosenHome = x;
+      });
+
       this._authService.authContent.subscribe(x => {
         this._zone.run(() => {
           this._curStatus = UIStatusEnum.LoggedinNoHomeChosen;
@@ -96,6 +111,10 @@ export class AppComponent implements OnInit {
 
   public onUserDetail(): void {
     this._router.navigate(['/user-detail']);
+  }
+
+  public onChosenHomeDetail(): void {
+    this._router.navigate(['/homedetail']);
   }
 
   public onLogout(): void {

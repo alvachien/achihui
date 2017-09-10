@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
 import { LogLevel, LearnCategory } from '../model';
 import { AuthService } from './auth.service';
+import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
@@ -21,7 +22,8 @@ export class LearnStorageService {
   private _isCtgyListLoaded: boolean;
 
   constructor(private _http: Http,
-    private _authService: AuthService) {
+    private _authService: AuthService,
+    private _homeService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering LearnStorageService constructor...');
     }
@@ -38,7 +40,9 @@ export class LearnStorageService {
       headers.append('Accept', 'application/json');
       headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      const options = new RequestOptions({ headers: headers }); // Create a request option
+      const params: URLSearchParams = new URLSearchParams();
+      params.set('hid', this._homeService.ChosedHome.ID.toString());
+      const options = new RequestOptions({ search: params, headers: headers }); // Create a request option
       this._http.get(apiurl, options)
         .map((response: Response) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {

@@ -11,7 +11,7 @@ const routes: Routes = [
     component: FinanceComponent,
     children: [
       {
-        path: 'accountcategory',
+        path: 'acntctgy',
         component: AccountCategoryComponent,
         children: [
           {

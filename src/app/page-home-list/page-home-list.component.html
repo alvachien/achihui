@@ -39,7 +39,11 @@
         <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
         <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
       </md-table>
-      <md-paginator #paginator [length]="_homedefService.HomeDefs.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+      <md-paginator #paginator 
+        [length]="_homedefService.HomeDefs.length" 
+        [pageIndex]="0" 
+        [pageSize]="25" 
+        [pageSizeOptions]="[5, 10, 25, 100]">
       </md-paginator>
     </div>
   </md-card-content>
