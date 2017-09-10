@@ -5,7 +5,7 @@ import { LearnStorageService } from './learn-storage.service';
 describe('LearnStorageService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [LearnStorageService]
+      providers: [LearnStorageService],
     });
   });
 

@@ -1,34 +1,33 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MdPaginator } from '@angular/material';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../environments/environment';
-import { LogLevel, Currency } from '../model';
-import { FinCurrencyService } from '../services';
+import { LogLevel, AppLanguage } from '../model';
+import { LanguageService } from '../services';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
 
 /**
- * Data source of Currency
+ * Data source of Language
  */
-export class CurrencyDataSource extends DataSource<any> {
-  constructor(private _currService: FinCurrencyService,
+export class LanguageDataSource extends DataSource<any> {
+  constructor(private _storageService: LanguageService,
     private _paginator: MdPaginator) {
     super();
   }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<Currency[]> {
+  connect(): Observable<AppLanguage[]> {
     const displayDataChanges = [
-      this._currService.listDataChange,
+      this._storageService.listDataChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._currService.Currencies.slice();
+      const data = this._storageService.Languages.slice();
 
       // Grab the page's slice of data.
       const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
@@ -40,22 +39,22 @@ export class CurrencyDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-finance-currency',
-  templateUrl: './finance-currency.component.html',
-  styleUrls: ['./finance-currency.component.scss'],
+  selector: 'app-language',
+  templateUrl: './language.component.html',
+  styleUrls: ['./language.component.scss'],
 })
-export class FinanceCurrencyComponent implements OnInit {
+export class LanguageComponent implements OnInit {
 
-  displayedColumns = ['curr', 'name', 'symbol'];
-  dataSource: CurrencyDataSource | null;
+  displayedColumns = ['lcid', 'isoname', 'enname', 'nvname', 'appflag'];
+  dataSource: LanguageDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
-  constructor(public _currService: FinCurrencyService,
-    private _router: Router) {
-    this._currService.fetchAllCurrencies();
+  constructor(public _storageService: LanguageService) {
   }
 
   ngOnInit() {
-    this.dataSource = new CurrencyDataSource(this._currService, this.paginator);
+    this.dataSource = new LanguageDataSource(this._storageService, this.paginator);
+
+    this._storageService.fetchAllLanguages();
   }
 }

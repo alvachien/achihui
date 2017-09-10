@@ -2,7 +2,7 @@
 export enum UIStatusEnum {
     NotLogin                = 0,
     LoggedinNoHomeChosen    = 1,
-    LoggedinAndHomeChosen   = 2
+    LoggedinAndHomeChosen   = 2,
 }
 
 /**

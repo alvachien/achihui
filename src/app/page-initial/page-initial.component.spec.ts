@@ -8,7 +8,7 @@ describe('PageInitialComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageInitialComponent ]
+      declarations: [ PageInitialComponent ],
     })
     .compileComponents();
   }));

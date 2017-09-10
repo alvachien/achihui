@@ -12,7 +12,7 @@ import { LearnStorageService } from '../../services';
  * Data source of Home def.
  */
 export class LearnCategoryDataSource extends DataSource<any> {
-  constructor(private _storageService: LearnStorageService, 
+  constructor(private _storageService: LearnStorageService,
     private _paginator: MdPaginator) {
     super();
   }
@@ -39,7 +39,7 @@ export class LearnCategoryDataSource extends DataSource<any> {
 @Component({
   selector: 'app-category-list',
   templateUrl: './category-list.component.html',
-  styleUrls: ['./category-list.component.scss']
+  styleUrls: ['./category-list.component.scss'],
 })
 export class CategoryListComponent implements OnInit {
   displayedColumns = ['id', 'name', 'comment'];

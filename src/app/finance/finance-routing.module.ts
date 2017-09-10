@@ -35,21 +35,21 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: AccountCategoryListComponent
+            component: AccountCategoryListComponent,
           },
           {
             path: 'create',
-            component: AccountCategoryDetailComponent
+            component: AccountCategoryDetailComponent,
           },
           {
             path: 'display/:id',
-            component: AccountCategoryDetailComponent
+            component: AccountCategoryDetailComponent,
           },
           {
             path: 'edit/:id',
-            component: AccountCategoryDetailComponent
-          }
-        ]
+            component: AccountCategoryDetailComponent,
+          },
+        ],
       },
       {
         path: 'doctype',
@@ -57,21 +57,21 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: DocumentTypeListComponent
+            component: DocumentTypeListComponent,
           },
           {
             path: 'create',
-            component: DocumentTypeDetailComponent
+            component: DocumentTypeDetailComponent,
           },
           {
             path: 'display/:id',
-            component: DocumentTypeDetailComponent
+            component: DocumentTypeDetailComponent,
           },
           {
             path: 'edit/:id',
-            component: DocumentTypeDetailComponent
-          }
-        ]
+            component: DocumentTypeDetailComponent,
+          },
+        ],
       },
       {
         path: 'trantype',
@@ -79,21 +79,21 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: TranTypeListComponent
+            component: TranTypeListComponent,
           },
           {
             path: 'create',
-            component: TranTypeDetailComponent
+            component: TranTypeDetailComponent,
           },
           {
             path: 'display/:id',
-            component: TranTypeDetailComponent
+            component: TranTypeDetailComponent,
           },
           {
             path: 'edit/:id',
-            component: TranTypeDetailComponent
-          }
-        ]
+            component: TranTypeDetailComponent,
+          },
+        ],
       },
       {
         path: 'account',
@@ -101,21 +101,21 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: AccountListComponent
+            component: AccountListComponent,
           },
           {
             path: 'create',
-            component: AccountDetailComponent
+            component: AccountDetailComponent,
           },
           {
             path: 'display/:id',
-            component: AccountDetailComponent
+            component: AccountDetailComponent,
           },
           {
             path: 'edit/:id',
-            component: AccountDetailComponent
-          }
-        ]
+            component: AccountDetailComponent,
+          },
+        ],
       },
       {
         path: 'controlcenter',
@@ -123,21 +123,21 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: ControlCenterListComponent
+            component: ControlCenterListComponent,
           },
           {
             path: 'create',
-            component: ControlCenterDetailComponent
+            component: ControlCenterDetailComponent,
           },
           {
             path: 'display/:id',
-            component: ControlCenterDetailComponent
+            component: ControlCenterDetailComponent,
           },
           {
             path: 'edit/:id',
-            component: ControlCenterDetailComponent
-          }
-        ]
+            component: ControlCenterDetailComponent,
+          },
+        ],
       },
       {
         path: 'order',
@@ -145,21 +145,21 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: OrderListComponent
+            component: OrderListComponent,
           },
           {
             path: 'create',
-            component: OrderDetailComponent
+            component: OrderDetailComponent,
           },
           {
             path: 'display/:id',
-            component: OrderDetailComponent
+            component: OrderDetailComponent,
           },
           {
             path: 'edit/:id',
-            component: OrderDetailComponent
-          }
-        ]
+            component: OrderDetailComponent,
+          },
+        ],
       },
       {
         path: 'document',
@@ -167,36 +167,36 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: DocumentListComponent
+            component: DocumentListComponent,
           },
           {
             path: 'create',
-            component: DocumentDetailComponent
+            component: DocumentDetailComponent,
           },
           {
             path: 'display/:id',
-            component: DocumentDetailComponent
+            component: DocumentDetailComponent,
           },
           {
             path: 'edit/:id',
-            component: DocumentDetailComponent
-          }
-        ]
+            component: DocumentDetailComponent,
+          },
+        ],
       },
       {
         path: 'report',
         component: ReportComponent,
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
   exports: [
-    RouterModule
-  ]
+    RouterModule,
+  ],
 })
 export class FinanceRoutingModule { }

@@ -8,7 +8,7 @@ describe('ControlCenterListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ControlCenterListComponent ]
+      declarations: [ ControlCenterListComponent ],
     })
     .compileComponents();
   }));

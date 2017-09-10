@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   CanActivate, Router,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot
+  RouterStateSnapshot,
 } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { LogLevel, UserAuthInfo } from '../model';
@@ -32,11 +32,13 @@ export class HomeChoseGuardService {
     }
 
     // Has logged in but no home chosen yet.
+    this.homedefService.RedirectURL = url;
+    
     if (this.homedefService.ChosedHome === null
       || this.homedefService.ChosedHome === undefined) {
         // Navigate to other page
         this.router.navigate(['/homelist']);
-      return false;
+        return false;
     }
 
     return true;

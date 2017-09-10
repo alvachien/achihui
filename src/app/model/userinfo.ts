@@ -32,7 +32,6 @@ export class UserDetail {
     }
 }
 
-
 /**
  * User Auth Info
  */

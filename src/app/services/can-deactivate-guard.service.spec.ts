@@ -5,7 +5,7 @@ import { CanDeactivateGuardService } from './can-deactivate-guard.service';
 describe('CanDeactivateGuardService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [CanDeactivateGuardService]
+      providers: [CanDeactivateGuardService],
     });
   });
 

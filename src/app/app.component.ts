@@ -8,7 +8,7 @@ import { AuthService, HomeDefDetailService } from './services';
 @Component({
   selector: 'hih-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   public navItems: appNavItems[] = [];
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   public navFinItems: appNavItems[] = [];
   public availableLanguages: appLanguage[] = [
     { displayas: 'Nav.English', value: 'en' },
-    { displayas: 'Nav.SimplifiedChinese', value: 'zh' }
+    { displayas: 'Nav.SimplifiedChinese', value: 'zh' },
   ];
   public isLoggedIn: boolean;
   public titleLogin: string;
@@ -56,6 +56,7 @@ export class AppComponent implements OnInit {
 
     this.navItems = [
       { name: 'Nav.Home', route: '' },
+      { name: 'Common.Languages', route: 'language' },
       { name: 'Nav.HomeList', route: 'homelist' },
       //{ name: 'Nav.HomeDetail', route: 'homedetail' },
       { name: 'Finance.Currency', route: 'currency' },
@@ -78,11 +79,11 @@ export class AppComponent implements OnInit {
 
     // Register the Auth service
     if (environment.LoginRequired) {
-      this._homeDefService.curHomeSelected.subscribe(x => {
+      this._homeDefService.curHomeSelected.subscribe((x) => {
         this.curChosenHome = x;
       });
 
-      this._authService.authContent.subscribe(x => {
+      this._authService.authContent.subscribe((x) => {
         this._zone.run(() => {
           this._curStatus = UIStatusEnum.LoggedinNoHomeChosen;
           this.isLoggedIn = x.isAuthorized;
@@ -92,7 +93,7 @@ export class AppComponent implements OnInit {
             this._homeDefService.fetchAllHomeDef();
           }
         });
-      }, error => {
+      }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error('AC Math Exercise: Log [Error]: Failed in subscribe to User', error);
         }

@@ -127,7 +127,7 @@ export class EnWord extends hih.BaseModel {
 
     public writeJSONObject(): any {
         if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of KnowledgeType");
+            console.log('Entering writeJSONObject of KnowledgeType');
         }
 
         let rstObj = super.writeJSONObject();
@@ -136,7 +136,7 @@ export class EnWord extends hih.BaseModel {
 
     public onSetData(data: any) {
         if (environment.DebugLogging) {
-            console.log("Entering onSetData of Finance.Setting");
+            console.log('Entering onSetData of Finance.Setting');
         }
 
         super.onSetData(data);
@@ -153,20 +153,20 @@ export class EnSentenceExplain extends hih.BaseModel {
     constructor() {
         super();
         if (environment.DebugLogging) {
-            console.log("Entering constructor of KnowledgeType");
+            console.log('Entering constructor of KnowledgeType');
         }
     }
 
     public onInit() {
         super.onInit();
         if (environment.DebugLogging) {
-            console.log("Entering onInit of KnowledgeType");
+            console.log('Entering onInit of KnowledgeType');
         }
     }
 
     public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
-            console.log("Entering onVerify of KnowledgeType");
+            console.log('Entering onVerify of KnowledgeType');
         }
         if (!super.onVerify(context))
             return false;
@@ -176,7 +176,7 @@ export class EnSentenceExplain extends hih.BaseModel {
 
     public writeJSONObject(): any {
         if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of KnowledgeType");
+            console.log('Entering writeJSONObject of KnowledgeType');
         }
 
         let rstObj = super.writeJSONObject();
@@ -196,20 +196,20 @@ export class EnSentence extends hih.BaseModel {
     constructor() {
         super();
         if (environment.DebugLogging) {
-            console.log("Entering constructor of KnowledgeType");
+            console.log('Entering constructor of KnowledgeType');
         }
     }
 
     public onInit() {
         super.onInit();
         if (environment.DebugLogging) {
-            console.log("Entering onInit of KnowledgeType");
+            console.log('Entering onInit of KnowledgeType');
         }
     }
 
     public onVerify(context: any): boolean {
         if (environment.DebugLogging) {
-            console.log("Entering onVerify of KnowledgeType");
+            console.log('Entering onVerify of KnowledgeType');
         }
         if (!super.onVerify(context))
             return false;
@@ -219,7 +219,7 @@ export class EnSentence extends hih.BaseModel {
 
     public writeJSONObject(): any {
         if (environment.DebugLogging) {
-            console.log("Entering writeJSONObject of KnowledgeType");
+            console.log('Entering writeJSONObject of KnowledgeType');
         }
 
         let rstObj = super.writeJSONObject();
@@ -228,7 +228,7 @@ export class EnSentence extends hih.BaseModel {
 
     public onSetData(data: any) {
         if (environment.DebugLogging) {
-            console.log("Entering onSetData of Finance.Setting");
+            console.log('Entering onSetData of Finance.Setting');
         }
 
         super.onSetData(data);
@@ -411,7 +411,7 @@ export class LearnHistory extends hih.BaseModel {
     }
 
     public generateKey() : string {
-        return this.UserId + "_" + this.ObjectId.toString() + "_" + hih.Utility.Date2String(this.LearnDate); 
+        return this.UserId + '_' + this.ObjectId.toString() + '_' + hih.Utility.Date2String(this.LearnDate);
     }
 
     get LearnDate(): Date {
@@ -447,18 +447,18 @@ export class LearnHistory extends hih.BaseModel {
 
             if (!bObj) {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgContent = "Select an object before continues";
+                msg.MsgContent = 'Select an object before continues';
                 msg.MsgTime = new Date();
-                msg.MsgTitle = "No object selected";
+                msg.MsgTitle = 'No object selected';
                 msg.MsgType = hih.MessageType.Error;
                 this.VerifiedMsgs.push(msg);
                 chkrst = false;
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgContent = "No object found in the system";
+            msg.MsgContent = 'No object found in the system';
             msg.MsgTime = new Date();
-            msg.MsgTitle = "No object found";
+            msg.MsgTitle = 'No object found';
             msg.MsgType = hih.MessageType.Error;
             this.VerifiedMsgs.push(msg);
             chkrst = false;
@@ -474,18 +474,18 @@ export class LearnHistory extends hih.BaseModel {
 
             if (!bFound) {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgContent = "Select an user before continues!";
+                msg.MsgContent = 'Select an user before continues!';
                 msg.MsgTime = new Date();
-                msg.MsgTitle = "No user selected";
+                msg.MsgTitle = 'No user selected';
                 msg.MsgType = hih.MessageType.Error;
                 this.VerifiedMsgs.push(msg);
                 chkrst = false;
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgContent = "No user found in the system.";
+            msg.MsgContent = 'No user found in the system.';
             msg.MsgTime = new Date();
-            msg.MsgTitle = "No user found";
+            msg.MsgTitle = 'No user found';
             msg.MsgType = hih.MessageType.Error;
             this.VerifiedMsgs.push(msg);
             chkrst = false;
@@ -494,9 +494,9 @@ export class LearnHistory extends hih.BaseModel {
         if (this.LearnDate) {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgContent = "Learn date is invalid.";
+            msg.MsgContent = 'Learn date is invalid.';
             msg.MsgTime = new Date();
-            msg.MsgTitle = "Invalid learn date";
+            msg.MsgTitle = 'Invalid learn date';
             msg.MsgType = hih.MessageType.Error;
             this.VerifiedMsgs.push(msg);
             chkrst = false;
@@ -536,7 +536,7 @@ export class LearnHistory extends hih.BaseModel {
         }
         if (data && data.comment && data.comment.length > 0) {
             this.Comment = data.comment;
-        }        
+        }
         if (data && data.userDisplayAs && data.userDisplayAs.length > 0) {
             this.UserDisplayAs = data.userDisplayAs;
         }

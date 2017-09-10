@@ -8,7 +8,7 @@ describe('DocumentListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentListComponent ]
+      declarations: [ DocumentListComponent ],
     })
     .compileComponents();
   }));

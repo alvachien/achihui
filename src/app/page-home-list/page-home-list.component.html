@@ -5,16 +5,22 @@
     <md-card-subtitle>Home List</md-card-subtitle>
   </md-card-header>
   <md-card-content>
-    <div class="table-container mat-elevation-z8">
+      <md-toolbar>
+        <button md-icon-button color="primary" (click)="onCreateHome()"><md-icon md-icon-button color="primary" class="example-icon">add</md-icon></button>
+      </md-toolbar>    
+      <div class="table-container mat-elevation-z8">
       <md-table #table [dataSource]="dataSource">
         <!-- ID Column -->
         <ng-container mdColumnDef="id">
           <md-header-cell *mdHeaderCellDef></md-header-cell>
           <md-cell *mdCellDef="let row">
-            <button md-mini-fab (click)="onChooseHome(row)">
-              <md-icon class="md-14" aria-label="Edit">edit</md-icon>
-            </button>
-            #{{ row.ID }}
+              <button md-icon-button (click)="onDisplayHome(row)">
+                <md-icon color="primary" class="md-14 example-icon" aria-label="Display">search</md-icon>
+              </button>
+              <button md-icon-button (click)="onChooseHome(row)">
+                <md-icon color="primary" class="md-14 example-icon" aria-label="Choose">assignment_turned_in</md-icon>
+              </button>
+              #{{ row.ID }}
           </md-cell>
         </ng-container>
 
@@ -54,7 +60,4 @@
       </md-paginator>
     </div>
   </md-card-content>
-  <md-card-actions>
-    <button md-button (click)="onCreateHome()">Create</button>
-  </md-card-actions>
 </md-card>

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DocumentTypeListComponent } from './document-type-list.component';
+import { LanguageComponent } from './language.component';
 
-describe('DocumentTypeListComponent', () => {
-  let component: DocumentTypeListComponent;
-  let fixture: ComponentFixture<DocumentTypeListComponent>;
+describe('LanguageComponent', () => {
+  let component: LanguageComponent;
+  let fixture: ComponentFixture<LanguageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentTypeListComponent ],
+      declarations: [ LanguageComponent ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DocumentTypeListComponent);
+    fixture = TestBed.createComponent(LanguageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

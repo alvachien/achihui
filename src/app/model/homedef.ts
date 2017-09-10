@@ -3,7 +3,7 @@ export enum HomeMemberRelationEnum {
     Self    = 0,
     Couple  = 1,
     Child   = 2,
-    Parent  = 3
+    Parent  = 3,
 }
 
 export interface HomeMemberJson {
@@ -44,7 +44,7 @@ export class HomeMember {
         this._relation = rel;
     }
 
-    constructor() {        
+    constructor() {
     }
 
     public parseJSONData(data: HomeMemberJson) {
@@ -58,7 +58,7 @@ export class HomeMember {
             homeID: this._hid,
             user: this._user,
             displayAs: this._displayas,
-            relation: this._relation
+            relation: this._relation,
         };
         return jdata;
     }
@@ -118,7 +118,7 @@ export class HomeDef {
     set CreatorDisplayAs(ds: string) {
         this._creatorDisplayAs = ds;
     }
-    
+
     get Members(): HomeMember[] {
         return this._listMembers;
     }
@@ -141,7 +141,7 @@ export class HomeDef {
             name: this._name,
             details: this._details,
             host: this._host,
-            baseCurrency: this._basecurr
+            baseCurrency: this._basecurr,
         };
         if (createmode) {
             jdata.creatorDisplayAs = this._creatorDisplayAs;
@@ -150,7 +150,6 @@ export class HomeDef {
         return jdata;
     }
 }
-
 
 export interface HomeMsgJson {
     hid: number;

@@ -12,7 +12,7 @@ import { FinanceStorageService } from '../../services';
  * Data source of Document type
  */
 export class DocumentTypeDataSource extends DataSource<any> {
-  constructor(private _storageService: FinanceStorageService, 
+  constructor(private _storageService: FinanceStorageService,
     private _paginator: MdPaginator) {
     super();
   }
@@ -39,7 +39,7 @@ export class DocumentTypeDataSource extends DataSource<any> {
 @Component({
   selector: 'app-document-type-list',
   templateUrl: './document-type-list.component.html',
-  styleUrls: ['./document-type-list.component.scss']
+  styleUrls: ['./document-type-list.component.scss'],
 })
 export class DocumentTypeListComponent implements OnInit {
 
@@ -52,7 +52,7 @@ export class DocumentTypeListComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource = new DocumentTypeDataSource(this._storageService, this.paginator);
-    
+
     this._storageService.fetchAllDocTypes();
   }
 }

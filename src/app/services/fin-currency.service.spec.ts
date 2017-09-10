@@ -5,7 +5,7 @@ import { FinCurrencyService } from './fin-currency.service';
 describe('FinCurrencyService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [FinCurrencyService]
+      providers: [FinCurrencyService],
     });
   });
 

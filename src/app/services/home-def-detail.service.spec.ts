@@ -5,7 +5,7 @@ import { HomeDefDetailService } from './home-def-detail.service';
 describe('HomeDefDetailService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [HomeDefDetailService]
+      providers: [HomeDefDetailService],
     });
   });
 

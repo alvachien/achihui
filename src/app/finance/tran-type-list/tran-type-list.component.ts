@@ -12,7 +12,7 @@ import { FinanceStorageService } from '../../services';
  * Data source of Tran. type
  */
 export class TranTypeDataSource extends DataSource<any> {
-  constructor(private _storageService: FinanceStorageService, 
+  constructor(private _storageService: FinanceStorageService,
     private _paginator: MdPaginator) {
     super();
   }
@@ -39,7 +39,7 @@ export class TranTypeDataSource extends DataSource<any> {
 @Component({
   selector: 'app-tran-type-list',
   templateUrl: './tran-type-list.component.html',
-  styleUrls: ['./tran-type-list.component.scss']
+  styleUrls: ['./tran-type-list.component.scss'],
 })
 export class TranTypeListComponent implements OnInit {
 
@@ -52,7 +52,7 @@ export class TranTypeListComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource = new TranTypeDataSource(this._storageService, this.paginator);
-    
+
     this._storageService.fetchAllTranTypes();
   }
 }

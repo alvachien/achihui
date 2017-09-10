@@ -76,7 +76,7 @@ export class LearnStorageService {
           }
 
           return listRst;
-        }).subscribe(x => {
+        }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllCategories in LearnStorageService: ${x}`);
           }
@@ -84,7 +84,7 @@ export class LearnStorageService {
 
           let copiedData = x;
           this.listCategoryChange.next(copiedData);
-        }, error => {
+        }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllCategories in LearnStorageService: ${error}`);
           }
@@ -126,7 +126,7 @@ export class LearnStorageService {
           }
 
           return listRst;
-        }).subscribe(x => {
+        }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllObjects in LearnStorageService: ${x}`);
           }
@@ -134,7 +134,7 @@ export class LearnStorageService {
 
           let copiedData = x;
           this.listObjectChange.next(copiedData);
-        }, error => {
+        }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllObjects in LearnStorageService: ${error}`);
           }
@@ -176,7 +176,7 @@ export class LearnStorageService {
           }
 
           return listRst;
-        }).subscribe(x => {
+        }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllHistories in LearnStorageService: ${x}`);
           }
@@ -184,7 +184,7 @@ export class LearnStorageService {
 
           let copiedData = x;
           this.listHistoryChange.next(copiedData);
-        }, error => {
+        }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllHistories in LearnStorageService: ${error}`);
           }

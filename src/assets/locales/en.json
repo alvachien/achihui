@@ -75,7 +75,13 @@
     "PleaseSelect": "Please select",
     "NoResultToDisplay": "No results to display",
     "RowPerPage": "Row per page",
-    "WelcomeBack": "Welcome back!"
+    "WelcomeBack": "Welcome back!",
+
+    "GenericInfo": "Generic Info",
+    "ExtraInfo": "Extra Info",
+    "ReviewForSubmit": "Review for submit",
+    "NextButton": "Next",
+    "PreviousButton": "Previous"
   },
   "Sys":{
     "Currency": {

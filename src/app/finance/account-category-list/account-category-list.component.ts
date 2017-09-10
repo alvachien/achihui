@@ -12,7 +12,7 @@ import { FinanceStorageService } from '../../services';
  * Data source of Account category
  */
 export class AccountCategoryDataSource extends DataSource<any> {
-  constructor(private _storageService: FinanceStorageService, 
+  constructor(private _storageService: FinanceStorageService,
     private _paginator: MdPaginator) {
     super();
   }
@@ -39,7 +39,7 @@ export class AccountCategoryDataSource extends DataSource<any> {
 @Component({
   selector: 'app-account-category-list',
   templateUrl: './account-category-list.component.html',
-  styleUrls: ['./account-category-list.component.scss']
+  styleUrls: ['./account-category-list.component.scss'],
 })
 export class AccountCategoryListComponent implements OnInit {
   displayedColumns = ['id', 'name', 'comment'];
@@ -51,7 +51,7 @@ export class AccountCategoryListComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource = new AccountCategoryDataSource(this._storageService, this.paginator);
-    
+
     this._storageService.fetchAllAccountCategories();
   }
 

@@ -8,7 +8,7 @@ describe('HistoryDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HistoryDetailComponent ]
+      declarations: [ HistoryDetailComponent ],
     })
     .compileComponents();
   }));

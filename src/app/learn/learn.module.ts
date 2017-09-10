@@ -22,24 +22,24 @@ import { HistoryDetailComponent } from './history-detail';
   imports: [
     CommonModule,
     LearnRoutingModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     UIDependModule,
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
   ],
   declarations: [
     LearnComponent,
-    ObjectComponent, 
-    ObjectListComponent, 
-    ObjectDetailComponent, 
-    CategoryComponent, 
-    CategoryListComponent, 
-    CategoryDetailComponent, 
-    HistoryComponent, 
-    HistoryListComponent, 
-    HistoryDetailComponent
+    ObjectComponent,
+    ObjectListComponent,
+    ObjectDetailComponent,
+    CategoryComponent,
+    CategoryListComponent,
+    CategoryDetailComponent,
+    HistoryComponent,
+    HistoryListComponent,
+    HistoryDetailComponent,
   ],
   providers: [
-  ]
+  ],
 })
 export class LearnModule { }

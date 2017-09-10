@@ -10,9 +10,9 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
-import { AuthService, AuthGuardService, UserDetailService, 
+import { AuthService, AuthGuardService, UserDetailService,
   FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
-  HomeDefDetailService, CanDeactivateGuardService } from './services';
+  HomeDefDetailService, CanDeactivateGuardService, LanguageService } from './services';
 import { AppRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
 import { PageHomeListComponent } from './page-home-list';
@@ -20,6 +20,7 @@ import { PageHomeDetailComponent } from './page-home-detail';
 import { LearnModule } from './learn';
 import { FinanceModule } from './finance';
 import { FinanceCurrencyComponent } from './finance-currency';
+import { LanguageComponent } from './language';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -37,18 +38,19 @@ export function HttpLoaderFactory(http: HttpClient) {
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
     HttpModule,
-    UIDependModule
+    UIDependModule,
   ],
   declarations: [
     AppComponent,
     PageInitialComponent,
     PageHomeListComponent,
     PageHomeDetailComponent,
-    FinanceCurrencyComponent
+    FinanceCurrencyComponent,
+    LanguageComponent,
   ],
   providers: [
       AuthService,
@@ -60,7 +62,8 @@ export function HttpLoaderFactory(http: HttpClient) {
       CanDeactivateGuardService,
       FinanceStorageService,
       LearnStorageService,
+      LanguageService
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [ AppComponent ],
 })
 export class AppModule { }

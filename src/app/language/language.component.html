@@ -1,0 +1,55 @@
+<md-card>
+    <md-card-header>
+      <div></div>
+      <md-card-title>{{'Common.Languages' | translate}}</md-card-title>
+      <md-card-subtitle>{{'Common.ListView' | translate}}</md-card-subtitle>
+    </md-card-header>
+    <md-card-content>
+      <div class="table-container mat-elevation-z8">
+        <md-table #table [dataSource]="dataSource">
+          <!-- LCID Column -->
+          <ng-container mdColumnDef="lcid">
+            <md-header-cell *mdHeaderCellDef></md-header-cell>
+            <md-cell *mdCellDef="let row">
+              {{ row.Lcid }}
+            </md-cell>
+          </ng-container>
+  
+          <!-- Name Column -->
+          <ng-container mdColumnDef="isoname">
+            <md-header-cell *mdHeaderCellDef>{{'Common.Name' | translate}}</md-header-cell>
+            <md-cell *mdCellDef="let row"> {{row.IsoName}} </md-cell>
+          </ng-container>
+  
+          <!-- English Name Column -->
+          <ng-container mdColumnDef="enname">
+            <md-header-cell *mdHeaderCellDef> English </md-header-cell>
+            <md-cell *mdCellDef="let row"> {{row.EnglishName}} </md-cell>
+          </ng-container>
+  
+          <!-- Native Name Column -->
+          <ng-container mdColumnDef="nvname">
+            <md-header-cell *mdHeaderCellDef>Native </md-header-cell>
+            <md-cell *mdCellDef="let row"> {{row.NativeName}} </md-cell>
+          </ng-container>
+    
+          <!-- App flag Column -->
+          <ng-container mdColumnDef="appflag">
+            <md-header-cell *mdHeaderCellDef> App Flag </md-header-cell>
+            <md-cell *mdCellDef="let row"> <md-checkbox [(ngModel)]="row.AppFlag"></md-checkbox> </md-cell>
+          </ng-container>
+  
+          <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
+          <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
+        </md-table>
+        
+        <md-paginator #paginator 
+          [length]="_storageService.Languages.length" 
+          [pageIndex]="0" 
+          [pageSize]="25" 
+          [pageSizeOptions]="[5, 10, 25, 100]">
+        </md-paginator>
+      </div>
+    </md-card-content>
+  </md-card>
+  

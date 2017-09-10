@@ -5,7 +5,7 @@ import { HomeChoseGuardService } from './home-chose-guard.service';
 describe('HomeChoseGuardService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [HomeChoseGuardService]
+      providers: [HomeChoseGuardService],
     });
   });
 

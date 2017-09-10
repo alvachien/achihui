@@ -8,7 +8,7 @@ describe('PageHomeDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageHomeDetailComponent ]
+      declarations: [ PageHomeDetailComponent ],
     })
     .compileComponents();
   }));

@@ -4,69 +4,73 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, Currency } from '../model';
+import { LogLevel, AppLanguage } from '../model';
 import { AuthService } from './auth.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
 
 @Injectable()
-export class FinCurrencyService {
-  listDataChange: BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
-  get Currencies(): Currency[] {
+export class LanguageService {
+  listDataChange: BehaviorSubject<AppLanguage[]> = new BehaviorSubject<AppLanguage[]>([]);
+  get Languages(): AppLanguage[] {
     return this.listDataChange.value;
   }
 
+  // Buffer
   private _islistLoaded: boolean;
 
-  constructor(private _http: Http,
-    private _authService: AuthService) {
+  constructor(private _http: Http) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering FinCurrencyService constructor...');
+      console.log('AC_HIH_UI [Debug]: Entering LanguageService constructor...');
     }
 
     this._islistLoaded = false; // Performance improvement
   }
 
-  public fetchAllCurrencies() {
+  public fetchAllLanguages() {
     if (!this._islistLoaded) {
-      const apiurl = environment.ApiUrl + '/api/FinanceCurrency';
+      const apiurl = environment.ApiUrl + '/api/Language';
 
       const headers = new Headers();
       headers.append('Content-Type', 'application/json');
       headers.append('Accept', 'application/json');
-      headers.append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       const options = new RequestOptions({ headers: headers }); // Create a request option
       this._http.get(apiurl, options)
         .map((response: Response) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinCurrencyService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllLanguages in LanguageService: ${response}`);
           }
 
-          this._islistLoaded = true;
-
           const rjs = response.json();
-          let listRst = [];
+          let _listRst = [];
 
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
-              const rst: Currency = new Currency();
-              rst.onSetData(si);
-              listRst.push(rst);
+          if (rjs instanceof Array && rjs.length > 0) {
+            for (const si of rjs) {
+              const hd: AppLanguage = new AppLanguage();
+              hd.Lcid = +si.lcid;
+              hd.EnglishName = si.englishName;
+              hd.NativeName = si.nativeName;
+              hd.IsoName = si.isoName;
+              hd.AppFlag = si.appFlag;
+
+              _listRst.push(hd);
             }
           }
 
-          return listRst;
+          return _listRst;
         }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllCurrencies in FinCurrencyService: ${x}`);
+            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllLanguages in LanguageService: ${x}`);
           }
+
+          this._islistLoaded = true;
           let copiedData = x;
           this.listDataChange.next(copiedData);
         }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllCurrencies in FinCurrencyService: ${error}`);
+            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllLanguages in LanguageService: ${error}`);
           }
 
           this._islistLoaded = false;

@@ -43,7 +43,7 @@ export const slideInLeftAnimation: AnimationTriggerMetadata =
       })),
     ]),
   ]);
-  
+
 export const slideInDownAnimation: AnimationTriggerMetadata =
   trigger('routeAnimation', [
     state('*',

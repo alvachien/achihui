@@ -75,7 +75,13 @@
     "PleaseSelect": "请选择",
     "NoResultToDisplay": "无显示结果",
     "RowPerPage": "每页行数",
-    "WelcomeBack": "欢迎回来!"
+    "WelcomeBack": "欢迎回来!",
+
+    "GenericInfo": "基础信息",
+    "ExtraInfo": "附加信息",
+    "ReviewForSubmit": "检查与提交",
+    "NextButton": "下一步",
+    "PreviousButton": "上一步"
   },
   "Sys":{
     "Currency": {

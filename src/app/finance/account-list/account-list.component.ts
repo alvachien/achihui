@@ -12,7 +12,7 @@ import { FinanceStorageService } from '../../services';
  * Data source of Account
  */
 export class AccountDataSource extends DataSource<any> {
-  constructor(private _storageService: FinanceStorageService, 
+  constructor(private _storageService: FinanceStorageService,
     private _paginator: MdPaginator) {
     super();
   }
@@ -39,7 +39,7 @@ export class AccountDataSource extends DataSource<any> {
 @Component({
   selector: 'app-account-list',
   templateUrl: './account-list.component.html',
-  styleUrls: ['./account-list.component.scss']
+  styleUrls: ['./account-list.component.scss'],
 })
 export class AccountListComponent implements OnInit {
 
@@ -54,9 +54,9 @@ export class AccountListComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...');
     }
-    
+
     this.dataSource = new AccountDataSource(this._storageService, this.paginator);
-    
+
     this._storageService.fetchAllAccounts();
     this._storageService.fetchAllAccountCategories();
   }

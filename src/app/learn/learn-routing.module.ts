@@ -21,22 +21,22 @@ const routes: Routes = [
         component: CategoryComponent,
         children: [
           {
-            path:'',
-            component: CategoryListComponent
+            path: '',
+            component: CategoryListComponent,
           },
           {
-            path:'create',
-            component: CategoryDetailComponent
+            path: 'create',
+            component: CategoryDetailComponent,
           },
           {
             path: 'display/:id',
-            component: CategoryDetailComponent
+            component: CategoryDetailComponent,
           },
           {
             path: 'edit/:id',
-            component: CategoryDetailComponent
-          }
-        ]
+            component: CategoryDetailComponent,
+          },
+        ],
       },
       {
         path: 'object',
@@ -44,21 +44,21 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: ObjectListComponent
+            component: ObjectListComponent,
           },
           {
-            path:'create',
-            component: ObjectDetailComponent
+            path: 'create',
+            component: ObjectDetailComponent,
           },
           {
             path: 'display/:id',
-            component: ObjectDetailComponent
+            component: ObjectDetailComponent,
           },
           {
             path: 'edit/:id',
-            component: ObjectDetailComponent
-          }
-        ]
+            component: ObjectDetailComponent,
+          },
+        ],
       },
       {
         path: 'history',
@@ -66,28 +66,28 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: HistoryListComponent
+            component: HistoryListComponent,
           },
           {
-            path:'create',
-            component: HistoryDetailComponent
+            path: 'create',
+            component: HistoryDetailComponent,
           },
           {
             path: 'display/:id',
-            component: HistoryDetailComponent
+            component: HistoryDetailComponent,
           },
           {
             path: 'edit/:id',
-            component: HistoryDetailComponent
-          }
-        ]
+            component: HistoryDetailComponent,
+          },
+        ],
       },
-    ]
-  }  
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class LearnRoutingModule { }

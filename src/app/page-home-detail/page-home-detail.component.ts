@@ -7,18 +7,18 @@ import { AuthService, HomeDefDetailService, FinCurrencyService } from '../servic
 @Component({
   selector: 'app-page-home-detail',
   templateUrl: './page-home-detail.component.html',
-  styleUrls: ['./page-home-detail.component.scss']
+  styleUrls: ['./page-home-detail.component.scss'],
 })
 export class PageHomeDetailComponent implements OnInit {
   currentHomeDef: HomeDef | null;
 
-  constructor(private _authService: AuthService, 
+  constructor(private _authService: AuthService,
     public _fincurrService: FinCurrencyService,
     private _homedefService: HomeDefDetailService,
     private _router: Router) {
     this.currentHomeDef = new HomeDef();
     this._fincurrService.fetchAllCurrencies();
-    this._homedefService.listDataChange.subscribe(x => {
+    this._homedefService.listDataChange.subscribe((x) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering listDataChange of PageHomeDetailComponent... ${x}`);
       }
@@ -33,7 +33,7 @@ export class PageHomeDetailComponent implements OnInit {
       || this.currentHomeDef.Name.length <= 0) {
         return false;
     }
-    
+
     if (this.currentHomeDef.BaseCurrency === null || this.currentHomeDef.BaseCurrency === undefined
       || this.currentHomeDef.BaseCurrency.length <= 0) {
         return false;
@@ -46,14 +46,14 @@ export class PageHomeDetailComponent implements OnInit {
     // Submit to DB
     if (this.currentHomeDef.ID === null || this.currentHomeDef.ID === undefined) {
       this.currentHomeDef.Host = this._authService.authSubject.value.getUserId();
-      this._homedefService.createEvent.subscribe(x => {
+      this._homedefService.createEvent.subscribe((x) => {
         if (x) {
           // Success!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering onSubmit of PageHomeDetailComponent... ${x}`);
           }
 
-          this._router.navigate(['/homelist']); 
+          this._router.navigate(['/homelist']);
         } else {
           // Failed
           if (environment.LoggingLevel >= LogLevel.Error) {

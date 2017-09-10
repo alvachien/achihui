@@ -8,7 +8,7 @@ describe('TranTypeDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TranTypeDetailComponent ]
+      declarations: [ TranTypeDetailComponent ],
     })
     .compileComponents();
   }));

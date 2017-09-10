@@ -10,5 +10,5 @@ export const environment = {
   AppLogoutCallbackUrl: 'http://localhost:29521',
   AppLoginSlientRevewCallbackUrl: 'http://localhost:29521/silentrenewcallback.html',
   AppHost: 'http://localhost:29521',
-  ApiUrl: 'http://localhost:25688'
+  ApiUrl: 'http://localhost:25688',
 };

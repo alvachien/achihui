@@ -200,7 +200,7 @@ export class AccountCategory extends hih.BaseModel {
     }
     set ID(id: number) {
         this._id = id;
-    }    
+    }
 
     private _hid: number;
     get HID(): number {
@@ -335,11 +335,11 @@ export abstract class AccountExtra {
     public writeJSONObject(): any {
         return {};
     }
-    public onInit(): void {        
+    public onInit(): void {
     }
-    public onComplete(): void {        
+    public onComplete(): void {
     }
-    public onSetData(data: any): void {        
+    public onSetData(data: any): void {
     }
 }
 
@@ -369,7 +369,7 @@ export class Account extends hih.BaseModel {
             return false;
 
         let brst: boolean = true;
-        
+
         if (context) {
             // Category
             if (context.arCategory && context.arCategory.length > 0) {
@@ -384,8 +384,8 @@ export class Account extends hih.BaseModel {
                     // Error message
                     let msg : hih.InfoMessage = new hih.InfoMessage();
                     msg.MsgType = hih.MessageType.Error;
-                    msg.MsgTitle = "Invalid category";
-                    msg.MsgContent = "Invalid category, please use a valid category!";
+                    msg.MsgTitle = 'Invalid category';
+                    msg.MsgContent = 'Invalid category, please use a valid category!';
                     msg.MsgTime = new Date();
                     this.VerifiedMsgs.push(msg);
                     brst = false;
@@ -394,8 +394,8 @@ export class Account extends hih.BaseModel {
             } else {
                 let msg : hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = "No category";
-                msg.MsgContent = "No category found in the system!";
+                msg.MsgTitle = 'No category';
+                msg.MsgContent = 'No category found in the system!';
                 msg.MsgTime = new Date();
                 this.VerifiedMsgs.push(msg);
                 brst = false;
@@ -554,7 +554,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
         } else {
             this.StartDate = null;
         }
-        
+
         if (this.EndDateString) {
             this.EndDate = hih.Utility.String2Date(this.EndDateString);
         } else {
@@ -581,13 +581,13 @@ export class ControlCenter extends hih.BaseModel {
     public onVerify(context: any): boolean {
         if (!super.onVerify(context))
             return false;
-        
+
         let bRst : boolean = true;
-        if (this.Name && this.Name.length > 0) {            
+        if (this.Name && this.Name.length > 0) {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTitle = "Name missing";
-            msg.MsgContent = "Name is must!";
+            msg.MsgTitle = 'Name missing';
+            msg.MsgContent = 'Name is must!';
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTime = new Date();
             this.VerifiedMsgs.push(msg);
@@ -638,7 +638,7 @@ export class Order extends hih.BaseModel {
     public _validTo: Date;
     public Comment: string;
 
-    public SRules: Array<SettlementRule> = [];
+    public SRules: SettlementRule[] = [];
 
     // UI part
     public ValidFromString: string;
@@ -689,57 +689,57 @@ export class Order extends hih.BaseModel {
         let chkrst = true;
 
         // Name
-        if (this.Name && this.Name.length > 0) {            
+        if (this.Name && this.Name.length > 0) {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "Invalid name";
-            msg.MsgContent = "Name is a must";
+            msg.MsgTitle = 'Invalid name';
+            msg.MsgContent = 'Name is a must';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
         // Valid from
-        if (this.ValidFrom && this.ValidFrom instanceof Date) {            
+        if (this.ValidFrom && this.ValidFrom instanceof Date) {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "Invalid valid from";
-            msg.MsgContent = "Valid from is a must";
+            msg.MsgTitle = 'Invalid valid from';
+            msg.MsgContent = 'Valid from is a must';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
-        // Valid to 
-        if (this.ValidTo && this.ValidTo instanceof Date) {            
+        // Valid to
+        if (this.ValidTo && this.ValidTo instanceof Date) {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "Invalid valid to";
-            msg.MsgContent = "Valid to is a must";
+            msg.MsgTitle = 'Invalid valid to';
+            msg.MsgContent = 'Valid to is a must';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
         // Valid to > valid from
-        if (this.ValidTo > this.ValidFrom) {            
+        if (this.ValidTo > this.ValidFrom) {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "Invalid valid range";
-            msg.MsgContent = "Valid to must later than valid from";
+            msg.MsgTitle = 'Invalid valid range';
+            msg.MsgContent = 'Valid to must later than valid from';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
         // Srules
         if (this.SRules.length > 0) {
             let ntotal: number = 0;
-            for(let srobj of this.SRules) {
+            for (let srobj of this.SRules) {
                 ntotal += srobj.Precent;
 
                 srobj.onVerify({});
-                for(let msg2 of srobj.VerifiedMsgs) {
+                for (let msg2 of srobj.VerifiedMsgs) {
                     this.VerifiedMsgs.push(msg2);
                     if (msg2.MsgType === hih.MessageType.Error) {
                         chkrst = false;
@@ -751,8 +751,8 @@ export class Order extends hih.BaseModel {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgTime = new Date();
                 msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = "No rule";
-                msg.MsgContent = "No rule defined";
+                msg.MsgTitle = 'No rule';
+                msg.MsgContent = 'No rule defined';
                 this.VerifiedMsgs.push(msg);
                 chkrst = false;
             }
@@ -760,8 +760,8 @@ export class Order extends hih.BaseModel {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "No rule";
-            msg.MsgContent = "No rule defined";
+            msg.MsgTitle = 'No rule';
+            msg.MsgContent = 'No rule defined';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
@@ -782,12 +782,12 @@ export class Order extends hih.BaseModel {
         rstObj.comment = this.Comment;
         rstObj.sRuleList = [];
 
-        for(let srule of this.SRules) {
+        for (let srule of this.SRules) {
             let sruleinfo = srule.writeJSONObject();
             sruleinfo.ordId = this.Id;
             rstObj.sRuleList.push(sruleinfo);
         }
-        
+
         return rstObj;
     }
 
@@ -816,7 +816,7 @@ export class Order extends hih.BaseModel {
 
         this.SRules = [];
         if (data && data.sRuleList && data.sRuleList instanceof Array) {
-            for(let sr of data.sRuleList) {
+            for (let sr of data.sRuleList) {
                 let srule: SettlementRule = new SettlementRule();
                 srule.onSetData(sr);
                 this.SRules.push(srule);
@@ -836,7 +836,7 @@ export class Order extends hih.BaseModel {
         } else {
             this.ValidFrom = null;
         }
-        
+
         if (this.ValidToString) {
             this.ValidTo = hih.Utility.String2Date(this.ValidToString);
         } else {
@@ -874,13 +874,13 @@ export class SettlementRule extends hih.BaseModel {
         // }
         if (!super.onVerify(context))
             return false;
-        
+
         let brst : boolean = true;
-        // ID 
+        // ID
         if (this.RuleId <= 0) {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgContent = "Rule Id should larger than 0.";
-            msg.MsgTitle = "Rule Id invalid";
+            msg.MsgContent = 'Rule Id should larger than 0.';
+            msg.MsgTitle = 'Rule Id invalid';
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTime = new Date();
             this.VerifiedMsgs.push(msg);
@@ -890,8 +890,8 @@ export class SettlementRule extends hih.BaseModel {
         // Precent
         if (this.Precent <= 0 || this.Precent > 100) {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgContent = "Precent should between 0 and 100.";
-            msg.MsgTitle = "Precent invalid";
+            msg.MsgContent = 'Precent should between 0 and 100.';
+            msg.MsgTitle = 'Precent invalid';
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTime = new Date();
             this.VerifiedMsgs.push(msg);
@@ -1019,7 +1019,7 @@ export class Document extends hih.BaseModel {
     public TranCurr2: string;
     public ExgRate2: number;
 
-    public Items: Array<DocumentItem> = [];
+    public Items: DocumentItem[] = [];
 
     // UI fields
     public DocTypeName: string;
@@ -1063,7 +1063,7 @@ export class Document extends hih.BaseModel {
         if (context && context.arDocType && context.arDocType instanceof Array) {
             if (this.DocType > 0) {
                 let bExist : boolean = false;
-                for(let tt of context.arDocType) {
+                for (let tt of context.arDocType) {
                     if (+tt.Id === this.DocType) {
                         bExist = true;
                     }
@@ -1073,35 +1073,35 @@ export class Document extends hih.BaseModel {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
                     msg.MsgTime = new Date();
                     msg.MsgType = hih.MessageType.Error;
-                    msg.MsgTitle = "Invalid doc. type id!";
-                    msg.MsgContent = "Invalid doc. type";
+                    msg.MsgTitle = 'Invalid doc. type id!';
+                    msg.MsgContent = 'Invalid doc. type';
                     this.VerifiedMsgs.push(msg);
-                    chkrst = false;           
+                    chkrst = false;
                 }
             } else {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgTime = new Date();
                 msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = "Specify an doc. type first";
-                msg.MsgContent = "No doc. type inputted";
+                msg.MsgTitle = 'Specify an doc. type first';
+                msg.MsgContent = 'No doc. type inputted';
                 this.VerifiedMsgs.push(msg);
-                chkrst = false;           
+                chkrst = false;
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "No doc. type in the system";
-            msg.MsgContent = "No doc. type defined";
+            msg.MsgTitle = 'No doc. type in the system';
+            msg.MsgContent = 'No doc. type defined';
             this.VerifiedMsgs.push(msg);
-            chkrst = false;           
+            chkrst = false;
         }
 
         // Currency check
         if (context && context.arCurrency && context.arCurrency instanceof Array) {
             if (this.TranCurr) {
                 let bExist : boolean = false;
-                for(let cc of context.arCurrency) {
+                for (let cc of context.arCurrency) {
                     if (cc.Currency === this.TranCurr) {
                         bExist = true;
                     }
@@ -1111,42 +1111,42 @@ export class Document extends hih.BaseModel {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
                     msg.MsgTime = new Date();
                     msg.MsgType = hih.MessageType.Error;
-                    msg.MsgTitle = "Invalid currency!";
-                    msg.MsgContent = "Invalid currency";
+                    msg.MsgTitle = 'Invalid currency!';
+                    msg.MsgContent = 'Invalid currency';
                     this.VerifiedMsgs.push(msg);
-                    chkrst = false;           
+                    chkrst = false;
                 }
             } else {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgTime = new Date();
                 msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = "Specify an currency first";
-                msg.MsgContent = "No currency inputted";
+                msg.MsgTitle = 'Specify an currency first';
+                msg.MsgContent = 'No currency inputted';
                 this.VerifiedMsgs.push(msg);
-                chkrst = false;           
+                chkrst = false;
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "No currency in the system";
-            msg.MsgContent = "No currency defined";
+            msg.MsgTitle = 'No currency in the system';
+            msg.MsgContent = 'No currency defined';
             this.VerifiedMsgs.push(msg);
-            chkrst = false;           
+            chkrst = false;
         }
 
-        // Items 
+        // Items
         let amtTotal: number = 0;
         if (this.Items instanceof Array && this.Items.length > 0) {
-            for(let fit of this.Items) {
+            for (let fit of this.Items) {
                 //amtTotal += fit.TranAmount;
                 if (!fit.onVerify(context)) {
-                    for(let imsg of fit.VerifiedMsgs) {
+                    for (let imsg of fit.VerifiedMsgs) {
                         this.VerifiedMsgs.push(imsg);
                     }
                     chkrst = false;
                 } else {
-                    for(let tt of context.arTranType) {
+                    for (let tt of context.arTranType) {
                         let ftt: TranType = <TranType>tt;
                         if (ftt.Id === fit.TranType) {
                             if (ftt.Expense) {
@@ -1162,8 +1162,8 @@ export class Document extends hih.BaseModel {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "No items";
-            msg.MsgContent = "No doc. items";
+            msg.MsgTitle = 'No items';
+            msg.MsgContent = 'No doc. items';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
@@ -1173,12 +1173,12 @@ export class Document extends hih.BaseModel {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgTime = new Date();
                 msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = "Item amount is not correct in transfer doc";
-                msg.MsgContent = "Amount error";
+                msg.MsgTitle = 'Item amount is not correct in transfer doc';
+                msg.MsgContent = 'Amount error';
                 this.VerifiedMsgs.push(msg);
                 chkrst = false;
             }
-        } 
+        }
 
         return chkrst;
     }
@@ -1196,7 +1196,7 @@ export class Document extends hih.BaseModel {
         rstObj.desp = this.Desp;
 
         rstObj.items = [];
-        for(let di of this.Items) {
+        for (let di of this.Items) {
             let item: any = di.writeJSONObject();
             rstObj.items.push(item);
         }
@@ -1235,7 +1235,7 @@ export class Document extends hih.BaseModel {
 
         this.Items = [];
         if (data && data.items && data.items instanceof Array) {
-            for(let it of data.items) {
+            for (let it of data.items) {
                 let item: DocumentItem = new DocumentItem();
                 item.onSetData(it);
                 this.Items.push(item);
@@ -1249,7 +1249,7 @@ export class Document extends hih.BaseModel {
         // if (environment.DebugLogging) {
         //     console.log("Entering onSetData of Document");
         // }
-        
+
         if (this.TranDateString) {
             this.TranDate = hih.Utility.String2Date(this.TranDateString);
         }
@@ -1271,7 +1271,7 @@ export class DocumentItem {
     public TranTypeName: string;
     public ControlCenterName: string;
     public OrderName: string;
-    public VerifiedMsgs: Array<hih.InfoMessage> = [];
+    public VerifiedMsgs: hih.InfoMessage[] = [];
 
     public onVerify(context: any): boolean {
         // if (environment.DebugLogging) {
@@ -1283,8 +1283,8 @@ export class DocumentItem {
         // Item Id
         if (this.ItemId <= 0) {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgContent = "Item Id should larger than 0.";
-            msg.MsgTitle = "Item Id invalid";
+            msg.MsgContent = 'Item Id should larger than 0.';
+            msg.MsgTitle = 'Item Id invalid';
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTime = new Date();
             this.VerifiedMsgs.push(msg);
@@ -1294,7 +1294,7 @@ export class DocumentItem {
         if (context && context.arAccount && context.arAccount instanceof Array) {
             if (this.AccountId > 0) {
                 let bAcntExist : boolean = false;
-                for(let acnt of context.arAccount) {
+                for (let acnt of context.arAccount) {
                     if (+acnt.Id === this.AccountId) {
                         bAcntExist = true;
                     }
@@ -1304,34 +1304,34 @@ export class DocumentItem {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
                     msg.MsgTime = new Date();
                     msg.MsgType = hih.MessageType.Error;
-                    msg.MsgTitle = "Invalid account id!";
-                    msg.MsgContent = "Invalid account id";
+                    msg.MsgTitle = 'Invalid account id!';
+                    msg.MsgContent = 'Invalid account id';
                     this.VerifiedMsgs.push(msg);
-                    chkrst = false;           
+                    chkrst = false;
                 }
             } else {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgTime = new Date();
                 msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = "No account inputted";
-                msg.MsgContent = "Specify an account first";
+                msg.MsgTitle = 'No account inputted';
+                msg.MsgContent = 'Specify an account first';
                 this.VerifiedMsgs.push(msg);
-                chkrst = false;           
+                chkrst = false;
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "No account defined";
-            msg.MsgContent = "No account in the system";
+            msg.MsgTitle = 'No account defined';
+            msg.MsgContent = 'No account in the system';
             this.VerifiedMsgs.push(msg);
-            chkrst = false;           
+            chkrst = false;
         }
         // Transaction type
         if (context && context.arTranType && context.arTranType instanceof Array) {
             if (this.TranType > 0) {
                 let bExist : boolean = false;
-                for(let tt of context.arTranType) {
+                for (let tt of context.arTranType) {
                     if (+tt.Id === this.TranType) {
                         bExist = true;
                     }
@@ -1341,38 +1341,38 @@ export class DocumentItem {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
                     msg.MsgTime = new Date();
                     msg.MsgType = hih.MessageType.Error;
-                    msg.MsgTitle = "Invalid tran. type";
-                    msg.MsgContent = "Invalid tran. type id!";
+                    msg.MsgTitle = 'Invalid tran. type';
+                    msg.MsgContent = 'Invalid tran. type id!';
                     this.VerifiedMsgs.push(msg);
-                    chkrst = false;           
+                    chkrst = false;
                 }
             } else {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgTime = new Date();
                 msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = "No tran. type inputted";
-                msg.MsgContent = "Specify an tran. type first";
+                msg.MsgTitle = 'No tran. type inputted';
+                msg.MsgContent = 'Specify an tran. type first';
                 this.VerifiedMsgs.push(msg);
-                chkrst = false;           
+                chkrst = false;
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "No tran. type defined";
-            msg.MsgContent = "No tran. type in the system!";
+            msg.MsgTitle = 'No tran. type defined';
+            msg.MsgContent = 'No tran. type in the system!';
             this.VerifiedMsgs.push(msg);
-            chkrst = false;           
+            chkrst = false;
         }
         // Amount
         if (this.TranAmount <= 0) {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = new Date();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = "No amount";
-            msg.MsgContent = "Amount is a must!";
+            msg.MsgTitle = 'No amount';
+            msg.MsgContent = 'Amount is a must!';
             this.VerifiedMsgs.push(msg);
-            chkrst = false;           
+            chkrst = false;
         }
         // Either control center or order must be exist
         let bccord: boolean = true;
@@ -1384,11 +1384,11 @@ export class DocumentItem {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgTime = new Date();
                 msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = "Duplicated inputs";
-                msg.MsgContent = "Input either control center or order!";
+                msg.MsgTitle = 'Duplicated inputs';
+                msg.MsgContent = 'Input either control center or order!';
                 this.VerifiedMsgs.push(msg);
-                chkrst = false;           
-            } else {                
+                chkrst = false;
+            } else {
             }
         } else {
             if (this.OrderId) {
@@ -1399,10 +1399,10 @@ export class DocumentItem {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgTime = new Date();
                 msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = "No inputs";
-                msg.MsgContent = "Input either control center or order";
+                msg.MsgTitle = 'No inputs';
+                msg.MsgContent = 'Input either control center or order';
                 this.VerifiedMsgs.push(msg);
-                chkrst = false;           
+                chkrst = false;
             }
         }
         if (bccord) {
@@ -1410,7 +1410,7 @@ export class DocumentItem {
             if (this.ControlCenterId) {
                 if (context && context.arControlCenter && context.arControlCenter instanceof Array) {
                     let bExist : boolean = false;
-                    for(let tt of context.arControlCenter) {
+                    for (let tt of context.arControlCenter) {
                         if (+tt.Id === this.ControlCenterId) {
                             bExist = true;
                         }
@@ -1420,25 +1420,25 @@ export class DocumentItem {
                         let msg: hih.InfoMessage = new hih.InfoMessage();
                         msg.MsgTime = new Date();
                         msg.MsgType = hih.MessageType.Error;
-                        msg.MsgTitle = "Invalid control center";
-                        msg.MsgContent = "Invalid control center id!";
+                        msg.MsgTitle = 'Invalid control center';
+                        msg.MsgContent = 'Invalid control center id!';
                         this.VerifiedMsgs.push(msg);
-                        chkrst = false;           
+                        chkrst = false;
                     }
                 } else {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
                     msg.MsgTime = new Date();
                     msg.MsgType = hih.MessageType.Error;
-                    msg.MsgTitle = "No control center defined";
-                    msg.MsgContent = "No control center in the system";
+                    msg.MsgTitle = 'No control center defined';
+                    msg.MsgContent = 'No control center in the system';
                     this.VerifiedMsgs.push(msg);
-                    chkrst = false;           
+                    chkrst = false;
                 }
             } else if (this.OrderId) {
                 // Order
                 if (context && context.arOrder && context.arOrder instanceof Array) {
                     let bExist : boolean = false;
-                    for(let tt of context.arOrder) {
+                    for (let tt of context.arOrder) {
                         if (+tt.Id === this.OrderId) {
                             bExist = true;
                         }
@@ -1448,19 +1448,19 @@ export class DocumentItem {
                         let msg: hih.InfoMessage = new hih.InfoMessage();
                         msg.MsgTime = new Date();
                         msg.MsgType = hih.MessageType.Error;
-                        msg.MsgTitle = "Invalid order";
-                        msg.MsgContent = "Invalid order id!";
+                        msg.MsgTitle = 'Invalid order';
+                        msg.MsgContent = 'Invalid order id!';
                         this.VerifiedMsgs.push(msg);
-                        chkrst = false;           
+                        chkrst = false;
                     }
                 } else {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
                     msg.MsgTime = new Date();
                     msg.MsgType = hih.MessageType.Error;
-                    msg.MsgTitle = "No order defined";
-                    msg.MsgContent = "No order in the system";
+                    msg.MsgTitle = 'No order defined';
+                    msg.MsgContent = 'No order in the system';
                     this.VerifiedMsgs.push(msg);
-                    chkrst = false;           
+                    chkrst = false;
                 }
             }
         }
@@ -1671,7 +1671,7 @@ export class BalanceSheetReport extends FinanceReportBase {
     public AccountCategoryName: string;
     public onSetData(data: any) {
         super.onSetData(data);
-        
+
         if (data && data.accountID) {
             this.AccountId = +data.accountID;
         }
@@ -1692,7 +1692,7 @@ export class ControlCenterReport extends FinanceReportBase {
     public ControlCenterName: string;
     public onSetData(data: any) {
         super.onSetData(data);
-        
+
         if (data && data.controlCenterID) {
             this.ControlCenterId = +data.controlCenterID;
         }
@@ -1811,4 +1811,4 @@ export class DocumentItemWithBalance {
             this.Desp = data.desp;
         }
     }
-} 
+}

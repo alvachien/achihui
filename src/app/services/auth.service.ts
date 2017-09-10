@@ -21,7 +21,7 @@ const AuthSettings: any = {
   //silentRequestTimeout:10000,
 
   filterProtocolClaims: true,
-  loadUserInfo: true
+  loadUserInfo: true,
 };
 
 @Injectable()

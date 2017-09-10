@@ -1,7 +1,7 @@
 import { environment } from '../../environments/environment';
 
-export const TypeParentSplitter: string = " > ";
-export const IDSplitChar: string = ",";
+export const TypeParentSplitter: string = ' > ';
+export const IDSplitChar: string = ',';
 export const DateSplitChar: string = '-';
 export const FinanceAccountCategory_AdvancePayment: number = 8; // Advance payment
 export const FinanceDocType_Normal: number = 1;
@@ -18,14 +18,14 @@ export enum UserHistType {
     Logout = 2,
     ChangePassword = 3,
     ResetPassword = 4,
-    Delete = 5
+    Delete = 5,
 };
 export enum UIMode {
     Create = 1,
     Change = 2,
     Display = 3,
-    
-    Invalid = 9
+
+    Invalid = 9,
 };
 
 export function isUIEditable(mode: UIMode): boolean {
@@ -33,18 +33,18 @@ export function isUIEditable(mode: UIMode): boolean {
 }
 
 export function getUIModeString(mode: UIMode): string {
-    switch(mode) {
+    switch (mode) {
         case UIMode.Create:
-            return "Common.Create";
+            return 'Common.Create';
 
         case UIMode.Change:
-            return "Common.Change";
+            return 'Common.Change';
 
         case UIMode.Display:
-            return "Common.Display";
+            return 'Common.Display';
 
         default:
-            return "";
+            return '';
     }
 }
 
@@ -62,14 +62,14 @@ export enum RepeatFrequency {
     Quarter     = 4,
     HalfYear    = 5,
     Year        = 6,
-    Manual      = 7
+    Manual      = 7,
 };
 export enum LogLevel {
     Crash = 0,
     Error = 1,
     Warning = 2,
     Info = 3,
-    Debug = 4
+    Debug = 4,
 }
 
 export class InfoMessage {
@@ -105,7 +105,7 @@ export class BaseModel {
     get CreatedAt(): Date {
         return this._createdAt;
     }
-    set CreatedAt(ca: Date) {        
+    set CreatedAt(ca: Date) {
         this._createdAt = ca;
         this.CreatedAtString = Utility.Date2String(this._createdAt);
     }
@@ -176,10 +176,10 @@ export class BaseModel {
             //rstobj.updatedAt = this.UpdatedAt;
             rstobj.updatedAt = this.UpdatedAtString;
         }
-        if (this.UpdatedBy && this.UpdatedBy.length >0 ) {
+        if (this.UpdatedBy && this.UpdatedBy.length > 0 ) {
             rstobj.updatedBy = this.UpdatedBy;
         }
-        
+
         return rstobj;
     }
 
@@ -260,16 +260,16 @@ export class Utility {
         // return (curr_date + "-" + curr_month + "-" + curr_year);
 
         let y: number = dt.getFullYear();
-		let m: number = dt.getMonth() + 1;
-		let d: number = dt.getDate();
-		return y.toString() + DateSplitChar + (m < 10 ? ('0' + m) : m).toString() + DateSplitChar + (d < 10 ? ('0' + d) : d).toString();
+		      let m: number = dt.getMonth() + 1;
+		      let d: number = dt.getDate();
+		      return y.toString() + DateSplitChar + (m < 10 ? ('0' + m) : m).toString() + DateSplitChar + (d < 10 ? ('0' + d) : d).toString();
     }
 
     public static String2Date(s: string): Date {
 		if (!s)
 			return new Date();
 
-		var ss = (s.split(DateSplitChar));
+		let ss = (s.split(DateSplitChar));
 		let y: number = parseInt(ss[0], 10);
 		let m: number = parseInt(ss[1], 10);
 		let d: number = parseInt(ss[2], 10);
@@ -287,9 +287,9 @@ export class Utility {
     	let two: Date = new Date(second.getFullYear(), second.getMonth(), second.getDate());
 
     	// Do the math.
-    	var millisecondsPerDay = 1000 * 60 * 60 * 24;
-    	var millisBetween = two.getTime() - one.getTime();
-    	var days = millisBetween / millisecondsPerDay;
+    	let millisecondsPerDay = 1000 * 60 * 60 * 24;
+    	let millisBetween = two.getTime() - one.getTime();
+    	let days = millisBetween / millisecondsPerDay;
 
     	// Round down.
     	return Math.floor(days);
@@ -302,12 +302,12 @@ export class Utility {
 
     public static CheckMail(strMail: string): boolean {
 		let isValid: boolean = false;
-		
+
 		if (strMail.indexOf('@') >= 1) {
-			var m_valid_dom = strMail.substr(strMail.indexOf('@')+1);
+			let m_valid_dom = strMail.substr(strMail.indexOf('@') + 1);
 			if (m_valid_dom.indexOf('@') === -1) {
 				if (m_valid_dom.indexOf('.') >= 1) {
-					var m_valid_dom_e = m_valid_dom.substr(m_valid_dom.indexOf('.')+1);
+					let m_valid_dom_e = m_valid_dom.substr(m_valid_dom.indexOf('.') + 1);
 					if (m_valid_dom_e.length >= 1) {
 						isValid = true;
 					}
@@ -321,28 +321,28 @@ export class Utility {
     public static CheckStringLength(strField: string, minlength: number, maxLength: number) : boolean {
     	let length_df: number = strField.length;
     	let bResult: boolean = false;
-    
+
     	if (length_df >= minlength && length_df <= maxLength) {
         	bResult = true;
     	}
-		
+
     	return bResult;
 	}
 
     public static GetPasswordStrengthLevel(strField: string) : number {
     	let pass_level: number = 0;
-    
-		if (strField.match(/[a-z]/g)) {
+
+		   if (strField.match(/[a-z]/g)) {
 			pass_level++;
 		}
-		if (strField.match(/[A-Z]/g)) {
+		   if (strField.match(/[A-Z]/g)) {
 			pass_level++;
 		}
-		if (strField.match(/[0-9]/g)) {
+		   if (strField.match(/[0-9]/g)) {
 			pass_level++;
 		}
-		if (strField.length < 5) {
-			if(pass_level >= 1) pass_level--;
+		   if (strField.length < 5) {
+			if (pass_level >= 1) pass_level--;
 		} else if (strField.length >= 20) {
 			pass_level++;
 		}
@@ -351,9 +351,9 @@ export class Utility {
 	}
 
     public static hasDuplicatesInStringArray(strarray: string) : boolean {
-        var valuesSoFar = Object.create(null);
-        for (var i = 0; i < strarray.length; ++i) {
-            var value = strarray[i];
+        let valuesSoFar = Object.create(null);
+        for (let i = 0; i < strarray.length; ++i) {
+            let value = strarray[i];
             if (value in valuesSoFar) {
                 return true;
             }

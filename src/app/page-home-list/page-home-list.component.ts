@@ -15,7 +15,7 @@ import 'rxjs/add/operator/map';
  * Data source of Home def.
  */
 export class HomeDefDataSource extends DataSource<any> {
-  constructor(private _homedefService: HomeDefDetailService, 
+  constructor(private _homedefService: HomeDefDetailService,
     private _paginator: MdPaginator) {
     super();
   }
@@ -42,7 +42,7 @@ export class HomeDefDataSource extends DataSource<any> {
 @Component({
   selector: 'app-page-home-list',
   templateUrl: './page-home-list.component.html',
-  styleUrls: ['./page-home-list.component.scss']
+  styleUrls: ['./page-home-list.component.scss'],
 })
 export class PageHomeListComponent implements OnInit {
   displayedColumns = ['id', 'name', 'host', 'currency', 'details'];
@@ -57,10 +57,17 @@ export class PageHomeListComponent implements OnInit {
   }
 
   public onCreateHome() {
-    this._router.navigate(['/homedetail']);    
+    this._router.navigate(['/homedetail']);
   }
 
   public onChooseHome(row: HomeDef) {
     this._homedefService.ChosedHome = row;
+
+    if (this._homedefService.RedirectURL) {
+      let url = this._homedefService.RedirectURL;
+      this._homedefService.RedirectURL = '';
+
+      this._router.navigate([url]);
+    }
   }
 }

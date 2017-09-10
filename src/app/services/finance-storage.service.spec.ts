@@ -5,7 +5,7 @@ import { FinanceStorageService } from './finance-storage.service';
 describe('FinanceStorageService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [FinanceStorageService]
+      providers: [FinanceStorageService],
     });
   });
 

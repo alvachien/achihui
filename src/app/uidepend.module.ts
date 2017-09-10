@@ -33,7 +33,7 @@ import {
     MdTabsModule,
     MdToolbarModule,
     MdTooltipModule,
-    StyleModule
+    StyleModule,
 } from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
 import { A11yModule } from '@angular/cdk/a11y';
@@ -46,7 +46,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import {
     AuthService, AuthGuardService, UserDetailService,
     FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
-    HomeDefDetailService, CanDeactivateGuardService
+    HomeDefDetailService, CanDeactivateGuardService,
 } from './services';
 
 @NgModule({
@@ -107,7 +107,7 @@ import {
         PlatformModule,
         PortalModule,
         NgxChartsModule,
-    ]
+    ],
 })
 export class UIDependModule {
     // constructor( @Optional() @SkipSelf() parentModule: UIDependModule) {
@@ -134,4 +134,3 @@ export class UIDependModule {
     //     };
     // }
 }
-

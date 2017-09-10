@@ -9,5 +9,5 @@ export const environment = {
   AppLogoutCallbackUrl: 'http://achihui.azurewebsites.net',
   AppLoginSlientRevewCallbackUrl: 'http://achihui.azurewebsites.net/silentrenewcallback.html',
   AppHost: 'http://achihui.azurewebsites.net',
-  ApiUrl: 'http://achihapi.azurewebsites.net'
+  ApiUrl: 'http://achihapi.azurewebsites.net',
 };

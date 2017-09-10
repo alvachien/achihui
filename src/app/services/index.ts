@@ -9,3 +9,4 @@ export * from './home-chose-guard.service';
 export * from './home-def-detail.service';
 export * from './finance-storage.service';
 export * from './learn-storage.service';
+export * from './language.service';

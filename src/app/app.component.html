@@ -8,20 +8,20 @@
             </div>
         </div>
         <hr *ngIf="curChosenHome" />
-        <md-nav-list style="font-size: smaller;">
-            <a *ngFor="let navItem of navItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
+        <md-nav-list>
+            <a *ngFor="let navItem of navItems; let i = index" style="font-size: 6px;" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
                 {{i}} - {{navItem.name | translate}}
             </a>
         </md-nav-list>
         <hr *ngIf="curChosenHome" />
-        <md-nav-list *ngIf="curChosenHome" style="font-size: smaller;">
-            <a *ngFor="let navItem of navLearnItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
+        <md-nav-list *ngIf="curChosenHome">
+            <a *ngFor="let navItem of navLearnItems; let i = index" style="font-size: 6px;" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
                 {{i}} - {{navItem.name | translate}}
             </a>
         </md-nav-list>
         <hr *ngIf="curChosenHome" />
-        <md-nav-list *ngIf="curChosenHome" style="font-size: smaller;">
-            <a *ngFor="let navItem of navFinItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
+        <md-nav-list *ngIf="curChosenHome">
+            <a *ngFor="let navItem of navFinItems; let i = index" style="font-size: 6px;" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
                 {{i}} - {{navItem.name | translate}}
             </a>
         </md-nav-list>

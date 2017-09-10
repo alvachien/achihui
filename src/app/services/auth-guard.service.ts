@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   CanActivate, Router,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot
+  RouterStateSnapshot,
 } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { LogLevel, UserAuthInfo } from '../model';

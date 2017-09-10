@@ -33,4 +33,3 @@ export class Movie extends hih.MultipleNamesObject {
     public PublishDate: Date;
     public Locations: Location[];
 }
-

@@ -45,7 +45,7 @@ export class FinanceStorageService {
 
   // Event
   createAccountEvent: EventEmitter<boolean> = new EventEmitter(null);
-  
+
   // Buffer
   private _isAcntCtgyListLoaded: boolean;
   private _isDocTypeListLoaded: boolean;
@@ -100,7 +100,7 @@ export class FinanceStorageService {
           }
 
           return listRst;
-        }).subscribe(x => {
+        }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllAccountCategories in FinanceStorageService: ${x}`);
           }
@@ -108,7 +108,7 @@ export class FinanceStorageService {
 
           let copiedData = x;
           this.listAccountCategoryChange.next(copiedData);
-        }, error => {
+        }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllAccountCategories in FinanceStorageService: ${error}`);
           }
@@ -150,7 +150,7 @@ export class FinanceStorageService {
           }
 
           return listRst;
-        }).subscribe(x => {
+        }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllDocTypes in FinanceStorageService: ${x}`);
           }
@@ -158,7 +158,7 @@ export class FinanceStorageService {
 
           let copiedData = x;
           this.listDocTypeChange.next(copiedData);
-        }, error => {
+        }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllDocTypes in FinanceStorageService: ${error}`);
           }
@@ -200,7 +200,7 @@ export class FinanceStorageService {
           }
 
           return listRst;
-        }).subscribe(x => {
+        }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllTranTypes in FinanceStorageService: ${x}`);
           }
@@ -208,7 +208,7 @@ export class FinanceStorageService {
 
           let copiedData = x;
           this.listTranTypeChange.next(copiedData);
-        }, error => {
+        }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllTranTypes in FinanceStorageService: ${error}`);
           }
@@ -218,7 +218,7 @@ export class FinanceStorageService {
         });
     }
   }
-  
+
   // Account
   public fetchAllAccounts() {
     if (!this._isAccountListLoaded) {
@@ -250,7 +250,7 @@ export class FinanceStorageService {
           }
 
           return listRst;
-        }).subscribe(x => {
+        }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllAccounts in FinanceStorageService: ${x}`);
           }
@@ -258,7 +258,7 @@ export class FinanceStorageService {
 
           let copiedData = x;
           this.listAccountChange.next(copiedData);
-        }, error => {
+        }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllAccounts in FinanceStorageService: ${error}`);
           }
@@ -288,7 +288,7 @@ export class FinanceStorageService {
         hd.onSetData(response.json());
         return hd;
       })
-      .subscribe(x => {
+      .subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createAccount in FinanceStorageService: ${x}`);
         }
@@ -299,7 +299,7 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.createAccountEvent.emit(true);
-      }, error => {
+      }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.log(`AC_HIH_UI [Error]: Error occurred in createAccount in FinanceStorageService:  ${error}`);
         }
@@ -341,7 +341,7 @@ export class FinanceStorageService {
           }
 
           return listRst;
-        }).subscribe(x => {
+        }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllControlCenters in FinanceStorageService: ${x}`);
           }
@@ -349,7 +349,7 @@ export class FinanceStorageService {
 
           let copiedData = x;
           this.listControlCenterChange.next(copiedData);
-        }, error => {
+        }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllControlCenters in FinanceStorageService: ${error}`);
           }
@@ -391,7 +391,7 @@ export class FinanceStorageService {
           }
 
           return listRst;
-        }).subscribe(x => {
+        }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllOrders in FinanceStorageService: ${x}`);
           }
@@ -399,7 +399,7 @@ export class FinanceStorageService {
 
           let copiedData = x;
           this.listOrderChange.next(copiedData);
-        }, error => {
+        }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllOrders in FinanceStorageService: ${error}`);
           }

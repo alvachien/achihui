@@ -5,11 +5,13 @@ import { PageInitialComponent } from './page-initial';
 import { PageHomeListComponent } from './page-home-list';
 import { PageHomeDetailComponent } from './page-home-detail';
 import { FinanceCurrencyComponent } from './finance-currency';
+import { LanguageComponent } from './language';
 
 export const AppRoutes: Routes = [
     { path: '', component: PageInitialComponent },
+    { path: 'language', component: LanguageComponent },
     { path: 'homelist', component: PageHomeListComponent, canActivate: [AuthGuardService], },
-    { path: 'currency', component: FinanceCurrencyComponent, canActivate: [AuthGuardService], },
+    { path: 'currency', component: FinanceCurrencyComponent, canActivate: [AuthGuardService], },    
     { path: 'homedetail', component: PageHomeDetailComponent, canActivate: [AuthGuardService], canDeactivate: [CanDeactivateGuardService] },
     // {
     //     path: '',

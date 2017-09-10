@@ -8,7 +8,7 @@ describe('DocumentTypeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentTypeComponent ]
+      declarations: [ DocumentTypeComponent ],
     })
     .compileComponents();
   }));
