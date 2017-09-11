@@ -38,7 +38,7 @@
         <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
       </md-table>
       <md-paginator #paginator 
-        [length]="_storageService.DocumentTypes.length" 
+        [length]="_storageService.Accounts.length" 
         [pageIndex]="0" 
         [pageSize]="25" 
         [pageSizeOptions]="[5, 10, 25, 100]">

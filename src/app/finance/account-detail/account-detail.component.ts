@@ -79,6 +79,10 @@ export class AccountDetailComponent implements OnInit {
     this.step--;
   }
 
+  public canSubmit(): boolean {
+    return true;
+  }
+  
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
       this._storageService.createAccountEvent.subscribe((x) => {

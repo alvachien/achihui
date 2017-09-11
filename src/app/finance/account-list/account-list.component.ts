@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account } from '../../model';
 import { FinanceStorageService } from '../../services';
+import { fadeInAnimation } from '../../utility';
 
 /**
  * Data source of Account
@@ -40,6 +41,8 @@ export class AccountDataSource extends DataSource<any> {
   selector: 'app-account-list',
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.scss'],
+  animations: [fadeInAnimation],
+  host: { '[@fadeInAnimation]': '' }  
 })
 export class AccountListComponent implements OnInit {
 

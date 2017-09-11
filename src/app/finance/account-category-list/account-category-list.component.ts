@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, AccountCategory } from '../../model';
 import { FinanceStorageService } from '../../services';
+import { fadeInAnimation } from '../../utility';
 
 /**
  * Data source of Account category
@@ -40,6 +41,8 @@ export class AccountCategoryDataSource extends DataSource<any> {
   selector: 'app-account-category-list',
   templateUrl: './account-category-list.component.html',
   styleUrls: ['./account-category-list.component.scss'],
+  animations: [fadeInAnimation],
+  host: { '[@fadeInAnimation]': '' }
 })
 export class AccountCategoryListComponent implements OnInit {
   displayedColumns = ['id', 'name', 'comment'];

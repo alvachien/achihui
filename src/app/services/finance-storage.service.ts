@@ -45,6 +45,7 @@ export class FinanceStorageService {
 
   // Event
   createAccountEvent: EventEmitter<boolean> = new EventEmitter(null);
+  readAccountEvent: EventEmitter<boolean> = new EventEmitter(null);
 
   // Buffer
   private _isAcntCtgyListLoaded: boolean;
@@ -324,11 +325,56 @@ export class FinanceStorageService {
       }, () => {
       });
   }
+  public readAccount(acntid: number) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+              .append('Accept', 'application/json')
+              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceAccount';
+    let params: HttpParams = new HttpParams();
+    params = params.set('id', acntid.toString());
+
+    this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+
+        let hd: Account = new Account();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createAccount in FinanceStorageService: ${x}`);
+        }
+
+        const copiedData = this.Accounts.slice();
+        copiedData.push(x);
+        this.listAccountChange.next(copiedData);
+
+        // Broadcast event
+        this.createAccountEvent.emit(true);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.log(`AC_HIH_UI [Error]: Error occurred in createAccount in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createAccountEvent.emit(false);
+      }, () => {
+      });
+  }
 
   // Control center
   public fetchAllControlCenters() {
     if (!this._isConctrolCenterListLoaded) {
-      const apiurl = environment.ApiUrl + '/api/FinanceControllingCenter';
+      const apiurl = environment.ApiUrl + '/api/FinanceControlCenter';
 
       let headers = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
