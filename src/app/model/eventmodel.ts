@@ -1,17 +1,16 @@
 import { environment } from '../../environments/environment';
 import * as hih from './common';
+import * as moment from 'moment';
 
 export class FinanceEvent {
     public ADPDocId: number;
-    private _tranDate: Date;
+    private _tranDate: moment.Moment;
     public Desp: string;
 
-    public TranDateString: string;
-    get TranDate() : Date {
+    get TranDate() : moment.Moment {
         return this._tranDate;
     }
-    set TranDate(td: Date) {
+    set TranDate(td: moment.Moment) {
         this._tranDate = td;
-        this.TranDateString = hih.Utility.Date2String(td);
     }
 }

@@ -1,4 +1,5 @@
 import { environment } from '../../environments/environment';
+import * as moment from 'moment';
 import * as hih from './common';
 
 export class Person extends hih.MultipleNamesObject {
@@ -18,7 +19,7 @@ export class BookCategory {
 export class Book extends hih.MultipleNamesObject {
     public Authors: Person[];
     public Categories: BookCategory[];
-    public PublishDate: Date;
+    public PublishDate: moment.Moment;
     public Locations: Location[];
 }
 
@@ -30,6 +31,6 @@ export class Movie extends hih.MultipleNamesObject {
     public Categories: MovieCategory[];
     public Directors: Person[];
     public Actors: Person[];
-    public PublishDate: Date;
+    public PublishDate: moment.Moment;
     public Locations: Location[];
 }

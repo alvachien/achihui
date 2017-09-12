@@ -3,7 +3,7 @@
 HIH consists of three major building blocks:
 * Identity Server
 * API (Web API)
-* UI app (Javascript/Typescript app)
+* UI app (Typescript app)
 
 ## Common
 
@@ -11,11 +11,11 @@ There are several common parts which need be documented.
 
 ### Key of Learning History
 The learning history has a combined key:
-* User ID
-* Learn Object ID
+* User
+* Learn Object
 * Learn Date
 
-To make it survive in WebAPI part, there should be a combined key used for communication between UI and API:
+To make it survive in Web API part, there should be a combined key used for communication between UI and API:
 
 For UI layer (Typescript codes):
 

@@ -1,4 +1,8 @@
+import * as moment from 'moment';
 
+/**
+ * Relationship 
+ */
 export enum HomeMemberRelationEnum {
     Self    = 0,
     Couple  = 1,
@@ -6,6 +10,9 @@ export enum HomeMemberRelationEnum {
     Parent  = 3,
 }
 
+/**
+ * Home members
+ */
 export interface HomeMemberJson {
     homeID: number;
     user: string;
@@ -13,6 +20,9 @@ export interface HomeMemberJson {
     relation: HomeMemberRelationEnum;
 }
 
+/**
+ * Home member
+ */
 export class HomeMember {
     private _hid: number;
     private _user: string;
@@ -64,6 +74,9 @@ export class HomeMember {
     }
 }
 
+/**
+ * Home definition JSON
+ */
 export interface HomeDefJson {
     id?: number;
     name: string;
@@ -73,6 +86,9 @@ export interface HomeDefJson {
     creatorDisplayAs?: string; // For creation
 }
 
+/**
+ * Home definition
+ */
 export class HomeDef {
     private _id: number;
     private _name: string;
@@ -151,13 +167,19 @@ export class HomeDef {
     }
 }
 
+/**
+ * Home message JSON
+ */
 export interface HomeMsgJson {
     hid: number;
 }
 
+/**
+ * Home message
+ */
 export class HomeMsg {
     private _hid: number;
     private _usrto: string;
     private _usrfrom: string;
-    private _senddate: Date;
+    private _senddate: moment.Moment;
 }

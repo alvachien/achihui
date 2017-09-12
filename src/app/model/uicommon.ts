@@ -1,4 +1,7 @@
 
+/**
+ * UI Status
+ */
 export enum UIStatusEnum {
     NotLogin                = 0,
     LoggedinNoHomeChosen    = 1,

@@ -1,97 +1,34 @@
 import { environment } from '../../environments/environment';
 import * as hih from './common';
+import * as moment from 'moment';
 
-export class Setting extends hih.BaseModel {
-    public SetId: string;
-    public SetValue: string;
-    public Comment: number;
-
-    constructor() {
-        super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of Finance.Setting");
-        // }
-    }
-
-    public onInit() {
-        super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of Finance.Setting");
-        // }
-    }
-
-    public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of Finance.Setting");
-        // }
-        if (!super.onVerify(context))
-            return false;
-
-        return true;
-    }
-
-    public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of Finance.Setting");
-        // }
-
-        let rstObj = super.writeJSONObject();
-        return rstObj;
-    }
-
-    public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of Finance.Setting");
-        // }
-
-        super.onSetData(data);
-        if (data && data.setID) {
-            this.SetId = data.setID;
-        }
-        if (data && data.setValue) {
-            this.SetValue = data.setValue;
-        }
-        if (data && data.comment) {
-            this.Comment = data.comment;
-        }
-    }
-}
-
+/**
+ * Exchange rate
+ */
 export class ExchangeRate extends hih.BaseModel {
-    private _tranDate: Date;
+    private _tranDate: moment.Moment;
     public ForeignCurrency: string;
     public Rate: number;
     public RefDocId: number;
 
-    public TranDateString: string;
-    get TranDate() : Date {
+    get TranDate() : moment.Moment {
         return this._tranDate;
     }
-    set TranDate(td: Date) {
+    set TranDate(td: moment.Moment) {
         this._tranDate = td;
-        this.TranDateString = hih.Utility.Date2String(this._tranDate);
     }
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of KnowledgeType");
-        // }
 
-        this.TranDate = new Date();
+        this._tranDate = moment();
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of KnowledgeType");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of KnowledgeType");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -99,10 +36,6 @@ export class ExchangeRate extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of KnowledgeType");
-        // }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
@@ -271,6 +204,9 @@ export class AccountCategory extends hih.BaseModel {
     }
 }
 
+/**
+ * Document type
+ */
 export class DocumentType extends hih.BaseModel {
     public Id: number;
     public Name: string;
@@ -279,22 +215,13 @@ export class DocumentType extends hih.BaseModel {
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of DocumentType");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of DocumentType");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of DocumentType");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -302,19 +229,11 @@ export class DocumentType extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of DocumentType");
-        // }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of DocumentType");
-        // }
-
         super.onSetData(data);
         if (data && data.id) {
             this.Id = +data.id;
@@ -331,6 +250,9 @@ export class DocumentType extends hih.BaseModel {
     }
 }
 
+/**
+ * Account extra info
+ */
 export abstract class AccountExtra {
     public writeJSONObject(): any {
         return {};
@@ -386,7 +308,7 @@ export class Account extends hih.BaseModel {
                     msg.MsgType = hih.MessageType.Error;
                     msg.MsgTitle = 'Invalid category';
                     msg.MsgContent = 'Invalid category, please use a valid category!';
-                    msg.MsgTime = new Date();
+                    msg.MsgTime = moment();
                     this.VerifiedMsgs.push(msg);
                     brst = false;
                 }
@@ -396,7 +318,7 @@ export class Account extends hih.BaseModel {
                 msg.MsgType = hih.MessageType.Error;
                 msg.MsgTitle = 'No category';
                 msg.MsgContent = 'No category found in the system!';
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 this.VerifiedMsgs.push(msg);
                 brst = false;
             }
@@ -460,54 +382,51 @@ export class Account extends hih.BaseModel {
     }
 }
 
+/**
+ * Extra info: Advance payment
+ */
 export class AccountExtraAdvancePayment extends AccountExtra {
     public Direct: boolean;
-    private _startDate: Date;
-    private _endDate: Date;
+    private _startDate: moment.Moment;
+    private _endDate: moment.Moment;
     public RepeatType: hih.RepeatFrequency;
     public RefDocId: number;
     public DeferredDays: string;
     public Comment: string;
 
-    // UI part
-    public StartDateString: string;
-    public EndDateString: string;
-
-    get StartDate(): Date {
+    get StartDate(): moment.Moment {
         return this._startDate;
     }
-    set StartDate(sd: Date) {
+    set StartDate(sd: moment.Moment) {
         this._startDate = sd;
-        this.StartDateString = hih.Utility.Date2String(sd);
     }
 
-    get EndDate(): Date {
+    get EndDate(): moment.Moment {
         return this._endDate;
     }
-    set EndDate(ed: Date) {
+    set EndDate(ed: moment.Moment) {
         this._endDate = ed;
-        this.EndDateString = hih.Utility.Date2String(ed);
     }
 
     constructor() {
         super();
 
-        this.StartDate = new Date();
-        this.EndDate = new Date();
+        this.StartDate = moment();
+        this.EndDate = moment();
     }
 
     public onInit() {
         super.onInit();
 
-        this.StartDate = new Date();
-        this.EndDate = new Date();
+        this.StartDate = moment();
+        this.EndDate = moment();
     }
 
     public writeJSONObject(): any {
         let rstobj: any = super.writeJSONObject();
         rstobj.direct = this.Direct;
-        rstobj.startDate = this.StartDateString;
-        rstobj.endDate = this.EndDateString;
+        rstobj.startDate = this._startDate.format(hih.MomentDateFormat);
+        rstobj.endDate = this._endDate.format(hih.MomentDateFormat);
         rstobj.rptType = this.RepeatType;
         rstobj.refDocID = this.RefDocId;
         rstobj.defrrDays = this.DeferredDays;
@@ -525,10 +444,10 @@ export class AccountExtraAdvancePayment extends AccountExtra {
             this.Direct = false;
         }
         if (data && data.startDate) {
-            this.StartDate = hih.Utility.String2Date(data.startDate);
+            this._startDate = moment(data.startDate, hih.MomentDateFormat);
         }
         if (data && data.endDate) {
-            this.EndDate = hih.Utility.String2Date(data.endDate);
+            this._endDate = moment(data.endDate, hih.MomentDateFormat);
         }
         if (data && data.rptType) {
             this.RepeatType = data.rptType;
@@ -545,24 +464,11 @@ export class AccountExtraAdvancePayment extends AccountExtra {
             this.Comment = data.comment;
         }
     }
-
-    public onComplete() : void {
-        super.onComplete();
-
-        if (this.StartDateString) {
-            this.StartDate = hih.Utility.String2Date(this.StartDateString);
-        } else {
-            this.StartDate = null;
-        }
-
-        if (this.EndDateString) {
-            this.EndDate = hih.Utility.String2Date(this.EndDateString);
-        } else {
-            this.EndDate = null;
-        }
-    }
 }
 
+/**
+ * Control center
+ */
 export class ControlCenter extends hih.BaseModel {
     public HID: number;
     public Id: number;
@@ -590,7 +496,7 @@ export class ControlCenter extends hih.BaseModel {
             msg.MsgTitle = 'Name missing';
             msg.MsgContent = 'Name is must!';
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             this.VerifiedMsgs.push(msg);
             bRst = false;
         }
@@ -636,58 +542,46 @@ export class ControlCenter extends hih.BaseModel {
     }
 }
 
+/**
+ * Order
+ */
 export class Order extends hih.BaseModel {
     public Id: number;
     public Name: string;
-    public _validFrom: Date;
-    public _validTo: Date;
+    public _validFrom: moment.Moment;
+    public _validTo: moment.Moment;
     public Comment: string;
 
     public SRules: SettlementRule[] = [];
 
-    // UI part
-    public ValidFromString: string;
-    public ValidToString: string;
-    get ValidFrom(): Date {
+    get ValidFrom(): moment.Moment {
         return this._validFrom;
     }
-    set ValidFrom(vf: Date) {
+    set ValidFrom(vf: moment.Moment) {
         this._validFrom = vf;
-        this.ValidFromString = hih.Utility.Date2String(this._validFrom);
     }
-    get ValidTo(): Date {
+    get ValidTo(): moment.Moment {
         return this._validTo;
     }
-    set ValidTo(vt: Date) {
+    set ValidTo(vt: moment.Moment) {
         this._validTo = vt;
-        this.ValidToString = hih.Utility.Date2String(this._validTo);
     }
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of Order");
-        // }
 
-        this.ValidFrom = new Date();
-        this.ValidTo = new Date();
+        this.ValidFrom = moment();
+        this.ValidTo = moment();
     }
 
     public onInit() {
         super.onInit();
 
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of Order");
-        // }
-
-        this.ValidFrom = new Date();
-        this.ValidTo = new Date();
+        this.ValidFrom = moment();
+        this.ValidTo = moment();
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of Order");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -697,7 +591,7 @@ export class Order extends hih.BaseModel {
         if (this.Name && this.Name.length > 0) {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'Invalid name';
             msg.MsgContent = 'Name is a must';
@@ -705,10 +599,10 @@ export class Order extends hih.BaseModel {
             chkrst = false;
         }
         // Valid from
-        if (this.ValidFrom && this.ValidFrom instanceof Date) {
+        if (this.ValidFrom) {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'Invalid valid from';
             msg.MsgContent = 'Valid from is a must';
@@ -716,10 +610,10 @@ export class Order extends hih.BaseModel {
             chkrst = false;
         }
         // Valid to
-        if (this.ValidTo && this.ValidTo instanceof Date) {
+        if (this.ValidTo) {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'Invalid valid to';
             msg.MsgContent = 'Valid to is a must';
@@ -730,7 +624,7 @@ export class Order extends hih.BaseModel {
         if (this.ValidTo > this.ValidFrom) {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'Invalid valid range';
             msg.MsgContent = 'Valid to must later than valid from';
@@ -754,7 +648,7 @@ export class Order extends hih.BaseModel {
 
             if (ntotal != 100) {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 msg.MsgType = hih.MessageType.Error;
                 msg.MsgTitle = 'No rule';
                 msg.MsgContent = 'No rule defined';
@@ -763,7 +657,7 @@ export class Order extends hih.BaseModel {
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'No rule';
             msg.MsgContent = 'No rule defined';
@@ -775,15 +669,11 @@ export class Order extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of Order");
-        // }
-
         let rstObj = super.writeJSONObject();
         rstObj.id = this.Id;
         rstObj.name = this.Name;
-        rstObj.validFrom = this.ValidFromString;
-        rstObj.validTo = this.ValidToString;
+        rstObj.validFrom = this._validFrom.format(hih.MomentDateFormat);
+        rstObj.validTo = this._validTo.format(hih.MomentDateFormat);
         rstObj.comment = this.Comment;
         rstObj.sRuleList = [];
 
@@ -797,10 +687,6 @@ export class Order extends hih.BaseModel {
     }
 
     public onSetData(data: any) : void {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of Order");
-        // }
-
         super.onSetData(data);
 
         if (data && data.id) {
@@ -813,10 +699,10 @@ export class Order extends hih.BaseModel {
             this.Comment = data.comment;
         }
         if (data && data.validFrom) {
-            this.ValidFrom = hih.Utility.String2Date(data.validFrom);
+            this.ValidFrom = moment(data.validFrom, hih.MomentDateFormat);
         }
         if (data && data.validTo) {
-            this.ValidTo = hih.Utility.String2Date(data.validTo);
+            this.ValidTo = moment(data.validTo, hih.MomentDateFormat);
         }
 
         this.SRules = [];
@@ -828,28 +714,11 @@ export class Order extends hih.BaseModel {
             }
         }
     }
-
-    public onComplete() : void {
-        super.onComplete();
-
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onComplete of Order");
-        // }
-
-        if (this.ValidFromString) {
-            this.ValidFrom = hih.Utility.String2Date(this.ValidFromString);
-        } else {
-            this.ValidFrom = null;
-        }
-
-        if (this.ValidToString) {
-            this.ValidTo = hih.Utility.String2Date(this.ValidToString);
-        } else {
-            this.ValidTo = null;
-        }
-    }
 }
 
+/**
+ * Settlement rule
+ */
 export class SettlementRule extends hih.BaseModel {
     public OrdId: number;
     public RuleId: number;
@@ -861,22 +730,13 @@ export class SettlementRule extends hih.BaseModel {
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of SettlementRule");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of SettlementRule");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of SettlementRule");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -887,7 +747,7 @@ export class SettlementRule extends hih.BaseModel {
             msg.MsgContent = 'Rule Id should larger than 0.';
             msg.MsgTitle = 'Rule Id invalid';
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             this.VerifiedMsgs.push(msg);
             brst = false;
         }
@@ -898,7 +758,7 @@ export class SettlementRule extends hih.BaseModel {
             msg.MsgContent = 'Precent should between 0 and 100.';
             msg.MsgTitle = 'Precent invalid';
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             this.VerifiedMsgs.push(msg);
             brst = false;
         }
@@ -907,10 +767,6 @@ export class SettlementRule extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of SettlementRule");
-        // }
-
         let rstObj = super.writeJSONObject();
         rstObj.ruleId = this.RuleId;
         rstObj.controlCenterID = this.ControlCenterId;
@@ -920,10 +776,6 @@ export class SettlementRule extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of SettlementRule");
-        // }
-
         // Not need call for the super class's method, because createdat and modifiedat not required here
 
         if (data && data.ruleID) {
@@ -944,6 +796,9 @@ export class SettlementRule extends hih.BaseModel {
     }
 }
 
+/**
+ * Tran type
+ */
 export class TranType extends hih.BaseModel {
     public Id: number;
     public Name: string;
@@ -954,22 +809,13 @@ export class TranType extends hih.BaseModel {
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of TranType");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of TranType");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of TranType");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -977,19 +823,11 @@ export class TranType extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of TranType");
-        // }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of TranType");
-        // }
-
         super.onSetData(data);
 
         if (data && data.id) {
@@ -1013,10 +851,13 @@ export class TranType extends hih.BaseModel {
     }
 }
 
+/**
+ * Document
+ */
 export class Document extends hih.BaseModel {
     public Id: number;
     public DocType: number;
-    public _tranDate: Date;
+    public _tranDate: moment.Moment;
     public TranCurr: string;
     public Desp: string;
     public ExgRate: number;
@@ -1029,36 +870,24 @@ export class Document extends hih.BaseModel {
     // UI fields
     public DocTypeName: string;
     public TranAmount: number;
-    public TranDateString: string;
-    get TranDate(): Date {
+    get TranDate(): moment.Moment {
         return this._tranDate;
     }
-    set TranDate(td: Date) {
+    set TranDate(td: moment.Moment) {
         this._tranDate = td;
-        this.TranDateString = hih.Utility.Date2String(td);
     }
 
     constructor() {
         super();
 
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of Document");
-        // }
-
-        this.TranDate = new Date();
+        this.TranDate = moment();
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of Document");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of Document");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -1076,7 +905,7 @@ export class Document extends hih.BaseModel {
 
                 if (!bExist) {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
-                    msg.MsgTime = new Date();
+                    msg.MsgTime = moment();
                     msg.MsgType = hih.MessageType.Error;
                     msg.MsgTitle = 'Invalid doc. type id!';
                     msg.MsgContent = 'Invalid doc. type';
@@ -1085,7 +914,7 @@ export class Document extends hih.BaseModel {
                 }
             } else {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 msg.MsgType = hih.MessageType.Error;
                 msg.MsgTitle = 'Specify an doc. type first';
                 msg.MsgContent = 'No doc. type inputted';
@@ -1094,7 +923,7 @@ export class Document extends hih.BaseModel {
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'No doc. type in the system';
             msg.MsgContent = 'No doc. type defined';
@@ -1114,7 +943,7 @@ export class Document extends hih.BaseModel {
 
                 if (!bExist) {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
-                    msg.MsgTime = new Date();
+                    msg.MsgTime = moment();
                     msg.MsgType = hih.MessageType.Error;
                     msg.MsgTitle = 'Invalid currency!';
                     msg.MsgContent = 'Invalid currency';
@@ -1123,7 +952,7 @@ export class Document extends hih.BaseModel {
                 }
             } else {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 msg.MsgType = hih.MessageType.Error;
                 msg.MsgTitle = 'Specify an currency first';
                 msg.MsgContent = 'No currency inputted';
@@ -1132,7 +961,7 @@ export class Document extends hih.BaseModel {
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'No currency in the system';
             msg.MsgContent = 'No currency defined';
@@ -1165,7 +994,7 @@ export class Document extends hih.BaseModel {
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'No items';
             msg.MsgContent = 'No doc. items';
@@ -1176,7 +1005,7 @@ export class Document extends hih.BaseModel {
         if (this.DocType === hih.FinanceDocType_Transfer){
             if (amtTotal !== 0) {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 msg.MsgType = hih.MessageType.Error;
                 msg.MsgTitle = 'Item amount is not correct in transfer doc';
                 msg.MsgContent = 'Amount error';
@@ -1189,14 +1018,10 @@ export class Document extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of Document");
-        // }
-
         let rstObj = super.writeJSONObject();
         rstObj.iD = this.Id;
         rstObj.docType = this.DocType;
-        rstObj.tranDate = this.TranDateString;
+        rstObj.tranDate = this._tranDate.format(hih.MomentDateFormat);
         rstObj.tranCurr = this.TranCurr;
         rstObj.desp = this.Desp;
 
@@ -1210,10 +1035,6 @@ export class Document extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of Document");
-        // }
-
         super.onSetData(data);
 
         if (data && data.id) {
@@ -1226,7 +1047,7 @@ export class Document extends hih.BaseModel {
             this.DocTypeName = data.docTypeName;
         }
         if (data && data.tranDate) {
-            this.TranDate = hih.Utility.String2Date(data.tranDate);
+            this.TranDate = moment(data.tranDate, hih.MomentDateFormat);
         }
         if (data && data.tranCurr) {
             this.TranCurr = data.tranCurr;
@@ -1247,20 +1068,11 @@ export class Document extends hih.BaseModel {
             }
         }
     }
-
-    public onComplete(): void {
-        super.onComplete();
-
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of Document");
-        // }
-
-        if (this.TranDateString) {
-            this.TranDate = hih.Utility.String2Date(this.TranDateString);
-        }
-    }
 }
 
+/**
+ * Document item
+ */
 export class DocumentItem {
     public DocId: number;
     public ItemId: number;
@@ -1279,10 +1091,6 @@ export class DocumentItem {
     public VerifiedMsgs: hih.InfoMessage[] = [];
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of DocumentItem");
-        // }
-
         let chkrst : boolean = true;
 
         // Item Id
@@ -1291,7 +1099,7 @@ export class DocumentItem {
             msg.MsgContent = 'Item Id should larger than 0.';
             msg.MsgTitle = 'Item Id invalid';
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
@@ -1307,7 +1115,7 @@ export class DocumentItem {
 
                 if (!bAcntExist) {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
-                    msg.MsgTime = new Date();
+                    msg.MsgTime = moment();
                     msg.MsgType = hih.MessageType.Error;
                     msg.MsgTitle = 'Invalid account id!';
                     msg.MsgContent = 'Invalid account id';
@@ -1316,7 +1124,7 @@ export class DocumentItem {
                 }
             } else {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 msg.MsgType = hih.MessageType.Error;
                 msg.MsgTitle = 'No account inputted';
                 msg.MsgContent = 'Specify an account first';
@@ -1325,7 +1133,7 @@ export class DocumentItem {
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'No account defined';
             msg.MsgContent = 'No account in the system';
@@ -1344,7 +1152,7 @@ export class DocumentItem {
 
                 if (!bExist) {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
-                    msg.MsgTime = new Date();
+                    msg.MsgTime = moment();
                     msg.MsgType = hih.MessageType.Error;
                     msg.MsgTitle = 'Invalid tran. type';
                     msg.MsgContent = 'Invalid tran. type id!';
@@ -1353,7 +1161,7 @@ export class DocumentItem {
                 }
             } else {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 msg.MsgType = hih.MessageType.Error;
                 msg.MsgTitle = 'No tran. type inputted';
                 msg.MsgContent = 'Specify an tran. type first';
@@ -1362,7 +1170,7 @@ export class DocumentItem {
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'No tran. type defined';
             msg.MsgContent = 'No tran. type in the system!';
@@ -1372,7 +1180,7 @@ export class DocumentItem {
         // Amount
         if (this.TranAmount <= 0) {
             let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
             msg.MsgTitle = 'No amount';
             msg.MsgContent = 'Amount is a must!';
@@ -1387,7 +1195,7 @@ export class DocumentItem {
                 bccord = false;
 
                 let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 msg.MsgType = hih.MessageType.Error;
                 msg.MsgTitle = 'Duplicated inputs';
                 msg.MsgContent = 'Input either control center or order!';
@@ -1402,7 +1210,7 @@ export class DocumentItem {
                 bccord = false;
 
                 let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 msg.MsgType = hih.MessageType.Error;
                 msg.MsgTitle = 'No inputs';
                 msg.MsgContent = 'Input either control center or order';
@@ -1423,7 +1231,7 @@ export class DocumentItem {
 
                     if (!bExist) {
                         let msg: hih.InfoMessage = new hih.InfoMessage();
-                        msg.MsgTime = new Date();
+                        msg.MsgTime = moment();
                         msg.MsgType = hih.MessageType.Error;
                         msg.MsgTitle = 'Invalid control center';
                         msg.MsgContent = 'Invalid control center id!';
@@ -1432,7 +1240,7 @@ export class DocumentItem {
                     }
                 } else {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
-                    msg.MsgTime = new Date();
+                    msg.MsgTime = moment();
                     msg.MsgType = hih.MessageType.Error;
                     msg.MsgTitle = 'No control center defined';
                     msg.MsgContent = 'No control center in the system';
@@ -1451,7 +1259,7 @@ export class DocumentItem {
 
                     if (!bExist) {
                         let msg: hih.InfoMessage = new hih.InfoMessage();
-                        msg.MsgTime = new Date();
+                        msg.MsgTime = moment();
                         msg.MsgType = hih.MessageType.Error;
                         msg.MsgTitle = 'Invalid order';
                         msg.MsgContent = 'Invalid order id!';
@@ -1460,7 +1268,7 @@ export class DocumentItem {
                     }
                 } else {
                     let msg: hih.InfoMessage = new hih.InfoMessage();
-                    msg.MsgTime = new Date();
+                    msg.MsgTime = moment();
                     msg.MsgType = hih.MessageType.Error;
                     msg.MsgTitle = 'No order defined';
                     msg.MsgContent = 'No order in the system';
@@ -1474,10 +1282,6 @@ export class DocumentItem {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of DocumentItem");
-        // }
-
         let rstObj: any = {};
         rstObj.itemID = this.ItemId;
         rstObj.accountID = this.AccountId;
@@ -1495,10 +1299,6 @@ export class DocumentItem {
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of DocumentItem");
-        // }
-
         if (data && data.itemID) {
             this.ItemId = +data.itemID;
         }
@@ -1535,25 +1335,25 @@ export class DocumentItem {
     }
 }
 
+/**
+ * Tempalte doc for Advance payment
+ */
 export class TemplateDocADP extends hih.BaseModel {
     public DocId: number;
     public RefDocId: number;
     public AccountId: number;
-    private _tranDate: Date;
+    private _tranDate: moment.Moment;
     public TranType: number;
     public TranAmount: number;
     public ControlCenterId: number;
     public OrderId: number;
     public Desp: string;
 
-    // UI part
-    public TranDateString: string;
-    get TranDate(): Date {
+    get TranDate(): moment.Moment {
         return this._tranDate;
     }
-    set TranDate(td: Date) {
+    set TranDate(td: moment.Moment) {
         this._tranDate = td;
-        this.TranDateString = hih.Utility.Date2String(td);
     }
     public AccountName: string;
     public ControlCenterName: string;
@@ -1561,26 +1361,17 @@ export class TemplateDocADP extends hih.BaseModel {
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of TemplateDocADP");
-        // }
 
-        this.TranDate = new Date();
+        this.TranDate = moment();
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of TemplateDocADP");
-        // }
 
-        this.TranDate = new Date();
+        this.TranDate = moment();
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of TemplateDocADP");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -1588,15 +1379,11 @@ export class TemplateDocADP extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of TemplateDocADP");
-        // }
-
         let rstObj = super.writeJSONObject();
         rstObj.docID = this.DocId;
         rstObj.refDocID = this.RefDocId;
         rstObj.accountID = this.AccountId;
-        rstObj.tranDate = this.TranDateString;
+        rstObj.tranDate = this._tranDate.format(hih.MomentDateFormat);
         rstObj.tranType = this.TranType;
         rstObj.tranAmount = this.TranAmount;
         rstObj.controlCenterID = this.ControlCenterId;
@@ -1607,10 +1394,6 @@ export class TemplateDocADP extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of TemplateDocADP");
-        // }
-
         super.onSetData(data);
 
         if (data && data.docID) {
@@ -1623,7 +1406,7 @@ export class TemplateDocADP extends hih.BaseModel {
             this.AccountId = +data.accountID;
         }
         if (data && data.tranDate) {
-            this.TranDate = hih.Utility.String2Date(data.tranDate);
+            this.TranDate = moment(data.tranDate, hih.MomentDateFormat);
         }
         if (data && data.tranType) {
             this.TranType = +data.tranType;
@@ -1643,6 +1426,9 @@ export class TemplateDocADP extends hih.BaseModel {
     }
 }
 
+/**
+ * Report base
+ */
 export class FinanceReportBase {
     public DebitBalance: number;
     public CreditBalance: number;
@@ -1669,6 +1455,9 @@ export class FinanceReportBase {
     }
 }
 
+/**
+ * Balance sheet
+ */
 export class BalanceSheetReport extends FinanceReportBase {
     public AccountId: number;
     public AccountName: string;
@@ -1692,6 +1481,9 @@ export class BalanceSheetReport extends FinanceReportBase {
     }
 }
 
+/**
+ * Control center report
+ */
 export class ControlCenterReport extends FinanceReportBase {
     public ControlCenterId: number;
     public ControlCenterName: string;
@@ -1707,6 +1499,9 @@ export class ControlCenterReport extends FinanceReportBase {
     }
 }
 
+/**
+ * Order report
+ */
 export class OrderReport extends FinanceReportBase {
     public OrderId: number;
     public OrderName: string;
@@ -1723,6 +1518,9 @@ export class OrderReport extends FinanceReportBase {
     }
 }
 
+/**
+ * Document item with balance
+ */
 export class DocumentItemWithBalance {
     public TranType_Exp: boolean;
     public TranCurr: string;
@@ -1730,7 +1528,7 @@ export class DocumentItemWithBalance {
     public TranAmount_Org: number;
     public TranAmount_LC: number;
     public Balance: number;
-    private _tranDate: Date;
+    private _tranDate: moment.Moment;
     public DocDesp: string;
     public DocId: number;
     public ItemId: number;
@@ -1741,17 +1539,15 @@ export class DocumentItemWithBalance {
     public UseCurr2: boolean;
     public Desp: string;
 
-    public TranDateString: string;
     public AccountName: string;
     public TranTypeName: string;
     public ControlCenterName: string;
     public OrderName: string;
-    get TranDate() : Date {
+    get TranDate() : moment.Moment {
         return this._tranDate;
     }
-    set TranDate(td: Date) {
+    set TranDate(td: moment.Moment) {
         this._tranDate = td;
-        this.TranDateString = hih.Utility.Date2String(td);
     }
 
     public onSetData(data: any) {
@@ -1783,7 +1579,7 @@ export class DocumentItemWithBalance {
             this.OrderName = data.orderName;
         }
         if (data && data.tranDate) {
-            this.TranDate = hih.Utility.String2Date(data.tranDate);
+            this.TranDate = moment(data.tranDate, hih.MomentDateFormat);
         }
         if (data && data.docDesp) {
             this.DocDesp = data.docDesp;

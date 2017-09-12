@@ -29,7 +29,7 @@ export class HomeDefDetailService {
     }
 
     if (hd) {
-      this.fetchAllMembersInChosedHOme();
+      this.fetchAllMembersInChosedHome();
     } else {
       this.curHomeMembers.next([]);
     }
@@ -156,7 +156,7 @@ export class HomeDefDetailService {
       });
   }
   
-  public fetchAllMembersInChosedHOme() {
+  public fetchAllMembersInChosedHome() {
     if (!this.curHomeSelected) {
       const apiurl = environment.ApiUrl + '/api/homemember';
 
@@ -171,7 +171,7 @@ export class HomeDefDetailService {
       this._http.get(apiurl, options)
         .map((response: Response) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHOme in HomeDefDetailService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefDetailService: ${response}`);
           }
 
           const rjs = response.json();
@@ -188,14 +188,14 @@ export class HomeDefDetailService {
           return listResult;
         }).subscribe((x) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllMembersInChosedHOme in HomeDefDetailService: ${x}`);
+            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllMembersInChosedHome in HomeDefDetailService: ${x}`);
           }
 
           let copiedData = x;
           this.curHomeMembers.next(copiedData);
         }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllMembersInChosedHOme in HomeDefDetailService: ${error}`);
+            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllMembersInChosedHome in HomeDefDetailService: ${error}`);
           }
         }, () => {
         });

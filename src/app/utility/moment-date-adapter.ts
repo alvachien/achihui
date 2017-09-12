@@ -1,7 +1,6 @@
 import { DateAdapter, MdDateFormats } from '@angular/material';
 import * as moment from 'moment';
-
-export const MomentDateFormat: string = 'YYYY-MM-DD';
+import { MomentDateFormat } from '../model';
 
 const MONTHS = {
     'long': moment.months,

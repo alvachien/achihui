@@ -1,4 +1,5 @@
 import { environment } from '../../environments/environment';
+import * as moment from 'moment';
 import * as hih from './common';
 
 /**
@@ -11,22 +12,13 @@ export class ENPOS extends hih.BaseModel {
     public PosNativeName: string;
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of ENPOS");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of ENPOS");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of ENPOS");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -34,19 +26,11 @@ export class ENPOS extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of ENPOS");
-        // }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of ENPOS");
-        // }
-
         super.onSetData(data);
     }
 }
@@ -61,22 +45,13 @@ export class ENWordExplain extends hih.BaseModel {
     public ExplainString: string;
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of KnowledgeType");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of KnowledgeType");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of KnowledgeType");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -84,10 +59,6 @@ export class ENWordExplain extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of KnowledgeType");
-        // }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
@@ -103,22 +74,13 @@ export class EnWord extends hih.BaseModel {
     public Explains: ENWordExplain[];
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of KnowledgeType");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of KnowledgeType");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of KnowledgeType");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -126,19 +88,11 @@ export class EnWord extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log('Entering writeJSONObject of KnowledgeType');
-        }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log('Entering onSetData of Finance.Setting');
-        }
-
         super.onSetData(data);
     }
 }
@@ -152,22 +106,13 @@ export class EnSentenceExplain extends hih.BaseModel {
     public ExplainString: string;
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log('Entering constructor of KnowledgeType');
-        }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log('Entering onInit of KnowledgeType');
-        }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log('Entering onVerify of KnowledgeType');
-        }
         if (!super.onVerify(context))
             return false;
 
@@ -175,10 +120,6 @@ export class EnSentenceExplain extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log('Entering writeJSONObject of KnowledgeType');
-        }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
@@ -195,22 +136,13 @@ export class EnSentence extends hih.BaseModel {
 
     constructor() {
         super();
-        if (environment.DebugLogging) {
-            console.log('Entering constructor of KnowledgeType');
-        }
     }
 
     public onInit() {
         super.onInit();
-        if (environment.DebugLogging) {
-            console.log('Entering onInit of KnowledgeType');
-        }
     }
 
     public onVerify(context: any): boolean {
-        if (environment.DebugLogging) {
-            console.log('Entering onVerify of KnowledgeType');
-        }
         if (!super.onVerify(context))
             return false;
 
@@ -218,19 +150,11 @@ export class EnSentence extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        if (environment.DebugLogging) {
-            console.log('Entering writeJSONObject of KnowledgeType');
-        }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        if (environment.DebugLogging) {
-            console.log('Entering onSetData of Finance.Setting');
-        }
-
         super.onSetData(data);
     }
 }
@@ -252,22 +176,13 @@ export class LearnCategory extends hih.BaseModel {
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of LearnCategory");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of LearnCategory");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of LearnCategory");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -275,19 +190,11 @@ export class LearnCategory extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of LearnCategory");
-        // }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of Finance.Setting");
-        // }
-
         super.onSetData(data);
 
         if (data && data.id) {
@@ -326,22 +233,13 @@ export class LearnObject extends hih.BaseModel {
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of LearnObject");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of LearnObject");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of LearnObject");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -349,10 +247,6 @@ export class LearnObject extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of LearnObject");
-        // }
-
         let rstObj = super.writeJSONObject();
         rstObj.Id = this.Id;
         rstObj.CategoryId = this.CategoryId;
@@ -362,10 +256,6 @@ export class LearnObject extends hih.BaseModel {
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of LearnObject");
-        // }
-
         super.onSetData(data);
 
         if (data && data.id) {
@@ -394,45 +284,34 @@ export class LearnHistory extends hih.BaseModel {
     public UserId: string;
     public ObjectId: number;
     public Comment: string;
-    private _learnDate: Date;
+    private _learnDate: moment.Moment;
 
     // Additional info, not need for saving
     public UserDisplayAs: string;
     public ObjectName: string;
-    public LearnDateString: string;
 
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of LearnHistory");
-        // }
 
-        this.LearnDate = new Date();
+        this.LearnDate = moment();
     }
 
     public generateKey() : string {
-        return this.UserId + '_' + this.ObjectId.toString() + '_' + hih.Utility.Date2String(this.LearnDate);
+        return this.UserId + '_' + this.ObjectId.toString() + '_' + this._learnDate.format(hih.MomentDateFormat);
     }
 
-    get LearnDate(): Date {
+    get LearnDate(): moment.Moment {
         return this._learnDate;
     }
-    set LearnDate(ld: Date) {
+    set LearnDate(ld: moment.Moment) {
         this._learnDate = ld;
-        this.LearnDateString = hih.Utility.Date2String(this._learnDate);
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of LearnHistory");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of LearnHistory");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -448,7 +327,7 @@ export class LearnHistory extends hih.BaseModel {
             if (!bObj) {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgContent = 'Select an object before continues';
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 msg.MsgTitle = 'No object selected';
                 msg.MsgType = hih.MessageType.Error;
                 this.VerifiedMsgs.push(msg);
@@ -457,7 +336,7 @@ export class LearnHistory extends hih.BaseModel {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgContent = 'No object found in the system';
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgTitle = 'No object found';
             msg.MsgType = hih.MessageType.Error;
             this.VerifiedMsgs.push(msg);
@@ -475,7 +354,7 @@ export class LearnHistory extends hih.BaseModel {
             if (!bFound) {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgContent = 'Select an user before continues!';
-                msg.MsgTime = new Date();
+                msg.MsgTime = moment();
                 msg.MsgTitle = 'No user selected';
                 msg.MsgType = hih.MessageType.Error;
                 this.VerifiedMsgs.push(msg);
@@ -484,7 +363,7 @@ export class LearnHistory extends hih.BaseModel {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgContent = 'No user found in the system.';
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgTitle = 'No user found';
             msg.MsgType = hih.MessageType.Error;
             this.VerifiedMsgs.push(msg);
@@ -495,7 +374,7 @@ export class LearnHistory extends hih.BaseModel {
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgContent = 'Learn date is invalid.';
-            msg.MsgTime = new Date();
+            msg.MsgTime = moment();
             msg.MsgTitle = 'Invalid learn date';
             msg.MsgType = hih.MessageType.Error;
             this.VerifiedMsgs.push(msg);
@@ -506,23 +385,15 @@ export class LearnHistory extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of LearnHistory");
-        // }
-
         let rstObj = super.writeJSONObject();
         rstObj.userID = this.UserId;
         rstObj.objectID = this.ObjectId;
-        rstObj.learnDate = this.LearnDateString;
+        rstObj.learnDate = this._learnDate.format(hih.MomentDateFormat);
         rstObj.comment = this.Comment;
         return rstObj;
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of LearnHistory");
-        // }
-
         super.onSetData(data);
 
         if (data && data.userID) {
@@ -532,7 +403,7 @@ export class LearnHistory extends hih.BaseModel {
             this.ObjectId = +data.objectID;
         }
         if (data && data.learnDate) {
-            this.LearnDate = hih.Utility.String2Date(data.learnDate);
+            this.LearnDate = moment(data.learnDate, hih.MomentDateFormat);
         }
         if (data && data.comment && data.comment.length > 0) {
             this.Comment = data.comment;
@@ -544,18 +415,6 @@ export class LearnHistory extends hih.BaseModel {
             this.ObjectName = data.objectName;
         }
     }
-
-    public onComplete() : void {
-        super.onComplete();
-
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onComplete of LearnHistory");
-        // }
-
-        if (this.LearnDateString) {
-            this.LearnDate = hih.Utility.String2Date(this.LearnDateString);
-        }
-    }
 }
 
 /**
@@ -564,22 +423,13 @@ export class LearnHistory extends hih.BaseModel {
 export class LearnAward extends hih.BaseModel {
     constructor() {
         super();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of LearnAward");
-        // }
     }
 
     public onInit() {
         super.onInit();
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of LearnAward");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of LearnAward");
-        // }
         if (!super.onVerify(context))
             return false;
 
@@ -587,19 +437,11 @@ export class LearnAward extends hih.BaseModel {
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of LearnAward");
-        // }
-
         let rstObj = super.writeJSONObject();
         return rstObj;
     }
 
     public onSetData(data: any) {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of LearnAward");
-        // }
-
         super.onSetData(data);
     }
 }

@@ -1,4 +1,5 @@
 import { environment } from '../../environments/environment';
+import * as moment from 'moment';
 
 export const TypeParentSplitter: string = ' > ';
 export const IDSplitChar: string = ',';
@@ -9,17 +10,14 @@ export const FinanceDocType_Transfer: number = 2; // Transfer doc
 export const FinanceDocType_AdvancePayment: number = 5;
 export const FinanceTranType_TransferIn: number = 37;
 export const FinanceTranType_TransferOut: number = 60;
+export const MomentDateFormat: string = 'YYYY-MM-DD';
 
 export enum AuthorizeScope { All = 1, OnlyOwner = 2 };
 export enum MessageType { Info = 1, Warning = 2, Error = 3 };
-export enum UserHistType {
-    Create = 0,
-    Login = 1,
-    Logout = 2,
-    ChangePassword = 3,
-    ResetPassword = 4,
-    Delete = 5,
-};
+
+/**
+ * UI Mode on detail page
+ */
 export enum UIMode {
     Create = 1,
     Change = 2,
@@ -48,12 +46,18 @@ export function getUIModeString(mode: UIMode): string {
     }
 }
 
-export declare abstract class IUIDetailPage {
-    public IsUIEditable(): boolean;
-    public currentUIMode(): UIMode;
-    public currentUIModeString(): string;
+/**
+ * UI Detail page interface
+ */
+export interface IUIDetailPage {
+    IsUIEditable(): boolean;
+    currentUIMode(): UIMode;
+    currentUIModeString(): string;
 }
 
+/**
+ * Repeat frequency
+ */
 export enum RepeatFrequency {
 	Month       = 0,
 	Fortnight   = 1,
@@ -64,6 +68,10 @@ export enum RepeatFrequency {
     Year        = 6,
     Manual      = 7,
 };
+
+/**
+ * Log Level enum
+ */
 export enum LogLevel {
     Crash = 0,
     Error = 1,
@@ -74,7 +82,7 @@ export enum LogLevel {
 
 export class InfoMessage {
     public MsgType: MessageType;
-    public MsgTime: Date;
+    public MsgTime: moment.Moment;
     public MsgTitle: string;
     public MsgContent: string;
 }
@@ -90,91 +98,56 @@ export interface BaseModelJson {
  * Base model
  */
 export class BaseModel {
-    protected _createdAt: Date;
+    protected _createdAt: moment.Moment;
     public CreatedBy: string;
-    protected _updatedAt: Date;
+    protected _updatedAt: moment.Moment;
     public UpdatedBy: string;
 
     // For checking
     public VerifiedMsgs: InfoMessage[];
 
-    // For UI display purpose
-    public CreatedAtString: string;
-    public UpdatedAtString: string;
-
-    get CreatedAt(): Date {
+    get CreatedAt(): moment.Moment {
         return this._createdAt;
     }
-    set CreatedAt(ca: Date) {
+    set CreatedAt(ca: moment.Moment) {
         this._createdAt = ca;
-        this.CreatedAtString = Utility.Date2String(this._createdAt);
     }
-    get UpdatedAt(): Date {
+    get UpdatedAt(): moment.Moment {
         return this._updatedAt;
     }
-    set UpdatedAt(ua: Date) {
+    set UpdatedAt(ua: moment.Moment) {
         this._updatedAt = ua;
-        this.UpdatedAtString = Utility.Date2String(this._updatedAt);
     }
 
     constructor() {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering constructor of BaseModel");
-        // }
-
-        this.CreatedAt = new Date();
-        this.UpdatedAt = new Date();
+        this.CreatedAt = moment();
+        this.UpdatedAt = moment();
     }
 
     public onInit() {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onInit of BaseModel");
-        // }
     }
 
     public onVerify(context: any): boolean {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onVerify of BaseModel");
-        // }
         this.VerifiedMsgs = [];
 
         return true;
     }
 
     public onComplete(): void {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onComplete of BaseModel");
-        // }
-
-        if (this.CreatedAtString) {
-            this.CreatedAt = Utility.String2Date(this.CreatedAtString);
-        } else {
-            this.CreatedAt = null;
-        }
-
-        if (this.UpdatedAtString) {
-            this.UpdatedAt = Utility.String2Date(this.UpdatedAtString);
-        } else {
-            this.UpdatedAt = null;
-        }
     }
 
     public writeJSONObject(): any {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONObject of BaseModel");
-        // }
+        let rstobj: any = {
 
-        let rstobj: any = {};
+        };
         if (this._createdAt) {
-            //rstobj.createdAt = this.CreatedAt;
-            rstobj.createdAt = this.CreatedAtString;
+            rstobj.createdAt = this._createdAt.format(MomentDateFormat);
         }
         if (this.CreatedBy && this.CreatedBy.length > 0) {
             rstobj.createdBy = this.CreatedBy;
         }
         if (this._updatedAt) {
-            //rstobj.updatedAt = this.UpdatedAt;
-            rstobj.updatedAt = this.UpdatedAtString;
+            rstobj.updatedAt = this._updatedAt.format(MomentDateFormat);
         }
         if (this.UpdatedBy && this.UpdatedBy.length > 0 ) {
             rstobj.updatedBy = this.UpdatedBy;
@@ -184,10 +157,6 @@ export class BaseModel {
     }
 
     public writeJSONString(): string {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering writeJSONString of BaseModel");
-        // }
-
         let forJSON = this.writeJSONObject();
         if (forJSON) {
             return JSON && JSON.stringify(forJSON);
@@ -196,23 +165,17 @@ export class BaseModel {
     }
 
     public onSetData(data: any) : void {
-        // if (environment.DebugLogging) {
-        //     console.log("Entering onSetData of BaseModel");
-        // }
-
         if (data && data.createdBy) {
             this.CreatedBy = data.createdBy;
         }
         if (data && data.createdAt) {
-            //this.CreatedAt = data.createdAt;
-            this.CreatedAt = Utility.String2Date(data.createdAt);
+            this.CreatedAt = moment(data.createdAt, MomentDateFormat);
         }
         if (data && data.updatedBy) {
             this.UpdatedBy = data.updatedBy;
         }
         if (data && data.updatedAt) {
-            //this.UpdatedAt = data.updatedAt;
-            this.UpdatedAt = Utility.String2Date(data.updatedAt);
+            this.UpdatedAt = moment(data.updatedAt, MomentDateFormat);
         }
     }
 }
@@ -251,114 +214,3 @@ export class MultipleNamesObject {
     public Name: string;
 }
 
-export class Utility {
-    public static Date2String(dt: Date) : string {
-        // From: http://stackoverflow.com/questions/1056728/where-can-i-find-documentation-on-formatting-a-date-in-javascript
-        // let curr_date : string = dt.getDate().toString();
-        // let curr_month : string = (dt.getMonth() + 1).toString(); //Months are zero based
-        // let curr_year : string = dt.getFullYear().toString();
-        // return (curr_date + "-" + curr_month + "-" + curr_year);
-
-        let y: number = dt.getFullYear();
-		      let m: number = dt.getMonth() + 1;
-		      let d: number = dt.getDate();
-		      return y.toString() + DateSplitChar + (m < 10 ? ('0' + m) : m).toString() + DateSplitChar + (d < 10 ? ('0' + d) : d).toString();
-    }
-
-    public static String2Date(s: string): Date {
-		if (!s)
-			return new Date();
-
-		let ss = (s.split(DateSplitChar));
-		let y: number = parseInt(ss[0], 10);
-		let m: number = parseInt(ss[1], 10);
-		let d: number = parseInt(ss[2], 10);
-		if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
-			return new Date(y, m - 1, d);
-		} else {
-			return new Date();
-		}
-    }
-
-    public static DaysBetween(first: Date, second: Date) : number {
-
-	    // Copy date parts of the timestamps, discarding the time parts.
-    	let one: Date = new Date(first.getFullYear(), first.getMonth(), first.getDate());
-    	let two: Date = new Date(second.getFullYear(), second.getMonth(), second.getDate());
-
-    	// Do the math.
-    	let millisecondsPerDay = 1000 * 60 * 60 * 24;
-    	let millisBetween = two.getTime() - one.getTime();
-    	let days = millisBetween / millisecondsPerDay;
-
-    	// Round down.
-    	return Math.floor(days);
-    }
-
-    public static Round2Two(num : number) : number {
-		//return +(Math.round(num + "e+2")  + "e-2");
-		return Math.round(num * 100) / 100;
-	}
-
-    public static CheckMail(strMail: string): boolean {
-		let isValid: boolean = false;
-
-		if (strMail.indexOf('@') >= 1) {
-			let m_valid_dom = strMail.substr(strMail.indexOf('@') + 1);
-			if (m_valid_dom.indexOf('@') === -1) {
-				if (m_valid_dom.indexOf('.') >= 1) {
-					let m_valid_dom_e = m_valid_dom.substr(m_valid_dom.indexOf('.') + 1);
-					if (m_valid_dom_e.length >= 1) {
-						isValid = true;
-					}
-				}
-			}
-		}
-
-		return isValid;
-	}
-
-    public static CheckStringLength(strField: string, minlength: number, maxLength: number) : boolean {
-    	let length_df: number = strField.length;
-    	let bResult: boolean = false;
-
-    	if (length_df >= minlength && length_df <= maxLength) {
-        	bResult = true;
-    	}
-
-    	return bResult;
-	}
-
-    public static GetPasswordStrengthLevel(strField: string) : number {
-    	let pass_level: number = 0;
-
-		   if (strField.match(/[a-z]/g)) {
-			pass_level++;
-		}
-		   if (strField.match(/[A-Z]/g)) {
-			pass_level++;
-		}
-		   if (strField.match(/[0-9]/g)) {
-			pass_level++;
-		}
-		   if (strField.length < 5) {
-			if (pass_level >= 1) pass_level--;
-		} else if (strField.length >= 20) {
-			pass_level++;
-		}
-
-	    return pass_level;
-	}
-
-    public static hasDuplicatesInStringArray(strarray: string) : boolean {
-        let valuesSoFar = Object.create(null);
-        for (let i = 0; i < strarray.length; ++i) {
-            let value = strarray[i];
-            if (value in valuesSoFar) {
-                return true;
-            }
-            valuesSoFar[value] = true;
-        }
-        return false;
-    }
-}
