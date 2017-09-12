@@ -69,7 +69,7 @@
 
         <md-action-row>
           <button md-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-          <button md-button color="primary" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+          <button md-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
         </md-action-row>
       </md-expansion-panel>
     </md-accordion>

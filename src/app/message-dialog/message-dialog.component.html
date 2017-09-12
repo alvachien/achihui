@@ -1,0 +1,23 @@
+<h2 md-dialog-title>{{ dlgInfo.Header | translate}}</h2>
+<md-dialog-content>
+  <h2 class="demo-full-width lead"> {{ dlgInfo.Content | translate}}
+  </h2>
+</md-dialog-content>
+<md-dialog-actions>
+  <div *ngIf="IsOnlyOKButton">
+    <button md-button [md-dialog-close]="true" tabindex="1">{{'Home.OKButton' | translate}}</button>
+  </div>
+  <div *ngIf="IsYesNoButton">
+    <button md-button [md-dialog-close]="true" tabindex="1">{{'Home.YesButton' | translate}}</button>
+    <button md-button [md-dialog-close]="false" tabindex="2">{{'Home.NoButton' | translate}}</button>
+  </div>
+  <div *ngIf="IsOKCancelButton">
+    <button md-button [md-dialog-close]="true" tabindex="1">{{'Home.OKButton' | translate}}</button>
+    <button md-button [md-dialog-close]="false" tabindex="2">{{'Home.CancelButton' | translate}}</button>
+  </div>
+  <div *ngIf="IsYesNoCancelButton">
+    <button md-button [md-dialog-close]="true" tabindex="1">{{'Home.YesButton' | translate}}</button>
+    <button md-button [md-dialog-close]="false" tabindex="2">{{'Home.NoButton' | translate}}</button>
+    <button md-button tabindex="3">{{'Home.CancelButton' | translate}}</button>
+  </div>
+</md-dialog-actions>

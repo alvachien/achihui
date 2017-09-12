@@ -564,6 +564,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 }
 
 export class ControlCenter extends hih.BaseModel {
+    public HID: number;
     public Id: number;
     public Name: string;
     public ParentId: number;
@@ -599,6 +600,7 @@ export class ControlCenter extends hih.BaseModel {
 
     public writeJSONObject(): any {
         let rstObj = super.writeJSONObject();
+        rstObj.hid = this.HID;
         rstObj.id = this.Id;
         rstObj.name = this.Name;
         rstObj.comment = this.Comment;
@@ -613,6 +615,9 @@ export class ControlCenter extends hih.BaseModel {
     public onSetData(data: any) {
         super.onSetData(data);
 
+        if (data && data.hid) {
+            this.HID = +data.hid;
+        }
         if (data && data.id) {
             this.Id = +data.id;
         }

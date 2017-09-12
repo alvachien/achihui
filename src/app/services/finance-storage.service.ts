@@ -44,8 +44,10 @@ export class FinanceStorageService {
   }
 
   // Event
-  createAccountEvent: EventEmitter<boolean> = new EventEmitter(null);
-  readAccountEvent: EventEmitter<boolean> = new EventEmitter(null);
+  createAccountEvent: EventEmitter<Account | string> = new EventEmitter(null);
+  readAccountEvent: EventEmitter<Account | string> = new EventEmitter(null);
+  createControlCenterEvent: EventEmitter<ControlCenter | string> = new EventEmitter(null);
+  readControlCenterEvent: EventEmitter<ControlCenter | string> = new EventEmitter(null);
 
   // Buffer
   private _isAcntCtgyListLoaded: boolean;
@@ -314,35 +316,32 @@ export class FinanceStorageService {
         this.listAccountChange.next(copiedData);
 
         // Broadcast event
-        this.createAccountEvent.emit(true);
+        this.createAccountEvent.emit(x);
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.log(`AC_HIH_UI [Error]: Error occurred in createAccount in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createAccountEvent.emit(false);
+        this.createAccountEvent.emit(error.toString());
       }, () => {
       });
   }
+
   public readAccount(acntid: number) {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
               .append('Accept', 'application/json')
               .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceAccount';
-    let params: HttpParams = new HttpParams();
-    params = params.set('id', acntid.toString());
-
+    let apiurl = environment.ApiUrl + '/api/FinanceAccount/' + acntid.toString();
     this._http.get(apiurl, {
         headers: headers,
-        params: params,
         withCredentials: true
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.log(`AC_HIH_UI [Debug]: Entering readAccount in FinanceStorageService: ${response}`);
         }
 
         let hd: Account = new Account();
@@ -351,22 +350,22 @@ export class FinanceStorageService {
       })
       .subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createAccount in FinanceStorageService: ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in readAccount in FinanceStorageService: ${x}`);
         }
 
-        const copiedData = this.Accounts.slice();
-        copiedData.push(x);
-        this.listAccountChange.next(copiedData);
+        // const copiedData = this.Accounts.slice();
+        // copiedData.push(x);
+        // this.listAccountChange.next(copiedData);
 
         // Broadcast event
-        this.createAccountEvent.emit(true);
+        this.readAccountEvent.emit(x);
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in createAccount in FinanceStorageService:  ${error}`);
+          console.log(`AC_HIH_UI [Error]: Error occurred in readAccount in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createAccountEvent.emit(false);
+        this.readAccountEvent.emit(error);
       }, () => {
       });
   }
@@ -422,6 +421,92 @@ export class FinanceStorageService {
         }, () => {
         });
     }
+  }
+  
+  public createControlCenter(objDetail: ControlCenter) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+              .append('Accept', 'application/json')
+              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceControlCenter';
+
+    const jdata: string = objDetail.writeJSONString();
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of createControlCenter in FinanceStorageService: ' + response);
+        }
+
+        let hd: ControlCenter = new ControlCenter();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createControlCenter in FinanceStorageService: ${x}`);
+        }
+
+        const copiedData = this.ControlCenters.slice();
+        copiedData.push(x);
+        this.listControlCenterChange.next(copiedData);
+
+        // Broadcast event
+        this.createControlCenterEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.log(`AC_HIH_UI [Error]: Error occurred in createControlCenter in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createControlCenterEvent.emit(error.toString());
+      }, () => {
+      });
+  }
+
+  public readControlCenter(ccid: number) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+              .append('Accept', 'application/json')
+              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceControlCenter/' + ccid.toString();
+    this._http.get(apiurl, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readControlCenter in FinanceStorageService: ${response}`);
+        }
+
+        let hd: ControlCenter = new ControlCenter();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in readControlCenter in FinanceStorageService: ${x}`);
+        }
+
+        // const copiedData = this.ControlCenters.slice();
+        // copiedData.push(x);
+        // this.listControlCenterChange.next(copiedData);
+
+        // Broadcast event
+        this.readControlCenterEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.log(`AC_HIH_UI [Error]: Error occurred in readControlCenter in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.readControlCenterEvent.emit(error);
+      }, () => {
+      });
   }
 
   // Order

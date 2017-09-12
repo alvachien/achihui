@@ -47,9 +47,6 @@ export class AppComponent implements OnInit {
     private _zone: NgZone,
     private _router: Router) {
     // Setup the translate
-    this._selLanguage = 'zh';
-    this._translate.setDefaultLang(this._selLanguage);
-    this._translate.use(this._selLanguage);
     this.userDisplayAs = '';
     this._curStatus = UIStatusEnum.NotLogin;
     this.curChosenHome = null;
@@ -106,6 +103,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._selLanguage = 'zh';
+    this._translate.setDefaultLang(this._selLanguage);
+    this._translate.use(this._selLanguage);
     this.updateDocumentTitle();
   }
 

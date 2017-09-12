@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, ControlCenter } from '../../model';
 import { FinanceStorageService } from '../../services';
+import { fadeAnimation } from '../../utility';
 
 /**
  * Data source of Control center
@@ -40,6 +41,7 @@ export class ControlCenterDataSource extends DataSource<any> {
   selector: 'app-control-center-list',
   templateUrl: './control-center-list.component.html',
   styleUrls: ['./control-center-list.component.scss'],
+  animations: [fadeAnimation],
 })
 export class ControlCenterListComponent implements OnInit {
 

@@ -5,14 +5,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpModule, Http } from '@angular/http';
+import { MD_DATE_FORMATS, DateAdapter } from '@angular/material';
 import { UIDependModule } from './uidepend.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
-import { AuthService, AuthGuardService, UserDetailService,
+import {
+  AuthService, AuthGuardService, UserDetailService,
   FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
-  HomeDefDetailService, CanDeactivateGuardService, LanguageService } from './services';
+  HomeDefDetailService, CanDeactivateGuardService, LanguageService
+} from './services';
 import { AppRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
 import { PageHomeListComponent } from './page-home-list';
@@ -21,6 +24,8 @@ import { LearnModule } from './learn';
 import { FinanceModule } from './finance';
 import { FinanceCurrencyComponent } from './finance-currency';
 import { LanguageComponent } from './language';
+import { MOMENT_DATE_FORMATS, MomentDateAdapter } from './utility';
+import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -51,19 +56,25 @@ export function HttpLoaderFactory(http: HttpClient) {
     PageHomeDetailComponent,
     FinanceCurrencyComponent,
     LanguageComponent,
+    MessageDialogComponent,
+  ],
+  entryComponents: [
+    MessageDialogComponent,
   ],
   providers: [
-      AuthService,
-      AuthGuardService,
-      FinCurrencyService,
-      UserDetailService,
-      HomeChoseGuardService,
-      HomeDefDetailService,
-      CanDeactivateGuardService,
-      FinanceStorageService,
-      LearnStorageService,
-      LanguageService
+    { provide: DateAdapter, useClass: MomentDateAdapter },
+    { provide: MD_DATE_FORMATS, useValue: MOMENT_DATE_FORMATS },
+    AuthService,
+    AuthGuardService,
+    FinCurrencyService,
+    UserDetailService,
+    HomeChoseGuardService,
+    HomeDefDetailService,
+    CanDeactivateGuardService,
+    FinanceStorageService,
+    LearnStorageService,
+    LanguageService
   ],
-  bootstrap: [ AppComponent ],
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

@@ -81,7 +81,9 @@
     "ExtraInfo": "Extra Info",
     "ReviewForSubmit": "Review for submit",
     "NextButton": "Next",
-    "PreviousButton": "Previous"
+    "PreviousButton": "Previous",
+    "Error": "Error",
+    "Success": "Success"
   },
   "Sys":{
     "Currency": {

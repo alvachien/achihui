@@ -81,7 +81,9 @@
     "ExtraInfo": "附加信息",
     "ReviewForSubmit": "检查与提交",
     "NextButton": "下一步",
-    "PreviousButton": "上一步"
+    "PreviousButton": "上一步",
+    "Error": "错误",
+    "Success": "成功"
   },
   "Sys":{
     "Currency": {
