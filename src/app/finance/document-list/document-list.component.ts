@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator } from '@angular/material';
+import { MdPaginator, MdDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -48,7 +48,8 @@ export class DocumentListComponent implements OnInit {
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
   constructor(public _storageService: FinanceStorageService,
-    private _router: Router) { }
+    private _router: Router,
+    private _dialog: MdDialog) { }
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {

@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MD_DATE_FORMATS, DateAdapter } from '@angular/material';
 
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { AuthService, HomeDefDetailService, LearnStorageService } from '../services';
+import { MOMENT_DATE_FORMATS, MomentDateAdapter } from '../utility';
 
 import { LearnRoutingModule } from './learn-routing.module';
 import { LearnComponent } from './learn.component';
@@ -40,6 +41,8 @@ import { HistoryDetailComponent } from './history-detail';
     HistoryDetailComponent,
   ],
   providers: [
-  ],
+    { provide: DateAdapter, useClass: MomentDateAdapter },
+    { provide: MD_DATE_FORMATS, useValue: MOMENT_DATE_FORMATS },
+  ]
 })
 export class LearnModule { }

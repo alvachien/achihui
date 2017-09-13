@@ -208,10 +208,10 @@ export class AccountCategory extends hih.BaseModel {
  * Document type
  */
 export class DocumentType extends hih.BaseModel {
+    public HID: number;
     public Id: number;
     public Name: string;
     public Comment: string;
-    public SysFlag: boolean;
 
     constructor() {
         super();
@@ -235,6 +235,9 @@ export class DocumentType extends hih.BaseModel {
 
     public onSetData(data: any) {
         super.onSetData(data);
+        if (data && data.hid) {
+            this.HID = +data.hid;
+        }
         if (data && data.id) {
             this.Id = +data.id;
         }
@@ -243,9 +246,6 @@ export class DocumentType extends hih.BaseModel {
         }
         if (data && data.comment) {
             this.Comment = data.comment;
-        }
-        if (data && data.sysFlag) {
-            this.SysFlag = data.sysFlag;
         }
     }
 }
@@ -801,12 +801,12 @@ export class SettlementRule extends hih.BaseModel {
  * Tran type
  */
 export class TranType extends hih.BaseModel {
+    public HID: number;
     public Id: number;
     public Name: string;
     public Expense: boolean;
     public ParId: number;
     public Comment: string;
-    public SysFlag: boolean;
 
     constructor() {
         super();
@@ -831,6 +831,9 @@ export class TranType extends hih.BaseModel {
     public onSetData(data: any) {
         super.onSetData(data);
 
+        if (data && data.hid) {
+            this.HID = +data.hid;
+        }
         if (data && data.id) {
             this.Id = +data.id;
         }
@@ -846,9 +849,6 @@ export class TranType extends hih.BaseModel {
         if (data && data.comment) {
             this.Comment = data.comment;
         }
-        if (data && data.sysFlag) {
-            this.SysFlag = data.sysFlag;
-        }
     }
 }
 
@@ -856,6 +856,7 @@ export class TranType extends hih.BaseModel {
  * Document
  */
 export class Document extends hih.BaseModel {
+    public HID: number;
     public Id: number;
     public DocType: number;
     public _tranDate: moment.Moment;
@@ -1038,6 +1039,9 @@ export class Document extends hih.BaseModel {
     public onSetData(data: any) {
         super.onSetData(data);
 
+        if (data && data.hid) {
+            this.HID = +data.hid;
+        }
         if (data && data.id) {
             this.Id = +data.id;
         }

@@ -132,6 +132,8 @@ export class FinanceStorageService {
           this._isAcntCtgyListLoaded = false;
         }, () => {
         });
+    } else {
+      this.listAccountCategoryChange.next(this.listAccountCategoryChange.value);
     }
   }
 
@@ -185,6 +187,8 @@ export class FinanceStorageService {
           this._isDocTypeListLoaded = false;
         }, () => {
         });
+    } else {
+      this.listDocTypeChange.next(this.listDocTypeChange.value);
     }
   }
 
@@ -238,6 +242,8 @@ export class FinanceStorageService {
           this._isTranTypeListLoaded = false;
         }, () => {
         });
+    } else {
+      this.listTranTypeChange.next(this.listTranTypeChange.value);
     }
   }
 
@@ -291,6 +297,8 @@ export class FinanceStorageService {
           this._isAccountListLoaded = false;
         }, () => {
         });
+    } else {
+      this.listAccountChange.next(this.listAccountChange.value);
     }
   }
 
@@ -432,6 +440,8 @@ export class FinanceStorageService {
           this._isConctrolCenterListLoaded = false;
         }, () => {
         });
+    } else {
+      this.listControlCenterChange.next(this.listControlCenterChange.value);
     }
   }
   
@@ -582,6 +592,8 @@ export class FinanceStorageService {
           this._isOrderListLoaded = false;
         }, () => {
         });
+    } else {
+      this.listOrderChange.next(this.listOrderChange.value);
     }
   }
 
@@ -732,6 +744,8 @@ export class FinanceStorageService {
           this._isDocumentListLoaded = false;
         }, () => {
         });
+    } else {
+      this.listDocumentChange.next(this.listDocumentChange.value);
     }
   }
 

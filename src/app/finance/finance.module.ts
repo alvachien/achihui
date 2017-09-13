@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MD_DATE_FORMATS, DateAdapter } from '@angular/material';
 
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { MOMENT_DATE_FORMATS, MomentDateAdapter } from '../utility';
 
 import { FinanceRoutingModule } from './finance-routing.module';
 import { FinanceComponent } from './finance.component';
@@ -64,5 +66,9 @@ import { ReportComponent } from './report';
     OrderDetailComponent,
     ReportComponent,
   ],
+  providers: [
+    { provide: DateAdapter, useClass: MomentDateAdapter },
+    { provide: MD_DATE_FORMATS, useValue: MOMENT_DATE_FORMATS },
+  ]
 })
 export class FinanceModule { }

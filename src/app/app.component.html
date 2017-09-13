@@ -12,12 +12,12 @@
                 {{i}} - {{navItem.name | translate}}
             </a>
             <md-divider ></md-divider>
-            <h3 mdSubheader>Learning Part</h3>
+            <h3 mdSubheader>{{'Nav.LearningTrace' | translate}}</h3>
             <a *ngFor="let navItem of navLearnItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
                 {{i}} - {{navItem.name | translate}}
             </a>
             <md-divider></md-divider>
-            <h3 mdSubheader>Finance Part</h3>
+            <h3 mdSubheader>{{'Nav.FinanceTrace' | translate}}</h3>
             <a *ngFor="let navItem of navFinItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
                 {{i}} - {{navItem.name | translate}}
             </a>
