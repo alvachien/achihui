@@ -22,24 +22,8 @@ export class AppComponent implements OnInit {
   public titleLogin: string;
   public userDisplayAs: string;
   public curChosenHome: HomeDef;
-
-  private _curStatus: UIStatusEnum;
-  get CurrentStatus(): UIStatusEnum {
-    return this._curStatus;
-  }
-
-  private _selLanguage: string;
-  get selectedLanguage(): string {
-    return this._selLanguage;
-  }
-  set selectedLanguage(lang: string) {
-    if (this._selLanguage !== lang && lang !== undefined && lang !== null) {
-      this._selLanguage = lang;
-
-      this.onLanguageChange();
-    }
-  }
-
+  public SelectedLanguage: string;
+  
   constructor(private _element: ElementRef,
     private _translate: TranslateService,
     private _authService: AuthService,
@@ -48,13 +32,12 @@ export class AppComponent implements OnInit {
     private _router: Router) {
     // Setup the translate
     this.userDisplayAs = '';
-    this._curStatus = UIStatusEnum.NotLogin;
     this.curChosenHome = null;
 
     this.navItems = [
       { name: 'Nav.Home', route: '' },
       { name: 'Common.Languages', route: 'language' },
-      { name: 'Nav.HomeList', route: 'homelist' },
+      { name: 'Nav.HomeList', route: 'homedef' },
       //{ name: 'Nav.HomeDetail', route: 'homedetail' },
       { name: 'Finance.Currency', route: 'currency' },
     ];
@@ -82,7 +65,6 @@ export class AppComponent implements OnInit {
 
       this._authService.authContent.subscribe((x) => {
         this._zone.run(() => {
-          this._curStatus = UIStatusEnum.LoggedinNoHomeChosen;
           this.isLoggedIn = x.isAuthorized;
           if (this.isLoggedIn) {
             this.titleLogin = x.getUserName();
@@ -102,11 +84,12 @@ export class AppComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-    this._selLanguage = 'zh';
-    this._translate.setDefaultLang(this._selLanguage);
-    this._translate.use(this._selLanguage);
-    this.updateDocumentTitle();
+  ngOnInit() {    
+    this._translate.setDefaultLang('zh');
+    this._translate.use('zh').subscribe(x => {
+      this.SelectedLanguage = 'zh';
+      this.updateDocumentTitle();
+    });
   }
 
   public onLogon() {
@@ -144,10 +127,10 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private onLanguageChange() {
-    if (this._translate.currentLang !== this._selLanguage &&
-      this._selLanguage !== undefined) {
-      this._translate.use(this._selLanguage);
+  private onLanguageChanged() {
+    if (this._translate.currentLang !== this.SelectedLanguage &&
+      this.SelectedLanguage !== undefined) {
+      this._translate.use(this.SelectedLanguage);
 
       this.updateDocumentTitle();
     }

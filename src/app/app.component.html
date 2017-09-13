@@ -7,21 +7,18 @@
                 <button (click)="onLogout()" md-button style="background: #525252;">{{'Login.Logout' | translate}}</button>
             </div>
         </div>
-        <hr *ngIf="curChosenHome" />
-        <md-nav-list>
-            <a *ngFor="let navItem of navItems; let i = index" style="padding: 1px; margin: 1px;" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
+        <md-nav-list dense>
+            <a *ngFor="let navItem of navItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
                 {{i}} - {{navItem.name | translate}}
             </a>
-        </md-nav-list>
-        <hr *ngIf="curChosenHome" />
-        <md-nav-list *ngIf="curChosenHome">
-            <a *ngFor="let navItem of navLearnItems; let i = index" style="padding: 1px; margin: 1px;" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
+            <md-divider ></md-divider>
+            <h3 mdSubheader>Learning Part</h3>
+            <a *ngFor="let navItem of navLearnItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
                 {{i}} - {{navItem.name | translate}}
             </a>
-        </md-nav-list>
-        <hr *ngIf="curChosenHome" />
-        <md-nav-list *ngIf="curChosenHome">
-            <a *ngFor="let navItem of navFinItems; let i = index" style="padding: 1px; margin: 1px;" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
+            <md-divider></md-divider>
+            <h3 mdSubheader>Finance Part</h3>
+            <a *ngFor="let navItem of navFinItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
                 {{i}} - {{navItem.name | translate}}
             </a>
         </md-nav-list>
@@ -40,7 +37,7 @@
                     <button md-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon">{{'Login.Login' | translate }}</button>
                     <button md-button *ngIf="isLoggedIn" (click)="onUserDetail()">{{titleLogin}}</button>
                     <button md-button *ngIf="curChosenHome" (click)="onChosenHomeDetail()">{{curChosenHome.Name}}</button>
-                    <md-select [(ngModel)]="selectedLanguage" name="lang">
+                    <md-select [(ngModel)]="SelectedLanguage" name="applang" (change)="onLanguageChanged()">
                         <md-option *ngFor="let lang of availableLanguages" [value]="lang.value">
                             {{lang.displayas | translate}}
                         </md-option>

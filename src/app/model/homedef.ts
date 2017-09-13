@@ -10,6 +10,16 @@ export enum HomeMemberRelationEnum {
     Parent  = 3,
 }
 
+export function getHomeMemberRelationString(re: HomeMemberRelationEnum) {
+    switch(re) {
+        case HomeMemberRelationEnum.Self: return 'Common.Self';
+        case HomeMemberRelationEnum.Couple: return 'Common.Couple';
+        case HomeMemberRelationEnum.Child: return 'Common.Child';
+        case HomeMemberRelationEnum.Parent: return 'Common.Parent';
+        default: return '';
+    }
+}
+
 /**
  * Home members
  */
@@ -53,6 +63,9 @@ export class HomeMember {
     set Relation(rel: HomeMemberRelationEnum) {
         this._relation = rel;
     }
+    get RelationString(): string {
+        return getHomeMemberRelationString(this._relation);
+    }
 
     constructor() {
     }
@@ -84,6 +97,8 @@ export interface HomeDefJson {
     host: string;
     baseCurrency: string;
     creatorDisplayAs?: string; // For creation
+
+    members?: HomeMemberJson[];
 }
 
 /**
@@ -95,7 +110,7 @@ export class HomeDef {
     private _details: string;
     private _host: string;
     private _basecurr: string;
-    private _creatorDisplayAs: string;
+    private _creatorDisplayAs: string; // Only for creation mode!
     private _listMembers: HomeMember[];
 
     get ID(): number {
@@ -149,6 +164,15 @@ export class HomeDef {
         this._details = data.details;
         this._host = data.host;
         this._basecurr = data.baseCurrency;
+
+        this._listMembers = [];
+        if (data.members) {
+            for(let mem of data.members) {
+                let hmem: HomeMember = new HomeMember();
+                hmem.parseJSONData(mem);
+                this._listMembers.push(hmem);
+            }
+        }
     }
 
     public generateJSONData(createmode?: boolean): HomeDefJson {

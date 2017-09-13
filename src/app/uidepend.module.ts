@@ -44,7 +44,7 @@ import { ObserversModule } from '@angular/cdk/observers';
 import { PortalModule } from '@angular/cdk/portal';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import {
-    AuthService, AuthGuardService, UserDetailService,
+    AuthService, AuthGuardService, 
     FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
     HomeDefDetailService, CanDeactivateGuardService,
 } from './services';

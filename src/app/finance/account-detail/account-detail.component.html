@@ -26,6 +26,12 @@
           </md-option>
         </md-select>
 
+        <md-select class="demo-full-width" placeholder="{{'Finance.Owner' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.OwnerId" name="owner">
+          <md-option *ngFor="let usr of _homedefService.MembersInChosedHome" [value]="usr.User">
+            {{usr.DisplayAs}} 
+          </md-option>
+        </md-select>
+        
         <md-form-field class="demo-full-width">
           <input mdInput type="text" placeholder="{{'Common.Comment' |translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="name">
         </md-form-field>
@@ -46,9 +52,9 @@
           </md-panel-description>
         </md-expansion-panel-header>
 
-        <md-form-field>
+        <!-- <md-form-field>
           <input mdInput placeholder="Country">
-        </md-form-field>
+        </md-form-field> -->
 
         <md-action-row>
           <button md-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>

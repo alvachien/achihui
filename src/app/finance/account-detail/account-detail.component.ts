@@ -25,7 +25,7 @@ export class AccountDetailComponent implements OnInit {
   constructor(private _dialog: MdDialog, 
     private _router: Router,
     private _activateRoute: ActivatedRoute,
-    private _homedefService: HomeDefDetailService,
+    public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
       this.detailObject = new Account();
   }

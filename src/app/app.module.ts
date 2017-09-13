@@ -12,20 +12,22 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import {
-  AuthService, AuthGuardService, UserDetailService,
+  AuthService, AuthGuardService, 
   FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
   HomeDefDetailService, CanDeactivateGuardService, LanguageService
 } from './services';
 import { AppRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
-import { PageHomeListComponent } from './page-home-list';
-import { PageHomeDetailComponent } from './page-home-detail';
 import { LearnModule } from './learn';
 import { FinanceModule } from './finance';
 import { FinanceCurrencyComponent } from './finance-currency';
 import { LanguageComponent } from './language';
 import { MOMENT_DATE_FORMATS, MomentDateAdapter } from './utility';
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
+import { HomeDefComponent } from './home-def';
+import { HomeDefListComponent } from './home-def-list';
+import { HomeDefDetailComponent } from './home-def-detail';
+import { PageNotFoundComponent } from './page-not-found';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -52,11 +54,13 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     AppComponent,
     PageInitialComponent,
-    PageHomeListComponent,
-    PageHomeDetailComponent,
     FinanceCurrencyComponent,
     LanguageComponent,
     MessageDialogComponent,
+    HomeDefComponent,
+    HomeDefListComponent,
+    HomeDefDetailComponent,
+    PageNotFoundComponent,
   ],
   entryComponents: [
     MessageDialogComponent,
@@ -67,7 +71,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     AuthService,
     AuthGuardService,
     FinCurrencyService,
-    UserDetailService,
     HomeChoseGuardService,
     HomeDefDetailService,
     CanDeactivateGuardService,

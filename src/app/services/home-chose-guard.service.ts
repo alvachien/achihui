@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate, Router,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { LogLevel, UserAuthInfo } from '../model';
 import { AuthService } from './auth.service';
@@ -37,7 +33,7 @@ export class HomeChoseGuardService {
     if (this.homedefService.ChosedHome === null
       || this.homedefService.ChosedHome === undefined) {
         // Navigate to other page
-        this.router.navigate(['/homelist']);
+        this.router.navigate(['/homedef']);
         return false;
     }
 

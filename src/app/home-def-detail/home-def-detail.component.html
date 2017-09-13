@@ -1,0 +1,46 @@
+<md-card>
+  <md-card-header>
+    <div></div>
+    <md-card-title>{{'Nav.HomeDetail' | translate}}</md-card-title>
+    <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
+  </md-card-header>
+  <md-card-content>
+    <md-form-field class="demo-full-width">
+      <input mdInput type="text" placeholder="{{'Common.Name' | translate}}" [(ngModel)]="detailObject.Name">
+    </md-form-field>
+
+    <md-form-field class="demo-full-width" *ngIf="IsCreateMode">
+      <input mdInput type="text" placeholder="{{'Login.DisplayAs' | translate}}" [(ngModel)]="detailObject.CreatorDisplayAs">
+    </md-form-field>
+
+    <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [(ngModel)]="detailObject.BaseCurrency" name="basecurr">
+      <md-option *ngFor="let curr of _fincurrService.Currencies" [value]="curr.Currency">
+        {{curr.Symbol}} - {{ curr.Name | translate }} 
+      </md-option>
+    </md-select>
+
+    <div class="demo-full-width" *ngIf="!IsCreateMode">
+      <md-form-field>
+        <input mdInput type="text" placeholder="ID" readonly [(ngModel)]="detailObject.Host">
+      </md-form-field>
+    </div>
+    
+    <md-form-field class="demo-full-width">
+      <input mdInput type="text" placeholder="Details" [(ngModel)]="detailObject.Details">
+    </md-form-field>
+
+    <hr />
+    <md-list *ngIf="!IsCreateMode">
+      <md-list-item *ngFor="let member of detailObject.Members">
+        <h3 mdLine> {{member.DisplayAs}} </h3>
+        <p mdLine>
+          <span> {{member.User}} </span>
+          <span > -- {{member.RelationString}} </span>
+        </p>
+      </md-list-item>
+    </md-list>
+  </md-card-content>
+  <md-card-actions>
+    <button md-button [disabled]="!canSubmit()" (click)="onSubmit()">Submit</button>
+  </md-card-actions>
+</md-card>

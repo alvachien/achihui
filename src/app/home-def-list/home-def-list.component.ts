@@ -40,11 +40,12 @@ export class HomeDefDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-page-home-list',
-  templateUrl: './page-home-list.component.html',
-  styleUrls: ['./page-home-list.component.scss'],
+  selector: 'app-home-def-list',
+  templateUrl: './home-def-list.component.html',
+  styleUrls: ['./home-def-list.component.scss']
 })
-export class PageHomeListComponent implements OnInit {
+export class HomeDefListComponent implements OnInit {
+
   displayedColumns = ['id', 'name', 'host', 'currency', 'details'];
   dataSource: HomeDefDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
@@ -57,7 +58,11 @@ export class PageHomeListComponent implements OnInit {
   }
 
   public onCreateHome() {
-    this._router.navigate(['/homedetail']);
+    this._router.navigate(['/homedef/create']);
+  }
+
+  public onDisplayHome(row: HomeDef) {
+    this._router.navigate(['/homedef/display/' + row.ID.toString()])
   }
 
   public onChooseHome(row: HomeDef) {

@@ -546,6 +546,7 @@ export class ControlCenter extends hih.BaseModel {
  * Order
  */
 export class Order extends hih.BaseModel {
+    public HID: number;
     public Id: number;
     public Name: string;
     public _validFrom: moment.Moment;
