@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, AccountCategory, DocumentType, TranType, Account, ControlCenter, Order } from '../model';
+import { LogLevel, AccountCategory, DocumentType, TranType, Account, ControlCenter, Order, Document } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -43,13 +43,20 @@ export class FinanceStorageService {
     return this.listOrderChange.value;
   }
 
+  listDocumentChange: BehaviorSubject<Document[]> = new BehaviorSubject<Document[]>([]);
+  get Documents(): Document[] {
+    return this.listDocumentChange.value;
+  }
+
   // Event
-  createAccountEvent: EventEmitter<Account | string> = new EventEmitter(null);
-  readAccountEvent: EventEmitter<Account | string> = new EventEmitter(null);
-  createControlCenterEvent: EventEmitter<ControlCenter | string> = new EventEmitter(null);
-  readControlCenterEvent: EventEmitter<ControlCenter | string> = new EventEmitter(null);
-  createOrderEvent: EventEmitter<Order | string> = new EventEmitter(null);
-  readOrderEvent: EventEmitter<Order | string> = new EventEmitter(null);
+  createAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
+  readAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
+  createControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
+  readControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
+  createOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
+  readOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
+  createDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
+  readDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
 
   // Buffer
   private _isAcntCtgyListLoaded: boolean;
@@ -58,6 +65,7 @@ export class FinanceStorageService {
   private _isAccountListLoaded: boolean;
   private _isConctrolCenterListLoaded: boolean;
   private _isOrderListLoaded: boolean;
+  private _isDocumentListLoaded: boolean;
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -671,4 +679,154 @@ export class FinanceStorageService {
       }, () => {
       });
   }
+
+  /**
+   * Read all documents out
+   */
+  public fetchAllDocuments() {
+    if (!this._isOrderListLoaded) {
+      const apiurl = environment.ApiUrl + '/api/FinanceDocument';
+
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                  .append('Accept', 'application/json')
+                  .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());      
+      this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true
+        })
+        .map((response: HttpResponse<any>) => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllDocuments in FinanceStorageService: ${response}`);
+          }
+
+          const rjs = response.body;
+          let listRst = [];
+
+          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+            for (const si of rjs.contentList) {
+              const rst: Document = new Document();
+              rst.onSetData(si);
+              listRst.push(rst);
+            }
+          }
+
+          return listRst;
+        }).subscribe((x) => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllDocuments in FinanceStorageService: ${x}`);
+          }
+          this._isDocumentListLoaded = true;
+
+          let copiedData = x;
+          this.listDocumentChange.next(copiedData);
+        }, (error) => {
+          if (environment.LoggingLevel >= LogLevel.Error) {
+            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllDocuments in FinanceStorageService: ${error}`);
+          }
+
+          this._isDocumentListLoaded = false;
+        }, () => {
+        });
+    }
+  }
+
+  /**
+   * Create a document
+   * @param objDetail instance of document which to be created
+   */
+  public createDocument(objDetail: Document) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+              .append('Accept', 'application/json')
+              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceDocument';
+
+    const jdata: string = objDetail.writeJSONString();
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of createDocument in FinanceStorageService: ' + response);
+        }
+
+        let hd: Document = new Document();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createDocument in FinanceStorageService: ${x}`);
+        }
+
+        const copiedData = this.Documents.slice();
+        copiedData.push(x);
+        this.listDocumentChange.next(copiedData);
+
+        // Broadcast event
+        this.createDocumentEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.log(`AC_HIH_UI [Error]: Error occurred in createDocument in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createDocumentEvent.emit(error.toString());
+      }, () => {
+      });
+  }
+  
+  /**
+   * Read the document from API
+   * @param docid Id of Document
+   */  
+  public readDocument(docid: number) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+              .append('Accept', 'application/json')
+              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceDocument/' + docid.toString();
+    this._http.get(apiurl, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readDocument in FinanceStorageService: ${response}`);
+        }
+
+        let hd: Document = new Document();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in readDocument in FinanceStorageService: ${x}`);
+        }
+
+        // Todo, update the memory
+        // const copiedData = this.Orders.slice();
+        // copiedData.push(x);
+        // this.listOrderChange.next(copiedData);
+
+        // Broadcast event
+        this.readDocumentEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.log(`AC_HIH_UI [Error]: Error occurred in readDocument in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.readDocumentEvent.emit(error);
+      }, () => {
+      });
+    }
 }

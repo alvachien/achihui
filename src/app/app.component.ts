@@ -105,7 +105,7 @@ export class AppComponent implements OnInit {
   }
 
   public onChosenHomeDetail(): void {
-    this._router.navigate(['/homedetail']);
+    this._router.navigate(['/homedef/display/' + this.curChosenHome.ID.toString()]);
   }
 
   public onLogout(): void {
