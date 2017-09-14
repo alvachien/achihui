@@ -5,7 +5,7 @@ import {
 import { Router, ActivatedRoute } from '@angular/router';
 import { MdDialog } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, UIMode } from '../../model';
+import { LogLevel, Account, UIMode, getUIModeString } from '../../model';
 import { HomeDefDetailService, FinanceStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -45,22 +45,20 @@ export class AccountDetailComponent implements OnInit {
 
         if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.currentMode = 'Common.Create';
           this.detailObject = new Account();
           this.uiMode = UIMode.Create;
           this.detailObject.HID = this._homedefService.ChosedHome.ID;
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.currentMode = 'Common.Edit';
           this.uiMode = UIMode.Change;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
-          this.currentMode = 'Common.Display';
           this.uiMode = UIMode.Display;
         }
-
+        this.currentMode = getUIModeString(this.uiMode);
+        
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
           this._storageService.readAccountEvent.subscribe(x => {
             if (x instanceof Account) {

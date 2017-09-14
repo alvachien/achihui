@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MdDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Order, SettlementRule, UIMode } from '../../model';
+import { LogLevel, Order, SettlementRule, UIMode, getUIModeString } from '../../model';
 import { HomeDefDetailService, FinanceStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -71,22 +71,20 @@ export class OrderDetailComponent implements OnInit {
 
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.currentMode = 'Common.Create';
           this.detailObject = new Order();
           this.uiMode = UIMode.Create;
           this.detailObject.HID = this._homedefService.ChosedHome.ID;
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.currentMode = 'Common.Edit';
           this.uiMode = UIMode.Change;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
-          this.currentMode = 'Common.Display';
           this.uiMode = UIMode.Display;
         }
-
+        this.currentMode = getUIModeString(this.uiMode);
+        
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
           this._storageService.readOrderEvent.subscribe(x2 => {
             if (x2 instanceof Order) {

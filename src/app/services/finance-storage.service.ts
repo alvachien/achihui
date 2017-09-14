@@ -83,18 +83,18 @@ export class FinanceStorageService {
   }
 
   // Account categories
-  public fetchAllAccountCategories() {
-    if (!this._isAcntCtgyListLoaded) {
+  public fetchAllAccountCategories(forceReload?: boolean): Observable<AccountCategory[]> {
+    if (!this._isAcntCtgyListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceAccountCategory';
 
       let headers = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')  
-                       .append('Accept', 'application/json')
-                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
@@ -104,8 +104,8 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAccountCategories in FinanceStorageService: ${response}`);
           }
 
+          let listRst: AccountCategory[] = [];
           const rjs = <any>response;
-          let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -115,41 +115,39 @@ export class FinanceStorageService {
             }
           }
 
-          return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllAccountCategories in FinanceStorageService: ${x}`);
-          }
           this._isAcntCtgyListLoaded = true;
+          this.listAccountCategoryChange.next(listRst);
 
-          let copiedData = x;
-          this.listAccountCategoryChange.next(copiedData);
-        }, (error) => {
+          return listRst;
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllAccountCategories in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccountCategories in FinanceStorageService: ${err}`);
           }
 
           this._isAcntCtgyListLoaded = false;
-        }, () => {
+          this.listAccountCategoryChange.next([]);
+        
+          return Observable.throw(err.json());
         });
     } else {
-      this.listAccountCategoryChange.next(this.listAccountCategoryChange.value);
+      return Observable.of(this.listAccountCategoryChange.value);
     }
   }
 
   // Doc type
-  public fetchAllDocTypes() {
-    if (!this._isAcntCtgyListLoaded) {
+  public fetchAllDocTypes(forceReload?: boolean): Observable<DocumentType[]> {
+    if (!this._isDocTypeListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceDocType';
 
       let headers = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
@@ -159,9 +157,9 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
-          let listRst = [];
+          let listRst: DocumentType[] = [];
 
+          const rjs = <any>response;
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: DocumentType = new DocumentType();
@@ -169,42 +167,39 @@ export class FinanceStorageService {
               listRst.push(rst);
             }
           }
+          this._isDocTypeListLoaded = true;
+          this.listDocTypeChange.next(listRst);
 
           return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllDocTypes in FinanceStorageService: ${x}`);
-          }
-          this._isDocTypeListLoaded = true;
-
-          let copiedData = x;
-          this.listDocTypeChange.next(copiedData);
-        }, (error) => {
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllDocTypes in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocTypes in FinanceStorageService: ${err}`);
           }
-
+          
           this._isDocTypeListLoaded = false;
-        }, () => {
+          this.listDocTypeChange.next([]);
+        
+          return Observable.throw(err.json());
         });
     } else {
-      this.listDocTypeChange.next(this.listDocTypeChange.value);
+      return Observable.of(this.listDocTypeChange.value);
     }
   }
 
   // Tran type
-  public fetchAllTranTypes() {
-    if (!this._isAcntCtgyListLoaded) {
+  public fetchAllTranTypes(forceReload?: boolean): Observable<TranType[]> {
+    if (!this._isTranTypeListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceTranType';
 
       let headers = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
@@ -214,9 +209,9 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
-          let listRst = [];
+          let listRst: TranType[] = [];
 
+          const rjs = <any>response;
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: TranType = new TranType();
@@ -225,41 +220,38 @@ export class FinanceStorageService {
             }
           }
 
-          return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllTranTypes in FinanceStorageService: ${x}`);
-          }
           this._isTranTypeListLoaded = true;
-
-          let copiedData = x;
-          this.listTranTypeChange.next(copiedData);
-        }, (error) => {
+          this.listTranTypeChange.next(listRst);
+          return listRst;
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllTranTypes in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllTranTypes in FinanceStorageService: ${err}`);
           }
-
+          
           this._isTranTypeListLoaded = false;
-        }, () => {
+          this.listTranTypeChange.next([]);
+      
+          return Observable.throw(err.json());
         });
     } else {
-      this.listTranTypeChange.next(this.listTranTypeChange.value);
+      return Observable.of(this.listTranTypeChange.value);
     }
   }
 
   // Account
-  public fetchAllAccounts() {
-    if (!this._isAccountListLoaded) {
+  public fetchAllAccounts(forceReload?: boolean): Observable<Account[]> {
+    if (!this._isAccountListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceAccount';
 
       let headers = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
@@ -269,8 +261,8 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceStorageService: ${response}`);
           }
 
+          let listRst: Account[] = [];
           const rjs = <any>response;
-          let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -280,33 +272,34 @@ export class FinanceStorageService {
             }
           }
 
-          return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllAccounts in FinanceStorageService: ${x}`);
-          }
           this._isAccountListLoaded = true;
-
-          let copiedData = x;
-          this.listAccountChange.next(copiedData);
-        }, (error) => {
+          this.listAccountChange.next(listRst);
+          return listRst;
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllAccounts in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccounts in FinanceStorageService: ${err}`);
           }
-
+          
           this._isAccountListLoaded = false;
-        }, () => {
+          this.listAccountChange.next([]);
+    
+          return Observable.throw(err.json());
         });
     } else {
-      this.listAccountChange.next(this.listAccountChange.value);
+      return Observable.of(this.listAccountChange.value);
     }
   }
 
+  /**
+   * Create an account
+   * @param objAcnt Account to create
+   */
   public createAccount(objAcnt: Account) {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
-              .append('Accept', 'application/json')
-              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceAccount';
 
@@ -337,7 +330,7 @@ export class FinanceStorageService {
         this.createAccountEvent.emit(x);
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in createAccount in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Error occurred in createAccount in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
@@ -346,11 +339,15 @@ export class FinanceStorageService {
       });
   }
 
+  /**
+   * Read an account
+   * @param acntid ID of the account to read
+   */
   public readAccount(acntid: number) {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
-              .append('Accept', 'application/json')
-              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceAccount/' + acntid.toString();
     this._http.get(apiurl, {
@@ -371,6 +368,7 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readAccount in FinanceStorageService: ${x}`);
         }
 
+        // Todo, update the list buffer?
         // const copiedData = this.Accounts.slice();
         // copiedData.push(x);
         // this.listAccountChange.next(copiedData);
@@ -391,18 +389,18 @@ export class FinanceStorageService {
   /**
    * Read all control centers
    */
-  public fetchAllControlCenters() {
-    if (!this._isConctrolCenterListLoaded) {
+  public fetchAllControlCenters(forceReload?: boolean): Observable<ControlCenter[]> {
+    if (!this._isConctrolCenterListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceControlCenter';
 
       let headers = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
-                  .append('Accept', 'application/json')
-                  .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.set('hid', this._homeService.ChosedHome.ID.toString());
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
@@ -412,8 +410,9 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceStorageService: ${response}`);
           }
 
+          let listRst: ControlCenter[] = [];
+
           const rjs = <any>response;
-          let listRst = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -423,28 +422,25 @@ export class FinanceStorageService {
             }
           }
 
-          return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllControlCenters in FinanceStorageService: ${x}`);
-          }
           this._isConctrolCenterListLoaded = true;
-
-          let copiedData = x;
-          this.listControlCenterChange.next(copiedData);
-        }, (error) => {
+          this.listControlCenterChange.next(listRst);
+          return listRst;
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllControlCenters in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService: ${err}`);
           }
-
+          
           this._isConctrolCenterListLoaded = false;
-        }, () => {
+          this.listControlCenterChange.next([]);
+  
+          return Observable.throw(err.json());
         });
     } else {
-      this.listControlCenterChange.next(this.listControlCenterChange.value);
+      return Observable.of(this.listControlCenterChange.value);
     }
   }
-  
+
   /**
    * Create a control center
    * @param objDetail Instance of control center to create
@@ -452,8 +448,8 @@ export class FinanceStorageService {
   public createControlCenter(objDetail: ControlCenter) {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
-              .append('Accept', 'application/json')
-              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceControlCenter';
 
@@ -484,7 +480,7 @@ export class FinanceStorageService {
         this.createControlCenterEvent.emit(x);
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in createControlCenter in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Error occurred in createControlCenter in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
@@ -500,14 +496,14 @@ export class FinanceStorageService {
   public readControlCenter(ccid: number) {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
-              .append('Accept', 'application/json')
-              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceControlCenter/' + ccid.toString();
     this._http.get(apiurl, {
-        headers: headers,
-        withCredentials: true
-      })
+      headers: headers,
+      withCredentials: true
+    })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering readControlCenter in FinanceStorageService: ${response}`);
@@ -543,18 +539,18 @@ export class FinanceStorageService {
   /**
    * Read all orders out
    */
-  public fetchAllOrders() {
-    if (!this._isOrderListLoaded) {
+  public fetchAllOrders(forceReload?: boolean): Observable<Order[]> {
+    if (!this._isOrderListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceOrder';
 
       let headers = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
-                  .append('Accept', 'application/json')
-                  .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());      
-      this._http.get(apiurl, {
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
@@ -564,9 +560,9 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceStorageService: ${response}`);
           }
 
-          const rjs = response.body;
-          let listRst = [];
+          let listRst: Order[] = [];
 
+          const rjs = response.body;
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: Order = new Order();
@@ -574,26 +570,23 @@ export class FinanceStorageService {
               listRst.push(rst);
             }
           }
-
-          return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllOrders in FinanceStorageService: ${x}`);
-          }
           this._isOrderListLoaded = true;
-
-          let copiedData = x;
-          this.listOrderChange.next(copiedData);
-        }, (error) => {
+          this.listOrderChange.next(listRst);
+          
+          return listRst;
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllOrders in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllOrders in FinanceStorageService: ${err}`);
           }
-
+          
           this._isOrderListLoaded = false;
-        }, () => {
+          this.listOrderChange.next([]);
+  
+          return Observable.throw(err.json());
         });
     } else {
-      this.listOrderChange.next(this.listOrderChange.value);
+      return Observable.of(this.listOrderChange.value);
     }
   }
 
@@ -604,8 +597,8 @@ export class FinanceStorageService {
   public createOrder(objDetail: Order) {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
-              .append('Accept', 'application/json')
-              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceOrder';
 
@@ -648,18 +641,18 @@ export class FinanceStorageService {
   /**
    * Read the order from API
    * @param ordid Id of Order
-   */  
+   */
   public readOrder(ordid: number) {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
-              .append('Accept', 'application/json')
-              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceOrder/' + ordid.toString();
     this._http.get(apiurl, {
-        headers: headers,
-        withCredentials: true
-      })
+      headers: headers,
+      withCredentials: true
+    })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering readOrder in FinanceStorageService: ${response}`);
@@ -695,18 +688,18 @@ export class FinanceStorageService {
   /**
    * Read all documents out
    */
-  public fetchAllDocuments() {
-    if (!this._isOrderListLoaded) {
+  public fetchAllDocuments(forceReload?: boolean): Observable<Document[]> {
+    if (!this._isDocumentListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceDocument';
 
       let headers = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
-                  .append('Accept', 'application/json')
-                  .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());      
-      this._http.get(apiurl, {
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
@@ -716,9 +709,8 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllDocuments in FinanceStorageService: ${response}`);
           }
 
+          let listRst:Document[] = [];
           const rjs = response.body;
-          let listRst = [];
-
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: Document = new Document();
@@ -727,25 +719,22 @@ export class FinanceStorageService {
             }
           }
 
-          return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllDocuments in FinanceStorageService: ${x}`);
-          }
           this._isDocumentListLoaded = true;
-
-          let copiedData = x;
-          this.listDocumentChange.next(copiedData);
-        }, (error) => {
+          this.listDocumentChange.next(listRst);
+          return listRst;              
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllDocuments in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocuments in FinanceStorageService: ${err}`);
           }
-
+          
           this._isDocumentListLoaded = false;
-        }, () => {
+          this.listDocumentChange.next([]);
+
+          return Observable.throw(err.json());
         });
     } else {
-      this.listDocumentChange.next(this.listDocumentChange.value);
+      return Observable.of(this.listDocumentChange.value);
     }
   }
 
@@ -756,16 +745,16 @@ export class FinanceStorageService {
   public createDocument(objDetail: Document) {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
-              .append('Accept', 'application/json')
-              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceDocument';
 
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
-        headers: headers,
-        withCredentials: true
-      })
+      headers: headers,
+      withCredentials: true
+    })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log('AC_HIH_UI [Debug]: Entering Map of createDocument in FinanceStorageService: ' + response);
@@ -796,22 +785,22 @@ export class FinanceStorageService {
       }, () => {
       });
   }
-  
+
   /**
    * Read the document from API
    * @param docid Id of Document
-   */  
+   */
   public readDocument(docid: number) {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
-              .append('Accept', 'application/json')
-              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceDocument/' + docid.toString();
     this._http.get(apiurl, {
-        headers: headers,
-        withCredentials: true
-      })
+      headers: headers,
+      withCredentials: true
+    })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering readDocument in FinanceStorageService: ${response}`);
@@ -842,5 +831,5 @@ export class FinanceStorageService {
         this.readDocumentEvent.emit(error);
       }, () => {
       });
-    }
+  }
 }

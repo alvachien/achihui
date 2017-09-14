@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MdDialog } from '@angular/material';
 import { environment } from '../../environments/environment';
-import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, UIMode } from '../model';
+import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, UIMode, getUIModeString } from '../model';
 import { AuthService, HomeDefDetailService, FinCurrencyService } from '../services';
 
 @Component({
@@ -45,21 +45,19 @@ export class HomeDefDetailComponent implements OnInit {
 
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.currentMode = 'Common.Create';
           this.detailObject = new HomeDef();
           this.uiMode = UIMode.Create;
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
-          this.currentMode = 'Common.Edit';
           this.uiMode = UIMode.Change;
         } else if (x[0].path === 'display') {
           this.routerID = +x[1].path;
 
-          this.currentMode = 'Common.Display';
           this.uiMode = UIMode.Display;
         }
-
+        this.currentMode = getUIModeString(this.uiMode);
+        
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
           this._homedefService.readHomeDefEvent.subscribe(x => {
             if (x !== null) {

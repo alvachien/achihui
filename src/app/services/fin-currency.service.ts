@@ -28,8 +28,8 @@ export class FinCurrencyService {
     this._islistLoaded = false; // Performance improvement
   }
 
-  public fetchAllCurrencies() {
-    if (!this._islistLoaded) {
+  public fetchAllCurrencies(forceReload?: boolean): Observable<Currency[]> {
+    if (!this._islistLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceCurrency';
 
       let headers = new HttpHeaders();
@@ -37,7 +37,7 @@ export class FinCurrencyService {
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
           withCredentials: true
         })
@@ -46,11 +46,9 @@ export class FinCurrencyService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinCurrencyService: ${response}`);
           }
 
-          this._islistLoaded = true;
-
+          let listRst: Currency[] = [];
           const rjs = <any>response;
-          let listRst = [];
-
+          
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: Currency = new Currency();
@@ -59,21 +57,22 @@ export class FinCurrencyService {
             }
           }
 
+          this._islistLoaded = true;
+          this.listDataChange.next(listRst);
           return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllCurrencies in FinCurrencyService: ${x}`);
-          }
-          let copiedData = x;
-          this.listDataChange.next(copiedData);
-        }, (error) => {
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllCurrencies in FinCurrencyService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinCurrencyService: ${err}`);
           }
-
+          
           this._islistLoaded = false;
-        }, () => {
+          this.listDataChange.next([]);
+
+          return Observable.throw(err.json());
         });
+    } else {
+      return Observable.of(this.listDataChange.value);
     }
   }
 }

@@ -8,7 +8,7 @@ import { MdDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode } from '../../model';
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -72,71 +72,60 @@ export class DocumentDetailComponent implements OnInit {
     }
 
     Observable.forkJoin([
-      this._storageService.listDocTypeChange,
-      this._storageService.listControlCenterChange,
-      this._storageService.listAccountChange,
-      this._storageService.listOrderChange,
-      this._storageService.listTranTypeChange,
-      this._currService.listDataChange
-    ]).subscribe(() => {
-      // Distinguish current mode
-      this._activateRoute.url.subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${x}`);
+      this._storageService.fetchAllAccountCategories(),
+      this._storageService.fetchAllDocTypes(),
+      this._storageService.fetchAllTranTypes(),
+      this._storageService.fetchAllAccounts(),
+      this._storageService.fetchAllControlCenters(),
+      //this._storageService.fetchAllOrders(),
+      this._currService.fetchAllCurrencies(),
+      this._activateRoute.url
+    ]).subscribe((x : any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${x}`);
+      }
+
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.detailObject = new Document();
+          this.uiMode = UIMode.Create;
+          this.detailObject.HID = this._homedefService.ChosedHome.ID;
+        } else if (x[0].path === 'edit') {
+          this.routerID = +x[1].path;
+
+          this.uiMode = UIMode.Change;
+        } else if (x[0].path === 'display') {
+          this.routerID = +x[1].path;
+
+          this.uiMode = UIMode.Display;
         }
-
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.currentMode = 'Common.Create';
-            this.detailObject = new Document();
-            this.uiMode = UIMode.Create;
-            this.detailObject.HID = this._homedefService.ChosedHome.ID;
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
-
-            this.currentMode = 'Common.Edit';
-            this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
-
-            this.currentMode = 'Common.Display';
-            this.uiMode = UIMode.Display;
-          }
-
-          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readOrderEvent.subscribe(x2 => {
-              if (x2 instanceof Document) {
-                if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readOrder : ${x2}`);
-                }
-
-                this.detailObject = x2;
-              } else {
-                if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readOrder : ${x2}`);
-                }
-
-                this.detailObject = new Document();
+        this.currentMode = getUIModeString(this.uiMode);
+        
+        if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+          this._storageService.readDocumentEvent.subscribe(x2 => {
+            if (x2 instanceof Document) {
+              if (environment.LoggingLevel >= LogLevel.Debug) {
+                console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
               }
-            });
 
-            this._storageService.readAccount(this.routerID);
-          }
+              this.detailObject = x2;
+            } else {
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
+              }
+
+              this.detailObject = new Document();
+            }
+          });
+
+          this._storageService.readAccount(this.routerID);
         }
-      }, (error) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Entering ngOnInit in DocumentDetailComponent with activateRoute URL : ${error}`);
-        }
-      }, () => {
-      });
+      }
+    }, error => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
+      }
     });
-
-    this._storageService.fetchAllDocTypes();
-    this._currService.fetchAllCurrencies();
-    this._storageService.fetchAllControlCenters();
-    this._storageService.fetchAllAccounts();
-    this._storageService.fetchAllTranTypes();
-    this._storageService.fetchAllOrders();
   }
 
   public setStep(index: number) {
@@ -156,8 +145,10 @@ export class DocumentDetailComponent implements OnInit {
   }
 
   public onCreateDocItem() {
-    this.itemUIMode = UIMode.Create;
-    this.curItemObject = new DocumentItem();
+    if (this.itemUIMode !== UIMode.Create) {
+      this.curItemObject = new DocumentItem();
+      this.itemUIMode = UIMode.Create;
+    }
   }
 
   public onDisplayDocItem(di) {
@@ -169,6 +160,14 @@ export class DocumentDetailComponent implements OnInit {
   }
 
   public onDeleteDocItem(di) {
+
+  }
+
+  public onItemSubmit() {
+
+  }
+
+  public onItemCancel() {
 
   }
 

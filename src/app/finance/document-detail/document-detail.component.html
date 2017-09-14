@@ -8,10 +8,10 @@
       <md-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
         <md-expansion-panel-header>
           <md-panel-title>
-            {{'Common.GenericInfo' | translate}}
+            {{'Finance.Header' | translate}}
           </md-panel-title>
           <md-panel-description>
-            {{'Common.GenericInfo' | translate}}
+            {{'Finance.Header' | translate}}
             <md-icon>account_circle</md-icon>
           </md-panel-description>
         </md-expansion-panel-header>
@@ -111,7 +111,7 @@
             <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
           </md-table>
 
-          <div *ngIf="IsItemDetailView">
+          <div *ngIf="IsItemDetailView"  style="margin: 10px;">
             <!-- Account -->
             <md-select class="demo-full-width" placeholder="{{'Finance.Account' | translate}}" 
               [disabled]="!isItemFieldChangable" [(ngModel)]="curItemObject.AccountId" name="itacnt">
@@ -155,6 +155,11 @@
               <input mdInput type="text" placeholder="{{'Common.Description' |translate}}" 
                 [disabled]="!isItemFieldChangable" [(ngModel)]="curItemObject.Desp" name="itamt">
             </md-form-field>
+
+            <md-action-row>
+              <button md-button color="warn" (click)="onItemSubmit()">{{'Common.Submit' | translate}}</button>
+              <button md-button color="primary" (click)="onItemCancel()">{{'Common.Cancel' | translate}}</button>
+            </md-action-row>
           </div>
         </div>
   
