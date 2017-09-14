@@ -39,7 +39,7 @@ export class LanguageDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-language',
+  selector: 'hih-language',
   templateUrl: './language.component.html',
   styleUrls: ['./language.component.scss'],
 })

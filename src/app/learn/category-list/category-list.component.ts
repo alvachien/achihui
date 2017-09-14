@@ -37,7 +37,7 @@ export class LearnCategoryDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-category-list',
+  selector: 'hih-learn-category-list',
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.scss'],
 })
@@ -51,6 +51,8 @@ export class CategoryListComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource = new LearnCategoryDataSource(this._storageService, this.paginator);
-    this._storageService.fetchAllCategories();
+    this._storageService.fetchAllCategories().subscribe(x =>{
+      // Just ensure the request has been fired
+    });
   }
 }

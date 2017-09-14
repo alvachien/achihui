@@ -38,7 +38,7 @@ export class AccountCategoryDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-account-category-list',
+  selector: 'hih-finance-account-category-list',
   templateUrl: './account-category-list.component.html',
   styleUrls: ['./account-category-list.component.scss'],
   animations: [fadeAnimation],
@@ -54,7 +54,8 @@ export class AccountCategoryListComponent implements OnInit {
   ngOnInit() {
     this.dataSource = new AccountCategoryDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllAccountCategories();
+    this._storageService.fetchAllAccountCategories().subscribe(x => {
+      // Just ensure the REQUEST has been sent
+    });
   }
-
 }

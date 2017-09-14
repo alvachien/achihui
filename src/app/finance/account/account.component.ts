@@ -2,7 +2,7 @@ import { Component, OnInit, HostBinding } from '@angular/core';
 import { fadeAnimation } from '../../utility';
 
 @Component({
-  selector: 'app-account',
+  selector: 'hih-finance-account',
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss'],
   animations: [fadeAnimation],

@@ -15,7 +15,7 @@ export interface MessageDialogInfo {
 }
 
 @Component({
-  selector: 'app-message-dialog',
+  selector: 'hih-message-dialog',
   templateUrl: './message-dialog.component.html',
   styleUrls: ['./message-dialog.component.scss']
 })

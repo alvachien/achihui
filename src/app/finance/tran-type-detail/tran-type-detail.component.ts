@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-tran-type-detail',
+  selector: 'hih-finance-tran-type-detail',
   templateUrl: './tran-type-detail.component.html',
   styleUrls: ['./tran-type-detail.component.scss'],
 })

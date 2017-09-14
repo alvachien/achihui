@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-home-def',
+  selector: 'hih-home-def',
   templateUrl: './home-def.component.html',
   styleUrls: ['./home-def.component.scss']
 })

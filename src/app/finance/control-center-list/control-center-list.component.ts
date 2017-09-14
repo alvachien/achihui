@@ -38,7 +38,7 @@ export class ControlCenterDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-control-center-list',
+  selector: 'hih-finance-control-center-list',
   templateUrl: './control-center-list.component.html',
   styleUrls: ['./control-center-list.component.scss'],
   animations: [fadeAnimation],
@@ -58,8 +58,9 @@ export class ControlCenterListComponent implements OnInit {
     }
 
     this.dataSource = new ControlCenterDataSource(this._storageService, this.paginator);
-
-    this._storageService.fetchAllControlCenters();
+    this._storageService.fetchAllControlCenters().subscribe(x =>{
+      // Just ensure the REQUEST has been sent
+    });
   }
 
   public onCreateCC() {

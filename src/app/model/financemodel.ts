@@ -672,6 +672,7 @@ export class Order extends hih.BaseModel {
     public writeJSONObject(): any {
         let rstObj = super.writeJSONObject();
         rstObj.id = this.Id;
+        rstObj.hid = this.HID;
         rstObj.name = this.Name;
         rstObj.validFrom = this._validFrom.format(hih.MomentDateFormat);
         rstObj.validTo = this._validTo.format(hih.MomentDateFormat);
@@ -692,6 +693,9 @@ export class Order extends hih.BaseModel {
 
         if (data && data.id) {
             this.Id = +data.id;
+        }
+        if (data && data.hid) {
+            this.HID = +data.id;
         }
         if (data && data.name && data.name.length > 0) {
             this.Name = data.name;
@@ -1021,7 +1025,8 @@ export class Document extends hih.BaseModel {
 
     public writeJSONObject(): any {
         let rstObj = super.writeJSONObject();
-        rstObj.iD = this.Id;
+        rstObj.id = this.Id;
+        rstObj.hid = this.HID;
         rstObj.docType = this.DocType;
         rstObj.tranDate = this._tranDate.format(hih.MomentDateFormat);
         rstObj.tranCurr = this.TranCurr;
@@ -1039,11 +1044,11 @@ export class Document extends hih.BaseModel {
     public onSetData(data: any) {
         super.onSetData(data);
 
-        if (data && data.hid) {
-            this.HID = +data.hid;
-        }
         if (data && data.id) {
             this.Id = +data.id;
+        }
+        if (data && data.hid) {
+            this.HID = +data.hid;
         }
         if (data && data.docType) {
             this.DocType = +data.docType;

@@ -5,19 +5,19 @@
 </md-dialog-content>
 <md-dialog-actions>
   <div *ngIf="IsOnlyOKButton">
-    <button md-button [md-dialog-close]="true" tabindex="1">{{'Home.OKButton' | translate}}</button>
+    <button md-button [md-dialog-close]="true" tabindex="1">{{'Common.OK' | translate}}</button>
   </div>
   <div *ngIf="IsYesNoButton">
-    <button md-button [md-dialog-close]="true" tabindex="1">{{'Home.YesButton' | translate}}</button>
-    <button md-button [md-dialog-close]="false" tabindex="2">{{'Home.NoButton' | translate}}</button>
+    <button md-button [md-dialog-close]="true" tabindex="1">{{'Common.Yes' | translate}}</button>
+    <button md-button [md-dialog-close]="false" tabindex="2">{{'Common.No' | translate}}</button>
   </div>
   <div *ngIf="IsOKCancelButton">
-    <button md-button [md-dialog-close]="true" tabindex="1">{{'Home.OKButton' | translate}}</button>
-    <button md-button [md-dialog-close]="false" tabindex="2">{{'Home.CancelButton' | translate}}</button>
+    <button md-button [md-dialog-close]="true" tabindex="1">{{'Common.OK' | translate}}</button>
+    <button md-button [md-dialog-close]="false" tabindex="2">{{'Common.Cancel' | translate}}</button>
   </div>
   <div *ngIf="IsYesNoCancelButton">
-    <button md-button [md-dialog-close]="true" tabindex="1">{{'Home.YesButton' | translate}}</button>
-    <button md-button [md-dialog-close]="false" tabindex="2">{{'Home.NoButton' | translate}}</button>
-    <button md-button tabindex="3">{{'Home.CancelButton' | translate}}</button>
+    <button md-button [md-dialog-close]="true" tabindex="1">{{'Common.Yes' | translate}}</button>
+    <button md-button [md-dialog-close]="false" tabindex="2">{{'Common.No' | translate}}</button>
+    <button md-button tabindex="3">{{'Common.Cancel' | translate}}</button>
   </div>
 </md-dialog-actions>

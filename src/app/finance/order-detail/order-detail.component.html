@@ -45,17 +45,16 @@
       <md-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
         <md-expansion-panel-header>
           <md-panel-title>
-            {{'Common.ExtraInfo' | translate}}
+            {{'Finance.SettlementRule' | translate}}
           </md-panel-title>
           <md-panel-description>
-            {{'Common.ExtraInfo' | translate}}
+            {{'Finance.SettlementRule' | translate}}
             <md-icon>map</md-icon>
           </md-panel-description>
         </md-expansion-panel-header>
 
         <md-toolbar>
-          <span class="example-spacer"></span>
-          <button md-icon-button color="primary" (click)="onCreateRule()"><md-icon md-icon-button color="primary" class="example-icon">add</md-icon></button>
+          <button md-icon-button color="primary" (click)="onCreateRule()"><md-icon md-icon-button color="primary">add</md-icon></button>
         </md-toolbar>
         <div class="table-container mat-elevation-z8">
           <md-table #table [dataSource]="dataSource">
@@ -63,8 +62,6 @@
             <ng-container mdColumnDef="rid">
               <md-header-cell *mdHeaderCellDef>#</md-header-cell>
               <md-cell *mdCellDef="let row">
-                  <button md-icon-button color="primary" (click)="onDisplayRule(row)"><md-icon class="example-icon">search</md-icon></button>
-                  <button md-icon-button color="primary" (click)="onChangeRule(row)"><md-icon class="example-icon">edit</md-icon></button>
                   <button md-icon-button color="primary" (click)="onDeleteRule(row)"><md-icon class="example-icon">delete</md-icon></button>
                   <span class="example-spacer"></span>
                   {{ row.RuleId }}
@@ -73,20 +70,36 @@
     
             <!-- CC Column -->
             <ng-container mdColumnDef="ccid">
-              <md-header-cell *mdHeaderCellDef>{{'Common.Name' | translate}}</md-header-cell>
-              <md-cell *mdCellDef="let row"> {{row.ControlCenterId}} </md-cell>
+              <md-header-cell *mdHeaderCellDef>{{'Finance.ControlCenter' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                <md-select [disabled]="!isFieldChangable" [(ngModel)]="row.ControlCenterId" name="ittt">
+                  <md-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+                    {{tt.Name}}
+                  </md-option>
+               </md-select>
+              </md-cell>
             </ng-container>
 
-            <!-- Comment Column -->
+            <!-- Present Column -->
             <ng-container mdColumnDef="precent">
-              <md-header-cell *mdHeaderCellDef>Precent</md-header-cell>
-              <md-cell *mdCellDef="let row"> {{row.Precent}} % </md-cell>
+              <md-header-cell *mdHeaderCellDef>{{'Common.Precent' |translate}} (%)</md-header-cell>
+              <md-cell *mdCellDef="let row"> 
+                <md-form-field class="demo-full-width">
+                  <input mdInput type="number" required placeholder="{{'Common.Precent' |translate}} (%)"
+                    [disabled]="!isFieldChangable" [(ngModel)]="row.Precent" name="rulepr">
+                </md-form-field>                 
+              </md-cell>
             </ng-container>
             
             <!-- Comment Column -->
             <ng-container mdColumnDef="comment">
               <md-header-cell *mdHeaderCellDef> {{'Common.Comment' | translate}} </md-header-cell>
-              <md-cell *mdCellDef="let row"> {{row.Comment}} </md-cell>
+              <md-cell *mdCellDef="let row">
+                <md-form-field class="demo-full-width">
+                  <input mdInput type="text" placeholder="{{'Common.Comment' | translate}}"
+                    [disabled]="!isFieldChangable" [(ngModel)]="row.Comment" name="rulecmt">
+                </md-form-field>                   
+              </md-cell>
             </ng-container>
     
             <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MD_DATE_FORMATS, DateAdapter } from '@angular/material';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,9 +23,10 @@ import { HistoryDetailComponent } from './history-detail';
 @NgModule({
   imports: [
     CommonModule,
-    LearnRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
+    LearnRoutingModule,
     UIDependModule,
     TranslateModule.forChild(),
   ],

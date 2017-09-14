@@ -46,8 +46,8 @@ export class LearnStorageService {
   }
 
   // Categories
-  public fetchAllCategories() {
-    if (!this._isCtgyListLoaded) {
+  public fetchAllCategories(forceReload?: boolean): Observable<LearnCategory[]> {
+    if (!this._isCtgyListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/learncategory';
 
       let headers = new HttpHeaders();
@@ -57,7 +57,7 @@ export class LearnStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
@@ -68,7 +68,7 @@ export class LearnStorageService {
           }
 
           const rjs = <any>response;
-          let listRst = [];
+          let listRst: LearnCategory[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -78,29 +78,28 @@ export class LearnStorageService {
             }
           }
 
-          return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllCategories in LearnStorageService: ${x}`);
-          }
           this._isCtgyListLoaded = true;
-
-          let copiedData = x;
-          this.listCategoryChange.next(copiedData);
-        }, (error) => {
+          this.listCategoryChange.next(listRst);
+          return listRst;
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllCategories in LearnStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllCategories in FinanceStorageService: ${err}`);
           }
-
+          
           this._isCtgyListLoaded = false;
-        }, () => {
+          this.listCategoryChange.next([]);
+      
+          return Observable.throw(err);
         });
+    } else {
+      return Observable.of(this.listCategoryChange.value);
     }
   }
 
   // Object
-  public fetchAllObjects() {
-    if (!this._isCtgyListLoaded) {
+  public fetchAllObjects(forceReload?: boolean): Observable<LearnObject[]> {
+    if (!this._isCtgyListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/learnobject';
 
       let headers = new HttpHeaders();
@@ -110,7 +109,7 @@ export class LearnStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
@@ -121,7 +120,7 @@ export class LearnStorageService {
           }
 
           const rjs = <any>response;
-          let listRst = [];
+          let listRst: LearnObject[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -131,29 +130,28 @@ export class LearnStorageService {
             }
           }
 
-          return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllObjects in LearnStorageService: ${x}`);
-          }
           this._isObjListLoaded = true;
-
-          let copiedData = x;
-          this.listObjectChange.next(copiedData);
-        }, (error) => {
+          this.listObjectChange.next(listRst);
+          return listRst;
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllObjects in LearnStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in FinanceStorageService: ${err}`);
           }
-
-          this._isObjListLoaded = false;
-        }, () => {
+          
+          this._isObjListLoaded = true;
+          this.listObjectChange.next([]);
+      
+          return Observable.throw(err);
         });
+    } else {
+      return Observable.of(this.listObjectChange.value);
     }
   }
 
   // History
-  public fetchAllHistories() {
-    if (!this._isCtgyListLoaded) {
+  public fetchAllHistories(forceReload?: boolean): Observable<LearnHistory[]> {
+    if (!this._isCtgyListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/learnhistory';
 
       let headers = new HttpHeaders();
@@ -163,7 +161,7 @@ export class LearnStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
@@ -184,23 +182,22 @@ export class LearnStorageService {
             }
           }
 
+          this._isHistListLoaded = true;          
+          this.listHistoryChange.next(listRst);
           return listRst;
-        }).subscribe((x) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllHistories in LearnStorageService: ${x}`);
-          }
-          this._isHistListLoaded = true;
-
-          let copiedData = x;
-          this.listHistoryChange.next(copiedData);
-        }, (error) => {
+        })
+        .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllHistories in LearnStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllHistories in FinanceStorageService: ${err}`);
           }
-
-          this._isHistListLoaded = false;
-        }, () => {
+          
+          this._isHistListLoaded = true;          
+          this.listHistoryChange.next([]);
+      
+          return Observable.throw(err);
         });
+    } else {
+      return Observable.of(this.listHistoryChange.value);
     }
   }
 }

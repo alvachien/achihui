@@ -22,14 +22,20 @@ export class DocumentItemDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<DocumentItem[]> {
-    return Observable.of(this._parentComponent.detailObject.Items);
+    const displayDataChanges = [
+      this._parentComponent.itemOperEvent,
+    ];
+
+    return Observable.merge(...displayDataChanges).map(() => {
+      return this._parentComponent.detailObject.Items;
+    });
   }
 
   disconnect() { }
 }
 
 @Component({
-  selector: 'app-document-detail',
+  selector: 'hih-finance-document-detail',
   templateUrl: './document-detail.component.html',
   styleUrls: ['./document-detail.component.scss'],
 })
@@ -37,22 +43,15 @@ export class DocumentDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
   public detailObject: Document | null = null;
-  public curItemObject: DocumentItem | null = null;
   public uiMode: UIMode = UIMode.Create;
-  public itemUIMode: UIMode = UIMode.Invalid;
   public step: number = 0;
 
-  displayedColumns = ['ItemId', 'AccountID', 'TranType', 'Amount', 'Desp'];
+  displayedColumns = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp'];
   dataSource: DocumentItemDataSource | null;
+  itemOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
 
-  get IsItemDetailView(): boolean {
-    return this.itemUIMode === UIMode.Create || this.itemUIMode === UIMode.Change;
-  }
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
-  }
-  get isItemFieldChangable(): boolean {
-    return this.itemUIMode === UIMode.Create || this.itemUIMode === UIMode.Change;
   }
 
   constructor(private _dialog: MdDialog,
@@ -62,7 +61,6 @@ export class DocumentDetailComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     this.detailObject = new Document();
-    this.curItemObject = new DocumentItem();
     this.dataSource = new DocumentItemDataSource(this);
   }
 
@@ -77,50 +75,53 @@ export class DocumentDetailComponent implements OnInit {
       this._storageService.fetchAllTranTypes(),
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllControlCenters(),
-      //this._storageService.fetchAllOrders(),
+      this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-      this._activateRoute.url
-    ]).subscribe((x : any) => {
+    ]).subscribe((rst) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.detailObject = new Document();
-          this.uiMode = UIMode.Create;
-          this.detailObject.HID = this._homedefService.ChosedHome.ID;
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
-
-          this.uiMode = UIMode.Change;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
-
-          this.uiMode = UIMode.Display;
-        }
-        this.currentMode = getUIModeString(this.uiMode);
-        
-        if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readDocumentEvent.subscribe(x2 => {
-            if (x2 instanceof Document) {
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
+      this._activateRoute.url.subscribe(x => {
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.detailObject = new Document();
+            this.uiMode = UIMode.Create;
+            this.detailObject.HID = this._homedefService.ChosedHome.ID;
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
+  
+            this.uiMode = UIMode.Change;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
+  
+            this.uiMode = UIMode.Display;
+          }
+          this.currentMode = getUIModeString(this.uiMode);
+          
+          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+            this._storageService.readDocumentEvent.subscribe(x2 => {
+              if (x2 instanceof Document) {
+                if (environment.LoggingLevel >= LogLevel.Debug) {
+                  console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
+                }
+  
+                this.detailObject = x2;
+              } else {
+                if (environment.LoggingLevel >= LogLevel.Error) {
+                  console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
+                }
+  
+                this.detailObject = new Document();
               }
-
-              this.detailObject = x2;
-            } else {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
-              }
-
-              this.detailObject = new Document();
-            }
-          });
-
-          this._storageService.readAccount(this.routerID);
+            });
+  
+            this._storageService.readAccount(this.routerID);
+          }
+        } else {
+          this.uiMode = UIMode.Invalid;
         }
-      }
+      });
     }, error => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
@@ -145,29 +146,11 @@ export class DocumentDetailComponent implements OnInit {
   }
 
   public onCreateDocItem() {
-    if (this.itemUIMode !== UIMode.Create) {
-      this.curItemObject = new DocumentItem();
-      this.itemUIMode = UIMode.Create;
-    }
-  }
-
-  public onDisplayDocItem(di) {
-
-  }
-
-  public onChangeDocItem(di) {
-
+    this.detailObject.Items.push(new DocumentItem());
+    this.itemOperEvent.emit();
   }
 
   public onDeleteDocItem(di) {
-
-  }
-
-  public onItemSubmit() {
-
-  }
-
-  public onItemCancel() {
 
   }
 

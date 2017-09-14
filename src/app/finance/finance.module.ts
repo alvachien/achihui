@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MD_DATE_FORMATS, DateAdapter } from '@angular/material';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -37,6 +38,7 @@ import { ReportComponent } from './report';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     FinanceRoutingModule,
     UIDependModule,
     TranslateModule.forChild(),

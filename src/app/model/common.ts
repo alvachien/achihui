@@ -164,7 +164,7 @@ export class BaseModel {
         return JSON && JSON.stringify(this);
     }
 
-    public onSetData(data: any) : void {
+    public onSetData(data: any) : void {        
         if (data && data.createdBy) {
             this.CreatedBy = data.createdBy;
         }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-object',
+  selector: 'hih-learn-object',
   templateUrl: './object.component.html',
   styleUrls: ['./object.component.scss'],
 })

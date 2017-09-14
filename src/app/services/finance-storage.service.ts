@@ -80,6 +80,7 @@ export class FinanceStorageService {
     this._isAccountListLoaded = false;
     this._isConctrolCenterListLoaded = false;
     this._isOrderListLoaded = false;
+    this._isDocumentListLoaded = false;
   }
 
   // Account categories
@@ -128,7 +129,7 @@ export class FinanceStorageService {
           this._isAcntCtgyListLoaded = false;
           this.listAccountCategoryChange.next([]);
         
-          return Observable.throw(err.json());
+          return Observable.throw(err);
         });
     } else {
       return Observable.of(this.listAccountCategoryChange.value);
@@ -180,7 +181,7 @@ export class FinanceStorageService {
           this._isDocTypeListLoaded = false;
           this.listDocTypeChange.next([]);
         
-          return Observable.throw(err.json());
+          return Observable.throw(err);
         });
     } else {
       return Observable.of(this.listDocTypeChange.value);
@@ -232,7 +233,7 @@ export class FinanceStorageService {
           this._isTranTypeListLoaded = false;
           this.listTranTypeChange.next([]);
       
-          return Observable.throw(err.json());
+          return Observable.throw(err);
         });
     } else {
       return Observable.of(this.listTranTypeChange.value);
@@ -284,7 +285,7 @@ export class FinanceStorageService {
           this._isAccountListLoaded = false;
           this.listAccountChange.next([]);
     
-          return Observable.throw(err.json());
+          return Observable.throw(err);
         });
     } else {
       return Observable.of(this.listAccountChange.value);
@@ -389,22 +390,24 @@ export class FinanceStorageService {
   /**
    * Read all control centers
    */
-  public fetchAllControlCenters(forceReload?: boolean): Observable<ControlCenter[]> {
+  public fetchAllControlCenters(forceReload?: boolean): Observable<any> {
     if (!this._isConctrolCenterListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceControlCenter';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
+      
       let params: HttpParams = new HttpParams();
-      params = params.set('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+
+      return this._http.get<any>(apiurl, {
           headers: headers,
           params: params,
           withCredentials: true
         })
+        //.retry(3)
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceStorageService: ${response}`);
@@ -434,7 +437,7 @@ export class FinanceStorageService {
           this._isConctrolCenterListLoaded = false;
           this.listControlCenterChange.next([]);
   
-          return Observable.throw(err.json());
+          return Observable.throw(err);
         });
     } else {
       return Observable.of(this.listControlCenterChange.value);
@@ -562,7 +565,7 @@ export class FinanceStorageService {
 
           let listRst: Order[] = [];
 
-          const rjs = response.body;
+          const rjs = <any>response;
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: Order = new Order();
@@ -583,7 +586,7 @@ export class FinanceStorageService {
           this._isOrderListLoaded = false;
           this.listOrderChange.next([]);
   
-          return Observable.throw(err.json());
+          return Observable.throw(err);
         });
     } else {
       return Observable.of(this.listOrderChange.value);
@@ -629,7 +632,7 @@ export class FinanceStorageService {
         this.createOrderEvent.emit(x);
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in createOrder in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Error occurred in createOrder in FinanceStorageService:  ${error.toString()}`);
         }
 
         // Broadcast event: failed
@@ -676,7 +679,7 @@ export class FinanceStorageService {
         this.readOrderEvent.emit(x);
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in readOrder in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Error occurred in readOrder in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
@@ -731,7 +734,7 @@ export class FinanceStorageService {
           this._isDocumentListLoaded = false;
           this.listDocumentChange.next([]);
 
-          return Observable.throw(err.json());
+          return Observable.throw(err);
         });
     } else {
       return Observable.of(this.listDocumentChange.value);

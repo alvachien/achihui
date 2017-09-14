@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-category-detail',
+  selector: 'hih-learn-category-detail',
   templateUrl: './category-detail.component.html',
   styleUrls: ['./category-detail.component.scss'],
 })

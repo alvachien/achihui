@@ -40,7 +40,7 @@ export class CurrencyDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-finance-currency',
+  selector: 'hih-finance-currency',
   templateUrl: './finance-currency.component.html',
   styleUrls: ['./finance-currency.component.scss'],
 })

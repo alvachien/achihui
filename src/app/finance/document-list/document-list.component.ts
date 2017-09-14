@@ -37,7 +37,7 @@ export class DocumentDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-document-list',
+  selector: 'hih-finance-document-list',
   templateUrl: './document-list.component.html',
   styleUrls: ['./document-list.component.scss'],
 })
@@ -58,7 +58,9 @@ export class DocumentListComponent implements OnInit {
 
     this.dataSource = new DocumentDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllDocuments();
+    this._storageService.fetchAllDocuments().subscribe(x => {
+      // Just ensure the REQUEST has been sent
+    });
   }
 
   public onCreateDocument() {

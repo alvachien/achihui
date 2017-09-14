@@ -10,7 +10,7 @@ import { HomeDefDetailService, FinanceStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
-  selector: 'app-control-center-detail',
+  selector: 'hih-finance-control-center-detail',
   templateUrl: './control-center-detail.component.html',
   styleUrls: ['./control-center-detail.component.scss'],
 })
@@ -25,7 +25,7 @@ export class ControlCenterDetailComponent implements OnInit {
   constructor(private _dialog: MdDialog, 
     private _router: Router,
     private _activateRoute: ActivatedRoute,
-    private _homedefService: HomeDefDetailService,
+    public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
       this.detailObject = new ControlCenter();
   }
@@ -72,12 +72,12 @@ export class ControlCenterDetailComponent implements OnInit {
             }
           });
 
-          this._storageService.readAccount(this.routerID);
+          this._storageService.readControlCenter(this.routerID);
         }
       }
     }, (error) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.log(`AC_HIH_UI [Error]: Entering ngOnInit in ControlCenterDetailComponent with activateRoute URL : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in ControlCenterDetailComponent with activateRoute URL : ${error}`);
       }
     }, () => {
     });
@@ -100,6 +100,16 @@ export class ControlCenterDetailComponent implements OnInit {
   }
 
   public canSubmit(): boolean {
+    if (!this.isFieldChangable) {
+      return false;
+    }
+
+    // Name
+    this.detailObject.Name = this.detailObject.Name.trim();
+    if (this.detailObject.Name.length <= 0) {
+      return false;
+    }
+
     return true;
   }
   
@@ -153,5 +163,8 @@ export class ControlCenterDetailComponent implements OnInit {
 
       this._storageService.createControlCenter(this.detailObject);
     }
+  }
+
+  public onCancel() {    
   }
 }

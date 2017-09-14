@@ -40,7 +40,7 @@ export class HomeDefDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-home-def-list',
+  selector: 'hih-home-def-list',
   templateUrl: './home-def-list.component.html',
   styleUrls: ['./home-def-list.component.scss']
 })

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-control-center',
+  selector: 'hih-finance-control-center',
   templateUrl: './control-center.component.html',
   styleUrls: ['./control-center.component.scss'],
 })

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-order',
+  selector: 'hih-finance-order',
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.scss'],
 })

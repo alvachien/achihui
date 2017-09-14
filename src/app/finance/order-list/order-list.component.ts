@@ -37,7 +37,7 @@ export class OrderDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-order-list',
+  selector: 'hih-finance-order-list',
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.scss'],
 })
@@ -57,7 +57,9 @@ export class OrderListComponent implements OnInit {
 
     this.dataSource = new OrderDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllOrders();
+    this._storageService.fetchAllOrders().subscribe(x => {
+      // Just ensure the REQUEST has been sent
+    });
   }
 
   public onCreateOrder() {

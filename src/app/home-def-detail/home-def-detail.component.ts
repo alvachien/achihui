@@ -6,7 +6,7 @@ import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, UIMode, get
 import { AuthService, HomeDefDetailService, FinCurrencyService } from '../services';
 
 @Component({
-  selector: 'app-home-def-detail',
+  selector: 'hih-home-def-detail',
   templateUrl: './home-def-detail.component.html',
   styleUrls: ['./home-def-detail.component.scss']
 })

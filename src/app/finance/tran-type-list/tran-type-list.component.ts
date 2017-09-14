@@ -37,7 +37,7 @@ export class TranTypeDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-tran-type-list',
+  selector: 'hih-finance-tran-type-list',
   templateUrl: './tran-type-list.component.html',
   styleUrls: ['./tran-type-list.component.scss'],
 })
@@ -53,6 +53,8 @@ export class TranTypeListComponent implements OnInit {
   ngOnInit() {
     this.dataSource = new TranTypeDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllTranTypes();
+    this._storageService.fetchAllTranTypes().subscribe(x => {
+      // Just ensure the REQUEST has been sent
+    });
   }
 }

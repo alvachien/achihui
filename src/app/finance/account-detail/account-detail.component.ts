@@ -10,7 +10,7 @@ import { HomeDefDetailService, FinanceStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
-  selector: 'app-account-detail',
+  selector: 'hih-finance-account-detail',
   templateUrl: './account-detail.component.html',
   styleUrls: ['./account-detail.component.scss'],
 })

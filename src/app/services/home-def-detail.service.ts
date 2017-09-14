@@ -29,12 +29,11 @@ export class HomeDefDetailService {
     }
 
     if (hd) {
+      this.curHomeSelected.next(hd);
       this.fetchAllMembersInChosedHome();
     } else {
       this.curHomeMembers.next([]);
     }
-
-    this.curHomeSelected.next(hd);
   }
 
   // Subject for the home meber of selected HomeDef

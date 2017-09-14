@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-report',
+  selector: 'hih-finance-report',
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.scss'],
 })

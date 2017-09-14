@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-category',
+  selector: 'hih-learn-category',
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss'],
 })

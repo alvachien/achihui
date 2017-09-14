@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-history-detail',
+  selector: 'hih-learn-history-detail',
   templateUrl: './history-detail.component.html',
   styleUrls: ['./history-detail.component.scss'],
 })

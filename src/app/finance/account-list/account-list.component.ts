@@ -37,7 +37,7 @@ export class AccountDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-account-list',
+  selector: 'hih-finance-account-list',
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.scss'],  
 })
@@ -57,8 +57,12 @@ export class AccountListComponent implements OnInit {
 
     this.dataSource = new AccountDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllAccounts();
-    this._storageService.fetchAllAccountCategories();
+    Observable.forkJoin([
+      this._storageService.fetchAllAccounts(),
+      this._storageService.fetchAllAccountCategories(),
+    ]).subscribe(x => {
+      // Just ensure the REQUEST has been sent
+    });
   }
 
   public onCreateAccount() {
