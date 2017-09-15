@@ -21,6 +21,38 @@
           </md-cell>
         </ng-container>
 
+        <!-- DocType Column -->
+        <ng-container mdColumnDef="DocType">
+          <md-header-cell *mdHeaderCellDef>{{'Finance.DocumentType' | translate}}</md-header-cell>
+          <md-cell *mdCellDef="let row">
+              {{ row.DocTypeName }}
+          </md-cell>
+        </ng-container>
+
+        <!-- TranDate Column -->
+        <ng-container mdColumnDef="TranDate">
+          <md-header-cell *mdHeaderCellDef>{{'Common.Date' | translate}}</md-header-cell>
+          <md-cell *mdCellDef="let row">
+              {{ row.TranDateFormatString }}
+          </md-cell>
+        </ng-container>
+
+        <!-- TranAmount Column -->
+        <ng-container mdColumnDef="TranAmount">
+          <md-header-cell *mdHeaderCellDef>{{'Finance.Amount' | translate}}</md-header-cell>
+          <md-cell *mdCellDef="let row">
+              {{ row.TranAmount }}
+          </md-cell>
+        </ng-container>
+
+        <!-- Desp Column -->
+        <ng-container mdColumnDef="Desp">
+          <md-header-cell *mdHeaderCellDef>{{'Common.Description' | translate}}</md-header-cell>
+          <md-cell *mdCellDef="let row">
+              {{ row.Desp }}
+          </md-cell>
+        </ng-container>
+        
         <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
         <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
       </md-table>

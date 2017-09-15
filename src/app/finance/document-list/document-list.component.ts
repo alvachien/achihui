@@ -43,7 +43,7 @@ export class DocumentDataSource extends DataSource<any> {
 })
 export class DocumentListComponent implements OnInit {
 
-  displayedColumns = ['id'];
+  displayedColumns = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
   dataSource: DocumentDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 

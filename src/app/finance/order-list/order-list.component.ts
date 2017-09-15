@@ -20,7 +20,7 @@ export class OrderDataSource extends DataSource<any> {
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Order[]> {
     const displayDataChanges = [
-      this._storageService.listControlCenterChange,
+      this._storageService.listOrderChange,
       this._paginator.page,
     ];
 
@@ -43,7 +43,7 @@ export class OrderDataSource extends DataSource<any> {
 })
 export class OrderListComponent implements OnInit {
 
-  displayedColumns = ['id', 'name', 'comment'];
+  displayedColumns = ['id', 'name', 'ValidFrom', 'ValidTo', 'comment'];
   dataSource: OrderDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 

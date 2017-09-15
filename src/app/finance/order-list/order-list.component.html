@@ -27,6 +27,18 @@
           <md-cell *mdCellDef="let row"> {{row.Name}} </md-cell>
         </ng-container>
 
+        <!-- ValidFrom Column -->
+        <ng-container mdColumnDef="ValidFrom">
+          <md-header-cell *mdHeaderCellDef>{{'Common.ValidFrom' | translate}}</md-header-cell>
+          <md-cell *mdCellDef="let row"> {{row.ValidFromFormatString}} </md-cell>
+        </ng-container>
+
+        <!-- ValidTo Column -->
+        <ng-container mdColumnDef="ValidTo">
+          <md-header-cell *mdHeaderCellDef>{{'Common.ValidTo' | translate}}</md-header-cell>
+          <md-cell *mdCellDef="let row"> {{row.ValidToFormatString}} </md-cell>
+        </ng-container>
+        
         <!-- Comment Column -->
         <ng-container mdColumnDef="comment">
           <md-header-cell *mdHeaderCellDef> {{'Common.Comment' | translate}} </md-header-cell>

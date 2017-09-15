@@ -561,11 +561,17 @@ export class Order extends hih.BaseModel {
     set ValidFrom(vf: moment.Moment) {
         this._validFrom = vf;
     }
+    get ValidFromFormatString(): string {
+        return this._validFrom.format(hih.MomentDateFormat);
+    }
     get ValidTo(): moment.Moment {
         return this._validTo;
     }
     set ValidTo(vt: moment.Moment) {
         this._validTo = vt;
+    }
+    get ValidToFormatString(): string {
+        return this._validTo.format(hih.MomentDateFormat);
     }
 
     constructor() {
@@ -881,6 +887,9 @@ export class Document extends hih.BaseModel {
     }
     set TranDate(td: moment.Moment) {
         this._tranDate = td;
+    }
+    get TranDateFormatString(): string {
+        return this._tranDate.format(hih.MomentDateFormat);
     }
 
     constructor() {

@@ -713,7 +713,7 @@ export class FinanceStorageService {
           }
 
           let listRst:Document[] = [];
-          const rjs = response.body;
+          const rjs = <any>response;
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: Document = new Document();
