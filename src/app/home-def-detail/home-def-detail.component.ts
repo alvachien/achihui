@@ -72,11 +72,10 @@ export class HomeDefDetailComponent implements OnInit {
       }
     }, (error) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.log(`AC_HIH_UI [Error]: Entering ngOnInit in HomeDefDetailComponent with activateRoute URL : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HomeDefDetailComponent with activateRoute URL : ${error}`);
       }
     }, () => {
     });
-
   }
 
   public canSubmit(): boolean {

@@ -92,7 +92,10 @@
     "InvalidValidTo": "无效的有效期结束日期",
     "ValidToIsMust": "有效期结束日期必须输入",
     "InvalidValidRange": "无效的有效期范围",
-    "ValidToMustLaterThanValidFrom": "有效期结束日期必须晚于开始日期"
+    "ValidToMustLaterThanValidFrom": "有效期结束日期必须晚于开始日期",
+    "InvalidCategory": "无效的类别",
+    "InputtedCategoryIsInvalid": "输入的类别无效",
+    "CategoryIsMust": "类别必须输入"
   },
   "Sys":{
     "Currency": {
@@ -228,7 +231,33 @@
 
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",
-    "SettlementRulePrecentSumNotCorrect": "结算规则的百分比之和不正确"
+    "SettlementRulePrecentSumNotCorrect": "结算规则的百分比之和不正确",
+    "InvalidRuleID": "无效的规则ID",
+    "InvalidControlCenter": "无效的控制中心",
+    "InvalidPrecent": "无效的百分比",
+    "InvalidDocumentType": "无效的凭证类型",
+    "DocumentTypeIsMust": "凭证类型是必须的",
+    "DocumentTypeFetchFailed": "无法获取凭证类型",
+    "InvalidCurrency": "无效的货币",
+    "CurrencyIsMust": "货币是必须的",
+    "CurrencyFetchFailed": "无法获取货币信息",
+    "NoDocumentItem": "没有凭证行项目",
+    "AmountIsNotCorrect": "金额不正确",
+    "AmountIsZeroInTransferDocument": "转账凭证的总金额必须为0",
+    "InvalidItemID": "无效的行项目ID",
+    "InvalidAccount": "无效的账户",
+    "AccountIsMust": "账户是必须的",
+    "AccountFetchFailed": "无法获取账户信息，或者尚未创建账户",
+    "InvalidTransactionType": "无效的交易类型",
+    "TransactionTypeIsMust": "交易类型是必须的",
+    "TransactionTypeFetchFailed": "无法获取交易类型信息",
+    "AmountIsMust": "金额是必须的",
+    "EitherControlCenterOrOrder": "输入控制中心或者订单",
+    "DualInputFound": "发现重复输入",
+    "NoInputFound": "发现空输入",
+    "InvalidOrder": "无效的订单",
+    "ControlCenterFetchFailedOrNoCC": "无法获取控制中心信息，或者尚未创建控制中心",
+    "OrderFetchFailedOrNoOrder": "无法获取订单信息，或尚未创建订单"
   },
   "Library": {
     "Books": "书籍",

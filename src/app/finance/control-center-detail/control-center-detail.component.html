@@ -5,12 +5,12 @@
   </md-card-header>
   <md-card-content>
     <md-form-field class="demo-full-width">
-      <input mdInput type="text" placeholder="{{'Common.Name' |translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Name"
+      <input mdInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name"
         name="name">
     </md-form-field>
 
     <md-form-field class="demo-full-width">
-      <input mdInput type="text" placeholder="{{'Common.Comment' |translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Comment"
+      <input mdInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment"
         name="cmt">
     </md-form-field>
 

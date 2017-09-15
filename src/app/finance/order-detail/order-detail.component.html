@@ -17,24 +17,24 @@
         </md-expansion-panel-header>
 
         <md-form-field class="demo-full-width">
-          <input mdInput type="text" placeholder="{{'Common.Name' |translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Name" name="name">
+          <input mdInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name" name="name">
         </md-form-field>
 
         <div class="demo-full-width">
           <md-form-field>
-            <input mdInput [(ngModel)]="detailObject.ValidFrom" [mdDatepicker]="vfmpicker" placeholder="{{'Common.ValidFrom' | translate}}">
+            <input mdInput [(ngModel)]="detailObject.ValidFrom" [readonly]="!isFieldChangable" [mdDatepicker]="vfmpicker" placeholder="{{'Common.ValidFrom' | translate}}">
             <md-datepicker-toggle mdSuffix [for]="vfmpicker"></md-datepicker-toggle>
             <md-datepicker #vfmpicker></md-datepicker>
           </md-form-field>
           <md-form-field>
-            <input mdInput [(ngModel)]="detailObject.ValidTo" [mdDatepicker]="vtopicker" placeholder="{{'Common.ValidTo' | translate}}">
+            <input mdInput [(ngModel)]="detailObject.ValidTo" [readonly]="!isFieldChangable" [mdDatepicker]="vtopicker" placeholder="{{'Common.ValidTo' | translate}}">
             <md-datepicker-toggle mdSuffix [for]="vtopicker"></md-datepicker-toggle>
             <md-datepicker #vtopicker></md-datepicker>
           </md-form-field>
         </div>
         
         <md-form-field class="demo-full-width">
-          <input mdInput type="text" placeholder="{{'Common.Comment' |translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="name">
+          <input mdInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="name">
         </md-form-field>
   
         <md-action-row>
@@ -54,7 +54,7 @@
         </md-expansion-panel-header>
 
         <md-toolbar>
-          <button md-icon-button color="primary" (click)="onCreateRule()"><md-icon md-icon-button color="primary">add</md-icon></button>
+          <button md-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onCreateRule()"><md-icon md-icon-button color="primary">add</md-icon></button>
         </md-toolbar>
         <div class="table-container mat-elevation-z8">
           <md-table #table [dataSource]="dataSource">
@@ -63,7 +63,6 @@
               <md-header-cell *mdHeaderCellDef>#</md-header-cell>
               <md-cell *mdCellDef="let row">
                   <button md-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteRule(row)"><md-icon class="example-icon">delete</md-icon></button>
-                  <span class="example-spacer"></span>
                   {{ row.RuleId }}
               </md-cell>
             </ng-container>
@@ -86,7 +85,7 @@
               <md-cell *mdCellDef="let row"> 
                 <md-form-field class="demo-full-width">
                   <input mdInput type="number" required placeholder="{{'Common.Precent' |translate}} (%)"
-                    [disabled]="!isFieldChangable" [(ngModel)]="row.Precent" name="rulepr">
+                    [readonly]="!isFieldChangable" [(ngModel)]="row.Precent" name="rulepr">
                 </md-form-field>                 
               </md-cell>
             </ng-container>
@@ -97,7 +96,7 @@
               <md-cell *mdCellDef="let row">
                 <md-form-field class="demo-full-width">
                   <input mdInput type="text" placeholder="{{'Common.Comment' | translate}}"
-                    [disabled]="!isFieldChangable" [(ngModel)]="row.Comment" name="rulecmt">
+                    [readonly]="!isFieldChangable" [(ngModel)]="row.Comment" name="rulecmt">
                 </md-form-field>                   
               </md-cell>
             </ng-container>
@@ -119,7 +118,7 @@
             {{'Common.ReviewForSubmit' | translate}}
           </md-panel-title>
           <md-panel-description>
-              {{'Common.ReviewForSubmit' | translate}}
+            {{'Common.ReviewForSubmit' | translate}}
             <md-icon>date_range</md-icon>
           </md-panel-description>
         </md-expansion-panel-header>

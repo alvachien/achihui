@@ -17,7 +17,7 @@
         </md-expansion-panel-header>
 
         <md-form-field class="demo-full-width">
-          <input mdInput type="text" placeholder="{{'Common.Name' |translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Name" name="name">
+          <input mdInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name" name="name">
         </md-form-field>
 
         <md-select class="demo-full-width" placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId" name="ctgy">
@@ -33,7 +33,7 @@
         </md-select>
         
         <md-form-field class="demo-full-width">
-          <input mdInput type="text" placeholder="{{'Common.Comment' |translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="name">
+          <input mdInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="name">
         </md-form-field>
   
         <md-action-row>

@@ -46,7 +46,7 @@ export class LearnStorageService {
   }
 
   // Categories
-  public fetchAllCategories(forceReload?: boolean): Observable<LearnCategory[]> {
+  public fetchAllCategories(forceReload?: boolean): Observable<any> {
     if (!this._isCtgyListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/learncategory';
 
@@ -82,7 +82,7 @@ export class LearnStorageService {
           this.listCategoryChange.next(listRst);
           return listRst;
         })
-        .catch(err => {
+        .catch((err) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllCategories in FinanceStorageService: ${err}`);
           }
@@ -98,7 +98,7 @@ export class LearnStorageService {
   }
 
   // Object
-  public fetchAllObjects(forceReload?: boolean): Observable<LearnObject[]> {
+  public fetchAllObjects(forceReload?: boolean): Observable<any> {
     if (!this._isCtgyListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/learnobject';
 

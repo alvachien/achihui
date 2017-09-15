@@ -40,7 +40,7 @@
         </md-form-field>        
         
         <md-form-field class="demo-full-width">
-          <input mdInput type="text" placeholder="{{'Common.Description' |translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Desp" name="name">
+          <input mdInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp" name="name">
         </md-form-field>
 
         <md-action-row>
@@ -72,7 +72,7 @@
                 <span class="example-spacer"></span>
                 <md-form-field>
                   <input mdInput type="number" required placeholder="#" 
-                    [disabled]="!isFieldChangable" [(ngModel)]="row.ItemId" name="itid">
+                    [readonly]="!isFieldChangable" [(ngModel)]="row.ItemId" name="itid">
                 </md-form-field>
               </md-cell>
             </ng-container>
@@ -109,7 +109,7 @@
               <md-cell *mdCellDef="let row"> 
                 <md-form-field>
                   <input mdInput type="number" required placeholder="{{'Finance.Amount' |translate}}" 
-                    [disabled]="!isFieldChangable" [(ngModel)]="row.TranAmount" name="itamt">
+                    [readonly]="!isFieldChangable" [(ngModel)]="row.TranAmount" name="itamt">
                 </md-form-field>
               </md-cell>
             </ng-container>
@@ -120,7 +120,7 @@
               <md-cell *mdCellDef="let row">
                 <md-form-field class="demo-full-width">
                   <input mdInput type="text" required placeholder="{{'Common.Description' |translate}}" 
-                    [disabled]="!isFieldChangable" [(ngModel)]="row.Desp" name="itdesp">
+                    [readonly]="!isFieldChangable" [(ngModel)]="row.Desp" name="itdesp">
                 </md-form-field> 
               </md-cell>
             </ng-container>

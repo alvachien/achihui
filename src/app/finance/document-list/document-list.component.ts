@@ -61,6 +61,18 @@ export class DocumentListComponent implements OnInit {
 
     this._storageService.fetchAllDocuments().subscribe(x => {
       // Just ensure the REQUEST has been sent
+    }, error => {
+      const dlginfo: MessageDialogInfo = {
+        Header: 'Common.Error',
+        Content: error? error.toString() : 'Common.Error',
+        Button: MessageDialogButtonEnum.onlyok
+      };
+  
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo
+      });      
     });
   }
 

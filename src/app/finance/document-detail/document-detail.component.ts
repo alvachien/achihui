@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MdDialog } from '@angular/material';
+import { MdDialog, MdSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
@@ -55,6 +55,7 @@ export class DocumentDetailComponent implements OnInit {
   }
 
   constructor(private _dialog: MdDialog,
+    private _snackbar: MdSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
@@ -127,6 +128,20 @@ export class DocumentDetailComponent implements OnInit {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
       }
+
+      const dlginfo: MessageDialogInfo = {
+        Header: 'Common.Error',
+        Content: error? error.toString() : 'Common.Error',
+        Button: MessageDialogButtonEnum.onlyok
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo
+      });
+
+      this.uiMode = UIMode.Invalid;
     });
   }
 
@@ -143,20 +158,81 @@ export class DocumentDetailComponent implements OnInit {
   }
 
   public canSubmit(): boolean {
+    if (!this.isFieldChangable) {
+      return false;
+    }
+
+    // Check name
+    this.detailObject.Desp = this.detailObject.Desp.trim();
+    if (this.detailObject.Desp.length <= 0) {
+      return false;
+    }
+
     return true;
   }
 
   public onCreateDocItem() {
-    this.detailObject.Items.push(new DocumentItem());
+    let di: DocumentItem = new DocumentItem();
+    di.ItemId = this.getNextItemID();
+    this.detailObject.Items.push(di);
     this.itemOperEvent.emit();
   }
 
   public onDeleteDocItem(di) {
+    let idx: number = 0;
+    for(let i: number = 0; i < this.detailObject.Items.length; i ++) {
+      if (this.detailObject.Items[i].ItemId === di.ItemId) {
+        idx = i;
+        break;
+      }
+    }
 
+    this.detailObject.Items.splice(idx);
+    this.itemOperEvent.emit();
   }
 
+  private getNextItemID(): number {
+    if (this.detailObject.Items.length <= 0) {
+      return 1;
+    }
+
+    let nMax: number = 0;
+    for(let item of this.detailObject.Items) {
+      if (item.ItemId > nMax) {
+        nMax = item.ItemId;
+      }
+    }
+
+    return nMax + 1;
+  }
+  
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
+      // Check!
+      if (!this.detailObject.onVerify({
+        ControlCenters: this._storageService.ControlCenters,
+        Orders: this._storageService.Orders,
+        Accounts: this._storageService.Accounts,
+        DocumentTypes: this._storageService.DocumentTypes,
+        TransactionTypes: this._storageService.TranTypes,
+        Currencies: this._currService.Currencies
+      })) {
+        // Show a dialog for error details
+        const dlginfo: MessageDialogInfo = {
+          Header: 'Common.Error',
+          ContentTable: this.detailObject.VerifiedMsgs,
+          Button: MessageDialogButtonEnum.onlyok
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo
+        });
+        
+        return;
+      }
+      
       this._storageService.createDocumentEvent.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentDetailComponent with : ${x}`);
@@ -164,22 +240,11 @@ export class DocumentDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof Document) {
-          // Show a dialog, then jump to the display view
-          const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Success',
-            Content: x.Id.toString(),
-            Button: MessageDialogButtonEnum.onlyok
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
+          // Show the snackbar
+          this._snackbar.open('Message archived', 'OK', {
+            duration: 3000
+          }).afterDismissed().subscribe(() => {
+            // Navigate to display
             this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
           });
         } else {

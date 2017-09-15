@@ -92,7 +92,10 @@
     "InvalidValidTo": "Invalid valid to",
     "ValidToIsMust": "Valid to is a must",
     "InvalidValidRange": "Invalid range of validitiy",
-    "ValidToMustLaterThanValidFrom": "Valid to must later than valid from"
+    "ValidToMustLaterThanValidFrom": "Valid to must later than valid from",
+    "InvalidCategory": "Invalid category",
+    "InputtedCategoryIsInvalid": "Inputted category is invalid",
+    "CategoryIsMust": "Category is a must"
   },
   "Sys":{
     "Currency": {
@@ -228,7 +231,33 @@
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",
-    "SettlementRulePrecentSumNotCorrect": "Sum of the precentage of all rules is not correct"
+    "SettlementRulePrecentSumNotCorrect": "Sum of the precentage of all rules is not correct",
+    "InvalidRuleID": "Invalid rule ID",
+    "InvalidControlCenter": "Invalid control center",
+    "InvalidPrecent": "Invalid precent",
+    "InvalidDocumentType": "Invalid document type",
+    "DocumentTypeIsMust": "Document type is a must",
+    "DocumentTypeFetchFailed": "Failed to fetch document type",
+    "InvalidCurrency": "Invalid currency",
+    "CurrencyIsMust": "Currency is must",
+    "CurrencyFetchFailed": "Failed to fetch currency",
+    "NoDocumentItem": "No document item",
+    "AmountIsNotCorrect": "Amount is not correct",
+    "AmountIsZeroInTransferDocument": "Transfer document requires the total amount is 0",
+    "InvalidItemID": "Invalid Item ID",
+    "InvalidAccount": "Invalid Account",
+    "AccountIsMust": "Account is a must",
+    "AccountFetchFailed": "Failed to fetch account",
+    "InvalidTransactionType": "Invalid transaction type",
+    "TransactionTypeIsMust": "Transaction type is a must",
+    "TransactionTypeFetchFailed": "Failed to fetch transaction type",
+    "AmountIsMust": "Amount is a must",
+    "EitherControlCenterOrOrder": "Enter either control center or order",
+    "DualInputFound": "Dual input found",
+    "NoInputFound": "No input found",
+    "InvalidOrder": "Invalid Order",
+    "ControlCenterFetchFailedOrNoCC": "Failed to fetch Control center or no control center created at all",
+    "OrderFetchFailedOrNoOrder": "Failed to fetch order or no order created at all"
   },
   "Library": {
     "Books": "Books",

@@ -137,7 +137,7 @@ export class BaseModel {
     public onInit() {
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context?: any): boolean {
         this.VerifiedMsgs = [];
 
         return true;

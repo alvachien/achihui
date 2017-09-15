@@ -18,7 +18,7 @@ export class ENPOS extends hih.BaseModel {
         super.onInit();
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context?: any): boolean {
         if (!super.onVerify(context))
             return false;
 
@@ -51,7 +51,7 @@ export class ENWordExplain extends hih.BaseModel {
         super.onInit();
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context?: any): boolean {
         if (!super.onVerify(context))
             return false;
 
@@ -80,7 +80,7 @@ export class EnWord extends hih.BaseModel {
         super.onInit();
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context?: any): boolean {
         if (!super.onVerify(context))
             return false;
 
@@ -112,7 +112,7 @@ export class EnSentenceExplain extends hih.BaseModel {
         super.onInit();
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context?: any): boolean {
         if (!super.onVerify(context))
             return false;
 
@@ -142,7 +142,7 @@ export class EnSentence extends hih.BaseModel {
         super.onInit();
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context?: any): boolean {
         if (!super.onVerify(context))
             return false;
 
@@ -182,7 +182,7 @@ export class LearnCategory extends hih.BaseModel {
         super.onInit();
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context?: any): boolean {
         if (!super.onVerify(context))
             return false;
 
@@ -239,7 +239,7 @@ export class LearnObject extends hih.BaseModel {
         super.onInit();
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context?: any): boolean {
         if (!super.onVerify(context))
             return false;
 
@@ -311,7 +311,7 @@ export class LearnHistory extends hih.BaseModel {
         super.onInit();
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context?: any): boolean {
         if (!super.onVerify(context))
             return false;
 
@@ -429,7 +429,7 @@ export class LearnAward extends hih.BaseModel {
         super.onInit();
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context?: any): boolean {
         if (!super.onVerify(context))
             return false;
 
