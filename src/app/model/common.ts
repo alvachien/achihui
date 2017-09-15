@@ -85,6 +85,16 @@ export class InfoMessage {
     public MsgTime: moment.Moment;
     public MsgTitle: string;
     public MsgContent: string;
+
+    get IsError(): boolean {
+        return this.MsgType === MessageType.Error;
+    }
+    get IsWarning(): boolean {
+        return this.MsgType === MessageType.Warning;
+    }
+    get IsInfo(): boolean {
+        return this.MsgType === MessageType.Info;
+    }
 }
 
 export interface BaseModelJson {

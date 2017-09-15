@@ -35,18 +35,17 @@ This project used tons of new project, including: ASP.NET Core 1.0, Angular 2, T
 This project was generated with [angular-cli](https://github.com/angular/angular-cli).
 
 This project also require the following components:
+* Angular 4
 * Material 2
 * Ngx-translate
-* Covalent
-* TinyMce
-* Angular 2
-* TypeScript
 * Oidc-Client
+* TinyMce
+* Moment
 
 ## Contact me
 **Alva Chien | 钱红俊**
 
-A programmer, and a certificated Advanced Photographer.  
+A programmer, a Photographer, and a father. 
  
 Contact me:
 

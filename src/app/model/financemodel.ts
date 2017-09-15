@@ -543,6 +543,13 @@ export class ControlCenter extends hih.BaseModel {
 }
 
 /**
+ * Context of verify
+ */
+export interface OrderVerifyContext {
+    ControlCenters: ControlCenter[];
+}
+
+/**
  * Order
  */
 export class Order extends hih.BaseModel {
@@ -577,18 +584,18 @@ export class Order extends hih.BaseModel {
     constructor() {
         super();
 
-        this.ValidFrom = moment();
-        this.ValidTo = moment();
+        this._validFrom = moment();
+        this._validTo = this._validFrom.day(30);
     }
 
     public onInit() {
         super.onInit();
 
-        this.ValidFrom = moment();
-        this.ValidTo = moment();
+        this._validFrom = moment();
+        this._validTo = this._validFrom.day(30);
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context: OrderVerifyContext): boolean {
         if (!super.onVerify(context))
             return false;
 
@@ -600,8 +607,8 @@ export class Order extends hih.BaseModel {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = 'Invalid name';
-            msg.MsgContent = 'Name is a must';
+            msg.MsgTitle = 'Common.InvalidName';
+            msg.MsgContent = 'Common.NameIsMust';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
@@ -611,8 +618,8 @@ export class Order extends hih.BaseModel {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = 'Invalid valid from';
-            msg.MsgContent = 'Valid from is a must';
+            msg.MsgTitle = 'Common.InvalidValidFrom';
+            msg.MsgContent = 'Common.ValidFromIsMust';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
@@ -622,8 +629,8 @@ export class Order extends hih.BaseModel {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = 'Invalid valid to';
-            msg.MsgContent = 'Valid to is a must';
+            msg.MsgTitle = 'Common.InvalidValidTo';
+            msg.MsgContent = 'Common.ValidToIsMust';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
@@ -633,8 +640,8 @@ export class Order extends hih.BaseModel {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = 'Invalid valid range';
-            msg.MsgContent = 'Valid to must later than valid from';
+            msg.MsgTitle = 'Common.InvalidValidRange';
+            msg.MsgContent = 'Common.ValidToMustLaterThanValidFrom';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
@@ -644,7 +651,7 @@ export class Order extends hih.BaseModel {
             for (let srobj of this.SRules) {
                 ntotal += srobj.Precent;
 
-                srobj.onVerify({});
+                srobj.onVerify(context);
                 for (let msg2 of srobj.VerifiedMsgs) {
                     this.VerifiedMsgs.push(msg2);
                     if (msg2.MsgType === hih.MessageType.Error) {
@@ -657,8 +664,8 @@ export class Order extends hih.BaseModel {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
                 msg.MsgTime = moment();
                 msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = 'No rule';
-                msg.MsgContent = 'No rule defined';
+                msg.MsgTitle = 'Finance.InvalidSettlementRule';
+                msg.MsgContent = 'Finance.SettlementRulePrecentSumNotCorrect';
                 this.VerifiedMsgs.push(msg);
                 chkrst = false;
             }
@@ -666,8 +673,8 @@ export class Order extends hih.BaseModel {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = 'No rule';
-            msg.MsgContent = 'No rule defined';
+            msg.MsgTitle = 'Finance.InvalidSettlementRule';
+            msg.MsgContent = 'Finance.NoSettlementRule';
             this.VerifiedMsgs.push(msg);
             chkrst = false;
         }
@@ -741,13 +748,14 @@ export class SettlementRule extends hih.BaseModel {
 
     constructor() {
         super();
+        this.RuleId = 0;
     }
 
     public onInit() {
         super.onInit();
     }
 
-    public onVerify(context: any): boolean {
+    public onVerify(context: OrderVerifyContext): boolean {
         if (!super.onVerify(context))
             return false;
 
@@ -761,6 +769,26 @@ export class SettlementRule extends hih.BaseModel {
             msg.MsgTime = moment();
             this.VerifiedMsgs.push(msg);
             brst = false;
+        }
+
+        // Control center
+        if (context !== null || context !== undefined || context.ControlCenters.length > 0) {
+            if (context.ControlCenters.findIndex( (value, index) => {
+                if (value.Id === this.ControlCenterId) {
+                    return true;
+                }
+
+                return false;
+            })) {
+            } else {
+                let msg: hih.InfoMessage = new hih.InfoMessage();
+                msg.MsgContent = 'Please specify the valid control center';
+                msg.MsgTitle = 'Invalid control center';
+                msg.MsgType = hih.MessageType.Error;
+                msg.MsgTime = moment();
+                this.VerifiedMsgs.push(msg);
+                brst = false;
+            }
         }
 
         // Precent

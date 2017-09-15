@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem } from '../../model';
 import { FinanceStorageService } from '../../services';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 /**
  * Data source of Document
@@ -76,6 +77,26 @@ export class DocumentListComponent implements OnInit {
   }
 
   public onDeleteDocument(doc: Document) {
+    // Show a confirmation dialog for the deletion
+    const dlginfo: MessageDialogInfo = {
+      Header: 'Common.DeleteConfirmation',
+      Content: 'ConfirmToDeleteSelectedItem',
+      Button: MessageDialogButtonEnum.yesno
+    };
 
+    this._dialog.open(MessageDialogComponent, {
+      disableClose: false,
+      width: '500px',
+      data: dlginfo
+    }).afterClosed().subscribe(x2 => {
+      // Do nothing!
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+      }
+
+      if (x2) {
+        // Todo!
+      }
+    });
   }
 }

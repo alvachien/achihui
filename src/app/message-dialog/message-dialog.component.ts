@@ -1,6 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { MdDialog, MdDialogRef, MD_DIALOG_DATA } from '@angular/material';
+import { InfoMessage } from '../model';
 
+/**
+ * Message dialog button type
+ */
 export enum MessageDialogButtonEnum {
   onlyok,
   yesno,
@@ -8,9 +12,13 @@ export enum MessageDialogButtonEnum {
   yesnocancel
 }
 
+/**
+ * Message dialog info
+ */
 export interface MessageDialogInfo {
   Header: string;
-  Content: string;
+  Content?: string;
+  ContentTable?: InfoMessage[],
   Button: MessageDialogButtonEnum;
 }
 

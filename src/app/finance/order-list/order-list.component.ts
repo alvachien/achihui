@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator } from '@angular/material';
+import { MdDialog, MdPaginator } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Order } from '../../model';
 import { FinanceStorageService } from '../../services';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 /**
  * Data source of Order
@@ -47,7 +48,8 @@ export class OrderListComponent implements OnInit {
   dataSource: OrderDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
-  constructor(public _storageService: FinanceStorageService,
+  constructor(private _dialog: MdDialog,
+    public _storageService: FinanceStorageService,
     private _router: Router) { }
 
   ngOnInit() {
@@ -75,6 +77,26 @@ export class OrderListComponent implements OnInit {
   }
 
   public onDeleteOrder(acnt: any) {
+    // Show a confirmation dialog for the deletion
+    const dlginfo: MessageDialogInfo = {
+      Header: 'Common.DeleteConfirmation',
+      Content: 'ConfirmToDeleteSelectedItem',
+      Button: MessageDialogButtonEnum.yesno
+    };
 
+    this._dialog.open(MessageDialogComponent, {
+      disableClose: false,
+      width: '500px',
+      data: dlginfo
+    }).afterClosed().subscribe(x2 => {
+      // Do nothing!
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+      }
+
+      if (x2) {
+        // Todo!
+      }
+    });
   }
 }

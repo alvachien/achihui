@@ -83,7 +83,16 @@
     "NextButton": "Next",
     "PreviousButton": "Previous",
     "Error": "Error",
-    "Success": "Success"
+    "Success": "Success",
+
+    "InvalidName": "Invalid name",
+    "NameIsMust": "Name is a must",
+    "InvalidValidFrom": "Invalid valid from",
+    "ValidFromIsMust": "Valid from is a must",
+    "InvalidValidTo": "Invalid valid to",
+    "ValidToIsMust": "Valid to is a must",
+    "InvalidValidRange": "Invalid range of validitiy",
+    "ValidToMustLaterThanValidFrom": "Valid to must later than valid from"
   },
   "Sys":{
     "Currency": {
@@ -215,7 +224,11 @@
     "Incoming": "Incoming",
     "Outgoing": "Outgoing",
     "Assets": "Assets",
-    "Liabilities": "Liabilities"
+    "Liabilities": "Liabilities",
+
+    "InvalidSettlementRule": "Invalid settlement rule",
+    "NoSettlementRule": "No settlement rule",
+    "SettlementRulePrecentSumNotCorrect": "Sum of the precentage of all rules is not correct"
   },
   "Library": {
     "Books": "Books",

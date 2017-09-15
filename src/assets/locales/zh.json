@@ -83,7 +83,16 @@
     "NextButton": "下一步",
     "PreviousButton": "上一步",
     "Error": "错误",
-    "Success": "成功"
+    "Success": "成功",
+
+    "InvalidName": "无效的名字",
+    "NameIsMust": "名字必须输入",
+    "InvalidValidFrom": "无效的有效期开始日期",
+    "ValidFromIsMust": "有效期开始日必须输入",
+    "InvalidValidTo": "无效的有效期结束日期",
+    "ValidToIsMust": "有效期结束日期必须输入",
+    "InvalidValidRange": "无效的有效期范围",
+    "ValidToMustLaterThanValidFrom": "有效期结束日期必须晚于开始日期"
   },
   "Sys":{
     "Currency": {
@@ -215,7 +224,11 @@
     "Incoming": "收入",
     "Outgoing": "支出",
     "Assets": "资产",
-    "Liabilities": "负债"
+    "Liabilities": "负债",
+
+    "InvalidSettlementRule": "无效的结算规则",
+    "NoSettlementRule": "结算规则没有定义",
+    "SettlementRulePrecentSumNotCorrect": "结算规则的百分比之和不正确"
   },
   "Library": {
     "Books": "书籍",

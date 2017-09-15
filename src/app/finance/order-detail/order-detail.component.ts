@@ -142,20 +142,77 @@ export class OrderDetailComponent implements OnInit {
   }
 
   public canSubmit(): boolean {
+    if (!this.isFieldChangable) {
+      return false;
+    }
+
+    // Check name
+    this.detailObject.Name = this.detailObject.Name.trim();
+    if (this.detailObject.Name.length <= 0) {
+      return false;
+    }
+
     return true;
   }
 
   public onCreateRule() {
-    this.detailObject.SRules.push(new SettlementRule());
+    let srule: SettlementRule = new SettlementRule();
+    srule.RuleId = this.getNextRuleID();
+    this.detailObject.SRules.push(srule);
+
     this.ruleOperEvent.emit();
   }
 
   public onDeleteRule(rule) {
-    
+    let idx: number = 0;
+    for(let i: number = 0; i < this.detailObject.SRules.length; i ++) {
+      if (this.detailObject.SRules[i].RuleId === rule.RuleId) {
+        idx = i;
+        break;
+      }
+    }
+
+    this.detailObject.SRules.splice(idx);
+    this.ruleOperEvent.emit();
+  }
+
+  private getNextRuleID(): number {
+    if (this.detailObject.SRules.length <= 0) {
+      return 1;
+    }
+
+    let nMax: number = 0;
+    for(let rule of this.detailObject.SRules) {
+      if (rule.RuleId > nMax) {
+        nMax = rule.RuleId;
+      }
+    }
+
+    return nMax + 1;
   }
 
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
+      // Check!
+      if (!this.detailObject.onVerify({
+        ControlCenters: this._storageService.ControlCenters
+      })) {
+        // Show a dialog for error details
+        const dlginfo: MessageDialogInfo = {
+          Header: 'Common.Error',
+          ContentTable: this.detailObject.VerifiedMsgs,
+          Button: MessageDialogButtonEnum.onlyok
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo
+        });
+        
+        return;
+      }
+
       this._storageService.createOrderEvent.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createOrderEvent in OrderDetailComponent with : ${x}`);
