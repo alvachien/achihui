@@ -46,7 +46,7 @@ export class DocumentDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
 
-  displayedColumns = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp'];
+  displayedColumns = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order'];
   dataSource: DocumentItemDataSource | null;
   itemOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
 
@@ -107,6 +107,7 @@ export class DocumentDetailComponent implements OnInit {
                 }
   
                 this.detailObject = x2;
+                this.itemOperEvent.emit(); // Show the items
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
@@ -116,7 +117,7 @@ export class DocumentDetailComponent implements OnInit {
               }
             });
   
-            this._storageService.readAccount(this.routerID);
+            this._storageService.readDocument(this.routerID);
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -202,6 +203,7 @@ export class DocumentDetailComponent implements OnInit {
         }
       });
 
+      this.detailObject.HID = this._homedefService.ChosedHome.ID;
       this._storageService.createDocument(this.detailObject);
     }
   }

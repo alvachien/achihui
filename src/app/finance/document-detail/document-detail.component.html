@@ -68,9 +68,12 @@
             <ng-container mdColumnDef="ItemId">
               <md-header-cell *mdHeaderCellDef>#</md-header-cell>
               <md-cell *mdCellDef="let row">
-                <button md-icon-button color="primary" (click)="onDeleteDocItem(row)"><md-icon class="example-icon">delete</md-icon></button>
+                <button md-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteDocItem(row)"><md-icon class="example-icon">delete</md-icon></button>
                 <span class="example-spacer"></span>
-                {{ row.ItemId }}
+                <md-form-field>
+                  <input mdInput type="number" required placeholder="#" 
+                    [disabled]="!isFieldChangable" [(ngModel)]="row.ItemId" name="itid">
+                </md-form-field>
               </md-cell>
             </ng-container>
 
@@ -104,10 +107,10 @@
             <ng-container mdColumnDef="Amount">
               <md-header-cell *mdHeaderCellDef>{{'Finance.Amount' | translate}}</md-header-cell>
               <md-cell *mdCellDef="let row"> 
-                  <md-form-field>
-                    <input mdInput type="number" required placeholder="{{'Finance.Amount' |translate}}" 
-                      [disabled]="!isFieldChangable" [(ngModel)]="row.Amount" name="itamt">
-                  </md-form-field>
+                <md-form-field>
+                  <input mdInput type="number" required placeholder="{{'Finance.Amount' |translate}}" 
+                    [disabled]="!isFieldChangable" [(ngModel)]="row.TranAmount" name="itamt">
+                </md-form-field>
               </md-cell>
             </ng-container>
               
@@ -121,7 +124,33 @@
                 </md-form-field> 
               </md-cell>
             </ng-container>
-    
+
+            <!-- Control center Column -->
+            <ng-container mdColumnDef="ControlCenter">
+              <md-header-cell *mdHeaderCellDef> {{'Finance.ControlCenter' | translate}} </md-header-cell>
+              <md-cell *mdCellDef="let row">
+                <md-select placeholder="{{'Finance.ControlCenter' | translate}}" 
+                  [disabled]="!isFieldChangable" [(ngModel)]="row.ControlCenterId" name="itcc">
+                  <md-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+                    {{tt.Name}}
+                  </md-option>
+                </md-select>
+              </md-cell>
+            </ng-container>
+
+            <!-- Order Column -->
+            <ng-container mdColumnDef="Order">
+              <md-header-cell *mdHeaderCellDef> {{'Finance.Order' | translate}} </md-header-cell>
+              <md-cell *mdCellDef="let row">
+                <md-select placeholder="{{'Finance.Order' | translate}}" 
+                  [disabled]="!isFieldChangable" [(ngModel)]="row.OrderId" name="itord">
+                  <md-option *ngFor="let tt of _storageService.Orders" [value]="tt.Id">
+                    {{tt.Name}}
+                  </md-option>
+                </md-select>
+              </md-cell>
+            </ng-container>
+            
             <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
             <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
           </md-table>

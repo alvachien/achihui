@@ -62,7 +62,7 @@
             <ng-container mdColumnDef="rid">
               <md-header-cell *mdHeaderCellDef>#</md-header-cell>
               <md-cell *mdCellDef="let row">
-                  <button md-icon-button color="primary" (click)="onDeleteRule(row)"><md-icon class="example-icon">delete</md-icon></button>
+                  <button md-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteRule(row)"><md-icon class="example-icon">delete</md-icon></button>
                   <span class="example-spacer"></span>
                   {{ row.RuleId }}
               </md-cell>

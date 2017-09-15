@@ -101,6 +101,7 @@ export class OrderDetailComponent implements OnInit {
                 }
   
                 this.detailObject = x2;
+                this.ruleOperEvent.emit(); // Reload the rules
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readOrder : ${x2}`);
