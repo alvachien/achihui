@@ -223,6 +223,7 @@ export class LearnCategory extends hih.BaseModel {
  * LearnObject: Learn object, same as Knowledge
  */
 export class LearnObject extends hih.BaseModel {
+    public HID: number;
     public Id: number;
     public CategoryId: number;
     public Name: string;
@@ -248,18 +249,22 @@ export class LearnObject extends hih.BaseModel {
 
     public writeJSONObject(): any {
         let rstObj = super.writeJSONObject();
-        rstObj.Id = this.Id;
-        rstObj.CategoryId = this.CategoryId;
-        rstObj.Name = this.Name;
-        rstObj.Content = this.Content;
+        rstObj.hid = this.HID;
+        rstObj.id = this.Id;
+        rstObj.categoryId = this.CategoryId;
+        rstObj.name = this.Name;
+        rstObj.content = this.Content;
         return rstObj;
     }
 
     public onSetData(data: any) {
         super.onSetData(data);
 
+        if (data && data.hid) {
+            this.HID = +data.hid;
+        }
         if (data && data.id) {
-            this.Id = data.id;
+            this.Id = +data.id;
         }
         if (data && data.categoryID) {
             this.CategoryId = +data.categoryID;
