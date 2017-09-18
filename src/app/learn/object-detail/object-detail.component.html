@@ -1,6 +1,6 @@
 <md-card>
   <md-card-header>
-    <md-card-title>{{'Learn.LearningObject' | translate}}</md-card-title>
+    <md-card-title>{{'Learning.LearningObject' | translate}}</md-card-title>
     <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
   </md-card-header>
   <md-card-content>
@@ -17,7 +17,7 @@
     </md-select>
   
     <div class="demo-full-width">
-      <textarea htmlEditor [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Content" name="content"></textarea>
+      <textarea id="{{elementId}}" [readonly]="!isFieldChangable" name="content"></textarea>
     </div>
 
   </md-card-content>

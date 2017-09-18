@@ -20,89 +20,111 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   public currentMode: string;
   public detailObject: LearnObject | null;
   public uiMode: UIMode = UIMode.Create;
-  @Input() elementId: String;
+  elementId: String;
   @Output() onEditorKeyup = new EventEmitter<any>();
 
-  constructor(private _dialog: MdDialog, 
+  constructor(private _dialog: MdDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
-      this.detailObject = new LearnObject();
+    this.detailObject = new LearnObject();
+    this.elementId = "tinymce" + Math.round(100* Math.random()).toString();
   }
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit...');
     }
-
-    // Distinguish current mode
-    this._activateRoute.url.subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit for activateRoute URL: ${x}`);
-        }
-
-        if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.detailObject = new LearnObject();
-          this.uiMode = UIMode.Create;
-          this.detailObject.HID = this._homedefService.ChosedHome.ID;
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
-
-          this.uiMode = UIMode.Change;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
-
-          this.uiMode = UIMode.Display;
-        }
-        this.currentMode = getUIModeString(this.uiMode);
-        
-        if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readObjectEvent.subscribe(x => {
-            if (x instanceof LearnObject) {
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ObjectDetailComponent, succeed to readControlCenterEvent : ${x}`);
-              }
-              this.detailObject = x;
-            } else {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.log(`AC_HIH_UI [Error]: Entering ngOninit in ObjectDetailComponent, failed to readControlCenterEvent : ${x}`);
-              }
-              this.detailObject = new LearnObject();
-            }
-          });
-
-          this._storageService.readObject(this.routerID);
-        }
-      }
-    }, (error) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in ObjectDetailComponent with activateRoute URL : ${error}`);
-      }
-    }, () => {
-    });
   }
 
   private editor: any = null;
-  
+
   ngAfterViewInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log("AC_HIH_UI [Debug]: Entering ngAfterViewInit of LearnObjectDetail");
     }
+    try {
+      tinymce.init({
+        selector: '#' + this.elementId,
+        schema: 'html5',
+        height: 500,
+        menubar: false,
+        toolbar: "fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link forecolor backcolor | removeformat",
+        plugins: 'advlist autolink link image lists charmap print preview',
+        skin_url: '../../../assets/tinymceskins/lightgray',
+        setup: editor => {
+          this.editor = editor;
+  
+          editor.on('keyup change', () => {
+            const content = editor.getContent();
+            this.onEditorKeyup.emit(content);
+          });
+        },
+      });
+    }
+    catch(err) {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Debug]: Exception in ngAfterViewInit of LearnObjectDetail: ${err ? err.toString() : ''}`);
+      }
 
-    tinymce.init({
-      selector: '#' + this.elementId,
-      plugins: ['link', 'paste', 'table'],
-      skin_url: 'assets/tinymceskins/lightgray',
-      setup: editor => {
-        this.editor = editor;
+      return;
+    }
 
-        editor.on('keyup change', () => {
-          const content = editor.getContent();
-          this.onEditorKeyup.emit(content);
-        });
-      },
+    this._storageService.fetchAllCategories().subscribe(x1 => {
+      // Distinguish current mode
+      this._activateRoute.url.subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngAfterViewInit for activateRoute URL: ${x}`);
+        }
+
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.detailObject = new LearnObject();
+            this.uiMode = UIMode.Create;
+            this.detailObject.HID = this._homedefService.ChosedHome.ID;
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
+
+            this.uiMode = UIMode.Change;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
+
+            this.uiMode = UIMode.Display;
+          }
+          this.currentMode = getUIModeString(this.uiMode);
+
+          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+            this._storageService.readObjectEvent.subscribe(x => {
+              if (x instanceof LearnObject) {
+                if (environment.LoggingLevel >= LogLevel.Debug) {
+                  console.log(`AC_HIH_UI [Debug]: Entering ngAfterViewInit in ObjectDetailComponent, succeed to readControlCenterEvent : ${x}`);
+                }
+                this.detailObject = x;                
+              } else {
+                if (environment.LoggingLevel >= LogLevel.Error) {
+                  console.log(`AC_HIH_UI [Error]: Entering ngAfterViewInit in ObjectDetailComponent, failed to readControlCenterEvent : ${x}`);
+                }
+                this.detailObject = new LearnObject();
+              }
+
+              // Set the content
+              tinymce.activeEditor.setContent(this.detailObject.Content);
+              if (this.uiMode === UIMode.Display) {
+                tinymce.activeEditor.setMode('readonly');
+              }
+            });
+
+            this._storageService.readObject(this.routerID);
+          }
+        }
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering ngOnInit in ObjectDetailComponent with activateRoute URL : ${error}`);
+        }
+      }, () => {
+      });
+    }, error => {
     });
   }
 
@@ -110,9 +132,16 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log("AC_HIH_UI [Debug]: Entering ngOnDestroy of LearnObjectDetail");
     }
-    tinymce.remove(this.editor);
+
+    try {
+      tinymce.remove(this.editor);
+    } catch(err) {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Debug]: Exception in ngAfterViewInit of LearnObjectDetail: ${err ? err.toString() : ''}`);
+      }
+    }
   }
-    
+
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -130,7 +159,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
     return true;
   }
-  
+
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
       this._storageService.createObjectEvent.subscribe((x) => {
@@ -176,14 +205,18 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
             }
           });
-        }        
+        }
       });
 
+      this.detailObject.Content = tinymce.activeEditor.getContent();
       this._storageService.createObject(this.detailObject);
+    } else if (this.uiMode === UIMode.Change) {
+      // Update mode
     }
   }
 
-  public onCancel() {    
+  public onCancel() {
+    // Jump back to the list view
+    this._router.navigate(['/learn/object']);
   }
-
 }

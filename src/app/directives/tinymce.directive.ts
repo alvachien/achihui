@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { environment } from '../../environments/environment';
+import { LogLevel } from '../model';
 
 declare var tinymce: any;
 
@@ -50,29 +52,44 @@ export class TinyMceDirective implements OnDestroy, AfterViewInit, ControlValueA
         }
     }
 
-    ngAfterViewInit(): void {
-        tinymce.init({
-            selector: `[data-tinymce-uniqueid=${this.uniqueId}]`,
-            schema: 'html5',
-            height: 500,
-            menubar: false,
-            toolbar: "fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link forecolor backcolor | removeformat",
-            plugins: 'advlist autolink link image lists charmap print preview',
-            skin_url: '../../assets/tinymceskins/lightgray',
-            //insert_toolbar: 'quickimage quicktable',
-            //selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
-            //inline: true,
-            //paste_data_images: true,
-            setup: ed => {
-                ed.on('init', ed2 => {
-                    if (this.innerValue) ed2.target.setContent(this.innerValue);
-                    this.init = true;
-                });
-            }
-        });
+    set readonly(isro: boolean) {
+        if (isro) {
+            tinymce.activeEditor.setMode('readonly');
+        }
+    }
 
-        // I chose to send an update on blur, you may choose otherwise
-        tinymce.activeEditor.on('blur', () => this.updateValue());
+    ngAfterViewInit(): void {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log("AC_HIH_UI [Debug]: Entering ngAfterViewInit of TinyMceDirective");
+        }
+
+        try {
+            tinymce.init({
+                selector: `[data-tinymce-uniqueid=${this.uniqueId}]`,
+                schema: 'html5',
+                height: 500,
+                menubar: false,
+                toolbar: "fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link forecolor backcolor | removeformat",
+                plugins: 'advlist autolink link image lists charmap print preview',
+                skin_url: '../../assets/tinymceskins/lightgray',
+                //insert_toolbar: 'quickimage quicktable',
+                //selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
+                //inline: true,
+                //paste_data_images: true,
+                setup: ed => {
+                    ed.on('init', ed2 => {
+                        if (this.innerValue) ed2.target.setContent(this.innerValue);
+                        this.init = true;
+                    });
+                }
+            });
+    
+            tinymce.activeEditor.on('keyup change', () => this.updateValue());
+        } catch (err) {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Debug]: Exception in ngAfterViewInit of TinyMceDirective: ${err ? err.toString() : ''}`);
+            }
+        }
     }
 
     updateValue() {
@@ -97,6 +114,16 @@ export class TinyMceDirective implements OnDestroy, AfterViewInit, ControlValueA
     }
 
     ngOnDestroy(): void {
-        if (this.init) tinymce.remove(`[data-tinymce-uniqueid=${this.uniqueId}]`);
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log("AC_HIH_UI [Debug]: Entering ngOnDestroy of TinyMceDirective");
+        }
+
+        try {
+            if (this.init) tinymce.remove(`[data-tinymce-uniqueid=${this.uniqueId}]`);
+        } catch (err) {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Debug]: Exception in ngAfterViewInit of LearnObjectDetail: ${err ? err.toString() : ''}`);
+            }
+        }
     }
 }

@@ -286,6 +286,7 @@ export class LearnObject extends hih.BaseModel {
  * LearnHistory: History of the learn object and the user
  */
 export class LearnHistory extends hih.BaseModel {
+    public HID: number;
     public UserId: string;
     public ObjectId: number;
     public Comment: string;
@@ -310,6 +311,9 @@ export class LearnHistory extends hih.BaseModel {
     }
     set LearnDate(ld: moment.Moment) {
         this._learnDate = ld;
+    }
+    get LearnDateDisplayString(): string {
+        return this._learnDate.format(hih.MomentDateFormat);
     }
 
     public onInit() {
@@ -391,6 +395,7 @@ export class LearnHistory extends hih.BaseModel {
 
     public writeJSONObject(): any {
         let rstObj = super.writeJSONObject();
+        rstObj.hid = this.HID;
         rstObj.userID = this.UserId;
         rstObj.objectID = this.ObjectId;
         rstObj.learnDate = this._learnDate.format(hih.MomentDateFormat);
@@ -401,6 +406,9 @@ export class LearnHistory extends hih.BaseModel {
     public onSetData(data: any) {
         super.onSetData(data);
 
+        if (data && data.hid) {
+            this.HID = +data.hid;
+        }
         if (data && data.userID) {
             this.UserId = data.userID;
         }

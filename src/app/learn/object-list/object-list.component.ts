@@ -10,7 +10,7 @@ import { LogLevel, LearnObject } from '../../model';
 import { LearnStorageService } from '../../services';
 
 /**
- * Data source of Account
+ * Data source of Learn object
  */
 export class LearnObjectDataSource extends DataSource<any> {
   constructor(private _storageService: LearnStorageService,
@@ -54,7 +54,7 @@ export class ObjectListComponent implements OnInit {
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnInit...');
     }
 
     this.dataSource = new LearnObjectDataSource(this._storageService, this.paginator);
@@ -64,6 +64,9 @@ export class ObjectListComponent implements OnInit {
       this._storageService.fetchAllObjects(),
     ]).subscribe(x => {
       // Just ensure the REQUEST has been sent
+      if (x) {
+        
+      }
     });
   }
 
@@ -79,7 +82,7 @@ export class ObjectListComponent implements OnInit {
     this._router.navigate(['/learn/object/edit', obj.Id]);
   }
 
-  public onDeleteAccount(acnt: any) {
+  public onDeleteObject(obj: any) {
 
   }
 }
