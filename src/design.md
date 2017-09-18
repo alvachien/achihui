@@ -81,6 +81,11 @@ Authority control applys to all objects.
     - All: can access all histories;
 * Others;
 
+## Copy TinyMCE library
+Powershell:
+
+xcopy /I /E node_modules\tinymce\skins src\assets\tinymceskins
+
 ## Others
 
 
