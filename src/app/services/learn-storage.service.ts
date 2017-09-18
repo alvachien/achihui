@@ -33,6 +33,10 @@ export class LearnStorageService {
   private _isObjListLoaded: boolean;
   private _isHistListLoaded: boolean;
 
+  // Events
+  createObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
+  readObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
+
   constructor(private _http: HttpClient,
     private _authService: AuthService,
     private _homeService: HomeDefDetailService) {
@@ -136,7 +140,7 @@ export class LearnStorageService {
         })
         .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in FinanceStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService: ${err}`);
           }
           
           this._isObjListLoaded = true;
@@ -149,6 +153,101 @@ export class LearnStorageService {
     }
   }
 
+  /**
+   * Create an object
+   * @param obj Object to create
+   */
+  public createObject(obj: LearnObject) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnObject';
+
+    const jdata: string = obj.writeJSONString();
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+
+        let hd: LearnObject = new LearnObject();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createObject in LearnStorageService: ${x}`);
+        }
+
+        const copiedData = this.Objects.slice();
+        copiedData.push(x);
+        this.listObjectChange.next(copiedData);
+
+        // Broadcast event
+        this.createObjectEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in createObject in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createObjectEvent.emit(error.toString());
+      }, () => {
+      });
+  }
+
+  /**
+   * Read an object
+   * @param objid ID of the object to read
+   */
+  public readObject(objid: number) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnObject/' + objid.toString();
+    this._http.get(apiurl, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readObject in LearnStorageService: ${response}`);
+        }
+
+        let hd: LearnObject = new LearnObject();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in readObject in LearnStorageService: ${x}`);
+        }
+
+        // Todo, update the list buffer?
+        // const copiedData = this.Accounts.slice();
+        // copiedData.push(x);
+        // this.listAccountChange.next(copiedData);
+
+        // Broadcast event
+        this.readObjectEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.log(`AC_HIH_UI [Error]: Error occurred in readObject in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.readObjectEvent.emit(error);
+      }, () => {
+      });
+  }
+  
   // History
   public fetchAllHistories(forceReload?: boolean): Observable<LearnHistory[]> {
     if (!this._isCtgyListLoaded || forceReload) {

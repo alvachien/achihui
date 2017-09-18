@@ -9,17 +9,17 @@
         name="name">
     </md-form-field>
 
-    <md-form-field class="demo-full-width">
-      <input mdInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment"
-        name="cmt">
-    </md-form-field>
-
-    <md-select class="demo-full-width" placeholder="{{'Finance.Owner' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Owner"
-      name="owner">
-      <md-option *ngFor="let usr of _homedefService.MembersInChosedHome" [value]="usr.User">
-        {{usr.DisplayAs}}
+    <md-select class="demo-full-width" placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId"
+      name="ctgy">
+      <md-option *ngFor="let ctgy of _storageService.Categories" [value]="ctgy.Id">
+        {{ctgy.Name}}
       </md-option>
     </md-select>
+  
+    <div class="demo-full-width">
+      <textarea htmlEditor [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Content" name="content"></textarea>
+    </div>
+
   </md-card-content>
   <md-card-actions>
     <button md-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>

@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MdDialog } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject, UIMode, getUIModeString } from '../../model';
-import { HomeDefDetailService, FinanceStorageService } from '../../services';
+import { HomeDefDetailService, LearnStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
@@ -14,19 +14,20 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   templateUrl: './object-detail.component.html',
   styleUrls: ['./object-detail.component.scss'],
 })
-export class ObjectDetailComponent implements OnInit {
+export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
   public detailObject: LearnObject | null;
   public uiMode: UIMode = UIMode.Create;
-  public step: number = 0;
+  @Input() elementId: String;
+  @Output() onEditorKeyup = new EventEmitter<any>();
 
   constructor(private _dialog: MdDialog, 
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService) {
+    public _storageService: LearnStorageService) {
       this.detailObject = new LearnObject();
   }
 
@@ -38,7 +39,7 @@ export class ObjectDetailComponent implements OnInit {
     // Distinguish current mode
     this._activateRoute.url.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit for activateRoute URL: ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
 
         if (x instanceof Array && x.length > 0) {
@@ -58,45 +59,62 @@ export class ObjectDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
         
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readControlCenterEvent.subscribe(x => {
-            if (x instanceof ControlCenter) {
+          this._storageService.readObjectEvent.subscribe(x => {
+            if (x instanceof LearnObject) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, succeed to readControlCenterEvent : ${x}`);
+                console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ObjectDetailComponent, succeed to readControlCenterEvent : ${x}`);
               }
               this.detailObject = x;
             } else {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.log(`AC_HIH_UI [Error]: Entering ngOninit in ControlCenterDetailComponent, failed to readControlCenterEvent : ${x}`);
+                console.log(`AC_HIH_UI [Error]: Entering ngOninit in ObjectDetailComponent, failed to readControlCenterEvent : ${x}`);
               }
-              this.detailObject = new ControlCenter();
+              this.detailObject = new LearnObject();
             }
           });
 
-          this._storageService.readControlCenter(this.routerID);
+          this._storageService.readObject(this.routerID);
         }
       }
     }, (error) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in ControlCenterDetailComponent with activateRoute URL : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in ObjectDetailComponent with activateRoute URL : ${error}`);
       }
     }, () => {
     });
   }
 
+  private editor: any = null;
+  
+  ngAfterViewInit() {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log("AC_HIH_UI [Debug]: Entering ngAfterViewInit of LearnObjectDetail");
+    }
+
+    tinymce.init({
+      selector: '#' + this.elementId,
+      plugins: ['link', 'paste', 'table'],
+      skin_url: 'assets/tinymceskins/lightgray',
+      setup: editor => {
+        this.editor = editor;
+
+        editor.on('keyup change', () => {
+          const content = editor.getContent();
+          this.onEditorKeyup.emit(content);
+        });
+      },
+    });
+  }
+
+  ngOnDestroy() {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log("AC_HIH_UI [Debug]: Entering ngOnDestroy of LearnObjectDetail");
+    }
+    tinymce.remove(this.editor);
+  }
+    
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
-  }
-
-  public setStep(index: number) {
-    this.step = index;
-  }
-
-  public nextStep() {
-    this.step++;
-  }
-
-  public prevStep() {
-    this.step--;
   }
 
   public canSubmit(): boolean {
@@ -115,13 +133,13 @@ export class ObjectDetailComponent implements OnInit {
   
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
-      this._storageService.createControlCenterEvent.subscribe((x) => {
+      this._storageService.createObjectEvent.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createControlCenterEvent in ControlCenterDetailComponent with : ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Receiving createObjectEvent in ObjectDetailComponent with : ${x}`);
         }
 
         // Navigate back to list view
-        if (x instanceof ControlCenter) {
+        if (x instanceof LearnObject) {
           // Show a dialog, then jump to the display view
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Success',
@@ -138,7 +156,7 @@ export class ObjectDetailComponent implements OnInit {
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
             }
-            this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
+            this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
           });
         } else {
           // Show error message
@@ -161,7 +179,7 @@ export class ObjectDetailComponent implements OnInit {
         }        
       });
 
-      this._storageService.createControlCenter(this.detailObject);
+      this._storageService.createObject(this.detailObject);
     }
   }
 

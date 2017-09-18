@@ -48,12 +48,13 @@ import {
     FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
     HomeDefDetailService, CanDeactivateGuardService,
 } from './services';
+import { TinyMceDirective } from './directives/tinymce.directive';
 
 @NgModule({
     imports: [CommonModule],
-    // declarations: [
-
-    // ],
+    declarations: [
+        TinyMceDirective
+    ],
     // providers: [
     //     AuthService,
     //     AuthGuardService,
@@ -107,6 +108,7 @@ import {
         PlatformModule,
         PortalModule,
         NgxChartsModule,
+        TinyMceDirective,
     ],
 })
 export class UIDependModule {
