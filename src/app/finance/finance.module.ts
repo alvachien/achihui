@@ -32,6 +32,9 @@ import { DocumentComponent } from './document';
 import { DocumentListComponent } from './document-list';
 import { DocumentDetailComponent } from './document-detail';
 import { ReportComponent } from './report';
+import { DocumentNormalDetailComponent } from './document-normal-detail';
+import { DocumentTransferDetailComponent } from './document-transfer-detail';
+import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment-detail';
 
 @NgModule({
   imports: [
@@ -67,6 +70,9 @@ import { ReportComponent } from './report';
     OrderListComponent,
     OrderDetailComponent,
     ReportComponent,
+    DocumentNormalDetailComponent,
+    DocumentTransferDetailComponent,
+    DocumentAdvancepaymentDetailComponent,
   ],
   providers: [
     { provide: DateAdapter, useClass: MomentDateAdapter },

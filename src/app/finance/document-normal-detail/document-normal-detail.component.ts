@@ -16,7 +16,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
  * Data source of Document Items
  */
 export class DocumentItemDataSource extends DataSource<any> {
-  constructor(private _parentComponent: DocumentDetailComponent) {
+  constructor(private _parentComponent: DocumentNormalDetailComponent) {
     super();
   }
 
@@ -35,11 +35,11 @@ export class DocumentItemDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'hih-finance-document-detail',
-  templateUrl: './document-detail.component.html',
-  styleUrls: ['./document-detail.component.scss'],
+  selector: 'app-document-normal-detail',
+  templateUrl: './document-normal-detail.component.html',
+  styleUrls: ['./document-normal-detail.component.scss']
 })
-export class DocumentDetailComponent implements OnInit {
+export class DocumentNormalDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
   public detailObject: Document | null = null;
@@ -67,7 +67,7 @@ export class DocumentDetailComponent implements OnInit {
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent ngOnInit...');
     }
 
     Observable.forkJoin([
@@ -80,7 +80,7 @@ export class DocumentDetailComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       this._activateRoute.url.subscribe(x => {
@@ -238,7 +238,7 @@ export class DocumentDetailComponent implements OnInit {
       
       this._storageService.createDocumentEvent.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentDetailComponent with : ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentNormalDetailComponent with : ${x}`);
         }
 
         // Navigate back to list view
@@ -248,7 +248,7 @@ export class DocumentDetailComponent implements OnInit {
             duration: 3000
           }).afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+            this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
           });
         } else {
           // Show error message

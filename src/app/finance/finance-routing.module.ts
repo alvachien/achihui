@@ -22,6 +22,9 @@ import { OrderDetailComponent } from './order-detail';
 import { DocumentComponent } from './document';
 import { DocumentListComponent } from './document-list';
 import { DocumentDetailComponent } from './document-detail';
+import { DocumentNormalDetailComponent } from './document-normal-detail';
+import { DocumentTransferDetailComponent } from './document-transfer-detail';
+import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment-detail';
 import { ReportComponent } from './report';
 
 const routes: Routes = [
@@ -174,12 +177,48 @@ const routes: Routes = [
             component: DocumentDetailComponent,
           },
           {
+            path: 'createnormal',
+            component: DocumentNormalDetailComponent,
+          },
+          {
+            path: 'createtransfer',
+            component: DocumentTransferDetailComponent,
+          },
+          {
+            path: 'createadp',
+            component: DocumentAdvancepaymentDetailComponent,
+          },
+          {
             path: 'display/:id',
             component: DocumentDetailComponent,
           },
           {
+            path: 'displaynormal/:id',
+            component: DocumentNormalDetailComponent,
+          },
+          {
+            path: 'displaytransfer/:id',
+            component: DocumentTransferDetailComponent,
+          },
+          {
+            path: 'displayadp',
+            component: DocumentAdvancepaymentDetailComponent,
+          },
+          {
             path: 'edit/:id',
             component: DocumentDetailComponent,
+          },
+          {
+            path: 'editnormal/:id',
+            component: DocumentNormalDetailComponent,
+          },
+          {
+            path: 'edittransfer/:id',
+            component: DocumentTransferDetailComponent,
+          },
+          {
+            path: 'editadp',
+            component: DocumentAdvancepaymentDetailComponent,
           },
         ],
       },

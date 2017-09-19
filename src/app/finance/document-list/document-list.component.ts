@@ -79,13 +79,41 @@ export class DocumentListComponent implements OnInit {
   public onCreateDocument() {
     this._router.navigate(['/finance/document/create']);
   }
+  public onCreateNormalDocument() {
+    this._router.navigate(['/finance/document/createnormal']);
+  }
+  public onCreateTransferDocument() {
+    this._router.navigate(['/finance/document/createtransfer']);
+  }
+  public onCreateADPDocument() {
+    this._router.navigate(['/finance/document/createadp']);
+  }
 
   public onDisplayDocument(doc: Document) {
-    this._router.navigate(['/finance/document/display', doc.Id]);
+    
+    this._router.navigate(['/finance/document/displaynormal', doc.Id]);
+  }
+  public onDisplayNormalDocument(doc: Document) {
+    this._router.navigate(['/finance/document/displaynormal', doc.Id]);
+  }
+  public onDisplayTransferDocument(doc: Document) {
+    this._router.navigate(['/finance/document/displaytransfer', doc.Id]);
+  }
+  public onDisplayADPDocument() {
+    this._router.navigate(['/finance/document/displayadp']);
   }
 
   public onChangeDocument(doc: Document) {
     this._router.navigate(['/finance/document/edit', doc.Id]);
+  }
+  public onChangeNormalDocument(doc: Document) {
+    this._router.navigate(['/finance/document/editnormal', doc.Id]);
+  }
+  public onChangeTransferDocument(doc: Document) {
+    this._router.navigate(['/finance/document/edittransfer', doc.Id]);
+  }
+  public onChangeADPDocument() {
+    this._router.navigate(['/finance/document/editadp']);
   }
 
   public onDeleteDocument(doc: Document) {

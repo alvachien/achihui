@@ -1,0 +1,27 @@
+<md-card>
+  <md-card-header>
+    <md-card-title>{{'Finance.TransferDocument' | translate}}</md-card-title>
+    <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
+  </md-card-header>
+  <md-card-content>
+    <!-- Currency -->
+    <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
+      name="doctype">
+      <md-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+        {{cr.Symbol}} - {{cr.Name | translate}}
+      </md-option>
+    </md-select>
+
+    <!-- Tran date -->
+    <md-form-field>
+      <input mdInput [(ngModel)]="detailObject.TranDate" [mdDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+      <md-datepicker-toggle mdSuffix [for]="tdpicker"></md-datepicker-toggle>
+      <md-datepicker #tdpicker></md-datepicker>
+    </md-form-field>
+
+    <md-form-field class="demo-full-width">
+      <input mdInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
+        name="name">
+    </md-form-field>
+  </md-card-content>
+</md-card>
