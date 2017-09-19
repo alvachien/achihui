@@ -36,6 +36,8 @@ export class LearnStorageService {
   // Events
   createObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
   readObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
+  createHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
+  readHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -152,7 +154,7 @@ export class LearnStorageService {
       return Observable.of(this.listObjectChange.value);
     }
   }
-
+0
   /**
    * Create an object
    * @param obj Object to create
@@ -299,4 +301,99 @@ export class LearnStorageService {
       return Observable.of(this.listHistoryChange.value);
     }
   }
+
+  /**
+   * Create a history
+   * @param hist History to create
+   */
+  public createHistory(hist: LearnHistory) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnHistory';
+
+    const jdata: string = hist.writeJSONString();
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+
+        let hd: LearnHistory = new LearnHistory();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createHistory in LearnStorageService: ${x}`);
+        }
+
+        const copiedData = this.Histories.slice();
+        copiedData.push(x);
+        this.listHistoryChange.next(copiedData);
+
+        // Broadcast event
+        this.createHistoryEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in createHistory in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createHistoryEvent.emit(error.toString());
+      }, () => {
+      });
+  }
+
+  /**
+   * Read a history
+   * @param histid ID of the history to read
+   */
+  public readHistory(histid: string) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnHistory/' + histid;
+    this._http.get(apiurl, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readHistory in LearnStorageService: ${response}`);
+        }
+
+        let hd: LearnHistory = new LearnHistory();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in readHistory in LearnStorageService: ${x}`);
+        }
+
+        // Todo, update the list buffer?
+        // const copiedData = this.Accounts.slice();
+        // copiedData.push(x);
+        // this.listAccountChange.next(copiedData);
+
+        // Broadcast event
+        this.readHistoryEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.log(`AC_HIH_UI [Error]: Error occurred in readHistory in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.readHistoryEvent.emit(error);
+      }, () => {
+      });
+  }  
 }

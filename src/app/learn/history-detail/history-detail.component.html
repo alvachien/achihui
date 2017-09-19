@@ -1,3 +1,31 @@
-<p>
-  history-detail works!
-</p>
+<md-card>
+  <md-card-header>
+    <md-card-title>{{'Learning.LearningHistory' | translate}}</md-card-title>
+    <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
+  </md-card-header>
+  <md-card-content>
+    <md-select class="demo-full-width" placeholder="{{'Login.User' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.UserId"
+      name="usr">
+      <md-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
+        {{mem.DisplayAs}}
+      </md-option>
+    </md-select>
+
+    <md-select class="demo-full-width" placeholder="{{'Learning.LearningObject' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ObjectId"
+      name="ctgy">
+      <md-option *ngFor="let obj of _storageService.Objects" [value]="obj.Id">
+        {{obj.Name}}
+      </md-option>
+    </md-select>
+  
+    <md-form-field class="demo-full-width">
+      <input mdInput [(ngModel)]="detailObject.LearnDate" [mdDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+      <md-datepicker-toggle mdSuffix [for]="tdpicker"></md-datepicker-toggle>
+      <md-datepicker #tdpicker></md-datepicker>
+    </md-form-field>
+  </md-card-content>
+  <md-card-actions>
+    <button md-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button md-button color="warn" (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
+  </md-card-actions>
+</md-card>

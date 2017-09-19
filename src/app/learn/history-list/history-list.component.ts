@@ -19,14 +19,14 @@ export class LearnHistoryDataSource extends DataSource<any> {
   }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<LearnObject[]> {
+  connect(): Observable<LearnHistory[]> {
     const displayDataChanges = [
       this._storageService.listHistoryChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.Objects.slice();
+      const data = this._storageService.Histories.slice();
 
       // Grab the page's slice of data.
       const startIndex = this._paginator.pageIndex * this._paginator.pageSize;

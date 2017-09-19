@@ -22,12 +22,12 @@ export class AccountDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
 
-  constructor(private _dialog: MdDialog, 
+  constructor(private _dialog: MdDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
-      this.detailObject = new Account();
+    this.detailObject = new Account();
   }
 
   ngOnInit() {
@@ -35,53 +35,53 @@ export class AccountDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit...');
     }
 
-    this._storageService.fetchAllAccountCategories();
-
-    // Distinguish current mode
-    this._activateRoute.url.subscribe((x) => {
+    this._storageService.fetchAllAccountCategories().subscribe((rst) => {
+      // Distinguish current mode
+      this._activateRoute.url.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
 
         if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.detailObject = new Account();
-          this.uiMode = UIMode.Create;
-          this.detailObject.HID = this._homedefService.ChosedHome.ID;
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+          if (x[0].path === 'create') {
+            this.detailObject = new Account();
+            this.uiMode = UIMode.Create;
+            this.detailObject.HID = this._homedefService.ChosedHome.ID;
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Change;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+            this.uiMode = UIMode.Change;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Display;
-        }
-        this.currentMode = getUIModeString(this.uiMode);
-        
-        if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readAccountEvent.subscribe(x => {
-            if (x instanceof Account) {
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readAccount : ${x}`);
+            this.uiMode = UIMode.Display;
+          }
+          this.currentMode = getUIModeString(this.uiMode);
+
+          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+            this._storageService.readAccountEvent.subscribe(x => {
+              if (x instanceof Account) {
+                if (environment.LoggingLevel >= LogLevel.Debug) {
+                  console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readAccount : ${x}`);
+                }
+                this.detailObject = x;
+              } else {
+                if (environment.LoggingLevel >= LogLevel.Error) {
+                  console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readAccount : ${x}`);
+                }
+                this.detailObject = new Account();
               }
-              this.detailObject = x;
-            } else {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readAccount : ${x}`);
-              }
-              this.detailObject = new Account();
-            }
-          });
+            });
 
-          this._storageService.readAccount(this.routerID);
+            this._storageService.readAccount(this.routerID);
+          }
         }
-      }
-    }, (error) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.log(`AC_HIH_UI [Error]: Entering ngOnInit in AccountDetailComponent with activateRoute URL : ${error}`);
-      }
-    }, () => {
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.log(`AC_HIH_UI [Error]: Entering ngOnInit in AccountDetailComponent with activateRoute URL : ${error}`);
+        }
+      }, () => {
+      });
     });
   }
 
@@ -104,7 +104,7 @@ export class AccountDetailComponent implements OnInit {
   public canSubmit(): boolean {
     return true;
   }
-  
+
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
       this._storageService.createAccountEvent.subscribe((x) => {
@@ -150,10 +150,12 @@ export class AccountDetailComponent implements OnInit {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
             }
           });
-        }        
+        }
       });
 
       this._storageService.createAccount(this.detailObject);
+    } else if (this.uiMode === UIMode.Change) {
+      // Update current account
     }
   }
 }

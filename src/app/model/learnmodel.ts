@@ -303,7 +303,7 @@ export class LearnHistory extends hih.BaseModel {
     }
 
     public generateKey() : string {
-        return this.UserId + '_' + this.ObjectId.toString() + '_' + this._learnDate.format(hih.MomentDateFormat);
+        return this.HID.toString() + '_' + this.UserId + '_' + this.ObjectId.toString() + '_' + this._learnDate.format(hih.MomentDateFormat);
     }
 
     get LearnDate(): moment.Moment {
