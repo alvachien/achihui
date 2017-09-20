@@ -801,9 +801,9 @@ export class FinanceStorageService {
 
     let apiurl = environment.ApiUrl + '/api/FinanceDocument/' + docid.toString();
     this._http.get(apiurl, {
-      headers: headers,
-      withCredentials: true
-    })
+        headers: headers,
+        withCredentials: true
+      })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering readDocument in FinanceStorageService: ${response}`);

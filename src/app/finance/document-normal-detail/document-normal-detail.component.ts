@@ -8,7 +8,7 @@ import { MdDialog, MdSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString } from '../../model';
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -85,15 +85,15 @@ export class DocumentNormalDetailComponent implements OnInit {
 
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
+          if (x[0].path === 'createnormal') {
             this.detailObject = new Document();
             this.uiMode = UIMode.Create;
             this.detailObject.HID = this._homedefService.ChosedHome.ID;
-          } else if (x[0].path === 'edit') {
+          } else if (x[0].path === 'editnormal') {
             this.routerID = +x[1].path;
   
             this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'display') {
+          } else if (x[0].path === 'displaynormal') {
             this.routerID = +x[1].path;
   
             this.uiMode = UIMode.Display;
@@ -272,6 +272,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       });
 
       this.detailObject.HID = this._homedefService.ChosedHome.ID;
+      this.detailObject.DocType = FinanceDocType_Normal;
       this._storageService.createDocument(this.detailObject);
     }
   }

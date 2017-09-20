@@ -1,9 +1,14 @@
 import { environment } from '../../environments/environment';
 import * as hih from './common';
 import * as HIHFinance from './financemodel';
+import * as moment from 'moment';
 
 export class UIFinTransferDocument {
     public TranAmount: number;
+    public TranCurr: string;
+    public TranDate: moment.Moment;
+    public Desp: string;
+
     public SourceAccountId: number;
     public TargetAccountId: number;
     public SourceControlCenterId: number;
@@ -17,6 +22,58 @@ export class UIFinTransferDocument {
     public TargetControlCenterName: string;
     public SourceOrderName: string;
     public TargetOrderName: string;
+
+    constructor() {
+        this.TranDate = moment();
+    }
+
+    public generateDocument(): HIHFinance.Document {
+        let doc: HIHFinance.Document = new HIHFinance.Document();
+        doc.DocType = hih.FinanceDocType_Transfer;
+        doc.Desp = this.Desp;
+        doc.TranCurr = this.TranCurr;
+
+        let docitem = new HIHFinance.DocumentItem();
+        docitem.ItemId = 1;
+        docitem.AccountId = this.SourceAccountId;
+        docitem.ControlCenterId = this.SourceControlCenterId;
+        docitem.OrderId = this.SourceOrderId;
+        docitem.TranType = hih.FinanceTranType_TransferOut;
+        docitem.TranAmount = this.TranAmount;
+        docitem.Desp = this.Desp;
+        doc.Items.push(docitem);
+
+        docitem = new HIHFinance.DocumentItem();
+        docitem.ItemId = 2;
+        docitem.AccountId = this.TargetAccountId;
+        docitem.TranType = hih.FinanceTranType_TransferIn;
+        docitem.ControlCenterId = this.TargetControlCenterId;
+        docitem.OrderId = this.TargetOrderId;
+        docitem.TranAmount = this.TranAmount;
+        docitem.Desp = this.Desp;
+        doc.Items.push(docitem);
+
+        return doc;
+    }
+
+    public parseDocument(doc: HIHFinance.Document): void {
+        this.TranDate = doc.TranDate;
+        this.TranCurr = doc.TranCurr;
+        this.Desp = doc.Desp;
+
+        for(let di of doc.Items) {
+            if (di.TranType === hih.FinanceTranType_TransferOut) {
+                this.SourceAccountId = di.AccountId;
+                this.SourceControlCenterId = di.ControlCenterId;
+                this.SourceOrderId = di.OrderId;
+                this.TranAmount = di.TranAmount;
+            } else if(di.TranType === hih.FinanceTranType_TransferIn) {
+                this.TargetAccountId = di.AccountId;
+                this.TargetControlCenterId = di.ControlCenterId;
+                this.TargetOrderId = di.OrderId;                                
+            }
+        }
+    }
 }
 
 export class UIRepeatFrequency {

@@ -6,7 +6,7 @@
   <md-card-content>
     <!-- Currency -->
     <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
-      name="doctype">
+      name="cur">
       <md-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
         {{cr.Symbol}} - {{cr.Name | translate}}
       </md-option>
@@ -19,9 +19,66 @@
       <md-datepicker #tdpicker></md-datepicker>
     </md-form-field>
 
+    <md-form-field>
+      <input mdInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"
+        name="itamt">
+    </md-form-field>
+
     <md-form-field class="demo-full-width">
       <input mdInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
-        name="name">
+        name="desp">
     </md-form-field>
+
+    <div class="container demo-full-width">
+      <div class="row demo-full-width">
+        <!-- From -->
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+          <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
+            name="itacnt">
+            <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
+              {{acnt.Name}}
+            </md-option>
+          </md-select>
+          <md-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
+            name="itcc">
+            <md-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+              {{tt.Name}}
+            </md-option>
+          </md-select>
+          <md-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId"
+            name="itord">
+            <md-option *ngFor="let tt of _storageService.Orders" [value]="tt.Id">
+              {{tt.Name}}
+            </md-option>
+          </md-select>
+        </div>
+
+        <!-- To -->
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+          <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetAccountId"
+            name="itacnt">
+            <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
+              {{acnt.Name}}
+            </md-option>
+          </md-select>
+          <md-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetControlCenterId"
+            name="itcc">
+            <md-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+              {{tt.Name}}
+            </md-option>
+          </md-select>
+          <md-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetOrderId"
+            name="itord">
+            <md-option *ngFor="let tt of _storageService.Orders" [value]="tt.Id">
+              {{tt.Name}}
+            </md-option>
+          </md-select>
+        </div>
+      </div>
+    </div>
   </md-card-content>
+  <md-card-actions>
+    <button md-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button md-button (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
+  </md-card-actions>
 </md-card>

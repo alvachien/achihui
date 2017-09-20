@@ -16,17 +16,9 @@
           </md-panel-description>
         </md-expansion-panel-header>
 
-        <!-- Doc. type -->
-        <md-select class="demo-full-width" placeholder="{{'Finance.DocumentType' | translate}}" 
-          [disabled]="!isFieldChangable" [(ngModel)]="detailObject.DocType" name="doctype">
-          <md-option *ngFor="let dt of _storageService.DocumentTypes" [value]="dt.Id">
-            {{dt.Name}} 
-          </md-option>
-        </md-select>
-
         <!-- Currency -->
         <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" 
-          [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr" name="doctype">
+          [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr" name="curr">
           <md-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
               {{cr.Symbol}} - {{cr.Name | translate}}
           </md-option>
@@ -40,7 +32,7 @@
         </md-form-field>        
         
         <md-form-field class="demo-full-width">
-          <input mdInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp" name="name">
+          <input mdInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp" name="dsp">
         </md-form-field>
 
         <md-action-row>
