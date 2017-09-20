@@ -409,12 +409,18 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     set StartDate(sd: moment.Moment) {
         this._startDate = sd;
     }
+    get StartDateFormatString(): string {
+        return this._startDate.format(hih.MomentDateFormat);
+    }
 
     get EndDate(): moment.Moment {
         return this._endDate;
     }
     set EndDate(ed: moment.Moment) {
         this._endDate = ed;
+    }
+    get EndDateFormatString(): string {
+        return this._endDate.format(hih.MomentDateFormat);
     }
 
     constructor() {

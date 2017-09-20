@@ -3,6 +3,9 @@ import * as hih from './common';
 import * as HIHFinance from './financemodel';
 import * as moment from 'moment';
 
+/**
+ * Transfer document in UI part
+ */
 export class UIFinTransferDocument {
     public TranAmount: number;
     public TranCurr: string;
@@ -118,8 +121,14 @@ export class UIRepeatFrequency {
     }
 }
 
+/**
+ * Advance payment: UI part
+ */
 export class UIFinAdvPayDocument {
     public TranAmount: number;
+    public TranDate: moment.Moment;
+    public Desp: string;
+    public TranCurr: string;
 
     public SourceTranType: number;
     public SourceAccountId: number;
@@ -131,5 +140,20 @@ export class UIFinAdvPayDocument {
 
     constructor() {
         this.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
+        this.TranDate = moment();
+    }
+    public generateDocument(): HIHFinance.Document {
+        let doc: HIHFinance.Document = new HIHFinance.Document();
+        doc.DocType = hih.FinanceDocType_Transfer;
+        doc.Desp = this.Desp;
+        doc.TranCurr = this.TranCurr;
+
+        return doc;
+    }
+
+    public parseDocument(doc: HIHFinance.Document): void {
+        this.TranDate = doc.TranDate;
+        this.TranCurr = doc.TranCurr;
+        this.Desp = doc.Desp;
     }
 }
