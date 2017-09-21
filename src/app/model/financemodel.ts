@@ -426,15 +426,15 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     constructor() {
         super();
 
-        this.StartDate = moment();
-        this.EndDate = moment();
+        this._startDate = moment();
+        this._endDate = moment();
     }
 
     public onInit() {
         super.onInit();
 
-        this.StartDate = moment();
-        this.EndDate = moment();
+        this._startDate = moment();
+        this._endDate = moment();
     }
 
     public clone(): AccountExtraAdvancePayment {

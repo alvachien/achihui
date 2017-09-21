@@ -8,10 +8,14 @@ import { MdDialog, MdSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, 
-  UIFinAdvPayDocument, TemplateDocADP, UIRepeatFrequency, AccountExtraAdvancePayment } from '../../model';
+import {
+  LogLevel, Document, DocumentItem, UIMode, getUIModeString,
+  UIFinAdvPayDocument, TemplateDocADP, UIRepeatFrequency, AccountExtraAdvancePayment, RepeatFrequency
+} from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import * as moment from 'moment';
+//import 'moment/locale/zh-cn';
 
 /**
  * Data source of Document Items
@@ -42,14 +46,14 @@ export class TemplateDocADPDataSource extends DataSource<any> {
   styleUrls: ['./document-advancepayment-detail.component.scss']
 })
 export class DocumentAdvancepaymentDetailComponent implements OnInit {
-  
+
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
   public detailObject: UIFinAdvPayDocument | null = null;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
 
-  displayedColumns = ['AccountId', 'TranType', 'TranDate', 'TranAmount', 'Desp', 'ControlCenter', 'Order'];
+  displayedColumns = ['TranDate', 'TranAmount', 'Desp'];
   dataSource: TemplateDocADPDataSource | null;
   tmpDocOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
   arFrequencies = UIRepeatFrequency.getRepeatFrequencies();
@@ -96,22 +100,22 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
             this.uiMode = UIMode.Create;
           } else if (x[0].path === 'edittransfer') {
             this.routerID = +x[1].path;
-  
+
             this.uiMode = UIMode.Change;
           } else if (x[0].path === 'displaytransfer') {
             this.routerID = +x[1].path;
-  
+
             this.uiMode = UIMode.Display;
           }
           this.currentMode = getUIModeString(this.uiMode);
-          
+
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this._storageService.readDocumentEvent.subscribe(x2 => {
               if (x2 instanceof Document) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
                 }
-  
+
                 this.detailObject.parseDocument(x2);
 
                 if (this.uiMode === UIMode.Change) {
@@ -121,16 +125,16 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
                 }
-  
+
                 this.detailObject = new UIFinAdvPayDocument();
                 this.uiMode = UIMode.Invalid;
               }
             });
-  
+
             this._storageService.readDocument(this.routerID);
           } else {
             // Create mode!
-            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;            
+            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -143,7 +147,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
       const dlginfo: MessageDialogInfo = {
         Header: 'Common.Error',
-        Content: error? error.toString() : 'Common.Error',
+        Content: error ? error.toString() : 'Common.Error',
         Button: MessageDialogButtonEnum.onlyok
       };
 
@@ -168,7 +172,111 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   public prevStep() {
     this.step--;
   }
-  
+
+  public onSync(): void {
+    this.detailObject.TmpDocs = [];
+
+    let rtype = this.detailObject.AdvPayAccount.RepeatType;
+    if (this.detailObject.AdvPayAccount.EndDate.isValid || this.detailObject.AdvPayAccount.StartDate.isValid) {
+      return;
+    }
+    
+    let ndays: number = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'days');
+    let ntimes: number = 0;
+    let i: number = 0;
+    let arDays = [];
+
+    switch (rtype) {
+      case RepeatFrequency.Month:
+        ntimes = Math.floor(ndays / 30);
+        for (i = 0; i < ntimes; i++) {
+          let nDate = this.detailObject.AdvPayAccount.StartDate.add(i, 'M');
+          arDays.push(nDate);
+        }
+        break;
+
+      case RepeatFrequency.Fortnight:
+        ntimes = Math.floor(ndays / 14);
+        for (i = 0; i < ntimes; i++) {
+          let nDate = this.detailObject.AdvPayAccount.StartDate.add(14 * i, 'd');
+          arDays.push(nDate);
+        }
+        break;
+
+      case RepeatFrequency.Week:
+        ntimes = Math.floor(ndays / 7);
+        for (i = 0; i < ntimes; i++) {
+          let nDate = this.detailObject.AdvPayAccount.StartDate.add(7 * i, 'd');
+          arDays.push(nDate);
+        }
+        break;
+
+      case RepeatFrequency.Day:
+        ntimes = ndays;
+        for (i = 0; i < ntimes; i++) {
+          let nDate = this.detailObject.AdvPayAccount.StartDate.add(i, 'd');
+          arDays.push(nDate);
+        }
+        break;
+
+      case RepeatFrequency.Quarter:
+        ntimes = Math.floor(ndays / 91);
+        for (i = 0; i < ntimes; i++) {
+          let nDate = this.detailObject.AdvPayAccount.StartDate.add(i, 'Q');
+          arDays.push(nDate);
+        }
+        break;
+
+      case RepeatFrequency.HalfYear:
+        ntimes = Math.floor(ndays / 182);
+        for (i = 0; i < ntimes; i++) {
+          let nDate = this.detailObject.AdvPayAccount.StartDate.add(6 * i, 'M');
+          arDays.push(nDate);
+        }
+        break;
+
+      case RepeatFrequency.Year:
+        ntimes = Math.floor(ndays / 365);
+        for (i = 0; i < ntimes; i++) {
+          let nDate = this.detailObject.AdvPayAccount.StartDate.add(i, 'y');
+          arDays.push(nDate);
+        }
+        break;
+
+      case RepeatFrequency.Manual:
+        ntimes = 0;
+        break;
+
+      default:
+        break;
+    }
+
+    let totalAmt: number = 0;
+    for (i = 0; i < ntimes; i++) {
+      let item: TemplateDocADP = new TemplateDocADP();
+      item.DocId = i + 1;
+      item.TranType = this.detailObject.SourceTranType;
+      item.TranDate = arDays[i];
+      item.TranAmount = Number.parseFloat((this.detailObject.TranAmount / ntimes).toFixed(2));
+      totalAmt += item.TranAmount;
+      this.detailObject.TmpDocs.push(item);
+    }
+    if (this.detailObject.TranAmount !== totalAmt) {
+      this.detailObject.TmpDocs[0].TranAmount += (this.detailObject.TranAmount - totalAmt);
+    }
+
+    if (ntimes === 0) {
+      let item = new TemplateDocADP();
+      item.DocId = 1;
+      item.TranType = this.detailObject.SourceTranType;
+      item.TranDate = this.detailObject.AdvPayAccount.StartDate;
+      item.TranAmount = this.detailObject.TranAmount;
+      this.detailObject.TmpDocs.push(item);
+    }
+
+    this.tmpDocOperEvent.emit();
+  }
+
   public canSubmit(): boolean {
     if (!this.isFieldChangable) {
       return false;
@@ -215,10 +323,10 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           width: '500px',
           data: dlginfo
         });
-        
+
         return;
       }
-      
+
       this._storageService.createDocumentEvent.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAdvancepaymentDetailComponent with : ${x}`);
