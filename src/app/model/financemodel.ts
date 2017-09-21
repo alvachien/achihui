@@ -437,6 +437,45 @@ export class AccountExtraAdvancePayment extends AccountExtra {
         this.EndDate = moment();
     }
 
+    public clone(): AccountExtraAdvancePayment {
+        let aobj: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+        aobj.Direct = this.Direct;
+        aobj.StartDate = this.StartDate;
+        aobj.EndDate = this.EndDate;
+        aobj.RepeatType = this.RepeatType;
+        aobj.RefDocId = this.RefDocId;
+        aobj.DeferredDays = this.DeferredDays;
+        aobj.Comment = this.Comment;
+
+        return aobj;
+    }
+
+    public isDiff(other: AccountExtraAdvancePayment): boolean {
+        if (this.Direct !== other.Direct) {
+            return true;
+        }
+        if (this.StartDate !== other.StartDate) {
+            return true;
+        }
+        if (this.EndDate !== other.EndDate) {
+            return true;
+        }
+        if (this.RepeatType !== other.RepeatType) {
+            return true;
+        }
+        if (this.RefDocId !== other.RefDocId) {
+            return true;
+        }
+        if (this.DeferredDays !== other.DeferredDays) {
+            return true;
+        }
+        if (this.Comment !== other.Comment) {
+            return true;
+        }
+
+        return false;
+    }
+
     public writeJSONObject(): any {
         let rstobj: any = super.writeJSONObject();
         rstobj.direct = this.Direct;

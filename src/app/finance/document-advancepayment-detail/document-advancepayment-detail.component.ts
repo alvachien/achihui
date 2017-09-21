@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, 
-  UIFinAdvPayDocument, TemplateDocADP, UIRepeatFrequency } from '../../model';
+  UIFinAdvPayDocument, TemplateDocADP, UIRepeatFrequency, AccountExtraAdvancePayment } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -53,6 +53,8 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   dataSource: TemplateDocADPDataSource | null;
   tmpDocOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
   arFrequencies = UIRepeatFrequency.getRepeatFrequencies();
+
+  private _advacntSnapshot: AccountExtraAdvancePayment = null;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -111,12 +113,17 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
                 }
   
                 this.detailObject.parseDocument(x2);
+
+                if (this.uiMode === UIMode.Change) {
+                  this._advacntSnapshot = this.detailObject.AdvPayAccount.clone();
+                }
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
                 }
   
                 this.detailObject = new UIFinAdvPayDocument();
+                this.uiMode = UIMode.Invalid;
               }
             });
   
