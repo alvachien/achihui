@@ -6,7 +6,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MOMENT_DATE_FORMATS, MomentDateAdapter } from '../utility';
+import { MD_MOMENT_DATE_FORMATS, MomentDateAdapter } from '../utility';
 
 import { FinanceRoutingModule } from './finance-routing.module';
 import { FinanceComponent } from './finance.component';
@@ -76,7 +76,7 @@ import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment
   ],
   providers: [
     { provide: DateAdapter, useClass: MomentDateAdapter },
-    { provide: MD_DATE_FORMATS, useValue: MOMENT_DATE_FORMATS },
+    { provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
   ]
 })
 export class FinanceModule { }

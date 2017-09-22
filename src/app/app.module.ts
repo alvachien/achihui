@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpModule, Http } from '@angular/http';
-import { MD_DATE_FORMATS, DateAdapter } from '@angular/material';
+import { MD_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER } from '@angular/material';
 import { UIDependModule } from './uidepend.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -22,7 +22,7 @@ import { LearnModule } from './learn';
 import { FinanceModule } from './finance';
 import { FinanceCurrencyComponent } from './finance-currency';
 import { LanguageComponent } from './language';
-import { MOMENT_DATE_FORMATS, MomentDateAdapter } from './utility';
+import { MD_MOMENT_DATE_FORMATS, MomentDateAdapter } from './utility';
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 import { HomeDefComponent } from './home-def';
 import { HomeDefListComponent } from './home-def-list';
@@ -66,8 +66,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MessageDialogComponent,
   ],
   providers: [
-    { provide: DateAdapter, useClass: MomentDateAdapter },
-    { provide: MD_DATE_FORMATS, useValue: MOMENT_DATE_FORMATS },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
     AuthService,
     AuthGuardService,
     FinCurrencyService,

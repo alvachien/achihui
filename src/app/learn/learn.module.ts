@@ -6,7 +6,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MOMENT_DATE_FORMATS, MomentDateAdapter } from '../utility';
+import { MD_MOMENT_DATE_FORMATS, MomentDateAdapter } from '../utility';
 
 import { LearnRoutingModule } from './learn-routing.module';
 import { LearnComponent } from './learn.component';
@@ -44,7 +44,7 @@ import { HistoryDetailComponent } from './history-detail';
   ],
   providers: [
     { provide: DateAdapter, useClass: MomentDateAdapter },
-    { provide: MD_DATE_FORMATS, useValue: MOMENT_DATE_FORMATS },
+    { provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
   ]
 })
 export class LearnModule { }
