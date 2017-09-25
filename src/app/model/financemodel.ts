@@ -400,7 +400,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     private _endDate: moment.Moment;
     public RepeatType: hih.RepeatFrequency;
     public RefDocId: number;
-    public DeferredDays: string;
+    public DeferredDays: number;
     public Comment: string;
 
     get StartDate(): moment.Moment {
@@ -970,6 +970,7 @@ export class Document extends hih.BaseModel {
     public ExgRate_Plan: boolean;
     public TranCurr2: string;
     public ExgRate2: number;
+    public ExgRate_Plan2: boolean;
 
     public Items: DocumentItem[] = [];
 
@@ -1134,6 +1135,10 @@ export class Document extends hih.BaseModel {
         rstObj.tranDate = this._tranDate.format(hih.MomentDateFormat);
         rstObj.tranCurr = this.TranCurr;
         rstObj.desp = this.Desp;
+        rstObj.exgRate = this.ExgRate;
+        rstObj.exgRate_Plan = this.ExgRate_Plan;
+        rstObj.exgRate2 = this.ExgRate2;
+        rstObj.exgRate_Plan2 = this.ExgRate_Plan2;
 
         rstObj.items = [];
         for (let di of this.Items) {

@@ -229,6 +229,8 @@
     "Outgoing": "Outgoing",
     "Assets": "Assets",
     "Liabilities": "Liabilities",
+    "ExchangeRate": "Exchange rate",
+    "ProposedExchangeRate": "Proposed exchange rate",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",
@@ -258,7 +260,8 @@
     "NoInputFound": "No input found",
     "InvalidOrder": "Invalid Order",
     "ControlCenterFetchFailedOrNoCC": "Failed to fetch Control center or no control center created at all",
-    "OrderFetchFailedOrNoOrder": "Failed to fetch order or no order created at all"
+    "OrderFetchFailedOrNoOrder": "Failed to fetch order or no order created at all",
+    "DocumentPosted": "Document Posted"
   },
   "Library": {
     "Books": "Books",

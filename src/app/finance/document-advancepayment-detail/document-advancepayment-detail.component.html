@@ -138,7 +138,7 @@
       </md-expansion-panel-header>
 
       <md-toolbar>
-        <button md-icon-button color="primary" (click)="onSync()"><md-icon md-icon-button color="primary">refresh</md-icon></button>
+        <button md-icon-button color="primary" (click)="onSync()" [disabled]="!isCreateMode"><md-icon md-icon-button color="primary">refresh</md-icon></button>
       </md-toolbar>
       <div class="table-container mat-elevation-z8">
         <md-table #table [dataSource]="dataSource">
@@ -184,5 +184,6 @@
   </md-card-content>
   <md-card-actions>
     <button md-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button md-button color="primary" (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
   </md-card-actions>
 </md-card>

@@ -2,13 +2,14 @@ import {
   Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MdDialog, MdSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString } from '../../model';
+import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, FinanceDocType_Transfer } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -23,6 +24,9 @@ export class DocumentTransferDetailComponent implements OnInit {
   public detailObject: UIFinTransferDocument | null = null;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
+  public commonFormGroup: FormGroup;
+  public sourceFormGroup: FormGroup;  
+  public targetFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -34,7 +38,8 @@ export class DocumentTransferDetailComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
-    public _currService: FinCurrencyService) {
+    public _currService: FinCurrencyService,
+    private _formBuilder: FormBuilder) {
     this.detailObject = new UIFinTransferDocument();
   }
 
@@ -42,6 +47,16 @@ export class DocumentTransferDetailComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentTransferDetailComponent ngOnInit...');
     }
+
+    this.commonFormGroup = this._formBuilder.group({
+
+    });
+    this.sourceFormGroup = this._formBuilder.group({
+      firstCtrl: ['', Validators.required]
+    });
+    this.targetFormGroup = this._formBuilder.group({
+      secondCtrl: ['', Validators.required]
+    });
 
     Observable.forkJoin([
       this._storageService.fetchAllAccountCategories(),

@@ -13,9 +13,9 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from 
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 /**
- * Data source of Document Items
+ * Data source of Normal Document Items
  */
-export class DocumentItemDataSource extends DataSource<any> {
+export class NormalDocumentItemDataSource extends DataSource<any> {
   constructor(private _parentComponent: DocumentNormalDetailComponent) {
     super();
   }
@@ -47,11 +47,18 @@ export class DocumentNormalDetailComponent implements OnInit {
   public step: number = 0;
 
   displayedColumns = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order'];
-  dataSource: DocumentItemDataSource | null;
+  dataSource: NormalDocumentItemDataSource | null;
   itemOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
+  get isForeignCurrency(): boolean {
+    if (this.detailObject && this.detailObject.TranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
+      return true;
+    }
+
+    return false;
   }
 
   constructor(private _dialog: MdDialog,
@@ -62,7 +69,8 @@ export class DocumentNormalDetailComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     this.detailObject = new Document();
-    this.dataSource = new DocumentItemDataSource(this);
+    this.detailObject.DocType = FinanceDocType_Normal;
+    this.dataSource = new NormalDocumentItemDataSource(this);
   }
 
   ngOnInit() {
@@ -89,6 +97,7 @@ export class DocumentNormalDetailComponent implements OnInit {
             this.detailObject = new Document();
             this.uiMode = UIMode.Create;
             this.detailObject.HID = this._homedefService.ChosedHome.ID;
+            this.detailObject.DocType = FinanceDocType_Normal;
           } else if (x[0].path === 'editnormal') {
             this.routerID = +x[1].path;
   
@@ -115,6 +124,7 @@ export class DocumentNormalDetailComponent implements OnInit {
                 }
   
                 this.detailObject = new Document();
+                this.detailObject.DocType = FinanceDocType_Normal;
               }
             });
   
@@ -182,7 +192,7 @@ export class DocumentNormalDetailComponent implements OnInit {
   }
 
   public onDeleteDocItem(di) {
-    let idx: number = 0;
+    let idx: number = -1;
     for(let i: number = 0; i < this.detailObject.Items.length; i ++) {
       if (this.detailObject.Items[i].ItemId === di.ItemId) {
         idx = i;
@@ -190,8 +200,10 @@ export class DocumentNormalDetailComponent implements OnInit {
       }
     }
 
-    this.detailObject.Items.splice(idx);
-    this.itemOperEvent.emit();
+    if (idx !== -1) {
+      this.detailObject.Items.splice(idx);
+      this.itemOperEvent.emit();
+    }
   }
 
   private getNextItemID(): number {
@@ -244,7 +256,7 @@ export class DocumentNormalDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           // Show the snackbar
-          this._snackbar.open('Message archived', 'OK', {
+          this._snackbar.open("{{'Finance.DocumentPosted' | translate}}", 'OK', {
             duration: 3000
           }).afterDismissed().subscribe(() => {
             // Navigate to display

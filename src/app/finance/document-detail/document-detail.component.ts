@@ -8,7 +8,7 @@ import { MdDialog, MdSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString } from '../../model';
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -52,6 +52,13 @@ export class DocumentDetailComponent implements OnInit {
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
+  get isForeignCurrency(): boolean {
+    if (this.detailObject && this.detailObject.TranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
+      return true;
+    }
+
+    return false;
   }
 
   constructor(private _dialog: MdDialog,

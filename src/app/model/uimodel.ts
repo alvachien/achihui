@@ -125,6 +125,9 @@ export class UIRepeatFrequency {
  * Advance payment: UI part
  */
 export class UIFinAdvPayDocument {
+    public DocumentObject: HIHFinance.Document;
+    public AccountObject: HIHFinance.Account;
+
     public TranAmount: number;
     public TranDate: moment.Moment;
     public Desp: string;
@@ -160,20 +163,48 @@ export class UIFinAdvPayDocument {
         return doc;
     }
 
-    public parseDocument(doc: HIHFinance.Document): void {
-        this.TranDate = doc.TranDate;
-        this.TranCurr = doc.TranCurr;
-        this.Desp = doc.Desp;
+    public parseDocument(doc: HIHFinance.Document | any): void {
+        if (doc instanceof HIHFinance.Document) {
+            this.TranDate = doc.TranDate;
+            this.TranCurr = doc.TranCurr;
+            this.Desp = doc.Desp;
+    
+            if (doc.Items.length !== 1) {
+                throw Error('Failed to parse document');
+            }
+    
+            let fitem: HIHFinance.DocumentItem = doc.Items[0];
+            this.SourceAccountId = fitem.AccountId;
+            this.SourceControlCenterId = fitem.ControlCenterId;
+            this.SourceOrderId = fitem.OrderId;
+            this.TranAmount = fitem.TranAmount;
+            this.SourceTranType = fitem.TranType;
+        } else {
+            this.DocumentObject = new HIHFinance.Document();
+            this.DocumentObject.onSetData(doc);
+            this.AccountObject = new HIHFinance.Account();
+            this.AccountObject.onSetData(doc.accountVM);
 
-        if (doc.Items.length !== 1) {
-            throw Error('Failed to parse document');
+            this.TranDate = moment(doc.tranDate, hih.MomentDateFormat);
+            this.TranCurr = doc.tranCurr;
+            this.Desp = doc.desp;
+
+            if (doc.items.length !== 1) {
+                throw Error('Failed to parse document');
+            }
+            let fitem = doc.items[0];
+            this.SourceAccountId = +fitem.accountID;
+            this.SourceControlCenterId = +fitem.controlCenterID;
+            this.SourceOrderId = +fitem.orderID;
+            this.SourceTranType = +fitem.tranType;
+
+            this.AdvPayAccount.onSetData(doc.accountVM.advancePaymentInfo);
+
+            for(let it of doc.tmpDocs) {
+                let tdoc: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
+                tdoc.onSetData(it);
+                this.TmpDocs.push(tdoc);
+            }
         }
-
-        let fitem: HIHFinance.DocumentItem = doc.Items[0];
-        this.SourceAccountId = fitem.AccountId;
-        this.SourceControlCenterId = fitem.ControlCenterId;
-        this.SourceOrderId = fitem.OrderId;
-        this.TranAmount = fitem.TranAmount;
-        this.SourceTranType = fitem.TranType;
     }
 }

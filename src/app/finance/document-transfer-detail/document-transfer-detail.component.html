@@ -4,35 +4,41 @@
     <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
   </md-card-header>
   <md-card-content>
-    <!-- Currency -->
-    <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
-      name="cur">
-      <md-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
-        {{cr.Symbol}} - {{cr.Name | translate}}
-      </md-option>
-    </md-select>
+    <md-horizontal-stepper linear="true">
+      <md-step [stepControl]="commonFormGroup">
+        <form [formGroup]="commonFormGroup">
+          <ng-template mdStepLabel>Header</ng-template>
+          <!-- Currency -->
+          <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
+            name="cur">
+            <md-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+              {{cr.Symbol}} - {{cr.Name | translate}}
+            </md-option>
+          </md-select>
 
-    <!-- Tran date -->
-    <md-form-field>
-      <input mdInput [(ngModel)]="detailObject.TranDate" [mdDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
-      <md-datepicker-toggle mdSuffix [for]="tdpicker"></md-datepicker-toggle>
-      <md-datepicker #tdpicker></md-datepicker>
-    </md-form-field>
+          <!-- Tran date -->
+          <md-form-field>
+            <input mdInput [(ngModel)]="detailObject.TranDate" [mdDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+            <md-datepicker-toggle mdSuffix [for]="tdpicker"></md-datepicker-toggle>
+            <md-datepicker #tdpicker></md-datepicker>
+          </md-form-field>
 
-    <md-form-field>
-      <input mdInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"
-        name="itamt">
-    </md-form-field>
+          <!-- Desp -->
+          <md-form-field class="demo-full-width">
+              <input mdInput type="text" placeholder="{{'Common.Description' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
+                name="desp">
+          </md-form-field>
+                  
+          <div>
+            <button md-button mdStepperNext>Next</button>
+          </div>
+        </form>
+      </md-step>
 
-    <md-form-field class="demo-full-width">
-      <input mdInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
-        name="desp">
-    </md-form-field>
+      <md-step [stepControl]="sourceFormGroup">
+        <form [formGroup]="sourceFormGroup">
+          <ng-template mdStepLabel>Source</ng-template>
 
-    <div class="container demo-full-width">
-      <div class="row demo-full-width">
-        <!-- From -->
-        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
           <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
             name="itacnt">
             <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
@@ -51,10 +57,17 @@
               {{tt.Name}}
             </md-option>
           </md-select>
-        </div>
 
-        <!-- To -->
-        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+          <div>
+            <button md-button mdStepperPrevious>Back</button>
+            <button md-button mdStepperNext>Next</button>
+          </div>
+        </form>
+      </md-step>
+
+      <md-step [targetFormGroup]="targetFormGroup">
+        <form [targetFormGroup]="targetFormGroup">
+          <ng-template mdStepLabel>Target</ng-template>
           <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetAccountId"
             name="itacnt">
             <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
@@ -73,10 +86,42 @@
               {{tt.Name}}
             </md-option>
           </md-select>
+          <div>
+            <button md-button mdStepperPrevious>Back</button>
+            <button md-button mdStepperNext>Next</button>
+          </div>
+        </form>
+      </md-step>
+      <md-step>
+        <ng-template mdStepLabel>Done</ng-template>
+        You are now done.
+        <div>
+          <button md-button mdStepperPrevious>Back</button>
+        </div>
+      </md-step>
+    </md-horizontal-stepper>
+
+
+
+    <md-form-field>
+      <input mdInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"
+        name="itamt">
+    </md-form-field>
+
+
+    <div class="container demo-full-width">
+      <div class="row demo-full-width">
+        <!-- From -->
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        </div>
+
+        <!-- To -->
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
         </div>
       </div>
     </div>
   </md-card-content>
+
   <md-card-actions>
     <button md-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
     <button md-button (click)="onCancel()">{{'Common.Cancel' | translate}}</button>

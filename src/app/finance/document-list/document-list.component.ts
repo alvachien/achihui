@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem } from '../../model';
+import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_Transfer, FinanceDocType_AdvancePayment } from '../../model';
 import { FinanceStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -76,6 +76,12 @@ export class DocumentListComponent implements OnInit {
     });
   }
 
+  public onRefreshList() {
+    this._storageService.fetchAllDocuments(true).subscribe(x => {
+      // Just ensure the REQUEST has been sent
+    });
+  }
+
   public onCreateDocument() {
     this._router.navigate(['/finance/document/create']);
   }
@@ -90,8 +96,13 @@ export class DocumentListComponent implements OnInit {
   }
 
   public onDisplayDocument(doc: Document) {
-    
-    this._router.navigate(['/finance/document/displaynormal', doc.Id]);
+    if (doc.DocType === FinanceDocType_Normal) {
+      this.onDisplayNormalDocument(doc);
+    } else if(doc.DocType === FinanceDocType_Transfer) {
+      this.onDisplayTransferDocument(doc);
+    } else if(doc.DocType === FinanceDocType_AdvancePayment) {
+      this.onDisplayADPDocument(doc);
+    }
   }
   public onDisplayNormalDocument(doc: Document) {
     this._router.navigate(['/finance/document/displaynormal', doc.Id]);
@@ -99,12 +110,18 @@ export class DocumentListComponent implements OnInit {
   public onDisplayTransferDocument(doc: Document) {
     this._router.navigate(['/finance/document/displaytransfer', doc.Id]);
   }
-  public onDisplayADPDocument() {
-    this._router.navigate(['/finance/document/displayadp']);
+  public onDisplayADPDocument(doc: Document) {
+    this._router.navigate(['/finance/document/displayadp', doc.Id]);
   }
 
   public onChangeDocument(doc: Document) {
-    this._router.navigate(['/finance/document/edit', doc.Id]);
+    if (doc.DocType === FinanceDocType_Normal) {
+      this.onChangeNormalDocument(doc);
+    } else if(doc.DocType === FinanceDocType_Transfer) {
+      this.onChangeTransferDocument(doc);
+    } else if(doc.DocType === FinanceDocType_AdvancePayment) {
+      this.onChangeADPDocument(doc);
+    }
   }
   public onChangeNormalDocument(doc: Document) {
     this._router.navigate(['/finance/document/editnormal', doc.Id]);
@@ -112,8 +129,8 @@ export class DocumentListComponent implements OnInit {
   public onChangeTransferDocument(doc: Document) {
     this._router.navigate(['/finance/document/edittransfer', doc.Id]);
   }
-  public onChangeADPDocument() {
-    this._router.navigate(['/finance/document/editadp']);
+  public onChangeADPDocument(doc: Document) {
+    this._router.navigate(['/finance/document/editadp', doc.Id]);
   }
 
   public onDeleteDocument(doc: Document) {

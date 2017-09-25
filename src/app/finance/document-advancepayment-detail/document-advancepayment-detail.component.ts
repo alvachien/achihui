@@ -58,10 +58,11 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   tmpDocOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
   arFrequencies = UIRepeatFrequency.getRepeatFrequencies();
 
-  private _advacntSnapshot: AccountExtraAdvancePayment = null;
-
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
+  get isCreateMode(): boolean {
+    return this.uiMode === UIMode.Create;
   }
 
   constructor(private _dialog: MdDialog,
@@ -95,14 +96,14 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'createtransfer') {
+          if (x[0].path === 'createadp') {
             this.detailObject = new UIFinAdvPayDocument();
             this.uiMode = UIMode.Create;
-          } else if (x[0].path === 'edittransfer') {
+          } else if (x[0].path === 'editadp') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'displaytransfer') {
+          } else if (x[0].path === 'displayadp') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
@@ -110,11 +111,16 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readADPDocument(this.routerID).subscribe(x3 => {
-              this.detailObject.parseDocument(x3);
-            }, error => {
+            this._storageService.readADPDocument(this.routerID).subscribe(x2 => {
+              if (environment.LoggingLevel >= LogLevel.Debug) {
+                console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit for activateRoute URL: ${x2}`);
+              }
+
+              this.detailObject.parseDocument(x2);
+              this.tmpDocOperEvent.emit();
+            }, error2 => {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error}`);
+                console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error2}`);
               }
             });
           } else {
@@ -330,7 +336,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           // Show the snackbar
-          this._snackbar.open('Message archived', 'OK', {
+          this._snackbar.open('Document posted', 'OK', {
             duration: 3000
           }).afterDismissed().subscribe(() => {
             // Navigate to display
@@ -384,6 +390,6 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   }
 
   public onCancel(): void {
-
+    this._router.navigate(['/finance/document/']);
   }
 }

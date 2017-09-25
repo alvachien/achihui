@@ -8,6 +8,7 @@
       <button md-icon-button [mdMenuTriggerFor]="mdMenuCreateDoc">
         <md-icon>add</md-icon>
       </button>
+      <button md-icon-button color="primary" (click)="onRefreshList()"><md-icon md-icon-button color="primary">refresh</md-icon></button>
       <md-menu #mdMenuCreateDoc="mdMenu">
         <button md-menu-item (click)="onCreateNormalDocument()">{{'Finance.Document' | translate}}</button>
         <button md-menu-item (click)="onCreateTransferDocument()">{{'Finance.TransferDocument' | translate}}</button>
