@@ -84,6 +84,7 @@
     "PreviousButton": "上一步",
     "Error": "错误",
     "Success": "成功",
+    "RepeatFrequency": "重复频率",
 
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",

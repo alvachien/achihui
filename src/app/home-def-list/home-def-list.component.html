@@ -14,11 +14,11 @@
         <ng-container mdColumnDef="id">
           <md-header-cell *mdHeaderCellDef></md-header-cell>
           <md-cell *mdCellDef="let row">
+              <button md-icon-button (click)="onChooseHome(row)">
+                <md-icon color="primary" class="md-14 example-icon" aria-label="Choose">verified_user</md-icon>
+              </button>
               <button md-icon-button (click)="onDisplayHome(row)">
                 <md-icon color="primary" class="md-14 example-icon" aria-label="Display">search</md-icon>
-              </button>
-              <button md-icon-button (click)="onChooseHome(row)">
-                <md-icon color="primary" class="md-14 example-icon" aria-label="Choose">assignment_turned_in</md-icon>
               </button>
               #{{ row.ID }}
           </md-cell>

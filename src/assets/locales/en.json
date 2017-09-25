@@ -84,6 +84,7 @@
     "PreviousButton": "Previous",
     "Error": "Error",
     "Success": "Success",
+    "RepeatFrequency": "Repeat Frequency",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",

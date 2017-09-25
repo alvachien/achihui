@@ -148,6 +148,15 @@ export class UIFinAdvPayDocument {
         doc.Desp = this.Desp;
         doc.TranCurr = this.TranCurr;
 
+        let fitem: HIHFinance.DocumentItem = new HIHFinance.DocumentItem();
+        fitem.ItemId = 1;
+        fitem.AccountId = this.SourceAccountId;
+        fitem.ControlCenterId = this.SourceControlCenterId;
+        fitem.OrderId = this.SourceOrderId;
+        fitem.TranType = this.SourceTranType;
+        fitem.TranAmount = this.TranAmount;
+        doc.Items.push(fitem);
+
         return doc;
     }
 
@@ -155,5 +164,16 @@ export class UIFinAdvPayDocument {
         this.TranDate = doc.TranDate;
         this.TranCurr = doc.TranCurr;
         this.Desp = doc.Desp;
+
+        if (doc.Items.length !== 1) {
+            throw Error('Failed to parse document');
+        }
+
+        let fitem: HIHFinance.DocumentItem = doc.Items[0];
+        this.SourceAccountId = fitem.AccountId;
+        this.SourceControlCenterId = fitem.ControlCenterId;
+        this.SourceOrderId = fitem.OrderId;
+        this.TranAmount = fitem.TranAmount;
+        this.SourceTranType = fitem.TranType;
     }
 }

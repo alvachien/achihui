@@ -56,7 +56,7 @@ export class FinanceStorageService {
   createOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
   readOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
   createDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
-  readDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
+  readDocumentEvent: EventEmitter<Document | string | any | null> = new EventEmitter(null);
 
   // Buffer
   private _isAcntCtgyListLoaded: boolean;
@@ -755,9 +755,9 @@ export class FinanceStorageService {
 
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
-      headers: headers,
-      withCredentials: true
-    })
+        headers: headers,
+        withCredentials: true
+      })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log('AC_HIH_UI [Debug]: Entering Map of createDocument in FinanceStorageService: ' + response);
@@ -780,7 +780,54 @@ export class FinanceStorageService {
         this.createDocumentEvent.emit(x);
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in createDocument in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Error occurred in createDocument in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createDocumentEvent.emit(error.toString());
+      }, () => {
+      });
+  }
+
+  /**
+   * Crate ADP document
+   * @param jdata JSON format
+   */
+  public createADPDocument(jdata: any) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/financeadpdocument';
+
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of createADPDocument in FinanceStorageService: ' + response);
+        }
+
+        let hd: Document = new Document();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createADPDocument in FinanceStorageService: ${x}`);
+        }
+
+        const copiedData = this.Documents.slice();
+        copiedData.push(x);
+        this.listDocumentChange.next(copiedData);
+
+        // Broadcast event
+        this.createDocumentEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in createADPDocument in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
@@ -827,7 +874,54 @@ export class FinanceStorageService {
         this.readDocumentEvent.emit(x);
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in readDocument in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Error occurred in readDocument in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.readDocumentEvent.emit(error);
+      }, () => {
+      });
+  }
+
+  /**
+   * Read the ADP document from API
+   * @param docid Id of ADP Document
+   */
+  public readADPDocument(docid: number) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/financeadpdocument/' + docid.toString();
+    this._http.get(apiurl, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readADPDocument in FinanceStorageService: ${response}`);
+        }
+
+        // let hd: Document = new Document();
+        // hd.onSetData(response);
+        return response;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in readADPDocument in FinanceStorageService: ${x}`);
+        }
+
+        // Todo, update the memory
+        // const copiedData = this.Orders.slice();
+        // copiedData.push(x);
+        // this.listOrderChange.next(copiedData);
+
+        // Broadcast event
+        this.readDocumentEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in readADPDocument in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed

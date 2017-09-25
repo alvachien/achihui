@@ -82,7 +82,7 @@
         </md-panel-description>
       </md-expansion-panel-header>
 
-      <div class="container">
+      <div class="container" class="demo-full-width">
         <md-form-field class="demo-full-width">
           <input mdInput [(ngModel)]="detailObject.AdvPayAccount.StartDate" [mdDatepicker]="advstartdpicker" placeholder="{{'Common.StartDate' | translate}}">
           <md-datepicker-toggle mdSuffix [for]="advstartdpicker"></md-datepicker-toggle>
@@ -95,7 +95,7 @@
           <md-datepicker #advenddpicker></md-datepicker>
         </md-form-field>
 
-        <md-select placeholder="Repeat frequency" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.AdvPayAccount.RepeatType"
+        <md-select placeholder="{{'Common.RepeatFrequency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.AdvPayAccount.RepeatType"
           name="rpttype" class="demo-full-width">
           <md-option *ngFor="let rt of arFrequencies" [value]="rt.Id">
             {{rt.DisplayString | translate}}

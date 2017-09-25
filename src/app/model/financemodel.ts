@@ -427,7 +427,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
         super();
 
         this._startDate = moment();
-        this._endDate = moment();
+        this._endDate = moment().add(1, 'y');
     }
 
     public onInit() {
