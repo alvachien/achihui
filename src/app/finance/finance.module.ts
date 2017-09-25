@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MD_DATE_FORMATS, DateAdapter } from '@angular/material';
+import { MD_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE_PROVIDER, MAT_DATE_LOCALE } from '@angular/material';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { UIDependModule } from '../uidepend.module';
@@ -75,7 +75,8 @@ import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment
     DocumentAdvancepaymentDetailComponent,
   ],
   providers: [
-    { provide: DateAdapter, useClass: MomentDateAdapter },
+    MAT_DATE_LOCALE_PROVIDER,
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
   ]
 })

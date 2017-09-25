@@ -3,7 +3,11 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef } from './model';
-import { AuthService, HomeDefDetailService } from './services';
+import { AuthService, HomeDefDetailService, UIStatusService } from './services';
+import * as moment from 'moment';
+import 'moment/locale/zh-cn';
+import { DateAdapter } from '@angular/material';
+import { MomentDateAdapter } from './utility';
 
 @Component({
   selector: 'hih-root',
@@ -29,7 +33,9 @@ export class AppComponent implements OnInit {
     private _authService: AuthService,
     private _homeDefService: HomeDefDetailService,
     private _zone: NgZone,
-    private _router: Router) {
+    private _router: Router,
+    private _uistatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<MomentDateAdapter>) {
     // Setup the translate
     this.userDisplayAs = '';
     this.curChosenHome = null;
@@ -74,7 +80,7 @@ export class AppComponent implements OnInit {
         });
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error('AC Math Exercise: Log [Error]: Failed in subscribe to User', error);
+          console.error('AC Math Exercise [Error]: Failed in subscribe to User', error);
         }
       }, () => {
         // Completed
@@ -84,10 +90,12 @@ export class AppComponent implements OnInit {
     }
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this._translate.setDefaultLang('zh');
     this._translate.use('zh').subscribe(x => {
       this.SelectedLanguage = 'zh';
+      this._uistatusService.CurrentLanguage = this.SelectedLanguage;
+      this._dateAdapter.setLocale('zh-cn');
       this.updateDocumentTitle();
     });
   }
@@ -131,6 +139,16 @@ export class AppComponent implements OnInit {
     if (this._translate.currentLang !== this.SelectedLanguage &&
       this.SelectedLanguage !== undefined) {
       this._translate.use(this.SelectedLanguage);
+
+      if (this.SelectedLanguage === 'zh') {
+        moment.locale('zh-cn');
+        this._dateAdapter.setLocale('zh-cn');
+      } else if (this.SelectedLanguage === 'en') {
+        moment.locale('en');
+        this._dateAdapter.setLocale('en');
+      }
+
+      this._uistatusService.CurrentLanguage = this.SelectedLanguage;
 
       this.updateDocumentTitle();
     }

@@ -14,7 +14,7 @@ import { AppComponent } from './app.component';
 import {
   AuthService, AuthGuardService, 
   FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
-  HomeDefDetailService, CanDeactivateGuardService, LanguageService
+  HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService
 } from './services';
 import { AppRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
@@ -66,6 +66,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MessageDialogComponent,
   ],
   providers: [
+    MAT_DATE_LOCALE_PROVIDER,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
     AuthService,
@@ -76,7 +77,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     CanDeactivateGuardService,
     FinanceStorageService,
     LearnStorageService,
-    LanguageService
+    LanguageService,
+    UIStatusService,
   ],
   bootstrap: [AppComponent],
 })
