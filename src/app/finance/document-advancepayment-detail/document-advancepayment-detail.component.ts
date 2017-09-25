@@ -110,30 +110,15 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocumentEvent.subscribe(x2 => {
-              if (x2 instanceof Document) {
-                if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
-                }
-
-                this.detailObject.parseDocument(x2);
-
-                if (this.uiMode === UIMode.Change) {
-                  this._advacntSnapshot = this.detailObject.AdvPayAccount.clone();
-                }
-              } else {
-                if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
-                }
-
-                this.detailObject = new UIFinAdvPayDocument();
-                this.uiMode = UIMode.Invalid;
+            this._storageService.readADPDocument(this.routerID).subscribe(x3 => {
+              this.detailObject.parseDocument(x3);
+            }, error => {
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error}`);
               }
             });
-
-            this._storageService.readDocument(this.routerID);
           } else {
-            // Create mode!
+            // Create mode!            
             this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
@@ -301,6 +286,10 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       return false;
     }
 
+    if (this.detailObject.TmpDocs.length <= 0) {
+      return false;
+    }
+
     return true;
   }
 
@@ -382,6 +371,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
       sobj.TmpDocs = [];
       for(let td of this.detailObject.TmpDocs) {
+        td.HID = acntobj.HID;
         td.ControlCenterId = this.detailObject.SourceControlCenterId;
         td.OrderId = this.detailObject.SourceOrderId;
 

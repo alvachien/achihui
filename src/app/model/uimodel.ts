@@ -138,13 +138,13 @@ export class UIFinAdvPayDocument {
     public AdvPayAccount: HIHFinance.AccountExtraAdvancePayment;
     public TmpDocs: HIHFinance.TemplateDocADP[] = [];
 
-    constructor() {
+    constructor() {        
         this.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
         this.TranDate = moment();
     }
     public generateDocument(): HIHFinance.Document {
         let doc: HIHFinance.Document = new HIHFinance.Document();
-        doc.DocType = hih.FinanceDocType_Transfer;
+        doc.DocType = hih.FinanceDocType_AdvancePayment;
         doc.Desp = this.Desp;
         doc.TranCurr = this.TranCurr;
 

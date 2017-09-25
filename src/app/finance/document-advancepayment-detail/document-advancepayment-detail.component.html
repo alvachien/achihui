@@ -30,6 +30,13 @@
         <md-datepicker #srcdpicker></md-datepicker>
       </md-form-field>
 
+      <!-- Tran type -->
+      <md-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranType" name="srctt">
+        <md-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
+          {{tt.Name}}
+        </md-option>
+      </md-select>
+
       <!-- Account -->
       <md-select class="demo-full-width" placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
         name="srcacnt">
@@ -51,7 +58,7 @@
       </md-form-field>
 
       <!-- CC -->
-      <md-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ControlCenterId"
+      <md-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
         name="hdrcc" class="demo-full-width">
         <md-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
           {{tt.Name}}
@@ -59,7 +66,7 @@
       </md-select>
 
       <!-- Order -->
-      <md-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.OrderId" name="hdrord"
+      <md-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId" name="hdrord"
         class="demo-full-width">
         <md-option *ngFor="let tt of _storageService.Orders" [value]="tt.Id">
           {{tt.Name}}

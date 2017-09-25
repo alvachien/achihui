@@ -1454,6 +1454,7 @@ export class DocumentItem {
  */
 export class TemplateDocADP extends hih.BaseModel {
     public DocId: number;
+    public HID: number;
     public RefDocId: number;
     public AccountId: number;
     private _tranDate: moment.Moment;
@@ -1495,6 +1496,7 @@ export class TemplateDocADP extends hih.BaseModel {
     public writeJSONObject(): any {
         let rstObj = super.writeJSONObject();
         rstObj.docID = this.DocId;
+        rstObj.hid = this.HID;
         rstObj.refDocID = this.RefDocId;
         rstObj.accountID = this.AccountId;
         rstObj.tranDate = this._tranDate.format(hih.MomentDateFormat);
@@ -1512,6 +1514,9 @@ export class TemplateDocADP extends hih.BaseModel {
 
         if (data && data.docID) {
             this.DocId = +data.docID;
+        }
+        if (data && data.hid) {
+            this.HID = +data.hid;
         }
         if (data && data.refDocID) {
             this.RefDocId = +data.refDocID;

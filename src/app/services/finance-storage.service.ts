@@ -884,17 +884,17 @@ export class FinanceStorageService {
   }
 
   /**
-   * Read the ADP document from API
+   * Read the ADP document from API, it WONT trigger readDocument event!
    * @param docid Id of ADP Document
    */
-  public readADPDocument(docid: number) {
+  public readADPDocument(docid: number): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/financeadpdocument/' + docid.toString();
-    this._http.get(apiurl, {
+    return this._http.get(apiurl, {
         headers: headers,
         withCredentials: true
       })
@@ -906,27 +906,6 @@ export class FinanceStorageService {
         // let hd: Document = new Document();
         // hd.onSetData(response);
         return response;
-      })
-      .subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in readADPDocument in FinanceStorageService: ${x}`);
-        }
-
-        // Todo, update the memory
-        // const copiedData = this.Orders.slice();
-        // copiedData.push(x);
-        // this.listOrderChange.next(copiedData);
-
-        // Broadcast event
-        this.readDocumentEvent.emit(x);
-      }, (error) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in readADPDocument in FinanceStorageService:  ${error}`);
-        }
-
-        // Broadcast event: failed
-        this.readDocumentEvent.emit(error);
-      }, () => {
       });
   }
 }

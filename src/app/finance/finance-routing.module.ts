@@ -201,7 +201,7 @@ const routes: Routes = [
             component: DocumentTransferDetailComponent,
           },
           {
-            path: 'displayadp',
+            path: 'displayadp/:id',
             component: DocumentAdvancepaymentDetailComponent,
           },
           {
@@ -217,7 +217,7 @@ const routes: Routes = [
             component: DocumentTransferDetailComponent,
           },
           {
-            path: 'editadp',
+            path: 'editadp/:id',
             component: DocumentAdvancepaymentDetailComponent,
           },
         ],
