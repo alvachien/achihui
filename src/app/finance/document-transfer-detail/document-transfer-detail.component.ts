@@ -49,13 +49,14 @@ export class DocumentTransferDetailComponent implements OnInit {
     }
 
     this.commonFormGroup = this._formBuilder.group({
-
+      despCtrl: ['', Validators.required],
+      amtCtrl: ['', Validators.required]
     });
     this.sourceFormGroup = this._formBuilder.group({
-      firstCtrl: ['', Validators.required]
+      //srcaccountCtrl: ['', Validators.required]
     });
     this.targetFormGroup = this._formBuilder.group({
-      secondCtrl: ['', Validators.required]
+      //tgtaccountCtrl: ['', Validators.required]
     });
 
     Observable.forkJoin([
