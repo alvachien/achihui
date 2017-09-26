@@ -5,99 +5,98 @@
   </md-card-header>
   <md-card-content>
     <md-horizontal-stepper linear="true">
-      <md-step [stepControl]="commonFormGroup">
-        <form [formGroup]="commonFormGroup">
-          <ng-template mdStepLabel>Header</ng-template>
+      <md-step>
+        <ng-template mdStepLabel>Header</ng-template>
 
-          <!-- Tran date -->
-          <md-form-field>
-            <input mdInput [(ngModel)]="detailObject.TranDate" [mdDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
-            <md-datepicker-toggle mdSuffix [for]="tdpicker"></md-datepicker-toggle>
-            <md-datepicker #tdpicker></md-datepicker>
-          </md-form-field>
+        <!-- Tran date -->
+        <md-form-field>
+          <input mdInput [(ngModel)]="detailObject.TranDate" [mdDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+          <md-datepicker-toggle mdSuffix [for]="tdpicker"></md-datepicker-toggle>
+          <md-datepicker #tdpicker></md-datepicker>
+        </md-form-field>
 
-          <!-- Desp -->
-          <md-form-field class="demo-full-width">
-            <input mdInput type="text" placeholder="{{'Common.Description' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
-              formControlName="despCtrl" name="desp">
-          </md-form-field>
+        <!-- Desp -->
+        <md-form-field class="demo-full-width">
+          <input mdInput type="text" placeholder="{{'Common.Description' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
+            name="desp">
+        </md-form-field>
 
-          <!-- Currency -->
-          <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
-              name="cur">
-            <md-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
-              {{cr.Symbol}} - {{cr.Name | translate}}
-            </md-option>
-          </md-select>
+        <!-- Currency -->
+        <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
+          name="cur">
+          <md-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+            {{cr.Symbol}} - {{cr.Name | translate}}
+          </md-option>
+        </md-select>
 
-          <md-form-field>
-            <input mdInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"
-              formControlName="amtCtrl" name="itamt">
-          </md-form-field>
-                        
-          <div>
-            <button md-button mdStepperNext>Next</button>
-          </div>
-        </form>
+        <md-form-field>
+          <input mdInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"
+            name="hdramt">
+        </md-form-field>
+
+        <div>
+          <button md-button mdStepperNext>Next</button>
+        </div>
       </md-step>
 
-      <md-step [stepControl]="sourceFormGroup">
-        <form [formGroup]="sourceFormGroup">
-          <ng-template mdStepLabel>Source</ng-template>
+      <md-step>
+        <ng-template mdStepLabel>Source</ng-template>
 
-          <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
-            name="srcacnt">
-            <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
-              {{acnt.Name}}
-            </md-option>
-          </md-select>
-          <md-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
-            name="srccc">
-            <md-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
-              {{tt.Name}}
-            </md-option>
-          </md-select>
-          <md-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId"
-            name="srcord">
-            <md-option *ngFor="let tt of _storageService.Orders" [value]="tt.Id">
-              {{tt.Name}}
-            </md-option>
-          </md-select>
+        <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
+          name="srcacnt">
+          <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
+            {{acnt.Name}}
+          </md-option>
+        </md-select>
 
-          <div>
-            <button md-button mdStepperPrevious>Back</button>
-            <button md-button mdStepperNext>Next</button>
-          </div>
-        </form>
+        <md-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
+          name="srccc">
+          <md-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+            {{cc.Name}}
+          </md-option>
+        </md-select>
+
+        <md-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId"
+          name="srcord">
+          <md-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+            {{ord.Name}}
+          </md-option>
+        </md-select>
+
+        <div>
+          <button md-button mdStepperPrevious>Back</button>
+          <button md-button mdStepperNext>Next</button>
+        </div>
       </md-step>
 
-      <md-step [stepControl]="targetFormGroup">
-        <form [formGroup]="targetFormGroup">
-          <ng-template mdStepLabel>Target</ng-template>
-          <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetAccountId"
-            name="tgtacnt">
-            <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
-              {{acnt.Name}}
-            </md-option>
-          </md-select>
-          <md-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetControlCenterId"
-            name="tgtcc">
-            <md-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
-              {{tt.Name}}
-            </md-option>
-          </md-select>
-          <md-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetOrderId"
-            name="tgtord">
-            <md-option *ngFor="let tt of _storageService.Orders" [value]="tt.Id">
-              {{tt.Name}}
-            </md-option>
-          </md-select>
-          <div>
-            <button md-button mdStepperPrevious>Back</button>
-            <button md-button mdStepperNext>Next</button>
-          </div>
-        </form>
+      <md-step>
+        <ng-template mdStepLabel>Target</ng-template>
+        <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetAccountId"
+          name="tgtacnt">
+          <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
+            {{acnt.Name}}
+          </md-option>
+        </md-select>
+
+        <md-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetControlCenterId"
+          name="tgtcc">
+          <md-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+            {{tt.Name}}
+          </md-option>
+        </md-select>
+
+        <md-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetOrderId"
+          name="tgtord">
+          <md-option *ngFor="let tt of _storageService.Orders" [value]="tt.Id">
+            {{tt.Name}}
+          </md-option>
+        </md-select>
+        <div>
+          <button md-button mdStepperPrevious>Back</button>
+          <button md-button mdStepperNext>Next</button>
+        </div>
       </md-step>
+
       <md-step>
         <ng-template mdStepLabel>Done</ng-template>
         You are now done.

@@ -2,7 +2,7 @@ import {
   Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+//import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MdDialog, MdSnackBar } from '@angular/material';
@@ -24,9 +24,9 @@ export class DocumentTransferDetailComponent implements OnInit {
   public detailObject: UIFinTransferDocument | null = null;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
-  public commonFormGroup: FormGroup;
-  public sourceFormGroup: FormGroup;  
-  public targetFormGroup: FormGroup;
+  // public commonFormGroup: FormGroup;
+  // public sourceFormGroup: FormGroup;  
+  // public targetFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -38,8 +38,8 @@ export class DocumentTransferDetailComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
-    public _currService: FinCurrencyService,
-    private _formBuilder: FormBuilder) {
+    public _currService: FinCurrencyService) {
+    //private _formBuilder: FormBuilder) {
     this.detailObject = new UIFinTransferDocument();
   }
 
@@ -48,16 +48,17 @@ export class DocumentTransferDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentTransferDetailComponent ngOnInit...');
     }
 
-    this.commonFormGroup = this._formBuilder.group({
-      despCtrl: ['', Validators.required],
-      amtCtrl: ['', Validators.required]
-    });
-    this.sourceFormGroup = this._formBuilder.group({
-      //srcaccountCtrl: ['', Validators.required]
-    });
-    this.targetFormGroup = this._formBuilder.group({
-      //tgtaccountCtrl: ['', Validators.required]
-    });
+    // this.commonFormGroup = this._formBuilder.group({
+    //   tdateCtrl: ['', Validators.required],
+    //   despCtrl: ['', Validators.required],
+    //   amtCtrl: ['', Validators.required]
+    // });
+    // this.sourceFormGroup = this._formBuilder.group({
+    //   //srcaccountCtrl: ['', Validators.required]
+    // });
+    // this.targetFormGroup = this._formBuilder.group({
+    //   //tgtaccountCtrl: ['', Validators.required]
+    // });
 
     Observable.forkJoin([
       this._storageService.fetchAllAccountCategories(),
