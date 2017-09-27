@@ -82,6 +82,7 @@
     "ReviewForSubmit": "检查与提交",
     "NextButton": "下一步",
     "PreviousButton": "上一步",
+    "BackButton": "前一步",
     "Error": "错误",
     "Success": "成功",
     "RepeatFrequency": "重复频率",
@@ -262,7 +263,9 @@
     "InvalidOrder": "无效的订单",
     "ControlCenterFetchFailedOrNoCC": "无法获取控制中心信息，或者尚未创建控制中心",
     "OrderFetchFailedOrNoOrder": "无法获取订单信息，或尚未创建订单",
-    "DocumentPosted": "凭证已创建"
+    "DocumentPosted": "凭证已创建",
+    "NoExchangeRate": "未定义汇率",
+    "UnnecessaryExchangeRate": "本币操作无需汇率"
   },
   "Library": {
     "Books": "书籍",

@@ -168,7 +168,8 @@ export class DocumentTransferDetailComponent implements OnInit {
         Accounts: this._storageService.Accounts,
         DocumentTypes: this._storageService.DocumentTypes,
         TransactionTypes: this._storageService.TranTypes,
-        Currencies: this._currService.Currencies
+        Currencies: this._currService.Currencies,
+        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency
       })) {
         // Show a dialog for error details
         const dlginfo: MessageDialogInfo = {

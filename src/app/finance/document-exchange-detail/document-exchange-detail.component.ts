@@ -30,9 +30,23 @@ export class DocumentExchangeDetailComponent implements OnInit {
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
+  get isForeignSourceCurrency(): boolean {
+    if (this.detailObject && this.detailObject.SourceTranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
+      return true;
+    }
 
-  headerFormGroup: FormGroup;
-  sourceFormGroup: FormGroup;
+    return false;
+  }
+  get isForeignTargetCurrency(): boolean {
+    if (this.detailObject && this.detailObject.TargetTranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // headerFormGroup: FormGroup;
+  // sourceFormGroup: FormGroup;
 
   constructor(private _dialog: MdDialog,
     private _snackbar: MdSnackBar,
@@ -50,15 +64,15 @@ export class DocumentExchangeDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentExchangeDetailComponent ngOnInit...');
     }
 
-    this.headerFormGroup = this._formBuilder.group({
-      hdrDateCtrl: ['', Validators.required],
-      hdrDespCtrl: ['', Validators.required],
-    });
-    this.sourceFormGroup = this._formBuilder.group({
-      srcAccountCtrl: ['', Validators.required],
-      srcCurrCtrl: ['', Validators.required],
-      srcAmountCtrl: ['', Validators.required],
-    });
+    // this.headerFormGroup = this._formBuilder.group({
+    //   hdrDateCtrl: ['', Validators.required],
+    //   hdrDespCtrl: ['', Validators.required],
+    // });
+    // this.sourceFormGroup = this._formBuilder.group({
+    //   srcAccountCtrl: ['', Validators.required],
+    //   srcCurrCtrl: ['', Validators.required],
+    //   srcAmountCtrl: ['', Validators.required],
+    // });
 
     Observable.forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -109,7 +123,8 @@ export class DocumentExchangeDetailComponent implements OnInit {
             this._storageService.readDocument(this.routerID);
           } else {
             // Create mode!
-            this.detailObject.SourceTranCurr = this._homedefService.ChosedHome.BaseCurrency;            
+            this.detailObject.SourceTranCurr = this._homedefService.ChosedHome.BaseCurrency;
+            this.detailObject.TargetTranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -169,7 +184,8 @@ export class DocumentExchangeDetailComponent implements OnInit {
         Accounts: this._storageService.Accounts,
         DocumentTypes: this._storageService.DocumentTypes,
         TransactionTypes: this._storageService.TranTypes,
-        Currencies: this._currService.Currencies
+        Currencies: this._currService.Currencies,
+        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency
       })) {
         // Show a dialog for error details
         const dlginfo: MessageDialogInfo = {

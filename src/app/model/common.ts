@@ -82,6 +82,19 @@ export enum LogLevel {
 }
 
 export class InfoMessage {
+    constructor(msgtype?: MessageType, msgtitle?: string, msgcontent?: string) {
+        this.MsgTime = moment();
+        if (msgtype) {
+            this.MsgType = msgtype;
+        }
+        if (msgtitle) {
+            this.MsgTitle = msgtitle;
+        }
+        if (msgcontent) {
+            this.MsgContent = msgcontent;
+        }
+    }
+    
     public MsgType: MessageType;
     public MsgTime: moment.Moment;
     public MsgTitle: string;

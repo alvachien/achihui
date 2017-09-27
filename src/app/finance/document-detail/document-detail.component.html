@@ -26,7 +26,7 @@
 
         <!-- Currency -->
         <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" 
-          [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr" name="doctype">
+          [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr" name="curr">
           <md-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
               {{cr.Symbol}} - {{cr.Name | translate}}
           </md-option>

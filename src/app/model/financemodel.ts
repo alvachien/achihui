@@ -3,45 +3,6 @@ import * as hih from './common';
 import * as moment from 'moment';
 
 /**
- * Exchange rate
- */
-export class ExchangeRate extends hih.BaseModel {
-    private _tranDate: moment.Moment;
-    public ForeignCurrency: string;
-    public Rate: number;
-    public RefDocId: number;
-
-    get TranDate() : moment.Moment {
-        return this._tranDate;
-    }
-    set TranDate(td: moment.Moment) {
-        this._tranDate = td;
-    }
-
-    constructor() {
-        super();
-
-        this._tranDate = moment();
-    }
-
-    public onInit() {
-        super.onInit();
-    }
-
-    public onVerify(context?: any): boolean {
-        if (!super.onVerify(context))
-            return false;
-
-        return true;
-    }
-
-    public writeJSONObject(): any {
-        let rstObj = super.writeJSONObject();
-        return rstObj;
-    }
-}
-
-/**
  * Currency definition in HIH
  */
 export interface CurrencyJson {
@@ -954,6 +915,7 @@ export interface DocumentVerifyContext {
     Accounts: Account[];
     ControlCenters: ControlCenter[];
     Orders: Order[];
+    BaseCurrency: string;
 }
 
 /**
@@ -1052,13 +1014,21 @@ export class Document extends hih.BaseModel {
                 }
 
                 if (!bExist) {
-                    let msg: hih.InfoMessage = new hih.InfoMessage();
-                    msg.MsgTime = moment();
-                    msg.MsgType = hih.MessageType.Error;
-                    msg.MsgTitle = 'Finance.InvalidCurrency';
-                    msg.MsgContent = 'Finance.InvalidCurrency';
+                    let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
                     this.VerifiedMsgs.push(msg);
                     chkrst = false;
+                } else {
+                    if (this.TranCurr !== context.BaseCurrency) {
+                        if (!this.ExgRate) {
+                            let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
+                            this.VerifiedMsgs.push(msg);        
+                        }
+                    } else {
+                        if (this.ExgRate) {
+                            let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
+                            this.VerifiedMsgs.push(msg);
+                        }
+                    }
                 }
             } else {
                 let msg: hih.InfoMessage = new hih.InfoMessage();
@@ -1068,6 +1038,33 @@ export class Document extends hih.BaseModel {
                 msg.MsgContent = 'Finance.CurrencyIsMust';
                 this.VerifiedMsgs.push(msg);
                 chkrst = false;
+            }
+
+            if (this.TranCurr2) {
+                let bExist : boolean = false;
+                for (let cc of context.Currencies) {
+                    if (cc.Currency === this.TranCurr) {
+                        bExist = true;
+                    }
+                }
+
+                if (!bExist) {
+                    let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
+                    this.VerifiedMsgs.push(msg);
+                    chkrst = false;
+                } else {
+                    if (this.TranCurr2 !== context.BaseCurrency) {
+                        if (!this.ExgRate2) {
+                            let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
+                            this.VerifiedMsgs.push(msg);        
+                        }
+                    } else {
+                        if (this.ExgRate2) {
+                            let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
+                            this.VerifiedMsgs.push(msg);
+                        }
+                    }
+                }
             }
         } else {
             let msg: hih.InfoMessage = new hih.InfoMessage();
@@ -1090,14 +1087,29 @@ export class Document extends hih.BaseModel {
                     }
                     chkrst = false;
                 } else {
+                    let amtItem: number = 0;
                     for (let tt of context.TransactionTypes) {
                         let ftt: TranType = <TranType>tt;
                         if (ftt.Id === fit.TranType) {
                             if (ftt.Expense) {
-                                amtTotal += (-1) * fit.TranAmount;
+                                amtItem = (-1) * fit.TranAmount;
                             } else {
-                                amtTotal += fit.TranAmount;
+                                amtItem = fit.TranAmount;
                             }
+                        }
+                    }
+
+                    if (fit.UseCurr2) {
+                        if (this.ExgRate2) {
+                            amtTotal += amtItem / this.ExgRate2;
+                        } else {
+                            amtTotal += amtItem;
+                        }
+                    } else {
+                        if (this.ExgRate) {
+                            amtTotal += amtItem / this.ExgRate;
+                        } else {
+                            amtTotal += amtItem;
                         }
                     }
                 }
@@ -1112,13 +1124,9 @@ export class Document extends hih.BaseModel {
             chkrst = false;
         }
 
-        if (this.DocType === hih.FinanceDocType_Transfer){
+        if (this.DocType === hih.FinanceDocType_Transfer || this.DocType === hih.FinanceDocType_CurrencyExchange){
             if (amtTotal !== 0) {
-                let msg: hih.InfoMessage = new hih.InfoMessage();
-                msg.MsgTime = moment();
-                msg.MsgType = hih.MessageType.Error;
-                msg.MsgTitle = 'Finance.AmountIsNotCorrect';
-                msg.MsgContent = 'Finance.AmountIsZeroInTransferDocument';
+                let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.AmountIsNotCorrect', 'Finance.AmountIsZeroInTransferDocument');
                 this.VerifiedMsgs.push(msg);
                 chkrst = false;
             }
@@ -1134,10 +1142,17 @@ export class Document extends hih.BaseModel {
         rstObj.docType = this.DocType;
         rstObj.tranDate = this._tranDate.format(hih.MomentDateFormat);
         rstObj.tranCurr = this.TranCurr;
+        if (this.TranCurr2) {
+            rstObj.tranCurr2 = this.TranCurr2;
+        }
         rstObj.desp = this.Desp;
-        rstObj.exgRate = this.ExgRate;
+        if (this.ExgRate) {
+            rstObj.exgRate = this.ExgRate;
+        }
         rstObj.exgRate_Plan = this.ExgRate_Plan;
-        rstObj.exgRate2 = this.ExgRate2;
+        if (this.ExgRate2) {
+            rstObj.exgRate2 = this.ExgRate2;
+        }
         rstObj.exgRate_Plan2 = this.ExgRate_Plan2;
 
         rstObj.items = [];
@@ -1169,6 +1184,21 @@ export class Document extends hih.BaseModel {
         }
         if (data && data.tranCurr) {
             this.TranCurr = data.tranCurr;
+        }
+        if (data && data.exgRate) {
+            this.ExgRate = +data.exgRate;
+        }
+        if (data && data.exgRate_Plan) {
+            this.ExgRate_Plan = data.exgRate_Plan;
+        }
+        if (data && data.tranCurr2) {
+            this.TranCurr2 = data.tranCurr2;
+        }
+        if (data && data.exgRate2) {
+            this.ExgRate2  = data.exgRate2;
+        }
+        if (data && data.exgRate_Plan2) {
+            this.ExgRate_Plan2 = data.exgRate_Plan2;
         }
         if (data && data.desp) {
             this.Desp = data.desp;
@@ -1406,6 +1436,7 @@ export class DocumentItem {
         rstObj.accountID = this.AccountId;
         rstObj.tranType = this.TranType;
         rstObj.tranAmount = this.TranAmount;
+        rstObj.useCurr2 = this.UseCurr2;
         if (this.ControlCenterId) {
             rstObj.controlCenterID = this.ControlCenterId;
         }
@@ -1435,6 +1466,9 @@ export class DocumentItem {
         }
         if (data && data.tranAmount) {
             this.TranAmount = +data.tranAmount;
+        }
+        if (data && data.useCurr2) {
+            this.UseCurr2 = data.useCurr2;
         }
         if (data && data.controlCenterID) {
             this.ControlCenterId = +data.controlCenterID;

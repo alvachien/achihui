@@ -218,6 +218,11 @@ export class UIFinCurrencyExchangeDocument {
 
     public SourceTranCurr: string;
     public TargetTranCurr: string;
+    public SourceExchangeRate: number;
+    public TargetExchangeRate: number;
+    // For exchange document, the exchange rate must know!
+    // public SourceExchangeRatePlan: boolean;
+    // public TargetExchangeRatePlan: boolean;
     public SourceTranAmount: number;
     public TargetTranAmount: number;
     public SourceAccountId: number;
@@ -238,6 +243,8 @@ export class UIFinCurrencyExchangeDocument {
         doc.Desp = this.Desp;
         doc.TranCurr = this.SourceTranCurr;
         doc.TranCurr2 = this.TargetTranCurr;
+        doc.ExgRate = this.SourceExchangeRate;
+        doc.ExgRate2 = this.TargetExchangeRate;
 
         let docitem = new HIHFinance.DocumentItem();
         docitem.ItemId = 1;
@@ -274,12 +281,14 @@ export class UIFinCurrencyExchangeDocument {
                 this.SourceOrderId = di.OrderId;
                 this.SourceTranAmount = di.TranAmount;
                 this.SourceTranCurr = doc.TranCurr;
+                this.SourceExchangeRate = doc.ExgRate;
             } else if(di.TranType === hih.FinanceTranType_TransferIn) {
                 this.TargetAccountId = di.AccountId;
                 this.TargetControlCenterId = di.ControlCenterId;
                 this.TargetOrderId = di.OrderId;                                
                 this.TargetTranAmount = di.TranAmount;
                 this.TargetTranCurr = doc.TranCurr2;
+                this.TargetExchangeRate = doc.ExgRate2;
             }
         }
     }

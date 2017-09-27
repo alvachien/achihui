@@ -82,6 +82,7 @@
     "ReviewForSubmit": "Review for submit",
     "NextButton": "Next",
     "PreviousButton": "Previous",
+    "BackButton": "Back",
     "Error": "Error",
     "Success": "Success",
     "RepeatFrequency": "Repeat Frequency",
@@ -262,7 +263,9 @@
     "InvalidOrder": "Invalid Order",
     "ControlCenterFetchFailedOrNoCC": "Failed to fetch Control center or no control center created at all",
     "OrderFetchFailedOrNoOrder": "Failed to fetch order or no order created at all",
-    "DocumentPosted": "Document Posted"
+    "DocumentPosted": "Document Posted",
+    "NoExchangeRate": "No exchange rate",
+    "UnnecessaryExchangeRate": "Exchange rate is unnecessary for base currency"
   },
   "Library": {
     "Books": "Books",

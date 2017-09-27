@@ -6,8 +6,8 @@
   <md-card-content>
     <md-horizontal-stepper linear="false">
       <md-step>
-        <ng-template mdStepLabel>Header</ng-template>
-
+        <ng-template mdStepLabel>{{'Finance.Header' | translate}}</ng-template>
+        
         <!-- Tran date -->
         <md-form-field>
           <input mdInput [(ngModel)]="detailObject.TranDate" [mdDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
@@ -35,13 +35,13 @@
         </md-form-field>
 
         <div>
-          <button md-button mdStepperNext>Next</button>
+          <button md-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>
       </md-step>
 
       <md-step>
-        <ng-template mdStepLabel>Source</ng-template>
-
+        <ng-template mdStepLabel>{{'Finance.TransferFrom' | translate}}</ng-template>
+        
         <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
           name="srcacnt">
           <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
@@ -64,13 +64,13 @@
         </md-select>
 
         <div>
-          <button md-button mdStepperPrevious>Back</button>
-          <button md-button mdStepperNext>Next</button>
+          <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
+          <button md-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>
       </md-step>
 
       <md-step>
-        <ng-template mdStepLabel>Target</ng-template>
+        <ng-template mdStepLabel>{{'Finance.TransferTo' | translate}}</ng-template>
         <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetAccountId"
           name="tgtacnt">
           <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
@@ -92,8 +92,8 @@
           </md-option>
         </md-select>
         <div>
-          <button md-button mdStepperPrevious>Back</button>
-          <button md-button mdStepperNext>Next</button>
+          <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
+          <button md-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>
       </md-step>
 
@@ -101,7 +101,7 @@
         <ng-template mdStepLabel>Done</ng-template>
         You are now done.
         <div>
-          <button md-button mdStepperPrevious>Back</button>
+          <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
           <button md-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
           <button md-button (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
         </div>
