@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_Transfer, FinanceDocType_AdvancePayment } from '../../model';
+import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_CurrencyExchange, 
+  FinanceDocType_Transfer, FinanceDocType_AdvancePayment } from '../../model';
 import { FinanceStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -94,12 +95,17 @@ export class DocumentListComponent implements OnInit {
   public onCreateADPDocument() {
     this._router.navigate(['/finance/document/createadp']);
   }
+  public onCreateExgDocument() {
+    this._router.navigate(['/finance/document/createexg']);
+  }
 
   public onDisplayDocument(doc: Document) {
     if (doc.DocType === FinanceDocType_Normal) {
       this.onDisplayNormalDocument(doc);
     } else if(doc.DocType === FinanceDocType_Transfer) {
       this.onDisplayTransferDocument(doc);
+    } else if (doc.DocType === FinanceDocType_CurrencyExchange) {
+      this.onDisplayExgDocument(doc);
     } else if(doc.DocType === FinanceDocType_AdvancePayment) {
       this.onDisplayADPDocument(doc);
     }
@@ -109,6 +115,9 @@ export class DocumentListComponent implements OnInit {
   }
   public onDisplayTransferDocument(doc: Document) {
     this._router.navigate(['/finance/document/displaytransfer', doc.Id]);
+  }
+  public onDisplayExgDocument(doc: Document) {
+    this._router.navigate(['/finance/document/displayexg', doc.Id]);
   }
   public onDisplayADPDocument(doc: Document) {
     this._router.navigate(['/finance/document/displayadp', doc.Id]);
@@ -121,6 +130,8 @@ export class DocumentListComponent implements OnInit {
       this.onChangeTransferDocument(doc);
     } else if(doc.DocType === FinanceDocType_AdvancePayment) {
       this.onChangeADPDocument(doc);
+    } else if (doc.DocType === FinanceDocType_CurrencyExchange) {
+      this.onChangeExgDocument(doc);
     }
   }
   public onChangeNormalDocument(doc: Document) {
@@ -131,6 +142,9 @@ export class DocumentListComponent implements OnInit {
   }
   public onChangeADPDocument(doc: Document) {
     this._router.navigate(['/finance/document/editadp', doc.Id]);
+  }
+  public onChangeExgDocument(doc: Document) {
+    this._router.navigate(['/finance/document/editexg', doc.Id]);
   }
 
   public onDeleteDocument(doc: Document) {

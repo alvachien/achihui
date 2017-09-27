@@ -231,6 +231,7 @@
     "Liabilities": "负债",
     "ExchangeRate": "汇率",
     "ProposedExchangeRate": "预测的汇率",
+    "CurrencyExchange": "货币兑换",
     
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",

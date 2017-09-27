@@ -2,35 +2,37 @@ import {
   Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
-//import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MdDialog, MdSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, FinanceDocType_Transfer } from '../../model';
+import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument, 
+  UIMode, getUIModeString, FinanceDocType_CurrencyExchange } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
-  selector: 'app-document-transfer-detail',
-  templateUrl: './document-transfer-detail.component.html',
-  styleUrls: ['./document-transfer-detail.component.scss']
+  selector: 'app-document-exchange-detail',
+  templateUrl: './document-exchange-detail.component.html',
+  styleUrls: ['./document-exchange-detail.component.scss']
 })
-export class DocumentTransferDetailComponent implements OnInit {
+export class DocumentExchangeDetailComponent implements OnInit {
+
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: UIFinTransferDocument | null = null;
+  public detailObject: UIFinCurrencyExchangeDocument | null = null;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
-  // public commonFormGroup: FormGroup;
-  // public sourceFormGroup: FormGroup;  
-  // public targetFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
+
+  headerFormGroup: FormGroup;
+  sourceFormGroup: FormGroup;
 
   constructor(private _dialog: MdDialog,
     private _snackbar: MdSnackBar,
@@ -38,27 +40,25 @@ export class DocumentTransferDetailComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
-    public _currService: FinCurrencyService) {
-    //private _formBuilder: FormBuilder) {
-    this.detailObject = new UIFinTransferDocument();
+    public _currService: FinCurrencyService,
+    private _formBuilder: FormBuilder) {
+    this.detailObject = new UIFinCurrencyExchangeDocument();    
   }
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentTransferDetailComponent ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentExchangeDetailComponent ngOnInit...');
     }
 
-    // this.commonFormGroup = this._formBuilder.group({
-    //   tdateCtrl: ['', Validators.required],
-    //   despCtrl: ['', Validators.required],
-    //   amtCtrl: ['', Validators.required]
-    // });
-    // this.sourceFormGroup = this._formBuilder.group({
-    //   //srcaccountCtrl: ['', Validators.required]
-    // });
-    // this.targetFormGroup = this._formBuilder.group({
-    //   //tgtaccountCtrl: ['', Validators.required]
-    // });
+    this.headerFormGroup = this._formBuilder.group({
+      hdrDateCtrl: ['', Validators.required],
+      hdrDespCtrl: ['', Validators.required],
+    });
+    this.sourceFormGroup = this._formBuilder.group({
+      srcAccountCtrl: ['', Validators.required],
+      srcCurrCtrl: ['', Validators.required],
+      srcAmountCtrl: ['', Validators.required],
+    });
 
     Observable.forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -70,19 +70,19 @@ export class DocumentTransferDetailComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentTransferDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       this._activateRoute.url.subscribe(x => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'createtransfer') {
-            this.detailObject = new UIFinTransferDocument();
+          if (x[0].path === 'createexg') {
+            this.detailObject = new UIFinCurrencyExchangeDocument();
             this.uiMode = UIMode.Create;
-          } else if (x[0].path === 'edittransfer') {
+          } else if (x[0].path === 'editexg') {
             this.routerID = +x[1].path;
   
             this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'displaytransfer') {
+          } else if (x[0].path === 'displayexg') {
             this.routerID = +x[1].path;
   
             this.uiMode = UIMode.Display;
@@ -102,14 +102,14 @@ export class DocumentTransferDetailComponent implements OnInit {
                   console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
                 }
   
-                this.detailObject = new UIFinTransferDocument();
+                this.detailObject = new UIFinCurrencyExchangeDocument();
               }
             });
   
             this._storageService.readDocument(this.routerID);
           } else {
             // Create mode!
-            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;            
+            this.detailObject.SourceTranCurr = this._homedefService.ChosedHome.BaseCurrency;            
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -161,6 +161,7 @@ export class DocumentTransferDetailComponent implements OnInit {
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
       let docObj = this.detailObject.generateDocument();
+      
       // Check!
       if (!docObj.onVerify({
         ControlCenters: this._storageService.ControlCenters,
@@ -188,7 +189,7 @@ export class DocumentTransferDetailComponent implements OnInit {
       
       this._storageService.createDocumentEvent.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentTransferDetailComponent with : ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentExchangeDetailComponent with : ${x}`);
         }
 
         // Navigate back to list view
@@ -198,7 +199,7 @@ export class DocumentTransferDetailComponent implements OnInit {
             duration: 3000
           }).afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/finance/document/displaytransfer/' + x.Id.toString()]);
+            this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
           });
         } else {
           // Show error message

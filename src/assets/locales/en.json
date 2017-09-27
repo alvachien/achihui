@@ -231,6 +231,7 @@
     "Liabilities": "Liabilities",
     "ExchangeRate": "Exchange rate",
     "ProposedExchangeRate": "Proposed exchange rate",
+    "CurrencyExchange": "Currency Exchange",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

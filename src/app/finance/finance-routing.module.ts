@@ -25,6 +25,7 @@ import { DocumentDetailComponent } from './document-detail';
 import { DocumentNormalDetailComponent } from './document-normal-detail';
 import { DocumentTransferDetailComponent } from './document-transfer-detail';
 import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment-detail';
+import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { ReportComponent } from './report';
 
 const routes: Routes = [
@@ -189,6 +190,10 @@ const routes: Routes = [
             component: DocumentAdvancepaymentDetailComponent,
           },
           {
+            path: 'createexg',
+            component: DocumentExchangeDetailComponent,
+          },
+          {
             path: 'display/:id',
             component: DocumentDetailComponent,
           },
@@ -205,6 +210,10 @@ const routes: Routes = [
             component: DocumentAdvancepaymentDetailComponent,
           },
           {
+            path: 'displayexg/:id',
+            component: DocumentExchangeDetailComponent,
+          },
+          {
             path: 'edit/:id',
             component: DocumentDetailComponent,
           },
@@ -219,6 +228,10 @@ const routes: Routes = [
           {
             path: 'editadp/:id',
             component: DocumentAdvancepaymentDetailComponent,
+          },
+          {
+            path: 'editexg/:id',
+            component: DocumentExchangeDetailComponent,
           },
         ],
       },
