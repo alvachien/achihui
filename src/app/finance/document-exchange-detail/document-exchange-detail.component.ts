@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument, 
-  UIMode, getUIModeString, FinanceDocType_CurrencyExchange, DocumentWithPlanExgRate } from '../../model';
+  UIMode, getUIModeString, FinanceDocType_CurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -237,13 +237,54 @@ export class DocumentExchangeDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof Document) {
-          // Show the snackbar
-          this._snackbar.open('Message archived', 'OK', {
-            duration: 3000
-          }).afterDismissed().subscribe(() => {
-            // Navigate to display
-            this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
-          });
+          let cobj: DocumentWithPlanExgRateForUpdate = new DocumentWithPlanExgRateForUpdate();
+          if (this.detailObject.prvdocs.length > 0) {
+            for(let pd of this.detailObject.prvdocs) {
+              if (pd.Selected) {
+                cobj.docIDs.push(pd.DocID);
+              }
+            }
+          }
+
+          if (cobj.docIDs.length > 0) {
+            if (this.isForeignSourceCurrency) {
+              cobj.targetCurrency = this.detailObject.SourceTranCurr;
+              cobj.exchangeRate = this.detailObject.SourceExchangeRate;            
+            } else if (this.isForeignTargetCurrency) {
+              cobj.targetCurrency = this.detailObject.TargetTranCurr;
+              cobj.exchangeRate = this.detailObject.TargetExchangeRate;
+            }
+  
+            this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe(rst => {
+              // Show something?
+              this._snackbar.open('Document Posted and previous doc updated', 'OK', {
+                duration: 3000
+              }).afterDismissed().subscribe(() => {
+                // Navigate to display
+                this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
+              });
+            }, rerror => {
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Debug]: Message dialog result ${rerror}`);
+              }
+
+              // Show something?
+              this._snackbar.open('Document Posted but previous doc failed to update', 'OK', {
+                duration: 3000
+              }).afterDismissed().subscribe(() => {
+                // Navigate to display
+                this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
+              });  
+            });
+          } else {
+            // Show the snackbar
+            this._snackbar.open('Document Posted', 'OK', {
+              duration: 3000
+            }).afterDismissed().subscribe(() => {
+              // Navigate to display
+              this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
+            });
+          }
         } else {
           // Show error message
           const dlginfo: MessageDialogInfo = {
@@ -267,6 +308,8 @@ export class DocumentExchangeDetailComponent implements OnInit {
 
       docObj.HID = this._homedefService.ChosedHome.ID;
       this._storageService.createDocument(docObj);
+    } else if(this.uiMode === UIMode.Change) {
+
     }
   }
 

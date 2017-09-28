@@ -43,7 +43,7 @@ export class AccountDataSource extends DataSource<any> {
 })
 export class AccountListComponent implements OnInit {
 
-  displayedColumns = ['id', 'name', 'comment'];
+  displayedColumns = ['id', 'name', 'ctgy', 'comment'];
   dataSource: AccountDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
@@ -79,5 +79,9 @@ export class AccountListComponent implements OnInit {
 
   public onDeleteAccount(acnt: any) {
 
+  }
+
+  public onRefresh() {
+    
   }
 }

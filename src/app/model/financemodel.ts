@@ -1711,8 +1711,15 @@ export class DocumentItemWithBalance {
     set TranDate(td: moment.Moment) {
         this._tranDate = td;
     }
+    get TranDateFormatString(): string {
+        return this._tranDate.format(hih.MomentDateFormat);
+    }
 
     public onSetData(data: any) {
+        if (data && data.accountID) {
+            this.AccountId = + data.accountID;
+        }
+
         if (data && data.tranType_Exp) {
             this.TranType_Exp = data.tranType_Exp;
         }
@@ -1751,9 +1758,6 @@ export class DocumentItemWithBalance {
         }
         if (data && data.itemID) {
             this.ItemId = +data.itemID;
-        }
-        if (data && data.accountID) {
-            this.AccountId = + data.accountID;
         }
         if (data && data.tranType) {
             this.TranType = +data.tranType;
@@ -1834,4 +1838,11 @@ export class DocumentWithPlanExgRate
             this.ExgRate_Plan2 = jdata.exgRate_Plan2;
         }
     }
+}
+
+export class DocumentWithPlanExgRateForUpdate
+{
+    public targetCurrency: string;
+    public exchangeRate: number;
+    public docIDs: number[] = [];
 }

@@ -4,7 +4,8 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, AccountCategory, DocumentType, TranType, Account, ControlCenter, Order, Document } from '../model';
+import { LogLevel, AccountCategory, DocumentType, TranType, Account, ControlCenter, Order, 
+    Document, DocumentWithPlanExgRateForUpdate } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -932,6 +933,56 @@ export class FinanceStorageService {
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering fetchPreviousDocWithPlanExgRate in FinanceStorageService: ${response}`);
+        }
+
+        return response;
+      });
+  }
+
+  /**
+   * Update previous document with planned exchange rate
+   * @param obj Object for planned exchange rate
+   */
+  public updatePreviousDocWithPlanExgRate(obj: DocumentWithPlanExgRateForUpdate) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
+    const jdata: string = JSON && JSON.stringify(obj);
+    
+    return this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService: ${response}`);
+        }
+
+        return response;
+      });
+  }
+
+  public getDocumentItemByAccount(acntid: number): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/financedocumentitem';
+    let params: HttpParams = new HttpParams();
+    params = params.append('acntid', acntid.toString());
+
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService: ${response}`);
         }
 
         return response;

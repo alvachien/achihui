@@ -86,6 +86,8 @@
     "Error": "Error",
     "Success": "Success",
     "RepeatFrequency": "Repeat Frequency",
+    "PageNotFoundHeader":"Page not found",
+    "PageNotFoundContent": "The page which you aim to visit is not exist",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",

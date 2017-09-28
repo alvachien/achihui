@@ -9,17 +9,17 @@
         </div>
         <md-nav-list dense>
             <a *ngFor="let navItem of navItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
-                {{i}} - {{navItem.name | translate}}
+                {{i + 1}} - {{navItem.name | translate}}
             </a>
             <md-divider ></md-divider>
             <h3 mdSubheader>{{'Nav.LearningTrace' | translate}}</h3>
             <a *ngFor="let navItem of navLearnItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
-                {{i}} - {{navItem.name | translate}}
+                {{i + 1}} - {{navItem.name | translate}}
             </a>
             <md-divider></md-divider>
             <h3 mdSubheader>{{'Nav.FinanceTrace' | translate}}</h3>
             <a *ngFor="let navItem of navFinItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
-                {{i}} - {{navItem.name | translate}}
+                {{i + 1}} - {{navItem.name | translate}}
             </a>
         </md-nav-list>
         <hr />

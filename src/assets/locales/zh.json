@@ -86,6 +86,8 @@
     "Error": "错误",
     "Success": "成功",
     "RepeatFrequency": "重复频率",
+    "PageNotFoundHeader":"页面未找到",
+    "PageNotFoundContent": "你想要访问的页面并不存在",
 
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",

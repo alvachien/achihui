@@ -124,6 +124,7 @@
         <ng-template mdStepLabel>Previous Documents</ng-template>
         <table>
           <tr>
+            <th></th>
             <th>#</th>
             <th>Type</th>
             <th>Date</th>
@@ -151,7 +152,7 @@
           </tr>
         </table>
         <div>
-          <button md-button (click)="onFetchPreviousDoc()">{{'Common.Refresh' | translate}}</button>
+          <button md-button [disabled]="!isFieldChangable" (click)="onFetchPreviousDoc()">{{'Common.Refresh' | translate}}</button>
           <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
           <button md-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>
