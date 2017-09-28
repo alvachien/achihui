@@ -1149,11 +1149,15 @@ export class Document extends hih.BaseModel {
         if (this.ExgRate) {
             rstObj.exgRate = this.ExgRate;
         }
-        rstObj.exgRate_Plan = this.ExgRate_Plan;
+        if (this.ExgRate_Plan) {
+            rstObj.exgRate_Plan = this.ExgRate_Plan;
+        }
         if (this.ExgRate2) {
             rstObj.exgRate2 = this.ExgRate2;
         }
-        rstObj.exgRate_Plan2 = this.ExgRate_Plan2;
+        if (this.ExgRate_Plan2) {
+            rstObj.exgRate_Plan2 = this.ExgRate_Plan2;
+        }
 
         rstObj.items = [];
         for (let di of this.Items) {
@@ -1768,6 +1772,66 @@ export class DocumentItemWithBalance {
         }
         if (data && data.desp) {
             this.Desp = data.desp;
+        }
+    }
+}
+
+/**
+ * Document with exchange rate as planned
+ */
+export class DocumentWithPlanExgRate
+{
+    public Selected: boolean;
+
+    public HID: number;
+    public DocID: number;
+    public DocType: number;    
+    public TranDate: moment.Moment;
+    get TranDateDisplayString(): string {
+        return this.TranDate.format(hih.MomentDateFormat);
+    }
+    public Desp: string;
+    public TranCurr: string;
+    public ExgRate: number;
+    public ExgRate_Plan: boolean;
+
+    public TranCurr2: string;
+    public ExgRate2: number;
+    public ExgRate_Plan2: boolean;
+
+    public onSetData(jdata: any) {
+        if (jdata && jdata.hid) {
+            this.HID = +jdata.hid;
+        }
+        if (jdata && jdata.docID) {
+            this.DocID = +jdata.docID;
+        }
+        if (jdata && jdata.docType) {
+            this.DocType = +jdata.docType;
+        }
+        if (jdata && jdata.tranDate) {
+            this.TranDate = moment(jdata.tranDate, hih.MomentDateFormat);
+        }
+        if (jdata && jdata.desp) {
+            this.Desp = jdata.desp;
+        }
+        if (jdata && jdata.tranCurr) {
+            this.TranCurr = jdata.tranCurr;
+        }
+        if (jdata && jdata.exgRate) {
+            this.ExgRate = +jdata.exgRate;
+        }
+        if (jdata && jdata.exgRate_Plan) {
+            this.ExgRate_Plan = jdata.exgRate_Plan;
+        }
+        if (jdata && jdata.tranCurr2) {
+            this.TranCurr2 = jdata.tranCurr2;
+        }
+        if (jdata && jdata.exgRate2) {
+            this.ExgRate2 = +jdata.exgRate2;
+        }
+        if (jdata && jdata.exgRate_Plan2) {
+            this.ExgRate_Plan2 = jdata.exgRate_Plan2;
         }
     }
 }

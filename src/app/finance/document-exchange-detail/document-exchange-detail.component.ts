@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument, 
-  UIMode, getUIModeString, FinanceDocType_CurrencyExchange } from '../../model';
+  UIMode, getUIModeString, FinanceDocType_CurrencyExchange, DocumentWithPlanExgRate } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -149,6 +149,33 @@ export class DocumentExchangeDetailComponent implements OnInit {
 
       this.uiMode = UIMode.Invalid;
     });
+  }
+
+  public onFetchPreviousDoc(): void {
+    this.detailObject.prvdocs = [];
+    if (this.isForeignSourceCurrency) {
+      this._storageService.fetchPreviousDocWithPlanExgRate(this.detailObject.SourceTranCurr).subscribe(x => {
+        if (x instanceof Array && x.length > 0) {
+          for(let it of x) {
+            let pvdoc: DocumentWithPlanExgRate = new DocumentWithPlanExgRate();
+            pvdoc.onSetData(it);
+            this.detailObject.prvdocs.push(pvdoc);
+          }
+        }
+      });      
+    }
+
+    if (this.isForeignTargetCurrency) {
+      this._storageService.fetchPreviousDocWithPlanExgRate(this.detailObject.TargetTranCurr).subscribe(x => {
+        if (x instanceof Array && x.length > 0) {
+          for(let it of x) {
+            let pvdoc: DocumentWithPlanExgRate = new DocumentWithPlanExgRate();
+            pvdoc.onSetData(it);
+            this.detailObject.prvdocs.push(pvdoc);
+         }
+        }
+      });
+    }
   }
 
   public canSubmit(): boolean {

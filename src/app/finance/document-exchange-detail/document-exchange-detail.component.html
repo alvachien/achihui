@@ -121,6 +121,43 @@
       </md-step>
 
       <md-step>
+        <ng-template mdStepLabel>Previous Documents</ng-template>
+        <table>
+          <tr>
+            <th>#</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Desp</th>
+            <th>Currency</th>
+            <th>Exg rate</th>
+            <th>Exg rate plan</th>
+            <th>Currency2</th>
+            <th>Exg rate2</th>
+            <th>Exg rate plan2</th>
+          </tr>
+        
+          <tr *ngFor="let doc of detailObject.prvdocs">
+            <td><md-checkbox [(ngModel)]="doc.Selected"></md-checkbox></td>
+            <td>{{doc.DocID}}</td>
+            <td>{{doc.DocType}}</td>
+            <td>{{doc.TranDateDisplayString}}</td>
+            <td>{{doc.Desp}}</td>
+            <td>{{doc.TranCurr}}</td>
+            <td>{{doc.ExgRate}}</td>
+            <td><md-checkbox disabled [(ngModel)]="doc.ExgRate_Plan"></md-checkbox></td>
+            <td>{{doc.TranCurr2}}</td>
+            <td>{{doc.ExgRate2}}</td>
+            <td><md-checkbox disabled [(ngModel)]="doc.ExgRate_Plan2"></md-checkbox></td>
+          </tr>
+        </table>
+        <div>
+          <button md-button (click)="onFetchPreviousDoc()">{{'Common.Refresh' | translate}}</button>
+          <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
+          <button md-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
+      </md-step>
+      
+      <md-step>
         <ng-template mdStepLabel>Done</ng-template>
         You are now done.
         <div>

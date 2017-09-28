@@ -289,4 +289,8 @@ export class DocumentNormalDetailComponent implements OnInit {
       this._storageService.createDocument(this.detailObject);
     }
   }
+  
+  public onCancel(): void {
+    this._router.navigate(['/finance/document/']);
+  }
 }

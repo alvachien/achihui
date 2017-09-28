@@ -42,7 +42,7 @@
 
         <!-- Planned Exchange rate -->
         <div *ngIf="isForeignCurrency">
-          <md-slide-toggle [(checked)]="detailObject.ExgRate_Plan" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate' | translate}}</md-slide-toggle>
+          <md-checkbox [(ngModel)]="detailObject.ExgRate_Plan" color="accent" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate' | translate}}</md-checkbox>
         </div>        
         
         <md-action-row>
@@ -178,6 +178,7 @@
         <md-action-row>
           <button md-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
           <button md-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+          <button md-button (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
         </md-action-row>
       </md-expansion-panel>
     </md-accordion>

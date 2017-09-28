@@ -31,6 +31,13 @@ export class DocumentTransferDetailComponent implements OnInit {
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
+  get isForeignCurrency(): boolean {
+    if (this.detailObject && this.detailObject.TranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
+      return true;
+    }
+
+    return false;
+  }
 
   constructor(private _dialog: MdDialog,
     private _snackbar: MdSnackBar,

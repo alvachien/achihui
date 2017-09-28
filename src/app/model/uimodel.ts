@@ -11,6 +11,8 @@ export class UIFinTransferDocument {
     public TranCurr: string;
     public TranDate: moment.Moment;
     public Desp: string;
+    public ExgRate: number;
+    public ExgRate_Plan: boolean;
 
     public SourceAccountId: number;
     public TargetAccountId: number;
@@ -35,6 +37,12 @@ export class UIFinTransferDocument {
         doc.DocType = hih.FinanceDocType_Transfer;
         doc.Desp = this.Desp;
         doc.TranCurr = this.TranCurr;
+        if (this.ExgRate) {
+            doc.ExgRate = this.ExgRate;
+        }
+        if (this.ExgRate_Plan) {
+            doc.ExgRate_Plan = this.ExgRate_Plan;
+        }
 
         let docitem = new HIHFinance.DocumentItem();
         docitem.ItemId = 1;
@@ -63,6 +71,12 @@ export class UIFinTransferDocument {
         this.TranDate = doc.TranDate;
         this.TranCurr = doc.TranCurr;
         this.Desp = doc.Desp;
+        if (doc.ExgRate) {
+            this.ExgRate = doc.ExgRate;
+        }
+        if (doc.ExgRate_Plan) {
+            this.ExgRate_Plan = doc.ExgRate_Plan;
+        }
 
         for(let di of doc.Items) {
             if (di.TranType === hih.FinanceTranType_TransferOut) {
@@ -232,6 +246,7 @@ export class UIFinCurrencyExchangeDocument {
     public SourceOrderId: number;
     public TargetOrderId: number;
 
+    public prvdocs: HIHFinance.DocumentWithPlanExgRate[] = [];
 
     constructor() {
         this.TranDate = moment();
