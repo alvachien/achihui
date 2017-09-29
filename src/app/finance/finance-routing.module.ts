@@ -26,6 +26,7 @@ import { DocumentNormalDetailComponent } from './document-normal-detail';
 import { DocumentTransferDetailComponent } from './document-transfer-detail';
 import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment-detail';
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
+import { DocumentItemOverviewComponent } from './document-item-overview';
 import { ReportComponent } from './report';
 
 const routes: Routes = [
@@ -33,6 +34,10 @@ const routes: Routes = [
     path: '',
     component: FinanceComponent,
     children: [
+      {
+        path: 'overview',
+        component: DocumentItemOverviewComponent,
+      },
       {
         path: 'acntctgy',
         component: AccountCategoryComponent,

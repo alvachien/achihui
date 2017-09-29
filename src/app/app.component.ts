@@ -53,6 +53,7 @@ export class AppComponent implements OnInit {
       { name: 'Learning.LearningHistories', route: 'learn/history' },
     ];
     this.navFinItems = [
+      { name: 'Common.Overview', route: 'finance/overview' },
       { name: 'Finance.AccountCategories', route: 'finance/acntctgy' },
       { name: 'Finance.DocumentTypes', route: 'finance/doctype' },
       { name: 'Finance.TransactionTypes', route: 'finance/trantype' },
