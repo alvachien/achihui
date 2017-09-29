@@ -70,7 +70,7 @@ export class HistoryListComponent implements OnInit {
     });
   }
 
-  public onCreateObject() {
+  public onCreateHistory() {
     this._router.navigate(['/learn/history/create']);
   }
 
@@ -83,5 +83,9 @@ export class HistoryListComponent implements OnInit {
   }
 
   public onDeleteHistory(hist: any) {
+  }
+
+  public onRefresh(): void {
+
   }
 }

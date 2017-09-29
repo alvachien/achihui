@@ -144,7 +144,7 @@
         <md-table #table [dataSource]="dataSource">
           <!-- TranDate Column -->
           <ng-container mdColumnDef="TranDate">
-            <md-header-cell *mdHeaderCellDef>{{'Finance.TransactionType' | translate}}</md-header-cell>
+            <md-header-cell *mdHeaderCellDef>{{'Finance.TransactionDate' | translate}}</md-header-cell>
             <md-cell *mdCellDef="let row">
               <md-form-field>
                 <input mdInput [(ngModel)]="row.TranDate" [mdDatepicker]="tmpdpicker" placeholder="{{'Common.Date' | translate}}">

@@ -352,8 +352,11 @@ export class FinanceStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceAccount/' + acntid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
         headers: headers,
+        params: params,
         withCredentials: true
       })
       .map((response: HttpResponse<any>) => {
@@ -965,6 +968,10 @@ export class FinanceStorageService {
       });
   }
 
+  /**
+   * Get document items by account
+   * @param acntid Account ID
+   */
   public getDocumentItemByAccount(acntid: number): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -989,6 +996,10 @@ export class FinanceStorageService {
       });
   }
 
+  /**
+   * Get document items by control center
+   * @param ccid Control center ID
+   */
   public getDocumentItemByControlCenter(ccid: number): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -1013,6 +1024,10 @@ export class FinanceStorageService {
       });
   }
 
+  /**
+   * Get document items by order
+   * @param ordid Order ID
+   */
   public getDocumentItemByOrder(ordid: number): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -1035,5 +1050,86 @@ export class FinanceStorageService {
 
         return response;
       });
-  }  
+  }
+  
+  /**
+   * Get Balance sheet report
+   */
+  public getReportBS(): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceReportBS';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering getReportBS in FinanceStorageService: ${response}`);
+        }
+
+        return response;
+      });
+  }
+
+  /**
+   * Get Control center report
+   */
+  public getReportCC(): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceReportCC';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering getReportCC in FinanceStorageService: ${response}`);
+        }
+
+        return response;
+      });
+  }
+
+  /**
+   * Get Order report
+   */
+  public getReportOrder(): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceReportOrder';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering getReportBS in FinanceStorageService: ${response}`);
+        }
+
+        return response;
+      });
+  }
 }

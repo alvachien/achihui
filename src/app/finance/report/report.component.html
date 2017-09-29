@@ -8,10 +8,273 @@
         <ng-template md-tab-label>
           {{'Finance.BalanceSheetReport' | translate}}
         </ng-template>
-        <md-toolbar>
-        </md-toolbar>
+
+        <div class="container">
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <md-card>
+                <md-card-header>
+                  <md-card-title>{{'Finance.Debit' | translate}}</md-card-title>
+                </md-card-header>
+                <md-card-content>
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSAccountDebit" [gradient]="gradient" (select)="onBSAccountDebitSelect($event)">
+                  </ngx-charts-advanced-pie-chart>
+                </md-card-content>
+              </md-card>
+            </div>
+            <div class="col-12 col-md-6">
+              <md-card>
+                <md-card-header>
+                  <md-card-title>{{'Finance.Credit' | translate}}</md-card-title>
+                </md-card-header>
+                <md-card-content>
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSAccountCredit" [gradient]="gradient" (select)="onBSAccountCreditSelect($event)">
+                  </ngx-charts-advanced-pie-chart>
+                </md-card-content>
+              </md-card>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <md-card>
+                <md-card-header>
+                  <md-card-title>{{'Finance.Debit' | translate}}</md-card-title>
+                </md-card-header>
+                <md-card-content>
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSCategoryDebit" [gradient]="gradient" (select)="onBSCategoryDebitSelect($event)">
+                  </ngx-charts-advanced-pie-chart>
+                </md-card-content>
+              </md-card>
+            </div>
+            <div class="col-12 col-md-6">
+              <md-card>
+                <md-card-header>
+                  <md-card-title>{{'Finance.Credit' | translate}}</md-card-title>
+                </md-card-header>
+                <md-card-content>
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSCategoryCredit" [gradient]="gradient" (select)="onBSCategoryCreditSelect($event)">
+                  </ngx-charts-advanced-pie-chart>
+                </md-card-content>
+              </md-card>
+            </div>
+          </div>
+        </div>
+        <hr />
+
+        <div class="table-container mat-elevation-z8">
+          <md-table #tableBS [dataSource]="dataSourceBS">
+            <!-- Account column -->
+            <ng-container mdColumnDef="Account">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Account' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                <md-select disabled [(ngModel)]="row.AccountId" name="acnt">
+                  <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
+                    {{acnt.Name}}
+                  </md-option>
+                </md-select>
+              </md-cell>
+            </ng-container>
+
+            <!-- Category Column -->
+            <ng-container mdColumnDef="Category">
+              <md-header-cell *mdHeaderCellDef>{{'Common.Category' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                <md-select disabled [(ngModel)]="row.AccountCategoryId" name="ctgy">
+                  <md-option *ngFor="let ctgy of _storageService.AccountCategories" [value]="ctgy.ID">
+                    {{ctgy.Name}}
+                  </md-option>
+                </md-select>
+              </md-cell>
+            </ng-container>
+
+            <!-- Debit Balance Column -->
+            <ng-container mdColumnDef="Debit">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Debit' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.DebitBalance?.toFixed(2) }}
+              </md-cell>
+            </ng-container>
+
+            <!-- Desp Column -->
+            <ng-container mdColumnDef="Credit">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Credit' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.CreditBalance?.toFixed(2) }}
+              </md-cell>
+            </ng-container>
+
+            <!-- Balance Column -->
+            <ng-container mdColumnDef="Balance">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Balance' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.Balance?.toFixed(2) }}
+              </md-cell>
+            </ng-container>
+
+            <md-header-row *mdHeaderRowDef="displayedBSColumns"></md-header-row>
+            <md-row *mdRowDef="let row; columns: displayedBSColumns;"></md-row>
+          </md-table>
+          <md-paginator #paginatorBS [length]="ReportBS.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+          </md-paginator>
+        </div>
       </md-tab>
 
+      <md-tab>
+        <ng-template md-tab-label>
+          {{'Finance.ControlCenterReport' | translate}}
+        </ng-template>
+
+        <div class="container">
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <md-card>
+                <md-card-header>
+                  <md-card-title>{{'Finance.Debit' | translate}}</md-card-title>
+                </md-card-header>
+                <md-card-content>
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataCCDebit" [gradient]="gradient" (select)="onCCDebitSelect($event)">
+                  </ngx-charts-advanced-pie-chart>
+                </md-card-content>
+              </md-card>
+            </div>
+            <div class="col-12 col-md-6">
+              <md-card>
+                <md-card-header>
+                  <md-card-title>{{'Finance.Credit' | translate}}</md-card-title>
+                </md-card-header>
+                <md-card-content>
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataCCCredit" [gradient]="gradient" (select)="onCCCreditSelect($event)">
+                  </ngx-charts-advanced-pie-chart>
+                </md-card-content>
+              </md-card>
+            </div>
+          </div>
+        </div>
+        <hr />
+
+        <div class="table-container mat-elevation-z8">
+          <md-table #tableCC [dataSource]="dataSourceCC">
+            <!-- Control Center column -->
+            <ng-container mdColumnDef="ControlCenter">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.ControlCenter' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                <md-select disabled [(ngModel)]="row.ControlCenterId" name="acnt">
+                  <md-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+                    {{cc.Name}}
+                  </md-option>
+                </md-select>
+              </md-cell>
+            </ng-container>
+
+            <!-- Debit Balance Column -->
+            <ng-container mdColumnDef="Debit">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Debit' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.DebitBalance?.toFixed(2) }}
+              </md-cell>
+            </ng-container>
+
+            <!-- Desp Column -->
+            <ng-container mdColumnDef="Credit">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Credit' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.CreditBalance?.toFixed(2) }}
+              </md-cell>
+            </ng-container>
+
+            <!-- Balance Column -->
+            <ng-container mdColumnDef="Balance">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Balance' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.Balance?.toFixed(2) }}
+              </md-cell>
+            </ng-container>
+
+            <md-header-row *mdHeaderRowDef="displayedCCColumns"></md-header-row>
+            <md-row *mdRowDef="let row; columns: displayedCCColumns;"></md-row>
+          </md-table>
+          <md-paginator #paginatorCC [length]="ReportCC.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+          </md-paginator>
+        </div>
+      </md-tab>
+      <md-tab>
+        <ng-template md-tab-label>
+          {{'Finance.OrderReport' | translate}}
+        </ng-template>
+
+        <div class="container">
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <md-card>
+                <md-card-header>
+                  <md-card-title>{{'Finance.Debit' | translate}}</md-card-title>
+                </md-card-header>
+                <md-card-content>
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataOrderDebit" [gradient]="gradient" (select)="onOrderDebitSelect($event)">
+                  </ngx-charts-advanced-pie-chart>
+                </md-card-content>
+              </md-card>
+            </div>
+            <div class="col-12 col-md-6">
+              <md-card>
+                <md-card-header>
+                  <md-card-title>{{'Finance.Credit' | translate}}</md-card-title>
+                </md-card-header>
+                <md-card-content>
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataOrderCredit" [gradient]="gradient" (select)="onOrderCreditSelect($event)">
+                  </ngx-charts-advanced-pie-chart>
+                </md-card-content>
+              </md-card>
+            </div>
+          </div>
+        </div>
+        <hr />
+
+        <div class="table-container mat-elevation-z8">
+          <md-table #tableOrder [dataSource]="dataSourceOrder">
+            <!-- Order column -->
+            <ng-container mdColumnDef="Order">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Order' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                <md-select disabled [(ngModel)]="row.OrderId" name="acnt">
+                  <md-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+                    {{ord.Name}}
+                  </md-option>
+                </md-select>
+              </md-cell>
+            </ng-container>
+
+            <!-- Debit Balance Column -->
+            <ng-container mdColumnDef="Debit">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Debit' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.DebitBalance?.toFixed(2) }}
+              </md-cell>
+            </ng-container>
+
+            <!-- Desp Column -->
+            <ng-container mdColumnDef="Credit">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Credit' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.CreditBalance?.toFixed(2) }}
+              </md-cell>
+            </ng-container>
+
+            <!-- Balance Column -->
+            <ng-container mdColumnDef="Balance">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Balance' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.Balance?.toFixed(2) }}
+              </md-cell>
+            </ng-container>
+
+            <md-header-row *mdHeaderRowDef="displayedOrderColumns"></md-header-row>
+            <md-row *mdRowDef="let row; columns: displayedOrderColumns;"></md-row>
+          </md-table>
+          <md-paginator #paginatorOrder [length]="ReportOrder.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+          </md-paginator>
+        </div>
+      </md-tab>
     </md-tab-group>
   </md-card-content>
 </md-card>

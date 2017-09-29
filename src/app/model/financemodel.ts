@@ -1625,6 +1625,7 @@ export class BalanceSheetReport extends FinanceReportBase {
     public AccountName: string;
     public AccountCategoryId: number;
     public AccountCategoryName: string;
+
     public onSetData(data: any) {
         super.onSetData(data);
 
