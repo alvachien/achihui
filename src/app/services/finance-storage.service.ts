@@ -1132,4 +1132,31 @@ export class FinanceStorageService {
         return response;
       });
   }
+
+  /**
+   * Get tran type report
+   */
+  public getReportTranType(): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceReportTranType';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering getReportBS in FinanceStorageService: ${response}`);
+        }
+
+        return response;
+      });
+  }
 }

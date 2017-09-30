@@ -1682,6 +1682,35 @@ export class OrderReport extends FinanceReportBase {
 }
 
 /**
+ * Tran type report
+ */
+export class TranTypeReport {
+    public TranType: number;
+    public TranTypeName: string;
+    public ExpenseFlag: boolean;
+    public TranAmount: number;
+    public TranDate: moment.Moment;
+
+    public onSetData(data: any) {
+        if (data && data.tranType) {
+            this.TranType = +data.tranType;
+        }
+        if (data && data.name) {
+            this.TranTypeName = data.name;
+        }
+        if (data && data.expenseFlag) {
+            this.ExpenseFlag = data.expenseFlag;
+        }
+        if (data && data.tranDate) {
+            this.TranDate = moment(data.tranDate, hih.MomentDateFormat);
+        }
+        if (data && data.tranAmount) {
+            this.TranAmount = +data.tranAmount;
+        }
+    }
+}
+
+/**
  * Document item with balance
  */
 export class DocumentItemWithBalance {

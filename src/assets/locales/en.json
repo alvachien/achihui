@@ -110,6 +110,24 @@
       "KRW": "South Korean Won",
       "TWD": "TaiWan New Dollar",
       "USD": "Dollar"
+    },
+    "AcntCty": {
+      "Cash": "Cash",
+      "CreditCard": "CreditCard",
+      "DepositAccount": "Deposit Account",
+      "Loan": "Loan",
+      "AdvancedPayment": "Advanced Payment",
+      "AccountPayable": "Account Payable",
+      "AccountReceviable": "Account Receviable",
+      "VirtualAccount": "Virtual Account",
+      "AssetAccount": "Asset Account"
+    },
+    "DocTy": {
+      "Normal": "Normal",
+      "Transfer": "Transfer",
+      "CurrExg": "Currency Exchange",
+      "Installment": "Installment",
+      "AdvancedPayment": "Advanced Payment"
     }
   },
   "RepeatFrequency": {

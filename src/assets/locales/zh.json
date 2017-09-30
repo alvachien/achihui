@@ -110,6 +110,24 @@
       "KRW": "韩币",
       "TWD": "新台币",
       "USD": "美元"
+    },
+    "AcntCty": {
+      "Cash": "现金",
+      "CreditCard": "信用卡",
+      "DepositAccount": "存款账户",
+      "Loan": "贷款",
+      "AdvancedPayment": "预付款",
+      "AccountPayable": "应付账款",
+      "AccountReceviable": "应收账款",
+      "VirtualAccount": "虚拟账户",
+      "AssetAccount": "资产账户"
+    },
+    "DocTy": {
+      "Normal": "普通收支",
+      "Transfer": "转账",
+      "CurrExg": "货币兑换",
+      "Installment": "分期付款",
+      "AdvancedPayment": "预付款"
     }
   },
   "RepeatFrequency": {
