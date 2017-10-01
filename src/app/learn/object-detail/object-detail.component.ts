@@ -211,7 +211,55 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       this.detailObject.Content = tinymce.activeEditor.getContent();
       this._storageService.createObject(this.detailObject);
     } else if (this.uiMode === UIMode.Change) {
+      this._storageService.updateObjectEvent.subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Receiving updateObjectEvent in ObjectDetailComponent with : ${x}`);
+        }
+
+        // Navigate back to list view
+        if (x instanceof LearnObject) {
+          // Show a dialog, then jump to the display view
+          const dlginfo: MessageDialogInfo = {
+            Header: 'Common.Success',
+            Content: x.Id.toString(),
+            Button: MessageDialogButtonEnum.onlyok
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo
+          }).afterClosed().subscribe(x2 => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            }
+            this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: 'Common.Error',
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo
+          }).afterClosed().subscribe(x2 => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            }
+          });
+        }
+      });
+
       // Update mode
+      this.detailObject.Content = tinymce.activeEditor.getContent();
+      this._storageService.updateObject(this.detailObject);
     }
   }
 

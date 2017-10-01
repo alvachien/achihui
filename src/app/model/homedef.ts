@@ -12,10 +12,10 @@ export enum HomeMemberRelationEnum {
 
 export function getHomeMemberRelationString(re: HomeMemberRelationEnum) {
     switch(re) {
-        case HomeMemberRelationEnum.Self: return 'Common.Self';
-        case HomeMemberRelationEnum.Couple: return 'Common.Couple';
-        case HomeMemberRelationEnum.Child: return 'Common.Child';
-        case HomeMemberRelationEnum.Parent: return 'Common.Parent';
+        case HomeMemberRelationEnum.Self: return 'Sys.MemRel.Self';
+        case HomeMemberRelationEnum.Couple: return 'Sys.MemRel.Couple';
+        case HomeMemberRelationEnum.Child: return 'Sys.MemRel.Children';
+        case HomeMemberRelationEnum.Parent: return 'Sys.MemRel.Parent';
         default: return '';
     }
 }

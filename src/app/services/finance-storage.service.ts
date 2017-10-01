@@ -5,12 +5,13 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
 import { LogLevel, AccountCategory, DocumentType, TranType, Account, ControlCenter, Order, 
-    Document, DocumentWithPlanExgRateForUpdate } from '../model';
+    Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
+import * as moment from 'moment';
 
 @Injectable()
 export class FinanceStorageService {
@@ -1136,7 +1137,7 @@ export class FinanceStorageService {
   /**
    * Get tran type report
    */
-  public getReportTranType(): Observable<any> {
+  public getReportTranType(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1145,6 +1146,12 @@ export class FinanceStorageService {
     let apiurl = environment.ApiUrl + '/api/FinanceReportTranType';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(MomentDateFormat));
+    }
     
     return this._http.get(apiurl, {
         headers: headers,

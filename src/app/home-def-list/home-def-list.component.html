@@ -1,26 +1,26 @@
 <md-card>
   <md-card-header>
     <div></div>
-    <md-card-title>Home List</md-card-title>
-    <md-card-subtitle>Home List</md-card-subtitle>
+    <md-card-title>{{'Nav.HomeList' | translate}}</md-card-title>
+    <md-card-subtitle>{{'Common.ListView' | translate}}</md-card-subtitle>
   </md-card-header>
   <md-card-content>
       <md-toolbar>
-        <button md-icon-button color="primary" (click)="onCreateHome()"><md-icon md-icon-button color="primary" class="example-icon">add</md-icon></button>
+        <button md-icon-button color="primary" (click)="onCreateHome()" mdTooltip="{{'Common.Create' | translate}}"><md-icon md-icon-button color="primary" class="example-icon">add</md-icon></button>
       </md-toolbar>    
       <div class="table-container mat-elevation-z8">
       <md-table #table [dataSource]="dataSource">
         <!-- ID Column -->
         <ng-container mdColumnDef="id">
-          <md-header-cell *mdHeaderCellDef></md-header-cell>
+          <md-header-cell *mdHeaderCellDef>#</md-header-cell>
           <md-cell *mdCellDef="let row">
-              <button md-icon-button (click)="onChooseHome(row)">
+              <button md-icon-button (click)="onChooseHome(row)" *ngIf="!IsCurrentHomeChosed" mdTooltip="{{'Common.ChooseThisHome' | translate}}">
                 <md-icon color="primary" class="md-14 example-icon" aria-label="Choose">verified_user</md-icon>
               </button>
-              <button md-icon-button (click)="onDisplayHome(row)">
+              <button md-icon-button (click)="onDisplayHome(row)" mdTooltip="{{'Common.Display' | translate}}">
                 <md-icon color="primary" class="md-14 example-icon" aria-label="Display">search</md-icon>
               </button>
-              #{{ row.ID }}
+              {{ row.ID }}
           </md-cell>
         </ng-container>
 
@@ -32,19 +32,19 @@
 
         <!-- Host Column -->
         <ng-container mdColumnDef="host">
-          <md-header-cell *mdHeaderCellDef> Host </md-header-cell>
+          <md-header-cell *mdHeaderCellDef> {{'Common.Host' | translate}} </md-header-cell>
           <md-cell *mdCellDef="let row"> {{row.Host}} </md-cell>
         </ng-container>
 
         <!-- Currency Column -->
         <ng-container mdColumnDef="currency">
           <md-header-cell *mdHeaderCellDef>{{'Finance.Currency' | translate}} </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.baseCurrency}} </md-cell>
+          <md-cell *mdCellDef="let row"> {{row.BaseCurrency}} </md-cell>
         </ng-container>
   
         <!-- Details Column -->
         <ng-container mdColumnDef="details">
-          <md-header-cell *mdHeaderCellDef> Details </md-header-cell>
+          <md-header-cell *mdHeaderCellDef> {{'Common.Detail' | translate}} </md-header-cell>
           <md-cell *mdCellDef="let row"> {{row.Details}} </md-cell>
         </ng-container>
 

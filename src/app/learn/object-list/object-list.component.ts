@@ -87,6 +87,6 @@ export class ObjectListComponent implements OnInit {
   }
 
   public onRefresh(): void {
-
+    this._storageService.fetchAllObjects(true);
   }
 }

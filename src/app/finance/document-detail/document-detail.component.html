@@ -20,7 +20,7 @@
         <md-select class="demo-full-width" placeholder="{{'Finance.DocumentType' | translate}}" 
           [disabled]="!isFieldChangable" [(ngModel)]="detailObject.DocType" name="doctype">
           <md-option *ngFor="let dt of _storageService.DocumentTypes" [value]="dt.Id">
-            {{dt.Name}} 
+            {{dt.Name | translate}} 
           </md-option>
         </md-select>
 

@@ -86,6 +86,6 @@ export class HistoryListComponent implements OnInit {
   }
 
   public onRefresh(): void {
-
+    this._storageService.fetchAllHistories(true);
   }
 }

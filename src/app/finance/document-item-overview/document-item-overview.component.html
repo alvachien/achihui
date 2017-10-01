@@ -6,36 +6,9 @@
     <md-tab-group>
       <md-tab>
         <ng-template md-tab-label>
-          {{'Common.Overview' | translate}}
+          {{'Common.Todo' | translate}}
         </ng-template>
-
-        <div class="container">
-          <div class="row">
-            <div class="col-12 col-md-6">
-              <md-card>
-                <md-card-header>
-                  <md-card-title>{{'Finance.Incoming' | translate}}</md-card-title>
-                </md-card-header>
-                <md-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataTTIn" [gradient]="gradient">
-                  </ngx-charts-advanced-pie-chart>
-                </md-card-content>
-              </md-card>
-            </div>
-            <div class="col-12 col-md-6">
-              <md-card>
-                <md-card-header>
-                  <md-card-title>{{'Finance.Outgoing' | translate}}</md-card-title>
-                </md-card-header>
-                <md-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataTTOut" [gradient]="gradient">
-                  </ngx-charts-advanced-pie-chart>
-                </md-card-content>
-              </md-card>
-            </div>
-          </div>
-        </div>
-        <hr />
+        <!-- Todo -->
         
       </md-tab> 
 

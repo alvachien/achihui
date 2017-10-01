@@ -4,10 +4,10 @@ export const environment = {
 
     DebugLogging: false,
     LoggingLevel: 2,
-    IDServerUrl: 'http://acidserver.azurewebsites.net',
-    AppLoginCallbackUrl: 'http://achihui.azurewebsites.net/logincallback.html',
-    AppLogoutCallbackUrl: 'http://achihui.azurewebsites.net',
-    AppLoginSlientRevewCallbackUrl: 'http://achihui.azurewebsites.net/silentrenewcallback.html',
-    AppHost: 'http://achihui.azurewebsites.net',
-    ApiUrl: 'http://achihapi.azurewebsites.net',
+    IDServerUrl: 'http://118.178.58.187:5100',
+    AppLoginCallbackUrl: 'http://118.178.58.187:5200/logincallback.html',
+    AppLogoutCallbackUrl: 'http://118.178.58.187:5200',
+    AppLoginSlientRevewCallbackUrl: 'http://118.178.58.187:5200/silentrenewcallback.html',
+    AppHost: 'http://118.178.58.187:5200',
+    ApiUrl: 'http://118.178.58.187:5300',
   };

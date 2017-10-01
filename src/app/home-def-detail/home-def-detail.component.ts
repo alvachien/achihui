@@ -28,7 +28,9 @@ export class HomeDefDetailComponent implements OnInit {
     private _activateRoute: ActivatedRoute) {
 
     this.detailObject = new HomeDef();
-    this._fincurrService.fetchAllCurrencies();
+    this._fincurrService.fetchAllCurrencies().subscribe(x => {
+      // Ensure the GET is fired
+    });
     this._homedefService.listDataChange.subscribe((x) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering listDataChange of HomeDefDetailComponent... ${x}`);
@@ -116,5 +118,9 @@ export class HomeDefDetailComponent implements OnInit {
       this._homedefService.createHomeDef(this.detailObject);
     } else {
     }
+  }
+
+  public onCancel(): void {
+    this._router.navigate(['/']);
   }
 }

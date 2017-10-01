@@ -34,7 +34,7 @@
         <ng-container mdColumnDef="DocType">
           <md-header-cell *mdHeaderCellDef>{{'Finance.DocumentType' | translate}}</md-header-cell>
           <md-cell *mdCellDef="let row">
-              {{ row.DocTypeName }}
+              {{ row.DocTypeName | translate }}
           </md-cell>
         </ng-container>
 

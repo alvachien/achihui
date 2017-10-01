@@ -17,7 +17,7 @@
         <!-- Name Column -->
         <ng-container mdColumnDef="name">
           <md-header-cell *mdHeaderCellDef>{{'Common.Name' | translate}}</md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.Name}} </md-cell>
+          <md-cell *mdCellDef="let row"> {{row.Name | translate}} </md-cell>
         </ng-container>
 
         <!-- Comment Column -->

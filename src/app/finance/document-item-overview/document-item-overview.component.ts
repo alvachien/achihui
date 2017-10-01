@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import * as moment from 'moment';
 
 /**
  * Data source of Document Item by Account
@@ -94,7 +95,7 @@ export class DocItemByOrderDataSource extends DataSource<any> {
 }
 
 @Component({
-  selector: 'app-document-item-overview',
+  selector: 'hih-fin-document-item-overview',
   templateUrl: './document-item-overview.component.html',
   styleUrls: ['./document-item-overview.component.scss']
 })
@@ -120,13 +121,6 @@ export class DocumentItemOverviewComponent implements OnInit {
   selectedControlCenter: number;
   selectedOrder: number;
 
-  view: any[] = [700, 400];  
-  colorScheme = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
-  };
-  dataTTIn: any[] = [];
-  dataTTOut: any[] = [];
-  
   constructor(private _dialog: MdDialog,
     private _snackbar: MdSnackBar,
     private _router: Router,
@@ -148,31 +142,9 @@ export class DocumentItemOverviewComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders()
     ]).subscribe(x => {
-      this._storageService.getReportTranType().subscribe(y => {
-        this.dataTTIn = [];
-        this.dataTTOut = [];
-        if (y instanceof Array && y.length > 0) {
-          for(let tt of y) {
-            let rtt: TranTypeReport = new TranTypeReport();
-            rtt.onSetData(tt);
-
-            if (rtt.ExpenseFlag) {
-              this.dataTTOut.push({
-                name: rtt.TranTypeName,
-                value:  Math.abs(rtt.TranAmount)
-              });
-            } else {
-              this.dataTTIn.push({
-                name: rtt.TranTypeName,
-                value: rtt.TranAmount
-              });
-            }
-          }
-        }
-      });
     });
   }
-
+  
   public onAccountSelectChange() {
     if (this.selectedAccount) {
       this._storageService.getDocumentItemByAccount(this.selectedAccount).subscribe(x => {

@@ -41,7 +41,7 @@ export class TemplateDocADPDataSource extends DataSource<any> {
 
 
 @Component({
-  selector: 'app-document-advancepayment-detail',
+  selector: 'hih-fin-document-advancepayment-detail',
   templateUrl: './document-advancepayment-detail.component.html',
   styleUrls: ['./document-advancepayment-detail.component.scss']
 })

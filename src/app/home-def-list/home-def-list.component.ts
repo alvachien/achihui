@@ -50,6 +50,10 @@ export class HomeDefListComponent implements OnInit {
   dataSource: HomeDefDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
+  get IsCurrentHomeChosed():boolean {
+    return this._homedefService.ChosedHome !== null;
+  }
+  
   constructor(public _homedefService: HomeDefDetailService,
     private _router: Router) { }
 
@@ -73,6 +77,8 @@ export class HomeDefListComponent implements OnInit {
       this._homedefService.RedirectURL = '';
 
       this._router.navigate([url]);
+    } else {
+      this._router.navigate(['/']);
     }
   }
 }

@@ -76,6 +76,14 @@
     "NoResultToDisplay": "No results to display",
     "RowPerPage": "Row per page",
     "WelcomeBack": "Welcome back!",
+    "CurrentMonth": "Current month",
+    "CurrentYear": "Current year",
+    "All": "All",
+    "ChooseThisHome": "Choose this home",
+    "WelcomeToHIH": "Welcome to H.I.H.",
+    "ShortIntroduceHIH": "H.I.H. helps to build a digitial life for each home",
+    "RequireLogin": "Please login to enpower the features provided by H.I.H.",
+    "RequireChooseHome": "Please choose a Home which you already assigned to, or create your new home to continue",
 
     "GenericInfo": "Generic Info",
     "ExtraInfo": "Extra Info",
@@ -88,6 +96,10 @@
     "RepeatFrequency": "Repeat Frequency",
     "PageNotFoundHeader":"Page not found",
     "PageNotFoundContent": "The page which you aim to visit is not exist",
+    "EnglishName": "English Name",
+    "NatvieName": "Native Name",
+    "LanguageSupportedInApp": "Supported",
+    "Host": "Host",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",
@@ -128,6 +140,12 @@
       "CurrExg": "Currency Exchange",
       "Installment": "Installment",
       "AdvancedPayment": "Advanced Payment"
+    },
+    "MemRel": {
+      "Self": "Self",
+      "Couple": "Couple",
+      "Children": "Children",
+      "Parent": "Parent"
     }
   },
   "RepeatFrequency": {

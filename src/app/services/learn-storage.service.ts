@@ -35,6 +35,7 @@ export class LearnStorageService {
 
   // Events
   createObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
+  updateObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
   readObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
   createHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
   readHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
@@ -154,7 +155,7 @@ export class LearnStorageService {
       return Observable.of(this.listObjectChange.value);
     }
   }
-0
+
   /**
    * Create an object
    * @param obj Object to create
@@ -203,6 +204,54 @@ export class LearnStorageService {
       });
   }
 
+  /**
+   * Update an object
+   * @param obj Object to create
+   */
+  public updateObject(obj: LearnObject) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnObject/' +obj.Id.toString();
+
+    const jdata: string = obj.writeJSONString();
+    this._http.put(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Map of updateObject in LearnStorageService' + response);
+        }
+
+        let hd: LearnObject = new LearnObject();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in updateObject in LearnStorageService: ${x}`);
+        }
+
+        // const copiedData = this.Objects.slice();
+        // copiedData.push(x);
+        // this.listObjectChange.next(copiedData);
+
+        // Broadcast event
+        this.updateObjectEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in updateObject in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.updateObjectEvent.emit(error.toString());
+      }, () => {
+      });
+  }
+  
   /**
    * Read an object
    * @param objid ID of the object to read

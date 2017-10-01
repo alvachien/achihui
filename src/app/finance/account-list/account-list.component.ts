@@ -82,6 +82,6 @@ export class AccountListComponent implements OnInit {
   }
 
   public onRefresh() {
-    
+    this._storageService.fetchAllAccounts(true);
   }
 }

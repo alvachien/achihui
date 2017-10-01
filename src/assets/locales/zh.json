@@ -76,7 +76,15 @@
     "NoResultToDisplay": "无显示结果",
     "RowPerPage": "每页行数",
     "WelcomeBack": "欢迎回来!",
-
+    "CurrentMonth": "本月",
+    "CurrentYear": "本年",
+    "All": "全部",
+    "ChooseThisHome": "选择此家庭",
+    "WelcomeToHIH": "欢迎来到H.I.H.",
+    "ShortIntroduceHIH": "H.I.H.旨在帮助每个家庭建立数字生活",
+    "RequireLogin": "请先登录以体验H.I.H.所提供的各项功能",
+    "RequireChooseHome": "请先选择一个您已经加入的家庭、或创建您自己的新家庭以继续",
+    
     "GenericInfo": "基础信息",
     "ExtraInfo": "附加信息",
     "ReviewForSubmit": "检查与提交",
@@ -88,6 +96,10 @@
     "RepeatFrequency": "重复频率",
     "PageNotFoundHeader":"页面未找到",
     "PageNotFoundContent": "你想要访问的页面并不存在",
+    "EnglishName": "英文名字",
+    "NatvieName": "本地名称",
+    "LanguageSupportedInApp": "程序支持",
+    "Host": "户主",
 
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",
@@ -128,6 +140,12 @@
       "CurrExg": "货币兑换",
       "Installment": "分期付款",
       "AdvancedPayment": "预付款"
+    },
+    "MemRel": {
+      "Self": "本人",
+      "Couple": "配偶",
+      "Children": "孩子",
+      "Parent": "双亲"
     }
   },
   "RepeatFrequency": {

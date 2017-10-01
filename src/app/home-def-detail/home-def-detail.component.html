@@ -21,12 +21,12 @@
 
     <div class="demo-full-width" *ngIf="!IsCreateMode">
       <md-form-field>
-        <input mdInput type="text" placeholder="ID" readonly [(ngModel)]="detailObject.Host">
+        <input mdInput type="text" placeholder="{{'Common.Host' | translate}}" readonly [(ngModel)]="detailObject.Host">
       </md-form-field>
     </div>
     
     <md-form-field class="demo-full-width">
-      <input mdInput type="text" placeholder="Details" [(ngModel)]="detailObject.Details">
+      <input mdInput type="text" placeholder="{{'Common.Detail' | translate}}" [(ngModel)]="detailObject.Details">
     </md-form-field>
 
     <hr />
@@ -35,12 +35,13 @@
         <h3 mdLine> {{member.DisplayAs}} </h3>
         <p mdLine>
           <span> {{member.User}} </span>
-          <span> -- {{member.RelationString}} </span>
+          <span> -- {{member.RelationString | translate}} </span>
         </p>
       </md-list-item>
     </md-list>
   </md-card-content>
   <md-card-actions>
-    <button md-button [disabled]="!canSubmit()" (click)="onSubmit()">Submit</button>
+    <button md-button [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button md-button (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
   </md-card-actions>
 </md-card>

@@ -60,17 +60,17 @@ export class FinCurrencyService {
           this._islistLoaded = true;
           this.listDataChange.next(listRst);
           return listRst;
-        })
-        .catch(err => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinCurrencyService: ${err}`);
-          }
-          
-          this._islistLoaded = false;
-          this.listDataChange.next([]);
-
-          return Observable.throw(err.json());
         });
+        // .catch(err => {
+        //   if (environment.LoggingLevel >= LogLevel.Error) {
+        //     console.error(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinCurrencyService: ${err}`);
+        //   }
+          
+        //   this._islistLoaded = false;
+        //   this.listDataChange.next([]);
+
+        //   return Observable.throw(err.json());
+        // });
     } else {
       return Observable.of(this.listDataChange.value);
     }

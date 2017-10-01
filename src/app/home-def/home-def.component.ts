@@ -11,5 +11,4 @@ export class HomeDefComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

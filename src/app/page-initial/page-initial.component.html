@@ -1,10 +1,62 @@
-<div class="jumbotron">
-  
-    <h1 class="display-3 text-dark">Initial page</h1>
-    <p class="lead text-dark">Welcome to the initial page</p>
-  
-    <p class="text-dark">This page shall be redefined later on, but not now.</p>
-    <p class="lead ">
-      <!-- <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a> -->
-    </p>
+<div class="jumbotron" *ngIf="!IsUserLoggedIn || !IsHomeChosed">
+
+  <h1 class="display-3 text-dark" *ngIf="!IsUserLoggedIn">{{'Common.WelcomeToHIH' | translate}}</h1>
+  <p class="lead text-dark" *ngIf="!IsUserLoggedIn">{{'Common.ShortIntroduceHIH' | translate}}</p>
+  <p class="text-dark" *ngIf="!IsUserLoggedIn">{{'Common.RequireLogin' | translate}}</p>
+
+  <h1 class="display-3 text-dark" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.WelcomeBack' | translate}}</h1>
+  <p class="lead text-dark" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.ShortIntroduceHIH' | translate}}</p>
+  <p class="text-dark" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.RequireChooseHome' | translate}}</p>
+
+  <p class="lead" *ngIf="!IsUserLoggedIn">
+    <a class="btn btn-primary btn-lg" role="button" (click)="onGoLogin()">{{'Login.Login' | translate}}</a>
+  </p>
+  <p class="lead" *ngIf="IsUserLoggedIn && !IsHomeChosed">
+    <a class="btn btn-primary btn-lg" role="button" (click)="onGoHomeList()">{{'Nav.HomeList' | translate}}</a>
+  </p>
+</div>
+
+<div class="container mt-2" *ngIf="IsUserLoggedIn && IsHomeChosed">
+  <!-- Show Learn history -->
+  <div class="row container mt-2">
   </div>
+  <hr />
+  <!-- Show Finance transaction type report -->
+  <div class="row container mt-2">
+    <md-toolbar>
+      <md-select [(ngModel)]="selectedScope" (change)="onScopeChanged()">
+        <md-option [value]="1">{{'Common.CurrentMonth' | translate}}</md-option>
+        <md-option [value]="2">{{'Common.CurrentYear' | translate}}</md-option>
+        <md-option [value]="9">{{'Common.All' | translate}}</md-option>
+      </md-select>
+    </md-toolbar>
+
+    <div class="container mt-2">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <md-card>
+            <md-card-header>
+              <md-card-title>{{'Finance.Incoming' | translate}}</md-card-title>
+            </md-card-header>
+            <md-card-content>
+              <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" [results]="dataTTIn">
+              </ngx-charts-advanced-pie-chart>
+            </md-card-content>
+          </md-card>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <md-card>
+            <md-card-header>
+              <md-card-title>{{'Finance.Outgoing' | translate}}</md-card-title>
+            </md-card-header>
+            <md-card-content>
+              <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" [results]="dataTTOut">
+              </ngx-charts-advanced-pie-chart>
+            </md-card-content>
+          </md-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

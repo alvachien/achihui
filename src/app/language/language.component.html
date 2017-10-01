@@ -23,20 +23,20 @@
   
           <!-- English Name Column -->
           <ng-container mdColumnDef="enname">
-            <md-header-cell *mdHeaderCellDef> English </md-header-cell>
+            <md-header-cell *mdHeaderCellDef> {{'Common.EnglishName' | translate}} </md-header-cell>
             <md-cell *mdCellDef="let row"> {{row.EnglishName}} </md-cell>
           </ng-container>
   
           <!-- Native Name Column -->
           <ng-container mdColumnDef="nvname">
-            <md-header-cell *mdHeaderCellDef>Native </md-header-cell>
+            <md-header-cell *mdHeaderCellDef> {{'Common.NativeName' | translate}} </md-header-cell>
             <md-cell *mdCellDef="let row"> {{row.NativeName}} </md-cell>
           </ng-container>
     
           <!-- App flag Column -->
           <ng-container mdColumnDef="appflag">
-            <md-header-cell *mdHeaderCellDef> App Flag </md-header-cell>
-            <md-cell *mdCellDef="let row"> <md-checkbox [(ngModel)]="row.AppFlag"></md-checkbox> </md-cell>
+            <md-header-cell *mdHeaderCellDef> {{'Common.LanguageSupportedInApp' | translate}} </md-header-cell>
+            <md-cell *mdCellDef="let row"> <md-checkbox disabled [(ngModel)]="row.AppFlag"></md-checkbox> </md-cell>
           </ng-container>
   
           <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>

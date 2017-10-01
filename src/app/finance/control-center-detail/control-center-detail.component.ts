@@ -165,6 +165,7 @@ export class ControlCenterDetailComponent implements OnInit {
     }
   }
 
-  public onCancel() {    
+  public onCancel() {
+    this._router.navigate(['/finance/controlcenter']);
   }
 }

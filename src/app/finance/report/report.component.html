@@ -17,7 +17,7 @@
                   <md-card-title>{{'Finance.Debit' | translate}}</md-card-title>
                 </md-card-header>
                 <md-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSAccountDebit" [gradient]="gradient" (select)="onBSAccountDebitSelect($event)">
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSAccountDebit" (select)="onBSAccountDebitSelect($event)">
                   </ngx-charts-advanced-pie-chart>
                 </md-card-content>
               </md-card>
@@ -28,7 +28,7 @@
                   <md-card-title>{{'Finance.Credit' | translate}}</md-card-title>
                 </md-card-header>
                 <md-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSAccountCredit" [gradient]="gradient" (select)="onBSAccountCreditSelect($event)">
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSAccountCredit" (select)="onBSAccountCreditSelect($event)">
                   </ngx-charts-advanced-pie-chart>
                 </md-card-content>
               </md-card>
@@ -41,7 +41,7 @@
                   <md-card-title>{{'Finance.Debit' | translate}}</md-card-title>
                 </md-card-header>
                 <md-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSCategoryDebit" [gradient]="gradient" (select)="onBSCategoryDebitSelect($event)">
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSCategoryDebit" (select)="onBSCategoryDebitSelect($event)">
                   </ngx-charts-advanced-pie-chart>
                 </md-card-content>
               </md-card>
@@ -52,7 +52,7 @@
                   <md-card-title>{{'Finance.Credit' | translate}}</md-card-title>
                 </md-card-header>
                 <md-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSCategoryCredit" [gradient]="gradient" (select)="onBSCategoryCreditSelect($event)">
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSCategoryCredit" (select)="onBSCategoryCreditSelect($event)">
                   </ngx-charts-advanced-pie-chart>
                 </md-card-content>
               </md-card>
@@ -81,7 +81,7 @@
               <md-cell *mdCellDef="let row">
                 <md-select disabled [(ngModel)]="row.AccountCategoryId" name="ctgy">
                   <md-option *ngFor="let ctgy of _storageService.AccountCategories" [value]="ctgy.ID">
-                    {{ctgy.Name}}
+                    {{ctgy.Name | translate}}
                   </md-option>
                 </md-select>
               </md-cell>
@@ -132,7 +132,7 @@
                   <md-card-title>{{'Finance.Debit' | translate}}</md-card-title>
                 </md-card-header>
                 <md-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataCCDebit" [gradient]="gradient" (select)="onCCDebitSelect($event)">
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataCCDebit" (select)="onCCDebitSelect($event)">
                   </ngx-charts-advanced-pie-chart>
                 </md-card-content>
               </md-card>
@@ -143,7 +143,7 @@
                   <md-card-title>{{'Finance.Credit' | translate}}</md-card-title>
                 </md-card-header>
                 <md-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataCCCredit" [gradient]="gradient" (select)="onCCCreditSelect($event)">
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataCCCredit" (select)="onCCCreditSelect($event)">
                   </ngx-charts-advanced-pie-chart>
                 </md-card-content>
               </md-card>
@@ -210,7 +210,7 @@
                   <md-card-title>{{'Finance.Debit' | translate}}</md-card-title>
                 </md-card-header>
                 <md-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataOrderDebit" [gradient]="gradient" (select)="onOrderDebitSelect($event)">
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataOrderDebit" (select)="onOrderDebitSelect($event)">
                   </ngx-charts-advanced-pie-chart>
                 </md-card-content>
               </md-card>
@@ -221,7 +221,7 @@
                   <md-card-title>{{'Finance.Credit' | translate}}</md-card-title>
                 </md-card-header>
                 <md-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataOrderCredit" [gradient]="gradient" (select)="onOrderCreditSelect($event)">
+                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataOrderCredit" (select)="onOrderCreditSelect($event)">
                   </ngx-charts-advanced-pie-chart>
                 </md-card-content>
               </md-card>
