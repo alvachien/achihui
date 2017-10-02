@@ -100,7 +100,7 @@ export class HistoryDetailComponent implements OnInit {
 
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
-      this._storageService.createObjectEvent.subscribe((x) => {
+      this._storageService.createHistoryEvent.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createObjectEvent in HistoryDetailComponent with : ${x}`);
         }

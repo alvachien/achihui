@@ -1160,10 +1160,10 @@ export class FinanceStorageService {
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering getReportBS in FinanceStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering getReportTranType in FinanceStorageService: ${response}`);
         }
 
-        return response;
+        return <any>response;
       });
   }
 }

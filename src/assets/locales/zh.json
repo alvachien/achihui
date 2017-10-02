@@ -100,6 +100,7 @@
     "NatvieName": "本地名称",
     "LanguageSupportedInApp": "程序支持",
     "Host": "户主",
+    "Todo": "待处理事项",
 
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",

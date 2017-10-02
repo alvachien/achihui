@@ -137,7 +137,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       tinymce.remove(this.editor);
     } catch(err) {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Exception in ngAfterViewInit of LearnObjectDetail: ${err ? err.toString() : ''}`);
+        console.error(`AC_HIH_UI [Debug]: Exception in ngOnDestroy of LearnObjectDetail: ${err ? err.toString() : ''}`);
       }
     }
   }

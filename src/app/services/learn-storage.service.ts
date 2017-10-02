@@ -4,12 +4,13 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, LearnCategory, LearnObject, LearnHistory } from '../model';
+import { LogLevel, LearnCategory, LearnObject, LearnHistory, MomentDateFormat } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
+import * as moment from 'moment';
 
 @Injectable()
 export class LearnStorageService {
@@ -106,7 +107,7 @@ export class LearnStorageService {
 
   // Object
   public fetchAllObjects(forceReload?: boolean): Observable<any> {
-    if (!this._isCtgyListLoaded || forceReload) {
+    if (!this._isObjListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/learnobject';
 
       let headers = new HttpHeaders();
@@ -301,7 +302,7 @@ export class LearnStorageService {
   
   // History
   public fetchAllHistories(forceReload?: boolean): Observable<LearnHistory[]> {
-    if (!this._isCtgyListLoaded || forceReload) {
+    if (!this._isHistListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/learnhistory';
 
       let headers = new HttpHeaders();
@@ -443,6 +444,72 @@ export class LearnStorageService {
         // Broadcast event: failed
         this.readHistoryEvent.emit(error);
       }, () => {
+      });
+  }
+  
+  /**
+   * Get history report by user
+   */
+  public getHistoryReportByUser(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnReportUserDate';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(MomentDateFormat));
+    }
+    
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByUser in LearnStorageService: ${response}`);
+        }
+
+        return <any>response;
+      });
+  }
+
+  /**
+   * Get history report by category
+   */
+  public getHistoryReportByCategory(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnReportCtgyDate';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(MomentDateFormat));
+    }
+    
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByCategory in LearnStorageService: ${response}`);
+        }
+
+        return <any>response;
       });
   }  
 }
