@@ -274,6 +274,7 @@
     "CurrencyExchange": "Currency Exchange",
     "RefDoc": "Ref Doc",
     "ReferenceDocument": "Reference Document",
+    "IsExpense": "Is Expense",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

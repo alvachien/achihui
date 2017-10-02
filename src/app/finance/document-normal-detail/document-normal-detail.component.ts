@@ -257,7 +257,7 @@ export class DocumentNormalDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           // Show the snackbar
-          this._snackbar.open("{{'Finance.DocumentPosted' | translate}}", 'OK', {
+          this._snackbar.open("Document Posted", 'OK', {
             duration: 3000
           }).afterDismissed().subscribe(() => {
             // Navigate to display

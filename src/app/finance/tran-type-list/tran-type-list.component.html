@@ -21,6 +21,19 @@
           <md-cell *mdCellDef="let row"> {{row.Name}} </md-cell>
         </ng-container>
 
+        <!-- Expense flag column -->
+        <ng-container mdColumnDef="expflag">
+          <md-header-cell *mdHeaderCellDef>{{'Finance.IsExpense' | translate}}</md-header-cell>
+          <md-cell *mdCellDef="let row">
+            <md-slide-toggle
+              class="mt-2"
+              color="accent"
+              [checked]="row.Expense"
+              disabled>
+            </md-slide-toggle>
+          </md-cell>
+        </ng-container>
+  
         <!-- Comment Column -->
         <ng-container mdColumnDef="comment">
           <md-header-cell *mdHeaderCellDef> {{'Common.Comment' | translate}} </md-header-cell>

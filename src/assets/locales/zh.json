@@ -274,6 +274,7 @@
     "CurrencyExchange": "货币兑换",
     "RefDoc": "关联",
     "ReferenceDocument": "关联凭证",
+    "IsExpense": "开销",
     
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",

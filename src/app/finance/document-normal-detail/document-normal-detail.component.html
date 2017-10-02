@@ -43,7 +43,7 @@
         <!-- Planned Exchange rate -->
         <div *ngIf="isForeignCurrency">
           <md-checkbox [(ngModel)]="detailObject.ExgRate_Plan" color="accent" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate' | translate}}</md-checkbox>
-        </div>        
+        </div>
         
         <md-action-row>
           <button md-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
