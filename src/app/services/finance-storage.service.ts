@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
 import { LogLevel, AccountCategory, DocumentType, TranType, Account, ControlCenter, Order, 
-    Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat } from '../model';
+    Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat, TemplateDocADP } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -915,8 +915,70 @@ export class FinanceStorageService {
   }
 
   /**
+   * Get ADP tmp docs: for document item overview page
+   */
+  public getADPTmpDocs(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceADPTmpDoc';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(MomentDateFormat));
+    }
+    
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering getADPTmpDocs in FinanceStorageService: ${response}`);
+        }
+
+        return <any>response;
+      });    
+  }
+  
+  /**
+   * Post the template doc
+   * @param doc Tmplate doc
+   */
+  public doPostADPTmpDoc(doc: TemplateDocADP) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceADPTmpDoc';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('docid', doc.DocId.toString());
+    
+    return this._http.post(apiurl, null, {
+        headers: headers,
+        params: params,
+        withCredentials: true
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering doPostADPTmpDoc in FinanceStorageService: ${response}`);
+        }
+
+        return <any>response;
+      });
+  }
+
+  /**
    * Fetch previous doc with planned exchange rate
-   * @param tgtcurr 
+   * @param tgtcurr Target currency
    */
   public fetchPreviousDocWithPlanExgRate(tgtcurr: string): Observable<any> {
     let headers = new HttpHeaders();

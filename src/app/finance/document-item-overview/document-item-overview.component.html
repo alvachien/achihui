@@ -8,7 +8,60 @@
         <ng-template md-tab-label>
           {{'Common.Todo' | translate}}
         </ng-template>
-        <!-- Todo -->
+
+        <div class="table-container mat-elevation-z8">
+          <md-table #tableADP [dataSource]="dataSourceADP">
+            <!-- DocID column -->
+            <ng-container mdColumnDef="DocID">
+              <md-header-cell *mdHeaderCellDef>#</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                <button md-icon-button color="primary" (click)="onPostADPDocument(row)"><md-icon class="example-icon">save</md-icon></button>
+                {{ row.DocId }}
+              </md-cell>
+            </ng-container>
+
+            <!-- TranType -->
+            <ng-container mdColumnDef="TranType">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.TransactionType' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                <md-select disabled [(ngModel)]="row.TranType" name="ittt">
+                  <md-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
+                    {{tt.Name}}
+                  </md-option>
+                </md-select>
+              </md-cell>
+            </ng-container>
+
+            <!-- TranDate Column -->
+            <ng-container mdColumnDef="TranDate">
+              <md-header-cell *mdHeaderCellDef>{{'Common.Date' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.TranDateFormatString }}
+              </md-cell>
+            </ng-container>
+
+            <!-- Amount Column -->
+            <ng-container mdColumnDef="TranAmount">
+              <md-header-cell *mdHeaderCellDef>{{'Finance.Amount' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.TranAmount?.toFixed(2) }}
+              </md-cell>
+            </ng-container>
+
+            <!-- Desp Column -->
+            <ng-container mdColumnDef="Desp">
+              <md-header-cell *mdHeaderCellDef>{{'Common.Description' | translate}}</md-header-cell>
+              <md-cell *mdCellDef="let row">
+                {{ row.Desp }}
+              </md-cell>
+            </ng-container>
+
+            <md-header-row *mdHeaderRowDef="displayedADPColumns"></md-header-row>
+            <md-row *mdRowDef="let row; columns: displayedADPColumns;"></md-row>
+          </md-table>
+          <md-paginator #paginatorADP [length]="ADPTmpDocs.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+          </md-paginator>
+        </div>
         
       </md-tab> 
 

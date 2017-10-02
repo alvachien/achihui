@@ -48,7 +48,21 @@ There are several scenarios with Foreign currency are supported:
 * Post the currency exchange document, in this case, the exchange rate must be inputted, and 'ProposedExchangeRate' cannot be set. It was designed to map the scenario when you pay the creditcard with foreign currency exist. The system will detect the previous documents with exactly same currency which marked 'ProposedExchangeRate', and you can make a decision whether to reset the 'ProposedExchangeRate' flag.
 * Transfer document with foreign currency can also mark 'ProposedExchangeRate' if the exact rate is unknown.
 
+#### Advanced payment support
+Advanced payment shall be splitted into pieces to make the expense more reality.
+* When posting an advanced payment document, an account will be created automatically with Category 'Advanced payment'; 
+* Via the repeat frequency setting, the template documents will be created;
+* Once the template documents got posted, the field 'REFDOCID' got updated with real document ID;
+* The unposted template documents will appear in the 'Todo' page of Finance;
+
+#### Loan support
+The Loan involves the interest calculation.
+* Post a loan document will create an account with category Loan automatically.
+* Just like advanced payment, repeat frequency also need be maintained, the template documents will be created automatically;
+* Others
+
 #### Others
+Others
 
 ## UI part
 

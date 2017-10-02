@@ -53,7 +53,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
 
-  displayedColumns = ['TranDate', 'TranAmount', 'Desp'];
+  displayedColumns = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
   dataSource: TemplateDocADPDataSource | null;
   tmpDocOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
   arFrequencies = UIRepeatFrequency.getRepeatFrequencies();

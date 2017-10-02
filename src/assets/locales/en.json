@@ -272,6 +272,8 @@
     "ExchangeRate": "Exchange rate",
     "ProposedExchangeRate": "Proposed exchange rate",
     "CurrencyExchange": "Currency Exchange",
+    "RefDoc": "Ref Doc",
+    "ReferenceDocument": "Reference Document",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

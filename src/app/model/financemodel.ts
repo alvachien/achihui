@@ -1513,6 +1513,9 @@ export class TemplateDocADP extends hih.BaseModel {
     set TranDate(td: moment.Moment) {
         this._tranDate = td;
     }
+    get TranDateFormatString(): string {
+        return this._tranDate.format(hih.MomentDateFormat);
+    }
     public AccountName: string;
     public ControlCenterName: string;
     public OrderName: string;

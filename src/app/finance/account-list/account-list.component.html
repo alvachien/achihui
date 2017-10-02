@@ -34,7 +34,7 @@
           <md-cell *mdCellDef="let row">
             <md-select class="demo-full-width" disabled [(ngModel)]="row.CategoryId" name="ctgy">
               <md-option *ngFor="let ctgy of _storageService.AccountCategories" [value]="ctgy.ID">
-                {{ctgy.Name}}
+                {{ctgy.Name | translate}}
               </md-option>
             </md-select>
           </md-cell>
