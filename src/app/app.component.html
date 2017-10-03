@@ -1,6 +1,8 @@
 <md-sidenav-container fullscreen>
-    <md-sidenav #start>
-        <div *ngIf="isLoggedIn" class="card">
+    <md-sidenav #start mode="side">
+        <hih-sidenav></hih-sidenav>
+        
+        <!-- <div *ngIf="isLoggedIn" class="card">
             <div class="card-body">
                 <h4 class="card-title text-muted">{{titleLogin}}</h4>
                 <h6 class="card-subtitle mb-2 text-muted">{{userDisplayAs}}</h6>
@@ -11,7 +13,7 @@
             <a *ngFor="let navItem of navItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
                 {{i + 1}} - {{navItem.name | translate}}
             </a>
-            <md-divider ></md-divider>
+            <md-divider></md-divider>
             <h3 mdSubheader>{{'Nav.LearningTrace' | translate}}</h3>
             <a *ngFor="let navItem of navLearnItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
                 {{i + 1}} - {{navItem.name | translate}}
@@ -23,12 +25,12 @@
             </a>
         </md-nav-list>
         <hr />
-        <button md-button (click)="start.close()">{{'Common.Close' | translate}}</button>
+        <button md-button (click)="start.close()">{{'Common.Close' | translate}}</button> -->
     </md-sidenav>
 
     <div>
         <md-toolbar color="primary">
-            <button md-icon-button (click)="start.open()">
+            <button md-icon-button (click)="start.opened = !start.opened">
                 <md-icon class="md-24">menu</md-icon>
             </button>
             <div class="hih-toolbar">

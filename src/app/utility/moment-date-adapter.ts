@@ -18,7 +18,6 @@ import { Moment } from 'moment';
 import * as _moment from 'moment';
 const moment = _moment;
 
-
 /** Creates an array and fills it with values. */
 function range<T>(length: number, valueFunction: (index: number) => T): T[] {
   const valuesArray = Array(length);
@@ -27,7 +26,6 @@ function range<T>(length: number, valueFunction: (index: number) => T): T[] {
   }
   return valuesArray;
 }
-
 
 /** Adapts Moment.js Dates for use with Angular Material. */
 @Injectable()
@@ -44,7 +42,7 @@ export class MomentDateAdapter extends DateAdapter<Moment> {
     dates: string[],
     longDaysOfWeek: string[],
     shortDaysOfWeek: string[],
-    narrowDaysOfWeek: string[]
+    narrowDaysOfWeek: string[],
   };
 
   constructor( @Optional() @Inject(MAT_DATE_LOCALE) dateLocale: string) {

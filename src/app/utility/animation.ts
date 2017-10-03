@@ -4,7 +4,7 @@ export const fadeInAnimation =
     trigger('fadeInAnimation', [
         transition(':enter', [
             style({ opacity: 0 }),
-            animate('1.2s', style({ opacity: 1 }))
+            animate('1.2s', style({ opacity: 1 })),
         ]),
     ]);
 
@@ -17,7 +17,7 @@ export const slideInOutAnimation =
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)'
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
         })),
 
         // route 'enter' transition
@@ -30,7 +30,7 @@ export const slideInOutAnimation =
                 right: '-400%',
 
                 // start with background opacity set to 0 (invisible)
-                backgroundColor: 'rgba(0, 0, 0, 0)'
+                backgroundColor: 'rgba(0, 0, 0, 0)',
             }),
 
             // animation and styles at end of transition
@@ -39,8 +39,8 @@ export const slideInOutAnimation =
                 right: 0,
 
                 // transition the background opacity to 0.8 to fade it in
-                backgroundColor: 'rgba(0, 0, 0, 0.8)'
-            }))
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            })),
         ]),
 
         // route 'leave' transition
@@ -51,7 +51,7 @@ export const slideInOutAnimation =
                 right: '-400%',
 
                 // transition the background opacity to 0 to fade it out
-                backgroundColor: 'rgba(0, 0, 0, 0)'
-            }))
-        ])
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+            })),
+        ]),
     ]);

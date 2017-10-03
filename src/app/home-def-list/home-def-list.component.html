@@ -6,7 +6,8 @@
   </md-card-header>
   <md-card-content>
       <md-toolbar>
-        <button md-icon-button color="primary" (click)="onCreateHome()" mdTooltip="{{'Common.Create' | translate}}"><md-icon md-icon-button color="primary" class="example-icon">add</md-icon></button>
+        <button md-icon-button (click)="onCreateHome()" mdTooltip="{{'Common.Create' | translate}}"><md-icon color="primary" class="example-icon">add</md-icon></button>
+        <button md-icon-button (click)="onRefresh()" mdTooltip="{{'Common.Refresh' | translate}}"><md-icon color="accent" class="example-icon">refresh</md-icon></button>
       </md-toolbar>    
       <div class="table-container mat-elevation-z8">
       <md-table #table [dataSource]="dataSource">
@@ -17,7 +18,7 @@
               <button md-icon-button (click)="onChooseHome(row)" *ngIf="!IsCurrentHomeChosed" mdTooltip="{{'Common.ChooseThisHome' | translate}}">
                 <md-icon color="primary" class="md-14 example-icon" aria-label="Choose">verified_user</md-icon>
               </button>
-              <button md-icon-button (click)="onDisplayHome(row)" mdTooltip="{{'Common.Display' | translate}}">
+              <button md-icon-button (click)="onDisplayHome(row)" mdTooltip="{{'Common.DisplayDetails' | translate}}">
                 <md-icon color="primary" class="md-14 example-icon" aria-label="Display">search</md-icon>
               </button>
               {{ row.ID }}

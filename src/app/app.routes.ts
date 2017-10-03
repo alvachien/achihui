@@ -13,18 +13,18 @@ export const AppRoutes: Routes = [
     {
         path: '',
         redirectTo: '/initial',
-        pathMatch: 'full'
+        pathMatch: 'full',
     },
     { path: 'initial', component: PageInitialComponent },
     { path: 'language', component: LanguageComponent },
-    { 
-        path: 'homedef', 
-        component: HomeDefComponent, 
-        canActivate: [AuthGuardService], 
+    {
+        path: 'homedef',
+        component: HomeDefComponent,
+        canActivate: [AuthGuardService],
         children: [
             {
-                path: '', 
-                component: HomeDefListComponent, 
+                path: '',
+                component: HomeDefListComponent,
             },
             {
                 path: 'create',
@@ -38,7 +38,7 @@ export const AppRoutes: Routes = [
                 path: 'edit/:id',
                 component: HomeDefDetailComponent,
               },
-        ]
+        ],
     },
     { path: 'currency', component: FinanceCurrencyComponent, canActivate: [AuthGuardService], },
     {

@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_CurrencyExchange, 
-  FinanceDocType_Transfer, FinanceDocType_AdvancePayment } from '../../model';
+import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_CurrencyExchange,
+  FinanceDocType_Transfer, FinanceDocType_AdvancePayment, OverviewScope, getOverviewScopeRange } from '../../model';
 import { FinanceStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -47,6 +47,7 @@ export class DocumentListComponent implements OnInit {
 
   displayedColumns = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
   dataSource: DocumentDataSource | null;
+  selectedDocScope: OverviewScope;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
   constructor(public _storageService: FinanceStorageService,
@@ -59,27 +60,30 @@ export class DocumentListComponent implements OnInit {
     }
 
     this.dataSource = new DocumentDataSource(this._storageService, this.paginator);
+    this.selectedDocScope = OverviewScope.CurrentMonth;
+    this.onDocScopeChanged();
+  }
 
-    this._storageService.fetchAllDocuments().subscribe(x => {
+  public onRefreshList(): void {
+    this.onDocScopeChanged();
+  }
+
+  public onDocScopeChanged(): void {
+    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
+    this._storageService.fetchAllDocuments(bgn, end).subscribe((x) => {
       // Just ensure the REQUEST has been sent
-    }, error => {
+    }, (error) => {
       const dlginfo: MessageDialogInfo = {
         Header: 'Common.Error',
-        Content: error? error.toString() : 'Common.Error',
-        Button: MessageDialogButtonEnum.onlyok
+        Content: error ? error.toString() : 'Common.Error',
+        Button: MessageDialogButtonEnum.onlyok,
       };
-  
+
       this._dialog.open(MessageDialogComponent, {
         disableClose: false,
         width: '500px',
-        data: dlginfo
-      });      
-    });
-  }
-
-  public onRefreshList() {
-    this._storageService.fetchAllDocuments(true).subscribe(x => {
-      // Just ensure the REQUEST has been sent
+        data: dlginfo,
+      });
     });
   }
 
@@ -102,11 +106,11 @@ export class DocumentListComponent implements OnInit {
   public onDisplayDocument(doc: Document) {
     if (doc.DocType === FinanceDocType_Normal) {
       this.onDisplayNormalDocument(doc);
-    } else if(doc.DocType === FinanceDocType_Transfer) {
+    } else if (doc.DocType === FinanceDocType_Transfer) {
       this.onDisplayTransferDocument(doc);
     } else if (doc.DocType === FinanceDocType_CurrencyExchange) {
       this.onDisplayExgDocument(doc);
-    } else if(doc.DocType === FinanceDocType_AdvancePayment) {
+    } else if (doc.DocType === FinanceDocType_AdvancePayment) {
       this.onDisplayADPDocument(doc);
     }
   }
@@ -126,9 +130,9 @@ export class DocumentListComponent implements OnInit {
   public onChangeDocument(doc: Document) {
     if (doc.DocType === FinanceDocType_Normal) {
       this.onChangeNormalDocument(doc);
-    } else if(doc.DocType === FinanceDocType_Transfer) {
+    } else if (doc.DocType === FinanceDocType_Transfer) {
       this.onChangeTransferDocument(doc);
-    } else if(doc.DocType === FinanceDocType_AdvancePayment) {
+    } else if (doc.DocType === FinanceDocType_AdvancePayment) {
       this.onChangeADPDocument(doc);
     } else if (doc.DocType === FinanceDocType_CurrencyExchange) {
       this.onChangeExgDocument(doc);
@@ -152,14 +156,14 @@ export class DocumentListComponent implements OnInit {
     const dlginfo: MessageDialogInfo = {
       Header: 'Common.DeleteConfirmation',
       Content: 'ConfirmToDeleteSelectedItem',
-      Button: MessageDialogButtonEnum.yesno
+      Button: MessageDialogButtonEnum.yesno,
     };
 
     this._dialog.open(MessageDialogComponent, {
       disableClose: false,
       width: '500px',
-      data: dlginfo
-    }).afterClosed().subscribe(x2 => {
+      data: dlginfo,
+    }).afterClosed().subscribe((x2) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);

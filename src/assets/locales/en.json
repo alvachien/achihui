@@ -25,6 +25,7 @@
     "Delete": "Delete",
     "Create": "Create",
     "Display": "Display",
+    "DisplayDetails": "Display Details",
     "Edit": "Edit",
     "Reset": "Reset",
     "Refresh": "Refresh",
@@ -77,6 +78,9 @@
     "RowPerPage": "Row per page",
     "WelcomeBack": "Welcome back!",
     "CurrentMonth": "Current month",
+    "PreviousMonth": "Previous month",
+    "CurrentQuarter": "Current quarter",
+    "CurrentWeek": "Current week",
     "CurrentYear": "Current year",
     "All": "All",
     "ChooseThisHome": "Choose this home",
@@ -97,7 +101,7 @@
     "PageNotFoundHeader":"Page not found",
     "PageNotFoundContent": "The page which you aim to visit is not exist",
     "EnglishName": "English Name",
-    "NatvieName": "Native Name",
+    "NativeName": "Native Name",
     "LanguageSupportedInApp": "Supported",
     "Host": "Host",
     "Todo": "Todo",
@@ -140,7 +144,8 @@
       "Transfer": "Transfer",
       "CurrExg": "Currency Exchange",
       "Installment": "Installment",
-      "AdvancedPayment": "Advanced Payment"
+      "AdvancedPayment": "Advanced Payment",
+      "CreditCardRepay": "Creditcard Repayment"
     },
     "MemRel": {
       "Self": "Self",
@@ -275,6 +280,11 @@
     "RefDoc": "Ref Doc",
     "ReferenceDocument": "Reference Document",
     "IsExpense": "Is Expense",
+    "IsAsset": "Is Asset",
+    "InvalidOnes": "Invalid Ones",
+    "AccountStatusNormal": "Normal",
+    "AccountStatusClosed": "Closed",
+    "AccountStatusFrozen": "Fronze",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

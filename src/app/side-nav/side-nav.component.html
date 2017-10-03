@@ -1,0 +1,13 @@
+<div class="sidenav-container">
+
+  <md-toolbar class="sidenav-toolbar mat-elevation-z2">
+    <md-icon class="logo-icon material-icons">view_compact</md-icon>
+    <a class="logo-text" href="/">H.I.H.</a>
+  </md-toolbar>
+
+  <div class="sidenav-scrollbar-container">
+    <md-nav-list class="sidenav-list sidenav-toplevel">
+      <hih-sidenav-item *ngFor="let item of items" [item]="item"></hih-sidenav-item>
+    </md-nav-list>
+  </div>
+</div>

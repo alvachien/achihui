@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
   public userDisplayAs: string;
   public curChosenHome: HomeDef;
   public SelectedLanguage: string;
-  
+
   constructor(private _element: ElementRef,
     private _translate: TranslateService,
     private _authService: AuthService,
@@ -93,7 +93,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this._translate.setDefaultLang('zh');
-    this._translate.use('zh').subscribe(x => {
+    this._translate.use('zh').subscribe((x) => {
       this.SelectedLanguage = 'zh';
       this._uistatusService.CurrentLanguage = this.SelectedLanguage;
       this._dateAdapter.setLocale('zh-cn');

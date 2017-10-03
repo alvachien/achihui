@@ -53,7 +53,7 @@ export class DocumentTypeListComponent implements OnInit {
   ngOnInit() {
     this.dataSource = new DocumentTypeDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllDocTypes().subscribe(x => {
+    this._storageService.fetchAllDocTypes().subscribe((x) => {
       // Just ensure the REQUEST has been sent
     });
   }

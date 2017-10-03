@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
     HomeDefDetailService, AuthService, UIStatusService,
-    FinanceStorageService, FinCurrencyService
+    FinanceStorageService, FinCurrencyService,
 } from '../services';
 import { environment } from '../../environments/environment';
 import { LogLevel } from '../model';
@@ -30,7 +30,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         }
         this.onSetLanguage(this._uistatusService.CurrentLanguage);
 
-        this._langChangeSub = this._uistatusService.langChangeEvent.subscribe(x => {
+        this._langChangeSub = this._uistatusService.langChangeEvent.subscribe((x) => {
             if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Enter language change event in FinanceComponent: ${x}`);
             }
@@ -57,8 +57,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
             if (this._langChangeSub) {
                 this._langChangeSub.unsubscribe();
             }
-        } catch(err) {
+        } catch (err) {
             console.error(err);
-        }        
+        }
     }
 }

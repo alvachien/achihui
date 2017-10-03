@@ -37,7 +37,7 @@ export class NormalDocumentItemDataSource extends DataSource<any> {
 @Component({
   selector: 'app-document-normal-detail',
   templateUrl: './document-normal-detail.component.html',
-  styleUrls: ['./document-normal-detail.component.scss']
+  styleUrls: ['./document-normal-detail.component.scss'],
 })
 export class DocumentNormalDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
@@ -91,7 +91,7 @@ export class DocumentNormalDetailComponent implements OnInit {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
-      this._activateRoute.url.subscribe(x => {
+      this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createnormal') {
             this.detailObject = new Document();
@@ -100,58 +100,58 @@ export class DocumentNormalDetailComponent implements OnInit {
             this.detailObject.DocType = FinanceDocType_Normal;
           } else if (x[0].path === 'editnormal') {
             this.routerID = +x[1].path;
-  
+
             this.uiMode = UIMode.Change;
           } else if (x[0].path === 'displaynormal') {
             this.routerID = +x[1].path;
-  
+
             this.uiMode = UIMode.Display;
           }
           this.currentMode = getUIModeString(this.uiMode);
-          
+
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocumentEvent.subscribe(x2 => {
+            this._storageService.readDocumentEvent.subscribe((x2) => {
               if (x2 instanceof Document) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
                 }
-  
+
                 this.detailObject = x2;
                 this.itemOperEvent.emit(); // Show the items
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
                 }
-  
+
                 this.detailObject = new Document();
                 this.detailObject.DocType = FinanceDocType_Normal;
               }
             });
-  
+
             this._storageService.readDocument(this.routerID);
           } else {
             // Create mode!
-            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;            
+            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
           this.uiMode = UIMode.Invalid;
         }
       });
-    }, error => {
+    }, (error) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
       }
 
       const dlginfo: MessageDialogInfo = {
         Header: 'Common.Error',
-        Content: error? error.toString() : 'Common.Error',
-        Button: MessageDialogButtonEnum.onlyok
+        Content: error ? error.toString() : 'Common.Error',
+        Button: MessageDialogButtonEnum.onlyok,
       };
 
       this._dialog.open(MessageDialogComponent, {
         disableClose: false,
         width: '500px',
-        data: dlginfo
+        data: dlginfo,
       });
 
       this.uiMode = UIMode.Invalid;
@@ -193,7 +193,7 @@ export class DocumentNormalDetailComponent implements OnInit {
 
   public onDeleteDocItem(di) {
     let idx: number = -1;
-    for(let i: number = 0; i < this.detailObject.Items.length; i ++) {
+    for (let i: number = 0; i < this.detailObject.Items.length; i ++) {
       if (this.detailObject.Items[i].ItemId === di.ItemId) {
         idx = i;
         break;
@@ -212,7 +212,7 @@ export class DocumentNormalDetailComponent implements OnInit {
     }
 
     let nMax: number = 0;
-    for(let item of this.detailObject.Items) {
+    for (let item of this.detailObject.Items) {
       if (item.ItemId > nMax) {
         nMax = item.ItemId;
       }
@@ -220,7 +220,7 @@ export class DocumentNormalDetailComponent implements OnInit {
 
     return nMax + 1;
   }
-  
+
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
       // Check!
@@ -231,24 +231,24 @@ export class DocumentNormalDetailComponent implements OnInit {
         DocumentTypes: this._storageService.DocumentTypes,
         TransactionTypes: this._storageService.TranTypes,
         Currencies: this._currService.Currencies,
-        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency
+        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
       })) {
         // Show a dialog for error details
         const dlginfo: MessageDialogInfo = {
           Header: 'Common.Error',
           ContentTable: this.detailObject.VerifiedMsgs,
-          Button: MessageDialogButtonEnum.onlyok
+          Button: MessageDialogButtonEnum.onlyok,
         };
 
         this._dialog.open(MessageDialogComponent, {
           disableClose: false,
           width: '500px',
-          data: dlginfo
+          data: dlginfo,
         });
-        
+
         return;
       }
-      
+
       this._storageService.createDocumentEvent.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentNormalDetailComponent with : ${x}`);
@@ -257,8 +257,8 @@ export class DocumentNormalDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           // Show the snackbar
-          this._snackbar.open("Document Posted", 'OK', {
-            duration: 3000
+          this._snackbar.open('Document Posted', 'OK', {
+            duration: 3000,
           }).afterDismissed().subscribe(() => {
             // Navigate to display
             this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
@@ -268,14 +268,14 @@ export class DocumentNormalDetailComponent implements OnInit {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Error',
             Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -289,7 +289,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       this._storageService.createDocument(this.detailObject);
     }
   }
-  
+
   public onCancel(): void {
     this._router.navigate(['/finance/document/']);
   }

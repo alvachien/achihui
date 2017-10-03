@@ -9,7 +9,7 @@ import { MdDialog, MdSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument, 
+import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument,
   UIMode, getUIModeString, FinanceDocType_CurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -17,7 +17,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 @Component({
   selector: 'app-document-exchange-detail',
   templateUrl: './document-exchange-detail.component.html',
-  styleUrls: ['./document-exchange-detail.component.scss']
+  styleUrls: ['./document-exchange-detail.component.scss'],
 })
 export class DocumentExchangeDetailComponent implements OnInit {
 
@@ -56,7 +56,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService,
     private _formBuilder: FormBuilder) {
-    this.detailObject = new UIFinCurrencyExchangeDocument();    
+    this.detailObject = new UIFinCurrencyExchangeDocument();
   }
 
   ngOnInit() {
@@ -87,39 +87,39 @@ export class DocumentExchangeDetailComponent implements OnInit {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
-      this._activateRoute.url.subscribe(x => {
+      this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createexg') {
             this.detailObject = new UIFinCurrencyExchangeDocument();
             this.uiMode = UIMode.Create;
           } else if (x[0].path === 'editexg') {
             this.routerID = +x[1].path;
-  
+
             this.uiMode = UIMode.Change;
           } else if (x[0].path === 'displayexg') {
             this.routerID = +x[1].path;
-  
+
             this.uiMode = UIMode.Display;
           }
           this.currentMode = getUIModeString(this.uiMode);
-          
+
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocumentEvent.subscribe(x2 => {
+            this._storageService.readDocumentEvent.subscribe((x2) => {
               if (x2 instanceof Document) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
                 }
-  
+
                 this.detailObject.parseDocument(x2);
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
                 }
-  
+
                 this.detailObject = new UIFinCurrencyExchangeDocument();
               }
             });
-  
+
             this._storageService.readDocument(this.routerID);
           } else {
             // Create mode!
@@ -130,21 +130,21 @@ export class DocumentExchangeDetailComponent implements OnInit {
           this.uiMode = UIMode.Invalid;
         }
       });
-    }, error => {
+    }, (error) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
       }
 
       const dlginfo: MessageDialogInfo = {
         Header: 'Common.Error',
-        Content: error? error.toString() : 'Common.Error',
-        Button: MessageDialogButtonEnum.onlyok
+        Content: error ? error.toString() : 'Common.Error',
+        Button: MessageDialogButtonEnum.onlyok,
       };
 
       this._dialog.open(MessageDialogComponent, {
         disableClose: false,
         width: '500px',
-        data: dlginfo
+        data: dlginfo,
       });
 
       this.uiMode = UIMode.Invalid;
@@ -154,21 +154,21 @@ export class DocumentExchangeDetailComponent implements OnInit {
   public onFetchPreviousDoc(): void {
     this.detailObject.prvdocs = [];
     if (this.isForeignSourceCurrency) {
-      this._storageService.fetchPreviousDocWithPlanExgRate(this.detailObject.SourceTranCurr).subscribe(x => {
+      this._storageService.fetchPreviousDocWithPlanExgRate(this.detailObject.SourceTranCurr).subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
-          for(let it of x) {
+          for (let it of x) {
             let pvdoc: DocumentWithPlanExgRate = new DocumentWithPlanExgRate();
             pvdoc.onSetData(it);
             this.detailObject.prvdocs.push(pvdoc);
           }
         }
-      });      
+      });
     }
 
     if (this.isForeignTargetCurrency) {
-      this._storageService.fetchPreviousDocWithPlanExgRate(this.detailObject.TargetTranCurr).subscribe(x => {
+      this._storageService.fetchPreviousDocWithPlanExgRate(this.detailObject.TargetTranCurr).subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
-          for(let it of x) {
+          for (let it of x) {
             let pvdoc: DocumentWithPlanExgRate = new DocumentWithPlanExgRate();
             pvdoc.onSetData(it);
             this.detailObject.prvdocs.push(pvdoc);
@@ -203,7 +203,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
       let docObj = this.detailObject.generateDocument();
-      
+
       // Check!
       if (!docObj.onVerify({
         ControlCenters: this._storageService.ControlCenters,
@@ -212,24 +212,24 @@ export class DocumentExchangeDetailComponent implements OnInit {
         DocumentTypes: this._storageService.DocumentTypes,
         TransactionTypes: this._storageService.TranTypes,
         Currencies: this._currService.Currencies,
-        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency
+        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
       })) {
         // Show a dialog for error details
         const dlginfo: MessageDialogInfo = {
           Header: 'Common.Error',
           ContentTable: docObj.VerifiedMsgs,
-          Button: MessageDialogButtonEnum.onlyok
+          Button: MessageDialogButtonEnum.onlyok,
         };
 
         this._dialog.open(MessageDialogComponent, {
           disableClose: false,
           width: '500px',
-          data: dlginfo
+          data: dlginfo,
         });
-        
+
         return;
       }
-      
+
       this._storageService.createDocumentEvent.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentExchangeDetailComponent with : ${x}`);
@@ -238,8 +238,9 @@ export class DocumentExchangeDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           let cobj: DocumentWithPlanExgRateForUpdate = new DocumentWithPlanExgRateForUpdate();
+          cobj.hid = this._homedefService.ChosedHome.ID;
           if (this.detailObject.prvdocs.length > 0) {
-            for(let pd of this.detailObject.prvdocs) {
+            for (let pd of this.detailObject.prvdocs) {
               if (pd.Selected) {
                 cobj.docIDs.push(pd.DocID);
               }
@@ -249,37 +250,37 @@ export class DocumentExchangeDetailComponent implements OnInit {
           if (cobj.docIDs.length > 0) {
             if (this.isForeignSourceCurrency) {
               cobj.targetCurrency = this.detailObject.SourceTranCurr;
-              cobj.exchangeRate = this.detailObject.SourceExchangeRate;            
+              cobj.exchangeRate = this.detailObject.SourceExchangeRate;
             } else if (this.isForeignTargetCurrency) {
               cobj.targetCurrency = this.detailObject.TargetTranCurr;
               cobj.exchangeRate = this.detailObject.TargetExchangeRate;
             }
-  
-            this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe(rst => {
+
+            this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe((rst) => {
               // Show something?
               this._snackbar.open('Document Posted and previous doc updated', 'OK', {
-                duration: 3000
+                duration: 3000,
               }).afterDismissed().subscribe(() => {
                 // Navigate to display
                 this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
               });
-            }, rerror => {
+            }, (rerror) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Debug]: Message dialog result ${rerror}`);
               }
 
               // Show something?
               this._snackbar.open('Document Posted but previous doc failed to update', 'OK', {
-                duration: 3000
+                duration: 3000,
               }).afterDismissed().subscribe(() => {
                 // Navigate to display
                 this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
-              });  
+              });
             });
           } else {
             // Show the snackbar
             this._snackbar.open('Document Posted', 'OK', {
-              duration: 3000
+              duration: 3000,
             }).afterDismissed().subscribe(() => {
               // Navigate to display
               this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
@@ -290,14 +291,14 @@ export class DocumentExchangeDetailComponent implements OnInit {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Error',
             Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -308,7 +309,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
 
       docObj.HID = this._homedefService.ChosedHome.ID;
       this._storageService.createDocument(docObj);
-    } else if(this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Change) {
 
     }
   }

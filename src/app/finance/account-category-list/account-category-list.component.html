@@ -20,6 +20,15 @@
           <md-cell *mdCellDef="let row"> {{row.Name | translate}} </md-cell>
         </ng-container>
 
+        <!-- Asset flag Column -->
+        <ng-container mdColumnDef="assetflag">
+          <md-header-cell *mdHeaderCellDef>{{'Finance.IsAsset' | translate}}</md-header-cell>
+          <md-cell *mdCellDef="let row"> 
+            <md-checkbox [(ngModel)]="row.AssetFlag" disabled>
+            </md-checkbox>
+          </md-cell>
+        </ng-container>
+        
         <!-- Comment Column -->
         <ng-container mdColumnDef="comment">
           <md-header-cell *mdHeaderCellDef> {{'Common.Comment' | translate}} </md-header-cell>

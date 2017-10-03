@@ -22,7 +22,7 @@
 
         <md-select class="demo-full-width" placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId" name="ctgy">
           <md-option *ngFor="let ctgy of _storageService.AccountCategories" [value]="ctgy.ID">
-            {{ctgy.Name}} 
+            {{ctgy.Name | translate}} 
           </md-option>
         </md-select>
 

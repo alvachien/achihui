@@ -4,7 +4,7 @@ export class AppPaginatorIntl {
     itemsPerPageLabel = 'Registros por página: ';
     nextPageLabel = 'Página siguiente';
     previousPageLabel = 'Página anterior';
-  
+
     getRangeLabel(page: number, pageSize: number, length: number): string {
       if (length === 0 || pageSize === 0) {
         return `0 de ${length}`;

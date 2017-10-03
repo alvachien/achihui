@@ -46,6 +46,6 @@ import { HistoryDetailComponent } from './history-detail';
     MAT_DATE_LOCALE_PROVIDER,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
-  ]
+  ],
 })
 export class LearnModule { }

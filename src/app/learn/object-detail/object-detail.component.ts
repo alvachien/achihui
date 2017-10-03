@@ -29,7 +29,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
     this.detailObject = new LearnObject();
-    this.elementId = "tinymce" + Math.round(100* Math.random()).toString();
+    this.elementId = 'tinymce' + Math.round(100 * Math.random()).toString();
   }
 
   ngOnInit() {
@@ -42,7 +42,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log("AC_HIH_UI [Debug]: Entering ngAfterViewInit of LearnObjectDetail");
+      console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of LearnObjectDetail');
     }
     try {
       tinymce.init({
@@ -50,12 +50,12 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         schema: 'html5',
         height: 500,
         menubar: false,
-        toolbar: "fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link forecolor backcolor | removeformat",
+        toolbar: 'fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link forecolor backcolor | removeformat',
         plugins: 'advlist autolink link image lists charmap print preview',
         skin_url: '../../../assets/tinymceskins/lightgray',
-        setup: editor => {
+        setup: (editor) => {
           this.editor = editor;
-  
+
           editor.on('keyup change', () => {
             const content = editor.getContent();
             this.onEditorKeyup.emit(content);
@@ -63,7 +63,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         },
       });
     }
-    catch(err) {
+    catch (err) {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Debug]: Exception in ngAfterViewInit of LearnObjectDetail: ${err ? err.toString() : ''}`);
       }
@@ -71,7 +71,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this._storageService.fetchAllCategories().subscribe(x1 => {
+    this._storageService.fetchAllCategories().subscribe((x1) => {
       // Distinguish current mode
       this._activateRoute.url.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -95,12 +95,12 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readObjectEvent.subscribe(x => {
+            this._storageService.readObjectEvent.subscribe((x) => {
               if (x instanceof LearnObject) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngAfterViewInit in ObjectDetailComponent, succeed to readControlCenterEvent : ${x}`);
                 }
-                this.detailObject = x;                
+                this.detailObject = x;
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.log(`AC_HIH_UI [Error]: Entering ngAfterViewInit in ObjectDetailComponent, failed to readControlCenterEvent : ${x}`);
@@ -124,18 +124,18 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }, () => {
       });
-    }, error => {
+    }, (error) => {
     });
   }
 
   ngOnDestroy() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log("AC_HIH_UI [Debug]: Entering ngOnDestroy of LearnObjectDetail");
+      console.log('AC_HIH_UI [Debug]: Entering ngOnDestroy of LearnObjectDetail');
     }
 
     try {
       tinymce.remove(this.editor);
-    } catch(err) {
+    } catch (err) {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Debug]: Exception in ngOnDestroy of LearnObjectDetail: ${err ? err.toString() : ''}`);
       }
@@ -173,14 +173,14 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Success',
             Content: x.Id.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -192,14 +192,14 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Error',
             Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -222,14 +222,14 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Success',
             Content: x.Id.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -241,14 +241,14 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Error',
             Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);

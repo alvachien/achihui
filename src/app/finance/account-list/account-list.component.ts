@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account } from '../../model';
+import { LogLevel, Account, AccountStatusEnum, getAccountStatusDisplayString } from '../../model';
 import { FinanceStorageService } from '../../services';
 
 /**
@@ -36,16 +36,23 @@ export class AccountDataSource extends DataSource<any> {
   disconnect() { }
 }
 
+export interface AccountStatusUI {
+  name: string;
+  value: AccountStatusEnum;
+}
+
 @Component({
   selector: 'hih-finance-account-list',
   templateUrl: './account-list.component.html',
-  styleUrls: ['./account-list.component.scss'],  
+  styleUrls: ['./account-list.component.scss'],
 })
 export class AccountListComponent implements OnInit {
 
   displayedColumns = ['id', 'name', 'ctgy', 'comment'];
   dataSource: AccountDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
+  arrayStatus: AccountStatusUI[] = [];
+  selectedStatus: undefined | AccountStatusEnum = undefined;
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router) { }
@@ -56,11 +63,23 @@ export class AccountListComponent implements OnInit {
     }
 
     this.dataSource = new AccountDataSource(this._storageService, this.paginator);
+    this.arrayStatus.push( {
+      name: getAccountStatusDisplayString(AccountStatusEnum.Normal),
+      value: AccountStatusEnum.Normal
+    });
+    this.arrayStatus.push( {
+      name: getAccountStatusDisplayString(AccountStatusEnum.Closed),
+      value: AccountStatusEnum.Closed
+    });
+    this.arrayStatus.push( {
+      name: getAccountStatusDisplayString(AccountStatusEnum.Frozen),
+      value: AccountStatusEnum.Frozen
+    });
 
     Observable.forkJoin([
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllAccountCategories(),
-    ]).subscribe(x => {
+    ]).subscribe((x) => {
       // Just ensure the REQUEST has been sent
     });
   }
@@ -82,6 +101,12 @@ export class AccountListComponent implements OnInit {
   }
 
   public onRefresh() {
-    this._storageService.fetchAllAccounts(true);
+    this.onStatusChange();
+  }
+
+  public onStatusChange() {
+    this._storageService.fetchAllAccounts(true, this.selectedStatus).subscribe((x) => {
+      // Just ensure the REQUEST has been sent
+    });
   }
 }

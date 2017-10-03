@@ -44,7 +44,7 @@ import { ObserversModule } from '@angular/cdk/observers';
 import { PortalModule } from '@angular/cdk/portal';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import {
-    AuthService, AuthGuardService, 
+    AuthService, AuthGuardService,
     FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
     HomeDefDetailService, CanDeactivateGuardService,
 } from './services';
@@ -53,7 +53,7 @@ import { TinyMceDirective } from './directives/tinymce.directive';
 @NgModule({
     imports: [CommonModule],
     declarations: [
-        TinyMceDirective
+        TinyMceDirective,
     ],
     // providers: [
     //     AuthService,

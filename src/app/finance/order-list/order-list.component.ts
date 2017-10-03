@@ -47,6 +47,7 @@ export class OrderListComponent implements OnInit {
   displayedColumns = ['id', 'name', 'ValidFrom', 'ValidTo', 'comment'];
   dataSource: OrderDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
+  includeInvalid: boolean = false;
 
   constructor(private _dialog: MdDialog,
     public _storageService: FinanceStorageService,
@@ -59,7 +60,7 @@ export class OrderListComponent implements OnInit {
 
     this.dataSource = new OrderDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllOrders().subscribe(x => {
+    this._storageService.fetchAllOrders().subscribe((x) => {
       // Just ensure the REQUEST has been sent
     });
   }
@@ -81,14 +82,14 @@ export class OrderListComponent implements OnInit {
     const dlginfo: MessageDialogInfo = {
       Header: 'Common.DeleteConfirmation',
       Content: 'ConfirmToDeleteSelectedItem',
-      Button: MessageDialogButtonEnum.yesno
+      Button: MessageDialogButtonEnum.yesno,
     };
 
     this._dialog.open(MessageDialogComponent, {
       disableClose: false,
       width: '500px',
-      data: dlginfo
-    }).afterClosed().subscribe(x2 => {
+      data: dlginfo,
+    }).afterClosed().subscribe((x2) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -97,6 +98,12 @@ export class OrderListComponent implements OnInit {
       if (x2) {
         // Todo!
       }
+    });
+  }
+
+  public onRefresh() {
+    this._storageService.fetchAllOrders(true, this.includeInvalid).subscribe((x) => {
+
     });
   }
 }

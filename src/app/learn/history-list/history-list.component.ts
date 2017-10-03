@@ -37,7 +37,6 @@ export class LearnHistoryDataSource extends DataSource<any> {
   disconnect() { }
 }
 
-
 @Component({
   selector: 'hih-learn-history-list',
   templateUrl: './history-list.component.html',
@@ -62,10 +61,10 @@ export class HistoryListComponent implements OnInit {
     Observable.forkJoin([
       this._storageService.fetchAllCategories(),
       this._storageService.fetchAllObjects(),
-      this._storageService.fetchAllHistories()
-    ]).subscribe(x => {
+      this._storageService.fetchAllHistories(),
+    ]).subscribe((x) => {
       // Just ensure the REQUEST has been sent
-      if (x) {        
+      if (x) {
       }
     });
   }

@@ -125,7 +125,7 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
 @Component({
   selector: 'hih-fin-document-item-overview',
   templateUrl: './document-item-overview.component.html',
-  styleUrls: ['./document-item-overview.component.scss']
+  styleUrls: ['./document-item-overview.component.scss'],
 })
 export class DocumentItemOverviewComponent implements OnInit {
 
@@ -149,10 +149,10 @@ export class DocumentItemOverviewComponent implements OnInit {
   @ViewChild('paginatorByControlCenter') paginatorByControlCenter: MdPaginator;
   @ViewChild('paginatorByOrder') paginatorByOrder: MdPaginator;
   @ViewChild('paginatorADP') paginatorADP: MdPaginator;
-  
+
   selectedAccount: number;
   selectedControlCenter: number;
-  selectedOrder: number;  
+  selectedOrder: number;
 
   constructor(private _dialog: MdDialog,
     private _snackbar: MdSnackBar,
@@ -160,7 +160,7 @@ export class DocumentItemOverviewComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
-    public _currService: FinCurrencyService) { 
+    public _currService: FinCurrencyService) {
   }
 
   ngOnInit() {
@@ -175,10 +175,10 @@ export class DocumentItemOverviewComponent implements OnInit {
       this._storageService.fetchAllTranTypes(),
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
-      this._storageService.getADPTmpDocs()
-    ]).subscribe(x => {
+      this._storageService.getADPTmpDocs(),
+    ]).subscribe((x) => {
       if (x[5] instanceof Array && x[5].length > 0) {
-        for(let dta of x[5]) {
+        for (let dta of x[5]) {
           let adpdoc = new TemplateDocADP();
           adpdoc.onSetData(dta);
           this.ADPTmpDocs.push(adpdoc);
@@ -188,13 +188,13 @@ export class DocumentItemOverviewComponent implements OnInit {
       }
     });
   }
-  
+
   public onAccountSelectChange() {
     if (this.selectedAccount) {
-      this._storageService.getDocumentItemByAccount(this.selectedAccount).subscribe(x => {
+      this._storageService.getDocumentItemByAccount(this.selectedAccount).subscribe((x) => {
         this.DocItemsByAccount = [];
         if (x instanceof Array && x.length > 0) {
-          for(let di of x) {
+          for (let di of x) {
             let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
             docitem.onSetData(di);
             this.DocItemsByAccount.push(docitem);
@@ -202,16 +202,16 @@ export class DocumentItemOverviewComponent implements OnInit {
         }
 
         this.DocItemByAccountEvent.emit();
-      });        
+      });
     }
   }
 
   public onControlCenterSelectChange() {
     if (this.selectedControlCenter) {
-      this._storageService.getDocumentItemByControlCenter(this.selectedControlCenter).subscribe(x => {
+      this._storageService.getDocumentItemByControlCenter(this.selectedControlCenter).subscribe((x) => {
         this.DocItemsByControlCenter = [];
         if (x instanceof Array && x.length > 0) {
-          for(let di of x) {
+          for (let di of x) {
             let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
             docitem.onSetData(di);
             this.DocItemsByControlCenter.push(docitem);
@@ -219,16 +219,16 @@ export class DocumentItemOverviewComponent implements OnInit {
         }
 
         this.DocItemByControlCenterEvent.emit();
-      });        
+      });
     }
   }
 
   public onOrderSelectChange() {
     if (this.selectedOrder) {
-      this._storageService.getDocumentItemByOrder(this.selectedOrder).subscribe(x => {
+      this._storageService.getDocumentItemByOrder(this.selectedOrder).subscribe((x) => {
         this.DocItemsByOrder = [];
         if (x instanceof Array && x.length > 0) {
-          for(let di of x) {
+          for (let di of x) {
             let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
             docitem.onSetData(di);
             this.DocItemsByOrder.push(docitem);
@@ -236,17 +236,17 @@ export class DocumentItemOverviewComponent implements OnInit {
         }
 
         this.DocItemByOrderEvent.emit();
-      });        
+      });
     }
   }
 
   public onPostADPDocument(doc: any) {
     // Do the posting!
-    this._storageService.doPostADPTmpDoc(doc).subscribe(x => {
+    this._storageService.doPostADPTmpDoc(doc).subscribe((x) => {
       // Show the posted document - after the snackbar!
       // TBD!
       this._router.navigate(['/finance/document/displaynormal/' + x.id]);
-    }, error => {
+    }, (error) => {
       // Show error dialog!
     });
   }

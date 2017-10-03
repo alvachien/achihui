@@ -37,7 +37,6 @@ export class LearnObjectDataSource extends DataSource<any> {
   disconnect() { }
 }
 
-
 @Component({
   selector: 'hih-learn-object-list',
   templateUrl: './object-list.component.html',
@@ -62,10 +61,10 @@ export class ObjectListComponent implements OnInit {
     Observable.forkJoin([
       this._storageService.fetchAllCategories(),
       this._storageService.fetchAllObjects(),
-    ]).subscribe(x => {
+    ]).subscribe((x) => {
       // Just ensure the REQUEST has been sent
       if (x) {
-        
+
       }
     });
   }

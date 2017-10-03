@@ -79,9 +79,9 @@ import { DocumentItemOverviewComponent } from './document-item-overview';
     DocumentItemOverviewComponent,
   ],
   providers: [
-    MAT_DATE_LOCALE_PROVIDER,    
+    MAT_DATE_LOCALE_PROVIDER,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
-  ]
+  ],
 })
 export class FinanceModule { }

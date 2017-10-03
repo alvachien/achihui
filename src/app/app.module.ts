@@ -12,9 +12,9 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import {
-  AuthService, AuthGuardService, 
+  AuthService, AuthGuardService,
   FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
-  HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService
+  HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService
 } from './services';
 import { AppRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
@@ -28,6 +28,8 @@ import { HomeDefComponent } from './home-def';
 import { HomeDefListComponent } from './home-def-list';
 import { HomeDefDetailComponent } from './home-def-detail';
 import { PageNotFoundComponent } from './page-not-found';
+import { SideNavComponent } from './side-nav';
+import { SideNavItemComponent } from './side-nav-item';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -61,6 +63,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     HomeDefListComponent,
     HomeDefDetailComponent,
     PageNotFoundComponent,
+    SideNavComponent,
+    SideNavItemComponent,
   ],
   entryComponents: [
     MessageDialogComponent,
@@ -79,6 +83,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     LearnStorageService,
     LanguageService,
     UIStatusService,
+    SideNavService,
   ],
   bootstrap: [AppComponent],
 })

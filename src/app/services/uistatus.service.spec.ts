@@ -5,7 +5,7 @@ import { UIStatusService } from './uistatus.service';
 describe('UIStatusService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UIStatusService]
+      providers: [UIStatusService],
     });
   });
 

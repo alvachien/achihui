@@ -8,7 +8,7 @@ describe('DocumentExchangeDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentExchangeDetailComponent ]
+      declarations: [ DocumentExchangeDetailComponent ],
     })
     .compileComponents();
   }));

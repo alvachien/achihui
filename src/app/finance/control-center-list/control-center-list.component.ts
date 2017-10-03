@@ -58,7 +58,7 @@ export class ControlCenterListComponent implements OnInit {
     }
 
     this.dataSource = new ControlCenterDataSource(this._storageService, this.paginator);
-    this._storageService.fetchAllControlCenters().subscribe(x =>{
+    this._storageService.fetchAllControlCenters().subscribe((x) => {
       // Just ensure the REQUEST has been sent
     });
   }
@@ -77,5 +77,11 @@ export class ControlCenterListComponent implements OnInit {
 
   public onDeleteCC(acnt: any) {
 
+  }
+
+  public onRefresh() {
+    this._storageService.fetchAllControlCenters(true).subscribe((x) => {
+      // Just ensure the REQUEST has been sent
+    });
   }
 }

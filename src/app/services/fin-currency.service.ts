@@ -39,7 +39,7 @@ export class FinCurrencyService {
 
       return this._http.get(apiurl, {
           headers: headers,
-          withCredentials: true
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -48,7 +48,7 @@ export class FinCurrencyService {
 
           let listRst: Currency[] = [];
           const rjs = <any>response;
-          
+
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: Currency = new Currency();
@@ -65,7 +65,7 @@ export class FinCurrencyService {
         //   if (environment.LoggingLevel >= LogLevel.Error) {
         //     console.error(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinCurrencyService: ${err}`);
         //   }
-          
+
         //   this._islistLoaded = false;
         //   this.listDataChange.next([]);
 

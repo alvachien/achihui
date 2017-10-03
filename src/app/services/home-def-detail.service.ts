@@ -58,7 +58,7 @@ export class HomeDefDetailService {
   createEvent: EventEmitter<HomeDef | null> = new EventEmitter<HomeDef | null>(null);
   readHomeDefEvent: EventEmitter<HomeDef | null> = new EventEmitter<HomeDef | null>(null);
   readHomeMembersEvent: EventEmitter<HomeMember[] | null> = new EventEmitter<HomeMember[] | null>(null);
-  
+
   constructor(private _http: HttpClient,
     private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -71,18 +71,18 @@ export class HomeDefDetailService {
   /**
    * Read all home defs in the system which current user can view
    */
-  public fetchAllHomeDef() {
-    if (!this._islistLoaded) {
+  public fetchAllHomeDef(forceReload?: boolean) {
+    if (!this._islistLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/homedef';
 
       let headers = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')  
+      headers = headers.append('Content-Type', 'application/json')
                        .append('Accept', 'application/json')
                        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       this._http.get(apiurl, {
           headers: headers,
-          withCredentials: true
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -125,21 +125,21 @@ export class HomeDefDetailService {
    */
   public readHomeDef(hid: number) {
     const apiurl = environment.ApiUrl + '/api/homedef/' + hid.toString();
-    
+
     let headers = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')  
+    headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-  
+
     this._http.get(apiurl, { headers: headers, withCredentials: true })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering map in ReadHomeDef in HomeDefDetailService: ${response}`);
         }
-    
+
         const rjs = <any>response;
         let listResult = [];
-    
+
         const hd: HomeDef = new HomeDef();
         hd.parseJSONData(rjs);
         listResult.push(hd);
@@ -148,7 +148,7 @@ export class HomeDefDetailService {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Succeed in ReadHomeDef in HomeDefDetailService: ${x}`);
         }
-    
+
         this.readHomeDefEvent.emit(x);
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
@@ -166,7 +166,7 @@ export class HomeDefDetailService {
    */
   public createHomeDef(objhd: HomeDef) {
     let headers = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')  
+    headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let apiurl = environment.ApiUrl + '/api/homedef';
@@ -175,7 +175,7 @@ export class HomeDefDetailService {
     const jdata = JSON && JSON.stringify(data);
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -207,7 +207,7 @@ export class HomeDefDetailService {
       }, () => {
       });
   }
-  
+
   /**
    * Fetch all members in the chosed home
    */
@@ -216,16 +216,16 @@ export class HomeDefDetailService {
       const apiurl = environment.ApiUrl + '/api/homemember';
 
       let headers = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')  
+      headers = headers.append('Content-Type', 'application/json')
                        .append('Accept', 'application/json')
                        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-  
+
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this.ChosedHome.ID.toString());
-      this._http.get(apiurl, { 
+      this._http.get(apiurl, {
           headers: headers,
-          params: params, 
-          withCredentials: true
+          params: params,
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -268,15 +268,15 @@ export class HomeDefDetailService {
       const apiurl = environment.ApiUrl + '/api/homemember';
 
       let headers = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')  
+      headers = headers.append('Content-Type', 'application/json')
                        .append('Accept', 'application/json')
-                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());  
+                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('hid', hid.toString());
-      this._http.get(apiurl, { 
+      this._http.get(apiurl, {
           headers: headers,
-          params: params, 
-          withCredentials: true
+          params: params,
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -309,5 +309,5 @@ export class HomeDefDetailService {
         }, () => {
         });
     }
-  }  
+  }
 }

@@ -59,12 +59,12 @@ export class HistoryDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readHistoryEvent.subscribe(x => {
+            this._storageService.readHistoryEvent.subscribe((x) => {
               if (x instanceof LearnHistory) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in HistoryDetailComponent, succeed to readControlCenterEvent : ${x}`);
                 }
-                this.detailObject = x;                
+                this.detailObject = x;
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.log(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent, failed to readControlCenterEvent : ${x}`);
@@ -82,7 +82,7 @@ export class HistoryDetailComponent implements OnInit {
         }
       }, () => {
       });
-    }, error => {
+    }, (error) => {
     });
   }
 
@@ -111,14 +111,14 @@ export class HistoryDetailComponent implements OnInit {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Success',
             Content: x.generateKey(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -130,14 +130,14 @@ export class HistoryDetailComponent implements OnInit {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Error',
             Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);

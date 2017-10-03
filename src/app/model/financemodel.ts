@@ -233,6 +233,20 @@ export abstract class AccountExtra {
     }
 }
 
+export enum AccountStatusEnum {
+    Normal = 0,
+    Closed = 1,
+    Frozen = 2
+}
+export function getAccountStatusDisplayString(stat: AccountStatusEnum): string {
+    switch(stat) {
+        case AccountStatusEnum.Normal: return 'Finance.AccountStatusNormal';
+        case AccountStatusEnum.Closed: return 'Finance.AccountStatusClosed';
+        case AccountStatusEnum.Frozen: return 'Finance.AccountStatusFrozen';
+    }
+
+    return '';
+}
 /**
  * Account
  */
@@ -243,6 +257,7 @@ export class Account extends hih.BaseModel {
     public Name: string;
     public Comment: string;
     public OwnerId: string;
+    public Status: AccountStatusEnum;
 
     public CategoryName: string;
     public OwnerDisplayAs: string;
@@ -251,6 +266,8 @@ export class Account extends hih.BaseModel {
 
     constructor() {
         super();
+
+        this.Status = AccountStatusEnum.Normal;
     }
 
     public onInit() {
@@ -338,6 +355,9 @@ export class Account extends hih.BaseModel {
         }
         if (data && data.owner && data.owner.length > 0) {
             this.OwnerId = data.owner;
+        }
+        if (data && data.status) {
+            this.Status = <AccountStatusEnum>data.Status;
         }
         if (data && data.ownerDisplayAs && data.ownerDisplayAs.length > 0) {
             this.OwnerDisplayAs = data.ownerDisplayAs;
@@ -1021,7 +1041,7 @@ export class Document extends hih.BaseModel {
                     if (this.TranCurr !== context.BaseCurrency) {
                         if (!this.ExgRate) {
                             let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
-                            this.VerifiedMsgs.push(msg);        
+                            this.VerifiedMsgs.push(msg);
                         }
                     } else {
                         if (this.ExgRate) {
@@ -1056,7 +1076,7 @@ export class Document extends hih.BaseModel {
                     if (this.TranCurr2 !== context.BaseCurrency) {
                         if (!this.ExgRate2) {
                             let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
-                            this.VerifiedMsgs.push(msg);        
+                            this.VerifiedMsgs.push(msg);
                         }
                     } else {
                         if (this.ExgRate2) {
@@ -1822,7 +1842,7 @@ export class DocumentWithPlanExgRate
 
     public HID: number;
     public DocID: number;
-    public DocType: number;    
+    public DocType: number;
     public TranDate: moment.Moment;
     get TranDateDisplayString(): string {
         return this.TranDate.format(hih.MomentDateFormat);
@@ -1875,6 +1895,7 @@ export class DocumentWithPlanExgRate
 
 export class DocumentWithPlanExgRateForUpdate
 {
+    public hid: number;
     public targetCurrency: string;
     public exchangeRate: number;
     public docIDs: number[] = [];

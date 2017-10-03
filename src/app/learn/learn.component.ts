@@ -26,7 +26,7 @@ export class LearnComponent implements OnInit, OnDestroy {
         }
         this.onSetLanguage(this._uistatusService.CurrentLanguage);
 
-        this._langChangeSub = this._uistatusService.langChangeEvent.subscribe(x => {
+        this._langChangeSub = this._uistatusService.langChangeEvent.subscribe((x) => {
             if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Enter language change event in FinanceComponent: ${x}`);
             }

@@ -138,8 +138,9 @@
       </md-expansion-panel-header>
 
       <md-toolbar>
-        <button md-icon-button color="primary" (click)="onSync()" [disabled]="!isCreateMode"><md-icon md-icon-button color="primary">refresh</md-icon></button>
+        <button md-icon-button (click)="onSync()" [disabled]="!isCreateMode" mdTooltip="{{'Common.Refresh' | translate}}"><md-icon color="primary">refresh</md-icon></button>
       </md-toolbar>
+
       <div class="table-container mat-elevation-z8">
         <md-table #table [dataSource]="dataSource">
           <!-- TranDate Column -->

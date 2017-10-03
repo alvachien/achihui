@@ -51,7 +51,7 @@ export class CategoryListComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource = new LearnCategoryDataSource(this._storageService, this.paginator);
-    this._storageService.fetchAllCategories().subscribe(x =>{
+    this._storageService.fetchAllCategories().subscribe((x) => {
       // Just ensure the request has been fired
     });
   }

@@ -78,16 +78,16 @@ export class UIFinTransferDocument {
             this.ExgRate_Plan = doc.ExgRate_Plan;
         }
 
-        for(let di of doc.Items) {
+        for (let di of doc.Items) {
             if (di.TranType === hih.FinanceTranType_TransferOut) {
                 this.SourceAccountId = di.AccountId;
                 this.SourceControlCenterId = di.ControlCenterId;
                 this.SourceOrderId = di.OrderId;
                 this.TranAmount = di.TranAmount;
-            } else if(di.TranType === hih.FinanceTranType_TransferIn) {
+            } else if (di.TranType === hih.FinanceTranType_TransferIn) {
                 this.TargetAccountId = di.AccountId;
                 this.TargetControlCenterId = di.ControlCenterId;
-                this.TargetOrderId = di.OrderId;                                
+                this.TargetOrderId = di.OrderId;
             }
         }
     }
@@ -155,7 +155,7 @@ export class UIFinAdvPayDocument {
     public AdvPayAccount: HIHFinance.AccountExtraAdvancePayment;
     public TmpDocs: HIHFinance.TemplateDocADP[] = [];
 
-    constructor() {        
+    constructor() {
         this.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
         this.TranDate = moment();
     }
@@ -182,11 +182,11 @@ export class UIFinAdvPayDocument {
             this.TranDate = doc.TranDate;
             this.TranCurr = doc.TranCurr;
             this.Desp = doc.Desp;
-    
+
             if (doc.Items.length !== 1) {
                 throw Error('Failed to parse document');
             }
-    
+
             let fitem: HIHFinance.DocumentItem = doc.Items[0];
             this.SourceAccountId = fitem.AccountId;
             this.SourceControlCenterId = fitem.ControlCenterId;
@@ -214,7 +214,7 @@ export class UIFinAdvPayDocument {
 
             this.AdvPayAccount.onSetData(doc.accountVM.advancePaymentInfo);
 
-            for(let it of doc.tmpDocs) {
+            for (let it of doc.tmpDocs) {
                 let tdoc: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
                 tdoc.onSetData(it);
                 this.TmpDocs.push(tdoc);
@@ -289,7 +289,7 @@ export class UIFinCurrencyExchangeDocument {
         this.TranDate = doc.TranDate;
         this.Desp = doc.Desp;
 
-        for(let di of doc.Items) {
+        for (let di of doc.Items) {
             if (di.TranType === hih.FinanceTranType_TransferOut) {
                 this.SourceAccountId = di.AccountId;
                 this.SourceControlCenterId = di.ControlCenterId;
@@ -297,10 +297,10 @@ export class UIFinCurrencyExchangeDocument {
                 this.SourceTranAmount = di.TranAmount;
                 this.SourceTranCurr = doc.TranCurr;
                 this.SourceExchangeRate = doc.ExgRate;
-            } else if(di.TranType === hih.FinanceTranType_TransferIn) {
+            } else if (di.TranType === hih.FinanceTranType_TransferIn) {
                 this.TargetAccountId = di.AccountId;
                 this.TargetControlCenterId = di.ControlCenterId;
-                this.TargetOrderId = di.OrderId;                                
+                this.TargetOrderId = di.OrderId;
                 this.TargetTranAmount = di.TranAmount;
                 this.TargetTranCurr = doc.TranCurr2;
                 this.TargetExchangeRate = doc.ExgRate2;
@@ -308,3 +308,56 @@ export class UIFinCurrencyExchangeDocument {
         }
     }
 }
+
+// Nav Item
+export class SidenavItem {
+    name: string;
+    icon: string;
+    route: any;
+    parent: SidenavItem;
+    subItems: SidenavItem[];
+    position: number;
+    badge: string;
+    badgeColor: string;
+    customClass: string;
+  
+    constructor(model: any = null) {
+      if (model) {
+        this.name = model.name;
+        this.icon = model.icon;
+        this.route = model.route;
+        this.parent = model.parent;
+        this.subItems = this.mapSubItems(model.subItems);
+        this.position = model.position;
+        this.badge = model.badge;
+        this.badgeColor = model.badgeColor;
+        this.customClass = model.customClass;
+      }
+    }
+  
+    hasSubItems() {
+      if (this.subItems) {
+        return this.subItems.length > 0;
+      }
+      return false;
+    }
+  
+    hasParent() {
+      return !!this.parent;
+    }
+  
+    mapSubItems(list: SidenavItem[]) {
+      if (list) {
+        list.forEach((item, index) => {
+          list[index] = new SidenavItem(item);
+        });
+  
+        return list;
+      }
+    }
+  
+    isRouteString() {
+      return this.route instanceof String || typeof this.route === 'string';
+    }
+  }
+  

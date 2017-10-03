@@ -71,15 +71,16 @@
         </md-expansion-panel-header>
 
         <md-toolbar>
-          <button md-icon-button color="primary" (click)="onCreateDocItem()"><md-icon md-icon-button color="primary">add</md-icon></button>
+          <button md-icon-button (click)="onCreateDocItem()" mdTooltip="{{'Common.Create' | translate}}"><md-icon color="primary">add</md-icon></button>
         </md-toolbar>
+
         <div class="table-container mat-elevation-z8">
           <md-table #table [dataSource]="dataSource">
             <!-- ID Column -->
             <ng-container mdColumnDef="ItemId">
               <md-header-cell *mdHeaderCellDef>#</md-header-cell>
               <md-cell *mdCellDef="let row">
-                <button md-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteDocItem(row)"><md-icon class="example-icon">delete</md-icon></button>
+                <button md-icon-button [disabled]="!isFieldChangable" (click)="onDeleteDocItem(row)" mdTooltip="{{'Common.Delete' | translate}}"><md-icon color="warn" class="example-icon">delete</md-icon></button>
                 <span class="example-spacer"></span>
                 <md-form-field>
                   <input mdInput type="number" required placeholder="#" 

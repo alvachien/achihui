@@ -9,7 +9,7 @@ export enum MessageDialogButtonEnum {
   onlyok,
   yesno,
   okcancel,
-  yesnocancel
+  yesnocancel,
 }
 
 /**
@@ -18,14 +18,14 @@ export enum MessageDialogButtonEnum {
 export interface MessageDialogInfo {
   Header: string;
   Content?: string;
-  ContentTable?: InfoMessage[],
+  ContentTable?: InfoMessage[];
   Button: MessageDialogButtonEnum;
 }
 
 @Component({
   selector: 'hih-message-dialog',
   templateUrl: './message-dialog.component.html',
-  styleUrls: ['./message-dialog.component.scss']
+  styleUrls: ['./message-dialog.component.scss'],
 })
 export class MessageDialogComponent {
 

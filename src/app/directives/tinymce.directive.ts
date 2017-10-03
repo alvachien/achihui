@@ -4,7 +4,7 @@ import {
     AfterViewInit,
     Provider,
     forwardRef,
-    HostBinding
+    HostBinding,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -16,13 +16,13 @@ declare var tinymce: any;
 export const TinyMceValueAccessor: Provider = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => TinyMceDirective),
-    multi: true
+    multi: true,
 };
 
 // Tinymce directive
 @Directive({
     selector: '[htmlEditor]',
-    providers: [TinyMceValueAccessor]
+    providers: [TinyMceValueAccessor],
 })
 export class TinyMceDirective implements OnDestroy, AfterViewInit, ControlValueAccessor {
     static nextUniqueId = 0;
@@ -60,7 +60,7 @@ export class TinyMceDirective implements OnDestroy, AfterViewInit, ControlValueA
 
     ngAfterViewInit(): void {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log("AC_HIH_UI [Debug]: Entering ngAfterViewInit of TinyMceDirective");
+            console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of TinyMceDirective');
         }
 
         try {
@@ -69,21 +69,21 @@ export class TinyMceDirective implements OnDestroy, AfterViewInit, ControlValueA
                 schema: 'html5',
                 height: 500,
                 menubar: false,
-                toolbar: "fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link forecolor backcolor | removeformat",
+                toolbar: 'fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link forecolor backcolor | removeformat',
                 plugins: 'advlist autolink link image lists charmap print preview',
                 skin_url: '../../assets/tinymceskins/lightgray',
                 //insert_toolbar: 'quickimage quicktable',
                 //selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
                 //inline: true,
                 //paste_data_images: true,
-                setup: ed => {
-                    ed.on('init', ed2 => {
+                setup: (ed) => {
+                    ed.on('init', (ed2) => {
                         if (this.innerValue) ed2.target.setContent(this.innerValue);
                         this.init = true;
                     });
-                }
+                },
             });
-    
+
             tinymce.activeEditor.on('keyup change', () => this.updateValue());
         } catch (err) {
             if (environment.LoggingLevel >= LogLevel.Error) {
@@ -115,7 +115,7 @@ export class TinyMceDirective implements OnDestroy, AfterViewInit, ControlValueA
 
     ngOnDestroy(): void {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log("AC_HIH_UI [Debug]: Entering ngOnDestroy of TinyMceDirective");
+            console.log('AC_HIH_UI [Debug]: Entering ngOnDestroy of TinyMceDirective');
         }
 
         try {

@@ -25,6 +25,7 @@
     "Delete": "删除",
     "Create": "创建",
     "Display": "显示",
+    "DisplayDetails": "显示详情",
     "Edit": "编辑",
     "Reset": "重置",
     "Refresh": "刷新",
@@ -77,6 +78,9 @@
     "RowPerPage": "每页行数",
     "WelcomeBack": "欢迎回来!",
     "CurrentMonth": "本月",
+    "PreviousMonth": "上一个月",
+    "CurrentQuarter": "当前季度",
+    "CurrentWeek": "本周",
     "CurrentYear": "本年",
     "All": "全部",
     "ChooseThisHome": "选择此家庭",
@@ -97,7 +101,7 @@
     "PageNotFoundHeader":"页面未找到",
     "PageNotFoundContent": "你想要访问的页面并不存在",
     "EnglishName": "英文名字",
-    "NatvieName": "本地名称",
+    "NativeName": "本地名称",
     "LanguageSupportedInApp": "程序支持",
     "Host": "户主",
     "Todo": "待处理事项",
@@ -140,7 +144,8 @@
       "Transfer": "转账",
       "CurrExg": "货币兑换",
       "Installment": "分期付款",
-      "AdvancedPayment": "预付款"
+      "AdvancedPayment": "预付款",
+      "CreditCardRepay": "信用卡还款"
     },
     "MemRel": {
       "Self": "本人",
@@ -275,6 +280,11 @@
     "RefDoc": "关联",
     "ReferenceDocument": "关联凭证",
     "IsExpense": "开销",
+    "IsAsset": "资产",
+    "InvalidOnes": "失效项",
+    "AccountStatusNormal": "正常",
+    "AccountStatusClosed": "已关闭账户",
+    "AccountStatusFrozen": "已冻结账户",
     
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",

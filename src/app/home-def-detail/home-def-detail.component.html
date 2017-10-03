@@ -41,7 +41,7 @@
     </md-list>
   </md-card-content>
   <md-card-actions>
-    <button md-button [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button md-button *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
     <button md-button (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
   </md-card-actions>
 </md-card>

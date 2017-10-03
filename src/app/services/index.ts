@@ -11,3 +11,4 @@ export * from './learn-storage.service';
 export * from './language.service';
 
 export * from './uistatus.service';
+export * from './side-nav.service';

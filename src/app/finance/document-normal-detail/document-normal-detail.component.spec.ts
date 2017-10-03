@@ -8,7 +8,7 @@ describe('DocumentNormalDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentNormalDetailComponent ]
+      declarations: [ DocumentNormalDetailComponent ],
     })
     .compileComponents();
   }));

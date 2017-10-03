@@ -33,11 +33,11 @@ export class LanguageService {
       const apiurl = environment.ApiUrl + '/api/Language';
 
       let headers = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')  
+      headers = headers.append('Content-Type', 'application/json')
                        .append('Accept', 'application/json');
 
       this._http.get(apiurl, {
-          headers: headers
+          headers: headers,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {

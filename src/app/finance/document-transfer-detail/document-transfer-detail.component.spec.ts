@@ -8,7 +8,7 @@ describe('DocumentTransferDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentTransferDetailComponent ]
+      declarations: [ DocumentTransferDetailComponent ],
     })
     .compileComponents();
   }));

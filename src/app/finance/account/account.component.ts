@@ -9,7 +9,7 @@ import { fadeAnimation } from '../../utility';
 })
 export class AccountComponent implements OnInit {
   @HostBinding('@routeAnimation') routeAnimation: boolean = true;
-  
+
   constructor() { }
 
   ngOnInit() {

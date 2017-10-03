@@ -94,7 +94,7 @@ export class InfoMessage {
             this.MsgContent = msgcontent;
         }
     }
-    
+
     public MsgType: MessageType;
     public MsgTime: moment.Moment;
     public MsgTitle: string;
@@ -188,7 +188,7 @@ export class BaseModel {
         return JSON && JSON.stringify(this);
     }
 
-    public onSetData(data: any) : void {        
+    public onSetData(data: any) : void {
         if (data && data.createdBy) {
             this.CreatedBy = data.createdBy;
         }
@@ -238,3 +238,28 @@ export class MultipleNamesObject {
     public Name: string;
 }
 
+export enum OverviewScope {
+   CurrentMonth = 1,
+   CurrentYear = 2,
+   All = 9,
+}
+export interface OverviewScopeRange {
+    BeginDate: moment.Moment;
+    EndDate: moment.Moment;
+}
+export function getOverviewScopeRange(scope: OverviewScope): OverviewScopeRange {
+    let bgn = moment();
+    let end = moment();
+
+    if (scope === OverviewScope.CurrentMonth) {
+      bgn.set('day', 0);
+    } else if (scope === OverviewScope.CurrentYear) {
+      bgn.set('day', 0);
+      bgn.set('month', 0);
+    } else if (scope === OverviewScope.All) {
+      bgn = moment('19710101');
+      end = moment('99991231');
+    }
+
+    return { BeginDate: bgn, EndDate: end };
+}

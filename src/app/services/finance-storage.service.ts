@@ -4,8 +4,8 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, AccountCategory, DocumentType, TranType, Account, ControlCenter, Order, 
-    Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat, TemplateDocADP } from '../model';
+import { LogLevel, AccountCategory, DocumentType, TranType, Account, ControlCenter, Order,
+    Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat, TemplateDocADP, AccountStatusEnum } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -67,7 +67,7 @@ export class FinanceStorageService {
   private _isAccountListLoaded: boolean;
   private _isConctrolCenterListLoaded: boolean;
   private _isOrderListLoaded: boolean;
-  private _isDocumentListLoaded: boolean;
+  //private _isDocumentListLoaded: boolean;
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -82,7 +82,7 @@ export class FinanceStorageService {
     this._isAccountListLoaded = false;
     this._isConctrolCenterListLoaded = false;
     this._isOrderListLoaded = false;
-    this._isDocumentListLoaded = false;
+    //this._isDocumentListLoaded = false;
   }
 
   // Account categories
@@ -100,7 +100,7 @@ export class FinanceStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -123,14 +123,14 @@ export class FinanceStorageService {
 
           return listRst;
         })
-        .catch(err => {
+        .catch((err) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccountCategories in FinanceStorageService: ${err}`);
           }
 
           this._isAcntCtgyListLoaded = false;
           this.listAccountCategoryChange.next([]);
-        
+
           return Observable.throw(err);
         });
     } else {
@@ -153,7 +153,7 @@ export class FinanceStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -175,14 +175,14 @@ export class FinanceStorageService {
 
           return listRst;
         })
-        .catch(err => {
+        .catch((err) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocTypes in FinanceStorageService: ${err}`);
           }
-          
+
           this._isDocTypeListLoaded = false;
           this.listDocTypeChange.next([]);
-        
+
           return Observable.throw(err);
         });
     } else {
@@ -205,7 +205,7 @@ export class FinanceStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -227,14 +227,14 @@ export class FinanceStorageService {
           this.listTranTypeChange.next(listRst);
           return listRst;
         })
-        .catch(err => {
+        .catch((err) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllTranTypes in FinanceStorageService: ${err}`);
           }
-          
+
           this._isTranTypeListLoaded = false;
           this.listTranTypeChange.next([]);
-      
+
           return Observable.throw(err);
         });
     } else {
@@ -243,7 +243,7 @@ export class FinanceStorageService {
   }
 
   // Account
-  public fetchAllAccounts(forceReload?: boolean): Observable<Account[]> {
+  public fetchAllAccounts(forceReload?: boolean, status?: AccountStatusEnum): Observable<Account[]> {
     if (!this._isAccountListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceAccount';
 
@@ -254,10 +254,12 @@ export class FinanceStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      if (status !== null && status !== undefined)
+        params = params.append('status', status.toString());
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -279,14 +281,14 @@ export class FinanceStorageService {
           this.listAccountChange.next(listRst);
           return listRst;
         })
-        .catch(err => {
+        .catch((err) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccounts in FinanceStorageService: ${err}`);
           }
-          
+
           this._isAccountListLoaded = false;
           this.listAccountChange.next([]);
-    
+
           return Observable.throw(err);
         });
     } else {
@@ -309,7 +311,7 @@ export class FinanceStorageService {
     const jdata: string = objAcnt.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -358,7 +360,7 @@ export class FinanceStorageService {
     this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -403,14 +405,14 @@ export class FinanceStorageService {
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-      
+
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
 
       return this._http.get<any>(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true
+          withCredentials: true,
         })
         //.retry(3)
         .map((response: HttpResponse<any>) => {
@@ -434,14 +436,14 @@ export class FinanceStorageService {
           this.listControlCenterChange.next(listRst);
           return listRst;
         })
-        .catch(err => {
+        .catch((err) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService: ${err}`);
           }
-          
+
           this._isConctrolCenterListLoaded = false;
           this.listControlCenterChange.next([]);
-  
+
           return Observable.throw(err);
         });
     } else {
@@ -464,7 +466,7 @@ export class FinanceStorageService {
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -508,10 +510,13 @@ export class FinanceStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceControlCenter/' + ccid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
-      headers: headers,
-      withCredentials: true
-    })
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering readControlCenter in FinanceStorageService: ${response}`);
@@ -547,7 +552,7 @@ export class FinanceStorageService {
   /**
    * Read all orders out
    */
-  public fetchAllOrders(forceReload?: boolean): Observable<Order[]> {
+  public fetchAllOrders(forceReload?: boolean, invalidone?: boolean): Observable<Order[]> {
     if (!this._isOrderListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceOrder';
 
@@ -558,10 +563,12 @@ export class FinanceStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      if (invalidone)
+        params = params.append('incInv', invalidone.valueOf().toString());
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -580,17 +587,17 @@ export class FinanceStorageService {
           }
           this._isOrderListLoaded = true;
           this.listOrderChange.next(listRst);
-          
+
           return listRst;
         })
-        .catch(err => {
+        .catch((err) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllOrders in FinanceStorageService: ${err}`);
           }
-          
+
           this._isOrderListLoaded = false;
           this.listOrderChange.next([]);
-  
+
           return Observable.throw(err);
         });
     } else {
@@ -613,7 +620,7 @@ export class FinanceStorageService {
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -657,9 +664,12 @@ export class FinanceStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceOrder/' + ordid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
       headers: headers,
-      withCredentials: true
+      params: params,
+      withCredentials: true,
     })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -696,54 +706,55 @@ export class FinanceStorageService {
   /**
    * Read all documents out
    */
-  public fetchAllDocuments(forceReload?: boolean): Observable<Document[]> {
-    if (!this._isDocumentListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/FinanceDocument';
+  public fetchAllDocuments(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<Document[]> {
+    const apiurl = environment.ApiUrl + '/api/FinanceDocument';
 
-      let headers = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-        .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
-          headers: headers,
-          params: params,
-          withCredentials: true
-        })
-        .map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllDocuments in FinanceStorageService: ${response}`);
-          }
-
-          let listRst:Document[] = [];
-          const rjs = <any>response;
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
-              const rst: Document = new Document();
-              rst.onSetData(si);
-              listRst.push(rst);
-            }
-          }
-
-          this._isDocumentListLoaded = true;
-          this.listDocumentChange.next(listRst);
-          return listRst;              
-        })
-        .catch(err => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocuments in FinanceStorageService: ${err}`);
-          }
-          
-          this._isDocumentListLoaded = false;
-          this.listDocumentChange.next([]);
-
-          return Observable.throw(err);
-        });
-    } else {
-      return Observable.of(this.listDocumentChange.value);
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
     }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(MomentDateFormat));
+    }
+
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllDocuments in FinanceStorageService: ${response}`);
+        }
+
+        let listRst: Document[] = [];
+        const rjs = <any>response;
+        if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+          for (const si of rjs.contentList) {
+            const rst: Document = new Document();
+            rst.onSetData(si);
+            listRst.push(rst);
+          }
+        }
+
+        this.listDocumentChange.next(listRst);
+        return listRst;
+      })
+      .catch((err) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocuments in FinanceStorageService: ${err}`);
+        }
+
+        this.listDocumentChange.next([]);
+
+        return Observable.throw(err);
+      });
   }
 
   /**
@@ -761,7 +772,7 @@ export class FinanceStorageService {
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -808,7 +819,7 @@ export class FinanceStorageService {
 
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -852,9 +863,12 @@ export class FinanceStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/FinanceDocument/' + docid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
         headers: headers,
-        withCredentials: true
+        params: params,
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -899,9 +913,12 @@ export class FinanceStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/financeadpdocument/' + docid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
         headers: headers,
-        withCredentials: true
+        params: params,
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -932,11 +949,11 @@ export class FinanceStorageService {
     if (dtend) {
       params = params.append('dtend', dtend.format(MomentDateFormat));
     }
-    
+
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -944,9 +961,9 @@ export class FinanceStorageService {
         }
 
         return <any>response;
-      });    
+      });
   }
-  
+
   /**
    * Post the template doc
    * @param doc Tmplate doc
@@ -961,11 +978,11 @@ export class FinanceStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('docid', doc.DocId.toString());
-    
+
     return this._http.post(apiurl, null, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -994,7 +1011,7 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1017,10 +1034,10 @@ export class FinanceStorageService {
 
     let apiurl = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
     const jdata: string = JSON && JSON.stringify(obj);
-    
+
     return this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1043,12 +1060,13 @@ export class FinanceStorageService {
 
     let apiurl = environment.ApiUrl + '/api/financedocumentitem';
     let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('acntid', acntid.toString());
 
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1071,12 +1089,13 @@ export class FinanceStorageService {
 
     let apiurl = environment.ApiUrl + '/api/financedocumentitem';
     let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('ccid', ccid.toString());
 
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1099,12 +1118,13 @@ export class FinanceStorageService {
 
     let apiurl = environment.ApiUrl + '/api/financedocumentitem';
     let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('ordid', ordid.toString());
 
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1114,7 +1134,7 @@ export class FinanceStorageService {
         return response;
       });
   }
-  
+
   /**
    * Get Balance sheet report
    */
@@ -1127,11 +1147,11 @@ export class FinanceStorageService {
     let apiurl = environment.ApiUrl + '/api/FinanceReportBS';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    
+
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1154,11 +1174,11 @@ export class FinanceStorageService {
     let apiurl = environment.ApiUrl + '/api/FinanceReportCC';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    
+
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1181,11 +1201,11 @@ export class FinanceStorageService {
     let apiurl = environment.ApiUrl + '/api/FinanceReportOrder';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    
+
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1214,11 +1234,11 @@ export class FinanceStorageService {
     if (dtend) {
       params = params.append('dtend', dtend.format(MomentDateFormat));
     }
-    
+
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {

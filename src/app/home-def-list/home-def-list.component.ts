@@ -42,7 +42,7 @@ export class HomeDefDataSource extends DataSource<any> {
 @Component({
   selector: 'hih-home-def-list',
   templateUrl: './home-def-list.component.html',
-  styleUrls: ['./home-def-list.component.scss']
+  styleUrls: ['./home-def-list.component.scss'],
 })
 export class HomeDefListComponent implements OnInit {
 
@@ -50,10 +50,10 @@ export class HomeDefListComponent implements OnInit {
   dataSource: HomeDefDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
-  get IsCurrentHomeChosed():boolean {
+  get IsCurrentHomeChosed(): boolean {
     return this._homedefService.ChosedHome !== null;
   }
-  
+
   constructor(public _homedefService: HomeDefDetailService,
     private _router: Router) { }
 
@@ -66,7 +66,7 @@ export class HomeDefListComponent implements OnInit {
   }
 
   public onDisplayHome(row: HomeDef) {
-    this._router.navigate(['/homedef/display/' + row.ID.toString()])
+    this._router.navigate(['/homedef/display/' + row.ID.toString()]);
   }
 
   public onChooseHome(row: HomeDef) {
@@ -80,5 +80,9 @@ export class HomeDefListComponent implements OnInit {
     } else {
       this._router.navigate(['/']);
     }
+  }
+
+  public onRefresh(): void {
+    this._homedefService.fetchAllHomeDef(true);
   }
 }

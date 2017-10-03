@@ -29,7 +29,7 @@ export class HomeChoseGuardService {
 
     // Has logged in but no home chosen yet.
     this.homedefService.RedirectURL = url;
-    
+
     if (this.homedefService.ChosedHome === null
       || this.homedefService.ChosedHome === undefined) {
         // Navigate to other page

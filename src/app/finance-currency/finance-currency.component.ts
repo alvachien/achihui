@@ -52,7 +52,7 @@ export class FinanceCurrencyComponent implements OnInit {
 
   constructor(public _currService: FinCurrencyService,
     private _router: Router) {
-    this._currService.fetchAllCurrencies().subscribe(x => {
+    this._currService.fetchAllCurrencies().subscribe((x) => {
     });
   }
 

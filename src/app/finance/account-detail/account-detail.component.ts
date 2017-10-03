@@ -59,7 +59,7 @@ export class AccountDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readAccountEvent.subscribe(x => {
+            this._storageService.readAccountEvent.subscribe((x) => {
               if (x instanceof Account) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readAccount : ${x}`);
@@ -118,14 +118,14 @@ export class AccountDetailComponent implements OnInit {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Success',
             Content: x.Id.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -137,14 +137,14 @@ export class AccountDetailComponent implements OnInit {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Error',
             Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);

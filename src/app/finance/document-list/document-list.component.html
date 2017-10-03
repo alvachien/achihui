@@ -5,16 +5,21 @@
   </md-card-header>
   <md-card-content>
     <md-toolbar>
-      <button md-icon-button color="primary" [mdMenuTriggerFor]="mdMenuCreateDoc">
+      <button md-icon-button color="accent" mdTooltip="{{'Common.Create' | translate}}" [mdMenuTriggerFor]="mdMenuCreateDoc">
         <md-icon>add</md-icon>
       </button>
-      <button md-icon-button color="primary" (click)="onRefreshList()"><md-icon md-icon-button color="primary">refresh</md-icon></button>
       <md-menu #mdMenuCreateDoc="mdMenu">
         <button md-menu-item (click)="onCreateNormalDocument()">{{'Finance.Document' | translate}}</button>
         <button md-menu-item (click)="onCreateTransferDocument()">{{'Finance.TransferDocument' | translate}}</button>
         <button md-menu-item (click)="onCreateExgDocument()">{{'Finance.CurrencyExchange' | translate}}</button>
         <button md-menu-item (click)="onCreateADPDocument()">{{'Finance.AdvancePayment' | translate}}</button>
       </md-menu>
+      <md-select color="accent" class="mt-1" [(ngModel)]="selectedDocScope" (change)="onDocScopeChanged()">
+        <md-option [value]="1">{{'Common.CurrentMonth' | translate}}</md-option>
+        <md-option [value]="2">{{'Common.CurrentYear' | translate}}</md-option>
+        <md-option [value]="9">{{'Common.All' | translate}}</md-option>
+      </md-select>
+      <button md-icon-button color="primary" (click)="onRefreshList()" mdTooltip="{{'Common.Refresh' | translate}}"><md-icon md-icon-button class="example-icon">refresh</md-icon></button>
     </md-toolbar>
     <div class="table-container mat-elevation-z8">
       <md-table #table [dataSource]="dataSource">
@@ -22,9 +27,9 @@
         <ng-container mdColumnDef="id">
           <md-header-cell *mdHeaderCellDef>#</md-header-cell>
           <md-cell *mdCellDef="let row">
-              <button md-icon-button color="primary" (click)="onDisplayDocument(row)"><md-icon class="example-icon">search</md-icon></button>
-              <button md-icon-button color="primary" (click)="onChangeDocument(row)"><md-icon class="example-icon">edit</md-icon></button>
-              <button md-icon-button color="primary" (click)="onDeleteDocument(row)"><md-icon class="example-icon">delete</md-icon></button>
+              <button md-icon-button color="primary" (click)="onDisplayDocument(row)" mdTooltip="{{'Common.DisplayDetails' | translate}}"><md-icon class="example-icon">search</md-icon></button>
+              <button md-icon-button color="accent" (click)="onChangeDocument(row)" mdTooltip="{{'Common.Edit' | translate}}"><md-icon class="example-icon">edit</md-icon></button>
+              <button md-icon-button color="warn" (click)="onDeleteDocument(row)" mdTooltip="{{'Common.Delete' | translate}}"><md-icon class="example-icon">delete</md-icon></button>
               <span class="example-spacer"></span>
               {{ row.Id }}
           </md-cell>

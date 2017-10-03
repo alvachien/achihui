@@ -44,7 +44,7 @@ export class AccountCategoryDataSource extends DataSource<any> {
   animations: [fadeAnimation],
 })
 export class AccountCategoryListComponent implements OnInit {
-  displayedColumns = ['id', 'name', 'comment'];
+  displayedColumns = ['id', 'name', 'assetflag', 'comment'];
   dataSource: AccountCategoryDataSource | null;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
@@ -54,7 +54,7 @@ export class AccountCategoryListComponent implements OnInit {
   ngOnInit() {
     this.dataSource = new AccountCategoryDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllAccountCategories().subscribe(x => {
+    this._storageService.fetchAllAccountCategories().subscribe((x) => {
       // Just ensure the REQUEST has been sent
     });
   }

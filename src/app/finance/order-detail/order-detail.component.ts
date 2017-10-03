@@ -33,7 +33,6 @@ export class SRuleDataSource extends DataSource<any> {
   disconnect() { }
 }
 
-
 @Component({
   selector: 'hih-finance-order-detail',
   templateUrl: './order-detail.component.html',
@@ -56,7 +55,7 @@ export class OrderDetailComponent implements OnInit {
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
- 
+
   constructor(private _dialog: MdDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
@@ -76,7 +75,7 @@ export class OrderDetailComponent implements OnInit {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
-  
+
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
             this.detailObject = new Order();
@@ -84,33 +83,33 @@ export class OrderDetailComponent implements OnInit {
             this.detailObject.HID = this._homedefService.ChosedHome.ID;
           } else if (x[0].path === 'edit') {
             this.routerID = +x[1].path;
-  
+
             this.uiMode = UIMode.Change;
           } else if (x[0].path === 'display') {
             this.routerID = +x[1].path;
-  
+
             this.uiMode = UIMode.Display;
           }
           this.currentMode = getUIModeString(this.uiMode);
-          
+
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readOrderEvent.subscribe(x2 => {
+            this._storageService.readOrderEvent.subscribe((x2) => {
               if (x2 instanceof Order) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readOrder : ${x2}`);
                 }
-  
+
                 this.detailObject = x2;
                 this.ruleOperEvent.emit(); // Reload the rules
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readOrder : ${x2}`);
                 }
-  
+
                 this.detailObject = new Order();
               }
             });
-  
+
             this._storageService.readOrder(this.routerID);
           }
         }
@@ -121,7 +120,7 @@ export class OrderDetailComponent implements OnInit {
         this.uiMode = UIMode.Invalid;
       }, () => {
       });
-    }, error => {
+    }, (error) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOnInit in OrderDetailComponent with activateRoute URL : ${error}`);
       }
@@ -165,7 +164,7 @@ export class OrderDetailComponent implements OnInit {
 
   public onDeleteRule(rule) {
     let idx: number = 0;
-    for(let i: number = 0; i < this.detailObject.SRules.length; i ++) {
+    for (let i: number = 0; i < this.detailObject.SRules.length; i ++) {
       if (this.detailObject.SRules[i].RuleId === rule.RuleId) {
         idx = i;
         break;
@@ -182,7 +181,7 @@ export class OrderDetailComponent implements OnInit {
     }
 
     let nMax: number = 0;
-    for(let rule of this.detailObject.SRules) {
+    for (let rule of this.detailObject.SRules) {
       if (rule.RuleId > nMax) {
         nMax = rule.RuleId;
       }
@@ -195,21 +194,21 @@ export class OrderDetailComponent implements OnInit {
     if (this.uiMode === UIMode.Create) {
       // Check!
       if (!this.detailObject.onVerify({
-        ControlCenters: this._storageService.ControlCenters
+        ControlCenters: this._storageService.ControlCenters,
       })) {
         // Show a dialog for error details
         const dlginfo: MessageDialogInfo = {
           Header: 'Common.Error',
           ContentTable: this.detailObject.VerifiedMsgs,
-          Button: MessageDialogButtonEnum.onlyok
+          Button: MessageDialogButtonEnum.onlyok,
         };
 
         this._dialog.open(MessageDialogComponent, {
           disableClose: false,
           width: '500px',
-          data: dlginfo
+          data: dlginfo,
         });
-        
+
         return;
       }
 
@@ -224,14 +223,14 @@ export class OrderDetailComponent implements OnInit {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Success',
             Content: x.Id.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -243,14 +242,14 @@ export class OrderDetailComponent implements OnInit {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Error',
             Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);

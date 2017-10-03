@@ -8,7 +8,7 @@ import { AuthService, HomeDefDetailService, FinCurrencyService } from '../servic
 @Component({
   selector: 'hih-home-def-detail',
   templateUrl: './home-def-detail.component.html',
-  styleUrls: ['./home-def-detail.component.scss']
+  styleUrls: ['./home-def-detail.component.scss'],
 })
 export class HomeDefDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
@@ -19,6 +19,9 @@ export class HomeDefDetailComponent implements OnInit {
   get IsCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
+  get isFieldChangable(): boolean {
+    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
 
   constructor(private _authService: AuthService,
     public _fincurrService: FinCurrencyService,
@@ -28,7 +31,7 @@ export class HomeDefDetailComponent implements OnInit {
     private _activateRoute: ActivatedRoute) {
 
     this.detailObject = new HomeDef();
-    this._fincurrService.fetchAllCurrencies().subscribe(x => {
+    this._fincurrService.fetchAllCurrencies().subscribe((x) => {
       // Ensure the GET is fired
     });
     this._homedefService.listDataChange.subscribe((x) => {
@@ -59,9 +62,9 @@ export class HomeDefDetailComponent implements OnInit {
           this.uiMode = UIMode.Display;
         }
         this.currentMode = getUIModeString(this.uiMode);
-        
+
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._homedefService.readHomeDefEvent.subscribe(x => {
+          this._homedefService.readHomeDefEvent.subscribe((x) => {
             if (x !== null) {
               this.detailObject = x;
             } else {

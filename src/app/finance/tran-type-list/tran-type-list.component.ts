@@ -53,7 +53,7 @@ export class TranTypeListComponent implements OnInit {
   ngOnInit() {
     this.dataSource = new TranTypeDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllTranTypes().subscribe(x => {
+    this._storageService.fetchAllTranTypes().subscribe((x) => {
       // Just ensure the REQUEST has been sent
     });
   }

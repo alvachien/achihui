@@ -38,6 +38,7 @@ export class LearnStorageService {
   createObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
   updateObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
   readObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
+  deleteObjectEvent: EventEmitter<string | null> = new EventEmitter(null);
   createHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
   readHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
 
@@ -68,7 +69,7 @@ export class LearnStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -94,10 +95,10 @@ export class LearnStorageService {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllCategories in FinanceStorageService: ${err}`);
           }
-          
+
           this._isCtgyListLoaded = false;
           this.listCategoryChange.next([]);
-      
+
           return Observable.throw(err);
         });
     } else {
@@ -120,7 +121,7 @@ export class LearnStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -142,14 +143,14 @@ export class LearnStorageService {
           this.listObjectChange.next(listRst);
           return listRst;
         })
-        .catch(err => {
+        .catch((err) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService: ${err}`);
           }
-          
+
           this._isObjListLoaded = true;
           this.listObjectChange.next([]);
-      
+
           return Observable.throw(err);
         });
     } else {
@@ -172,7 +173,7 @@ export class LearnStorageService {
     const jdata: string = obj.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -215,12 +216,12 @@ export class LearnStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnObject/' +obj.Id.toString();
+    let apiurl = environment.ApiUrl + '/api/LearnObject/' + obj.Id.toString();
 
     const jdata: string = obj.writeJSONString();
     this._http.put(apiurl, jdata, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -252,7 +253,50 @@ export class LearnStorageService {
       }, () => {
       });
   }
-  
+
+  /**
+   * Delete an object
+   * @param obj Object to create
+   */
+  public deleteObject(oid: number) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnObject/' + oid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    this._http.delete(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Map of deleteObject in LearnStorageService' + response);
+        }
+
+        return <any>response;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteObject in LearnStorageService: ${x}`);
+        }
+
+        // Broadcast event
+        this.deleteObjectEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in deleteObject in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.deleteObjectEvent.emit(error.toString());
+      }, () => {
+      });
+  }
+
   /**
    * Read an object
    * @param objid ID of the object to read
@@ -264,9 +308,12 @@ export class LearnStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl = environment.ApiUrl + '/api/LearnObject/' + objid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
         headers: headers,
-        withCredentials: true
+        params: params,
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -299,7 +346,7 @@ export class LearnStorageService {
       }, () => {
       });
   }
-  
+
   // History
   public fetchAllHistories(forceReload?: boolean): Observable<LearnHistory[]> {
     if (!this._isHistListLoaded || forceReload) {
@@ -315,7 +362,7 @@ export class LearnStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true
+          withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -333,18 +380,18 @@ export class LearnStorageService {
             }
           }
 
-          this._isHistListLoaded = true;          
+          this._isHistListLoaded = true;
           this.listHistoryChange.next(listRst);
           return listRst;
         })
-        .catch(err => {
+        .catch((err) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllHistories in FinanceStorageService: ${err}`);
           }
-          
-          this._isHistListLoaded = true;          
+
+          this._isHistListLoaded = true;
           this.listHistoryChange.next([]);
-      
+
           return Observable.throw(err);
         });
     } else {
@@ -367,7 +414,7 @@ export class LearnStorageService {
     const jdata: string = hist.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -413,7 +460,7 @@ export class LearnStorageService {
     let apiurl = environment.ApiUrl + '/api/LearnHistory/' + histid;
     this._http.get(apiurl, {
         headers: headers,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -446,7 +493,7 @@ export class LearnStorageService {
       }, () => {
       });
   }
-  
+
   /**
    * Get history report by user
    */
@@ -465,11 +512,11 @@ export class LearnStorageService {
     if (dtend) {
       params = params.append('dtend', dtend.format(MomentDateFormat));
     }
-    
+
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -498,11 +545,11 @@ export class LearnStorageService {
     if (dtend) {
       params = params.append('dtend', dtend.format(MomentDateFormat));
     }
-    
+
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true
+        withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -511,5 +558,5 @@ export class LearnStorageService {
 
         return <any>response;
       });
-  }  
+  }
 }

@@ -25,12 +25,8 @@
         <ng-container mdColumnDef="expflag">
           <md-header-cell *mdHeaderCellDef>{{'Finance.IsExpense' | translate}}</md-header-cell>
           <md-cell *mdCellDef="let row">
-            <md-slide-toggle
-              class="mt-2"
-              color="accent"
-              [checked]="row.Expense"
-              disabled>
-            </md-slide-toggle>
+            <md-checkbox [(ngModel)]="row.Expense" disabled>
+            </md-checkbox>
           </md-cell>
         </ng-container>
   

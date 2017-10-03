@@ -6,8 +6,8 @@
   </md-card-header>
   <md-card-content>
     <md-toolbar>
-      <button md-icon-button color="primary" (click)="onCreateObject()"><md-icon md-icon-button color="primary">add</md-icon></button>
-      <button md-icon-button color="primary" (click)="onRefresh()"><md-icon md-icon-button color="primary">refresh</md-icon></button>
+      <button md-icon-button (click)="onCreateObject()" mdTooltip="{{'Common.Create' | translate}}"><md-icon color="primary">add</md-icon></button>
+      <button md-icon-button (click)="onRefresh()" mdTooltip="{{'Common.Refresh' | translate}}"><md-icon color="accent">refresh</md-icon></button>
     </md-toolbar>
     <div class="table-container mat-elevation-z8">
       <md-table #table [dataSource]="dataSource">
@@ -15,9 +15,9 @@
         <ng-container mdColumnDef="id">
           <md-header-cell *mdHeaderCellDef>#</md-header-cell>
           <md-cell *mdCellDef="let row">
-            <button md-icon-button color="primary" (click)="onDisplayObject(row)"><md-icon class="example-icon">search</md-icon></button>
-            <button md-icon-button color="primary" (click)="onChangeObject(row)"><md-icon class="example-icon">edit</md-icon></button>
-            <button md-icon-button color="primary" (click)="onDeleteObject(row)"><md-icon class="example-icon">delete</md-icon></button>
+            <button md-icon-button (click)="onDisplayObject(row)" mdTooltip="{{'Common.DisplayDetails' | translate}}"><md-icon color="primary" class="example-icon">search</md-icon></button>
+            <button md-icon-button (click)="onChangeObject(row)" mdTooltip="{{'Common.Edit' | translate}}"><md-icon color="accent" class="example-icon">edit</md-icon></button>
+            <button md-icon-button (click)="onDeleteObject(row)" mdTooltip="{{'Common.Delete' | translate}}"><md-icon color="warn"  class="example-icon">delete</md-icon></button>
             {{ row.Id }}
           </md-cell>
         </ng-container>

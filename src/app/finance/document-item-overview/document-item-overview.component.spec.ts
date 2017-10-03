@@ -8,7 +8,7 @@ describe('DocumentItemOverviewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentItemOverviewComponent ]
+      declarations: [ DocumentItemOverviewComponent ],
     })
     .compileComponents();
   }));

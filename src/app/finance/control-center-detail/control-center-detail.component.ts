@@ -22,7 +22,7 @@ export class ControlCenterDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
 
-  constructor(private _dialog: MdDialog, 
+  constructor(private _dialog: MdDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
@@ -56,9 +56,9 @@ export class ControlCenterDetailComponent implements OnInit {
           this.uiMode = UIMode.Display;
         }
         this.currentMode = getUIModeString(this.uiMode);
-        
+
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readControlCenterEvent.subscribe(x => {
+          this._storageService.readControlCenterEvent.subscribe((x) => {
             if (x instanceof ControlCenter) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, succeed to readControlCenterEvent : ${x}`);
@@ -112,7 +112,7 @@ export class ControlCenterDetailComponent implements OnInit {
 
     return true;
   }
-  
+
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
       this._storageService.createControlCenterEvent.subscribe((x) => {
@@ -126,14 +126,14 @@ export class ControlCenterDetailComponent implements OnInit {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Success',
             Content: x.Id.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -145,20 +145,20 @@ export class ControlCenterDetailComponent implements OnInit {
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Error',
             Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok
+            Button: MessageDialogButtonEnum.onlyok,
           };
 
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo
-          }).afterClosed().subscribe(x2 => {
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
             }
           });
-        }        
+        }
       });
 
       this._storageService.createControlCenter(this.detailObject);

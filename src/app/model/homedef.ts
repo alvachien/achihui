@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 
 /**
- * Relationship 
+ * Relationship
  */
 export enum HomeMemberRelationEnum {
     Self    = 0,
@@ -11,7 +11,7 @@ export enum HomeMemberRelationEnum {
 }
 
 export function getHomeMemberRelationString(re: HomeMemberRelationEnum) {
-    switch(re) {
+    switch (re) {
         case HomeMemberRelationEnum.Self: return 'Sys.MemRel.Self';
         case HomeMemberRelationEnum.Couple: return 'Sys.MemRel.Couple';
         case HomeMemberRelationEnum.Child: return 'Sys.MemRel.Children';
@@ -167,7 +167,7 @@ export class HomeDef {
 
         this._listMembers = [];
         if (data.members) {
-            for(let mem of data.members) {
+            for (let mem of data.members) {
                 let hmem: HomeMember = new HomeMember();
                 hmem.parseJSONData(mem);
                 this._listMembers.push(hmem);
