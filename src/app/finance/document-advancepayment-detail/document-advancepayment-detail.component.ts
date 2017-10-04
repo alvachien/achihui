@@ -270,6 +270,15 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
         this.detailObject.TmpDocs.push(item);
       }
 
+      // Update the template desp
+      if(this.detailObject.TmpDocs.length === 1) {
+        this.detailObject.TmpDocs[0].Desp = this.detailObject.Desp;
+      } else {
+        for(let i = 0; i < this.detailObject.TmpDocs.length; i ++) {
+          this.detailObject.TmpDocs[i].Desp = this.detailObject.Desp + i.toString() + '/' + this.detailObject.TmpDocs.length.toString();
+        }
+      }
+
       this.tmpDocOperEvent.emit();
     }
   }
@@ -382,6 +391,9 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
         td.HID = acntobj.HID;
         td.ControlCenterId = this.detailObject.SourceControlCenterId;
         td.OrderId = this.detailObject.SourceOrderId;
+        if (td.Desp.length > 45) {
+          td.Desp = td.Desp.substring(0, 44);
+        }
 
         sobj.TmpDocs.push(td.writeJSONObject());
       }

@@ -1121,13 +1121,13 @@ export class Document extends hih.BaseModel {
 
                     if (fit.UseCurr2) {
                         if (this.ExgRate2) {
-                            amtTotal += amtItem / this.ExgRate2;
+                            amtTotal += amtItem * this.ExgRate2 / 100;
                         } else {
                             amtTotal += amtItem;
                         }
                     } else {
                         if (this.ExgRate) {
-                            amtTotal += amtItem / this.ExgRate;
+                            amtTotal += amtItem * this.ExgRate / 100;
                         } else {
                             amtTotal += amtItem;
                         }

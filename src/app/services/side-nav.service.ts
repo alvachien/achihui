@@ -13,30 +13,41 @@ export class SideNavService {
   currentlyOpen$: Observable<SidenavItem[]> = this._currentlyOpenSubject.asObservable();
   
   constructor() {
-    const overall = this.addItem('Common.Overview', 'home', '/', 1);
-    this.addSubItem(overall, 'Nav.Home', '/', 1);
-    this.addSubItem(overall, 'Common.Languages', '/language', 1);
-    this.addSubItem(overall, 'Nav.HomeList', '/homedef', 2);
-    this.addSubItem(overall, 'Finance.Currency', '/currency', 2);
+    const overall = this.addItem('Common.Overview', 'weekend', '/', 1);
+    this.addSubItem(overall, 'Nav.InitialPage', '/initial', 1, 'dashboard');
+    this.addSubItem(overall, 'Common.Languages', '/language', 2, 'language');
+    this.addSubItem(overall, 'Nav.HomeList', '/homedef', 3, 'domain');
+    this.addSubItem(overall, 'Finance.Currency', '/currency', 4, 'euro_symbol');
 
-    const learn = this.addItem('Nav.LearningTrace', 'bubble_chart', null, 3);
-    this.addSubItem(learn, 'Learning.LearningCategory', '/learn/category', 1);
-    this.addSubItem(learn, 'Learning.LearningObjects', '/learn/object', 2);
-    this.addSubItem(learn, 'Learning.LearningHistories', '/learn/history', 3);
+    const learn = this.addItem('Nav.LearningTrace', 'event_note', null, 2);
+    this.addSubItem(learn, 'Learning.LearningCategory', '/learn/category', 1, 'settings_input_composite');
+    this.addSubItem(learn, 'Learning.LearningObjects', '/learn/object', 2, 'lightbulb_outline');
+    this.addSubItem(learn, 'Learning.LearningHistories', '/learn/history', 3, 'history');
 
-    const finance = this.addItem('Nav.FinanceTrace', 'equalizer', null, 3);
-    this.addSubItem(finance, 'Common.Overview', '/finance/overview', 1);
-    this.addSubItem(finance, 'Finance.AccountCategories', '/finance/acntctgy', 2);
-    this.addSubItem(finance, 'Finance.DocumentTypes', '/finance/doctype', 3);
-    this.addSubItem(finance, 'Finance.TransactionTypes', '/finance/trantype', 4);
-    this.addSubItem(finance, 'Finance.Accounts', '/finance/account', 5);
-    this.addSubItem(finance, 'Finance.ControlCenters', '/finance/controlcenter', 6);
-    this.addSubItem(finance, 'Finance.Orders', '/finance/order', 7);
-    this.addSubItem(finance, 'Finance.Documents', '/finance/document', 8);
-    this.addSubItem(finance, 'Finance.Reports', '/finance/report', 9);
+    const finance = this.addItem('Nav.FinanceTrace', 'art_track', null, 3);
+    this.addSubItem(finance, 'Common.Overview', '/finance/overview', 1, 'today');
+    this.addSubItem(finance, 'Finance.AccountCategories', '/finance/acntctgy', 2, 'settings_input_component');
+    this.addSubItem(finance, 'Finance.DocumentTypes', '/finance/doctype', 3, 'view_comfy');
+    this.addSubItem(finance, 'Finance.TransactionTypes', '/finance/trantype', 4, 'featured_play_list');
+    this.addSubItem(finance, 'Finance.Accounts', '/finance/account', 5, 'library_books');
+    this.addSubItem(finance, 'Finance.ControlCenters', '/finance/controlcenter', 6, 'store');
+    this.addSubItem(finance, 'Finance.Orders', '/finance/order', 7, 'tune');
+    this.addSubItem(finance, 'Finance.Documents', '/finance/document', 8, 'poll');
+    this.addSubItem(finance, 'Finance.Reports', '/finance/report', 9, 'account_balance');
+
+    const library = this.addItem('Nav.Libraries', 'subject', null, 4);
+    this.addSubItem(library, 'Nav.Person', '/lib/person', 1, 'face');
+    this.addSubItem(library, 'Nav.Location', '/lib/location', 2, 'storage');
+    this.addSubItem(library, 'Library.Books', '/lib/book', 3, 'book');
+    this.addSubItem(library, 'Library.Movies', '/lib/movie', 4, 'movie');
+
+    const event = this.addItem('Nav.EventTrace', 'event', null, 5);
+    this.addSubItem(event, 'Common.Categories', '/event/category', 1, 'toc');
+    this.addSubItem(event, 'Nav.EventTrace', '/event/recurevent', 2, 'schedule');
+    this.addSubItem(event, 'Nav.EventTrace', '/event/timeline', 2, 'timeline');
   }
 
-  addItem(name: string, icon: string, route: any, position: number, badge?: string, badgeColor?: string, customClass?: string) {
+  addItem(name: string, icon: string, route: any, position: number, badge?: string, badgeColor?: string, customClass?: string, color?: string) {
     const item = new SidenavItem({
       name: name,
       icon: icon,
@@ -45,7 +56,8 @@ export class SideNavService {
       position: position || 99,
       badge: badge || null,
       badgeColor: badgeColor || null,
-      customClass: customClass || null
+      customClass: customClass || null,
+      color: color || 'primary'
     });
 
     this._items.push(item);
@@ -54,13 +66,15 @@ export class SideNavService {
     return item;
   }
 
-  addSubItem(parent: SidenavItem, name: string, route: any, position: number) {
+  addSubItem(parent: SidenavItem, name: string, route: any, position: number, icon?: string, color?: string) {
     const item = new SidenavItem({
       name: name,
       route: route,
       parent: parent,
       subItems: [],
-      position: position || 99
+      position: position || 99,
+      icon: icon || null,
+      color: color || 'accent'
     });
 
     parent.subItems.push(item);

@@ -37,7 +37,7 @@
 
         <!-- Exchange rate -->
         <md-form-field class="demo-full-width" *ngIf="isForeignCurrency">
-          <input mdInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.ExgRate" name="hexrate">
+          <input mdInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" mdTooltip="{{'Finance.ExchangeRateHint' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.ExgRate" name="hexrate">
         </md-form-field>
 
         <!-- Planned Exchange rate -->
@@ -62,7 +62,7 @@
         </md-expansion-panel-header>
 
         <md-toolbar>
-          <button md-icon-button color="primary" (click)="onCreateDocItem()"><md-icon md-icon-button color="primary">add</md-icon></button>
+          <button md-icon-button (click)="onCreateDocItem()" mdTooltip="{{'Finance.CreateItem' | translate}}"><md-icon md-icon-button color="primary">add</md-icon></button>
         </md-toolbar>
         <div class="table-container mat-elevation-z8">
           <md-table #table [dataSource]="dataSource">

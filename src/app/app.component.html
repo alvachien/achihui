@@ -1,61 +1,56 @@
 <md-sidenav-container fullscreen>
-    <md-sidenav #start mode="side">
-        <hih-sidenav></hih-sidenav>
-        
-        <!-- <div *ngIf="isLoggedIn" class="card">
-            <div class="card-body">
-                <h4 class="card-title text-muted">{{titleLogin}}</h4>
-                <h6 class="card-subtitle mb-2 text-muted">{{userDisplayAs}}</h6>
-                <button (click)="onLogout()" md-button style="background: #525252;">{{'Login.Logout' | translate}}</button>
-            </div>
-        </div>
-        <md-nav-list dense>
-            <a *ngFor="let navItem of navItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
-                {{i + 1}} - {{navItem.name | translate}}
-            </a>
-            <md-divider></md-divider>
-            <h3 mdSubheader>{{'Nav.LearningTrace' | translate}}</h3>
-            <a *ngFor="let navItem of navLearnItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
-                {{i + 1}} - {{navItem.name | translate}}
-            </a>
-            <md-divider></md-divider>
-            <h3 mdSubheader>{{'Nav.FinanceTrace' | translate}}</h3>
-            <a *ngFor="let navItem of navFinItems; let i = index" md-list-item (click)="start.close()" [routerLink]="[navItem.route]">
-                {{i + 1}} - {{navItem.name | translate}}
-            </a>
-        </md-nav-list>
-        <hr />
-        <button md-button (click)="start.close()">{{'Common.Close' | translate}}</button> -->
-    </md-sidenav>
+  <md-sidenav #start mode="side">
+    <hih-sidenav></hih-sidenav>
+  </md-sidenav>
 
-    <div>
-        <md-toolbar color="primary">
-            <button md-icon-button (click)="start.opened = !start.opened">
-                <md-icon class="md-24">menu</md-icon>
+  <div>
+    <md-toolbar color="primary">
+      <button md-icon-button (click)="start.opened = !start.opened">
+        <md-icon class="md-24">menu</md-icon>
+      </button>
+      <div class="hih-toolbar">
+        <h1>H.I.H., by Alva Chien</h1>
+        <div>
+          <button md-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon">{{'Login.Login' | translate }}</button>
+          <button md-icon-button *ngIf="isLoggedIn" [mdMenuTriggerFor]="mdMenuUser"><md-icon>account_box</md-icon></button>
+          <md-menu #mdMenuUser="mdMenu" overlapTrigger="false" xPosition="after" yPosition="below">
+            <button md-menu-item disabled>{{titleLogin}}</button>
+            <button md-menu-item (click)="onUserDetail()">
+              <md-icon>account_circle</md-icon>
+              <span class="title">{{'Nav.UserDetail' | translate}}</span>
             </button>
-            <div class="hih-toolbar">
-                <h1>H.I.H., by Alva Chien</h1>
-                <div>
-                    <button md-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon">{{'Login.Login' | translate }}</button>
-                    <button md-button *ngIf="isLoggedIn" (click)="onUserDetail()">{{titleLogin}}</button>
-                    <button md-button *ngIf="curChosenHome" (click)="onChosenHomeDetail()">{{curChosenHome.Name}}</button>
-                    <md-select [(ngModel)]="SelectedLanguage" name="applang" (change)="onLanguageChanged()">
-                        <md-option *ngFor="let lang of availableLanguages" [value]="lang.value">
-                            {{lang.displayas | translate}}
-                        </md-option>
-                    </md-select>
-                    <button md-icon-button (click)="toggleFullscreen()" title="Toggle fullscreen">
-                        <md-icon class="md-24">fullscreen</md-icon>
-                    </button>
-                    <a md-icon-button href="https://github.com/alvachien/achihui" target="_blank" title="Go to Source repo">
-                        <md-icon class="md-24">code</md-icon>
-                    </a>
-                </div>
-            </div>
-        </md-toolbar>
+            <button md-menu-item (click)="onLogout()">
+              <md-icon>exit_to_app</md-icon>
+              <span>{{'Login.Logout' | translate}}</span>
+            </button>
+          </md-menu>
+                
+          <button md-icon-button md-button *ngIf="curChosenHome" [mdMenuTriggerFor]="mdMenuHome"><md-icon>domain</md-icon></button>
+          <md-menu #mdMenuHome="mdMenu" overlapTrigger="false" xPosition="after" yPosition="below">
+            <button md-menu-item disabled>{{curChosenHome?.Name}}</button>
+            <button md-menu-item (click)="onChosenHomeDetail()">
+              <md-icon>account_circle</md-icon>
+              <span>{{'Nav.HomeDetail' | translate}}</span>
+            </button>
+          </md-menu>
 
-        <div class="hih-content">
-            <router-outlet></router-outlet>
+          <md-select [(ngModel)]="SelectedLanguage" name="applang" (change)="onLanguageChanged()">
+            <md-option *ngFor="let lang of availableLanguages" [value]="lang.value">
+              {{lang.displayas | translate}}
+            </md-option>
+          </md-select>
+          <button md-icon-button (click)="toggleFullscreen()" title="Toggle fullscreen">
+            <md-icon class="md-24">fullscreen</md-icon>
+          </button>
+          <a md-icon-button href="https://github.com/alvachien/achihui" target="_blank" title="Go to Source repo">
+            <md-icon class="md-24">code</md-icon>
+          </a>
         </div>
+      </div>
+    </md-toolbar>
+
+    <div class="hih-content">
+      <router-outlet></router-outlet>
     </div>
+  </div>
 </md-sidenav-container>

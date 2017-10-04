@@ -6,8 +6,8 @@
   </md-card-header>
   <md-card-content>
       <md-toolbar>
-        <button md-icon-button (click)="onCreateHome()" mdTooltip="{{'Common.Create' | translate}}"><md-icon color="primary" class="example-icon">add</md-icon></button>
-        <button md-icon-button (click)="onRefresh()" mdTooltip="{{'Common.Refresh' | translate}}"><md-icon color="accent" class="example-icon">refresh</md-icon></button>
+        <button md-icon-button (click)="onCreateHome()" mdTooltip="{{'Common.Create' | translate}}"><md-icon color="primary" class="mt-3">add</md-icon></button>
+        <button md-icon-button (click)="onRefresh()" mdTooltip="{{'Common.Refresh' | translate}}"><md-icon color="accent" class="mt-3">refresh</md-icon></button>
       </md-toolbar>    
       <div class="table-container mat-elevation-z8">
       <md-table #table [dataSource]="dataSource">
@@ -16,12 +16,12 @@
           <md-header-cell *mdHeaderCellDef>#</md-header-cell>
           <md-cell *mdCellDef="let row">
               <button md-icon-button (click)="onChooseHome(row)" *ngIf="!IsCurrentHomeChosed" mdTooltip="{{'Common.ChooseThisHome' | translate}}">
-                <md-icon color="primary" class="md-14 example-icon" aria-label="Choose">verified_user</md-icon>
+                <md-icon color="primary" class="md-14 cell-icon" aria-label="Choose">verified_user</md-icon>
               </button>
-              <button md-icon-button (click)="onDisplayHome(row)" mdTooltip="{{'Common.DisplayDetails' | translate}}">
-                <md-icon color="primary" class="md-14 example-icon" aria-label="Display">search</md-icon>
-              </button>
-              {{ row.ID }}
+              <!-- <button md-icon-button (click)="onDisplayHome(row)" mdTooltip="{{'Common.DisplayDetails' | translate}}">
+                <md-icon color="primary" class="md-14 cell-icon" aria-label="Display">search</md-icon>
+              </button> -->
+              <a class="mt-1" routerLink='/homedef/display/{{row.ID}}' routerLinkActive="active" *ngIf="row.ID">{{row.ID}}</a>
           </md-cell>
         </ng-container>
 
@@ -34,7 +34,7 @@
         <!-- Host Column -->
         <ng-container mdColumnDef="host">
           <md-header-cell *mdHeaderCellDef> {{'Common.Host' | translate}} </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.Host}} </md-cell>
+          <md-cell *mdCellDef="let row"> {{row.CreatorDisplayAs}} </md-cell>
         </ng-container>
 
         <!-- Currency Column -->

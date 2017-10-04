@@ -203,7 +203,10 @@
     "Version": "版本",
     "Libraries": "资料库",
     "English": "英文",
-    "SimplifiedChinese": "简体中文"
+    "SimplifiedChinese": "简体中文",
+    "InitialPage": "起始页",
+    "Person": "人物",
+    "Location": "存储位置"
   },
   "Learning": {
     "LearningCategory": "学习种类",
@@ -285,6 +288,9 @@
     "AccountStatusNormal": "正常",
     "AccountStatusClosed": "已关闭账户",
     "AccountStatusFrozen": "已冻结账户",
+    "CreateItem": "新建行项目",
+    "ExchangeRateHint": "100外币所能换到的本币金额",
+    "PreviousDocWithPlannedExgRate": "预测汇率的凭证",
     
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",

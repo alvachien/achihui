@@ -170,7 +170,13 @@ export class DocumentListComponent implements OnInit {
       }
 
       if (x2) {
-        // Todo!
+        this._storageService.deleteDocumentEvent.subscribe(x => {
+          // Do nothing!
+        }, err2 => {
+          // TBD: handle the error!
+        });
+
+        this._storageService.deleteDocument(doc.Id);
       }
     });
   }

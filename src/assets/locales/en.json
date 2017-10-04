@@ -203,7 +203,10 @@
     "Version": "Version",
     "Libraries": "Libraries",
     "English": "English",
-    "SimplifiedChinese": "Simplified Chinese"
+    "SimplifiedChinese": "Simplified Chinese",
+    "InitialPage": "Initial page",
+    "Person": "Person",
+    "Location": "Location"
   },
   "Learning": {
     "LearningCategory": "Learning Category",
@@ -285,6 +288,9 @@
     "AccountStatusNormal": "Normal",
     "AccountStatusClosed": "Closed",
     "AccountStatusFrozen": "Fronze",
+    "CreateItem": "Create an item",
+    "ExchangeRateHint": "The amount of the base currency which 100 foreign currency can buy",
+    "PreviousDocWithPlannedExgRate": "Previous documents whose planned exchange rate",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

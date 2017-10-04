@@ -37,6 +37,7 @@ import { DocumentTransferDetailComponent } from './document-transfer-detail';
 import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment-detail';
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
+import { DocumentLoanDetailComponent } from './document-loan-detail';
 
 @NgModule({
   imports: [
@@ -77,6 +78,7 @@ import { DocumentItemOverviewComponent } from './document-item-overview';
     DocumentAdvancepaymentDetailComponent,
     DocumentExchangeDetailComponent,
     DocumentItemOverviewComponent,
+    DocumentLoanDetailComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

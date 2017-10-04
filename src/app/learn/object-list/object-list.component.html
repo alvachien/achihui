@@ -15,10 +15,9 @@
         <ng-container mdColumnDef="id">
           <md-header-cell *mdHeaderCellDef>#</md-header-cell>
           <md-cell *mdCellDef="let row">
-            <button md-icon-button (click)="onDisplayObject(row)" mdTooltip="{{'Common.DisplayDetails' | translate}}"><md-icon color="primary" class="example-icon">search</md-icon></button>
-            <button md-icon-button (click)="onChangeObject(row)" mdTooltip="{{'Common.Edit' | translate}}"><md-icon color="accent" class="example-icon">edit</md-icon></button>
-            <button md-icon-button (click)="onDeleteObject(row)" mdTooltip="{{'Common.Delete' | translate}}"><md-icon color="warn"  class="example-icon">delete</md-icon></button>
-            {{ row.Id }}
+            <button md-icon-button (click)="onChangeObject(row)" mdTooltip="{{'Common.Edit' | translate}}"><md-icon color="accent" class="mt-3">edit</md-icon></button>
+            <button md-icon-button (click)="onDeleteObject(row)" mdTooltip="{{'Common.Delete' | translate}}"><md-icon color="warn" class="mt-3">delete</md-icon></button>
+            <a class="mt-1" routerLink='/learn/object/display/{{row.Id}}' routerLinkActive="active" *ngIf="row.Id">{{row.Id}}</a>
           </md-cell>
         </ng-container>
 

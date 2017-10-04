@@ -31,7 +31,7 @@
 
         <!-- Exchange rate -->
         <md-form-field class="demo-full-width" *ngIf="isForeignCurrency">
-          <input mdInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.ExgRate" name="hexrate">
+          <input mdInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" mdTooltip="{{'Finance.ExchangeRateHint' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.ExgRate" name="hexrate">
         </md-form-field>
 
         <!-- Planned Exchange rate -->
@@ -108,8 +108,10 @@
       </md-step>
 
       <md-step>
-        <ng-template mdStepLabel>Done</ng-template>
-        You are now done.
+        <ng-template mdStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
+        <p>
+          {{detailObject.SourceAccountId}} ... {{detailObject.SourceAccountId}}
+        </p>
         <div>
           <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
           <button md-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>

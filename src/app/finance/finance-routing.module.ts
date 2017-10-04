@@ -27,6 +27,7 @@ import { DocumentTransferDetailComponent } from './document-transfer-detail';
 import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment-detail';
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
+import { DocumentLoanDetailComponent } from './document-loan-detail';
 import { ReportComponent } from './report';
 
 const routes: Routes = [
@@ -199,6 +200,10 @@ const routes: Routes = [
             component: DocumentExchangeDetailComponent,
           },
           {
+            path: 'createloan',
+            component: DocumentLoanDetailComponent,
+          },
+          {
             path: 'display/:id',
             component: DocumentDetailComponent,
           },
@@ -219,6 +224,10 @@ const routes: Routes = [
             component: DocumentExchangeDetailComponent,
           },
           {
+            path: 'displayloan/:id',
+            component: DocumentLoanDetailComponent,
+          },
+          {
             path: 'edit/:id',
             component: DocumentDetailComponent,
           },
@@ -237,6 +246,10 @@ const routes: Routes = [
           {
             path: 'editexg/:id',
             component: DocumentExchangeDetailComponent,
+          },
+          {
+            path: 'editloan/:id',
+            component: DocumentLoanDetailComponent,
           },
         ],
       },

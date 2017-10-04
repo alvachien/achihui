@@ -38,13 +38,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 300);
-
-    //this._service.isIconSidenav = !this._service.isIconSidenav;
   }
-
-  // isIconSidenav(): boolean {
-  //   return this._service.isIconSidenav;
-  // }
 
   sortRecursive(array: SidenavItem[], propertyName: string) {
     return array;

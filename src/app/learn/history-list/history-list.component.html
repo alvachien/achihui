@@ -18,7 +18,7 @@
             <button md-icon-button (click)="onDisplayHistory(row)" mdTooltip="{{'Common.DisplayDetails' | translate}}"><md-icon color="primary"  class="example-icon">search</md-icon></button>
             <button md-icon-button (click)="onChangeHistory(row)" mdTooltip="{{'Common.Edit' | translate}}"><md-icon color="accent" class="example-icon">edit</md-icon></button>
             <button md-icon-button (click)="onDeleteHistory(row)" mdTooltip="{{'Common.Delete' | translate}}"><md-icon color="warn" class="example-icon">delete</md-icon></button>
-            {{ row.ObjectId }}
+            <a class="mt-1" routerLink='/learn/object/display/{{row.ObjectId}}' routerLinkActive="active" *ngIf="row.ObjectId">{{row.ObjectId}}</a>
           </md-cell>
         </ng-container>
 

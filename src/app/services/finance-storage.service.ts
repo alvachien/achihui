@@ -59,6 +59,7 @@ export class FinanceStorageService {
   readOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
   createDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
   readDocumentEvent: EventEmitter<Document | string | any | null> = new EventEmitter(null);
+  deleteDocumentEvent: EventEmitter<any | null> = new EventEmitter(null);
 
   // Buffer
   private _isAcntCtgyListLoaded: boolean;
@@ -929,6 +930,49 @@ export class FinanceStorageService {
         // hd.onSetData(response);
         return response;
       });
+  }
+
+  /**
+   * Delete the document
+   * @param docid ID fo the doc
+   */
+  public deleteDocument(docid: number) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/financedocument/' + docid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    this._http.delete(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Map of deleteDocument in LearnStorageService' + response);
+        }
+
+        return <any>response;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteDocument in LearnStorageService: ${x}`);
+        }
+
+        // Broadcast event
+        this.deleteDocumentEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in deleteDocument in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.deleteDocumentEvent.emit(error.toString());
+      }, () => {
+      });    
   }
 
   /**

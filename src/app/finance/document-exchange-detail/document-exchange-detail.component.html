@@ -44,7 +44,7 @@
         </md-select>
 
         <md-form-field class="demo-full-width" *ngIf="isForeignSourceCurrency">
-          <input mdInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.SourceExchangeRate"
+          <input mdInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" mdTooltip="{{'Finance.ExchangeRateHint' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.SourceExchangeRate"
             name="hexrate">
         </md-form-field>
 
@@ -90,7 +90,7 @@
         </md-select>
 
         <md-form-field class="demo-full-width" *ngIf="isForeignTargetCurrency">
-          <input mdInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TargetExchangeRate"
+          <input mdInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" mdTooltip="{{'Finance.ExchangeRateHint' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TargetExchangeRate"
             name="hexrate">
         </md-form-field>
 
@@ -119,20 +119,20 @@
       </md-step>
 
       <md-step>
-        <ng-template mdStepLabel>Previous Documents</ng-template>
+        <ng-template mdStepLabel>{{'Finance.PreviousDocWithPlannedExgRate' | translate}}</ng-template>
         <table>
           <tr>
             <th></th>
             <th>#</th>
-            <th>Type</th>
-            <th>Date</th>
-            <th>Desp</th>
-            <th>Currency</th>
-            <th>Exg rate</th>
-            <th>Exg rate plan</th>
-            <th>Currency2</th>
-            <th>Exg rate2</th>
-            <th>Exg rate plan2</th>
+            <th>{{'Common.Type' | translate}}</th>
+            <th>{{'Common.Date' | translate}}</th>
+            <th>{{'Common.Description' | translate}}</th>
+            <th>{{'Finance.Currency' | translate}}</th>
+            <th>{{'Finance.ExchangeRate' | translate}}</th>
+            <th>{{'Finance.ProposedExchangeRate' | translate}}</th>
+            <th>{{'Finance.Currency' | translate}}</th>
+            <th>{{'Finance.ExchangeRate' | translate}}</th>
+            <th>{{'Finance.ProposedExchangeRate' | translate}}</th>
           </tr>
 
           <tr *ngFor="let doc of detailObject.prvdocs">
@@ -163,8 +163,10 @@
       </md-step>
 
       <md-step>
-        <ng-template mdStepLabel>Done</ng-template>
-        You are now done.
+        <ng-template mdStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
+          <p> 
+            {{detailObject.SourceAccountId}} ... {{detailObject.SourceAccountId}}
+          </p>  
         <div>
           <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
           <button md-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>

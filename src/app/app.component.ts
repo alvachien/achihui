@@ -15,9 +15,6 @@ import { MomentDateAdapter } from './utility';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  public navItems: appNavItems[] = [];
-  public navLearnItems: appNavItems[] = [];
-  public navFinItems: appNavItems[] = [];
   public availableLanguages: appLanguage[] = [
     { displayas: 'Nav.English', value: 'en' },
     { displayas: 'Nav.SimplifiedChinese', value: 'zh' },
@@ -39,30 +36,6 @@ export class AppComponent implements OnInit {
     // Setup the translate
     this.userDisplayAs = '';
     this.curChosenHome = null;
-
-    this.navItems = [
-      { name: 'Nav.Home', route: '' },
-      { name: 'Common.Languages', route: 'language' },
-      { name: 'Nav.HomeList', route: 'homedef' },
-      //{ name: 'Nav.HomeDetail', route: 'homedetail' },
-      { name: 'Finance.Currency', route: 'currency' },
-    ];
-    this.navLearnItems = [
-      { name: 'Learning.LearningCategory', route: 'learn/category' },
-      { name: 'Learning.LearningObjects', route: 'learn/object' },
-      { name: 'Learning.LearningHistories', route: 'learn/history' },
-    ];
-    this.navFinItems = [
-      { name: 'Common.Overview', route: 'finance/overview' },
-      { name: 'Finance.AccountCategories', route: 'finance/acntctgy' },
-      { name: 'Finance.DocumentTypes', route: 'finance/doctype' },
-      { name: 'Finance.TransactionTypes', route: 'finance/trantype' },
-      { name: 'Finance.Accounts', route: 'finance/account' },
-      { name: 'Finance.ControlCenters', route: 'finance/controlcenter' },
-      { name: 'Finance.Orders', route: 'finance/order' },
-      { name: 'Finance.Documents', route: 'finance/document' },
-      { name: 'Finance.Reports', route: 'finance/report' },
-    ];
 
     // Register the Auth service
     if (environment.LoginRequired) {

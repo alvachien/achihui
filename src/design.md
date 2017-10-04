@@ -9,6 +9,14 @@ HIH consists of three major building blocks:
 
 There are several common parts which need be documented.
 
+### Base Model
+
+There is a base class BaseModel which defined the following methods
+* onSetData: parse the data fetched from API and translate into attributes for UI;
+* writeJSONString: construct the string which can be sent to API, it depends on writeJSONObject;
+* writeJSONObject: also prepared for sending data to API;
+* onVerify: verify the data;
+
 ### Key of Learning History
 The learning history has a combined key:
 * User
@@ -43,7 +51,7 @@ It shall keep unchange after the home defintion was created.
 
 #### Foreign currency support
 There are several scenarios with Foreign currency are supported:
-* Exchange rate in HIH stands for the number of the foreign currency which 1 base currency can exchange for. For instance, if set base currency as CNY, and 1 EUR = 5 CNY, you need input 0.2 as exchange rate during the posting.
+* Exchange rate in HIH stands for the number of the base currency which 100 foreign currency can exchange for. For instance, if set base currency as CNY, and 1 EUR = 5 CNY, you need input 500.00 as exchange rate during the posting.
 * Post a normal document with foreign currency but WITHOUT exchange rate known is allowed. A typical example is, do shopping via Creditcard. In this case, provide an estimated exchange rate and mark 'ProposedExchangeRate';
 * Post the currency exchange document, in this case, the exchange rate must be inputted, and 'ProposedExchangeRate' cannot be set. It was designed to map the scenario when you pay the creditcard with foreign currency exist. The system will detect the previous documents with exactly same currency which marked 'ProposedExchangeRate', and you can make a decision whether to reset the 'ProposedExchangeRate' flag.
 * Transfer document with foreign currency can also mark 'ProposedExchangeRate' if the exact rate is unknown.
