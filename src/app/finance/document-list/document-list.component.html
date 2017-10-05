@@ -30,7 +30,7 @@
               <button md-icon-button color="primary" (click)="onDisplayDocument(row)" mdTooltip="{{'Common.DisplayDetails' | translate}}"><md-icon class="cell-icon">search</md-icon></button>
               <button md-icon-button color="accent" (click)="onChangeDocument(row)" mdTooltip="{{'Common.Edit' | translate}}"><md-icon class="cell-icon">edit</md-icon></button>
               <button md-icon-button color="warn" (click)="onDeleteDocument(row)" mdTooltip="{{'Common.Delete' | translate}}"><md-icon class="cell-icon">delete</md-icon></button>
-              <button md-button (click)="onDisplayDocument(row)" *ngIf="row.Id">{{row.Id}}</button>
+              <button type="button" class="btn btn-link" (click)="onDisplayDocument(row)" *ngIf="row.Id">{{row.Id}}</button>
           </md-cell>
         </ng-container>
 
