@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -16,7 +16,7 @@ import 'rxjs/add/operator/map';
  */
 export class HomeDefDataSource extends DataSource<any> {
   constructor(private _homedefService: HomeDefDetailService,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -48,7 +48,7 @@ export class HomeDefListComponent implements OnInit {
 
   displayedColumns = ['id', 'name', 'host', 'currency', 'details'];
   dataSource: HomeDefDataSource | null;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   get IsCurrentHomeChosed(): boolean {
     return this._homedefService.ChosedHome !== null;

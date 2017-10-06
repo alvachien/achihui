@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdDialog, MdPaginator } from '@angular/material';
+import { MatDialog, MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -14,7 +14,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
  */
 export class OrderDataSource extends DataSource<any> {
   constructor(private _storageService: FinanceStorageService,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -46,10 +46,10 @@ export class OrderListComponent implements OnInit {
 
   displayedColumns = ['id', 'name', 'ValidFrom', 'ValidTo', 'comment'];
   dataSource: OrderDataSource | null;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   includeInvalid: boolean = false;
 
-  constructor(private _dialog: MdDialog,
+  constructor(private _dialog: MatDialog,
     public _storageService: FinanceStorageService,
     private _router: Router) { }
 

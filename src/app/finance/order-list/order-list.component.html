@@ -1,62 +1,62 @@
-<md-card>
-  <md-card-header>
-    <md-card-title>{{'Finance.Orders' | translate}}</md-card-title>
-    <md-card-subtitle>{{'Common.ListView' | translate}}</md-card-subtitle>
-  </md-card-header>
-  <md-card-content>
-    <md-toolbar>      
-      <button md-icon-button color="primary" (click)="onCreateOrder()" mdTooltip="{{'Common.Create' | translate}}"><md-icon color="primary">add</md-icon></button>
-      <md-checkbox [(ngModel)]="includeInvalid">{{'Finance.InvalidOnes' | translate}}</md-checkbox>
-      <button md-icon-button color="primary" (click)="onRefresh()" mdTooltip="{{'Common.Refresh' | translate}}"><md-icon color="primary">refresh</md-icon></button>
-    </md-toolbar>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Finance.Orders' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-toolbar>      
+      <button mat-icon-button color="primary" (click)="onCreateOrder()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></button>
+      <mat-checkbox [(ngModel)]="includeInvalid">{{'Finance.InvalidOnes' | translate}}</mat-checkbox>
+      <button mat-icon-button color="primary" (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
+    </mat-toolbar>
     <div class="table-container mat-elevation-z8">
-      <md-table #table [dataSource]="dataSource">
+      <mat-table #table [dataSource]="dataSource">
         <!-- ID Column -->
-        <ng-container mdColumnDef="id">
-          <md-header-cell *mdHeaderCellDef>#</md-header-cell>
-          <md-cell *mdCellDef="let row">
-              <button md-icon-button (click)="onDisplayOrder(row)" mdTooltip="{{'Common.DisplayDetails' | translate}}"><md-icon color="primary"  class="example-icon">search</md-icon></button>
-              <button md-icon-button (click)="onChangeOrder(row)" mdTooltip="{{'Common.Edit' | translate}}"><md-icon color="accent" class="example-icon">edit</md-icon></button>
-              <button md-icon-button (click)="onDeleteOrder(row)" mdTooltip="{{'Common.Delete' | translate}}"><md-icon color="warn" class="example-icon">delete</md-icon></button>
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <button mat-icon-button (click)="onDisplayOrder(row)" matTooltip="{{'Common.DisplayDetails' | translate}}"><mat-icon color="primary"  class="example-icon">search</mat-icon></button>
+              <button mat-icon-button (click)="onChangeOrder(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
+              <button mat-icon-button (click)="onDeleteOrder(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="example-icon">delete</mat-icon></button>
               <a routerLink='/finance/order/display/{{row.Id}}' routerLinkActive="active" *ngIf="row.Id">{{row.Id}}</a>
-          </md-cell>
+          </mat-cell>
         </ng-container>
 
         <!-- Name Column -->
-        <ng-container mdColumnDef="name">
-          <md-header-cell *mdHeaderCellDef>{{'Common.Name' | translate}}</md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.Name}} </md-cell>
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Name' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.Name}} </mat-cell>
         </ng-container>
 
         <!-- ValidFrom Column -->
-        <ng-container mdColumnDef="ValidFrom">
-          <md-header-cell *mdHeaderCellDef>{{'Common.ValidFrom' | translate}}</md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.ValidFromFormatString}} </md-cell>
+        <ng-container matColumnDef="ValidFrom">
+          <mat-header-cell *matHeaderCellDef>{{'Common.ValidFrom' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.ValidFromFormatString}} </mat-cell>
         </ng-container>
 
         <!-- ValidTo Column -->
-        <ng-container mdColumnDef="ValidTo">
-          <md-header-cell *mdHeaderCellDef>{{'Common.ValidTo' | translate}}</md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.ValidToFormatString}} </md-cell>
+        <ng-container matColumnDef="ValidTo">
+          <mat-header-cell *matHeaderCellDef>{{'Common.ValidTo' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.ValidToFormatString}} </mat-cell>
         </ng-container>
         
         <!-- Comment Column -->
-        <ng-container mdColumnDef="comment">
-          <md-header-cell *mdHeaderCellDef> {{'Common.Comment' | translate}} </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.Comment}} </md-cell>
+        <ng-container matColumnDef="comment">
+          <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.Comment}} </mat-cell>
         </ng-container>
 
-        <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
-        <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
-      </md-table>
-      <md-paginator #paginator 
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator #paginator 
         [length]="_storageService.Orders.length" 
         [pageIndex]="0" 
         [pageSize]="25" 
         [pageSizeOptions]="[5, 10, 25, 100]">
-      </md-paginator>
+      </mat-paginator>
     </div>
-  </md-card-content>
-  <md-card-actions>
-  </md-card-actions>
-</md-card>
+  </mat-card-content>
+  <mat-card-actions>
+  </mat-card-actions>
+</mat-card>

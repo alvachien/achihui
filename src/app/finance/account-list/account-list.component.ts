@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, HostBinding } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -13,7 +13,7 @@ import { FinanceStorageService } from '../../services';
  */
 export class AccountDataSource extends DataSource<any> {
   constructor(private _storageService: FinanceStorageService,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -50,7 +50,7 @@ export class AccountListComponent implements OnInit {
 
   displayedColumns = ['id', 'name', 'ctgy', 'comment'];
   dataSource: AccountDataSource | null;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   arrayStatus: AccountStatusUI[] = [];
   selectedStatus: undefined | AccountStatusEnum = undefined;
 

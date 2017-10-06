@@ -1,13 +1,13 @@
 <div class="sidenav-container">
 
-  <md-toolbar class="sidenav-toolbar mat-elevation-z2">
-    <md-icon>event_seat</md-icon>
+  <mat-toolbar class="sidenav-toolbar mat-elevation-z2">
+    <mat-icon>event_seat</mat-icon>
     <a class="logo-text" routerLink="/initial" routerLinkActive="active" >H.I.H.</a>
-  </md-toolbar>
+  </mat-toolbar>
 
   <div class="sidenav-scrollbar-container">
-    <md-nav-list class="sidenav-list sidenav-toplevel">
+    <mat-nav-list class="sidenav-list sidenav-toplevel">
       <hih-sidenav-item *ngFor="let item of items" [item]="item"></hih-sidenav-item>
-    </md-nav-list>
+    </mat-nav-list>
   </div>
 </div>

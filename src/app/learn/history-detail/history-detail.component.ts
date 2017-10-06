@@ -2,7 +2,7 @@ import {
   Component, OnInit, OnDestroy, EventEmitter,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MdDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnHistory, UIMode, getUIModeString } from '../../model';
 import { HomeDefDetailService, LearnStorageService } from '../../services';
@@ -22,7 +22,7 @@ export class HistoryDetailComponent implements OnInit {
   public detailObject: LearnHistory | null;
   public uiMode: UIMode = UIMode.Create;
 
-  constructor(private _dialog: MdDialog,
+  constructor(private _dialog: MatDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,

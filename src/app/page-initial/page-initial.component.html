@@ -17,82 +17,82 @@
 </div>
 
 <div class="container mt-2" *ngIf="IsUserLoggedIn && IsHomeChosed">
-  <md-toolbar>
-    <md-select [(ngModel)]="selectedLearnScope" (change)="onLearnScopeChanged()">
-      <md-option [value]="1">{{'Common.CurrentMonth' | translate}}</md-option>
-      <md-option [value]="2">{{'Common.CurrentYear' | translate}}</md-option>
-      <md-option [value]="9">{{'Common.All' | translate}}</md-option>
-    </md-select>
+  <mat-toolbar>
+    <mat-select [(ngModel)]="selectedLearnScope" (change)="onLearnScopeChanged()">
+      <mat-option [value]="1">{{'Common.CurrentMonth' | translate}}</mat-option>
+      <mat-option [value]="2">{{'Common.CurrentYear' | translate}}</mat-option>
+      <mat-option [value]="9">{{'Common.All' | translate}}</mat-option>
+    </mat-select>
     <span class="example-spacer"></span>
     <span>{{'Nav.LearningTrace' | translate}}</span>
-  </md-toolbar>
+  </mat-toolbar>
 
   <!-- Show Learn history -->
   <div class="row container mt-2">
     <div class="col-12 col-md-6 container">
-      <md-card>
-        <md-card-header>
-          <md-card-title>{{'Learning.LearningCategory' | translate}}</md-card-title>
-        </md-card-header>
-        <md-card-content style="height: 350px;">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{'Learning.LearningCategory' | translate}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="height: 350px;">
           <ngx-charts-bar-vertical [view]="view" [scheme]="colorScheme" [results]="dataLrnCtgy" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
             [showYAxisLabel]="true" [xAxisLabel]="xLearnCtgyAxisLabel" [yAxisLabel]="yLearnCtgyAxisLabel" [legend]="true">
           </ngx-charts-bar-vertical>
-        </md-card-content>
-      </md-card>
+        </mat-card-content>
+      </mat-card>
     </div>
 
     <div class="col-12 col-md-6 container">
-      <md-card>
-        <md-card-header>
-          <md-card-title>{{'Nav.Users' | translate}}</md-card-title>
-        </md-card-header>
-        <md-card-content style="height: 350px;">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{'Nav.Users' | translate}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="height: 350px;">
           <ngx-charts-bar-vertical [view]="view" [scheme]="colorScheme" [results]="dataLrnUser" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
             [showYAxisLabel]="true" [xAxisLabel]="xLearnUserAxisLabel" [yAxisLabel]="yLearnUserAxisLabel" [legend]="true">
           </ngx-charts-bar-vertical>
-        </md-card-content>
-      </md-card>
+        </mat-card-content>
+      </mat-card>
     </div>
   </div>
   <hr />
 
   <!-- Show Finance transaction type report -->
   <div class="row container mt-2">
-    <md-toolbar>
-      <md-select [(ngModel)]="selectedFinanceScope" (change)="onFinanceScopeChanged()">
-        <md-option [value]="1">{{'Common.CurrentMonth' | translate}}</md-option>
-        <md-option [value]="2">{{'Common.CurrentYear' | translate}}</md-option>
-        <md-option [value]="9">{{'Common.All' | translate}}</md-option>
-      </md-select>
+    <mat-toolbar>
+      <mat-select [(ngModel)]="selectedFinanceScope" (change)="onFinanceScopeChanged()">
+        <mat-option [value]="1">{{'Common.CurrentMonth' | translate}}</mat-option>
+        <mat-option [value]="2">{{'Common.CurrentYear' | translate}}</mat-option>
+        <mat-option [value]="9">{{'Common.All' | translate}}</mat-option>
+      </mat-select>
       <span class="example-spacer"></span>
       <span>{{'Nav.FinanceTrace' | translate}}</span>
-    </md-toolbar>
+    </mat-toolbar>
 
     <div class="container mt-2">
       <div class="row container">
         <div class="col-12 col-md-6 container">
-          <md-card>
-            <md-card-header>
-              <md-card-title>{{'Finance.Incoming' | translate}}</md-card-title>
-            </md-card-header>
-            <md-card-content>
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
               <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" [results]="dataFinTTIn">
               </ngx-charts-advanced-pie-chart>
-            </md-card-content>
-          </md-card>
+            </mat-card-content>
+          </mat-card>
         </div>
 
         <div class="col-12 col-md-6 container">
-          <md-card>
-            <md-card-header>
-              <md-card-title>{{'Finance.Outgoing' | translate}}</md-card-title>
-            </md-card-header>
-            <md-card-content>
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
               <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" [results]="dataFinTTOut">
               </ngx-charts-advanced-pie-chart>
-            </md-card-content>
-          </md-card>
+            </mat-card-content>
+          </mat-card>
         </div>
       </div>
     </div>

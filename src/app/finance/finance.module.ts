@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MD_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE_PROVIDER, MAT_DATE_LOCALE } from '@angular/material';
+import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE_PROVIDER, MAT_DATE_LOCALE } from '@angular/material';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MD_MOMENT_DATE_FORMATS, MomentDateAdapter } from '../utility';
+import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
 
 import { FinanceRoutingModule } from './finance-routing.module';
 import { FinanceComponent } from './finance.component';
@@ -91,7 +92,8 @@ import { AssetCategoryDetailComponent } from './asset-category-detail';
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
+    { provide: MAT_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
+    { provide: MATERIAL_COMPATIBILITY_MODE, useValue: true },
   ],
 })
 export class FinanceModule { }

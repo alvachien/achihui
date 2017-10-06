@@ -4,7 +4,9 @@ import * as moment from 'moment';
 export const TypeParentSplitter: string = ' > ';
 export const IDSplitChar: string = ',';
 export const DateSplitChar: string = '-';
+export const FinanceAccountCategory_Asset: number = 7;
 export const FinanceAccountCategory_AdvancePayment: number = 8; // Advance payment
+export const FinanceAccountCategory_Loan: number = 9;
 export const FinanceDocType_Normal: number = 1;
 export const FinanceDocType_Transfer: number = 2; // Transfer doc
 export const FinanceDocType_CurrencyExchange: number = 3; // Currency exchange

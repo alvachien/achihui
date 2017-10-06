@@ -1,133 +1,135 @@
-<md-card>
-  <md-card-header>
-    <md-card-title>{{'Finance.Order' | translate}}</md-card-title>
-    <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
-  </md-card-header>
-  <md-card-content>
-    <md-accordion class="example-headers-align">
-      <md-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
-        <md-expansion-panel-header>
-          <md-panel-title>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Finance.Order' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-accordion class="example-headers-align">
+      <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
             {{'Common.GenericInfo' | translate}}
-          </md-panel-title>
-          <md-panel-description>
+          </mat-panel-title>
+          <mat-panel-description>
             {{'Common.GenericInfo' | translate}}
-            <md-icon>account_circle</md-icon>
-          </md-panel-description>
-        </md-expansion-panel-header>
+            <mat-icon>account_circle</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
 
-        <md-form-field class="demo-full-width">
-          <input mdInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name" name="name">
-        </md-form-field>
+        <mat-form-field class="demo-full-width">
+          <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name" name="name">
+        </mat-form-field>
 
         <div class="demo-full-width">
-          <md-form-field>
-            <input mdInput [(ngModel)]="detailObject.ValidFrom" [readonly]="!isFieldChangable" [mdDatepicker]="vfmpicker" placeholder="{{'Common.ValidFrom' | translate}}">
-            <md-datepicker-toggle mdSuffix [for]="vfmpicker"></md-datepicker-toggle>
-            <md-datepicker #vfmpicker></md-datepicker>
-          </md-form-field>
-          <md-form-field>
-            <input mdInput [(ngModel)]="detailObject.ValidTo" [readonly]="!isFieldChangable" [mdDatepicker]="vtopicker" placeholder="{{'Common.ValidTo' | translate}}">
-            <md-datepicker-toggle mdSuffix [for]="vtopicker"></md-datepicker-toggle>
-            <md-datepicker #vtopicker></md-datepicker>
-          </md-form-field>
+          <mat-form-field>
+            <input matInput [(ngModel)]="detailObject.ValidFrom" [readonly]="!isFieldChangable" [matDatepicker]="vfmpicker" placeholder="{{'Common.ValidFrom' | translate}}">
+            <mat-datepicker-toggle matSuffix [for]="vfmpicker"></mat-datepicker-toggle>
+            <mat-datepicker #vfmpicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput [(ngModel)]="detailObject.ValidTo" [readonly]="!isFieldChangable" [matDatepicker]="vtopicker" placeholder="{{'Common.ValidTo' | translate}}">
+            <mat-datepicker-toggle matSuffix [for]="vtopicker"></mat-datepicker-toggle>
+            <mat-datepicker #vtopicker></mat-datepicker>
+          </mat-form-field>
         </div>
         
-        <md-form-field class="demo-full-width">
-          <input mdInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="name">
-        </md-form-field>
+        <mat-form-field class="demo-full-width">
+          <input matInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="name">
+        </mat-form-field>
   
-        <md-action-row>
-          <button md-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
-        </md-action-row>
-      </md-expansion-panel>
+        <mat-action-row>
+          <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
+        </mat-action-row>
+      </mat-expansion-panel>
 
-      <md-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
-        <md-expansion-panel-header>
-          <md-panel-title>
+      <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
             {{'Finance.SettlementRule' | translate}}
-          </md-panel-title>
-          <md-panel-description>
+          </mat-panel-title>
+          <mat-panel-description>
             {{'Finance.SettlementRule' | translate}}
-            <md-icon>map</md-icon>
-          </md-panel-description>
-        </md-expansion-panel-header>
+            <mat-icon>map</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
 
-        <md-toolbar>
-          <button md-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onCreateRule()"><md-icon md-icon-button color="primary">add</md-icon></button>
-        </md-toolbar>
+        <mat-toolbar>
+          <button mat-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onCreateRule()"><mat-icon mat-icon-button color="primary">add</mat-icon></button>
+        </mat-toolbar>
         <div class="table-container mat-elevation-z8">
-          <md-table #table [dataSource]="dataSource">
+          <mat-table #table [dataSource]="dataSource">
             <!-- ID Column -->
-            <ng-container mdColumnDef="rid">
-              <md-header-cell *mdHeaderCellDef>#</md-header-cell>
-              <md-cell *mdCellDef="let row">
-                  <button md-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteRule(row)"><md-icon class="example-icon">delete</md-icon></button>
+            <ng-container matColumnDef="rid">
+              <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                  <button mat-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteRule(row)"><mat-icon class="example-icon">delete</mat-icon></button>
                   {{ row.RuleId }}
-              </md-cell>
+              </mat-cell>
             </ng-container>
     
             <!-- CC Column -->
-            <ng-container mdColumnDef="ccid">
-              <md-header-cell *mdHeaderCellDef>{{'Finance.ControlCenter' | translate}}</md-header-cell>
-              <md-cell *mdCellDef="let row">
-                <md-select [disabled]="!isFieldChangable" [(ngModel)]="row.ControlCenterId" name="ittt">
-                  <md-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
-                    {{tt.Name}}
-                  </md-option>
-               </md-select>
-              </md-cell>
+            <ng-container matColumnDef="ccid">
+              <mat-header-cell *matHeaderCellDef>{{'Finance.ControlCenter' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <mat-select [disabled]="!isFieldChangable" [(ngModel)]="row.ControlCenterId" name="ittt">
+                    <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+                      {{tt.Name}}
+                    </mat-option>
+                </mat-select>
+                </mat-form-field>
+              </mat-cell>
             </ng-container>
 
             <!-- Present Column -->
-            <ng-container mdColumnDef="precent">
-              <md-header-cell *mdHeaderCellDef>{{'Common.Precent' |translate}} (%)</md-header-cell>
-              <md-cell *mdCellDef="let row"> 
-                <md-form-field class="demo-full-width">
-                  <input mdInput type="number" required placeholder="{{'Common.Precent' |translate}} (%)"
+            <ng-container matColumnDef="precent">
+              <mat-header-cell *matHeaderCellDef>{{'Common.Precent' |translate}} (%)</mat-header-cell>
+              <mat-cell *matCellDef="let row"> 
+                <mat-form-field class="demo-full-width">
+                  <input matInput type="number" required placeholder="{{'Common.Precent' |translate}} (%)"
                     [readonly]="!isFieldChangable" [(ngModel)]="row.Precent" name="rulepr">
-                </md-form-field>                 
-              </md-cell>
+                </mat-form-field>                 
+              </mat-cell>
             </ng-container>
             
             <!-- Comment Column -->
-            <ng-container mdColumnDef="comment">
-              <md-header-cell *mdHeaderCellDef> {{'Common.Comment' | translate}} </md-header-cell>
-              <md-cell *mdCellDef="let row">
-                <md-form-field class="demo-full-width">
-                  <input mdInput type="text" placeholder="{{'Common.Comment' | translate}}"
+            <ng-container matColumnDef="comment">
+              <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field class="demo-full-width">
+                  <input matInput type="text" placeholder="{{'Common.Comment' | translate}}"
                     [readonly]="!isFieldChangable" [(ngModel)]="row.Comment" name="rulecmt">
-                </md-form-field>                   
-              </md-cell>
+                </mat-form-field>                   
+              </mat-cell>
             </ng-container>
     
-            <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
-            <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
-          </md-table>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
         </div>
   
-        <md-action-row>
-          <button md-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-          <button md-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
-        </md-action-row>
-      </md-expansion-panel>
+        <mat-action-row>
+          <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
+        </mat-action-row>
+      </mat-expansion-panel>
 
-      <md-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
-        <md-expansion-panel-header>
-          <md-panel-title>
+      <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
             {{'Common.ReviewForSubmit' | translate}}
-          </md-panel-title>
-          <md-panel-description>
+          </mat-panel-title>
+          <mat-panel-description>
             {{'Common.ReviewForSubmit' | translate}}
-            <md-icon>date_range</md-icon>
-          </md-panel-description>
-        </md-expansion-panel-header>
+            <mat-icon>date_range</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
 
-        <md-action-row>
-          <button md-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-          <button md-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
-        </md-action-row>
-      </md-expansion-panel>
-    </md-accordion>
-  </md-card-content>
-</md-card>
+        <mat-action-row>
+          <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-content>
+</mat-card>

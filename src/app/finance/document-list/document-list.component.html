@@ -1,85 +1,91 @@
-<md-card>
-  <md-card-header>
-    <md-card-title>{{'Finance.Documents' | translate}}</md-card-title>
-    <md-card-subtitle>{{'Common.ListView' | translate}}</md-card-subtitle>
-  </md-card-header>
-  <md-card-content>
-    <md-toolbar>
-      <button md-icon-button color="accent" mdTooltip="{{'Common.Create' | translate}}" [mdMenuTriggerFor]="mdMenuCreateDoc">
-        <md-icon>add</md-icon>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Finance.Documents' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-toolbar>
+      <button mat-icon-button color="accent" matTooltip="{{'Common.Create' | translate}}" [matMenuTriggerFor]="matMenuCreateDoc">
+        <mat-icon>add</mat-icon>
       </button>
-      <md-menu #mdMenuCreateDoc="mdMenu" overlapTrigger="false">
-        <button md-menu-item (click)="onCreateNormalDocument()">{{'Finance.Document' | translate}}</button>
-        <button md-menu-item (click)="onCreateTransferDocument()">{{'Finance.TransferDocument' | translate}}</button>
-        <button md-menu-item (click)="onCreateExgDocument()">{{'Finance.CurrencyExchange' | translate}}</button>
-        <button md-menu-item (click)="onCreateADPDocument()">{{'Finance.AdvancePayment' | translate}}</button>
-        <button md-menu-item (click)="onCreateAssetBuyInDocument()">{{'Finance.AdvancePayment' | translate}}</button>
-        <button md-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Finance.AdvancePayment' | translate}}</button>
-        <button md-menu-item (click)="onCreateLoanDocument()">{{'Finance.AdvancePayment' | translate}}</button>
-      </md-menu>
-      <md-select color="accent" class="mt-1" [(ngModel)]="selectedDocScope" (change)="onDocScopeChanged()">
-        <md-option [value]="1">{{'Common.CurrentMonth' | translate}}</md-option>
-        <md-option [value]="2">{{'Common.CurrentYear' | translate}}</md-option>
-        <md-option [value]="9">{{'Common.All' | translate}}</md-option>
-      </md-select>
-      <button md-icon-button (click)="onRefreshList()" mdTooltip="{{'Common.Refresh' | translate}}"><md-icon md-icon-button color="primary" class="cell-icon">refresh</md-icon></button>
-    </md-toolbar>
+      <mat-menu #matMenuCreateDoc="matMenu" overlapTrigger="false">
+        <button mat-menu-item (click)="onCreateNormalDocument()">{{'Finance.Document' | translate}}</button>
+        <button mat-menu-item (click)="onCreateTransferDocument()">{{'Finance.TransferDocument' | translate}}</button>
+        <button mat-menu-item (click)="onCreateExgDocument()">{{'Finance.CurrencyExchange' | translate}}</button>
+        <button mat-menu-item (click)="onCreateADPDocument()">{{'Finance.AdvancePayment' | translate}}</button>
+        <button mat-menu-item (click)="onCreateAssetBuyInDocument()">{{'Sys.DocTy.AssetBuyIn' | translate}}</button>
+        <button mat-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | translate}}</button>
+        <button mat-menu-item (click)="onCreateLoanDocument()">{{'Sys.DocTy.Loan' | translate}}</button>
+      </mat-menu>
+
+      <mat-form-field>
+        <mat-select color="accent" class="mt-1" [(ngModel)]="selectedDocScope" (change)="onDocScopeChanged()">
+          <mat-option [value]="1">{{'Common.CurrentMonth' | translate}}</mat-option>
+          <mat-option [value]="2">{{'Common.CurrentYear' | translate}}</mat-option>
+          <mat-option [value]="9">{{'Common.All' | translate}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-icon-button (click)="onRefreshList()" matTooltip="{{'Common.Refresh' | translate}}">
+        <mat-icon mat-icon-button color="primary" class="cell-icon">refresh</mat-icon>
+      </button>
+    </mat-toolbar>
+
     <div class="table-container mat-elevation-z8">
-      <md-table #table [dataSource]="dataSource">
+      <mat-table #table [dataSource]="dataSource">
         <!-- ID Column -->
-        <ng-container mdColumnDef="id">
-          <md-header-cell *mdHeaderCellDef>#</md-header-cell>
-          <md-cell *mdCellDef="let row">
-              <button md-icon-button color="primary" (click)="onDisplayDocument(row)" mdTooltip="{{'Common.DisplayDetails' | translate}}"><md-icon class="cell-icon">search</md-icon></button>
-              <button md-icon-button color="accent" (click)="onChangeDocument(row)" mdTooltip="{{'Common.Edit' | translate}}"><md-icon class="cell-icon">edit</md-icon></button>
-              <button md-icon-button color="warn" (click)="onDeleteDocument(row)" mdTooltip="{{'Common.Delete' | translate}}"><md-icon class="cell-icon">delete</md-icon></button>
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <button mat-icon-button color="primary" (click)="onDisplayDocument(row)" matTooltip="{{'Common.DisplayDetails' | translate}}"><mat-icon class="cell-icon">search</mat-icon></button>
+              <button mat-icon-button color="accent" (click)="onChangeDocument(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon class="cell-icon">edit</mat-icon></button>
+              <button mat-icon-button color="warn" (click)="onDeleteDocument(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon class="cell-icon">delete</mat-icon></button>
               <button type="button" class="btn btn-link" (click)="onDisplayDocument(row)" *ngIf="row.Id">{{row.Id}}</button>
-          </md-cell>
+          </mat-cell>
         </ng-container>
 
         <!-- DocType Column -->
-        <ng-container mdColumnDef="DocType">
-          <md-header-cell *mdHeaderCellDef>{{'Finance.DocumentType' | translate}}</md-header-cell>
-          <md-cell *mdCellDef="let row">
+        <ng-container matColumnDef="DocType">
+          <mat-header-cell *matHeaderCellDef>{{'Finance.DocumentType' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row">
               {{ row.DocTypeName | translate }}
-          </md-cell>
+          </mat-cell>
         </ng-container>
 
         <!-- TranDate Column -->
-        <ng-container mdColumnDef="TranDate">
-          <md-header-cell *mdHeaderCellDef>{{'Common.Date' | translate}}</md-header-cell>
-          <md-cell *mdCellDef="let row">
+        <ng-container matColumnDef="TranDate">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Date' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row">
               {{ row.TranDateFormatString }}
-          </md-cell>
+          </mat-cell>
         </ng-container>
 
         <!-- TranAmount Column -->
-        <ng-container mdColumnDef="TranAmount">
-          <md-header-cell *mdHeaderCellDef>{{'Finance.Amount' | translate}}</md-header-cell>
-          <md-cell *mdCellDef="let row">
+        <ng-container matColumnDef="TranAmount">
+          <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row">
               {{ row.TranAmount }}
-          </md-cell>
+          </mat-cell>
         </ng-container>
 
         <!-- Desp Column -->
-        <ng-container mdColumnDef="Desp">
-          <md-header-cell *mdHeaderCellDef>{{'Common.Description' | translate}}</md-header-cell>
-          <md-cell *mdCellDef="let row">
+        <ng-container matColumnDef="Desp">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Description' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row">
               {{ row.Desp }}
-          </md-cell>
+          </mat-cell>
         </ng-container>
         
-        <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
-        <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
-      </md-table>
-      <md-paginator #paginator 
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator #paginator 
         [length]="_storageService.Documents.length" 
         [pageIndex]="0" 
-        [pageSize]="25" 
+        [pageSize]="10" 
         [pageSizeOptions]="[5, 10, 25, 100]">
-      </md-paginator>
+      </mat-paginator>
     </div>
-  </md-card-content>
-  <md-card-actions>
-  </md-card-actions>
-</md-card>
+  </mat-card-content>
+  <mat-card-actions>
+  </mat-card-actions>
+</mat-card>

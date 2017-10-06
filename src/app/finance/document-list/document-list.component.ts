@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator, MdDialog } from '@angular/material';
+import { MatPaginator, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -17,7 +17,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
  */
 export class DocumentDataSource extends DataSource<any> {
   constructor(private _storageService: FinanceStorageService,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -50,11 +50,11 @@ export class DocumentListComponent implements OnInit {
   displayedColumns = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
   dataSource: DocumentDataSource | null;
   selectedDocScope: OverviewScope;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router,
-    private _dialog: MdDialog) { }
+    private _dialog: MatDialog) { }
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {

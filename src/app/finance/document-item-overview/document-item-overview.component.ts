@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdDialog, MdPaginator, MdSnackBar } from '@angular/material';
+import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -15,7 +15,7 @@ import * as moment from 'moment';
  */
 export class DocItemByAccountDataSource extends DataSource<any> {
   constructor(private _parentComponent: DocumentItemOverviewComponent,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -43,7 +43,7 @@ export class DocItemByAccountDataSource extends DataSource<any> {
  */
 export class DocItemByControlCenterDataSource extends DataSource<any> {
   constructor(private _parentComponent: DocumentItemOverviewComponent,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -71,7 +71,7 @@ export class DocItemByControlCenterDataSource extends DataSource<any> {
  */
 export class DocItemByOrderDataSource extends DataSource<any> {
   constructor(private _parentComponent: DocumentItemOverviewComponent,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -99,7 +99,7 @@ export class DocItemByOrderDataSource extends DataSource<any> {
  */
 export class TmpDocStillOpenDataSource extends DataSource<any> {
   constructor(private _parentComponent: DocumentItemOverviewComponent,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -145,17 +145,17 @@ export class DocumentItemOverviewComponent implements OnInit {
   DocItemsByControlCenter: DocumentItemWithBalance[] = [];
   DocItemsByOrder: DocumentItemWithBalance[] = [];
   ADPTmpDocs: TemplateDocADP[] = [];
-  @ViewChild('paginatorByAccount') paginatorByAccount: MdPaginator;
-  @ViewChild('paginatorByControlCenter') paginatorByControlCenter: MdPaginator;
-  @ViewChild('paginatorByOrder') paginatorByOrder: MdPaginator;
-  @ViewChild('paginatorADP') paginatorADP: MdPaginator;
+  @ViewChild('paginatorByAccount') paginatorByAccount: MatPaginator;
+  @ViewChild('paginatorByControlCenter') paginatorByControlCenter: MatPaginator;
+  @ViewChild('paginatorByOrder') paginatorByOrder: MatPaginator;
+  @ViewChild('paginatorADP') paginatorADP: MatPaginator;
 
   selectedAccount: number;
   selectedControlCenter: number;
   selectedOrder: number;
 
-  constructor(private _dialog: MdDialog,
-    private _snackbar: MdSnackBar,
+  constructor(private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,

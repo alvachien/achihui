@@ -1,5 +1,5 @@
-<h2 md-dialog-title>{{ dlgInfo.Header | translate}}</h2>
-<md-dialog-content>  
+<h2 matDialogTitle>{{ dlgInfo.Header | translate}}</h2>
+<mat-dialog-content>  
   <h2 class="demo-full-width lead" *ngIf="dlgInfo.Content"> {{ dlgInfo.Content | translate}}
   </h2>
   <div *ngIf="dlgInfo.ContentTable">
@@ -11,22 +11,22 @@
       </div>
     </div>
   </div>
-</md-dialog-content>
-<md-dialog-actions>
+</mat-dialog-content>
+<mat-dialog-actions>
   <div *ngIf="IsOnlyOKButton">
-    <button md-button [md-dialog-close]="true" tabindex="1">{{'Common.OK' | translate}}</button>
+    <button mat-button [matDialogClose]="true" tabindex="1">{{'Common.OK' | translate}}</button>
   </div>
   <div *ngIf="IsYesNoButton">
-    <button md-button [md-dialog-close]="true" tabindex="1">{{'Common.Yes' | translate}}</button>
-    <button md-button [md-dialog-close]="false" tabindex="2">{{'Common.No' | translate}}</button>
+    <button mat-button [matDialogClose]="true" tabindex="1">{{'Common.Yes' | translate}}</button>
+    <button mat-button [matDialogClose]="false" tabindex="2">{{'Common.No' | translate}}</button>
   </div>
   <div *ngIf="IsOKCancelButton">
-    <button md-button [md-dialog-close]="true" tabindex="1">{{'Common.OK' | translate}}</button>
-    <button md-button [md-dialog-close]="false" tabindex="2">{{'Common.Cancel' | translate}}</button>
+    <button mat-button [matDialogClose]="true" tabindex="1">{{'Common.OK' | translate}}</button>
+    <button mat-button [matDialogClose]="false" tabindex="2">{{'Common.Cancel' | translate}}</button>
   </div>
   <div *ngIf="IsYesNoCancelButton">
-    <button md-button [md-dialog-close]="true" tabindex="1">{{'Common.Yes' | translate}}</button>
-    <button md-button [md-dialog-close]="false" tabindex="2">{{'Common.No' | translate}}</button>
-    <button md-button tabindex="3">{{'Common.Cancel' | translate}}</button>
+    <button mat-button [matDialogClose]="true" tabindex="1">{{'Common.Yes' | translate}}</button>
+    <button mat-button [matDialogClose]="false" tabindex="2">{{'Common.No' | translate}}</button>
+    <button mat-button tabindex="3">{{'Common.Cancel' | translate}}</button>
   </div>
-</md-dialog-actions>
+</mat-dialog-actions>

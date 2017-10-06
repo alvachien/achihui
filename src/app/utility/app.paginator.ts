@@ -1,4 +1,4 @@
-import { MdPaginatorIntl } from '@angular/material';
+import { MatPaginatorIntl } from '@angular/material';
 
 export class AppPaginatorIntl {
     itemsPerPageLabel = 'Registros por página: ';

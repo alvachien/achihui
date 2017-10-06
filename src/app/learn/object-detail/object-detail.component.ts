@@ -3,7 +3,7 @@ import {
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MdDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject, UIMode, getUIModeString } from '../../model';
 import { HomeDefDetailService, LearnStorageService } from '../../services';
@@ -23,7 +23,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   elementId: String;
   @Output() onEditorKeyup = new EventEmitter<any>();
 
-  constructor(private _dialog: MdDialog,
+  constructor(private _dialog: MatDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,

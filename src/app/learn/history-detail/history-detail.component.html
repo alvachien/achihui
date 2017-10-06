@@ -1,31 +1,35 @@
-<md-card>
-  <md-card-header>
-    <md-card-title>{{'Learning.LearningHistory' | translate}}</md-card-title>
-    <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
-  </md-card-header>
-  <md-card-content>
-    <md-select class="demo-full-width" placeholder="{{'Login.User' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.UserId"
-      name="usr">
-      <md-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
-        {{mem.DisplayAs}}
-      </md-option>
-    </md-select>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Learning.LearningHistory' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-form-field>
+      <mat-select class="demo-full-width" placeholder="{{'Login.User' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.UserId"
+        name="usr">
+        <mat-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
+          {{mem.DisplayAs}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-    <md-select class="demo-full-width" placeholder="{{'Learning.LearningObject' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ObjectId"
-      name="ctgy">
-      <md-option *ngFor="let obj of _storageService.Objects" [value]="obj.Id">
-        {{obj.Name}}
-      </md-option>
-    </md-select>
+    <mat-form-field>
+      <mat-select class="demo-full-width" placeholder="{{'Learning.LearningObject' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ObjectId"
+        name="ctgy">
+        <mat-option *ngFor="let obj of _storageService.Objects" [value]="obj.Id">
+          {{obj.Name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   
-    <md-form-field class="demo-full-width">
-      <input mdInput [(ngModel)]="detailObject.LearnDate" [mdDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
-      <md-datepicker-toggle mdSuffix [for]="tdpicker"></md-datepicker-toggle>
-      <md-datepicker #tdpicker></md-datepicker>
-    </md-form-field>
-  </md-card-content>
-  <md-card-actions>
-    <button md-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
-    <button md-button color="warn" (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
-  </md-card-actions>
-</md-card>
+    <mat-form-field class="demo-full-width">
+      <input matInput [(ngModel)]="detailObject.LearnDate" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+      <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
+      <mat-datepicker #tdpicker></mat-datepicker>
+    </mat-form-field>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button mat-button color="warn" (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
+  </mat-card-actions>
+</mat-card>

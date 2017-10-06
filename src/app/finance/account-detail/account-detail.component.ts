@@ -3,7 +3,7 @@ import {
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MdDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, UIMode, getUIModeString } from '../../model';
 import { HomeDefDetailService, FinanceStorageService } from '../../services';
@@ -22,7 +22,7 @@ export class AccountDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
 
-  constructor(private _dialog: MdDialog,
+  constructor(private _dialog: MatDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,

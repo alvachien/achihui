@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MdDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { environment } from '../../environments/environment';
 import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, UIMode, getUIModeString } from '../model';
 import { AuthService, HomeDefDetailService, FinCurrencyService } from '../services';
@@ -26,7 +26,7 @@ export class HomeDefDetailComponent implements OnInit {
   constructor(private _authService: AuthService,
     public _fincurrService: FinCurrencyService,
     private _homedefService: HomeDefDetailService,
-    private _dialog: MdDialog,
+    private _dialog: MatDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute) {
 

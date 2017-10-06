@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MdDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Order, SettlementRule, UIMode, getUIModeString } from '../../model';
@@ -56,7 +56,7 @@ export class OrderDetailComponent implements OnInit {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
 
-  constructor(private _dialog: MdDialog,
+  constructor(private _dialog: MatDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,

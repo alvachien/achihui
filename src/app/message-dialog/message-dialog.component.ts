@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MdDialog, MdDialogRef, MD_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { InfoMessage } from '../model';
 
 /**
@@ -45,7 +45,7 @@ export class MessageDialogComponent {
     return this.dlgInfo.Button === MessageDialogButtonEnum.yesnocancel;
   }
 
-  constructor(public dialogRef: MdDialogRef<MessageDialogComponent>,
-    @Inject(MD_DIALOG_DATA) public dlgInfo: MessageDialogInfo) {
+  constructor(public dialogRef: MatDialogRef<MessageDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public dlgInfo: MessageDialogInfo) {
   }
 }

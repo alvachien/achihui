@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdDialog, MdPaginator, MdSnackBar } from '@angular/material';
+import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -14,7 +14,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
  */
 export class ReportBSDataSource extends DataSource<any> {
   constructor(private _parentComponent: ReportComponent,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -42,7 +42,7 @@ export class ReportBSDataSource extends DataSource<any> {
  */
 export class ReportCCDataSource extends DataSource<any> {
   constructor(private _parentComponent: ReportComponent,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -70,7 +70,7 @@ export class ReportCCDataSource extends DataSource<any> {
  */
 export class ReportOrderDataSource extends DataSource<any> {
   constructor(private _parentComponent: ReportComponent,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -103,19 +103,19 @@ export class ReportComponent implements OnInit {
   dataSourceBS: ReportBSDataSource | null;
   ReportBS: BalanceSheetReport[] = [];
   ReportBSEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  @ViewChild('paginatorBS') paginatorBS: MdPaginator;
+  @ViewChild('paginatorBS') paginatorBS: MatPaginator;
 
   displayedCCColumns = ['ControlCenter', 'Debit', 'Credit', 'Balance'];
   dataSourceCC: ReportCCDataSource | null;
   ReportCC: ControlCenterReport[] = [];
   ReportCCEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  @ViewChild('paginatorCC') paginatorCC: MdPaginator;
+  @ViewChild('paginatorCC') paginatorCC: MatPaginator;
 
   displayedOrderColumns = ['Order', 'Debit', 'Credit', 'Balance'];
   dataSourceOrder: ReportOrderDataSource | null;
   ReportOrder: OrderReport[] = [];
   ReportOrderEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  @ViewChild('paginatorOrder') paginatorOrder: MdPaginator;
+  @ViewChild('paginatorOrder') paginatorOrder: MatPaginator;
 
   view: any[] = [700, 400];
   colorScheme = {
@@ -130,8 +130,8 @@ export class ReportComponent implements OnInit {
   dataOrderDebit: any[] = [];
   dataOrderCredit: any[] = [];
 
-  constructor(private _dialog: MdDialog,
-    private _snackbar: MdSnackBar,
+  constructor(private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,

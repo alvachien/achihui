@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../environments/environment';
@@ -15,7 +15,7 @@ import 'rxjs/add/operator/map';
  */
 export class LanguageDataSource extends DataSource<any> {
   constructor(private _storageService: LanguageService,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -47,7 +47,7 @@ export class LanguageComponent implements OnInit {
 
   displayedColumns = ['lcid', 'isoname', 'enname', 'nvname', 'appflag'];
   dataSource: LanguageDataSource | null;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LanguageService) {
   }

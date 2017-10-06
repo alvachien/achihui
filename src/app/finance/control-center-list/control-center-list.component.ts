@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -14,7 +14,7 @@ import { fadeAnimation } from '../../utility';
  */
 export class ControlCenterDataSource extends DataSource<any> {
   constructor(private _storageService: FinanceStorageService,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -47,7 +47,7 @@ export class ControlCenterListComponent implements OnInit {
 
   displayedColumns = ['id', 'name', 'comment'];
   dataSource: ControlCenterDataSource | null;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router) { }

@@ -5,10 +5,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpModule, Http } from '@angular/http';
-import { MD_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER } from '@angular/material';
+import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER } from '@angular/material';
 import { UIDependModule } from './uidepend.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import {
@@ -72,7 +73,8 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
+    { provide: MAT_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
+    { provide: MATERIAL_COMPATIBILITY_MODE, useValue: true },
     AuthService,
     AuthGuardService,
     FinCurrencyService,

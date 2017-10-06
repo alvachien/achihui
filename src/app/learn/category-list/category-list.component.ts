@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -13,7 +13,7 @@ import { LearnStorageService } from '../../services';
  */
 export class LearnCategoryDataSource extends DataSource<any> {
   constructor(private _storageService: LearnStorageService,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -44,7 +44,7 @@ export class LearnCategoryDataSource extends DataSource<any> {
 export class CategoryListComponent implements OnInit {
   displayedColumns = ['id', 'name', 'comment'];
   dataSource: LearnCategoryDataSource | null;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LearnStorageService,
     private _router: Router) { }

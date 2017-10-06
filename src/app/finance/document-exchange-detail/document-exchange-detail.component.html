@@ -1,120 +1,137 @@
-<md-card>
-  <md-card-header>
-    <md-card-title>{{'Finance.CurrencyExchange' | translate}}</md-card-title>
-    <md-card-subtitle>{{currentMode | translate}}</md-card-subtitle>
-  </md-card-header>
-  <md-card-content>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Finance.CurrencyExchange' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
     <md-horizontal-stepper linear="false">
       <md-step>
         <ng-template mdStepLabel>{{'Finance.Header' | translate}}</ng-template>
 
         <!-- Tran date -->
-        <md-form-field>
-          <input mdInput [(ngModel)]="detailObject.TranDate" [mdDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
-          <md-datepicker-toggle mdSuffix [for]="tdpicker"></md-datepicker-toggle>
-          <md-datepicker #tdpicker></md-datepicker>
-        </md-form-field>
+        <mat-form-field>
+          <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+          <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
+          <mat-datepicker #tdpicker></mat-datepicker>
+        </mat-form-field>
 
         <!-- Desp -->
-        <md-form-field class="demo-full-width">
-          <input mdInput type="text" placeholder="{{'Common.Description' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
+        <mat-form-field class="demo-full-width">
+          <input matInput type="text" placeholder="{{'Common.Description' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
             name="hdrdesp">
-        </md-form-field>
+        </mat-form-field>
 
         <div>
-          <button md-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
+          <button mat-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>
       </md-step>
 
       <md-step>
         <ng-template mdStepLabel>{{'Finance.TransferFrom' | translate}}</ng-template>
 
-        <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
-          name="srcacnt">
-          <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
-            {{acnt.Name}}
-          </md-option>
-        </md-select>
+        <mat-form-field>
+          <mat-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
+            name="srcacnt">
+            <mat-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
+              {{acnt.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranCurr"
-          name="srccur">
-          <md-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
-            {{cr.Symbol}} - {{cr.Name | translate}}
-          </md-option>
-        </md-select>
+        <mat-form-field>
+          <mat-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranCurr"
+            name="srccur">
+            <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+              {{cr.Symbol}} - {{cr.Name | translate}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <md-form-field class="demo-full-width" *ngIf="isForeignSourceCurrency">
-          <input mdInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" mdTooltip="{{'Finance.ExchangeRateHint' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.SourceExchangeRate"
+        <mat-form-field class="demo-full-width" *ngIf="isForeignSourceCurrency">
+          <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.SourceExchangeRate"
             name="hexrate">
-        </md-form-field>
+        </mat-form-field>
 
-        <md-form-field>
-          <input mdInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranAmount"
+        <mat-form-field>
+          <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranAmount"
             name="srcamt">
-        </md-form-field>
+        </mat-form-field>
 
-        <md-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
-          name="srccc">
-          <md-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
-            {{cc.Name}}
-          </md-option>
-        </md-select>
+        <mat-form-field>
+          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
+            name="srccc">
+            <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+              {{cc.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <md-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId"
-          name="srcord">
-          <md-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
-            {{ord.Name}}
-          </md-option>
-        </md-select>
+        <mat-form-field>
+          <mat-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId"
+            name="srcord">
+            <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+              {{ord.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
         <div>
-          <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
-          <button md-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
+          <button mat-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
+          <button mat-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>
       </md-step>
 
       <md-step>
         <ng-template mdStepLabel>{{'Finance.TransferTo' | translate}}</ng-template>
-        <md-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetAccountId"
-          name="tgtacnt">
-          <md-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
-            {{acnt.Name}}
-          </md-option>
-        </md-select>
+        <mat-form-field>
+          <mat-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetAccountId"
+            name="tgtacnt">
+            <mat-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
+              {{acnt.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <md-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetTranCurr"
-          name="tgtcur">
-          <md-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
-            {{cr.Symbol}} - {{cr.Name | translate}}
-          </md-option>
-        </md-select>
+        <mat-form-field>
+          <mat-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetTranCurr"
+            name="tgtcur">
+            <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+              {{cr.Symbol}} - {{cr.Name | translate}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <md-form-field class="demo-full-width" *ngIf="isForeignTargetCurrency">
-          <input mdInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" mdTooltip="{{'Finance.ExchangeRateHint' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TargetExchangeRate"
+        <mat-form-field class="demo-full-width" *ngIf="isForeignTargetCurrency">
+          <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TargetExchangeRate"
             name="hexrate">
-        </md-form-field>
+        </mat-form-field>
 
-        <md-form-field>
-          <input mdInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TargetTranAmount"
+        <mat-form-field>
+          <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TargetTranAmount"
             name="tgtamt">
-        </md-form-field>
+        </mat-form-field>
 
-        <md-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetControlCenterId"
-          name="tgtcc">
-          <md-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
-            {{cc.Name}}
-          </md-option>
-        </md-select>
+        <mat-form-field>
+          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetControlCenterId"
+            name="tgtcc">
+            <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+              {{cc.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <md-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetOrderId"
-          name="tgtord">
-          <md-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
-            {{ord.Name}}
-          </md-option>
-        </md-select>
+        <mat-form-field>
+          <mat-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetOrderId"
+            name="tgtord">
+            <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+              {{ord.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
         <div>
-          <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
-          <button md-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
+          <button mat-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
+          <button mat-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>
       </md-step>
 
@@ -137,7 +154,7 @@
 
           <tr *ngFor="let doc of detailObject.prvdocs">
             <td>
-              <md-checkbox [(ngModel)]="doc.Selected"></md-checkbox>
+              <mat-checkbox [(ngModel)]="doc.Selected"></mat-checkbox>
             </td>
             <td>{{doc.DocID}}</td>
             <td>{{doc.DocType}}</td>
@@ -146,19 +163,19 @@
             <td>{{doc.TranCurr}}</td>
             <td>{{doc.ExgRate}}</td>
             <td>
-              <md-checkbox disabled [(ngModel)]="doc.ExgRate_Plan"></md-checkbox>
+              <mat-checkbox disabled [(ngModel)]="doc.ExgRate_Plan"></mat-checkbox>
             </td>
             <td>{{doc.TranCurr2}}</td>
             <td>{{doc.ExgRate2}}</td>
             <td>
-              <md-checkbox disabled [(ngModel)]="doc.ExgRate_Plan2"></md-checkbox>
+              <mat-checkbox disabled [(ngModel)]="doc.ExgRate_Plan2"></mat-checkbox>
             </td>
           </tr>
         </table>
         <div>
-          <button md-button [disabled]="!isFieldChangable" (click)="onFetchPreviousDoc()">{{'Common.Refresh' | translate}}</button>
-          <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
-          <button md-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
+          <button mat-button [disabled]="!isFieldChangable" (click)="onFetchPreviousDoc()">{{'Common.Refresh' | translate}}</button>
+          <button mat-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
+          <button mat-button mdStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>
       </md-step>
 
@@ -168,11 +185,11 @@
             {{detailObject.SourceAccountId}} ... {{detailObject.SourceAccountId}}
           </p>  
         <div>
-          <button md-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
-          <button md-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
-          <button md-button (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
+          <button mat-button mdStepperPrevious>{{'Common.BackButton' | translate}}</button>
+          <button mat-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+          <button mat-button (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
         </div>
       </md-step>
     </md-horizontal-stepper>
-  </md-card-content>
-</md-card>
+  </mat-card-content>
+</mat-card>

@@ -311,6 +311,70 @@ export class UIFinCurrencyExchangeDocument {
   }
 }
 
+/**
+ * Asset Operation document in UI part
+ */
+export class UIFinAssetOperationDocument {
+  public isBuyin: boolean;
+  public TranDate: moment.Moment;
+  public Desp: string;
+
+  public TranCurr: string;
+  public ExgRate: number;
+  public ExgRate_Plan: boolean;
+  public TranAmount: number;
+  public AccountId: number;
+  public ControlCenterId: number;
+  public OrderId: number;
+  public TranType: number;
+
+  public AssetAccount: HIHFinance.AccountExtraAsset;
+  
+  constructor() {
+    this.TranDate = moment();
+    this.AssetAccount = new HIHFinance.AccountExtraAsset();
+  }
+
+  public generateDocument(): HIHFinance.Document {
+    let doc: HIHFinance.Document = new HIHFinance.Document();
+    if (this.isBuyin) {
+      doc.DocType = hih.FinanceDocType_AssetBuyIn;
+    } else {
+      doc.DocType = hih.FinanceDocType_AssetSoldOut;
+    }      
+    doc.Desp = this.Desp;
+    doc.TranCurr = this.TranCurr;
+    doc.ExgRate = this.ExgRate;
+    doc.ExgRate_Plan = this.ExgRate_Plan;
+
+    let docitem = new HIHFinance.DocumentItem();
+    docitem.ItemId = 1;
+    docitem.AccountId = this.AccountId;
+    docitem.ControlCenterId = this.ControlCenterId;
+    docitem.OrderId = this.OrderId;
+    docitem.TranType = this.TranType;
+    docitem.TranAmount = this.TranAmount;
+    docitem.Desp = this.Desp;
+    doc.Items.push(docitem);
+
+    return doc;
+  }
+
+  public parseDocument(doc: HIHFinance.Document): void {
+    this.TranDate = doc.TranDate;
+    this.Desp = doc.Desp;
+    this.ExgRate = doc.ExgRate;
+    this.ExgRate_Plan = doc.ExgRate_Plan;
+    this.TranCurr = doc.TranCurr;
+    
+    this.AccountId = doc.Items[0].AccountId;
+    this.ControlCenterId = doc.Items[0].ControlCenterId;
+    this.OrderId = doc.Items[0].OrderId;
+    this.TranAmount = doc.Items[0].TranAmount;
+    this.TranType = doc.Items[0].TranType;
+  }
+}
+
 // Nav Item
 export class SidenavItem {
   name: string;

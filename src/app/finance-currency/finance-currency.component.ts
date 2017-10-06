@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -16,7 +16,7 @@ import 'rxjs/add/operator/map';
  */
 export class CurrencyDataSource extends DataSource<any> {
   constructor(private _currService: FinCurrencyService,
-    private _paginator: MdPaginator) {
+    private _paginator: MatPaginator) {
     super();
   }
 
@@ -48,7 +48,7 @@ export class FinanceCurrencyComponent implements OnInit {
 
   displayedColumns = ['curr', 'name', 'symbol'];
   dataSource: CurrencyDataSource | null;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _currService: FinCurrencyService,
     private _router: Router) {

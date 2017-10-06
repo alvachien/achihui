@@ -913,6 +913,54 @@ export class FinanceStorageService {
   }
 
   /**
+   * Create asset document
+   * @param jdata Data for creation
+   * @param isbuyin Is a buyin doc or soldout doc
+   */
+  public createAssetDocument(jdata: any, isbuyin: boolean) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + isbuyin? '/api/FinanceAssetBuyDocument' : '/api/FinanceAssetSoldDocument';
+
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of createAssetDocument in FinanceStorageService: ' + response);
+        }
+
+        let hd: Document = new Document();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createAssetDocument in FinanceStorageService: ${x}`);
+        }
+
+        const copiedData = this.Documents.slice();
+        copiedData.push(x);
+        this.listDocumentChange.next(copiedData);
+
+        // Broadcast event
+        this.createDocumentEvent.emit(x);
+      }, (error) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in createAssetDocument in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createDocumentEvent.emit(error.toString());
+      }, () => {
+      });
+  }
+
+  /**
    * Read the document from API
    * @param docid Id of Document
    */
@@ -959,6 +1007,36 @@ export class FinanceStorageService {
         // Broadcast event: failed
         this.readDocumentEvent.emit(error);
       }, () => {
+      });
+  }
+
+  /**
+   * Read the asset document out
+   * @param docid ID of Asset document
+   * @param isbuyin Is buyin document, otherwise is a soldout document
+   */
+  public readAssetDocument(docid: number, isbuyin: boolean): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + isbuyin? '/api/FinanceAssetBuyDocument/' : '/api/FinanceAssetSoldDocument/' + docid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readAssetDocument in FinanceStorageService: ${response}`);
+        }
+
+        // let hd: Document = new Document();
+        // hd.onSetData(response);
+        return response;
       });
   }
 
