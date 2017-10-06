@@ -384,7 +384,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       acntobj.Name = docObj.Desp;
       acntobj.Comment = docObj.Desp;
       acntobj.ExtraInfo = this.detailObject.AdvPayAccount;
-      sobj.AccountVM = acntobj.writeJSONObject();
+      sobj.accountVM = acntobj.writeJSONObject();
 
       sobj.TmpDocs = [];
       for (let td of this.detailObject.TmpDocs) {

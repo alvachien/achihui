@@ -1,0 +1,25 @@
+<div class="container" class="demo-full-width">
+  <mat-form-field class="demo-full-width">
+    <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="extObject.CategoryID"
+      name="asstctgy" class="demo-full-width">
+      <mat-option *ngFor="let rt of _storageService.AssetCategories" [value]="rt.ID">
+        {{rt.Name | translate}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="demo-full-width">
+    <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Name' | translate}}" [(ngModel)]="extObject.Name"
+      name="asstname">
+  </mat-form-field>
+
+  <mat-form-field class="demo-full-width">
+    <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="extObject.Comment"
+      name="asstname">
+  </mat-form-field>
+
+  <mat-form-field class="demo-full-width" *ngIf="!isCreateMode">
+    <input matInput type="number" disable placeholder="{{'Common.RefDoc' | translate}}" [(ngModel)]="extObject.RefDocForBuy"
+      name="asstbuy">
+  </mat-form-field>
+</div>

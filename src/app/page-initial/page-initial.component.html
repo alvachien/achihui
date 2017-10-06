@@ -18,11 +18,13 @@
 
 <div class="container mt-2" *ngIf="IsUserLoggedIn && IsHomeChosed">
   <mat-toolbar>
-    <mat-select [(ngModel)]="selectedLearnScope" (change)="onLearnScopeChanged()">
-      <mat-option [value]="1">{{'Common.CurrentMonth' | translate}}</mat-option>
-      <mat-option [value]="2">{{'Common.CurrentYear' | translate}}</mat-option>
-      <mat-option [value]="9">{{'Common.All' | translate}}</mat-option>
-    </mat-select>
+    <mat-form-field>
+      <mat-select [(ngModel)]="selectedLearnScope" (change)="onLearnScopeChanged()">
+        <mat-option [value]="1">{{'Common.CurrentMonth' | translate}}</mat-option>
+        <mat-option [value]="2">{{'Common.CurrentYear' | translate}}</mat-option>
+        <mat-option [value]="9">{{'Common.All' | translate}}</mat-option>
+      </mat-select>
+    </mat-form-field>
     <span class="example-spacer"></span>
     <span>{{'Nav.LearningTrace' | translate}}</span>
   </mat-toolbar>
@@ -60,11 +62,13 @@
   <!-- Show Finance transaction type report -->
   <div class="row container mt-2">
     <mat-toolbar>
-      <mat-select [(ngModel)]="selectedFinanceScope" (change)="onFinanceScopeChanged()">
-        <mat-option [value]="1">{{'Common.CurrentMonth' | translate}}</mat-option>
-        <mat-option [value]="2">{{'Common.CurrentYear' | translate}}</mat-option>
-        <mat-option [value]="9">{{'Common.All' | translate}}</mat-option>
-      </mat-select>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedFinanceScope" (change)="onFinanceScopeChanged()">
+          <mat-option [value]="1">{{'Common.CurrentMonth' | translate}}</mat-option>
+          <mat-option [value]="2">{{'Common.CurrentYear' | translate}}</mat-option>
+          <mat-option [value]="9">{{'Common.All' | translate}}</mat-option>
+        </mat-select>
+      </mat-form-field>
       <span class="example-spacer"></span>
       <span>{{'Nav.FinanceTrace' | translate}}</span>
     </mat-toolbar>

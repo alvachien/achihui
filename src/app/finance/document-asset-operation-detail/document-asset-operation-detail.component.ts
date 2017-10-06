@@ -2,7 +2,6 @@ import {
   Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
@@ -60,7 +59,6 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
-      this._storageService.fetchAllAssetCategories(),
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -101,6 +99,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
             this.uiMode = UIMode.Display;
           }
           this.currentMode = getUIModeString(this.uiMode);
+          this.PageTitle = this._isbuyin ? 'Sys.DocTy.AssetBuyIn' : 'Sys.DocTy.AssetSoldOut';
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this._storageService.readAssetDocument(this.routerID, this._isbuyin).subscribe((x2) => {

@@ -56,10 +56,12 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <!-- <mat-form-field>
-          <input matInput placeholder="Country">
-        </mat-form-field> -->
-
+        <div class="container" class="demo-full-width">
+          <hih-finance-account-ext-adp *ngIf="isADPAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-adp>
+          <hih-finance-account-ext-asset *ngIf="isAssetAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-asset>
+          <div *ngIf="!isAssetAccount && isADPAccount">There is no extra Info in this Account!</div>
+        </div>
+    
         <mat-action-row>
           <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
           <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>

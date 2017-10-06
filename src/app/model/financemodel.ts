@@ -397,7 +397,9 @@ export class Account extends hih.BaseModel {
     rstObj.owner = this.OwnerId;
 
     if (this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && this.ExtraInfo) {
-      rstObj.AdvancePaymentInfo = this.ExtraInfo.writeJSONObject();
+      rstObj.extraInfo_ADP = this.ExtraInfo.writeJSONObject();
+    } else if (this.CategoryId === hih.FinanceAccountCategory_Asset && this.ExtraInfo) {
+      rstObj.extraInfo_AS = this.ExtraInfo.writeJSONObject();
     }
 
     return rstObj;
@@ -434,9 +436,14 @@ export class Account extends hih.BaseModel {
       this.OwnerDisplayAs = data.ownerDisplayAs;
     }
 
-    if (data && this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && data.advancePaymentInfo) {
+    if (data && this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && data.extraInfo_ADP) {
       let ei = new AccountExtraAdvancePayment();
-      ei.onSetData(data.advancePaymentInfo);
+      ei.onSetData(data.extraInfo_ADP);
+
+      this.ExtraInfo = ei;
+    } else if (data && this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && data.extraInfo_ADP) {
+      let ei = new AccountExtraAsset();
+      ei.onSetData(data.extraInfo_AS);
 
       this.ExtraInfo = ei;
     }

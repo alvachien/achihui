@@ -100,32 +100,8 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <div class="container" class="demo-full-width">
-        <mat-form-field class="demo-full-width">
-          <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.AssetAccount.CategoryID"
-            name="asstctgy" class="demo-full-width">
-            <mat-option *ngFor="let rt of _storageService.AssetCategories" [value]="rt.ID">
-              {{rt.Name | translate}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field class="demo-full-width">
-          <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Name' | translate}}" [(ngModel)]="detailObject.AssetAccount.Name"
-            name="asstname">
-        </mat-form-field>
-
-        <mat-form-field class="demo-full-width">
-          <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="detailObject.AssetAccount.Comment"
-            name="asstname">
-        </mat-form-field>
-
-        <mat-form-field class="demo-full-width" *ngIf="!isCreateMode">
-          <input matInput type="number" disable placeholder="{{'Common.Reference' | translate}}" [(ngModel)]="detailObject.AssetAccount.RefDocForBuy"
-            name="asstbuy">
-        </mat-form-field>
-      </div>
-
+      <hih-finance-account-ext-asset [uiMode]="uiMode" [extObject]="detailObject.AssetAccount"></hih-finance-account-ext-asset>
+      
       <mat-action-row>
         <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
         <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>

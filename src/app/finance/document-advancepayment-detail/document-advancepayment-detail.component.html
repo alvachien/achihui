@@ -100,36 +100,7 @@
       </mat-expansion-panel-header>
 
       <div class="container" class="demo-full-width">
-        <mat-form-field class="demo-full-width">
-          <input matInput [(ngModel)]="detailObject.AdvPayAccount.StartDate" [matDatepicker]="advstartdpicker" placeholder="{{'Common.StartDate' | translate}}">
-          <mat-datepicker-toggle matSuffix [for]="advstartdpicker"></mat-datepicker-toggle>
-          <mat-datepicker #advstartdpicker></mat-datepicker>
-        </mat-form-field>
-
-        <mat-form-field class="demo-full-width">
-          <input matInput [(ngModel)]="detailObject.AdvPayAccount.EndDate" [matDatepicker]="advenddpicker" placeholder="{{'Common.EndDate' | translate}}">
-          <mat-datepicker-toggle matSuffix [for]="advenddpicker"></mat-datepicker-toggle>
-          <mat-datepicker #advenddpicker></mat-datepicker>
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.AdvPayAccount.RepeatType"
-            name="rpttype" class="demo-full-width">
-            <mat-option *ngFor="let rt of arFrequencies" [value]="rt.Id">
-              {{rt.DisplayString | translate}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        
-        <!-- <mat-form-field class="demo-full-width">
-          <input matInput type="number" [disabled]="!isFieldChangable" placeholder="Deferred days" [(ngModel)]="detailObject.AdvPayAccount.DeferredDays"
-            name="dfrrdays" #dfrrdays="ngModel">
-        </mat-form-field> -->
-
-        <mat-form-field class="demo-full-width">
-          <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="detailObject.AdvPayAccount.Comment"
-            name="advacntcmt" #advacntcmt="ngModel">
-        </mat-form-field>
+        <hih-finance-account-ext-adp [uiMode]="uiMode" [extObject]="detailObject.AdvPayAccount"></hih-finance-account-ext-adp>
       </div>
 
       <mat-action-row>

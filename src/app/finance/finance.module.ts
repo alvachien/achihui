@@ -43,6 +43,8 @@ import { DocumentAssetOperationDetailComponent } from './document-asset-operatio
 import { AssetCategoryComponent } from './asset-category';
 import { AssetCategoryListComponent } from './asset-category-list';
 import { AssetCategoryDetailComponent } from './asset-category-detail';
+import { AccountExtAssetComponent } from './account-ext-asset';
+import { AccountExtADPComponent } from './account-ext-adp';
 
 @NgModule({
   imports: [
@@ -88,6 +90,8 @@ import { AssetCategoryDetailComponent } from './asset-category-detail';
     AssetCategoryComponent,
     AssetCategoryListComponent,
     AssetCategoryDetailComponent,
+    AccountExtAssetComponent,
+    AccountExtADPComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

@@ -94,6 +94,9 @@ export class UIFinTransferDocument {
   }
 }
 
+/**
+ * Repeat Frequency
+ */
 export class UIRepeatFrequency {
   public Id: hih.RepeatFrequency;
   public DisplayString: string;
@@ -140,8 +143,8 @@ export class UIRepeatFrequency {
  * Advance payment: UI part
  */
 export class UIFinAdvPayDocument {
-  public DocumentObject: HIHFinance.Document;
-  public AccountObject: HIHFinance.Account;
+  // public DocumentObject: HIHFinance.Document;
+  // public AccountObject: HIHFinance.Account;
 
   public TranAmount: number;
   public TranDate: moment.Moment;
@@ -196,25 +199,25 @@ export class UIFinAdvPayDocument {
       this.TranAmount = fitem.TranAmount;
       this.SourceTranType = fitem.TranType;
     } else {
-      this.DocumentObject = new HIHFinance.Document();
-      this.DocumentObject.onSetData(doc);
-      this.AccountObject = new HIHFinance.Account();
-      this.AccountObject.onSetData(doc.accountVM);
+      let docobj = new HIHFinance.Document();
+      docobj.onSetData(doc);
+      let acntobj = new HIHFinance.Account();
+      acntobj.onSetData(doc.accountVM);
 
-      this.TranDate = doc.tranDate.clone();
-      this.TranCurr = doc.tranCurr;
-      this.Desp = doc.desp;
+      this.TranDate = docobj.TranDate.clone();
+      this.TranCurr = docobj.TranCurr;
+      this.Desp = docobj.Desp;
 
-      if (doc.items.length !== 1) {
+      if (docobj.Items.length !== 1) {
         throw Error('Failed to parse document');
       }
-      let fitem = doc.items[0];
-      this.SourceAccountId = +fitem.accountID;
-      this.SourceControlCenterId = +fitem.controlCenterID;
-      this.SourceOrderId = +fitem.orderID;
-      this.SourceTranType = +fitem.tranType;
+      let fitem = docobj.Items[0];
+      this.SourceAccountId = +fitem.AccountId;
+      this.SourceControlCenterId = +fitem.ControlCenterId;
+      this.SourceOrderId = +fitem.OrderId;
+      this.SourceTranType = +fitem.TranType;
 
-      this.AdvPayAccount.onSetData(doc.accountVM.advancePaymentInfo);
+      this.AdvPayAccount.onSetData(doc.accountVM.extraInfo_ADP);
 
       for (let it of doc.tmpDocs) {
         let tdoc: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
@@ -360,18 +363,39 @@ export class UIFinAssetOperationDocument {
     return doc;
   }
 
-  public parseDocument(doc: HIHFinance.Document): void {
-    this.TranDate = doc.TranDate;
-    this.Desp = doc.Desp;
-    this.ExgRate = doc.ExgRate;
-    this.ExgRate_Plan = doc.ExgRate_Plan;
-    this.TranCurr = doc.TranCurr;
-    
-    this.AccountId = doc.Items[0].AccountId;
-    this.ControlCenterId = doc.Items[0].ControlCenterId;
-    this.OrderId = doc.Items[0].OrderId;
-    this.TranAmount = doc.Items[0].TranAmount;
-    this.TranType = doc.Items[0].TranType;
+  public parseDocument(doc: HIHFinance.Document | any): void {
+    if (doc instanceof HIHFinance.Document) {
+      this.TranDate = doc.TranDate.clone();
+      this.Desp = doc.Desp;
+      this.ExgRate = doc.ExgRate;
+      this.ExgRate_Plan = doc.ExgRate_Plan;
+      this.TranCurr = doc.TranCurr;
+      
+      this.AccountId = doc.Items[0].AccountId;
+      this.ControlCenterId = doc.Items[0].ControlCenterId;
+      this.OrderId = doc.Items[0].OrderId;
+      this.TranAmount = doc.Items[0].TranAmount;
+      this.TranType = doc.Items[0].TranType;
+    } else {
+      let docobj = new HIHFinance.Document();
+      docobj.onSetData(doc);
+      let acntobj = new HIHFinance.Account();
+      acntobj.onSetData(doc.accountVM);
+
+      this.TranDate = docobj.TranDate.clone();
+      this.Desp = docobj.Desp;
+      this.ExgRate = docobj.ExgRate;
+      this.ExgRate_Plan = docobj.ExgRate_Plan;
+      this.TranCurr = docobj.TranCurr;
+      
+      this.AccountId = docobj.Items[0].AccountId;
+      this.ControlCenterId = docobj.Items[0].ControlCenterId;
+      this.OrderId = docobj.Items[0].OrderId;
+      this.TranAmount = docobj.Items[0].TranAmount;
+      this.TranType = docobj.Items[0].TranType;
+
+      this.AssetAccount.onSetData(doc.accountVM.extraInfo_AS);
+    }
   }
 }
 

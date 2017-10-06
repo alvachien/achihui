@@ -5,7 +5,8 @@ import {
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, UIMode, getUIModeString } from '../../model';
+import { LogLevel, Account, UIMode, getUIModeString, FinanceAccountCategory_Asset, 
+  FinanceAccountCategory_AdvancePayment, FinanceAccountCategory_Loan } from '../../model';
 import { HomeDefDetailService, FinanceStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -87,6 +88,27 @@ export class AccountDetailComponent implements OnInit {
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
+  get isAssetAccount(): boolean {
+    if (this.detailObject !== null && (this.detailObject.CategoryId === FinanceAccountCategory_Asset)) {
+      return true;
+    }
+
+    return false;
+  }
+  get isADPAccount(): boolean {
+    if (this.detailObject !== null && (this.detailObject.CategoryId === FinanceAccountCategory_AdvancePayment)) {
+      return true;
+    }
+
+    return false;
+  }
+  get isLoanAccount(): boolean {
+    if (this.detailObject !== null && (this.detailObject.CategoryId === FinanceAccountCategory_Loan)) {
+      return true;
+    }
+
+    return false;    
   }
 
   public setStep(index: number) {

@@ -46,10 +46,10 @@ export class PageInitialComponent implements OnInit {
 
   ngOnInit() {
     if (this.IsUserLoggedIn && this.IsHomeChosed) {
-      this.selectedFinanceScope = 1;
+      this.selectedFinanceScope = OverviewScope.CurrentMonth;
       this.onFinanceScopeChanged();
 
-      this.selectedLearnScope = 1;
+      this.selectedLearnScope = OverviewScope.CurrentYear;
       this.onLearnScopeChanged();
     }
   }
