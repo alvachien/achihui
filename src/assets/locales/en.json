@@ -150,6 +150,15 @@
       "AssetSoldOut": "Sold out Asset",
       "Loan": "Loan"
     },
+    "AssCtgy": {
+      "Apartment": "Apartment",
+      "Automobile": "Automobile",
+      "Furniture": "Furniture",
+      "HouseAppliances": "Household Appliances",
+      "Camera": "Camera",
+      "Computer": "Computer",
+      "MobileDevice": "Mobile Device"
+    },
     "MemRel": {
       "Self": "Self",
       "Couple": "Couple",

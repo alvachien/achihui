@@ -150,6 +150,15 @@
       "AssetSoldOut": "出售资产或大件家用器具",
       "Loan": "贷款"
     },
+    "AssCtgy": {
+      "Apartment": "公寓",
+      "Automobile": "机动车",
+      "Furniture": "家具",
+      "HouseAppliances": "家用电器",
+      "Camera": "相机",
+      "Computer": "计算机",
+      "MobileDevice": "移动设备"
+    },
     "MemRel": {
       "Self": "本人",
       "Couple": "配偶",

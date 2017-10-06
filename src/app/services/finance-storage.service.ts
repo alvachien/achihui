@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, AccountCategory, DocumentType, TranType, Account, ControlCenter, Order,
+import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Account, ControlCenter, Order,
     Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat, TemplateDocADP, AccountStatusEnum } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -28,6 +28,11 @@ export class FinanceStorageService {
   listTranTypeChange: BehaviorSubject<TranType[]> = new BehaviorSubject<TranType[]>([]);
   get TranTypes(): TranType[] {
     return this.listTranTypeChange.value;
+  }
+
+  listAssetCategoryChange: BehaviorSubject<AssetCategory[]> = new BehaviorSubject<AssetCategory[]>([]);
+  get AssetCategories(): AssetCategory[] {
+    return this.listAssetCategoryChange.value;
   }
 
   listAccountChange: BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
@@ -65,6 +70,7 @@ export class FinanceStorageService {
   private _isAcntCtgyListLoaded: boolean;
   private _isDocTypeListLoaded: boolean;
   private _isTranTypeListLoaded: boolean;
+  private _isAsstCtgyListLoaded: boolean;
   private _isAccountListLoaded: boolean;
   private _isConctrolCenterListLoaded: boolean;
   private _isOrderListLoaded: boolean;
@@ -243,6 +249,59 @@ export class FinanceStorageService {
     }
   }
 
+  // Asset categories
+  public fetchAllAssetCategories(forceReload?: boolean): Observable<AssetCategory[]> {
+    if (!this._isAcntCtgyListLoaded || forceReload) {
+      const apiurl = environment.ApiUrl + '/api/FinanceAssetCategory';
+
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      return this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true,
+        })
+        .map((response: HttpResponse<any>) => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAssetCategories in FinanceStorageService: ${response}`);
+          }
+
+          let listRst: AssetCategory[] = [];
+          const rjs = <any>response;
+
+          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+            for (const si of rjs.contentList) {
+              const rst: AssetCategory = new AssetCategory();
+              rst.onSetData(si);
+              listRst.push(rst);
+            }
+          }
+
+          this._isAsstCtgyListLoaded = true;
+          this.listAssetCategoryChange.next(listRst);
+
+          return listRst;
+        })
+        .catch((err) => {
+          if (environment.LoggingLevel >= LogLevel.Error) {
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAssetCategories in FinanceStorageService: ${err}`);
+          }
+
+          this._isAsstCtgyListLoaded = false;
+          this.listAssetCategoryChange.next([]);
+
+          return Observable.throw(err);
+        });
+    } else {
+      return Observable.of(this.listAssetCategoryChange.value);
+    }
+  }
+  
   // Account
   public fetchAllAccounts(forceReload?: boolean, status?: AccountStatusEnum): Observable<Account[]> {
     if (!this._isAccountListLoaded || forceReload) {

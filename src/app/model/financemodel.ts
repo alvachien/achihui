@@ -212,7 +212,77 @@ export class DocumentType extends hih.BaseModel {
 }
 
 /**
- * Account context
+ * Asset category
+ */
+export class AssetCategory extends hih.BaseModel {
+    private _id: number;
+    get ID(): number {
+        return this._id;
+    }
+    set ID(id: number) {
+        this._id = id;
+    }
+
+    private _hid: number;
+    get HID(): number {
+        return this._hid;
+    }
+    set HID(hid: number) {
+        this._hid = hid;
+    }
+
+    private _name: string;
+    get Name(): string {
+        return this._name;
+    }
+    set Name(nm: string) {
+        this._name = nm;
+    }
+
+    private _desp: string;
+    get Desp(): string {
+        return this._desp;
+    }
+    set Comment(cmt: string) {
+        this._desp = cmt;
+    }
+
+    constructor() {
+        super();
+    }
+
+    public onInit() {
+        super.onInit();
+    }
+
+    public onVerify(context?: any): boolean {
+        if (!super.onVerify(context))
+            return false;
+
+        return true;
+    }
+
+    public writeJSONObject(): any {
+        let rstObj = super.writeJSONObject();
+        return rstObj;
+    }
+
+    public onSetData(data: any) {
+        super.onSetData(data);
+        if (data && data.id) {
+            this.ID = +data.id;
+        }
+        if (data && data.name) {
+            this._name = data.name;
+        }
+        if (data && data.desp) {
+            this._desp = data.desp;
+        }
+    }
+}
+
+/**
+ * Account verify context
  */
 export interface AccountVerifyContext {
     Categories: AccountCategory[];

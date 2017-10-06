@@ -1,3 +1,38 @@
-<p>
-  asset-category-list works!
-</p>
+<md-card>
+  <md-card-header>
+    <md-card-title>{{'Finance.AssetCategories' | translate}}</md-card-title>
+    <md-card-subtitle>{{'Common.ListView' | translate}}</md-card-subtitle>
+  </md-card-header>
+  <md-card-content>
+    <div class="table-container mat-elevation-z8">
+      <md-table #table [dataSource]="dataSource">
+        <!-- ID Column -->
+        <ng-container mdColumnDef="id">
+          <md-header-cell *mdHeaderCellDef>#</md-header-cell>
+          <md-cell *mdCellDef="let row">
+            {{ row.ID }}
+          </md-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container mdColumnDef="name">
+          <md-header-cell *mdHeaderCellDef>{{'Common.Name' | translate}}</md-header-cell>
+          <md-cell *mdCellDef="let row"> {{row.Name | translate}} </md-cell>
+        </ng-container>
+
+        <!-- Desp Column -->
+        <ng-container mdColumnDef="desp">
+          <md-header-cell *mdHeaderCellDef> {{'Common.Description' | translate}} </md-header-cell>
+          <md-cell *mdCellDef="let row"> {{row.Desp}} </md-cell>
+        </ng-container>
+
+        <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
+        <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
+      </md-table>
+      <md-paginator #paginator [length]="_storageService.AssetCategories.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      </md-paginator>
+    </div>
+  </md-card-content>
+  <md-card-actions>
+  </md-card-actions>
+</md-card>
