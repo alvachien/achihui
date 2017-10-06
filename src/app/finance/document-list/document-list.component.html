@@ -13,6 +13,9 @@
         <button md-menu-item (click)="onCreateTransferDocument()">{{'Finance.TransferDocument' | translate}}</button>
         <button md-menu-item (click)="onCreateExgDocument()">{{'Finance.CurrencyExchange' | translate}}</button>
         <button md-menu-item (click)="onCreateADPDocument()">{{'Finance.AdvancePayment' | translate}}</button>
+        <button md-menu-item (click)="onCreateAssetBuyInDocument()">{{'Finance.AdvancePayment' | translate}}</button>
+        <button md-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Finance.AdvancePayment' | translate}}</button>
+        <button md-menu-item (click)="onCreateLoanDocument()">{{'Finance.AdvancePayment' | translate}}</button>
       </md-menu>
       <md-select color="accent" class="mt-1" [(ngModel)]="selectedDocScope" (change)="onDocScopeChanged()">
         <md-option [value]="1">{{'Common.CurrentMonth' | translate}}</md-option>

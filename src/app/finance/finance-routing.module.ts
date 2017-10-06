@@ -10,6 +10,9 @@ import { DocumentTypeDetailComponent } from './document-type-detail';
 import { TranTypeComponent } from './tran-type';
 import { TranTypeListComponent } from './tran-type-list';
 import { TranTypeDetailComponent } from './tran-type-detail';
+import { AssetCategoryComponent } from './asset-category';
+import { AssetCategoryListComponent } from './asset-category-list';
+import { AssetCategoryDetailComponent } from './asset-category-detail';
 import { AccountComponent } from './account';
 import { AccountListComponent } from './account-list';
 import { AccountDetailComponent } from './account-detail';
@@ -28,6 +31,7 @@ import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
+import { DocumentAssetOperationDetailComponent } from './document-asset-operation-detail';
 import { ReportComponent } from './report';
 
 const routes: Routes = [
@@ -102,6 +106,28 @@ const routes: Routes = [
           {
             path: 'edit/:id',
             component: TranTypeDetailComponent,
+          },
+        ],
+      },
+      {
+        path: 'assetctgy',
+        component: AssetCategoryComponent,
+        children: [
+          {
+            path: '',
+            component: AssetCategoryListComponent,
+          },
+          {
+            path: 'create',
+            component: AssetCategoryDetailComponent,
+          },
+          {
+            path: 'display/:id',
+            component: AssetCategoryDetailComponent,
+          },
+          {
+            path: 'edit/:id',
+            component: AssetCategoryDetailComponent,
           },
         ],
       },
@@ -204,6 +230,14 @@ const routes: Routes = [
             component: DocumentLoanDetailComponent,
           },
           {
+            path: 'createassetbuy',
+            component: DocumentAssetOperationDetailComponent,
+          },
+          {
+            path: 'createassetsold',
+            component: DocumentAssetOperationDetailComponent,
+          },
+          {
             path: 'display/:id',
             component: DocumentDetailComponent,
           },
@@ -228,6 +262,14 @@ const routes: Routes = [
             component: DocumentLoanDetailComponent,
           },
           {
+            path: 'displayassetbuy/:id',
+            component: DocumentAssetOperationDetailComponent,
+          },
+          {
+            path: 'displayassetsold/:id',
+            component: DocumentAssetOperationDetailComponent,
+          },
+          {
             path: 'edit/:id',
             component: DocumentDetailComponent,
           },
@@ -250,6 +292,14 @@ const routes: Routes = [
           {
             path: 'editloan/:id',
             component: DocumentLoanDetailComponent,
+          },
+          {
+            path: 'editassetbuy/:id',
+            component: DocumentAssetOperationDetailComponent,
+          },
+          {
+            path: 'editassetsold/:id',
+            component: DocumentAssetOperationDetailComponent,
           },
         ],
       },

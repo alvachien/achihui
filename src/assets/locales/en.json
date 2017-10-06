@@ -145,7 +145,10 @@
       "CurrExg": "Currency Exchange",
       "Installment": "Installment",
       "AdvancedPayment": "Advanced Payment",
-      "CreditCardRepay": "Creditcard Repayment"
+      "CreditCardRepay": "Creditcard Repayment",
+      "AssetBuyIn": "Buy in Asset",
+      "AssetSoldOut": "Sold out Asset",
+      "Loan": "Loan"
     },
     "MemRel": {
       "Self": "Self",
@@ -255,6 +258,8 @@
     "TransactionTypes": "Transaction Types",
     "DocumentType": "Document Type",
     "DocumentTypes": "Document Type",
+    "AssetCategory": "Asset Category",
+    "AssetCategories": "Asset Categories",
     "Reports": "Reports",
     "AssetFlag": "Asset Flag",
     "AdvancePayment": "Advance Payment",

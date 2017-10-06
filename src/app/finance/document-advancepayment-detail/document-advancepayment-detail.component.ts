@@ -275,7 +275,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
         this.detailObject.TmpDocs[0].Desp = this.detailObject.Desp;
       } else {
         for(let i = 0; i < this.detailObject.TmpDocs.length; i ++) {
-          this.detailObject.TmpDocs[i].Desp = this.detailObject.Desp + i.toString() + '/' + this.detailObject.TmpDocs.length.toString();
+          this.detailObject.TmpDocs[i].Desp = this.detailObject.Desp + ' | ' + i.toString() + '/' + this.detailObject.TmpDocs.length.toString();
         }
       }
 

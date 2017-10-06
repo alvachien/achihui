@@ -6,7 +6,9 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_CurrencyExchange,
-  FinanceDocType_Transfer, FinanceDocType_AdvancePayment, OverviewScope, getOverviewScopeRange } from '../../model';
+  FinanceDocType_Transfer, FinanceDocType_AdvancePayment, OverviewScope, getOverviewScopeRange,
+  FinanceDocType_CreditcardRepay, FinanceDocType_AssetBuyIn, FinanceDocType_AssetSoldOut, 
+  FinanceDocType_Loan } from '../../model';
 import { FinanceStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -102,6 +104,15 @@ export class DocumentListComponent implements OnInit {
   public onCreateExgDocument() {
     this._router.navigate(['/finance/document/createexg']);
   }
+  public onCreateAssetBuyInDocument() {
+    this._router.navigate(['/finance/document/createassetbuy']);
+  }
+  public onCreateAssetSoldOutDocument() {
+    this._router.navigate(['/finance/document/createassetsold']);
+  }
+  public onCreateLoanDocument() {
+    this._router.navigate(['/finance/document/createloan']);
+  }
 
   public onDisplayDocument(doc: Document) {
     if (doc.DocType === FinanceDocType_Normal) {
@@ -112,6 +123,12 @@ export class DocumentListComponent implements OnInit {
       this.onDisplayExgDocument(doc);
     } else if (doc.DocType === FinanceDocType_AdvancePayment) {
       this.onDisplayADPDocument(doc);
+    } else if (doc.DocType === FinanceDocType_AssetBuyIn) {
+      this.onDisplayAssetBuyInDocument(doc);
+    } else if (doc.DocType === FinanceDocType_AssetSoldOut) {
+      this.onDisplayAssetSoldOutDocument(doc);
+    } else if (doc.DocType === FinanceDocType_Loan) {
+      this.onDisplayLoanDocument(doc);
     }
   }
   public onDisplayNormalDocument(doc: Document) {
@@ -126,6 +143,15 @@ export class DocumentListComponent implements OnInit {
   public onDisplayADPDocument(doc: Document) {
     this._router.navigate(['/finance/document/displayadp', doc.Id]);
   }
+  public onDisplayAssetBuyInDocument(doc: Document) {
+    this._router.navigate(['/finance/document/displayassetbuy', doc.Id]);
+  }
+  public onDisplayAssetSoldOutDocument(doc: Document) {
+    this._router.navigate(['/finance/document/displayassetsold', doc.Id]);
+  }
+  public onDisplayLoanDocument(doc: Document) {
+    this._router.navigate(['/finance/document/displayloan', doc.Id]);
+  }
 
   public onChangeDocument(doc: Document) {
     if (doc.DocType === FinanceDocType_Normal) {
@@ -136,6 +162,12 @@ export class DocumentListComponent implements OnInit {
       this.onChangeADPDocument(doc);
     } else if (doc.DocType === FinanceDocType_CurrencyExchange) {
       this.onChangeExgDocument(doc);
+    } else if (doc.DocType === FinanceDocType_AssetBuyIn) {
+      this.onChangeAssetBuyInDocument(doc);
+    } else if (doc.DocType === FinanceDocType_AssetSoldOut) {
+      this.onChangeAssetSoldOutDocument(doc);
+    } else if (doc.DocType === FinanceDocType_Loan) {
+      this.onChangeLoanDocument(doc);
     }
   }
   public onChangeNormalDocument(doc: Document) {
@@ -149,6 +181,15 @@ export class DocumentListComponent implements OnInit {
   }
   public onChangeExgDocument(doc: Document) {
     this._router.navigate(['/finance/document/editexg', doc.Id]);
+  }
+  public onChangeAssetBuyInDocument(doc: Document) {
+    this._router.navigate(['/finance/document/editassetbuy', doc.Id]);
+  }
+  public onChangeAssetSoldOutDocument(doc: Document) {
+    this._router.navigate(['/finance/document/editassetsold', doc.Id]);
+  }
+  public onChangeLoanDocument(doc: Document) {
+    this._router.navigate(['/finance/document/editloan', doc.Id]);
   }
 
   public onDeleteDocument(doc: Document) {

@@ -145,7 +145,10 @@
       "CurrExg": "货币兑换",
       "Installment": "分期付款",
       "AdvancedPayment": "预付款",
-      "CreditCardRepay": "信用卡还款"
+      "CreditCardRepay": "信用卡还款",
+      "AssetBuyIn": "购入资产或大件家用器具",
+      "AssetSoldOut": "出售资产或大件家用器具",
+      "Loan": "贷款"
     },
     "MemRel": {
       "Self": "本人",
@@ -255,6 +258,8 @@
     "TransactionTypes": "交易类型",
     "DocumentType": "凭证类型",
     "DocumentTypes": "凭证类型",
+    "AssetCategory": "资产类型",
+    "AssetCategories": "资产类型",
     "Reports": "报表",
     "AssetFlag": "资产类标志",
     "AdvancePayment": "预付款",

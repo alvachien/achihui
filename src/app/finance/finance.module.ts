@@ -38,6 +38,10 @@ import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
+import { DocumentAssetOperationDetailComponent } from './document-asset-operation-detail';
+import { AssetCategoryComponent } from './asset-category';
+import { AssetCategoryListComponent } from './asset-category-list';
+import { AssetCategoryDetailComponent } from './asset-category-detail';
 
 @NgModule({
   imports: [
@@ -79,6 +83,10 @@ import { DocumentLoanDetailComponent } from './document-loan-detail';
     DocumentExchangeDetailComponent,
     DocumentItemOverviewComponent,
     DocumentLoanDetailComponent,
+    DocumentAssetOperationDetailComponent,
+    AssetCategoryComponent,
+    AssetCategoryListComponent,
+    AssetCategoryDetailComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

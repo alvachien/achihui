@@ -29,11 +29,12 @@ export class SideNavService {
     this.addSubItem(finance, 'Finance.AccountCategories', '/finance/acntctgy', 2, 'settings_input_component');
     this.addSubItem(finance, 'Finance.DocumentTypes', '/finance/doctype', 3, 'view_comfy');
     this.addSubItem(finance, 'Finance.TransactionTypes', '/finance/trantype', 4, 'featured_play_list');
-    this.addSubItem(finance, 'Finance.Accounts', '/finance/account', 5, 'library_books');
-    this.addSubItem(finance, 'Finance.ControlCenters', '/finance/controlcenter', 6, 'store');
-    this.addSubItem(finance, 'Finance.Orders', '/finance/order', 7, 'tune');
-    this.addSubItem(finance, 'Finance.Documents', '/finance/document', 8, 'poll');
-    this.addSubItem(finance, 'Finance.Reports', '/finance/report', 9, 'account_balance');
+    this.addSubItem(finance, 'Finance.AssetCategories', '/finance/assetctgy', 5, 'devices');
+    this.addSubItem(finance, 'Finance.Accounts', '/finance/account', 6, 'library_books');
+    this.addSubItem(finance, 'Finance.ControlCenters', '/finance/controlcenter', 7, 'store');
+    this.addSubItem(finance, 'Finance.Orders', '/finance/order', 8, 'tune');
+    this.addSubItem(finance, 'Finance.Documents', '/finance/document', 9, 'poll');
+    this.addSubItem(finance, 'Finance.Reports', '/finance/report', 10, 'account_balance');
 
     const library = this.addItem('Nav.Libraries', 'subject', null, 4);
     this.addSubItem(library, 'Nav.Person', '/lib/person', 1, 'face');
