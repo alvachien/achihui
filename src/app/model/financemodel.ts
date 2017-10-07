@@ -441,11 +441,13 @@ export class Account extends hih.BaseModel {
       ei.onSetData(data.extraInfo_ADP);
 
       this.ExtraInfo = ei;
-    } else if (data && this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && data.extraInfo_ADP) {
+    } else if (data && this.CategoryId === hih.FinanceAccountCategory_Asset && data.extraInfo_AS) {
       let ei = new AccountExtraAsset();
       ei.onSetData(data.extraInfo_AS);
 
       this.ExtraInfo = ei;
+    } else if (data && data.CategoryId === hih.FinanceAccountCategory_Loan && data.extraInfo_LO) {
+      // Todo: Loan
     }
   }
 }

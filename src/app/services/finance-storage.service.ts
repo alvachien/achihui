@@ -230,6 +230,25 @@ export class FinanceStorageService {
             }
           }
 
+          // Sort it!
+          listRst.sort((a, b) => {
+            if (a.Expense) {
+              if (b.Expense) {
+                // Both are expense
+                return a.Id - b.Id;
+              } else {
+                return 1;
+              }
+            } else {
+              if (b.Expense) {
+                return -1;
+              } else {
+                // Both are income
+                return a.Id - b.Id;
+              }
+            }
+          });
+
           this._isTranTypeListLoaded = true;
           this.listTranTypeChange.next(listRst);
           return listRst;

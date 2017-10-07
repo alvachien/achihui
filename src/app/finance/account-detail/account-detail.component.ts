@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, UIMode, getUIModeString, FinanceAccountCategory_Asset, 
   FinanceAccountCategory_AdvancePayment, FinanceAccountCategory_Loan } from '../../model';
@@ -36,7 +37,10 @@ export class AccountDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit...');
     }
 
-    this._storageService.fetchAllAccountCategories().subscribe((rst) => {
+    Observable.forkJoin([
+      this._storageService.fetchAllAccountCategories(),
+      this._storageService.fetchAllAssetCategories()
+    ]).subscribe((rst) => {
       // Distinguish current mode
       this._activateRoute.url.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
