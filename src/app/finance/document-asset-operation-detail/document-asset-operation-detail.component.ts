@@ -27,7 +27,6 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public PageTitle: string;
-  private _isbuyin: boolean;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -44,7 +43,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     this.detailObject = new UIFinAssetOperationDocument();
-    this._isbuyin = true;
+    this.detailObject.isBuyin = true;
   }
 
   ngOnInit() {
@@ -69,40 +68,40 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createassetbuy') {
             this.detailObject = new UIFinAssetOperationDocument();
-            this._isbuyin = true;
+            this.detailObject.isBuyin = true;
 
             this.uiMode = UIMode.Create;
           } else if (x[0].path === 'createassetsold') {
             this.detailObject = new UIFinAssetOperationDocument();
-            this._isbuyin = false;
+            this.detailObject.isBuyin = false;
 
             this.uiMode = UIMode.Create;
           } else if (x[0].path === 'editassetbuy') {
             this.routerID = +x[1].path;
-            this._isbuyin = true;
+            this.detailObject.isBuyin = true;
             
             this.uiMode = UIMode.Change;
           } else if (x[0].path === 'editassetsold') {
             this.routerID = +x[1].path;
-            this._isbuyin = false;
+            this.detailObject.isBuyin = false;
             
             this.uiMode = UIMode.Change;
           } else if (x[0].path === 'displayassetbuy') {
             this.routerID = +x[1].path;
-            this._isbuyin = true;
+            this.detailObject.isBuyin = true;
             
             this.uiMode = UIMode.Display;
           } else if (x[0].path === 'displayassetsold') {
             this.routerID = +x[1].path;
-            this._isbuyin = false;
+            this.detailObject.isBuyin = false;
             
             this.uiMode = UIMode.Display;
           }
           this.currentMode = getUIModeString(this.uiMode);
-          this.PageTitle = this._isbuyin ? 'Sys.DocTy.AssetBuyIn' : 'Sys.DocTy.AssetSoldOut';
+          this.PageTitle = this.detailObject.isBuyin ? 'Sys.DocTy.AssetBuyIn' : 'Sys.DocTy.AssetSoldOut';
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readAssetDocument(this.routerID, this._isbuyin).subscribe((x2) => {
+            this._storageService.readAssetDocument(this.routerID, this.detailObject.isBuyin).subscribe((x2) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent ngOnInit for activateRoute URL: ${x2}`);
               }
@@ -218,7 +217,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
             duration: 3000,
           }).afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate([this._isbuyin? '/finance/document/displayassetbuy/' : '/finance/document/displayassetsold/' + x.Id.toString()]);
+            this._router.navigate([(this.detailObject.isBuyin? '/finance/document/displayassetbuy/' : '/finance/document/displayassetsold/') + x.Id.toString()]);
           });
         } else {
           // Show error message
@@ -241,7 +240,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
         }
       });
 
-      docObj.HID = this._homedefService.ChosedHome.ID;
+      docObj.HID = this._homedefService.ChosedHome.ID;      
 
       // Build the JSON file to API
       let sobj = docObj.writeJSONObject(); // Document first
@@ -254,7 +253,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       sobj.AccountVM = acntobj.writeJSONObject();
 
       let dataJSON = JSON.stringify(sobj);
-      this._storageService.createAssetDocument(sobj, this._isbuyin);
+      this._storageService.createAssetDocument(sobj, this.detailObject.isBuyin);
     }
   }
 

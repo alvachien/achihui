@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
@@ -130,15 +130,15 @@ export class FinanceStorageService {
 
           return listRst;
         })
-        .catch((err) => {
+        .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccountCategories in FinanceStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccountCategories in FinanceStorageService: ${error}`);
           }
 
           this._isAcntCtgyListLoaded = false;
           this.listAccountCategoryChange.next([]);
 
-          return Observable.throw(err);
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
         });
     } else {
       return Observable.of(this.listAccountCategoryChange.value);
@@ -182,15 +182,15 @@ export class FinanceStorageService {
 
           return listRst;
         })
-        .catch((err) => {
+        .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocTypes in FinanceStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocTypes in FinanceStorageService: ${error}`);
           }
 
           this._isDocTypeListLoaded = false;
           this.listDocTypeChange.next([]);
 
-          return Observable.throw(err);
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
         });
     } else {
       return Observable.of(this.listDocTypeChange.value);
@@ -234,15 +234,15 @@ export class FinanceStorageService {
           this.listTranTypeChange.next(listRst);
           return listRst;
         })
-        .catch((err) => {
+        .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllTranTypes in FinanceStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllTranTypes in FinanceStorageService: ${error}`);
           }
 
           this._isTranTypeListLoaded = false;
           this.listTranTypeChange.next([]);
 
-          return Observable.throw(err);
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
         });
     } else {
       return Observable.of(this.listTranTypeChange.value);
@@ -287,15 +287,15 @@ export class FinanceStorageService {
 
           return listRst;
         })
-        .catch((err) => {
+        .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAssetCategories in FinanceStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAssetCategories in FinanceStorageService: ${error}`);
           }
 
           this._isAsstCtgyListLoaded = false;
           this.listAssetCategoryChange.next([]);
 
-          return Observable.throw(err);
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
         });
     } else {
       return Observable.of(this.listAssetCategoryChange.value);
@@ -341,15 +341,15 @@ export class FinanceStorageService {
           this.listAccountChange.next(listRst);
           return listRst;
         })
-        .catch((err) => {
+        .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccounts in FinanceStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccounts in FinanceStorageService: ${error}`);
           }
 
           this._isAccountListLoaded = false;
           this.listAccountChange.next([]);
 
-          return Observable.throw(err);
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
         });
     } else {
       return Observable.of(this.listAccountChange.value);
@@ -393,13 +393,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.createAccountEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in createAccount in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createAccountEvent.emit(error.toString());
+        this.createAccountEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -443,13 +443,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.readAccountEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.log(`AC_HIH_UI [Error]: Error occurred in readAccount in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.readAccountEvent.emit(error);
+        this.readAccountEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -496,15 +496,15 @@ export class FinanceStorageService {
           this.listControlCenterChange.next(listRst);
           return listRst;
         })
-        .catch((err) => {
+        .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService: ${error}`);
           }
 
           this._isConctrolCenterListLoaded = false;
           this.listControlCenterChange.next([]);
 
-          return Observable.throw(err);
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
         });
     } else {
       return Observable.of(this.listControlCenterChange.value);
@@ -548,13 +548,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.createControlCenterEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in createControlCenter in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createControlCenterEvent.emit(error.toString());
+        this.createControlCenterEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -598,13 +598,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.readControlCenterEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.log(`AC_HIH_UI [Error]: Error occurred in readControlCenter in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.readControlCenterEvent.emit(error);
+        this.readControlCenterEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -650,15 +650,15 @@ export class FinanceStorageService {
 
           return listRst;
         })
-        .catch((err) => {
+        .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllOrders in FinanceStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllOrders in FinanceStorageService: ${error}`);
           }
 
           this._isOrderListLoaded = false;
           this.listOrderChange.next([]);
 
-          return Observable.throw(err);
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
         });
     } else {
       return Observable.of(this.listOrderChange.value);
@@ -702,13 +702,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.createOrderEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createOrder in FinanceStorageService:  ${error.toString()}`);
+          console.error(`AC_HIH_UI [Error]: Error occurred in createOrder in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createOrderEvent.emit(error.toString());
+        this.createOrderEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -752,13 +752,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.readOrderEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in readOrder in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.readOrderEvent.emit(error);
+        this.readOrderEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -806,14 +806,14 @@ export class FinanceStorageService {
         this.listDocumentChange.next(listRst);
         return listRst;
       })
-      .catch((err) => {
+      .catch((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocuments in FinanceStorageService: ${err}`);
+          console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocuments in FinanceStorageService: ${error}`);
         }
 
         this.listDocumentChange.next([]);
 
-        return Observable.throw(err);
+        return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
       });
   }
 
@@ -854,13 +854,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.createDocumentEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in createDocument in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createDocumentEvent.emit(error.toString());
+        this.createDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -901,13 +901,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.createDocumentEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in createADPDocument in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createDocumentEvent.emit(error.toString());
+        this.createDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -923,7 +923,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + isbuyin? '/api/FinanceAssetBuyDocument' : '/api/FinanceAssetSoldDocument';
+    let apiurl = environment.ApiUrl + (isbuyin? '/api/FinanceAssetBuyDocument' : '/api/FinanceAssetSoldDocument');
 
     this._http.post(apiurl, jdata, {
         headers: headers,
@@ -949,13 +949,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.createDocumentEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in createAssetDocument in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createDocumentEvent.emit(error.toString());
+        this.createDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -999,13 +999,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.readDocumentEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in readDocument in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.readDocumentEvent.emit(error);
+        this.readDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -1021,7 +1021,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + isbuyin? '/api/FinanceAssetBuyDocument/' : '/api/FinanceAssetSoldDocument/' + docid.toString();
+    let apiurl = environment.ApiUrl + (isbuyin? '/api/FinanceAssetBuyDocument/' : '/api/FinanceAssetSoldDocument/') + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -1101,13 +1101,13 @@ export class FinanceStorageService {
 
         // Broadcast event
         this.deleteDocumentEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in deleteDocument in LearnStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.deleteDocumentEvent.emit(error.toString());
+        this.deleteDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });    
   }

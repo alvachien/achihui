@@ -34,7 +34,7 @@
 
       <!-- Tran type -->
       <mat-form-field>
-        <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranType"
+        <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranType"
           name="srctt">
           <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
             {{tt.Name}}
@@ -44,7 +44,7 @@
 
       <!-- Account -->
       <mat-form-field>
-        <mat-select class="demo-full-width" placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
+        <mat-select class="demo-full-width" placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.AccountId"
           name="srcacnt">
           <mat-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
             {{acnt.Name}}
@@ -66,7 +66,7 @@
 
       <!-- CC -->
       <mat-form-field>
-        <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
+        <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ControlCenterId"
           name="hdrcc" class="demo-full-width">
           <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
             {{tt.Name}}
@@ -76,7 +76,7 @@
 
       <!-- Order -->
       <mat-form-field>
-        <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId"
+        <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.OrderId"
           name="hdrord" class="demo-full-width">
           <mat-option *ngFor="let tt of _storageService.Orders" [value]="tt.Id">
             {{tt.Name}}
@@ -102,11 +102,15 @@
 
       <hih-finance-account-ext-asset [uiMode]="uiMode" [extObject]="detailObject.AssetAccount"></hih-finance-account-ext-asset>
       
-      <mat-action-row>
+      <!-- <mat-action-row>
         <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
         <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
-      </mat-action-row>
+      </mat-action-row> -->
     </mat-expansion-panel>
 
   </mat-card-content>
+  <mat-card-actions>
+    <button mat-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button mat-button color="primary" (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
+  </mat-card-actions>
 </mat-card>

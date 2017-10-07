@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
@@ -91,15 +91,15 @@ export class LearnStorageService {
           this.listCategoryChange.next(listRst);
           return listRst;
         })
-        .catch((err) => {
+        .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllCategories in FinanceStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllCategories in FinanceStorageService: ${error}`);
           }
 
           this._isCtgyListLoaded = false;
           this.listCategoryChange.next([]);
 
-          return Observable.throw(err);
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
         });
     } else {
       return Observable.of(this.listCategoryChange.value);
@@ -143,15 +143,15 @@ export class LearnStorageService {
           this.listObjectChange.next(listRst);
           return listRst;
         })
-        .catch((err) => {
+        .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService: ${error}`);
           }
 
           this._isObjListLoaded = true;
           this.listObjectChange.next([]);
 
-          return Observable.throw(err);
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
         });
     } else {
       return Observable.of(this.listObjectChange.value);
@@ -195,13 +195,13 @@ export class LearnStorageService {
 
         // Broadcast event
         this.createObjectEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in createObject in LearnStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createObjectEvent.emit(error.toString());
+        this.createObjectEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -243,13 +243,13 @@ export class LearnStorageService {
 
         // Broadcast event
         this.updateObjectEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in updateObject in LearnStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.updateObjectEvent.emit(error.toString());
+        this.updateObjectEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -286,13 +286,13 @@ export class LearnStorageService {
 
         // Broadcast event
         this.deleteObjectEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in deleteObject in LearnStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.deleteObjectEvent.emit(error.toString());
+        this.deleteObjectEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -336,18 +336,21 @@ export class LearnStorageService {
 
         // Broadcast event
         this.readObjectEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.log(`AC_HIH_UI [Error]: Error occurred in readObject in LearnStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.readObjectEvent.emit(error);
+        this.readObjectEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
 
-  // History
+  /**
+   * Fetch all all histories information
+   * @param forceReload Force to reload all histories
+   */
   public fetchAllHistories(forceReload?: boolean): Observable<LearnHistory[]> {
     if (!this._isHistListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/learnhistory';
@@ -384,15 +387,15 @@ export class LearnStorageService {
           this.listHistoryChange.next(listRst);
           return listRst;
         })
-        .catch((err) => {
+        .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllHistories in FinanceStorageService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllHistories in FinanceStorageService: ${error}`);
           }
 
           this._isHistListLoaded = true;
           this.listHistoryChange.next([]);
 
-          return Observable.throw(err);
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
         });
     } else {
       return Observable.of(this.listHistoryChange.value);
@@ -436,13 +439,13 @@ export class LearnStorageService {
 
         // Broadcast event
         this.createHistoryEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in createHistory in LearnStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createHistoryEvent.emit(error.toString());
+        this.createHistoryEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -483,13 +486,13 @@ export class LearnStorageService {
 
         // Broadcast event
         this.readHistoryEvent.emit(x);
-      }, (error) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.log(`AC_HIH_UI [Error]: Error occurred in readHistory in LearnStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.readHistoryEvent.emit(error);
+        this.readHistoryEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
