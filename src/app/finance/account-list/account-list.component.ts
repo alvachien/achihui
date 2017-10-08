@@ -38,7 +38,7 @@ export class AccountDataSource extends DataSource<any> {
 
 export interface AccountStatusUI {
   name: string;
-  value: AccountStatusEnum;
+  value?: AccountStatusEnum;
 }
 
 @Component({
@@ -52,10 +52,23 @@ export class AccountListComponent implements OnInit {
   dataSource: AccountDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   arrayStatus: AccountStatusUI[] = [];
-  selectedStatus: undefined | AccountStatusEnum = undefined;
+  selectedStatus: AccountStatusEnum | undefined = undefined;
 
   constructor(public _storageService: FinanceStorageService,
-    private _router: Router) { }
+    private _router: Router) {
+    this.arrayStatus.push({
+      name: getAccountStatusDisplayString(AccountStatusEnum.Normal),
+      value: AccountStatusEnum.Normal
+    });
+    this.arrayStatus.push({
+      name: getAccountStatusDisplayString(AccountStatusEnum.Closed),
+      value: AccountStatusEnum.Closed
+    });
+    this.arrayStatus.push({
+      name: getAccountStatusDisplayString(AccountStatusEnum.Frozen),
+      value: AccountStatusEnum.Frozen
+    });
+  }
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -63,18 +76,6 @@ export class AccountListComponent implements OnInit {
     }
 
     this.dataSource = new AccountDataSource(this._storageService, this.paginator);
-    this.arrayStatus.push( {
-      name: getAccountStatusDisplayString(AccountStatusEnum.Normal),
-      value: AccountStatusEnum.Normal
-    });
-    this.arrayStatus.push( {
-      name: getAccountStatusDisplayString(AccountStatusEnum.Closed),
-      value: AccountStatusEnum.Closed
-    });
-    this.arrayStatus.push( {
-      name: getAccountStatusDisplayString(AccountStatusEnum.Frozen),
-      value: AccountStatusEnum.Frozen
-    });
 
     Observable.forkJoin([
       this._storageService.fetchAllAccounts(),
@@ -97,7 +98,6 @@ export class AccountListComponent implements OnInit {
   }
 
   public onDeleteAccount(acnt: any) {
-
   }
 
   public onRefresh() {
