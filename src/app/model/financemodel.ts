@@ -1024,6 +1024,10 @@ export class TranType extends hih.BaseModel {
   public ParId: number;
   public Comment: string;
 
+  // For UI display
+  public HierLevel: number;
+  public FullDisplayText: string;
+
   constructor() {
     super();
   }

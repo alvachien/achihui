@@ -20,9 +20,7 @@
   <mat-toolbar>
     <mat-form-field>
       <mat-select [(ngModel)]="selectedLearnScope" (change)="onLearnScopeChanged()">
-        <mat-option [value]="1">{{'Common.CurrentMonth' | translate}}</mat-option>
-        <mat-option [value]="2">{{'Common.CurrentYear' | translate}}</mat-option>
-        <mat-option [value]="9">{{'Common.All' | translate}}</mat-option>
+        <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
       </mat-select>
     </mat-form-field>
     <span class="example-spacer"></span>
@@ -64,9 +62,7 @@
     <mat-toolbar>
       <mat-form-field>
         <mat-select [(ngModel)]="selectedFinanceScope" (change)="onFinanceScopeChanged()">
-          <mat-option [value]="1">{{'Common.CurrentMonth' | translate}}</mat-option>
-          <mat-option [value]="2">{{'Common.CurrentYear' | translate}}</mat-option>
-          <mat-option [value]="9">{{'Common.All' | translate}}</mat-option>
+          <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
       <span class="example-spacer"></span>

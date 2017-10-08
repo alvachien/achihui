@@ -20,9 +20,7 @@
 
       <mat-form-field>
         <mat-select color="accent" class="mt-1" [(ngModel)]="selectedDocScope" (change)="onDocScopeChanged()">
-          <mat-option [value]="1">{{'Common.CurrentMonth' | translate}}</mat-option>
-          <mat-option [value]="2">{{'Common.CurrentYear' | translate}}</mat-option>
-          <mat-option [value]="9">{{'Common.All' | translate}}</mat-option>
+          <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
       <button mat-icon-button (click)="onRefreshList()" matTooltip="{{'Common.Refresh' | translate}}">

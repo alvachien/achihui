@@ -43,7 +43,7 @@ export class TranTypeDataSource extends DataSource<any> {
 })
 export class TranTypeListComponent implements OnInit {
 
-  displayedColumns = ['id', 'name', 'expflag', 'comment'];
+  displayedColumns = ['id', 'name', 'expflag', 'fulldisplay', 'parent', 'comment'];
   dataSource: TranTypeDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 

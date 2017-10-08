@@ -27,7 +27,7 @@
                 <mat-form-field>
                   <mat-select disabled [(ngModel)]="row.TranType" name="ittt">
                     <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-                      {{tt.Name}}
+                      <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -97,7 +97,7 @@
                 <mat-form-field>
                   <mat-select disabled [(ngModel)]="row.TranType" name="ittt">
                     <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-                      {{tt.Name}}
+                      <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -175,7 +175,7 @@
                 <mat-form-field>
                   <mat-select disabled [(ngModel)]="row.TranType" name="ittt">
                     <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-                      {{tt.Name}}
+                      <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -253,7 +253,7 @@
                 <mat-form-field>
                   <mat-select disabled [(ngModel)]="row.TranType" name="ittt">
                     <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-                      {{tt.Name}}
+                      <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
                     </mat-option>
                   </mat-select>
                 </mat-form-field>

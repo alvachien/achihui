@@ -6,10 +6,10 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_CurrencyExchange,
-  FinanceDocType_Transfer, FinanceDocType_AdvancePayment, OverviewScope, getOverviewScopeRange,
+  FinanceDocType_Transfer, FinanceDocType_AdvancePayment, OverviewScopeEnum, OverviewScope,
   FinanceDocType_CreditcardRepay, FinanceDocType_AssetBuyIn, FinanceDocType_AssetSoldOut, 
   FinanceDocType_Loan } from '../../model';
-import { FinanceStorageService } from '../../services';
+import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 /**
@@ -49,12 +49,14 @@ export class DocumentListComponent implements OnInit {
 
   displayedColumns = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
   dataSource: DocumentDataSource | null;
-  selectedDocScope: OverviewScope;
+  selectedDocScope: OverviewScopeEnum;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: FinanceStorageService,
+    public _uiStatusService: UIStatusService,
     private _router: Router,
-    private _dialog: MatDialog) { }
+    private _dialog: MatDialog) {      
+    }
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -62,7 +64,7 @@ export class DocumentListComponent implements OnInit {
     }
 
     this.dataSource = new DocumentDataSource(this._storageService, this.paginator);
-    this.selectedDocScope = OverviewScope.CurrentMonth;
+    this.selectedDocScope = OverviewScopeEnum.CurrentMonth;
     this.onDocScopeChanged();
   }
 
@@ -71,7 +73,7 @@ export class DocumentListComponent implements OnInit {
   }
 
   public onDocScopeChanged(): void {
-    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
+    let { BeginDate: bgn,  EndDate: end }  = OverviewScope.getOverviewScopeRange(this.selectedDocScope);
     this._storageService.fetchAllDocuments(bgn, end).subscribe((x) => {
       // Just ensure the REQUEST has been sent
     }, (error) => {

@@ -21,6 +21,18 @@
           <mat-cell *matCellDef="let row"> {{row.Name}} </mat-cell>
         </ng-container>
 
+        <!-- Parent ID -->
+        <ng-container matColumnDef="parid">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Parent' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.ParentId}} </mat-cell>
+        </ng-container>
+        
+        <!-- Full display Column -->
+        <ng-container matColumnDef="fulldisplay">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Name' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.FullDisplayText}} </mat-cell>
+        </ng-container>
+        
         <!-- Comment Column -->
         <ng-container matColumnDef="comment">
           <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>

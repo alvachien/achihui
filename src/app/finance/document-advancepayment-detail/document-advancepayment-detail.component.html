@@ -36,7 +36,7 @@
       <mat-form-field>
         <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranType" name="srctt">
           <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-            {{tt.Name}}
+            <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
           </mat-option>
         </mat-select>
       </mat-form-field>

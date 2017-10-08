@@ -101,7 +101,7 @@
                   <mat-select placeholder="{{'Finance.Account' | translate}}" 
                     [disabled]="!isFieldChangable" [(ngModel)]="row.AccountId" name="itacnt">
                     <mat-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
-                      {{acnt.Name}}
+                      <span [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}}</span>
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -116,7 +116,7 @@
                   <mat-select placeholder="{{'Finance.TransactionType' | translate}}" 
                     [disabled]="!isFieldChangable" [(ngModel)]="row.TranType" name="ittt">
                     <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-                      {{tt.Name}}
+                      <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
                     </mat-option>
                   </mat-select>
                 </mat-form-field>

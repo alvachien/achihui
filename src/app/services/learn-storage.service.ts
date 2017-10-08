@@ -87,6 +87,13 @@ export class LearnStorageService {
             }
           }
 
+          // Prepare for the hierarchy
+          this.buildLearnCategoryHierarchy(listRst);
+          // Sort it
+          listRst.sort((a, b) => {
+            return a.FullDisplayText.localeCompare(b.FullDisplayText);
+          })
+
           this._isCtgyListLoaded = true;
           this.listCategoryChange.next(listRst);
           return listRst;
@@ -104,6 +111,26 @@ export class LearnStorageService {
     } else {
       return Observable.of(this.listCategoryChange.value);
     }
+  }
+  private buildLearnCategoryHierarchy(listCtgy: LearnCategory[]) {
+    listCtgy.forEach((value, index, array) => {
+      if (!value.ParentId) {
+        value.HierLevel = 0;
+        value.FullDisplayText = value.Name;
+
+        this.buildLearnCategoryHiercharyImpl(value, listCtgy, 1);
+      }
+    });
+  }
+  private buildLearnCategoryHiercharyImpl(par: LearnCategory, listCtgy: LearnCategory[], curLevel: number) {
+    listCtgy.forEach((value, index, array) => {
+      if (value.ParentId === par.Id) {
+        value.HierLevel = curLevel;
+        value.FullDisplayText = par.FullDisplayText + "." + value.Name;
+
+        this.buildLearnCategoryHiercharyImpl(value, listCtgy, value.HierLevel + 1);
+      }
+    });
   }
 
   // Object

@@ -29,7 +29,19 @@
             </mat-checkbox>
           </mat-cell>
         </ng-container>
-  
+
+        <!-- Full display -->
+        <ng-container matColumnDef="fulldisplay">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Name' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.FullDisplayText}} </mat-cell>
+        </ng-container>
+
+        <!-- Parent ID -->
+        <ng-container matColumnDef="parent">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Parent' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.ParId}} </mat-cell>
+        </ng-container>
+      
         <!-- Comment Column -->
         <ng-container matColumnDef="comment">
           <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
@@ -42,7 +54,7 @@
       <mat-paginator #paginator 
         [length]="_storageService.TranTypes.length" 
         [pageIndex]="0" 
-        [pageSize]="25" 
+        [pageSize]="15" 
         [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
     </div>

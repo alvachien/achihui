@@ -229,13 +229,14 @@ export class FinanceStorageService {
               listRst.push(rst);
             }
           }
-
-          // Sort it!
+          // Prepare for the hierarchy
+          this.buildTranTypeHierarchy(listRst);
+          // Sort it
           listRst.sort((a, b) => {
             if (a.Expense) {
               if (b.Expense) {
                 // Both are expense
-                return a.Id - b.Id;
+                return a.FullDisplayText.localeCompare(b.FullDisplayText);
               } else {
                 return 1;
               }
@@ -244,7 +245,7 @@ export class FinanceStorageService {
                 return -1;
               } else {
                 // Both are income
-                return a.Id - b.Id;
+                return a.FullDisplayText.localeCompare(b.FullDisplayText);
               }
             }
           });
@@ -266,6 +267,26 @@ export class FinanceStorageService {
     } else {
       return Observable.of(this.listTranTypeChange.value);
     }
+  }
+  private buildTranTypeHierarchy(listTranType: TranType[]) {
+    listTranType.forEach((value, index, array) => {
+      if (!value.ParId) {
+        value.HierLevel = 0;
+        value.FullDisplayText = value.Name;
+
+        this.buildTranTypeHierarchyImpl(value, listTranType, 1);
+      }
+    });
+  }
+  private buildTranTypeHierarchyImpl(par: TranType, listTranType: TranType[], curLvl: number) {
+    listTranType.forEach((value, index, array) => {
+      if (value.ParId === par.Id) {
+        value.HierLevel = curLvl;
+        value.FullDisplayText = par.FullDisplayText + "." + value.Name;
+
+        this.buildTranTypeHierarchyImpl(value, listTranType, value.HierLevel + 1);
+      }
+    });
   }
 
   // Asset categories

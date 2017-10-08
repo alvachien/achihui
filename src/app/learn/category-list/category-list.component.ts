@@ -42,7 +42,7 @@ export class LearnCategoryDataSource extends DataSource<any> {
   styleUrls: ['./category-list.component.scss'],
 })
 export class CategoryListComponent implements OnInit {
-  displayedColumns = ['id', 'name', 'comment'];
+  displayedColumns = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   dataSource: LearnCategoryDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 

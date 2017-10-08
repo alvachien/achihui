@@ -3,7 +3,7 @@ import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageS
   FinCurrencyService, UIStatusService } from '../services';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { LogLevel, TranTypeReport, OverviewScope, getOverviewScopeRange } from '../model';
+import { LogLevel, TranTypeReport, OverviewScopeEnum, OverviewScope } from '../model';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 
@@ -13,8 +13,8 @@ import 'rxjs/Rx';
   styleUrls: ['./page-initial.component.scss'],
 })
 export class PageInitialComponent implements OnInit {
-  selectedFinanceScope: OverviewScope;
-  selectedLearnScope: OverviewScope;
+  selectedFinanceScope: OverviewScopeEnum;
+  selectedLearnScope: OverviewScopeEnum;
   view: any[] = [400, 300];
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
@@ -40,23 +40,23 @@ export class PageInitialComponent implements OnInit {
     private _lrnstorageService: LearnStorageService,
     private _finstorageService: FinanceStorageService,
     private _currService: FinCurrencyService,
-    private _uistatusService: UIStatusService,
+    public _uistatusService: UIStatusService,
     private _router: Router) {
   }
 
   ngOnInit() {
     if (this.IsUserLoggedIn && this.IsHomeChosed) {
-      this.selectedFinanceScope = OverviewScope.CurrentMonth;
+      this.selectedFinanceScope = OverviewScopeEnum.CurrentMonth;
       this.onFinanceScopeChanged();
 
-      this.selectedLearnScope = OverviewScope.CurrentYear;
+      this.selectedLearnScope = OverviewScopeEnum.CurrentYear;
       this.onLearnScopeChanged();
     }
   }
 
   public onLearnScopeChanged() {
     // Destructing an object syntax!
-    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedLearnScope);
+    let { BeginDate: bgn,  EndDate: end }  = OverviewScope.getOverviewScopeRange(this.selectedLearnScope);
 
     Observable.forkJoin([
       this._lrnstorageService.getHistoryReportByCategory(bgn, end),
@@ -89,7 +89,7 @@ export class PageInitialComponent implements OnInit {
   }
 
   public onFinanceScopeChanged() {
-    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedFinanceScope);
+    let { BeginDate: bgn,  EndDate: end }  = OverviewScope.getOverviewScopeRange(this.selectedFinanceScope);
 
     this._finstorageService.getReportTranType(bgn, end).subscribe((y) => {
         this.dataFinTTIn = [];

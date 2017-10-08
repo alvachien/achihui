@@ -26,246 +26,316 @@ export enum MessageType { Info = 1, Warning = 2, Error = 3 };
  * UI Mode on detail page
  */
 export enum UIMode {
-    Create = 1,
-    Change = 2,
-    Display = 3,
+  Create = 1,
+  Change = 2,
+  Display = 3,
 
-    Invalid = 9,
+  Invalid = 9,
 };
 
 export function isUIEditable(mode: UIMode): boolean {
-    return mode === UIMode.Create || mode === UIMode.Change;
+  return mode === UIMode.Create || mode === UIMode.Change;
 }
 
 export function getUIModeString(mode: UIMode): string {
-    switch (mode) {
-        case UIMode.Create:
-            return 'Common.Create';
+  switch (mode) {
+    case UIMode.Create:
+      return 'Common.Create';
 
-        case UIMode.Change:
-            return 'Common.Change';
+    case UIMode.Change:
+      return 'Common.Change';
 
-        case UIMode.Display:
-            return 'Common.Display';
+    case UIMode.Display:
+      return 'Common.Display';
 
-        default:
-            return '';
-    }
+    default:
+      return '';
+  }
 }
 
 /**
  * UI Detail page interface
  */
 export interface IUIDetailPage {
-    IsUIEditable(): boolean;
-    currentUIMode(): UIMode;
-    currentUIModeString(): string;
+  IsUIEditable(): boolean;
+  currentUIMode(): UIMode;
+  currentUIModeString(): string;
 }
 
 /**
  * Repeat frequency
  */
 export enum RepeatFrequency {
-	Month       = 0,
-	Fortnight   = 1,
-	Week        = 2,
-    Day         = 3,
-    Quarter     = 4,
-    HalfYear    = 5,
-    Year        = 6,
-    Manual      = 7,
+  Month = 0,
+  Fortnight = 1,
+  Week = 2,
+  Day = 3,
+  Quarter = 4,
+  HalfYear = 5,
+  Year = 6,
+  Manual = 7,
 };
 
 /**
  * Log Level enum
  */
 export enum LogLevel {
-    Crash = 0,
-    Error = 1,
-    Warning = 2,
-    Info = 3,
-    Debug = 4,
+  Crash = 0,
+  Error = 1,
+  Warning = 2,
+  Info = 3,
+  Debug = 4,
 }
 
 export class InfoMessage {
-    constructor(msgtype?: MessageType, msgtitle?: string, msgcontent?: string) {
-        this.MsgTime = moment();
-        if (msgtype) {
-            this.MsgType = msgtype;
-        }
-        if (msgtitle) {
-            this.MsgTitle = msgtitle;
-        }
-        if (msgcontent) {
-            this.MsgContent = msgcontent;
-        }
+  constructor(msgtype?: MessageType, msgtitle?: string, msgcontent?: string) {
+    this.MsgTime = moment();
+    if (msgtype) {
+      this.MsgType = msgtype;
     }
+    if (msgtitle) {
+      this.MsgTitle = msgtitle;
+    }
+    if (msgcontent) {
+      this.MsgContent = msgcontent;
+    }
+  }
 
-    public MsgType: MessageType;
-    public MsgTime: moment.Moment;
-    public MsgTitle: string;
-    public MsgContent: string;
+  public MsgType: MessageType;
+  public MsgTime: moment.Moment;
+  public MsgTitle: string;
+  public MsgContent: string;
 
-    get IsError(): boolean {
-        return this.MsgType === MessageType.Error;
-    }
-    get IsWarning(): boolean {
-        return this.MsgType === MessageType.Warning;
-    }
-    get IsInfo(): boolean {
-        return this.MsgType === MessageType.Info;
-    }
+  get IsError(): boolean {
+    return this.MsgType === MessageType.Error;
+  }
+  get IsWarning(): boolean {
+    return this.MsgType === MessageType.Warning;
+  }
+  get IsInfo(): boolean {
+    return this.MsgType === MessageType.Info;
+  }
 }
 
 export interface BaseModelJson {
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 }
 
 /**
  * Base model
  */
 export class BaseModel {
-    protected _createdAt: moment.Moment;
-    public CreatedBy: string;
-    protected _updatedAt: moment.Moment;
-    public UpdatedBy: string;
+  protected _createdAt: moment.Moment;
+  public CreatedBy: string;
+  protected _updatedAt: moment.Moment;
+  public UpdatedBy: string;
 
-    // For checking
-    public VerifiedMsgs: InfoMessage[];
+  // For checking
+  public VerifiedMsgs: InfoMessage[];
 
-    get CreatedAt(): moment.Moment {
-        return this._createdAt;
+  get CreatedAt(): moment.Moment {
+    return this._createdAt;
+  }
+  set CreatedAt(ca: moment.Moment) {
+    this._createdAt = ca;
+  }
+  get UpdatedAt(): moment.Moment {
+    return this._updatedAt;
+  }
+  set UpdatedAt(ua: moment.Moment) {
+    this._updatedAt = ua;
+  }
+
+  constructor() {
+    this.CreatedAt = moment();
+    this.UpdatedAt = moment();
+  }
+
+  public onInit() {
+  }
+
+  public onVerify(context?: any): boolean {
+    this.VerifiedMsgs = [];
+
+    return true;
+  }
+
+  public onComplete(): void {
+  }
+
+  public writeJSONObject(): any {
+    let rstobj: any = {
+
+    };
+    if (this._createdAt) {
+      rstobj.createdAt = this._createdAt.format(MomentDateFormat);
     }
-    set CreatedAt(ca: moment.Moment) {
-        this._createdAt = ca;
+    if (this.CreatedBy && this.CreatedBy.length > 0) {
+      rstobj.createdBy = this.CreatedBy;
     }
-    get UpdatedAt(): moment.Moment {
-        return this._updatedAt;
+    if (this._updatedAt) {
+      rstobj.updatedAt = this._updatedAt.format(MomentDateFormat);
     }
-    set UpdatedAt(ua: moment.Moment) {
-        this._updatedAt = ua;
-    }
-
-    constructor() {
-        this.CreatedAt = moment();
-        this.UpdatedAt = moment();
-    }
-
-    public onInit() {
-    }
-
-    public onVerify(context?: any): boolean {
-        this.VerifiedMsgs = [];
-
-        return true;
-    }
-
-    public onComplete(): void {
-    }
-
-    public writeJSONObject(): any {
-        let rstobj: any = {
-
-        };
-        if (this._createdAt) {
-            rstobj.createdAt = this._createdAt.format(MomentDateFormat);
-        }
-        if (this.CreatedBy && this.CreatedBy.length > 0) {
-            rstobj.createdBy = this.CreatedBy;
-        }
-        if (this._updatedAt) {
-            rstobj.updatedAt = this._updatedAt.format(MomentDateFormat);
-        }
-        if (this.UpdatedBy && this.UpdatedBy.length > 0 ) {
-            rstobj.updatedBy = this.UpdatedBy;
-        }
-
-        return rstobj;
+    if (this.UpdatedBy && this.UpdatedBy.length > 0) {
+      rstobj.updatedBy = this.UpdatedBy;
     }
 
-    public writeJSONString(): string {
-        let forJSON = this.writeJSONObject();
-        if (forJSON) {
-            return JSON && JSON.stringify(forJSON);
-        }
-        return JSON && JSON.stringify(this);
-    }
+    return rstobj;
+  }
 
-    public onSetData(data: any) : void {
-        if (data && data.createdBy) {
-            this.CreatedBy = data.createdBy;
-        }
-        if (data && data.createdAt) {
-            this.CreatedAt = moment(data.createdAt, MomentDateFormat);
-        }
-        if (data && data.updatedBy) {
-            this.UpdatedBy = data.updatedBy;
-        }
-        if (data && data.updatedAt) {
-            this.UpdatedAt = moment(data.updatedAt, MomentDateFormat);
-        }
+  public writeJSONString(): string {
+    let forJSON = this.writeJSONObject();
+    if (forJSON) {
+      return JSON && JSON.stringify(forJSON);
     }
+    return JSON && JSON.stringify(this);
+  }
+
+  public onSetData(data: any): void {
+    if (data && data.createdBy) {
+      this.CreatedBy = data.createdBy;
+    }
+    if (data && data.createdAt) {
+      this.CreatedAt = moment(data.createdAt, MomentDateFormat);
+    }
+    if (data && data.updatedBy) {
+      this.UpdatedBy = data.updatedBy;
+    }
+    if (data && data.updatedAt) {
+      this.UpdatedAt = moment(data.updatedAt, MomentDateFormat);
+    }
+  }
 }
 
 // Module
 export class Module {
-    public Module: string;
-    public Name: string;
+  public Module: string;
+  public Name: string;
 }
 
 // Tag
 export class Tag {
-    public ID: number;
-    public Tag: string;
+  public ID: number;
+  public Tag: string;
 }
 
 // Tag linkage
 export class TagLinkage {
-    public TagID: number;
-    public Module: string;
-    public ObjectID: number;
+  public TagID: number;
+  public Module: string;
+  public ObjectID: number;
 }
 
 // App language: the language set which supported by current app.
 export class AppLanguage {
-    public Lcid: number;
-    public IsoName: string;
-    public EnglishName: string;
-    public NativeName: string;
-    public AppFlag: boolean;
+  public Lcid: number;
+  public IsoName: string;
+  public EnglishName: string;
+  public NativeName: string;
+  public AppFlag: boolean;
 }
 
 export class MultipleNamesObject {
-    public LangName: string;
-    public IsOrigin: boolean;
-    public Name: string;
+  public LangName: string;
+  public IsOrigin: boolean;
+  public Name: string;
 }
 
-export enum OverviewScope {
-   CurrentMonth = 1,
-   CurrentYear = 2,
-   All = 9,
+/**
+ * Overview Scope
+ */
+export enum OverviewScopeEnum {
+  CurrentMonth = 1,
+  CurrentYear = 2,
+  PreviousMonth = 3,
+  PreviousYear = 4,
+
+  All = 9,
 }
+
 export interface OverviewScopeRange {
-    BeginDate: moment.Moment;
-    EndDate: moment.Moment;
+  BeginDate: moment.Moment;
+  EndDate: moment.Moment;
 }
-export function getOverviewScopeRange(scope: OverviewScope): OverviewScopeRange {
+
+export interface OverviewScopeUIString {
+  value: OverviewScopeEnum;
+  i18nterm: string;
+  displaystring: string;
+}
+
+
+export class OverviewScope {
+  public static getOverviewScopeStrings(): Array<OverviewScopeUIString> {
+    let arrst: Array<OverviewScopeUIString> = new Array<OverviewScopeUIString>();
+
+    for (let se in OverviewScopeEnum) {
+      if (Number.isNaN(+se)) {
+      } else {
+        arrst.push({
+          value: +se,
+          i18nterm: OverviewScope.getOverviewScopeDisplayString(+se),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+
+  public static getOverviewScopeDisplayString(se: OverviewScopeEnum): string {
+    switch(se) {
+      case OverviewScopeEnum.CurrentMonth:
+        return 'Common.CurrentMonth';
+
+      case OverviewScopeEnum.CurrentYear:
+        return 'Common.CurrentYear';
+
+      case OverviewScopeEnum.PreviousMonth:
+        return 'Common.PreviousMonth';
+
+      case OverviewScopeEnum.PreviousYear:
+        return 'Common.PreviousYear';
+
+      case OverviewScopeEnum.All:
+        return 'Common.All';
+
+      default:
+        return '';
+    }
+  }
+
+  public static getOverviewScopeRange(scope: OverviewScopeEnum): OverviewScopeRange {
     let bgn = moment();
     let end = moment();
 
-    if (scope === OverviewScope.CurrentMonth) {
-      bgn.set('day', 0);
-    } else if (scope === OverviewScope.CurrentYear) {
-      bgn.set('day', 0);
-      bgn.set('month', 0);
-    } else if (scope === OverviewScope.All) {
+    if (scope === OverviewScopeEnum.CurrentMonth) {
+      bgn.startOf('month');
+      end.endOf('month');
+    } else if (scope === OverviewScopeEnum.CurrentYear) {
+      bgn.startOf('year');
+      end.endOf('year');
+    } else if (scope === OverviewScopeEnum.PreviousMonth) {
+      bgn.subtract(1, 'M');
+      bgn.endOf('month');
+
+      end = bgn.clone();
+      end.endOf('month');
+    } else if (scope === OverviewScopeEnum.PreviousYear) {
+      bgn.subtract(1, 'y');
+      bgn.startOf('year');
+
+      end = bgn.clone();
+      end.endOf('year');
+    } else if (scope === OverviewScopeEnum.All) {
       bgn = moment('19710101');
       end = moment('99991231');
     }
 
     return { BeginDate: bgn, EndDate: end };
+  }
 }
+

@@ -170,8 +170,8 @@ export class LearnCategory extends hih.BaseModel {
   public SysFlag: boolean;
 
   // Runtime information
-  public ParentIdForJsTree: number;
-  public ParentObject: any;
+  public ParentIdForJsTree: number;  
+  public HierLevel: number; // Level in the hierarchy: 0 stands for the root
   public FullDisplayText: string;
 
   constructor() {
