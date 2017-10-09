@@ -30,6 +30,7 @@
 
         <mat-form-field>
           <mat-select class="demo-full-width" placeholder="{{'Finance.Owner' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.OwnerId" name="owner">
+            <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
             <mat-option *ngFor="let usr of _homedefService.MembersInChosedHome" [value]="usr.User">
               {{usr.DisplayAs}} 
             </mat-option>

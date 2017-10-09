@@ -67,6 +67,7 @@
       <mat-form-field>
         <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
           name="hdrcc" class="demo-full-width">
+          <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
           <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
             {{tt.Name}}
           </mat-option>
@@ -77,6 +78,7 @@
       <mat-form-field>
         <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId" name="hdrord"
           class="demo-full-width">
+          <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
           <mat-option *ngFor="let tt of _storageService.Orders" [value]="tt.Id">
             {{tt.Name}}
           </mat-option>
