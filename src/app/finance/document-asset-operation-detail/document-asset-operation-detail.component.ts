@@ -53,6 +53,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
 
     Observable.forkJoin([
       this._storageService.fetchAllAccountCategories(),
+      this._storageService.fetchAllAssetCategories(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),
       this._storageService.fetchAllAccounts(),
