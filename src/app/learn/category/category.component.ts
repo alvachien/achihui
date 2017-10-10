@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'hih-learn-category',
-  templateUrl: './category.component.html',
+  template: `<router-outlet></router-outlet>`,
   styleUrls: ['./category.component.scss'],
 })
 export class CategoryComponent implements OnInit {

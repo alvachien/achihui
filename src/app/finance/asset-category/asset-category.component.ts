@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-asset-category',
-  templateUrl: './asset-category.component.html',
+  template: `<router-outlet></router-outlet>`,
   styleUrls: ['./asset-category.component.scss']
 })
 export class AssetCategoryComponent implements OnInit {

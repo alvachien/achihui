@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-book',
+  selector: 'app-person',
   template: `<router-outlet></router-outlet>`,
-  styleUrls: ['./book.component.scss']
+  styleUrls: ['./person.component.scss']
 })
-export class BookComponent implements OnInit {
+export class PersonComponent implements OnInit {
 
   constructor() { }
 

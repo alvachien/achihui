@@ -3,7 +3,7 @@ import { fadeAnimation } from '../../utility';
 
 @Component({
   selector: 'hih-finance-account',
-  templateUrl: './account.component.html',
+  template: `<router-outlet></router-outlet>`,
   styleUrls: ['./account.component.scss'],
   animations: [fadeAnimation],
 })

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'hih-learn-object',
-  templateUrl: './object.component.html',
+  template: `<router-outlet></router-outlet>`,
   styleUrls: ['./object.component.scss'],
 })
 export class ObjectComponent implements OnInit {

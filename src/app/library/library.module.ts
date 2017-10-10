@@ -16,6 +16,9 @@ import { BookSetComponent } from './book-set/book-set.component';
 import { BookSetDetailComponent } from './book-set-detail/book-set-detail.component';
 import { MovieComponent } from './movie/movie.component';
 import { MovieDetailComponent } from './movie-detail/movie-detail.component';
+import { PersonComponent } from './person/person.component';
+import { PersonListComponent } from './person-list/person-list.component';
+import { PersonDetailComponent } from './person-detail/person-detail.component';
 
 @NgModule({
   imports: [
@@ -33,7 +36,10 @@ import { MovieDetailComponent } from './movie-detail/movie-detail.component';
     BookSetComponent, 
     BookSetDetailComponent, 
     MovieComponent, 
-    MovieDetailComponent
+    MovieDetailComponent, 
+    PersonComponent, 
+    PersonListComponent, 
+    PersonDetailComponent
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
