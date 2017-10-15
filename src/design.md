@@ -72,6 +72,41 @@ The Loan involves the interest calculation.
 #### Others
 Others
 
+### Library Document
+#### Book Category
+Arts & Photography
+Biographies & Memoirs
+Business & Money
+Calendars
+Children's Books
+Christian Books & Bibles
+Comics & Graphic Novels
+Computers & Technology
+Cookbooks, Food & Wine
+Crafts, Hobbies & Home
+Education & Teaching
+Engineering & Transportation
+Gay & Lesbian
+Health, Fitness & Dieting
+History
+Humor & Entertainment
+Law
+Literature & Fiction
+Medical Books
+Mystery, Thriller & Suspense
+Parenting & Relationships
+Politics & Social Sciences
+Reference
+Religion & Spirituality
+Romance
+Science & Math
+Science Fiction & Fantasy
+Self-Help
+Sports & Outdoors
+Teen & Young Adult
+Test Preparation
+Travel
+
 ## UI part
 
 The TypeScript UI app consists lots of the interfaces.

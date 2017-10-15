@@ -166,6 +166,9 @@
       "Couple": "Couple",
       "Children": "Children",
       "Parent": "Parent"
+    },
+    "BkCtgy": {
+      "Novel": "Novel"
     }
   },
   "RepeatFrequency": {
