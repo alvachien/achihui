@@ -9,7 +9,7 @@ import { LogLevel, LearnCategory } from '../../model';
 import { LearnStorageService } from '../../services';
 
 /**
- * Data source of Home def.
+ * Data source of Learn Category
  */
 export class LearnCategoryDataSource extends DataSource<any> {
   constructor(private _storageService: LearnStorageService,

@@ -345,6 +345,10 @@
     "UnnecessaryExchangeRate": "本币操作无需汇率"
   },
   "Library": {
+    "BookCategories": "图书种类",
+    "BookCategory": "图书种类",
+    "MovieGenres": "影视类别",
+    "MovieGenre": "影视类别",
     "Books": "书籍",
     "Book": "书籍",
     "Movies": "影视剧",

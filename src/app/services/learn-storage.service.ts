@@ -100,7 +100,7 @@ export class LearnStorageService {
         })
         .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllCategories in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllCategories in LearnStorageService: ${error}`);
           }
 
           this._isCtgyListLoaded = false;
@@ -416,7 +416,7 @@ export class LearnStorageService {
         })
         .catch((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllHistories in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllHistories in LearnStorageService: ${error}`);
           }
 
           this._isHistListLoaded = true;

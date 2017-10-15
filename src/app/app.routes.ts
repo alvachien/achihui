@@ -51,5 +51,10 @@ export const AppRoutes: Routes = [
         canActivate: [HomeChoseGuardService],
         loadChildren: 'app/finance/finance.module#FinanceModule',
     },
+    {
+        path: 'library',
+        canActivate: [HomeChoseGuardService],
+        loadChildren: 'app/library/library.module#LibraryModule',
+    },
     { path: '**', component: PageNotFoundComponent },
 ];

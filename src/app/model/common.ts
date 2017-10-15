@@ -238,10 +238,13 @@ export class AppLanguage {
   public AppFlag: boolean;
 }
 
+/**
+ * Multiple name object
+ */
 export class MultipleNamesObject {
-  public LangName: string;
-  public IsOrigin: boolean;
-  public Name: string;
+  public NativeName: string;
+  public EnglishName: string;
+  public EnglishIsNative: boolean;
 }
 
 /**

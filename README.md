@@ -4,6 +4,7 @@
 - Learning trace. This features enable you to record the target for each family member's learning targets. Learning is a habit of self growth, no matter the ages of the family members.
 - Libraries (Under design phrase). 
 
+## How to use it
 **HIH** is expected to run on a HTTP/HTTPS server, which shall be easily access by all workstations/mobile devices. 
 As it name indicates, HIH shall be used inside the family network. So, ideally, it runs on a NAS or Family Server with HTTP/PHP enabling.  
 
@@ -35,12 +36,14 @@ This project used tons of new project, including: ASP.NET Core 1.0, Angular 2, T
 This project was generated with [angular-cli](https://github.com/angular/angular-cli).
 
 This project also require the following components:
-* Angular 4
-* Material 2
-* Ngx-translate
-* Oidc-Client
-* TinyMce
-* Moment
+* [Typescript](http://www.typescriptlang.org)
+* [Angular 2, 4, 5](https://github.com/angular/angular)
+* [Material 2](https://github.com/angular/material)
+* [Ngx-translate](https://github.com/ngx-translate/core)
+* [Oidc-Client](https://github.com/IdentityModel/oidc-client-js)
+* [TinyMce](https://www.tinymce.com/)
+* [Moment.js](https://momentjs.com/)
+* [Ngx-Chart](https://github.com/swimlane/ngx-charts)
 
 ## Contact me
 **Alva Chien | 钱红俊**

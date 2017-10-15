@@ -37,10 +37,12 @@ export class SideNavService {
     this.addSubItem(finance, 'Finance.Reports', '/finance/report', 10, 'account_balance');
 
     const library = this.addItem('Nav.Libraries', 'subject', null, 4);
-    this.addSubItem(library, 'Nav.Person', '/lib/person', 1, 'face');
-    this.addSubItem(library, 'Nav.Location', '/lib/location', 2, 'storage');
-    this.addSubItem(library, 'Library.Books', '/lib/book', 3, 'book');
-    this.addSubItem(library, 'Library.Movies', '/lib/movie', 4, 'movie');
+    this.addSubItem(library, 'Nav.Person', '/library/person', 1, 'face');
+    this.addSubItem(library, 'Nav.Location', '/library/location', 2, 'storage');
+    this.addSubItem(library, 'Library.BookCategories', '/library/bookcategory', 3, 'settings');
+    this.addSubItem(library, 'Library.Books', '/library/book', 4, 'book');
+    this.addSubItem(library, 'Library.MovieGenres', '/library/moviegenre', 5, 'video_library');
+    this.addSubItem(library, 'Library.Movies', '/library/movie', 6, 'movie');
 
     const event = this.addItem('Nav.EventTrace', 'event', null, 5);
     this.addSubItem(event, 'Common.Categories', '/event/category', 1, 'toc');

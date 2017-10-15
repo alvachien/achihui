@@ -14,7 +14,7 @@ import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
 import { AppComponent } from './app.component';
 import {
   AuthService, AuthGuardService,
-  FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
+  FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService, LibraryStorageService,
   HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService
 } from './services';
 import { AppRoutes } from './app.routes';
@@ -83,6 +83,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     CanDeactivateGuardService,
     FinanceStorageService,
     LearnStorageService,
+    LibraryStorageService,
     LanguageService,
     UIStatusService,
     SideNavService,

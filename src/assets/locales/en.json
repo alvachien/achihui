@@ -345,6 +345,10 @@
     "UnnecessaryExchangeRate": "Exchange rate is unnecessary for base currency"
   },
   "Library": {
+    "BookCategories": "Book Categories",
+    "BookCategory": "Book Category",
+    "MovieGenres": "Movie Genres",
+    "MovieGenre": "Movie Genre",
     "Books": "Books",
     "Book": "Book",
     "Movies": "Movies",
