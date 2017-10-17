@@ -241,10 +241,50 @@ export class AppLanguage {
 /**
  * Multiple name object
  */
-export class MultipleNamesObject {
+export class MultipleNamesObject extends BaseModel {
   public NativeName: string;
   public EnglishName: string;
   public EnglishIsNative: boolean;
+
+  constructor() {
+    super();
+  }
+
+  public onInit() {
+    super.onInit();
+  }
+
+  public onVerify(context?: any): boolean {
+    return super.onVerify(context);
+  }
+
+  public writeJSONObject(): any {
+    let rstobj: any = super.writeJSONObject();
+
+    rstobj.nativeName = this.NativeName;
+    if (this.EnglishName) {
+      rstobj.englishName = this.EnglishName;
+    }
+    if (this.EnglishIsNative) {
+      rstobj.englishIsNative = this.EnglishIsNative;
+    }
+
+    return rstobj;
+  }
+
+  public onSetData(data: any): void {
+    super.onSetData(data);
+
+    if (data && data.nativeName) {
+      this.NativeName = data.nativeName;
+    }
+    if (data && data.englishName) {
+      this.EnglishName = data.englishName;
+    }
+    if (data && data.englishIsNative) {
+      this.EnglishIsNative = data.englishIsNative;
+    }
+  }
 }
 
 /**
