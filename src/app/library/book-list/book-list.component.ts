@@ -69,4 +69,11 @@ export class BookListComponent implements OnInit {
     });
   }
 
+  public onCreateBook() {
+
+  }
+
+  public onRefresh() {
+    
+  }
 }

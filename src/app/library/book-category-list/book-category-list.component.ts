@@ -20,7 +20,7 @@ export class BookCategoryDataSource extends DataSource<any> {
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<BookCategory[]> {
     const displayDataChanges = [
-      this._storageService.listCategoryChange,
+      this._storageService.listBookCategoryChange,
       this._paginator.page,
     ];
 

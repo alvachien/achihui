@@ -69,4 +69,10 @@ export class LocationListComponent implements OnInit {
     });
   }
 
+  public onCreateLocation() {    
+  }
+
+  public onRefresh() {
+    
+  }
 }
