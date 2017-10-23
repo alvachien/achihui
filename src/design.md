@@ -137,6 +137,13 @@ To save the working load the API, also increase the performance of the app from 
 
 The buffer can be bypassed if you refresh the list manually via the 'refresh' button.
 
+## Use webpack instead of ng
+The following commands shall be used directly:
+   - "npm run build" to build.
+   - "npm test" to run unit tests.
+   - "npm start" to serve the app using webpack-dev-server.
+   - "npm run e2e" to run protractor.
+
 ## Authority control
 
 Authority control applys to all objects.

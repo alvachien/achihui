@@ -17,13 +17,13 @@
       </mat-form-field>
       <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent" class="example-icon">refresh</mat-icon></button>
     </mat-toolbar>
+
     <div class="table-container mat-elevation-z8">
       <mat-table #table [dataSource]="dataSource">
         <!-- ID Column -->
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
           <mat-cell *matCellDef="let row">
-            <button mat-icon-button (click)="onDisplayAccount(row)" matTooltip="{{'Common.DisplayDetails' | translate}}"><mat-icon color="primary" class="example-icon">search</mat-icon></button>
             <button mat-icon-button (click)="onChangeAccount(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
             <button mat-icon-button (click)="onDeleteAccount(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="example-icon">delete</mat-icon></button>
             <a class="mt-1" routerLink='/finance/account/display/{{row.Id}}' routerLinkActive="active" *ngIf="row.Id">{{row.Id}}</a>
