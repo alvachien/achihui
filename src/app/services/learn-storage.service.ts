@@ -356,16 +356,11 @@ export class LearnStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readObject in LearnStorageService: ${x}`);
         }
 
-        // Todo, update the list buffer?
-        // const copiedData = this.Accounts.slice();
-        // copiedData.push(x);
-        // this.listAccountChange.next(copiedData);
-
         // Broadcast event
         this.readObjectEvent.emit(x);
       }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in readObject in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Error occurred in readObject in LearnStorageService:  ${error}`);
         }
 
         // Broadcast event: failed

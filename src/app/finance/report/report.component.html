@@ -9,7 +9,7 @@
           {{'Finance.BalanceSheetReport' | translate}}
         </ng-template>
 
-        <div class="container">
+        <div class="container mt-2">
           <div class="row">
             <div class="col-12 col-md-6">
               <mat-card>
@@ -61,7 +61,7 @@
         </div>
         <hr />
 
-        <div class="table-container mat-elevation-z8">
+        <div class="table-container mat-elevation-z8 mt-2">
           <mat-table #tableBS [dataSource]="dataSourceBS">
             <!-- Account column -->
             <ng-container matColumnDef="Account">
@@ -128,7 +128,7 @@
           {{'Finance.ControlCenterReport' | translate}}
         </ng-template>
 
-        <div class="container">
+        <div class="container mt-2">
           <div class="row">
             <div class="col-12 col-md-6">
               <mat-card>
@@ -156,7 +156,7 @@
         </div>
         <hr />
 
-        <div class="table-container mat-elevation-z8">
+        <div class="table-container mat-elevation-z8 mt-2">
           <mat-table #tableCC [dataSource]="dataSourceCC">
             <!-- Control Center column -->
             <ng-container matColumnDef="ControlCenter">
@@ -208,7 +208,12 @@
           {{'Finance.OrderReport' | translate}}
         </ng-template>
 
-        <div class="container">
+        <mat-toolbar>
+          <mat-checkbox [(ngModel)]="includeInvalid">{{'Finance.InvalidOnes' | translate}}</mat-checkbox>
+          <button mat-icon-button color="primary" (click)="onReportOrderRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
+        </mat-toolbar>
+            
+        <div class="container mt-2">
           <div class="row">
             <div class="col-12 col-md-6">
               <mat-card>
@@ -236,7 +241,7 @@
         </div>
         <hr />
 
-        <div class="table-container mat-elevation-z8">
+        <div class="table-container mat-elevation-z8 mt-2">
           <mat-table #tableOrder [dataSource]="dataSourceOrder">
             <!-- Order column -->
             <ng-container matColumnDef="Order">

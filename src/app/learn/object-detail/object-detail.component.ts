@@ -18,32 +18,33 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: LearnObject | null;
+  public detailObject: LearnObject | null = null;
   public uiMode: UIMode = UIMode.Create;
   elementId: String;
   @Output() onEditorKeyup = new EventEmitter<any>();
-
+  private editor: any = null;
+  
   constructor(private _dialog: MatDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
+
     this.detailObject = new LearnObject();
     this.elementId = 'tinymce' + Math.round(100 * Math.random()).toString();
   }
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering LearnObjectDetail ngOnInit...');
     }
   }
-
-  private editor: any = null;
 
   ngAfterViewInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of LearnObjectDetail');
     }
+
     try {
       tinymce.init({
         selector: '#' + this.elementId,
@@ -103,7 +104,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.detailObject = x;
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.log(`AC_HIH_UI [Error]: Entering ngAfterViewInit in ObjectDetailComponent, failed to readControlCenterEvent : ${x}`);
+                  console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit in ObjectDetailComponent, failed to readControlCenterEvent : ${x}`);
                 }
                 this.detailObject = new LearnObject();
               }
