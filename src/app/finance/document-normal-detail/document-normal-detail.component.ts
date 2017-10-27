@@ -8,7 +8,8 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal } from '../../model';
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal,
+  BuildupAccountForSelection, UIAccountForSelection } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -45,7 +46,8 @@ export class DocumentNormalDetailComponent implements OnInit {
   public detailObject: Document | null = null;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
-
+  public arUIAccount: UIAccountForSelection[] = [];
+  
   displayedColumns = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order'];
   dataSource: NormalDocumentItemDataSource | null;
   itemOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
@@ -91,6 +93,9 @@ export class DocumentNormalDetailComponent implements OnInit {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
+      // Accounts
+      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+      
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createnormal') {

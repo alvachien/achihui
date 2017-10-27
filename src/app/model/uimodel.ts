@@ -103,38 +103,47 @@ export class UIRepeatFrequency {
 
   public static getRepeatFrequencies(): UIRepeatFrequency[] {
     let rst: UIRepeatFrequency[] = new Array<UIRepeatFrequency>();
+
     let item: UIRepeatFrequency = new UIRepeatFrequency();
     item.Id = hih.RepeatFrequency.Month;
     item.DisplayString = 'RepeatFrequency.Month';
     rst.push(item);
+
     item = new UIRepeatFrequency();
     item.Id = hih.RepeatFrequency.Fortnight;
     item.DisplayString = 'RepeatFrequency.Fortnight';
     rst.push(item);
+
     item = new UIRepeatFrequency();
     item.Id = hih.RepeatFrequency.Week;
     item.DisplayString = 'RepeatFrequency.Week';
     rst.push(item);
+
     item = new UIRepeatFrequency();
     item.Id = hih.RepeatFrequency.Day;
     item.DisplayString = 'RepeatFrequency.Day';
     rst.push(item);
+
     item = new UIRepeatFrequency();
     item.Id = hih.RepeatFrequency.Quarter;
     item.DisplayString = 'RepeatFrequency.Quarter';
     rst.push(item);
+
     item = new UIRepeatFrequency();
     item.Id = hih.RepeatFrequency.HalfYear;
     item.DisplayString = 'RepeatFrequency.HalfYear';
     rst.push(item);
+
     item = new UIRepeatFrequency();
     item.Id = hih.RepeatFrequency.Year;
     item.DisplayString = 'RepeatFrequency.Year';
     rst.push(item);
+
     item = new UIRepeatFrequency();
     item.Id = hih.RepeatFrequency.Manual;
     item.DisplayString = 'RepeatFrequency.Manual';
     rst.push(item);
+
     return rst;
   }
 }
@@ -451,4 +460,65 @@ export class SidenavItem {
   isRouteString() {
     return this.route instanceof String || typeof this.route === 'string';
   }
+}
+
+/**
+ * Account for selection
+ */
+export class UIAccountForSelection {
+  public Id: number;
+  public CategoryId: number;  
+  public Name: string;
+  public CategoryName: string;
+  public AssetFlag: boolean;
+  public Status: HIHFinance.AccountStatusEnum;
+}
+
+/**
+ * Buildup accounts for select
+ * @param acnts Accounts
+ * @param acntctg Account categories
+ * @param skipadp Skip ADP accounts
+ * @param skiploan Skip Loan accounts
+ * @param skipasset Skip Asset accounts
+ */
+export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg: HIHFinance.AccountCategory[], 
+  skipadp?: boolean, skiploan?: boolean, skipasset?: boolean): UIAccountForSelection[] {
+  let arrst: UIAccountForSelection[] = [];
+
+  for(let acnt of acnts) {
+    let rst: UIAccountForSelection = new UIAccountForSelection();
+    rst.CategoryId = acnt.CategoryId;
+    rst.Id = acnt.Id;
+    rst.Name = acnt.Name;
+    rst.Status = acnt.Status;
+
+    // Skip some categories
+    if (skipadp) {
+      if (acnt.CategoryId === hih.FinanceAccountCategory_AdvancePayment) {
+        continue;
+      }
+    }
+    if (skiploan) {
+      if (acnt.CategoryId === hih.FinanceAccountCategory_Loan) {
+        continue;
+      }
+    }
+    if (skipasset) {
+      if (acnt.CategoryId === hih.FinanceAccountCategory_Asset) {
+        continue;
+      }
+    }
+
+    for(let ctgy of acntctg) {
+      if (ctgy.ID === rst.CategoryId) {
+        rst.CategoryName = ctgy.Name;
+        rst.AssetFlag = ctgy.AssetFlag;
+      }
+    }
+
+    arrst.push(rst);
+  }
+
+  return arrst;
 }

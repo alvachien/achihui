@@ -9,7 +9,8 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, FinanceDocType_Transfer } from '../../model';
+import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, FinanceDocType_Transfer,
+  BuildupAccountForSelection, UIAccountForSelection } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -27,7 +28,8 @@ export class DocumentTransferDetailComponent implements OnInit {
   // public commonFormGroup: FormGroup;
   // public sourceFormGroup: FormGroup;
   // public targetFormGroup: FormGroup;
-
+  public arUIAccount: UIAccountForSelection[] = [];
+  
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -80,6 +82,9 @@ export class DocumentTransferDetailComponent implements OnInit {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentTransferDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
+      // Accounts
+      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+      
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createtransfer') {

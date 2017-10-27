@@ -46,8 +46,8 @@
       <mat-form-field>
         <mat-select class="demo-full-width" placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.AccountId"
           name="srcacnt">
-          <mat-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
-            {{acnt.Name}}
+          <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
+            <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
           </mat-option>
         </mat-select>
       </mat-form-field>

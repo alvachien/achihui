@@ -113,6 +113,8 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
               tinymce.activeEditor.setContent(this.detailObject.Content);
               if (this.uiMode === UIMode.Display) {
                 tinymce.activeEditor.setMode('readonly');
+              } else if(this.uiMode === UIMode.Create || this.uiMode === UIMode.Change) {
+                tinymce.activeEditor.setMode('design');
               }
             });
 

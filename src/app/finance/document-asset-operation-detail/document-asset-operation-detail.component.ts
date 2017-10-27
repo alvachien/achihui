@@ -9,7 +9,7 @@ import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_Asset,
-  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequency,
+  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequency, BuildupAccountForSelection, UIAccountForSelection
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -27,7 +27,8 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public PageTitle: string;
-
+  public arUIAccount: UIAccountForSelection[] = [];
+  
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -65,6 +66,9 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
+      // Accounts
+      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createassetbuy') {

@@ -957,7 +957,7 @@ export class SettlementRule extends hih.BaseModel {
         }
 
         return false;
-      })) {
+      }) !== -1) {
       } else {
         let msg: hih.InfoMessage = new hih.InfoMessage();
         msg.MsgTitle = 'Finance.InvalidControlCenter';
