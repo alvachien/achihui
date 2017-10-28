@@ -80,7 +80,7 @@
         <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.OrderId"
           name="hdrord" class="demo-full-width">
           <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-          <mat-option *ngFor="let tt of _storageService.Orders" [value]="tt.Id">
+          <mat-option *ngFor="let tt of arUIOrders" [value]="tt.Id">
             {{tt.Name}}
           </mat-option>
         </mat-select>

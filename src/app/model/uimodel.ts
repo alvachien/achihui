@@ -522,3 +522,41 @@ export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg:
 
   return arrst;
 }
+
+/**
+ * Order for selection
+ */
+export class UIOrderForSelection {
+  public Id: number;
+  public Name: string;
+  public _validFrom: moment.Moment;
+  public _validTo: moment.Moment;
+}
+
+/**
+ * Buildup accounts for select
+ * @param orders Orders
+ * @param skipinv Skip invalid orders
+ */
+export function BuildupOrderForSelection(orders: HIHFinance.Order[], skipinv?: boolean): UIOrderForSelection[] {
+  let arrst: UIOrderForSelection[] = [];
+
+  for(let ord of orders) {
+    let rst: UIOrderForSelection = new UIOrderForSelection();
+    rst.Id = ord.Id;
+    rst.Name = ord.Name;
+    rst._validFrom = ord._validFrom.clone();
+    rst._validTo = ord._validTo.clone();
+
+    // Skip some categories
+    if (skipinv) {
+      if (rst._validFrom > moment() || rst._validTo < moment()) {
+        continue;
+      }
+    }
+
+    arrst.push(rst);
+  }
+
+  return arrst;
+}

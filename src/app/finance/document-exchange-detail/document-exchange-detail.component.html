@@ -125,8 +125,8 @@
           <mat-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetOrderId"
             name="tgtord">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-            <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
-              {{ord.Name}}
+            <mat-option *ngFor="let tt of arUIOrders" [value]="tt.Id">
+              {{tt.Name}}
             </mat-option>
           </mat-select>
         </mat-form-field>

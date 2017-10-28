@@ -1,12 +1,14 @@
 # Home Info. Hub (Website Version)
-**Home Information Hub**, have two abbreviation terms: **HIH** or **Home Info. Hub**. **HIH** targets to build the warehouse for all necessary information among all family members. Key components are:
+**Home Information Hub**, with the abbreviation **HIH**. **HIH** targets to build the warehouse for all necessary information among all family members. 
+
+Key components are:
 - Finance trace. This feature allows you record (nearly) all the finance activities, and provides the reports for you to review the healthy of the family, such as the balance report, cash journal, etc;
 - Learning trace. This features enable you to record the target for each family member's learning targets. Learning is a habit of self growth, no matter the ages of the family members.
 - Libraries (Under design phrase). 
 
 ## How to use it
-**HIH** is expected to run on a HTTP/HTTPS server, which shall be easily access by all workstations/mobile devices. 
-As it name indicates, HIH shall be used inside the family network. So, ideally, it runs on a NAS or Family Server with HTTP/PHP enabling.  
+**HIH** is expected to run on Cloud or a HTTP/HTTPS server, which shall be easily access by all workstations/mobile devices. 
+Ideally, HIH runs on a NAS or Family Server with ASP.NET Core supporting as well as HTTP server enabling.  
 
 ## Live Demo / Example
 ***Live application***  hosted in [Azure Link (will be obseleted soon)](http://achihui.azurewebsites.net).

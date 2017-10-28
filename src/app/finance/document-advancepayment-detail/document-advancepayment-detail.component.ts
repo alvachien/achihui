@@ -10,7 +10,8 @@ import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_AdvancePayment,
-  UIFinAdvPayDocument, TemplateDocADP, UIRepeatFrequency, AccountExtraAdvancePayment, RepeatFrequency, BuildupAccountForSelection, UIAccountForSelection
+  UIFinAdvPayDocument, TemplateDocADP, UIRepeatFrequency, AccountExtraAdvancePayment, RepeatFrequency, 
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -52,6 +53,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
+  public arUIOrder: UIOrderForSelection[] = [];
   
   displayedColumns = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
   dataSource: TemplateDocADPDataSource | null;
@@ -96,6 +98,8 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      // Orders
+      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {

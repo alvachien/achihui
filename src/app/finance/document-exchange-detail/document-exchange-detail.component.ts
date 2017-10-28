@@ -9,7 +9,8 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument, BuildupAccountForSelection, UIAccountForSelection,
+import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument, 
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   UIMode, getUIModeString, FinanceDocType_CurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -27,6 +28,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
+  public arUIOrder: UIOrderForSelection[] = [];
   
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -90,6 +92,8 @@ export class DocumentExchangeDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+      // Orders
+      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {

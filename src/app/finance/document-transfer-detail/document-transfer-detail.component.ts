@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, FinanceDocType_Transfer,
-  BuildupAccountForSelection, UIAccountForSelection } from '../../model';
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -29,6 +29,7 @@ export class DocumentTransferDetailComponent implements OnInit {
   // public sourceFormGroup: FormGroup;
   // public targetFormGroup: FormGroup;
   public arUIAccount: UIAccountForSelection[] = [];
+  public arUIOrder: UIOrderForSelection[] = [];
   
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -84,6 +85,8 @@ export class DocumentTransferDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+      // Orders
+      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {

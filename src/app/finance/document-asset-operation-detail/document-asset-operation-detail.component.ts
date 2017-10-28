@@ -9,7 +9,8 @@ import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_Asset,
-  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequency, BuildupAccountForSelection, UIAccountForSelection
+  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequency, 
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -28,6 +29,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   public step: number = 0;
   public PageTitle: string;
   public arUIAccount: UIAccountForSelection[] = [];
+  public arUIOrder: UIOrderForSelection[] = [];
   
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -68,7 +70,9 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
-      
+      // Orders
+      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+            
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createassetbuy') {
