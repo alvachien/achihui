@@ -10,6 +10,9 @@ import { ObjectDetailComponent } from './object-detail';
 import { HistoryComponent } from './history';
 import { HistoryListComponent } from './history-list';
 import { HistoryDetailComponent } from './history-detail';
+import { QuestionBankComponent } from './question-bank';
+import { QuestionBankListComponent } from './question-bank-list';
+import { QuestionBankDetailComponent } from './question-bank-detail';
 
 const routes: Routes = [
   {
@@ -79,6 +82,28 @@ const routes: Routes = [
           {
             path: 'edit/:id',
             component: HistoryDetailComponent,
+          },
+        ],
+      },
+      {
+        path: 'questionbank',
+        component: QuestionBankComponent,
+        children: [
+          {
+            path: '',
+            component: QuestionBankListComponent,
+          },
+          {
+            path: 'create',
+            component: QuestionBankDetailComponent,
+          },
+          {
+            path: 'display/:id',
+            component: QuestionBankDetailComponent,
+          },
+          {
+            path: 'edit/:id',
+            component: QuestionBankDetailComponent,
           },
         ],
       },

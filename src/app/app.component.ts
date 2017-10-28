@@ -10,7 +10,7 @@ import { DateAdapter } from '@angular/material';
 import { MomentDateAdapter } from './utility';
 
 @Component({
-  selector: 'hih-root',
+  selector: 'hih-app',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

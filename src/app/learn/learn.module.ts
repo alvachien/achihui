@@ -20,6 +20,9 @@ import { CategoryDetailComponent } from './category-detail';
 import { HistoryComponent } from './history';
 import { HistoryListComponent } from './history-list';
 import { HistoryDetailComponent } from './history-detail';
+import { QuestionBankComponent } from './question-bank';
+import { QuestionBankListComponent } from './question-bank-list';
+import { QuestionBankDetailComponent } from './question-bank-detail';
 
 @NgModule({
   imports: [
@@ -42,6 +45,9 @@ import { HistoryDetailComponent } from './history-detail';
     HistoryComponent,
     HistoryListComponent,
     HistoryDetailComponent,
+    QuestionBankComponent,
+    QuestionBankListComponent,
+    QuestionBankDetailComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
