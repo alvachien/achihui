@@ -220,7 +220,7 @@ export class LearnCategory extends hih.BaseModel {
 }
 
 /**
- * LearnObject: Learn object, same as Knowledge
+ * Learn Object: Learn object, same as Knowledge
  */
 export class LearnObject extends hih.BaseModel {
   public HID: number;
@@ -283,7 +283,7 @@ export class LearnObject extends hih.BaseModel {
 }
 
 /**
- * LearnHistory: History of the learn object and the user
+ * Learn History: History of the learn object and the user
  */
 export class LearnHistory extends hih.BaseModel {
   public HID: number;
@@ -431,7 +431,7 @@ export class LearnHistory extends hih.BaseModel {
 }
 
 /**
- * LearnAward: Learn award for the user
+ * Learn Award: Learn award for the user
  */
 export class LearnAward extends hih.BaseModel {
   constructor() {
@@ -457,4 +457,20 @@ export class LearnAward extends hih.BaseModel {
   public onSetData(data: any) {
     super.onSetData(data);
   }
+}
+
+/**
+ * Question bank type
+ */
+export enum LearnQuestionBankType
+{
+    EssayQuestion       = 1,
+    MultipleChoice      = 2
+}
+
+/**
+ * Question bank: Question bank
+ */
+export class LearnQuestionBank extends hih.BaseModel {
+
 }

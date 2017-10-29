@@ -23,6 +23,7 @@ export class SideNavService {
     this.addSubItem(learn, 'Learning.LearningCategory', '/learn/category', 1, 'settings_input_composite');
     this.addSubItem(learn, 'Learning.LearningObjects', '/learn/object', 2, 'lightbulb_outline');
     this.addSubItem(learn, 'Learning.LearningHistories', '/learn/history', 3, 'history');
+    this.addSubItem(learn, 'Learning.QuestionBank', '/learn/questionbank', 4, 'collections');
 
     const finance = this.addItem('Nav.FinanceTrace', 'art_track', null, 3);
     this.addSubItem(finance, 'Common.Overview', '/finance/overview', 1, 'today');

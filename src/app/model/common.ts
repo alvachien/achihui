@@ -216,17 +216,19 @@ export class Module {
   public Name: string;
 }
 
-// Tag
-export class Tag {
-  public ID: number;
-  public Tag: string;
+/**
+ * Tag type
+ */
+export enum TagTypeEnum {
+  LearnQuestionBank   = 1,
+  
+  FinanceDocumentItem = 10,
 }
 
-// Tag linkage
-export class TagLinkage {
-  public TagID: number;
-  public Module: string;
-  public ObjectID: number;
+// Tag
+export class Tag {
+  public TagType: number;
+  public Term: string;
 }
 
 // App language: the language set which supported by current app.
