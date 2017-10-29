@@ -1,3 +1,36 @@
-<p>
-  question-bank-detail works!
-</p>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Learning.QuestionBank' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <mat-form-field class="demo-full-width">
+      <textarea matInput placeholder="Question" [(ngModel)]="itemObj.Question"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="demo-full-width">
+      <textarea matInput placeholder="Answer" [(ngModel)]="itemObj.BriefAnswer"></textarea>
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-chip-list #typeList>
+        <mat-chip *ngFor="let fruit of fruits" selectable="true"
+                  removable="true" (remove)="removeType(fruit)">
+          {{fruit.name}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+  
+        <input placeholder="New type..."
+                [matChipInputFor]="typeList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="addOnBlur"
+                (matChipInputTokenEnd)="addType($event)" />
+      </mat-chip-list>  
+    </mat-form-field>    
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button mat-button color="warn" (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
+  </mat-card-actions>
+</mat-card>

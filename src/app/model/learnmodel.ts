@@ -472,5 +472,5 @@ export enum LearnQuestionBankType
  * Question bank: Question bank
  */
 export class LearnQuestionBank extends hih.BaseModel {
-
+  public HID: number;
 }
