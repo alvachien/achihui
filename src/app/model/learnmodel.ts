@@ -471,6 +471,44 @@ export enum LearnQuestionBankType
 /**
  * Question bank: Question bank
  */
-export class LearnQuestionBank extends hih.BaseModel {
+export class QuestionBankItem extends hih.BaseModel {
   public HID: number;
+  public ID: number;
+  public Question: string;
+  public BriefAnswer: string;
+
+  public SubItems: QuestionBankSubItem[] = [];
+  public Tags: string[] = [];
+
+  public onSetData(data?: any) {
+    super.onSetData(data);
+
+    if (data && data.id) {
+      this.ID = +data.id;
+    }
+    if (data && data.hid) {
+      this.HID = +data.hid;
+    }
+    if (data && data.question) {
+      this.Question = data.question;
+    }
+    if (data && data.briefAnswer) {
+      this.BriefAnswer = data.briefAnswer;
+    }
+  }
+}
+
+/**
+ * Sub items
+ */
+export class QuestionBankSubItem {
+  public QuestionID: number;
+  public SubItem: string;
+
+  public Detail: string;
+  public Others: string;
+
+  public onSetData(data?: any) {
+    //if (data && data.)
+  }
 }

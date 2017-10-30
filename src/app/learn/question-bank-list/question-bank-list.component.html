@@ -1,3 +1,13 @@
-<p>
-  question-bank-list works!
-</p>
+<mat-card>
+  <mat-card-header>
+    <div></div>
+    <mat-card-title>{{'Learning.QuestionBank' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-toolbar>
+      <button mat-icon-button (click)="onCreateQuestion()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></button>
+      <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent">refresh</mat-icon></button>
+    </mat-toolbar>
+  </mat-card-content>
+</mat-card>

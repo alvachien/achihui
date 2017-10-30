@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, LearnCategory, LearnObject, LearnHistory, MomentDateFormat } from '../model';
+import { LogLevel, LearnCategory, LearnObject, LearnHistory, QuestionBankItem, MomentDateFormat } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -29,10 +29,16 @@ export class LearnStorageService {
     return this.listHistoryChange.value;
   }
 
+  listQtnBankChange: BehaviorSubject<QuestionBankItem[]> = new BehaviorSubject<QuestionBankItem[]>([]);
+  get QuestionBanks(): QuestionBankItem[] {
+    return this.listQtnBankChange.value;
+  }
+  
   // Buffer
   private _isCtgyListLoaded: boolean;
   private _isObjListLoaded: boolean;
   private _isHistListLoaded: boolean;
+  private _isQtnBankListLoaded: boolean;
 
   // Events
   createObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
@@ -41,6 +47,8 @@ export class LearnStorageService {
   deleteObjectEvent: EventEmitter<string | null> = new EventEmitter(null);
   createHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
   readHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
+  createQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
+  readQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -52,6 +60,7 @@ export class LearnStorageService {
     this._isCtgyListLoaded = false;
     this._isObjListLoaded = false;
     this._isHistListLoaded = false;
+    this._isQtnBankListLoaded = false;
   }
 
   // Categories
@@ -582,6 +591,99 @@ export class LearnStorageService {
         }
 
         return <any>response;
+      });
+  }
+
+  /**
+   * Create an item of Question Bank
+   * @param item Question bank item to create
+   */
+  public createQuestionBankItem(item: QuestionBankItem) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnQuestionBank';
+
+    const jdata: string = item.writeJSONString();
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+
+        let hd: QuestionBankItem = new QuestionBankItem();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createQuestionBankItem in LearnStorageService: ${x}`);
+        }
+
+        const copiedData = this.QuestionBanks.slice();
+        copiedData.push(x);
+        this.listQtnBankChange.next(copiedData);
+
+        // Broadcast event
+        this.createQuestionEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in createQuestionBankItem in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+  
+  /**
+   * Read an item of question bank
+   * @param itemid ID of question bank item
+   */
+  public readQuestionBank(itemid: number) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnQuestionBank/' + itemid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readQuestionBank in LearnStorageService: ${response}`);
+        }
+
+        let hd: QuestionBankItem = new QuestionBankItem();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in readQuestionBank in LearnStorageService: ${x}`);
+        }
+
+        // Broadcast event
+        this.readQuestionEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in readQuestionBank in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.readQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
       });
   }
 }

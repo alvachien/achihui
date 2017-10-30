@@ -4,7 +4,7 @@ import {
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, LearnQuestionBank, UIMode, getUIModeString } from '../../model';
+import { LogLevel, QuestionBankItem, UIMode, getUIModeString } from '../../model';
 import { HomeDefDetailService, LearnStorageService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { Observable } from 'rxjs/Observable';
@@ -18,7 +18,7 @@ export class QuestionBankDetailComponent implements OnInit {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: LearnQuestionBank | null = null;
+  public detailObject: QuestionBankItem | null = null;
   public uiMode: UIMode = UIMode.Create;
 
   constructor(private _dialog: MatDialog,
@@ -27,7 +27,7 @@ export class QuestionBankDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
 
-    this.detailObject = new LearnQuestionBank();
+    this.detailObject = new QuestionBankItem();
   }
 
   ngOnInit() {
@@ -38,12 +38,12 @@ export class QuestionBankDetailComponent implements OnInit {
     // Distinguish current mode
     this._activateRoute.url.subscribe((x) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent ngOnInit for activateRoute URL: ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent ngOnInit for activateRoute URL: ${x}`);
       }
 
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.detailObject = new LearnQuestionBank();
+          this.detailObject = new QuestionBankItem();
           this.uiMode = UIMode.Create;
           this.detailObject.HID = this._homedefService.ChosedHome.ID;
         } else if (x[0].path === 'edit') {
@@ -58,26 +58,26 @@ export class QuestionBankDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readHistoryEvent.subscribe((x) => {
-            if (x instanceof LearnHistory) {
+          this._storageService.readQuestionEvent.subscribe((x) => {
+            if (x instanceof QuestionBankItem) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in HistoryDetailComponent, succeed to readControlCenterEvent : ${x}`);
+                console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in QuestionBankDetailComponent, succeed to readQuestionEvent : ${x}`);
               }
               this.detailObject = x;
             } else {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.log(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent, failed to readControlCenterEvent : ${x}`);
+                console.log(`AC_HIH_UI [Error]: Entering ngOnInit in QuestionBankDetailComponent, failed to readQuestionEvent : ${x}`);
               }
-              this.detailObject = new LearnHistory();
+              this.detailObject = new QuestionBankItem();
             }
           });
 
-          this._storageService.readHistory(this.routerID);
+          this._storageService.readQuestionBank(this.routerID);
         }
       }
     }, (error) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent with activateRoute URL : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in QuestionBankDetailComponent with activateRoute URL : ${error}`);
       }
     }, () => {
     });
@@ -95,4 +95,7 @@ export class QuestionBankDetailComponent implements OnInit {
     return true;
   }
 
+  public removeTag(tag) {
+    
+  }
 }

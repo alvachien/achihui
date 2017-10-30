@@ -6,17 +6,17 @@
 
   <mat-card-content>
     <mat-form-field class="demo-full-width">
-      <textarea matInput placeholder="Question" [(ngModel)]="itemObj.Question"></textarea>
+      <textarea matInput placeholder="Question" [(ngModel)]="detailObject.Question"></textarea>
     </mat-form-field>
 
     <mat-form-field class="demo-full-width">
-      <textarea matInput placeholder="Answer" [(ngModel)]="itemObj.BriefAnswer"></textarea>
+      <textarea matInput placeholder="Answer" [(ngModel)]="detailObject.BriefAnswer"></textarea>
     </mat-form-field>
   
     <mat-form-field>
       <mat-chip-list #typeList>
-        <mat-chip *ngFor="let fruit of fruits" selectable="true"
-                  removable="true" (remove)="removeType(fruit)">
+        <mat-chip *ngFor="let tag of detailObject.Tags" selectable="true"
+                  removable="true" (remove)="removeTag(tag)">
           {{fruit.name}}
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
