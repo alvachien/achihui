@@ -595,6 +595,61 @@ export class LearnStorageService {
   }
 
   /**
+   * Fetch all question bank
+   * @param forceReload Force to reload
+   */
+  public fetchAllQuestionBankItem(forceReload?: boolean): Observable<QuestionBankItem[]> {
+    if (!this._isQtnBankListLoaded || forceReload) {
+      const apiurl = environment.ApiUrl + '/api/LearnQuestionBank';
+
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                .append('Accept', 'application/json')
+                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      return this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true,
+        })
+        .map((response: HttpResponse<any>) => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllQuestionBankItem in LearnStorageService: ${response}`);
+          }
+
+          const rjs = <any>response;
+          let listRst = [];
+
+          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+            for (const si of rjs.contentList) {
+              const rst: QuestionBankItem = new QuestionBankItem();
+              rst.onSetData(si);
+              listRst.push(rst);
+            }
+          }
+
+          this._isQtnBankListLoaded = true;
+          this.listQtnBankChange.next(listRst);
+          return listRst;
+        })
+        .catch((error: HttpErrorResponse) => {
+          if (environment.LoggingLevel >= LogLevel.Error) {
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllQuestionBankItem in LearnStorageService: ${error}`);
+          }
+
+          this._isQtnBankListLoaded = true;
+          this.listQtnBankChange.next([]);
+
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+        });
+    } else {
+      return Observable.of(this.listQtnBankChange.value);
+    }
+  }
+
+  /**
    * Create an item of Question Bank
    * @param item Question bank item to create
    */

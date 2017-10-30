@@ -5,30 +5,43 @@
   </mat-card-header>
 
   <mat-card-content>
+    <mat-form-field>
+      <mat-select class="demo-full-width" placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.QBType"
+        name="ltype">
+        <mat-option *ngFor="let qbt of _uiService.QuestionBankTypeStrings" [value]="qbt.value">
+          {{qbt.i18nterm | translate}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+        
     <mat-form-field class="demo-full-width">
-      <textarea matInput placeholder="Question" [(ngModel)]="detailObject.Question"></textarea>
+      <textarea matInput placeholder="{{'Learning.Question' | translate}}" 
+        [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Question"></textarea>
     </mat-form-field>
 
     <mat-form-field class="demo-full-width">
-      <textarea matInput placeholder="Answer" [(ngModel)]="detailObject.BriefAnswer"></textarea>
+      <textarea matInput placeholder="{{'Learning.BriefAnswer' | translate}}" 
+        [disabled]="!isFieldChangable" [(ngModel)]="detailObject.BriefAnswer"></textarea>
     </mat-form-field>
   
-    <mat-form-field>
-      <mat-chip-list #typeList>
-        <mat-chip *ngFor="let tag of detailObject.Tags" selectable="true"
-                  removable="true" (remove)="removeTag(tag)">
-          {{fruit.name}}
-          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+    <mat-form-field class="demo-full-width">
+      <mat-chip-list #tagList>
+        <mat-chip *ngFor="let tag of detailObject.Tags"                   
+                  [removable]="tagRemovable" (remove)="removeTag(tag)">
+          {{tag}}
+          <mat-icon matChipRemove *ngIf="tagRemovable">cancel</mat-icon>
         </mat-chip>
   
-        <input placeholder="New type..."
-                [matChipInputFor]="typeList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                [matChipInputAddOnBlur]="addOnBlur"
-                (matChipInputTokenEnd)="addType($event)" />
+        <input placeholder="{{'Common.Tags' | translate}}"
+               [disabled]="!isFieldChangable"
+               [matChipInputFor]="tagList"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               [matChipInputAddOnBlur]="addOnBlur"
+               (matChipInputTokenEnd)="addTag($event)" />
       </mat-chip-list>  
-    </mat-form-field>    
+    </mat-form-field>
   </mat-card-content>
+
   <mat-card-actions>
     <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
     <button mat-button color="warn" (click)="onCancel()">{{'Common.Cancel' | translate}}</button>

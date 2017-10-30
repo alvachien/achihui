@@ -460,12 +460,56 @@ export class LearnAward extends hih.BaseModel {
 }
 
 /**
- * Question bank type
+ * Question bank type enum.
  */
-export enum LearnQuestionBankType
+export enum QuestionBankTypeEnum
 {
     EssayQuestion       = 1,
     MultipleChoice      = 2
+}
+
+/**
+ * Question bank type UI string
+ */
+export class QuestionBankTypeUIString {
+  value: QuestionBankTypeEnum;
+  i18nterm: string;
+  displaystring: string;
+}
+
+/**
+ * Question bank type
+ */
+export class QuestionBankType {
+  public static getQuestionBankTypeStrings(): Array<QuestionBankTypeUIString> {
+    let arrst: Array<QuestionBankTypeUIString> = new Array<QuestionBankTypeUIString>();
+
+    for (let se in QuestionBankTypeEnum) {
+      if (Number.isNaN(+se)) {
+      } else {
+        arrst.push({
+          value: +se,
+          i18nterm: QuestionBankType.getQuestionBankTypeDisplayString(+se),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+
+  public static getQuestionBankTypeDisplayString(se: QuestionBankTypeEnum): string {
+    switch(se) {
+      case QuestionBankTypeEnum.EssayQuestion:
+        return 'Learning.EssayQuestion';
+
+      case QuestionBankTypeEnum.MultipleChoice:
+        return 'Learning.MultipleChoice';
+
+      default:
+        return '';
+    }
+  }
 }
 
 /**
@@ -473,6 +517,7 @@ export enum LearnQuestionBankType
  */
 export class QuestionBankItem extends hih.BaseModel {
   public HID: number;
+  public QBType: QuestionBankTypeEnum;
   public ID: number;
   public Question: string;
   public BriefAnswer: string;
@@ -489,12 +534,49 @@ export class QuestionBankItem extends hih.BaseModel {
     if (data && data.hid) {
       this.HID = +data.hid;
     }
+    if (data && data.questionType) {
+      this.QBType = <QuestionBankTypeEnum>data.questionType;
+    }
     if (data && data.question) {
       this.Question = data.question;
     }
     if (data && data.briefAnswer) {
       this.BriefAnswer = data.briefAnswer;
     }
+
+    if (data && data.tagTerms && data.tagTerms.length > 0) {
+      for(let tt of data.tagTerms) {
+        this.Tags.push(tt);
+      }
+    }
+    if (data && data.subItemList && data.subItemList.length > 0) {
+      for(let si of data.subItemList) {
+        let nsi: QuestionBankSubItem = new QuestionBankSubItem();
+        nsi.onSetData(si);
+        this.SubItems.push(nsi);
+      }
+    }
+  }
+
+  public writeJSONObject() {
+    let rst = super.writeJSONObject();
+
+    rst.hid = this.HID;
+    rst.questionType = <number>this.QBType;
+    rst.question = this.Question;
+    rst.briefAnswer = this.BriefAnswer;
+
+    // TBD: subitem
+
+    if (this.Tags.length > 0) {
+      rst.tagTerms = [];
+
+      for(let term of this.Tags) {
+        rst.tagTerms.push(term);
+      }
+    }
+
+    return rst;
   }
 }
 

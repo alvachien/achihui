@@ -301,18 +301,26 @@ export enum OverviewScopeEnum {
   All = 9,
 }
 
+/**
+ * Scope range
+ */
 export interface OverviewScopeRange {
   BeginDate: moment.Moment;
   EndDate: moment.Moment;
 }
 
+/**
+ * Scope UI string
+ */
 export interface OverviewScopeUIString {
   value: OverviewScopeEnum;
   i18nterm: string;
   displaystring: string;
 }
 
-
+/**
+ * Overview scope
+ */
 export class OverviewScope {
   public static getOverviewScopeStrings(): Array<OverviewScopeUIString> {
     let arrst: Array<OverviewScopeUIString> = new Array<OverviewScopeUIString>();

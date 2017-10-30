@@ -1,5 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { OverviewScopeEnum, OverviewScope, OverviewScopeUIString } from '../model';
+import { OverviewScopeEnum, OverviewScope, OverviewScopeUIString, 
+  QuestionBankType, QuestionBankTypeEnum, QuestionBankTypeUIString } from '../model';
 
 @Injectable()
 export class UIStatusService {
@@ -8,8 +9,14 @@ export class UIStatusService {
     return this._arrOverviewScopes;
   }
 
+  private _arrQuestionBankType: QuestionBankTypeUIString[] = [];
+  get QuestionBankTypeStrings(): QuestionBankTypeUIString[] {
+    return this._arrQuestionBankType;
+  }
+
   constructor() { 
     this._arrOverviewScopes = OverviewScope.getOverviewScopeStrings();
+    this._arrQuestionBankType = QuestionBankType.getQuestionBankTypeStrings();
   }
 
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(null);

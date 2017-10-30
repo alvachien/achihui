@@ -247,7 +247,12 @@
     "Ctgy_English": "English",
     "Ctgy_Vocabulary": "Vocabulary",
     "Ctgy_Grammar": "Grammar",
-    "Ctgy_Japanese": "Japanese"
+    "Ctgy_Japanese": "Japanese",
+    "EssayQuestion": "Essay Question",
+    "MultipleChoice": "Multiple Choice",
+    "Question": "Question",
+    "Answer": "Answer",
+    "BriefAnswer": "Brief Answer"  
   },
   "Finance": {
     "Accounts": "Accounts",

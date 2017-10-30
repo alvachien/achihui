@@ -2,12 +2,15 @@ import {
   Component, OnInit, OnDestroy, EventEmitter,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatChipInputEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, QuestionBankItem, UIMode, getUIModeString } from '../../model';
-import { HomeDefDetailService, LearnStorageService } from '../../services';
+import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { Observable } from 'rxjs/Observable';
+import { ENTER } from '@angular/cdk/keycodes';
+
+const COMMA = 188;
 
 @Component({
   selector: 'hih-learn-question-bank-detail',
@@ -20,11 +23,16 @@ export class QuestionBankDetailComponent implements OnInit {
   public currentMode: string;
   public detailObject: QuestionBankItem | null = null;
   public uiMode: UIMode = UIMode.Create;
+  addOnBlur: boolean = true;
+  tagRemovable: boolean = true;
+  // Enter, comma
+  separatorKeysCodes = [ENTER, COMMA];
 
   constructor(private _dialog: MatDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
+    public _uiService: UIStatusService,
     public _storageService: LearnStorageService) {
 
     this.detailObject = new QuestionBankItem();
@@ -95,7 +103,86 @@ export class QuestionBankDetailComponent implements OnInit {
     return true;
   }
 
-  public removeTag(tag) {
-    
+  public addTag(event: MatChipInputEvent): void {
+    let input = event.input;
+    let value = event.value;
+
+    // Add new Tag
+    if ((value || '').trim()) {
+      this.detailObject.Tags.push(value.trim());
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  public removeTag(tag: any): void {
+    let index = this.detailObject.Tags.indexOf(tag);
+
+    if (index >= 0) {
+      this.detailObject.Tags.splice(index, 1);
+    }
+  }
+  
+  public onSubmit() {
+    if (this.uiMode === UIMode.Create) {
+      this._storageService.createQuestionEvent.subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Receiving createQuestionEvent in QuestionBankDetailComponent with : ${x}`);
+        }
+
+        // Navigate back to list view
+        if (x instanceof QuestionBankItem) {
+          // Show a dialog, then jump to the display view
+          const dlginfo: MessageDialogInfo = {
+            Header: 'Common.Success',
+            Content: '',
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            }
+
+            //this._router.navigate(['/learn/questionbank/display/' + x.generateKey()]);
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: 'Common.Error',
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            }
+          });
+        }
+      });
+
+      this.detailObject.HID = this._homedefService.ChosedHome.ID;
+      this._storageService.createQuestionBankItem(this.detailObject);
+    } else if (this.uiMode === UIMode.Change) {
+      // Update mode
+    }
+  }
+
+  public onCancel() {
+
   }
 }
