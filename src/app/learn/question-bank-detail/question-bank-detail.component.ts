@@ -4,7 +4,7 @@ import {
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatChipInputEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, QuestionBankItem, UIMode, getUIModeString } from '../../model';
+import { LogLevel, QuestionBankItem, UIMode, getUIModeString, QuestionBankTypeEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { Observable } from 'rxjs/Observable';
@@ -24,7 +24,6 @@ export class QuestionBankDetailComponent implements OnInit {
   public detailObject: QuestionBankItem | null = null;
   public uiMode: UIMode = UIMode.Create;
   addOnBlur: boolean = true;
-  tagRemovable: boolean = true;
   // Enter, comma
   separatorKeysCodes = [ENTER, COMMA];
 
@@ -100,6 +99,31 @@ export class QuestionBankDetailComponent implements OnInit {
       return false;
     }
 
+    // UI mode check
+    if (this.uiMode === UIMode.Change || this.uiMode === UIMode.Create) {      
+    } else {
+      return false;
+    }
+
+    if (!this.detailObject) {
+      return false;
+    }
+
+    // Question
+    if (!this.detailObject.Question) {
+      return false;
+    }
+
+    // Brief answer
+    if (!this.detailObject.BriefAnswer) {
+      return false;
+    }
+
+    // Only support one type by now
+    if (this.detailObject.QBType !== QuestionBankTypeEnum.EssayQuestion) {
+      return false;
+    }
+
     return true;
   }
 
@@ -138,7 +162,7 @@ export class QuestionBankDetailComponent implements OnInit {
           // Show a dialog, then jump to the display view
           const dlginfo: MessageDialogInfo = {
             Header: 'Common.Success',
-            Content: '',
+            Content: x.ID.toString(),
             Button: MessageDialogButtonEnum.onlyok,
           };
 
@@ -152,7 +176,7 @@ export class QuestionBankDetailComponent implements OnInit {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
             }
 
-            //this._router.navigate(['/learn/questionbank/display/' + x.generateKey()]);
+            this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
           });
         } else {
           // Show error message
@@ -183,6 +207,7 @@ export class QuestionBankDetailComponent implements OnInit {
   }
 
   public onCancel() {
-
+    // Navigate back to the list view
+    this._router.navigate(['/learn/questionbank/']);
   }
 }

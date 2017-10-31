@@ -227,8 +227,23 @@ export enum TagTypeEnum {
 
 // Tag
 export class Tag {
-  public TagType: number;
+  public TagType: TagTypeEnum;
+  public TagID: number;
   public Term: string;
+
+  public onSetData(data?: any) {
+    if (data && data.tagType) {
+      this.TagType = <TagTypeEnum>data.tagType;
+    }
+
+    if (data && data.tagID) {
+      this.TagID = +data.tagID;
+    }
+
+    if (data && data.term) {
+      this.Term = data.term;
+    }
+  }
 }
 
 // App language: the language set which supported by current app.

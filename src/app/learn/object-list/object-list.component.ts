@@ -82,7 +82,6 @@ export class ObjectListComponent implements OnInit {
   }
 
   public onDeleteObject(obj: any) {
-
   }
 
   public onRefresh(): void {
