@@ -111,6 +111,7 @@ export class ReportComponent implements OnInit {
   ReportCCEvent: EventEmitter<null> = new EventEmitter<null>(null);
   @ViewChild('paginatorCC') paginatorCC: MatPaginator;
 
+  includeInvalid: boolean = false;
   displayedOrderColumns = ['Order', 'Debit', 'Credit', 'Balance'];
   dataSourceOrder: ReportOrderDataSource | null;
   ReportOrder: OrderReport[] = [];

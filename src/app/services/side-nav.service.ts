@@ -18,6 +18,7 @@ export class SideNavService {
     this.addSubItem(overall, 'Common.Languages', '/language', 2, 'language');
     this.addSubItem(overall, 'Nav.HomeList', '/homedef', 3, 'domain');
     this.addSubItem(overall, 'Finance.Currency', '/currency', 4, 'euro_symbol');
+    this.addSubItem(overall, 'Common.Tags', '/tag', 5, 'filter_vintage');
 
     const learn = this.addItem('Nav.LearningTrace', 'event_note', null, 2);
     this.addSubItem(learn, 'Learning.LearningCategory', '/learn/category', 1, 'settings_input_composite');
@@ -143,7 +144,6 @@ export class SideNavService {
         return item;
       }
     });
-
 
     if (!result) {
       collection.forEach((item)=> {

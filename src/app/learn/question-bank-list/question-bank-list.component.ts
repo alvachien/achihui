@@ -3,8 +3,8 @@ import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, QuestionBankItem, UIMode, getUIModeString } from '../../model';
-import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
+import { LogLevel, QuestionBankItem, UIMode, getUIModeString, TagTypeEnum } from '../../model';
+import { HomeDefDetailService, LearnStorageService, UIStatusService, TagsService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { Observable } from 'rxjs/Observable';
 
@@ -46,15 +46,26 @@ export class QuestionBankListComponent implements OnInit {
   displayedColumns = ['id', 'type', 'question', 'briefawr' ];
   dataSource: QuestionBankDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  allTags: string[] = [];
 
   constructor(public _storageService: LearnStorageService,
     public _uiService: UIStatusService,
+    public _tagService: TagsService,
     private _router: Router) { }
 
   ngOnInit() {
     this.dataSource = new QuestionBankDataSource(this._storageService, this.paginator);
     
-    this._storageService.fetchAllQuestionBankItem().subscribe(x => {
+    Observable.forkJoin([
+      //this._tagService.fetchAllTags(TagTypeEnum.LearnQuestionBank),
+      this._storageService.fetchAllQuestionBankItem()
+    ]).subscribe(x => {
+      // if (x[0] instanceof Array && x[0].length > 0) {
+      //   for(let tag of x[0]) {
+      //     let tag2: any = tag;
+      //     this.allTags.push(tag2);
+      //   }
+      // }
     });
   }
 
