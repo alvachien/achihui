@@ -5,6 +5,7 @@ import { Observable, BehaviorSubject } from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
 import { LogLevel, Tag } from '../model';
 import { AuthService } from './auth.service';
+import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
@@ -19,6 +20,7 @@ export class TagsService {
   private _islistLoaded: boolean;
 
   constructor(private _http: HttpClient,
+    private _homeService: HomeDefDetailService,
     private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering TagsService constructor...');
@@ -36,13 +38,15 @@ export class TagsService {
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
       return this._http.get(apiurl, {
           headers: headers,
           withCredentials: true,
         })
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in TagsService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService: ${response}`);
           }
 
           let listRst: Tag[] = [];
