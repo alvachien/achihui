@@ -459,7 +459,7 @@ export class OverviewScope {
       end.endOf('year');
     } else if (scope === OverviewScopeEnum.PreviousMonth) {
       bgn.subtract(1, 'M');
-      bgn.endOf('month');
+      bgn.startOf('month');
 
       end = bgn.clone();
       end.endOf('month');
