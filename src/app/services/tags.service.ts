@@ -3,7 +3,7 @@ import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErr
 import { Subject } from 'rxjs/Subject';
 import { Observable, BehaviorSubject } from 'rxjs/Rx';
 import { environment } from '../../environments/environment';
-import { LogLevel, Tag, TagTypeEnum } from '../model';
+import { LogLevel, Tag, TagCount, TagTypeEnum } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -31,8 +31,9 @@ export class TagsService {
 
   public fetchAllTags(
     //forceReload?: boolean
-    tagtype?: TagTypeEnum
-  ): Observable<string[]> {
+    tagtype?: TagTypeEnum,
+    tagterm?: string
+  ): Observable<TagCount[]> {
     //if (!this._islistLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/Tag';
 
@@ -46,6 +47,9 @@ export class TagsService {
       if (tagtype) {
         params = params.append('tagtype', (<number>tagtype).toString());
       }
+      if (tagterm) {
+        params = params.append('tagterm', tagterm);
+      }
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
@@ -56,11 +60,13 @@ export class TagsService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService: ${response}`);
           }
 
-          let listRst: string[] = [];
+          let listRst: TagCount[] = [];
           const rjs = <any>response;
 
           for (const si of rjs) {
-            listRst.push(si);
+            let tc: TagCount = new TagCount();
+            tc.onSetData(si);
+            listRst.push(tc);
           }
 
           // this._islistLoaded = true;

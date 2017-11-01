@@ -222,8 +222,53 @@ export class Module {
 export enum TagTypeEnum {
   LearnQuestionBank   = 1,
   
-  FinanceDocumentItem = 10,
+  FinanceDocument = 10,
 }
+
+/**
+ * Question bank type UI string
+ */
+export class TagTypeUIString {
+  value: TagTypeEnum;
+  i18nterm: string;
+  displaystring: string;
+}
+
+/**
+ * Question bank type
+ */
+export class TagType {
+  public static getTagTypeStrings(): Array<TagTypeUIString> {
+    let arrst: Array<TagTypeUIString> = new Array<TagTypeUIString>();
+
+    for (let se in TagTypeEnum) {
+      if (Number.isNaN(+se)) {
+      } else {
+        arrst.push({
+          value: +se,
+          i18nterm: TagType.getTagTypeDisplayString(+se),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+
+  public static getTagTypeDisplayString(se: TagTypeEnum): string {
+    switch(se) {
+      case TagTypeEnum.FinanceDocument:
+        return 'Finance.Document';
+
+      case TagTypeEnum.LearnQuestionBank:
+        return 'Learning.QuestionBank';
+
+      default:
+        return '';
+    }
+  }
+}
+
 
 // Tag
 export class Tag {
@@ -242,6 +287,21 @@ export class Tag {
 
     if (data && data.term) {
       this.Term = data.term;
+    }
+  }
+}
+
+// Tag count
+export class TagCount {
+  public Term: string;
+  public TermCount: number;
+
+  public onSetData(data?: any) {
+    if (data && data.term) {
+      this.Term = data.term;
+    }
+    if (data && data.termCount) {
+      this.TermCount = +data.termCount;
     }
   }
 }

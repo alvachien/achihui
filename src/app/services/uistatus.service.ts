@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { OverviewScopeEnum, OverviewScope, OverviewScopeUIString, 
-  QuestionBankType, QuestionBankTypeEnum, QuestionBankTypeUIString } from '../model';
+  QuestionBankType, QuestionBankTypeEnum, QuestionBankTypeUIString,
+  TagTypeEnum, TagTypeUIString, TagType } from '../model';
 
 @Injectable()
 export class UIStatusService {
@@ -14,9 +15,15 @@ export class UIStatusService {
     return this._arrQuestionBankType;
   }
 
+  private _arrTagType: TagTypeUIString[] = [];
+  get TagTypeStrings(): TagTypeUIString[] {
+    return this._arrTagType;
+  }
+
   constructor() { 
     this._arrOverviewScopes = OverviewScope.getOverviewScopeStrings();
     this._arrQuestionBankType = QuestionBankType.getQuestionBankTypeStrings();
+    this._arrTagType = TagType.getTagTypeStrings();
   }
 
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(null);

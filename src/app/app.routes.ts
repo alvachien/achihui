@@ -8,6 +8,7 @@ import { HomeDefComponent } from './home-def';
 import { HomeDefListComponent } from './home-def-list';
 import { HomeDefDetailComponent } from './home-def-detail';
 import { PageNotFoundComponent } from './page-not-found';
+import { TagsListComponent } from './tags-list';
 
 export const AppRoutes: Routes = [
     {
@@ -41,6 +42,7 @@ export const AppRoutes: Routes = [
         ],
     },
     { path: 'currency', component: FinanceCurrencyComponent, canActivate: [AuthGuardService], },
+    { path: 'tag', component: TagsListComponent, canActivate: [AuthGuardService], },
     {
         path: 'learn',
         canActivate: [HomeChoseGuardService],

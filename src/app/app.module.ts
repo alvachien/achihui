@@ -10,6 +10,7 @@ import { UIDependModule } from './uidepend.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
+import { TagCloudModule } from 'angular-tag-cloud-module';
 
 import { AppComponent } from './app.component';
 import {
@@ -31,6 +32,7 @@ import { HomeDefDetailComponent } from './home-def-detail';
 import { PageNotFoundComponent } from './page-not-found';
 import { SideNavComponent } from './side-nav';
 import { SideNavItemComponent } from './side-nav-item';
+import { TagsListComponent } from './tags-list';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -53,6 +55,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     HttpModule,
     UIDependModule,
+    TagCloudModule,
   ],
   declarations: [
     AppComponent,
@@ -66,6 +69,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PageNotFoundComponent,
     SideNavComponent,
     SideNavItemComponent,
+    TagsListComponent,
   ],
   entryComponents: [
     MessageDialogComponent,
