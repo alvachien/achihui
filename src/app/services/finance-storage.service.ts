@@ -291,7 +291,7 @@ export class FinanceStorageService {
 
   // Asset categories
   public fetchAllAssetCategories(forceReload?: boolean): Observable<AssetCategory[]> {
-    if (!this._isAcntCtgyListLoaded || forceReload) {
+    if (!this._isAsstCtgyListLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/FinanceAssetCategory';
 
       let headers = new HttpHeaders();

@@ -349,7 +349,8 @@
     "OrderFetchFailedOrNoOrder": "无法获取订单信息，或尚未创建订单",
     "DocumentPosted": "凭证已创建",
     "NoExchangeRate": "未定义汇率",
-    "UnnecessaryExchangeRate": "本币操作无需汇率"
+    "UnnecessaryExchangeRate": "本币操作无需汇率",
+    "DespIsMust": "描述是必须的"
   },
   "Library": {
     "BookCategories": "图书种类",

@@ -1507,6 +1507,16 @@ export class DocumentItem {
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
+    // Desp
+    if (!this.Desp) {
+      let msg: hih.InfoMessage = new hih.InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = hih.MessageType.Error;
+      msg.MsgTitle = 'Finance.DespIsMust';
+      msg.MsgContent = 'Finance.DespIsMust';
+      this.VerifiedMsgs.push(msg);
+      chkrst = false;
+    }
     // Either control center or order must be exist
     let bccord: boolean = true;
     if (this.ControlCenterId) {

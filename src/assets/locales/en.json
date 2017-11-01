@@ -349,7 +349,8 @@
     "OrderFetchFailedOrNoOrder": "Failed to fetch order or no order created at all",
     "DocumentPosted": "Document Posted",
     "NoExchangeRate": "No exchange rate",
-    "UnnecessaryExchangeRate": "Exchange rate is unnecessary for base currency"
+    "UnnecessaryExchangeRate": "Exchange rate is unnecessary for base currency",
+    "DespIsMust": "Desp is must"
   },
   "Library": {
     "BookCategories": "Book Categories",
