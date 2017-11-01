@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CloudData, CloudOptions } from 'angular-tag-cloud-module';
 import { environment } from '../../environments/environment';
 import { LogLevel, Tag, TagCount, TagTypeEnum } from '../model';
@@ -15,43 +16,51 @@ import { UIStatusService } from '../services/uistatus.service';
 export class TagsListComponent implements OnInit {
   optionsCloud: CloudOptions = {
     // if width is between 0 and 1 it will be set to the size of the upper element multiplied by the value  
-    width : 0.8,
-    height : 400,
+    width: 0.8,
+    height: 400,
     overflow: false,
   }
   dataCloud: Array<CloudData> = [];
   tagTerm: string;
   tagType: TagTypeEnum;
-  rstSearch: TagCount[] = [];
+  rstSearch: Tag[] = [];
 
   constructor(private _tagService: TagsService,
+    private _router: Router,
     public _uiService: UIStatusService) {
+    this.tagType = TagTypeEnum.LearnQuestionBank;
   }
 
   ngOnInit() {
-    this._tagService.fetchAllTags().subscribe(x => {
+    this._tagService.fetchAllTags(true).subscribe(x => {
       this.dataCloud = [];
-      for(let s1 of x) {
+      for (let s1 of x) {
+        let s2 = <TagCount>s1;
+
         let cd: CloudData = {
-          text: s1.Term,
-          weight: s1.TermCount
+          text: s2.Term,
+          weight: s2.TermCount
         };
         this.dataCloud.push(cd);
       }
     });
   }
 
-  public tagClicked(clicked: CloudData){
+  public tagClicked(clicked: CloudData) {
     console.log(clicked);
   }
 
   public onSearchTagTerm() {
-    this._tagService.fetchAllTags(this.tagType, this.tagTerm).subscribe(x => {
+    this._tagService.fetchAllTags(false, this.tagType, this.tagTerm).subscribe(x => {
       this.rstSearch = [];
 
-      for(let s1 of x) {
-        this.rstSearch.push(s1);
+      for (let s1 of x) {
+        this.rstSearch.push(<Tag>s1);
       }
     });
+  }
+
+  public showDetailInfo(rst: Tag) {
+    this._router.navigate([rst.LinkTarget]);
   }
 }

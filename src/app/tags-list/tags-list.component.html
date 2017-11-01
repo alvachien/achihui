@@ -1,27 +1,21 @@
 <mat-tab-group class="demo-tab-group">
   <mat-tab label="{{'Common.TagsCloud' | translate}}">
     <div class="demo-tab-content">
-      <angular-tag-cloud
-        [data]="dataCloud"
-        [width]="optionsCloud.width"
-        [height]="optionsCloud.height"
-        [overflow]="optionsCloud.overflow"
+      <angular-tag-cloud [data]="dataCloud" [width]="optionsCloud.width" [height]="optionsCloud.height" [overflow]="optionsCloud.overflow"
         (clicked)="tagClicked($event)">
       </angular-tag-cloud>
     </div>
   </mat-tab>
-  <mat-tab label="Tag with detail">
+  <mat-tab label="{{'Common.Tag' | translate}}l">
     <ng-template mat-tab-label>
       ⭐
     </ng-template>
     <div class="demo-tab-content">
       <mat-form-field>
-        <input matInput type="text" placeholder="{{'Common.Tag' |translate}}" [(ngModel)]="tagTerm"
-          name="term">
+        <input matInput type="text" placeholder="{{'Common.Tag' |translate}}" [(ngModel)]="tagTerm" name="term">
       </mat-form-field>
       <mat-form-field>
-        <mat-select placeholder="{{'Common.Category' | translate}}" [(ngModel)]="tagType"
-          name="ctgy">
+        <mat-select placeholder="{{'Common.Category' | translate}}" [(ngModel)]="tagType" name="ctgy">
           <mat-option *ngFor="let tgtype of _uiService.TagTypeStrings" [value]="tgtype.value">
             {{tgtype.i18nterm | translate}}
           </mat-option>
@@ -30,9 +24,19 @@
 
       <button mat-raised-button color="primary" (click)="onSearchTagTerm()">Go</button>
 
-      <mat-list dense>
-        <mat-list-item *ngFor="let rs of rstSearch">{{rs.Term}} ({{rs.TermCount}})</mat-list-item>
-      </mat-list>
+      <mat-nav-list>
+        <mat-list-item *ngFor="let rs of rstSearch">
+          <a matLine [routerLink]="rs.LinkTarget" routerLinkActive="active">{{rs.TagID}}</a>
+          <mat-select matLine [(ngModel)]="rs.TagType" name="tagtyp" disableRipple="true" disabled>
+            <mat-option *ngFor="let tgtype of _uiService.TagTypeStrings" [value]="tgtype.value">
+              {{tgtype.i18nterm | translate}}
+            </mat-option>
+          </mat-select>
+          <button matLine mat-icon-button (click)="showDetailInfo(rs)">
+            <mat-icon>info</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-nav-list>
     </div>
   </mat-tab>
 </mat-tab-group>

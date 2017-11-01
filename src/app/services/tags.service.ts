@@ -31,9 +31,10 @@ export class TagsService {
 
   public fetchAllTags(
     //forceReload?: boolean
+    reqamt: boolean,
     tagtype?: TagTypeEnum,
     tagterm?: string
-  ): Observable<TagCount[]> {
+  ): Observable<TagCount[] | Tag[]> {
     //if (!this._islistLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/Tag';
 
@@ -44,6 +45,7 @@ export class TagsService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      params = params.append('reqamt', (<boolean>reqamt).toString());
       if (tagtype) {
         params = params.append('tagtype', (<number>tagtype).toString());
       }
@@ -60,19 +62,26 @@ export class TagsService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService: ${response}`);
           }
 
-          let listRst: TagCount[] = [];
+          let listCountRst: TagCount[] = [];
+          let listRst: Tag[] = [];
           const rjs = <any>response;
 
           for (const si of rjs) {
-            let tc: TagCount = new TagCount();
-            tc.onSetData(si);
-            listRst.push(tc);
+            if (reqamt) {
+              let tc: TagCount = new TagCount();
+              tc.onSetData(si);
+              listCountRst.push(tc);
+            } else {
+              let tag: Tag = new Tag();
+              tag.onSetData(si);
+              listRst.push(tag);
+            }
           }
 
           // this._islistLoaded = true;
           // this.listDataChange.next(listRst);
 
-          return listRst;
+          return reqamt? listCountRst : listRst;
         })
         .catch(err => {
           if (environment.LoggingLevel >= LogLevel.Error) {

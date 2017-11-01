@@ -275,6 +275,17 @@ export class Tag {
   public TagType: TagTypeEnum;
   public TagID: number;
   public Term: string;
+  get LinkTarget(): string {
+    switch(this.TagType) {
+      case TagTypeEnum.LearnQuestionBank:
+        return '/learn/questionbank/display/' + this.TagID.toString();
+
+      case TagTypeEnum.FinanceDocument:
+        return '/finance/document/display/' + this.TagID.toString();
+    }
+
+    return '';
+  }
 
   public onSetData(data?: any) {
     if (data && data.tagType) {
