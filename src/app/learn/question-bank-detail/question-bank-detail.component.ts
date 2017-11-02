@@ -2,15 +2,13 @@ import {
   Component, OnInit, OnDestroy, EventEmitter,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatChipInputEvent } from '@angular/material';
+import { MatDialog, MatSnackBar, MatChipInputEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, QuestionBankItem, UIMode, getUIModeString, QuestionBankTypeEnum } from '../../model';
+import { COMMA, LogLevel, QuestionBankItem, UIMode, getUIModeString, QuestionBankTypeEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { Observable } from 'rxjs/Observable';
 import { ENTER } from '@angular/cdk/keycodes';
-
-const COMMA = 188;
 
 @Component({
   selector: 'hih-learn-question-bank-detail',
@@ -28,6 +26,7 @@ export class QuestionBankDetailComponent implements OnInit {
   separatorKeysCodes = [ENTER, COMMA];
 
   constructor(private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
@@ -159,23 +158,17 @@ export class QuestionBankDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof QuestionBankItem) {
-          // Show a dialog, then jump to the display view
-          const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Success',
-            Content: x.ID.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+          // Show the snackbar
+          let snackBarRef = this._snackbar.open('Question Bank Created', 'Create another one', {
+            duration: 3000,
+          });
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
+          snackBarRef.onAction().subscribe(() => {
+            this._router.navigate(['/learn/questionbank/create']);
+          });
 
+          snackBarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
             this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
           });
         } else {

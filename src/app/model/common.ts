@@ -21,6 +21,8 @@ export const MomentDateFormat: string = 'YYYY-MM-DD';
 
 export enum AuthorizeScope { All = 1, OnlyOwner = 2 };
 export enum MessageType { Info = 1, Warning = 2, Error = 3 };
+export const COMMA = 188;
+
 
 /**
  * UI Mode on detail page
@@ -210,19 +212,13 @@ export class BaseModel {
   }
 }
 
-// Module
-export class Module {
-  public Module: string;
-  public Name: string;
-}
-
 /**
  * Tag type
  */
 export enum TagTypeEnum {
   LearnQuestionBank   = 1,
   
-  FinanceDocument = 10,
+  FinanceDocument     = 10,  
 }
 
 /**
@@ -268,7 +264,6 @@ export class TagType {
     }
   }
 }
-
 
 // Tag
 export class Tag {

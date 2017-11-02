@@ -9,7 +9,7 @@ import { TagsService } from '../services/tags.service';
 import { UIStatusService } from '../services/uistatus.service';
 
 @Component({
-  selector: 'app-tags-list',
+  selector: 'hih-tags-list',
   templateUrl: './tags-list.component.html',
   styleUrls: ['./tags-list.component.scss']
 })
