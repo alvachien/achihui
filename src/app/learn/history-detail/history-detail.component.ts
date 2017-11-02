@@ -2,10 +2,10 @@ import {
   Component, OnInit, OnDestroy, EventEmitter,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, LearnHistory, UIMode, getUIModeString } from '../../model';
-import { HomeDefDetailService, LearnStorageService } from '../../services';
+import { LogLevel, LearnHistory, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
+import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
@@ -23,8 +23,10 @@ export class HistoryDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
 
   constructor(private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
     this.detailObject = new LearnHistory();
@@ -108,21 +110,18 @@ export class HistoryDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof LearnHistory) {
           // Show a dialog, then jump to the display view
-          const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Success',
-            Content: x.generateKey(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+          // Show the snackbar
+          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
+          });
+        
+          snackbarRef.onAction().subscribe(() => {
+            this._router.navigate(['/learn/history/create']);
+          });
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
             this._router.navigate(['/learn/history/display/' + x.generateKey()]);
           });
         } else {

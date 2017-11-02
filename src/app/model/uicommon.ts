@@ -54,3 +54,50 @@ export class UIRouteLink {
   public route: string;
   public icon: string;
 }
+
+export enum UICommonLabelEnum {
+  DocumentPosted    = 1,
+  CreateAnotherOne  = 2,
+  CreatedSuccess    = 3
+}
+
+export class UICommonLabelUIString {
+  public value: UICommonLabelEnum;
+  public i18nterm: string;
+  public displaystring: string;
+}
+
+export class UICommonLabel {
+  public static getUICommonLabelStrings(): Array<UICommonLabelUIString> {
+    let arrst: Array<UICommonLabelUIString> = new Array<UICommonLabelUIString>();
+
+    for (let se in UICommonLabelEnum) {
+      if (Number.isNaN(+se)) {
+      } else {
+        arrst.push({
+          value: +se,
+          i18nterm: UICommonLabel.getUICommonLabelDisplayString(+se),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+
+  public static getUICommonLabelDisplayString(le: UICommonLabelEnum): string {
+    switch(le) {
+      case UICommonLabelEnum.DocumentPosted:
+        return 'Finance.DocumentPosted';
+
+      case UICommonLabelEnum.CreateAnotherOne:
+        return 'Common.CreateAnotherOne';
+
+      case UICommonLabelEnum.CreatedSuccess:
+        return 'Common.CreatedSuccessfully';
+        
+      default:
+        return '';
+    }
+  }
+}

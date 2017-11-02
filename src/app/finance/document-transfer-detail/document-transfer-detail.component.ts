@@ -10,8 +10,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, FinanceDocType_Transfer,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum } from '../../model';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
@@ -46,6 +46,7 @@ export class DocumentTransferDetailComponent implements OnInit {
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
@@ -210,9 +211,16 @@ export class DocumentTransferDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           // Show the snackbar
-          this._snackbar.open('Message archived', 'OK', {
+          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
-          }).afterDismissed().subscribe(() => {
+          });
+        
+          snackbarRef.onAction().subscribe(() => {
+            this._router.navigate(['/finance/document/createtransfer']);
+          });
+
+          snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             this._router.navigate(['/finance/document/displaytransfer/' + x.Id.toString()]);
           });

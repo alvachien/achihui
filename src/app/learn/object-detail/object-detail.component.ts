@@ -3,10 +3,10 @@ import {
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, LearnObject, UIMode, getUIModeString } from '../../model';
-import { HomeDefDetailService, LearnStorageService } from '../../services';
+import { LogLevel, LearnObject, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
+import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
@@ -25,8 +25,10 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private editor: any = null;
   
   constructor(private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
 
@@ -172,22 +174,18 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Navigate back to list view
         if (x instanceof LearnObject) {
-          // Show a dialog, then jump to the display view
-          const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Success',
-            Content: x.Id.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+          // Show the snackbar
+          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
+          });
+          
+          snackbarRef.onAction().subscribe(() => {
+            this._router.navigate(['/learn/object/create']);
+          });
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
             this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
           });
         } else {

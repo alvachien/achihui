@@ -9,8 +9,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum } from '../../model';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 /**
@@ -67,9 +67,10 @@ export class DocumentNormalDetailComponent implements OnInit {
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
+    private _uiStatusService: UIStatusService,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService,
+    public _storageService: FinanceStorageService,    
     public _currService: FinCurrencyService) {
     this.detailObject = new Document();
     this.detailObject.DocType = FinanceDocType_Normal;
@@ -265,9 +266,16 @@ export class DocumentNormalDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           // Show the snackbar
-          this._snackbar.open('Document Posted', 'OK', {
+          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
-          }).afterDismissed().subscribe(() => {
+          });
+          
+          snackbarRef.onAction().subscribe(() => {
+            this._router.navigate(['/finance/document/createnormal']);
+          });
+
+          snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
           });

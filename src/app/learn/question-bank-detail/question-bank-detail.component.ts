@@ -4,7 +4,7 @@ import {
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatChipInputEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { COMMA, LogLevel, QuestionBankItem, UIMode, getUIModeString, QuestionBankTypeEnum } from '../../model';
+import { COMMA, LogLevel, QuestionBankItem, UIMode, getUIModeString, QuestionBankTypeEnum, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { Observable } from 'rxjs/Observable';
@@ -159,15 +159,16 @@ export class QuestionBankDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof QuestionBankItem) {
           // Show the snackbar
-          let snackBarRef = this._snackbar.open('Question Bank Created', 'Create another one', {
+          let snackbarRef = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+            this._uiService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });
 
-          snackBarRef.onAction().subscribe(() => {
+          snackbarRef.onAction().subscribe(() => {
             this._router.navigate(['/learn/questionbank/create']);
           });
 
-          snackBarRef.afterDismissed().subscribe(() => {
+          snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
           });

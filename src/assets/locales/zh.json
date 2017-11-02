@@ -119,7 +119,9 @@
     "ValidToMustLaterThanValidFrom": "有效期结束日期必须晚于开始日期",
     "InvalidCategory": "无效的类别",
     "InputtedCategoryIsInvalid": "输入的类别无效",
-    "CategoryIsMust": "类别必须输入"
+    "CategoryIsMust": "类别必须输入",
+    "CreateAnotherOne": "再创建一个",
+    "CreatedSuccessfully": "创建成功"
   },
   "Sys":{
     "Currency": {

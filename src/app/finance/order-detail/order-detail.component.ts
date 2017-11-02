@@ -4,11 +4,11 @@ import {
 } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Order, SettlementRule, UIMode, getUIModeString } from '../../model';
-import { HomeDefDetailService, FinanceStorageService } from '../../services';
+import { LogLevel, Order, SettlementRule, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
+import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 /**
@@ -57,8 +57,10 @@ export class OrderDetailComponent implements OnInit {
   }
 
   constructor(private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
     this.detailObject = new Order();
@@ -219,22 +221,17 @@ export class OrderDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof Order) {
-          // Show a dialog, then jump to the display view
-          const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Success',
-            Content: x.Id.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
+          });
+          
+          snackbarRef.onAction().subscribe(() => {
+            this._router.navigate(['/finance/order/create']);
+          });
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
             this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
           });
         } else {

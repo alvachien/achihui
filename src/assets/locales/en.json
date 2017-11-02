@@ -119,7 +119,9 @@
     "ValidToMustLaterThanValidFrom": "Valid to must later than valid from",
     "InvalidCategory": "Invalid category",
     "InputtedCategoryIsInvalid": "Inputted category is invalid",
-    "CategoryIsMust": "Category is a must"
+    "CategoryIsMust": "Category is a must",
+    "CreateAnotherOne": "Create another One",
+    "CreatedSuccessfully": "Created successfully"
   },
   "Sys":{
     "Currency": {

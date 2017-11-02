@@ -9,7 +9,11 @@
           {{'Common.Todo' | translate}}
         </ng-template>
 
-        <div class="table-container mat-elevation-z8">
+        <mat-toolbar class="mt-2">
+          <button mat-icon-button (click)="onOverviewRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent" class="example-icon">refresh</mat-icon></button>
+        </mat-toolbar>
+    
+        <div class="table-container mat-elevation-z8 mt-2">
           <mat-table #tableADP [dataSource]="dataSourceADP">
             <!-- DocID column -->
             <ng-container matColumnDef="DocID">

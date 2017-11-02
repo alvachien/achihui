@@ -5,8 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocADP } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
+import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocADP, UICommonLabelEnum } from '../../model';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
 
@@ -160,6 +160,7 @@ export class DocumentItemOverviewComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
+    private _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
   }
 
@@ -183,6 +184,38 @@ export class DocumentItemOverviewComponent implements OnInit {
           adpdoc.onSetData(dta);
           this.ADPTmpDocs.push(adpdoc);
         }
+
+        // Sort it by ADP
+        this.ADPTmpDocs.sort((a, b) => {
+          if (a.TranDate.isSame(b.TranDate)) return 0;
+          if (a.TranDate.isBefore(b.TranDate)) return -1;
+          else 
+            return 1;
+        });
+
+        this.ADPTmpDocEvent.emit();
+      }
+    });
+  }
+
+  public onOverviewRefresh() {
+    this._storageService.getADPTmpDocs().subscribe(x => {
+      this.ADPTmpDocs = [];
+
+      if (x instanceof Array && x.length > 0) {
+        for (let dta of x) {
+          let adpdoc = new TemplateDocADP();
+          adpdoc.onSetData(dta);
+          this.ADPTmpDocs.push(adpdoc);
+        }
+
+        // Sort it by ADP
+        this.ADPTmpDocs.sort((a, b) => {
+          if (a.TranDate.isSame(b.TranDate)) return 0;
+          if (a.TranDate.isBefore(b.TranDate)) return -1;
+          else 
+            return 1;
+        });
 
         this.ADPTmpDocEvent.emit();
       }
@@ -244,8 +277,12 @@ export class DocumentItemOverviewComponent implements OnInit {
     // Do the posting!
     this._storageService.doPostADPTmpDoc(doc).subscribe((x) => {
       // Show the posted document - after the snackbar!
-      // TBD!
-      this._router.navigate(['/finance/document/displaynormal/' + x.id]);
+      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
+        duration: 3000,
+      }).afterDismissed().subscribe(() => {
+        // Navigate to display
+        this._router.navigate(['/finance/document/displaynormal/' + x.id]);
+      });
     }, (error) => {
       // Show error dialog!
     });

@@ -8,9 +8,9 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal,
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 /**
@@ -68,6 +68,7 @@ export class DocumentDetailComponent implements OnInit {
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
@@ -259,10 +260,16 @@ export class DocumentDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof Document) {
-          // Show the snackbar
-          this._snackbar.open('Message archived', 'OK', {
+          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
-          }).afterDismissed().subscribe(() => {
+          });
+          
+          snackbarRef.onAction().subscribe(() => {
+            this._router.navigate(['/finance/document/create/']);
+          });
+
+          snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
           });

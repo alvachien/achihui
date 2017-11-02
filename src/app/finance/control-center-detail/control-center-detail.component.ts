@@ -3,10 +3,10 @@ import {
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, ControlCenter, UIMode, getUIModeString } from '../../model';
-import { HomeDefDetailService, FinanceStorageService } from '../../services';
+import { LogLevel, ControlCenter, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
+import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
@@ -23,8 +23,10 @@ export class ControlCenterDetailComponent implements OnInit {
   public step: number = 0;
 
   constructor(private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
       this.detailObject = new ControlCenter();
@@ -122,22 +124,18 @@ export class ControlCenterDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof ControlCenter) {
-          // Show a dialog, then jump to the display view
-          const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Success',
-            Content: x.Id.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+          // Show the snackbar
+          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
+          });
+          
+          snackbarRef.onAction().subscribe(() => {
+            this._router.navigate(['/finance/controlcenter/create/']);
+          });
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
             this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
           });
         } else {
