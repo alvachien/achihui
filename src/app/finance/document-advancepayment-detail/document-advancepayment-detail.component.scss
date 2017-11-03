@@ -17,8 +17,12 @@
 }
 
 .mat-table {
- overflow: auto;
- max-height: 600px;
+  overflow: auto;
+  max-height: 600px;
+}
+
+.mat-header-row, .mat-row {
+  min-width: 800px;
 }
 
 .assetaccount {

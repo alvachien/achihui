@@ -34,7 +34,6 @@
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
           <mat-cell *matCellDef="let row">
-              <button mat-icon-button color="primary" (click)="onDisplayDocument(row)" matTooltip="{{'Common.DisplayDetails' | translate}}"><mat-icon class="cell-icon">search</mat-icon></button>
               <button mat-icon-button color="accent" (click)="onChangeDocument(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon class="cell-icon">edit</mat-icon></button>
               <button mat-icon-button color="warn" (click)="onDeleteDocument(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon class="cell-icon">delete</mat-icon></button>
               <button type="button" class="btn btn-link" (click)="onDisplayDocument(row)" *ngIf="row.Id">{{row.Id}}</button>

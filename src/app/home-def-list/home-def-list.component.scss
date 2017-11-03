@@ -14,15 +14,24 @@
 
 .mat-table {
   overflow: auto;
-  max-height: 500px;
+}
+
+.mat-cell, .mat-header-cell {
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.mat-column-id {
+  min-width: 100px;
+  max-width: 100px;
 }
 
 .cell-icon {
-padding: 0 3px;
+  padding: 0 3px;
 } 
 
 .mat-cell:nth-child(1),
 .mat-header-cell:nth-child(1),
 {
-flex: 0 0 10%;
+  flex: 0 0 10%;
 }

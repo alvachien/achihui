@@ -17,8 +17,8 @@
         </mat-expansion-panel-header>
 
         <!-- Currency -->
-        <mat-form-field>
-          <mat-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" 
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Currency' | translate}}" 
             [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr" name="curr">
             <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
                 {{cr.Symbol}} - {{cr.Name | translate}}
@@ -27,7 +27,7 @@
         </mat-form-field>
 
         <!-- Tran date -->
-        <mat-form-field>
+        <mat-form-field class="demo-full-width">
           <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
           <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
           <mat-datepicker #tdpicker></mat-datepicker>
@@ -43,7 +43,7 @@
         </mat-form-field>
 
         <!-- Planned Exchange rate -->
-        <div *ngIf="isForeignCurrency">
+        <div *ngIf="isForeignCurrency" class="demo-full-width">
           <mat-checkbox [(ngModel)]="detailObject.ExgRate_Plan" color="accent" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
         </div>
         
@@ -59,7 +59,7 @@
           </mat-panel-title>
           <mat-panel-description>
             {{'Finance.Items' | translate}}
-            <mat-icon>map</mat-icon>
+            <mat-icon>format_list_numbered</mat-icon>
           </mat-panel-description>
         </mat-expansion-panel-header>
 
@@ -69,20 +69,18 @@
         <div class="table-container mat-elevation-z8">
           <mat-table #table [dataSource]="dataSource">
             <!-- ID Column -->
-            <ng-container matColumnDef="ItemId">
+            <ng-container matColumnDef="itemid">
               <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <button mat-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteDocItem(row)"><mat-icon class="example-icon">delete</mat-icon></button>
-                <span class="example-spacer"></span>
+                <button mat-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteDocItem(row)"><mat-icon class="cell-icon">delete</mat-icon></button>
                 <mat-form-field>
-                  <input matInput type="number" required placeholder="#" 
-                    [readonly]="!isFieldChangable" [(ngModel)]="row.ItemId" name="itid">
+                  <input matInput type="number" required [readonly]="!isFieldChangable" [(ngModel)]="row.ItemId" name="itid">
                 </mat-form-field>
               </mat-cell>
             </ng-container>
 
             <!-- Account Column -->
-            <ng-container matColumnDef="AccountId">
+            <ng-container matColumnDef="accountid">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Account' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
@@ -97,7 +95,7 @@
             </ng-container>
 
             <!-- TranType Column -->
-            <ng-container matColumnDef="TranType">
+            <ng-container matColumnDef="trantype">
               <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionType' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
@@ -112,7 +110,7 @@
             </ng-container>
               
             <!-- Amount Column -->
-            <ng-container matColumnDef="Amount">
+            <ng-container matColumnDef="amount">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row"> 
                 <mat-form-field>
@@ -123,7 +121,7 @@
             </ng-container>
               
             <!-- Comment Column -->
-            <ng-container matColumnDef="Desp">
+            <ng-container matColumnDef="desp">
               <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field class="demo-full-width">
@@ -134,7 +132,7 @@
             </ng-container>
 
             <!-- Control center Column -->
-            <ng-container matColumnDef="ControlCenter">
+            <ng-container matColumnDef="controlcenter">
               <mat-header-cell *matHeaderCellDef> {{'Finance.ControlCenter' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
@@ -150,7 +148,7 @@
             </ng-container>
 
             <!-- Order Column -->
-            <ng-container matColumnDef="Order">
+            <ng-container matColumnDef="order">
               <mat-header-cell *matHeaderCellDef> {{'Finance.Order' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
@@ -164,7 +162,14 @@
                 </mat-form-field>
               </mat-cell>
             </ng-container>
-            
+
+            <!-- Tag column -->
+            <ng-container matColumnDef="tag">
+              <mat-header-cell *matHeaderCellDef> {{'Common.Tag' | translate}} </mat-header-cell>
+              <mat-cell *matCellDef="let row">Tag
+              </mat-cell>
+            </ng-container>
+                
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           </mat-table>
@@ -182,8 +187,8 @@
             {{'Common.ReviewForSubmit' | translate}}
           </mat-panel-title>
           <mat-panel-description>
-              {{'Common.ReviewForSubmit' | translate}}
-            <mat-icon>date_range</mat-icon>
+            {{'Common.ReviewForSubmit' | translate}}
+          <mat-icon>playlist_add_check</mat-icon>
           </mat-panel-description>
         </mat-expansion-panel-header>
 

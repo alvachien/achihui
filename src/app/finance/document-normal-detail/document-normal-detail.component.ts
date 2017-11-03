@@ -49,7 +49,7 @@ export class DocumentNormalDetailComponent implements OnInit {
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
   
-  displayedColumns = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order'];
+  displayedColumns = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
   dataSource: NormalDocumentItemDataSource | null;
   itemOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
 
@@ -271,13 +271,25 @@ export class DocumentNormalDetailComponent implements OnInit {
             duration: 3000,
           });
           
+          let isrecreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Snackbar onAction)`);
+            }
+
+            isrecreate = true;
             this._router.navigate(['/finance/document/createnormal']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Snackbar afterDismissed with ${isrecreate}`);
+            }
+            
+            if (!isrecreate) {
+              this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
+            }            
           });
         } else {
           // Show error message

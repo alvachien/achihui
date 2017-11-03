@@ -31,6 +31,10 @@
   max-height: 600px;
 }
 
+.mat-header-row, .mat-row {
+  min-width: 800px;
+}
+
 .example-icon {
   padding: 0 3px;
 }

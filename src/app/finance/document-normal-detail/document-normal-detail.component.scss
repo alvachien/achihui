@@ -25,19 +25,63 @@
    padding-left: 24px;
    font-size: 20px;
  }
-  
- .mat-table {
-   overflow: auto;
-   max-height: 600px;
- }
 
- .example-icon {
-    padding: 0 14px;
-  }
+ .mat-table {
+  overflow: auto;
+}
+
+.mat-cell, .mat-header-cell {
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.mat-column-itemid {
+  min-width: 120px;
+  max-width: 120px;
+}
+
+.mat-column-accountid {
+  min-width: 100px;
+  max-width: 200px;
+}
+
+.mat-column-trantype {
+  min-width: 100px;
+  max-width: 200px;
+}
+
+.mat-column-amount {
+  min-width: 100px;
+  max-width: 150px;
+}
+
+.mat-column-desp {
+  min-width: 120px;
+  max-width: 200px;
+}
+
+.mat-column-controlcenter {
+  min-width: 100px;
+  max-width: 200px;
+}
+
+.mat-column-order {
+  min-width: 100px;
+  max-width: 200px;
+}
+
+.mat-column-tag {
+  min-width: 100px;
+  max-width: 200px;
+}
+
+.cell-icon {
+  padding: 0 2px;
+}
   
-  .example-spacer {
-    flex: 1 1 auto;
-  }
+.example-spacer {
+  flex: 1 1 auto;
+}
 
 .assetaccount {
   color: green;

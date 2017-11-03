@@ -18,9 +18,6 @@
               <button mat-icon-button (click)="onChooseHome(row)" *ngIf="!IsCurrentHomeChosed" matTooltip="{{'Common.ChooseThisHome' | translate}}">
                 <mat-icon color="primary" class="md-14 cell-icon" aria-label="Choose">verified_user</mat-icon>
               </button>
-              <!-- <button mat-icon-button (click)="onDisplayHome(row)" matTooltip="{{'Common.DisplayDetails' | translate}}">
-                <mat-icon color="primary" class="md-14 cell-icon" aria-label="Display">search</mat-icon>
-              </button> -->
               <a class="mt-1" routerLink='/homedef/display/{{row.ID}}' routerLinkActive="active" *ngIf="row.ID">{{row.ID}}</a>
           </mat-cell>
         </ng-container>
