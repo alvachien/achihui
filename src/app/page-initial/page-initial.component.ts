@@ -3,7 +3,7 @@ import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageS
   FinCurrencyService, UIStatusService } from '../services';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { LogLevel, TranTypeReport, OverviewScopeEnum, OverviewScope } from '../model';
+import { LogLevel, TranTypeReport, OverviewScopeEnum, OverviewScope, UICommonLabelEnum } from '../model';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 
@@ -19,10 +19,11 @@ export class PageInitialComponent implements OnInit {
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
   };
-  xLearnCtgyAxisLabel = 'Category';
-  yLearnCtgyAxisLabel = 'Count';
-  xLearnUserAxisLabel = 'User';
-  yLearnUserAxisLabel = 'Count';
+  xLearnCtgyAxisLabel: string;
+  yLearnCtgyAxisLabel: string;
+  xLearnUserAxisLabel: string;
+  yLearnUserAxisLabel: string;
+  totalLabel: string;
   dataFinTTIn: any[] = [];
   dataFinTTOut: any[] = [];
   dataLrnUser: any[] = [];
@@ -42,6 +43,11 @@ export class PageInitialComponent implements OnInit {
     private _currService: FinCurrencyService,
     public _uistatusService: UIStatusService,
     private _router: Router) {
+    this.xLearnCtgyAxisLabel = this._uistatusService.getUILabel(UICommonLabelEnum.Category);
+    this.yLearnCtgyAxisLabel = this._uistatusService.getUILabel(UICommonLabelEnum.Count);
+    this.xLearnUserAxisLabel = this._uistatusService.getUILabel(UICommonLabelEnum.User);
+    this.yLearnUserAxisLabel = this._uistatusService.getUILabel(UICommonLabelEnum.Count);
+    this.totalLabel = this._uistatusService.getUILabel(UICommonLabelEnum.Total);
   }
 
   ngOnInit() {

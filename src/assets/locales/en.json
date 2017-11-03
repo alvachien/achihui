@@ -108,6 +108,7 @@
     "LanguageSupportedInApp": "Supported",
     "Host": "Host",
     "Todo": "Todo",
+    "Total": "Total",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",
@@ -352,7 +353,8 @@
     "DocumentPosted": "Document Posted",
     "NoExchangeRate": "No exchange rate",
     "UnnecessaryExchangeRate": "Exchange rate is unnecessary for base currency",
-    "DespIsMust": "Desp is must"
+    "DespIsMust": "Desp is must",
+    "NoExtraInfo": "No extra info"
   },
   "Library": {
     "BookCategories": "Book Categories",

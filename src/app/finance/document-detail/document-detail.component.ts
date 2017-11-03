@@ -102,9 +102,7 @@ export class DocumentDetailComponent implements OnInit {
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
-            this.detailObject = new Document();
-            this.uiMode = UIMode.Create;
-            this.detailObject.HID = this._homedefService.ChosedHome.ID;
+            this.onInitCreateMode();
           } else if (x[0].path === 'edit') {
             this.routerID = +x[1].path;
 
@@ -135,9 +133,6 @@ export class DocumentDetailComponent implements OnInit {
             });
 
             this._storageService.readDocument(this.routerID);
-          } else {
-            // Create mode!
-            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -265,13 +260,21 @@ export class DocumentDetailComponent implements OnInit {
             duration: 3000,
           });
           
+          let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
-            this._router.navigate(['/finance/document/create/']);
+            recreate = true;
+
+            this.onInitCreateMode();
+            this.setStep(0);
+            this.itemOperEvent.emit();
+            //this._router.navigate(['/finance/document/create/']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+            if (!recreate) {
+              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+            }            
           });
         } else {
           // Show error message
@@ -297,5 +300,12 @@ export class DocumentDetailComponent implements OnInit {
       this.detailObject.HID = this._homedefService.ChosedHome.ID;
       this._storageService.createDocument(this.detailObject);
     }
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new Document();
+    this.uiMode = UIMode.Create;
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
+    this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
 }

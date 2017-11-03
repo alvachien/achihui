@@ -1,6 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, EventEmitter,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatChipInputEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
@@ -49,9 +47,7 @@ export class QuestionBankDetailComponent implements OnInit {
 
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.detailObject = new QuestionBankItem();
-          this.uiMode = UIMode.Create;
-          this.detailObject.HID = this._homedefService.ChosedHome.ID;
+          this.onInitCreateMode();
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
@@ -164,13 +160,18 @@ export class QuestionBankDetailComponent implements OnInit {
             duration: 3000,
           });
 
+          let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
-            this._router.navigate(['/learn/questionbank/create']);
+            recreate = true;
+            this.onInitCreateMode();
+            //this._router.navigate(['/learn/questionbank/create']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
+            if (!recreate) {
+              this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
+            }            
           });
         } else {
           // Show error message
@@ -197,11 +198,18 @@ export class QuestionBankDetailComponent implements OnInit {
       this._storageService.createQuestionBankItem(this.detailObject);
     } else if (this.uiMode === UIMode.Change) {
       // Update mode
+      // TBD
     }
   }
 
   public onCancel() {
     // Navigate back to the list view
     this._router.navigate(['/learn/questionbank/']);
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new QuestionBankItem();
+    this.uiMode = UIMode.Create;
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
 }

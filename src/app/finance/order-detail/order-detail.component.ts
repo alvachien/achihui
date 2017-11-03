@@ -80,9 +80,7 @@ export class OrderDetailComponent implements OnInit {
 
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
-            this.detailObject = new Order();
-            this.uiMode = UIMode.Create;
-            this.detailObject.HID = this._homedefService.ChosedHome.ID;
+            this.onInitCreateMode();
           } else if (x[0].path === 'edit') {
             this.routerID = +x[1].path;
 
@@ -226,13 +224,20 @@ export class OrderDetailComponent implements OnInit {
             duration: 3000,
           });
           
+          let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
-            this._router.navigate(['/finance/order/create']);
+            recreate = true;
+
+            this.onInitCreateMode();
+            this.setStep(0);
+            //this._router.navigate(['/finance/order/create']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
+            if (!recreate) {
+              this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
+            }            
           });
         } else {
           // Show error message
@@ -258,5 +263,11 @@ export class OrderDetailComponent implements OnInit {
       this.detailObject.HID = this._homedefService.ChosedHome.ID;
       this._storageService.createOrder(this.detailObject);
     }
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new Order();
+    this.uiMode = UIMode.Create;
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
 }

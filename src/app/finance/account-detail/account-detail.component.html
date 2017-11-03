@@ -53,14 +53,14 @@
           </mat-panel-title>
           <mat-panel-description>
             {{'Common.ExtraInfo' | translate}}
-            <mat-icon>map</mat-icon>
+            <mat-icon>extension</mat-icon>
           </mat-panel-description>
         </mat-expansion-panel-header>
 
         <div class="container" class="demo-full-width">
           <hih-finance-account-ext-adp *ngIf="isADPAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-adp>
           <hih-finance-account-ext-asset *ngIf="isAssetAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-asset>
-          <div *ngIf="!isAssetAccount && !isADPAccount">There is no extra Info in this Account!</div>
+          <div *ngIf="!isAssetAccount && !isADPAccount">{{'Finance.NoExtraInfo' | translate}}</div>
         </div>
     
         <mat-action-row>
@@ -76,7 +76,7 @@
           </mat-panel-title>
           <mat-panel-description>
             {{'Common.ReviewForSubmit' | translate}}
-            <mat-icon>date_range</mat-icon>
+            <mat-icon>playlist_add_check</mat-icon>
           </mat-panel-description>
         </mat-expansion-panel-header>
 

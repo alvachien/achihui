@@ -4,8 +4,8 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-form-field>
-      <mat-select class="demo-full-width" placeholder="{{'Login.User' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.UserId"
+    <mat-form-field class="demo-full-width">
+      <mat-select placeholder="{{'Login.User' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.UserId"
         name="usr">
         <mat-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
           {{mem.DisplayAs}}
@@ -13,8 +13,8 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-select class="demo-full-width" placeholder="{{'Learning.LearningObject' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ObjectId"
+    <mat-form-field class="demo-full-width">
+      <mat-select placeholder="{{'Learning.LearningObject' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ObjectId"
         name="ctgy">
         <mat-option *ngFor="let obj of _storageService.Objects" [value]="obj.Id">
           {{obj.Name}}

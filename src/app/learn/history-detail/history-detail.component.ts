@@ -46,9 +46,7 @@ export class HistoryDetailComponent implements OnInit {
 
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
-            this.detailObject = new LearnHistory();
-            this.uiMode = UIMode.Create;
-            this.detailObject.HID = this._homedefService.ChosedHome.ID;
+            this.onInitCreateMode();
           } else if (x[0].path === 'edit') {
             this.routerID = x[1].path;
 
@@ -116,13 +114,19 @@ export class HistoryDetailComponent implements OnInit {
             duration: 3000,
           });
         
+          let recreate: boolean = false;
+
           snackbarRef.onAction().subscribe(() => {
-            this._router.navigate(['/learn/history/create']);
+            recreate = true;
+            this.onInitCreateMode();
+            //this._router.navigate(['/learn/history/create']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/learn/history/display/' + x.generateKey()]);
+            if (!recreate) {
+              this._router.navigate(['/learn/history/display/' + x.generateKey()]);
+            }            
           });
         } else {
           // Show error message
@@ -155,5 +159,11 @@ export class HistoryDetailComponent implements OnInit {
   public onCancel() {
     // Jump back to the list view
     this._router.navigate(['/learn/history']);
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new LearnHistory();
+    this.uiMode = UIMode.Create;
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
 }

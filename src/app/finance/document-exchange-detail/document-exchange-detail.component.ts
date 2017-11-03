@@ -1,5 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -10,9 +9,9 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument, 
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   UIMode, getUIModeString, FinanceDocType_CurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
@@ -34,14 +33,14 @@ export class DocumentExchangeDetailComponent implements OnInit {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
   get isForeignSourceCurrency(): boolean {
-    if (this.detailObject && this.detailObject.SourceTranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
+    if (this.detailObject && this.detailObject.SourceTranCurr && this.detailObject.SourceTranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
       return true;
     }
 
     return false;
   }
   get isForeignTargetCurrency(): boolean {
-    if (this.detailObject && this.detailObject.TargetTranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
+    if (this.detailObject && this.detailObject.TargetTranCurr && this.detailObject.TargetTranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
       return true;
     }
 
@@ -55,6 +54,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService,
@@ -98,8 +98,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createexg') {
-            this.detailObject = new UIFinCurrencyExchangeDocument();
-            this.uiMode = UIMode.Create;
+            this.onInitCreateMode();
           } else if (x[0].path === 'editexg') {
             this.routerID = +x[1].path;
 
@@ -129,10 +128,6 @@ export class DocumentExchangeDetailComponent implements OnInit {
             });
 
             this._storageService.readDocument(this.routerID);
-          } else {
-            // Create mode!
-            this.detailObject.SourceTranCurr = this._homedefService.ChosedHome.BaseCurrency;
-            this.detailObject.TargetTranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -265,12 +260,24 @@ export class DocumentExchangeDetailComponent implements OnInit {
             }
 
             this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe((rst) => {
-              // Show something?
-              this._snackbar.open('Document Posted and previous doc updated', 'OK', {
+              let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+                this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
                 duration: 3000,
-              }).afterDismissed().subscribe(() => {
+              });
+              
+              let recreate: boolean = false;
+              snackbarRef.onAction().subscribe(() => {
+                recreate = true;
+    
+                this.onInitCreateMode();
+                //this._router.navigate(['/finance/document/create/']);
+              });
+    
+              snackbarRef.afterDismissed().subscribe(() => {
                 // Navigate to display
-                this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
+                if (!recreate) {
+                  this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
+                }            
               });
             }, (rerror) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
@@ -324,5 +331,13 @@ export class DocumentExchangeDetailComponent implements OnInit {
 
   public onCancel(): void {
     this._router.navigate(['/finance/document/']);
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new UIFinCurrencyExchangeDocument();
+    this.uiMode = UIMode.Create;
+
+    this.detailObject.SourceTranCurr = this._homedefService.ChosedHome.BaseCurrency;
+    this.detailObject.TargetTranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
 }

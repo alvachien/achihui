@@ -16,9 +16,8 @@
       </mat-expansion-panel-header>
 
       <!-- Currency -->
-      <mat-form-field>
-        <mat-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
-          name="cur">
+      <mat-form-field class="demo-full-width">
+        <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr" name="cur">
           <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
             {{cr.Symbol}} - {{cr.Name | translate}}
           </mat-option>
@@ -33,9 +32,8 @@
       </mat-form-field>
 
       <!-- Tran type -->
-      <mat-form-field>
-        <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranType"
-          name="srctt">
+      <mat-form-field class="demo-full-width">
+        <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranType" name="srctt">
           <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
             <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
           </mat-option>
@@ -43,9 +41,8 @@
       </mat-form-field>
 
       <!-- Account -->
-      <mat-form-field>
-        <mat-select class="demo-full-width" placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.AccountId"
-          name="srcacnt">
+      <mat-form-field class="demo-full-width">
+        <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.AccountId" name="srcacnt">
           <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
             <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
           </mat-option>
@@ -65,9 +62,9 @@
       </mat-form-field>
 
       <!-- CC -->
-      <mat-form-field>
+      <mat-form-field class="demo-full-width">
         <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ControlCenterId"
-          name="hdrcc" class="demo-full-width">
+          name="hdrcc">
           <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
           <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
             {{tt.Name}}
@@ -76,9 +73,9 @@
       </mat-form-field>
 
       <!-- Order -->
-      <mat-form-field>
+      <mat-form-field class="demo-full-width">
         <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.OrderId"
-          name="hdrord" class="demo-full-width">
+          name="hdrord">
           <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
           <mat-option *ngFor="let tt of arUIOrder" [value]="tt.Id">
             {{tt.Name}}
@@ -98,16 +95,12 @@
         </mat-panel-title>
         <mat-panel-description>
           {{'Common.ExtraInfo' | translate}}
-          <mat-icon>details</mat-icon>
+          <mat-icon>extension</mat-icon>
         </mat-panel-description>
       </mat-expansion-panel-header>
 
       <hih-finance-account-ext-asset [uiMode]="uiMode" [extObject]="detailObject.AssetAccount"></hih-finance-account-ext-asset>
       
-      <!-- <mat-action-row>
-        <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-        <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
-      </mat-action-row> -->
     </mat-expansion-panel>
 
   </mat-card-content>

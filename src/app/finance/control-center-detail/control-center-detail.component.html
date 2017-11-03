@@ -6,17 +6,18 @@
   <mat-card-content>
     <mat-form-field class="demo-full-width">
       <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name"
-        name="name">
+        name="name" #name maxlength="30">
+      <mat-hint align="end">{{name.value.length}} / 30</mat-hint>
     </mat-form-field>
 
     <mat-form-field class="demo-full-width">
       <input matInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment"
-        name="cmt">
+        name="cmt" #comment maxlength="45">
+      <mat-hint align="end">{{comment.value.length}} / 45</mat-hint>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-select class="demo-full-width" placeholder="{{'Finance.Owner' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Owner"
-        name="owner">
+    <mat-form-field class="demo-full-width">
+      <mat-select placeholder="{{'Finance.Owner' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Owner" name="owner">
         <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
         <mat-option *ngFor="let usr of _homedefService.MembersInChosedHome" [value]="usr.User">
           {{usr.DisplayAs}}
@@ -24,8 +25,9 @@
       </mat-select>
     </mat-form-field>
   </mat-card-content>
+  
   <mat-card-actions>
     <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
-    <button mat-button color="warn" (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
+    <button mat-button color="warn" (click)="onBackToList()">{{'Common.BackToList' | translate}}</button>
   </mat-card-actions>
 </mat-card>

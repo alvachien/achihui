@@ -83,9 +83,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
-            this.detailObject = new LearnObject();
-            this.uiMode = UIMode.Create;
-            this.detailObject.HID = this._homedefService.ChosedHome.ID;
+            this.onInitCreateMode();
           } else if (x[0].path === 'edit') {
             this.routerID = +x[1].path;
 
@@ -180,13 +178,18 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
             duration: 3000,
           });
           
+          let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
-            this._router.navigate(['/learn/object/create']);
+            recreate = true;
+            this.onInitCreateMode();
+            //this._router.navigate(['/learn/object/create']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
+            if (!recreate) {
+              this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
+            }            
           });
         } else {
           // Show error message
@@ -267,5 +270,11 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   public onCancel() {
     // Jump back to the list view
     this._router.navigate(['/learn/object']);
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new LearnObject();
+    this.uiMode = UIMode.Create;
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
 }

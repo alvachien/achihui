@@ -35,7 +35,7 @@ export class DocumentTransferDetailComponent implements OnInit {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
   get isForeignCurrency(): boolean {
-    if (this.detailObject && this.detailObject.TranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
+    if (this.detailObject && this.detailObject.TranCurr && this.detailObject.TranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
       return true;
     }
 
@@ -92,8 +92,7 @@ export class DocumentTransferDetailComponent implements OnInit {
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createtransfer') {
-            this.detailObject = new UIFinTransferDocument();
-            this.uiMode = UIMode.Create;
+            this.onInitCreateMode();
           } else if (x[0].path === 'edittransfer') {
             this.routerID = +x[1].path;
 
@@ -119,13 +118,11 @@ export class DocumentTransferDetailComponent implements OnInit {
                 }
 
                 this.detailObject = new UIFinTransferDocument();
+                this.uiMode = UIMode.Invalid;
               }
             });
 
             this._storageService.readDocument(this.routerID);
-          } else {
-            // Create mode!
-            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -177,6 +174,7 @@ export class DocumentTransferDetailComponent implements OnInit {
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
       let docObj = this.detailObject.generateDocument();
+
       // Check!
       if (!docObj.onVerify({
         ControlCenters: this._storageService.ControlCenters,
@@ -216,13 +214,18 @@ export class DocumentTransferDetailComponent implements OnInit {
             duration: 3000,
           });
         
+          let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
-            this._router.navigate(['/finance/document/createtransfer']);
+
+            recreate = true;
+            this.onInitCreateMode();
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/finance/document/displaytransfer/' + x.Id.toString()]);
+            if (!recreate) {
+              this._router.navigate(['/finance/document/displaytransfer/' + x.Id.toString()]);
+            }            
           });
         } else {
           // Show error message
@@ -252,5 +255,12 @@ export class DocumentTransferDetailComponent implements OnInit {
 
   public onCancel(): void {
     this._router.navigate(['/finance/document/']);
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new UIFinTransferDocument();
+    this.uiMode = UIMode.Create;
+
+    this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
 }

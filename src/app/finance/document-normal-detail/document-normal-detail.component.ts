@@ -57,7 +57,7 @@ export class DocumentNormalDetailComponent implements OnInit {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
   get isForeignCurrency(): boolean {
-    if (this.detailObject && this.detailObject.TranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
+    if (this.detailObject && this.detailObject.TranCurr && this.detailObject.TranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
       return true;
     }
 
@@ -103,10 +103,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createnormal') {
-            this.detailObject = new Document();
-            this.uiMode = UIMode.Create;
-            this.detailObject.HID = this._homedefService.ChosedHome.ID;
-            this.detailObject.DocType = FinanceDocType_Normal;
+            this.onInitCreateMode();
           } else if (x[0].path === 'editnormal') {
             this.routerID = +x[1].path;
 
@@ -138,9 +135,6 @@ export class DocumentNormalDetailComponent implements OnInit {
             });
 
             this._storageService.readDocument(this.routerID);
-          } else {
-            // Create mode!
-            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -274,17 +268,20 @@ export class DocumentNormalDetailComponent implements OnInit {
           let isrecreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Snackbar onAction)`);
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Snackbar onAction()`);
             }
 
             isrecreate = true;
-            this._router.navigate(['/finance/document/createnormal']);
+            // Re-initial the page for another create
+            this.onInitCreateMode();
+            this.setStep(0);            
+            this.itemOperEvent.emit();
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Snackbar afterDismissed with ${isrecreate}`);
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Snackbar afterDismissed with ${isrecreate}`);
             }
             
             if (!isrecreate) {
@@ -306,7 +303,7 @@ export class DocumentNormalDetailComponent implements OnInit {
           }).afterClosed().subscribe((x2) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);
             }
           });
         }
@@ -320,5 +317,14 @@ export class DocumentNormalDetailComponent implements OnInit {
 
   public onCancel(): void {
     this._router.navigate(['/finance/document/']);
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new Document();
+    this.uiMode = UIMode.Create;
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
+    this.detailObject.DocType = FinanceDocType_Normal;
+
+    this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
 }

@@ -1,5 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
@@ -105,8 +104,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createadp') {
-            this.detailObject = new UIFinAdvPayDocument();
-            this.uiMode = UIMode.Create;
+            this.onInitCreateMode();
           } else if (x[0].path === 'editadp') {
             this.routerID = +x[1].path;
 
@@ -131,9 +129,6 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
                 console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error2}`);
               }
             });
-          } else {
-            // Create mode!
-            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -361,13 +356,21 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
             duration: 3000,
           });
           
+          let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
-            this._router.navigate(['/finance/document/createadp/']);
+            recreate = true;
+
+            this.onInitCreateMode();
+            this.setStep(0);
+            this.tmpDocOperEvent.emit();
+            //this._router.navigate(['/finance/document/createadp/']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/finance/document/displayadp/' + x.Id.toString()]);
+            if (!recreate) {
+              this._router.navigate(['/finance/document/displayadp/' + x.Id.toString()]);
+            }            
           });
         } else {
           // Show error message
@@ -421,5 +424,12 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
   public onCancel(): void {
     this._router.navigate(['/finance/document/']);
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new UIFinAdvPayDocument();
+    this.uiMode = UIMode.Create;
+
+    this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
 }

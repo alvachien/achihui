@@ -77,15 +77,9 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createassetbuy') {
-            this.detailObject = new UIFinAssetOperationDocument();
-            this.detailObject.isBuyin = true;
-
-            this.uiMode = UIMode.Create;
+            this.onInitCreateMode(true);
           } else if (x[0].path === 'createassetsold') {
-            this.detailObject = new UIFinAssetOperationDocument();
-            this.detailObject.isBuyin = false;
-
-            this.uiMode = UIMode.Create;
+            this.onInitCreateMode(false);
           } else if (x[0].path === 'editassetbuy') {
             this.routerID = +x[1].path;
             this.detailObject.isBuyin = true;
@@ -122,9 +116,6 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
                 console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error2}`);
               }
             });
-          } else {
-            // Create mode!
-            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -228,13 +219,20 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
             duration: 3000,
           });
           
+          let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
-            this._router.navigate([this.detailObject.isBuyin? '/finance/document/createassetbuy/' : '/finance/document/createassetsold/']);
+            recreate = true;
+
+            this.onInitCreateMode(this.detailObject.isBuyin);
+            this.setStep(0);
+            //this._router.navigate([this.detailObject.isBuyin? '/finance/document/createassetbuy/' : '/finance/document/createassetsold/']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate([(this.detailObject.isBuyin? '/finance/document/displayassetbuy/' : '/finance/document/displayassetsold/') + x.Id.toString()]);
+            if (!recreate) {
+              this._router.navigate([(this.detailObject.isBuyin? '/finance/document/displayassetbuy/' : '/finance/document/displayassetsold/') + x.Id.toString()]);
+            }            
           });
         } else {
           // Show error message
@@ -276,5 +274,13 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
 
   public onCancel(): void {
     this._router.navigate(['/finance/document/']);
+  }
+
+  private onInitCreateMode(isbuyin: boolean) {
+    this.detailObject = new UIFinAssetOperationDocument();
+    this.detailObject.isBuyin = isbuyin;
+
+    this.uiMode = UIMode.Create;
+    this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
 }

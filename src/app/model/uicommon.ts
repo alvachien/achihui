@@ -58,7 +58,11 @@ export class UIRouteLink {
 export enum UICommonLabelEnum {
   DocumentPosted    = 1,
   CreateAnotherOne  = 2,
-  CreatedSuccess    = 3
+  CreatedSuccess    = 3,
+  Category          = 4,
+  User              = 5,
+  Count             = 6,
+  Total             = 7
 }
 
 export class UICommonLabelUIString {
@@ -95,6 +99,18 @@ export class UICommonLabel {
 
       case UICommonLabelEnum.CreatedSuccess:
         return 'Common.CreatedSuccessfully';
+
+      case UICommonLabelEnum.Category:
+        return 'Common.Category';
+
+      case UICommonLabelEnum.User:
+        return 'Login.User';
+
+      case UICommonLabelEnum.Count:
+        return 'Common.Count';
+
+      case UICommonLabelEnum.Total:
+        return 'Common.Total';
         
       default:
         return '';

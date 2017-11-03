@@ -108,7 +108,8 @@
     "LanguageSupportedInApp": "程序支持",
     "Host": "户主",
     "Todo": "待处理事项",
-
+    "Total": "总计",
+    
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",
     "InvalidValidFrom": "无效的有效期开始日期",
@@ -352,7 +353,8 @@
     "DocumentPosted": "凭证已创建",
     "NoExchangeRate": "未定义汇率",
     "UnnecessaryExchangeRate": "本币操作无需汇率",
-    "DespIsMust": "描述是必须的"
+    "DespIsMust": "描述是必须的",
+    "NoExtraInfo": "没有附加信息"
   },
   "Library": {
     "BookCategories": "图书种类",

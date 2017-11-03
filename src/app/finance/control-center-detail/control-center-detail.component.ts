@@ -20,7 +20,6 @@ export class ControlCenterDetailComponent implements OnInit {
   public currentMode: string;
   public detailObject: ControlCenter | null;
   public uiMode: UIMode = UIMode.Create;
-  public step: number = 0;
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -29,7 +28,7 @@ export class ControlCenterDetailComponent implements OnInit {
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
-      this.detailObject = new ControlCenter();
+    this.detailObject = new ControlCenter();
   }
 
   ngOnInit() {
@@ -45,9 +44,7 @@ export class ControlCenterDetailComponent implements OnInit {
 
         if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.detailObject = new ControlCenter();
-          this.uiMode = UIMode.Create;
-          this.detailObject.HID = this._homedefService.ChosedHome.ID;
+          this.onInitCreateMode();
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
@@ -89,18 +86,6 @@ export class ControlCenterDetailComponent implements OnInit {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
 
-  public setStep(index: number) {
-    this.step = index;
-  }
-
-  public nextStep() {
-    this.step++;
-  }
-
-  public prevStep() {
-    this.step--;
-  }
-
   public canSubmit(): boolean {
     if (!this.isFieldChangable) {
       return false;
@@ -130,13 +115,19 @@ export class ControlCenterDetailComponent implements OnInit {
             duration: 3000,
           });
           
+          let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
-            this._router.navigate(['/finance/controlcenter/create/']);
+            recreate = true;
+
+            this.onInitCreateMode();
+            //this._router.navigate(['/finance/controlcenter/create/']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
+            if (!recreate) {
+              this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
+            }            
           });
         } else {
           // Show error message
@@ -163,7 +154,13 @@ export class ControlCenterDetailComponent implements OnInit {
     }
   }
 
-  public onCancel() {
+  public onBackToList() {
     this._router.navigate(['/finance/controlcenter']);
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new ControlCenter();
+    this.uiMode = UIMode.Create;
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
 }

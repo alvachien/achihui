@@ -17,8 +17,8 @@
         </mat-expansion-panel-header>
 
         <!-- Doc. type -->
-        <mat-form-field>
-          <mat-select class="demo-full-width" placeholder="{{'Finance.DocumentType' | translate}}" 
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.DocumentType' | translate}}" 
             [disabled]="!isFieldChangable" [(ngModel)]="detailObject.DocType" name="doctype">
             <mat-option *ngFor="let dt of _storageService.DocumentTypes" [value]="dt.Id">
               {{dt.Name | translate}} 
@@ -27,8 +27,8 @@
         </mat-form-field>
 
         <!-- Currency -->
-        <mat-form-field>
-          <mat-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" 
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Currency' | translate}}" 
             [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr" name="curr">
             <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
                 {{cr.Symbol}} - {{cr.Name | translate}}
@@ -37,7 +37,7 @@
         </mat-form-field>
 
         <!-- Tran date -->
-        <mat-form-field>
+        <mat-form-field class="demo-full-width">
           <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
           <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
           <mat-datepicker #tdpicker></mat-datepicker>
@@ -54,7 +54,7 @@
         </mat-form-field>
 
         <!-- Planned Exchange rate -->
-        <div *ngIf="isForeignCurrency">
+        <div *ngIf="isForeignCurrency" class="demo-full-width">
           <mat-slide-toggle [(checked)]="detailObject.ExgRate_Plan" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate' | translate}}</mat-slide-toggle>
         </div>        
         
@@ -70,7 +70,7 @@
           </mat-panel-title>
           <mat-panel-description>
             {{'Finance.Items' | translate}}
-            <mat-icon>map</mat-icon>
+            <mat-icon>format_list_numbered</mat-icon>
           </mat-panel-description>
         </mat-expansion-panel-header>
 
@@ -195,7 +195,7 @@
           </mat-panel-title>
           <mat-panel-description>
               {{'Common.ReviewForSubmit' | translate}}
-            <mat-icon>date_range</mat-icon>
+            <mat-icon>playlist_add_check</mat-icon>
           </mat-panel-description>
         </mat-expansion-panel-header>
 

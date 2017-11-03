@@ -17,7 +17,9 @@
         </mat-expansion-panel-header>
 
         <mat-form-field class="demo-full-width">
-          <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name" name="name">
+          <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name" name="name"
+            #name maxlength="30">
+          <mat-hint align="end">{{name.value.length}} / 30</mat-hint>
         </mat-form-field>
 
         <div class="demo-full-width">
@@ -34,7 +36,9 @@
         </div>
         
         <mat-form-field class="demo-full-width">
-          <input matInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="name">
+          <input matInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="cmt"
+            #comment maxlength="45">
+          <mat-hint align="end">{{comment.value.length}} / 45</mat-hint>
         </mat-form-field>
   
         <mat-action-row>
@@ -49,7 +53,7 @@
           </mat-panel-title>
           <mat-panel-description>
             {{'Finance.SettlementRule' | translate}}
-            <mat-icon>map</mat-icon>
+            <mat-icon>format_list_numbered</mat-icon>
           </mat-panel-description>
         </mat-expansion-panel-header>
 
@@ -62,8 +66,8 @@
             <ng-container matColumnDef="rid">
               <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                  <button mat-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteRule(row)"><mat-icon class="example-icon">delete</mat-icon></button>
-                  {{ row.RuleId }}
+                <button mat-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteRule(row)"><mat-icon class="example-icon">delete</mat-icon></button>
+                {{ row.RuleId }}
               </mat-cell>
             </ng-container>
     
@@ -85,7 +89,7 @@
             <ng-container matColumnDef="precent">
               <mat-header-cell *matHeaderCellDef>{{'Common.Precent' |translate}} (%)</mat-header-cell>
               <mat-cell *matCellDef="let row"> 
-                <mat-form-field class="demo-full-width">
+                <mat-form-field>
                   <input matInput type="number" required placeholder="{{'Common.Precent' |translate}} (%)"
                     [readonly]="!isFieldChangable" [(ngModel)]="row.Precent" name="rulepr">
                 </mat-form-field>                 
@@ -96,7 +100,7 @@
             <ng-container matColumnDef="comment">
               <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <mat-form-field class="demo-full-width">
+                <mat-form-field>
                   <input matInput type="text" placeholder="{{'Common.Comment' | translate}}"
                     [readonly]="!isFieldChangable" [(ngModel)]="row.Comment" name="rulecmt">
                 </mat-form-field>                   
@@ -121,7 +125,7 @@
           </mat-panel-title>
           <mat-panel-description>
             {{'Common.ReviewForSubmit' | translate}}
-            <mat-icon>date_range</mat-icon>
+            <mat-icon>playlist_add_check</mat-icon>
           </mat-panel-description>
         </mat-expansion-panel-header>
 

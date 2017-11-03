@@ -51,9 +51,7 @@ export class AccountDetailComponent implements OnInit {
 
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
-            this.detailObject = new Account();
-            this.uiMode = UIMode.Create;
-            this.detailObject.HID = this._homedefService.ChosedHome.ID;
+            this.onInitCreateMode();
           } else if (x[0].path === 'edit') {
             this.routerID = +x[1].path;
 
@@ -148,13 +146,20 @@ export class AccountDetailComponent implements OnInit {
             duration: 3000,
           });
           
+          let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
-            this._router.navigate(['/finance/account/create']);
+            recreate = true;
+
+            this.onInitCreateMode();
+            this.setStep(0);
+            // this._router.navigate(['/finance/account/create']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
-            this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+            if (!recreate) {
+              this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+            }
           });
         } else {
           // Show error message
@@ -180,6 +185,13 @@ export class AccountDetailComponent implements OnInit {
       this._storageService.createAccount(this.detailObject);
     } else if (this.uiMode === UIMode.Change) {
       // Update current account
+      // TBD!
     }
+  }
+
+  private onInitCreateMode() {
+    this.detailObject = new Account();
+    this.uiMode = UIMode.Create;
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
 }

@@ -9,7 +9,7 @@
         <ng-template matStepLabel>{{'Finance.Header' | translate}}</ng-template>
 
         <!-- Tran date -->
-        <mat-form-field>
+        <mat-form-field class="demo-full-width">
           <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
           <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
           <mat-datepicker #tdpicker></mat-datepicker>
@@ -29,8 +29,8 @@
       <mat-step>
         <ng-template matStepLabel>{{'Finance.TransferFrom' | translate}}</ng-template>
 
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
             name="srcacnt">
             <mat-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
               {{acnt.Name}}
@@ -38,8 +38,8 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
-          <mat-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranCurr"
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranCurr"
             name="srccur">
             <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
               {{cr.Symbol}} - {{cr.Name | translate}}
@@ -52,13 +52,13 @@
             name="hexrate">
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="demo-full-width">
           <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranAmount"
             name="srcamt">
         </mat-form-field>
 
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
             name="srccc">
             <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
               {{cc.Name}}
@@ -66,8 +66,8 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId"
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId"
             name="srcord">
             <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
               {{ord.Name}}
@@ -83,8 +83,8 @@
 
       <mat-step>
         <ng-template matStepLabel>{{'Finance.TransferTo' | translate}}</ng-template>
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.Account' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetAccountId"
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetAccountId"
             name="tgtacnt">
             <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
               <span [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName}})</span>
@@ -92,8 +92,8 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
-          <mat-select class="demo-full-width" placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetTranCurr"
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetTranCurr"
             name="tgtcur">
             <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
               {{cr.Symbol}} - {{cr.Name | translate}}
@@ -106,14 +106,13 @@
             name="hexrate">
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="demo-full-width">
           <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TargetTranAmount"
             name="tgtamt">
         </mat-form-field>
 
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetControlCenterId"
-            name="tgtcc">
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetControlCenterId" name="tgtcc">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
             <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
               {{cc.Name}}
@@ -121,9 +120,8 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.Order' | translate}}" class="demo-full-width" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetOrderId"
-            name="tgtord">
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetOrderId" name="tgtord">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
             <mat-option *ngFor="let tt of arUIOrder" [value]="tt.Id">
               {{tt.Name}}
@@ -184,7 +182,7 @@
       <mat-step>
         <ng-template matStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
           <p> 
-            {{detailObject.SourceAccountId}} ... {{detailObject.SourceAccountId}}
+            {{detailObject.SourceAccountId}} ... {{detailObject.TargetAccountId}}
           </p>  
         <div>
           <button mat-button matStepperPrevious>{{'Common.BackButton' | translate}}</button>
