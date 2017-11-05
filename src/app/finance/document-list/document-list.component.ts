@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_CurrencyExchange,
-  FinanceDocType_Transfer, FinanceDocType_AdvancePayment, OverviewScopeEnum, OverviewScope,
+  FinanceDocType_Transfer, FinanceDocType_AdvancePayment, OverviewScopeEnum, getOverviewScopeRange,
   FinanceDocType_CreditcardRepay, FinanceDocType_AssetBuyIn, FinanceDocType_AssetSoldOut, 
   FinanceDocType_Loan } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
@@ -73,7 +73,7 @@ export class DocumentListComponent implements OnInit {
   }
 
   public onDocScopeChanged(): void {
-    let { BeginDate: bgn,  EndDate: end }  = OverviewScope.getOverviewScopeRange(this.selectedDocScope);
+    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
     this._storageService.fetchAllDocuments(bgn, end).subscribe((x) => {
       // Just ensure the REQUEST has been sent
     }, (error) => {

@@ -3,7 +3,7 @@ import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageS
   FinCurrencyService, UIStatusService } from '../services';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { LogLevel, TranTypeReport, OverviewScopeEnum, OverviewScope, UICommonLabelEnum } from '../model';
+import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum } from '../model';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 
@@ -62,7 +62,7 @@ export class PageInitialComponent implements OnInit {
 
   public onLearnScopeChanged() {
     // Destructing an object syntax!
-    let { BeginDate: bgn,  EndDate: end }  = OverviewScope.getOverviewScopeRange(this.selectedLearnScope);
+    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedLearnScope);
 
     Observable.forkJoin([
       this._lrnstorageService.getHistoryReportByCategory(bgn, end),
@@ -95,7 +95,7 @@ export class PageInitialComponent implements OnInit {
   }
 
   public onFinanceScopeChanged() {
-    let { BeginDate: bgn,  EndDate: end }  = OverviewScope.getOverviewScopeRange(this.selectedFinanceScope);
+    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedFinanceScope);
 
     this._finstorageService.getReportTranType(bgn, end).subscribe((y) => {
         this.dataFinTTIn = [];

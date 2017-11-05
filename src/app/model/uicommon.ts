@@ -1,3 +1,4 @@
+import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum } from './common';
 
 /**
  * UI Status
@@ -55,32 +56,67 @@ export class UIRouteLink {
   public icon: string;
 }
 
-export enum UICommonLabelEnum {
-  DocumentPosted    = 1,
-  CreateAnotherOne  = 2,
-  CreatedSuccess    = 3,
-  Category          = 4,
-  User              = 5,
-  Count             = 6,
-  Total             = 7
-}
+/**
+ * UI Display string Enum
+ */
+export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum;
 
-export class UICommonLabelUIString {
-  public value: UICommonLabelEnum;
+/**
+ * UI Display string
+ */
+export class UIDisplayString {
+  public value: UIDisplayStringEnum;
   public i18nterm: string;
   public displaystring: string;
 }
 
-export class UICommonLabel {
-  public static getUICommonLabelStrings(): Array<UICommonLabelUIString> {
-    let arrst: Array<UICommonLabelUIString> = new Array<UICommonLabelUIString>();
+/**
+ * Utility class for UI display string
+ */
+export class UIDisplayStringUtil {
+  public static getUICommonLabelStrings(): Array<UIDisplayString> {
+    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
 
     for (let se in UICommonLabelEnum) {
       if (Number.isNaN(+se)) {
       } else {
         arrst.push({
           value: +se,
-          i18nterm: UICommonLabel.getUICommonLabelDisplayString(+se),
+          i18nterm: UIDisplayStringUtil.getUICommonLabelDisplayString(+se),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+  
+  public static getQuestionBankTypeStrings(): Array<UIDisplayString> {
+    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+
+    for (let se in QuestionBankTypeEnum) {
+      if (Number.isNaN(+se)) {
+      } else {
+        arrst.push({
+          value: +se,
+          i18nterm: UIDisplayStringUtil.getQuestionBankTypeDisplayString(+se),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+  
+  public static getTagTypeStrings(): Array<UIDisplayString> {
+    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+
+    for (let se in TagTypeEnum) {
+      if (Number.isNaN(+se)) {
+      } else {
+        arrst.push({
+          value: +se,
+          i18nterm: UIDisplayStringUtil.getTagTypeDisplayString(+se),
           displaystring: ''
         });
       }
@@ -89,6 +125,24 @@ export class UICommonLabel {
     return arrst;
   }
 
+  public static getOverviewScopeStrings(): Array<UIDisplayString> {
+    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+
+    for (let se in OverviewScopeEnum) {
+      if (Number.isNaN(+se)) {
+      } else {
+        arrst.push({
+          value: +se,
+          i18nterm: UIDisplayStringUtil.getOverviewScopeDisplayString(+se),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+
+  // Get display string for each enum  
   public static getUICommonLabelDisplayString(le: UICommonLabelEnum): string {
     switch(le) {
       case UICommonLabelEnum.DocumentPosted:
@@ -112,6 +166,54 @@ export class UICommonLabel {
       case UICommonLabelEnum.Total:
         return 'Common.Total';
         
+      default:
+        return '';
+    }
+  }
+
+  public static getQuestionBankTypeDisplayString(se: QuestionBankTypeEnum): string {
+    switch(se) {
+      case QuestionBankTypeEnum.EssayQuestion:
+        return 'Learning.EssayQuestion';
+
+      case QuestionBankTypeEnum.MultipleChoice:
+        return 'Learning.MultipleChoice';
+
+      default:
+        return '';
+    }
+  }
+
+  public static getTagTypeDisplayString(se: TagTypeEnum): string {
+    switch(se) {
+      case TagTypeEnum.FinanceDocumentItem:
+        return 'Finance.Document';
+
+      case TagTypeEnum.LearnQuestionBank:
+        return 'Learning.QuestionBank';
+
+      default:
+        return '';
+    }
+  }
+
+  public static getOverviewScopeDisplayString(se: OverviewScopeEnum): string {
+    switch(se) {
+      case OverviewScopeEnum.CurrentMonth:
+        return 'Common.CurrentMonth';
+
+      case OverviewScopeEnum.CurrentYear:
+        return 'Common.CurrentYear';
+
+      case OverviewScopeEnum.PreviousMonth:
+        return 'Common.PreviousMonth';
+
+      case OverviewScopeEnum.PreviousYear:
+        return 'Common.PreviousYear';
+
+      case OverviewScopeEnum.All:
+        return 'Common.All';
+
       default:
         return '';
     }

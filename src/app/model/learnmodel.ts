@@ -1,6 +1,7 @@
 import { environment } from '../../environments/environment';
 import * as moment from 'moment';
 import * as hih from './common';
+import { QuestionBankTypeEnum } from './common';
 
 /**
  * ENPOS: English Part of Speech
@@ -456,59 +457,6 @@ export class LearnAward extends hih.BaseModel {
 
   public onSetData(data: any) {
     super.onSetData(data);
-  }
-}
-
-/**
- * Question bank type enum.
- */
-export enum QuestionBankTypeEnum
-{
-    EssayQuestion       = 1,
-    MultipleChoice      = 2
-}
-
-/**
- * Question bank type UI string
- */
-export class QuestionBankTypeUIString {
-  value: QuestionBankTypeEnum;
-  i18nterm: string;
-  displaystring: string;
-}
-
-/**
- * Question bank type
- */
-export class QuestionBankType {
-  public static getQuestionBankTypeStrings(): Array<QuestionBankTypeUIString> {
-    let arrst: Array<QuestionBankTypeUIString> = new Array<QuestionBankTypeUIString>();
-
-    for (let se in QuestionBankTypeEnum) {
-      if (Number.isNaN(+se)) {
-      } else {
-        arrst.push({
-          value: +se,
-          i18nterm: QuestionBankType.getQuestionBankTypeDisplayString(+se),
-          displaystring: ''
-        });
-      }
-    }
-
-    return arrst;
-  }
-
-  public static getQuestionBankTypeDisplayString(se: QuestionBankTypeEnum): string {
-    switch(se) {
-      case QuestionBankTypeEnum.EssayQuestion:
-        return 'Learning.EssayQuestion';
-
-      case QuestionBankTypeEnum.MultipleChoice:
-        return 'Learning.MultipleChoice';
-
-      default:
-        return '';
-    }
   }
 }
 

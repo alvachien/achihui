@@ -1,34 +1,33 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { OverviewScopeEnum, OverviewScope, OverviewScopeUIString, 
-  QuestionBankType, QuestionBankTypeEnum, QuestionBankTypeUIString,
-  TagTypeEnum, TagTypeUIString, TagType, UICommonLabelEnum, UICommonLabelUIString, UICommonLabel } from '../model';
+import { OverviewScopeEnum, QuestionBankTypeEnum, TagTypeEnum, UICommonLabelEnum, 
+  UIDisplayString, UIDisplayStringUtil } from '../model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class UIStatusService {
-  private _arrOverviewScopes: OverviewScopeUIString[] = [];
-  get OverviewScopeStrings(): OverviewScopeUIString[] {
+  private _arrOverviewScopes: UIDisplayString[] = [];
+  get OverviewScopeStrings(): UIDisplayString[] {
     return this._arrOverviewScopes;
   }
 
-  private _arrQuestionBankType: QuestionBankTypeUIString[] = [];
-  get QuestionBankTypeStrings(): QuestionBankTypeUIString[] {
+  private _arrQuestionBankType: UIDisplayString[] = [];
+  get QuestionBankTypeStrings(): UIDisplayString[] {
     return this._arrQuestionBankType;
   }
 
-  private _arrTagType: TagTypeUIString[] = [];
-  get TagTypeStrings(): TagTypeUIString[] {
+  private _arrTagType: UIDisplayString[] = [];
+  get TagTypeStrings(): UIDisplayString[] {
     return this._arrTagType;
   }
 
-  public arrLabels: UICommonLabelUIString[] = [];
+  public arrLabels: UIDisplayString[] = [];
 
   constructor(private _tranService: TranslateService) { 
-    this._arrOverviewScopes = OverviewScope.getOverviewScopeStrings();
-    this._arrQuestionBankType = QuestionBankType.getQuestionBankTypeStrings();
-    this._arrTagType = TagType.getTagTypeStrings();
+    this._arrOverviewScopes = UIDisplayStringUtil.getOverviewScopeStrings();
+    this._arrQuestionBankType = UIDisplayStringUtil.getQuestionBankTypeStrings();
+    this._arrTagType = UIDisplayStringUtil.getTagTypeStrings();
 
-    this.arrLabels = UICommonLabel.getUICommonLabelStrings();
+    this.arrLabels = UIDisplayStringUtil.getUICommonLabelStrings();
   }
 
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(null);

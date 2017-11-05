@@ -23,6 +23,48 @@ export enum AuthorizeScope { All = 1, OnlyOwner = 2 };
 export enum MessageType { Info = 1, Warning = 2, Error = 3 };
 export const COMMA = 188;
 
+/**
+ * Enum for Common Label
+ */
+export enum UICommonLabelEnum {
+  DocumentPosted    = 1,
+  CreateAnotherOne  = 2,
+  CreatedSuccess    = 3,
+  Category          = 4,
+  User              = 5,
+  Count             = 6,
+  Total             = 7
+}
+
+/**
+ * Enum for Question bank type 
+ */
+export enum QuestionBankTypeEnum
+{
+    EssayQuestion       = 1,
+    MultipleChoice      = 2
+}
+
+/**
+ * Enum for Tag type
+ */
+export enum TagTypeEnum {
+  LearnQuestionBank   = 1,
+  
+  FinanceDocumentItem = 10,  
+}
+
+/**
+ * Overview Scope
+ */
+export enum OverviewScopeEnum {
+  CurrentMonth = 1,
+  CurrentYear = 2,
+  PreviousMonth = 3,
+  PreviousYear = 4,
+
+  All = 9,
+}
 
 /**
  * UI Mode on detail page
@@ -212,70 +254,19 @@ export class BaseModel {
   }
 }
 
-/**
- * Tag type
- */
-export enum TagTypeEnum {
-  LearnQuestionBank   = 1,
-  
-  FinanceDocument     = 10,  
-}
-
-/**
- * Question bank type UI string
- */
-export class TagTypeUIString {
-  value: TagTypeEnum;
-  i18nterm: string;
-  displaystring: string;
-}
-
-/**
- * Question bank type
- */
-export class TagType {
-  public static getTagTypeStrings(): Array<TagTypeUIString> {
-    let arrst: Array<TagTypeUIString> = new Array<TagTypeUIString>();
-
-    for (let se in TagTypeEnum) {
-      if (Number.isNaN(+se)) {
-      } else {
-        arrst.push({
-          value: +se,
-          i18nterm: TagType.getTagTypeDisplayString(+se),
-          displaystring: ''
-        });
-      }
-    }
-
-    return arrst;
-  }
-
-  public static getTagTypeDisplayString(se: TagTypeEnum): string {
-    switch(se) {
-      case TagTypeEnum.FinanceDocument:
-        return 'Finance.Document';
-
-      case TagTypeEnum.LearnQuestionBank:
-        return 'Learning.QuestionBank';
-
-      default:
-        return '';
-    }
-  }
-}
-
 // Tag
 export class Tag {
   public TagType: TagTypeEnum;
   public TagID: number;
+  public TagSubID: number;
   public Term: string;
+
   get LinkTarget(): string {
     switch(this.TagType) {
       case TagTypeEnum.LearnQuestionBank:
         return '/learn/questionbank/display/' + this.TagID.toString();
 
-      case TagTypeEnum.FinanceDocument:
+      case TagTypeEnum.FinanceDocumentItem:
         return '/finance/document/display/' + this.TagID.toString();
     }
 
@@ -289,6 +280,10 @@ export class Tag {
 
     if (data && data.tagID) {
       this.TagID = +data.tagID;
+    }
+
+    if (data && data.tagSubID) {
+      this.TagSubID = +data.tagSubID;
     }
 
     if (data && data.term) {
@@ -371,18 +366,6 @@ export class MultipleNamesObject extends BaseModel {
 }
 
 /**
- * Overview Scope
- */
-export enum OverviewScopeEnum {
-  CurrentMonth = 1,
-  CurrentYear = 2,
-  PreviousMonth = 3,
-  PreviousYear = 4,
-
-  All = 9,
-}
-
-/**
  * Scope range
  */
 export interface OverviewScopeRange {
@@ -390,86 +373,33 @@ export interface OverviewScopeRange {
   EndDate: moment.Moment;
 }
 
-/**
- * Scope UI string
- */
-export interface OverviewScopeUIString {
-  value: OverviewScopeEnum;
-  i18nterm: string;
-  displaystring: string;
-}
+export function getOverviewScopeRange(scope: OverviewScopeEnum): OverviewScopeRange {
+  let bgn = moment();
+  let end = moment();
 
-/**
- * Overview scope
- */
-export class OverviewScope {
-  public static getOverviewScopeStrings(): Array<OverviewScopeUIString> {
-    let arrst: Array<OverviewScopeUIString> = new Array<OverviewScopeUIString>();
+  if (scope === OverviewScopeEnum.CurrentMonth) {
+    bgn.startOf('month');
+    end.endOf('month');
+  } else if (scope === OverviewScopeEnum.CurrentYear) {
+    bgn.startOf('year');
+    end.endOf('year');
+  } else if (scope === OverviewScopeEnum.PreviousMonth) {
+    bgn.subtract(1, 'M');
+    bgn.startOf('month');
 
-    for (let se in OverviewScopeEnum) {
-      if (Number.isNaN(+se)) {
-      } else {
-        arrst.push({
-          value: +se,
-          i18nterm: OverviewScope.getOverviewScopeDisplayString(+se),
-          displaystring: ''
-        });
-      }
-    }
+    end = bgn.clone();
+    end.endOf('month');
+  } else if (scope === OverviewScopeEnum.PreviousYear) {
+    bgn.subtract(1, 'y');
+    bgn.startOf('year');
 
-    return arrst;
+    end = bgn.clone();
+    end.endOf('year');
+  } else if (scope === OverviewScopeEnum.All) {
+    bgn = moment('19710101');
+    end = moment('99991231');
   }
 
-  public static getOverviewScopeDisplayString(se: OverviewScopeEnum): string {
-    switch(se) {
-      case OverviewScopeEnum.CurrentMonth:
-        return 'Common.CurrentMonth';
-
-      case OverviewScopeEnum.CurrentYear:
-        return 'Common.CurrentYear';
-
-      case OverviewScopeEnum.PreviousMonth:
-        return 'Common.PreviousMonth';
-
-      case OverviewScopeEnum.PreviousYear:
-        return 'Common.PreviousYear';
-
-      case OverviewScopeEnum.All:
-        return 'Common.All';
-
-      default:
-        return '';
-    }
-  }
-
-  public static getOverviewScopeRange(scope: OverviewScopeEnum): OverviewScopeRange {
-    let bgn = moment();
-    let end = moment();
-
-    if (scope === OverviewScopeEnum.CurrentMonth) {
-      bgn.startOf('month');
-      end.endOf('month');
-    } else if (scope === OverviewScopeEnum.CurrentYear) {
-      bgn.startOf('year');
-      end.endOf('year');
-    } else if (scope === OverviewScopeEnum.PreviousMonth) {
-      bgn.subtract(1, 'M');
-      bgn.startOf('month');
-
-      end = bgn.clone();
-      end.endOf('month');
-    } else if (scope === OverviewScopeEnum.PreviousYear) {
-      bgn.subtract(1, 'y');
-      bgn.startOf('year');
-
-      end = bgn.clone();
-      end.endOf('year');
-    } else if (scope === OverviewScopeEnum.All) {
-      bgn = moment('19710101');
-      end = moment('99991231');
-    }
-
-    return { BeginDate: bgn, EndDate: end };
-  }
+  return { BeginDate: bgn, EndDate: end };
 }
 
