@@ -60,7 +60,7 @@
         <ng-container matColumnDef="TranAmount">
           <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row">
-              {{ row.TranAmount }}
+              {{ row.TranAmount | currency: row.TranCurr }}
           </mat-cell>
         </ng-container>
 

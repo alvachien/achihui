@@ -9,13 +9,14 @@ import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_AdvancePayment,
-  UIFinAdvPayDocument, TemplateDocADP, UIRepeatFrequency, AccountExtraAdvancePayment, RepeatFrequency, 
+  UIFinAdvPayDocument, TemplateDocADP, UIRepeatFrequency, AccountExtraAdvancePayment, RepeatFrequency, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
 //import 'moment/locale/zh-cn';
+import { ENTER } from '@angular/cdk/keycodes';
 
 /**
  * Data source of Document Items
@@ -53,6 +54,8 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
+  // Enter, comma
+  separatorKeysCodes = [ENTER, COMMA];
   
   displayedColumns = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
   dataSource: TemplateDocADPDataSource | null;
@@ -279,7 +282,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
         this.detailObject.TmpDocs[0].Desp = this.detailObject.Desp;
       } else {
         for(let i = 0; i < this.detailObject.TmpDocs.length; i ++) {
-          this.detailObject.TmpDocs[i].Desp = this.detailObject.Desp + ' | ' + i.toString() + '/' + this.detailObject.TmpDocs.length.toString();
+          this.detailObject.TmpDocs[i].Desp = this.detailObject.Desp + ' | ' + (i+1).toString() + '/' + this.detailObject.TmpDocs.length.toString();
         }
       }
 

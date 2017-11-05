@@ -7,10 +7,11 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Loan,
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Loan, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { ENTER } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-document-loan-detail',
@@ -24,7 +25,9 @@ export class DocumentLoanDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
-
+  // Enter, comma
+  separatorKeysCodes = [ENTER, COMMA];
+  
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }

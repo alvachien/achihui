@@ -4,14 +4,15 @@ import {
 } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, MatChipInputEvent } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal,
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { ENTER } from '@angular/cdk/keycodes';
 
 /**
  * Data source of Normal Document Items
@@ -48,7 +49,9 @@ export class DocumentNormalDetailComponent implements OnInit {
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
-  
+  // Enter, comma
+  separatorKeysCodes = [ENTER, COMMA];
+    
   displayedColumns = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
   dataSource: NormalDocumentItemDataSource | null;
   itemOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
@@ -327,4 +330,27 @@ export class DocumentNormalDetailComponent implements OnInit {
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
+
+  public addItemTag(row: DocumentItem, $event: MatChipInputEvent): void {
+    let input = $event.input;
+    let value = $event.value;
+
+    // Add new Tag
+    if ((value || '').trim()) {
+      row.Tags.push(value.trim());
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  public removeItemTag(row: DocumentItem, tag: any): void {
+    let index = row.Tags.indexOf(tag);
+
+    if (index >= 0) {
+      row.Tags.splice(index, 1);
+    }
+  }  
 }

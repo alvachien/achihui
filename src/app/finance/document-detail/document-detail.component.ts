@@ -8,10 +8,11 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal, UICommonLabelEnum,
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal, UICommonLabelEnum, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { ENTER } from '@angular/cdk/keycodes';
 
 /**
  * Data source of Document Items
@@ -48,7 +49,9 @@ export class DocumentDetailComponent implements OnInit {
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
-
+  // Enter, comma
+  separatorKeysCodes = [ENTER, COMMA];
+  
   displayedColumns = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order'];
   dataSource: DocumentItemDataSource | null;
   itemOperEvent: EventEmitter<null> = new EventEmitter<null>(null);

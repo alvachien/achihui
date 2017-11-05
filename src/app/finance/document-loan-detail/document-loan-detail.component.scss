@@ -1,4 +1,44 @@
+.example-headers-align .mat-expansion-panel-header-title, 
+.example-headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.example-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.demo-full-width {
+  width: 100%;
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.table-header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  font-size: 20px;
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 600px;
+}
+
 .mat-header-row, .mat-row {
-    min-width: 800px;
-  }
-  
+  min-width: 800px;
+}
+
+.assetaccount {
+  color: green;
+}
+
+.expenseaccount {
+  color: red;
+}

@@ -9,10 +9,11 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, FinanceDocType_Transfer,
+import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, FinanceDocType_Transfer, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { ENTER } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-document-transfer-detail',
@@ -30,7 +31,9 @@ export class DocumentTransferDetailComponent implements OnInit {
   // public targetFormGroup: FormGroup;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
-  
+  // Enter, comma
+  separatorKeysCodes = [ENTER, COMMA];
+    
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }

@@ -1409,6 +1409,8 @@ export class DocumentItem {
   public OrderName: string;
   public VerifiedMsgs: hih.InfoMessage[] = [];
 
+  public Tags: string[] = [];
+
   public onVerify(context?: DocumentVerifyContext): boolean {
     let chkrst: boolean = true;
 
@@ -1625,6 +1627,12 @@ export class DocumentItem {
       rstObj.orderID = this.OrderId;
     }
     rstObj.desp = this.Desp;
+    if (this.Tags.length > 0) {
+      rstObj.tagTerms = [];
+      for(let tag of this.Tags) {
+        rstObj.tagTerms.push(tag);
+      }
+    }
 
     return rstObj;
   }
@@ -1665,6 +1673,11 @@ export class DocumentItem {
     }
     if (data && data.desp) {
       this.Desp = data.desp;
+    }
+    if (data && data.tagTerms && data.tagTerms instanceof Array && data.tagTerms.length > 0) {
+      for(let term of data.tagTerms) {
+        this.Tags.push(term);
+      }      
     }
   }
 }

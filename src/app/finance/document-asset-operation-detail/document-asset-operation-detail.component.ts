@@ -9,12 +9,13 @@ import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_Asset,
-  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequency, UICommonLabelEnum,
+  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequency, UICommonLabelEnum, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
+import { ENTER } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'hih-document-asset-operation-detail',
@@ -30,6 +31,8 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   public PageTitle: string;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
+  // Enter, comma
+  separatorKeysCodes = [ENTER, COMMA];
   
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
