@@ -11,10 +11,10 @@
     <mat-datepicker #advenddpicker></mat-datepicker>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field class="demo-full-width">
     <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}" [disabled]="!isFieldChangable" 
       [ngModel]="extObject.RepeatType" (ngModelChange)="extObject.RepeatType=$event"
-      name="rpttype" class="demo-full-width">
+      name="rpttype">
       <mat-option *ngFor="let rt of arFrequencies" [value]="rt.Id">
         {{rt.DisplayString | translate}}
       </mat-option>

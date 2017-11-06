@@ -318,6 +318,7 @@
     "AccountStatusClosed": "已关闭账户",
     "AccountStatusFrozen": "已冻结账户",
     "CreateItem": "新建行项目",
+    "TemplateDocument": "模板凭证",
     "ExchangeRateHint": "100外币所能换到的本币金额",
     "PreviousDocWithPlannedExgRate": "预测汇率的凭证",
     

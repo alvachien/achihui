@@ -4,175 +4,179 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{'Common.GenericInfo' | translate}}
-        </mat-panel-title>
-        <mat-panel-description>
-          {{'Common.GenericInfo' | translate}}
-          <mat-icon>account_circle</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+    <mat-accordion class="example-headers-align">
+      <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{'Common.GenericInfo' | translate}}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{'Common.GenericInfo' | translate}}
+            <mat-icon>account_circle</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
 
-      <!-- Currency -->
-      <mat-form-field class="demo-full-width">
-        <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
-          name="cur">
-          <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
-            {{cr.Symbol}} - {{cr.Name | translate}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <!-- Currency -->
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
+            name="cur">
+            <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+              {{cr.Symbol}} - {{cr.Name | translate}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <!-- Tran date -->
-      <mat-form-field class="demo-full-width">
-        <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="srcdpicker" placeholder="{{'Common.Date' | translate}}">
-        <mat-datepicker-toggle matSuffix [for]="srcdpicker"></mat-datepicker-toggle>
-        <mat-datepicker #srcdpicker></mat-datepicker>
-      </mat-form-field>
+        <!-- Tran date -->
+        <mat-form-field class="demo-full-width">
+          <input matInput [(ngModel)]="detailObject.TranDate" [readonly]="!isFieldChangable" [matDatepicker]="srcdpicker" placeholder="{{'Common.Date' | translate}}">
+          <mat-datepicker-toggle matSuffix [for]="srcdpicker"></mat-datepicker-toggle>
+          <mat-datepicker #srcdpicker></mat-datepicker>
+        </mat-form-field>
 
-      <!-- Tran type -->
-      <mat-form-field class="demo-full-width">
-        <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranType" name="srctt">
-          <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-            <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <!-- Tran type -->
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranType" name="srctt">
+            <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
+              <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <!-- Account -->
-      <mat-form-field class="demo-full-width">
-        <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
-          name="srcacnt">
-          <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
-            <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <!-- Account -->
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
+            name="srcacnt">
+            <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
+              <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <!-- Amount -->
-      <mat-form-field class="demo-full-width">
-        <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"
-          name="srcamt">
-      </mat-form-field>
+        <!-- Amount -->
+        <mat-form-field class="demo-full-width">
+          <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"
+            name="srcamt">
+        </mat-form-field>
 
-      <!-- Desp -->
-      <mat-form-field class="demo-full-width">
-        <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
-          name="desp">
-      </mat-form-field>
+        <!-- Desp -->
+        <mat-form-field class="demo-full-width">
+          <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
+            name="desp" #desp maxlength="45">
+          <mat-hint align="end">{{desp.value.length}} / 45</mat-hint>
+        </mat-form-field>
 
-      <!-- CC -->
-      <mat-form-field class="demo-full-width">
-        <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
-          name="hdrcc">
-          <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-          <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
-            {{tt.Name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <!-- CC -->
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
+            name="hdrcc">
+            <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+            <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+              {{tt.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <!-- Order -->
-      <mat-form-field class="demo-full-width">
-        <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId" name="hdrord">
-          <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-          <mat-option *ngFor="let tt of arUIOrder" [value]="tt.Id">
-            {{tt.Name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <!-- Order -->
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId" name="hdrord">
+            <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+            <mat-option *ngFor="let tt of arUIOrder" [value]="tt.Id">
+              {{tt.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-action-row>
-        <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
-      </mat-action-row>
-    </mat-expansion-panel>
+        <mat-action-row>
+          <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
+        </mat-action-row>
+      </mat-expansion-panel>
 
-    <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{'Common.ExtraInfo' | translate}}
-        </mat-panel-title>
-        <mat-panel-description>
-          {{'Common.ExtraInfo' | translate}}
-          <mat-icon>details</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+      <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{'Common.ExtraInfo' | translate}}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{'Common.ExtraInfo' | translate}}
+            <mat-icon>extension</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
 
-      <div class="container" class="demo-full-width">
-        <hih-finance-account-ext-adp [uiMode]="uiMode" [extObject]="detailObject.AdvPayAccount"></hih-finance-account-ext-adp>
-      </div>
+        <div class="container" class="demo-full-width">
+          <hih-finance-account-ext-adp [uiMode]="uiMode" [extObject]="detailObject.AdvPayAccount"></hih-finance-account-ext-adp>
+        </div>
 
-      <mat-action-row>
-        <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-        <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
-      </mat-action-row>
-    </mat-expansion-panel>
+        <mat-action-row>
+          <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
+        </mat-action-row>
+      </mat-expansion-panel>
 
-    <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{'Common.ExtraInfo' | translate}}
-        </mat-panel-title>
-        <mat-panel-description>
-          {{'Common.ExtraInfo' | translate}}
-          <mat-icon>extension</mat-icon>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+      <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{'Finance.TemplateDocument' | translate}}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{'Finance.TemplateDocument' | translate}}
+            <mat-icon>details</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
 
-      <mat-toolbar>
-        <button mat-icon-button (click)="onSync()" [disabled]="!isCreateMode" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
-      </mat-toolbar>
+        <mat-toolbar>
+          <button mat-icon-button (click)="onSync()" [disabled]="!isCreateMode" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
+        </mat-toolbar>
 
-      <div class="table-container mat-elevation-z8">
-        <mat-table #table [dataSource]="dataSource">
-          <!-- TranDate Column -->
-          <ng-container matColumnDef="TranDate">
-            <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionDate' | translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let row">
-              <mat-form-field>
-                <input matInput [(ngModel)]="row.TranDate" [matDatepicker]="tmpdpicker" placeholder="{{'Common.Date' | translate}}">
-                <mat-datepicker-toggle matSuffix [for]="tmpdpicker"></mat-datepicker-toggle>
-                <mat-datepicker #tmpdpicker></mat-datepicker>
-              </mat-form-field>
-            </mat-cell>
-          </ng-container>
+        <div class="table-container mat-elevation-z8">
+          <mat-table #table [dataSource]="dataSource">
+            <!-- TranDate Column -->
+            <ng-container matColumnDef="TranDate">
+              <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionDate' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <input matInput [(ngModel)]="row.TranDate" [matDatepicker]="tmpdpicker" placeholder="{{'Common.Date' | translate}}">
+                  <mat-datepicker-toggle matSuffix [for]="tmpdpicker"></mat-datepicker-toggle>
+                  <mat-datepicker #tmpdpicker></mat-datepicker>
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
 
-          <!-- RefDoc Column -->
-          <ng-container matColumnDef="RefDoc">
-            <mat-header-cell *matHeaderCellDef>{{'Finance.RefDoc' | translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let row">
-              <a routerLink='/finance/document/displaynormal/{{row.RefDocId}}' routerLinkActive="active" *ngIf="row.RefDocId">{{row.RefDocId}}</a>
-            </mat-cell>
-          </ng-container>
-          
-          <!-- Amount Column -->
-          <ng-container matColumnDef="TranAmount">
-            <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let row">
-              <mat-form-field>
-                <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.TranAmount"
-                  name="tmpamt">
-              </mat-form-field>
-            </mat-cell>
-          </ng-container>
+            <!-- RefDoc Column -->
+            <ng-container matColumnDef="RefDoc">
+              <mat-header-cell *matHeaderCellDef>{{'Finance.RefDoc' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <a routerLink='/finance/document/displaynormal/{{row.RefDocId}}' routerLinkActive="active" *ngIf="row.RefDocId">{{row.RefDocId}}</a>
+              </mat-cell>
+            </ng-container>
+            
+            <!-- Amount Column -->
+            <ng-container matColumnDef="TranAmount">
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.TranAmount"
+                    name="tmpamt">
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
 
-          <!-- Desp Column -->
-          <ng-container matColumnDef="Desp">
-            <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
-            <mat-cell *matCellDef="let row">
-              <mat-form-field>
-                <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.Desp"
-                  name="tmpdesp">
-              </mat-form-field>
-            </mat-cell>
-          </ng-container>
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-        </mat-table>
-      </div>
-    </mat-expansion-panel>
+            <!-- Desp Column -->
+            <ng-container matColumnDef="Desp">
+              <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.Desp"
+                    name="tmpdesp" #tmpdesp maxlength="45">
+                  <mat-hint align="end">{{tmpdesp.value.length}} / 45</mat-hint>
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
   </mat-card-content>
   
   <mat-card-actions>

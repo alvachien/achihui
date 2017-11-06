@@ -12,13 +12,15 @@
   <mat-form-field class="demo-full-width">
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Name' | translate}}" 
       [ngModel]="extObject?.Name" (ngModelChange)="extObject.Name=$event"
-      name="asstname">
+      name="asstname" #assetname maxlength="50">
+      <mat-hint align="end">{{assetname.value.length}} / 50</mat-hint>
   </mat-form-field>
 
   <mat-form-field class="demo-full-width">
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" 
       [ngModel]="extObject?.Comment" (ngModelChange)="extObject.Comment=$event"
-      name="asstname">
+      name="asstcmt" #assetcomment maxlength="100">
+      <mat-hint align="end">{{assetcomment.value.length}} / 100</mat-hint>
   </mat-form-field>
 
   <mat-form-field class="demo-full-width" *ngIf="!isCreateMode">

@@ -318,6 +318,7 @@
     "AccountStatusClosed": "Closed",
     "AccountStatusFrozen": "Fronze",
     "CreateItem": "Create an item",
+    "TemplateDocument": "Template documents",
     "ExchangeRateHint": "The amount of the base currency which 100 foreign currency can buy",
     "PreviousDocWithPlannedExgRate": "Previous documents whose planned exchange rate",
 
