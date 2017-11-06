@@ -13,10 +13,10 @@
 }
 
 .table-container {
-    display: flex;
-    flex-direction: column;
-    min-width: 300px;
- }
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
 
 .table-header {
   min-height: 64px;
@@ -28,7 +28,7 @@
 
 .mat-table {
   overflow: auto;
-  max-height: 600px;
+  max-height: 800px;
 }
 
 .example-icon {
@@ -37,4 +37,9 @@
 
 .example-spacer {
   flex: 1 1 auto;
+}
+
+.mat-column-DocID {
+  min-width: 150px;
+  max-width: 200px;
 }

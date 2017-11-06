@@ -34,7 +34,7 @@
           <mat-cell *matCellDef="let row">
             <mat-form-field>
               <mat-select placeholder="{{'Common.Category' | translate}}" 
-                [disabled]="!isFieldChangable" [(ngModel)]="row.QBType" name="itbt">
+                disabled [(ngModel)]="row.QBType" name="itbt">
                 <mat-option *ngFor="let qbt of _uiService.QuestionBankTypeStrings" [value]="qbt.value">
                   {{qbt.i18nterm | translate}}
                 </mat-option>
@@ -46,13 +46,13 @@
         <!-- Question Column -->
         <ng-container matColumnDef="question">
           <mat-header-cell *matHeaderCellDef>{{'Learning.Question' | translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.Question}} </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.Question | slice:0:50}} </mat-cell>
         </ng-container>
 
         <!-- Brief Answer Column -->
         <ng-container matColumnDef="briefawr">
           <mat-header-cell *matHeaderCellDef> {{'Learning.BriefAnswer' | translate}} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.BriefAnswer}} </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.BriefAnswer | slice:0:50}} </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

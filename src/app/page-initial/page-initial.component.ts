@@ -3,7 +3,7 @@ import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageS
   FinCurrencyService, UIStatusService } from '../services';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum } from '../model';
+import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair } from '../model';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 
@@ -97,27 +97,19 @@ export class PageInitialComponent implements OnInit {
   public onFinanceScopeChanged() {
     let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedFinanceScope);
 
-    this._finstorageService.getReportTranType(bgn, end).subscribe((y) => {
+    this._finstorageService.getReportTranType(bgn, end).subscribe(([val1, val2]) => {
         this.dataFinTTIn = [];
         this.dataFinTTOut = [];
-        if (y instanceof Array && y.length > 0) {
-          for (let tt of y) {
-            let rtt: TranTypeReport = new TranTypeReport();
-            rtt.onSetData(tt);
 
-            if (rtt.ExpenseFlag) {
-              this.dataFinTTOut.push({
-                name: rtt.TranTypeName,
-                value:  Math.abs(rtt.TranAmount),
-              });
-            } else {
-              this.dataFinTTIn.push({
-                name: rtt.TranTypeName,
-                value: Math.abs(rtt.TranAmount),
-              });
-            }
-          }
-        }
+        let mapin = <Map<number, UINameValuePair<number>>>val1;
+        let mapout = <Map<number, UINameValuePair<number>>>val2;
+
+        mapin.forEach((value) => {
+          this.dataFinTTIn.push(value);
+        });
+        mapout.forEach((value) => {
+          this.dataFinTTOut.push(value);
+        });        
       });
   }
 

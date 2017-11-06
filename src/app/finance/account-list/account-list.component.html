@@ -9,7 +9,7 @@
       <span class="example-spacer"></span>
       <mat-form-field>        
         <mat-select [(ngModel)]="selectedStatus" (change)="onStatusChange()" #select="matSelect">
-          <mat-option>{{'Common.All' | translate}}</mat-option>
+          <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
           <mat-option *ngFor="let sts of arrayStatus" [value]="sts.value">
             {{sts.name | translate}}
           </mat-option>

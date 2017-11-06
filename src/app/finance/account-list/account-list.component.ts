@@ -52,7 +52,7 @@ export class AccountListComponent implements OnInit {
   dataSource: AccountDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   arrayStatus: AccountStatusUI[] = [];
-  selectedStatus: AccountStatusEnum | undefined = undefined;
+  selectedStatus: AccountStatusEnum | undefined = AccountStatusEnum.Normal;
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router) {

@@ -57,6 +57,14 @@ export class UIRouteLink {
 }
 
 /**
+ * Name value pair
+ */
+export class UINameValuePair<T> {
+  name: string;
+  value: T;
+}
+
+/**
  * UI Display string Enum
  */
 export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum;

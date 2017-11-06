@@ -18,15 +18,15 @@
   min-width: 300px;
  }
   
- .table-header {
-   min-height: 64px;
-   display: flex;
-   align-items: center;
-   padding-left: 24px;
-   font-size: 20px;
- }
+.table-header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  font-size: 20px;
+}
 
- .mat-table {
+.mat-table {
   overflow: auto;
 }
 

@@ -5,7 +5,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
 import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Account, ControlCenter, Order,
-    Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat, TemplateDocADP, AccountStatusEnum } from '../model';
+    Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
+    UINameValuePair } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -1466,7 +1467,43 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Entering getReportTranType in FinanceStorageService: ${response}`);
         }
 
-        return <any>response;
+        // Do the grouping here.
+        let y = <any>response;
+        let mapOut: Map<number, UINameValuePair<number>> = new Map<number, UINameValuePair<number>>();
+        let mapIn: Map<number, UINameValuePair<number>> = new Map<number, UINameValuePair<number>>();
+
+        if (y instanceof Array && y.length > 0) {
+          for (let tt of y) {
+            let rtt: TranTypeReport = new TranTypeReport();
+            rtt.onSetData(tt);
+
+            if (rtt.ExpenseFlag) {
+              if (mapOut.has(rtt.TranType)) {
+                let val = mapOut.get(rtt.TranType);
+                val.value += Math.abs(rtt.TranAmount);
+                mapOut.set(rtt.TranType, val);
+              } else {
+                mapOut.set(rtt.TranType, {
+                  name: rtt.TranTypeName,
+                  value: Math.abs(rtt.TranAmount),
+                });
+              }
+            } else {
+              if (mapIn.has(rtt.TranType)) {
+                let val = mapIn.get(rtt.TranType);
+                val.value += Math.abs(rtt.TranAmount);
+                mapIn.set(rtt.TranType, val);
+              } else {
+                mapIn.set(rtt.TranType, {
+                  name: rtt.TranTypeName,
+                  value: Math.abs(rtt.TranAmount),
+                });
+              }
+            }
+          }
+        }
+        
+        return [mapIn, mapOut];
       });
   }
 }
