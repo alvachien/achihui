@@ -19,7 +19,7 @@ import * as moment from 'moment';
 import { ENTER } from '@angular/cdk/keycodes';
 
 /**
- * Data source of Document Items
+ * Data source of ADP Template Document
  */
 export class TemplateDocADPDataSource extends DataSource<any> {
   constructor(private _parentComponent: DocumentAdvancepaymentDetailComponent) {

@@ -7,11 +7,34 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Loan, COMMA,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum } from '../../model';
+import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Loan, COMMA, TemplateDocLoan, UIFinLoanDocument,
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
+  FinanceAccountCategory_Loan } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ENTER } from '@angular/cdk/keycodes';
+
+/**
+ * Data source of ADP Template Document
+ */
+export class TemplateDocLoanDataSource extends DataSource<any> {
+  constructor(private _parentComponent: DocumentLoanDetailComponent) {
+    super();
+  }
+
+  /** Connect function called by the table to retrieve one stream containing the data to render. */
+  connect(): Observable<TemplateDocLoan[]> {
+    const displayDataChanges = [
+      this._parentComponent.tmpDocOperEvent,
+    ];
+
+    return Observable.merge(...displayDataChanges).map(() => {
+      return this._parentComponent.detailObject.TmpDocs;
+    });
+  }
+
+  disconnect() { }
+}
 
 @Component({
   selector: 'app-document-loan-detail',
@@ -21,12 +44,16 @@ import { ENTER } from '@angular/cdk/keycodes';
 export class DocumentLoanDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: Document | null = null;
+  public detailObject: UIFinLoanDocument | null = null;
   public uiMode: UIMode = UIMode.Create;
+  public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
   separatorKeysCodes = [ENTER, COMMA];
+  tmpDocOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
+  displayedColumns = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
+  dataSource: TemplateDocLoanDataSource | null;
   
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -47,8 +74,8 @@ export class DocumentLoanDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
-    this.detailObject = new Document();
-    this.detailObject.DocType = FinanceDocType_Loan;
+    this.detailObject = new UIFinLoanDocument();
+    this.dataSource = new TemplateDocLoanDataSource(this);
   }
 
   ngOnInit() {
@@ -76,16 +103,13 @@ export class DocumentLoanDetailComponent implements OnInit {
       
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'createnormal') {
-            this.detailObject = new Document();
-            this.uiMode = UIMode.Create;
-            this.detailObject.HID = this._homedefService.ChosedHome.ID;
-            this.detailObject.DocType = FinanceDocType_Loan;
-          } else if (x[0].path === 'editnormal') {
+          if (x[0].path === 'createadp') {
+            this.onInitCreateMode();
+          } else if (x[0].path === 'editadp') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'displaynormal') {
+          } else if (x[0].path === 'displayadp') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
@@ -93,27 +117,18 @@ export class DocumentLoanDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocumentEvent.subscribe((x2) => {
-              if (x2 instanceof Document) {
-                if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
-                }
+            this._storageService.readLoanDocument(this.routerID).subscribe((x2) => {
+              if (environment.LoggingLevel >= LogLevel.Debug) {
+                console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngOnInit for activateRoute URL: ${x2}`);
+              }
 
-                this.detailObject = x2;
-              } else {
-                if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
-                }
-
-                this.detailObject = new Document();
-                this.detailObject.DocType = FinanceDocType_Loan;
+              this.detailObject.parseDocument(x2);
+              this.tmpDocOperEvent.emit();
+            }, (error2) => {
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readLoanDocument : ${error2}`);
               }
             });
-
-            this._storageService.readDocument(this.routerID);
-          } else {
-            // Create mode!
-            this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
           }
         } else {
           this.uiMode = UIMode.Invalid;
@@ -138,5 +153,163 @@ export class DocumentLoanDetailComponent implements OnInit {
 
       this.uiMode = UIMode.Invalid;
     });
+  }
+
+  public setStep(index: number) {
+    this.step = index;
+  }
+
+  public nextStep() {
+    this.step++;
+  }
+
+  public prevStep() {
+    this.step--;
+  }
+
+  public canSubmit(): boolean {
+    if (!this.isFieldChangable) {
+      return false;
+    }
+
+    // Check name
+    if (!this.detailObject) {
+      return false;
+    }
+
+    if (!this.detailObject.Desp) {
+      return false;
+    }
+
+    this.detailObject.Desp = this.detailObject.Desp.trim();
+    if (this.detailObject.Desp.length <= 0) {
+      return false;
+    }
+
+    if (this.detailObject.TmpDocs.length <= 0) {
+      return false;
+    }
+
+    return true;
+  }
+  
+  public onSubmit() {
+    if (this.uiMode === UIMode.Create) {
+      let docObj = this.detailObject.generateDocument();
+
+      // Check!
+      if (!docObj.onVerify({
+        ControlCenters: this._storageService.ControlCenters,
+        Orders: this._storageService.Orders,
+        Accounts: this._storageService.Accounts,
+        DocumentTypes: this._storageService.DocumentTypes,
+        TransactionTypes: this._storageService.TranTypes,
+        Currencies: this._currService.Currencies,
+        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+      })) {
+        // Show a dialog for error details
+        const dlginfo: MessageDialogInfo = {
+          Header: 'Common.Error',
+          ContentTable: docObj.VerifiedMsgs,
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        });
+
+        return;
+      }
+
+      this._storageService.createDocumentEvent.subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAdvancepaymentDetailComponent with : ${x}`);
+        }
+
+        // Navigate back to list view
+        if (x instanceof Document) {
+          // Show the snackbar
+          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
+          });
+          
+          let recreate: boolean = false;
+          snackbarRef.onAction().subscribe(() => {
+            recreate = true;
+
+            this.onInitCreateMode();
+            this.setStep(0);
+            this.tmpDocOperEvent.emit();
+            //this._router.navigate(['/finance/document/createadp/']);
+          });
+
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
+            if (!recreate) {
+              this._router.navigate(['/finance/document/displayloan/' + x.Id.toString()]);
+            }            
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: 'Common.Error',
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            }
+          });
+        }
+      });
+
+      docObj.HID = this._homedefService.ChosedHome.ID;
+
+      // Build the JSON file to API
+      let sobj = docObj.writeJSONObject(); // Document first
+      let acntobj: Account = new Account();
+      acntobj.HID = this._homedefService.ChosedHome.ID;
+      acntobj.CategoryId = FinanceAccountCategory_Loan;
+      acntobj.Name = docObj.Desp;
+      acntobj.Comment = docObj.Desp;
+      acntobj.ExtraInfo = this.detailObject.LoanAccount;
+      sobj.accountVM = acntobj.writeJSONObject();
+
+      sobj.TmpDocs = [];
+      for (let td of this.detailObject.TmpDocs) {
+        td.HID = acntobj.HID;
+        td.ControlCenterId = this.detailObject.SourceControlCenterId;
+        td.OrderId = this.detailObject.SourceOrderId;
+        if (td.Desp.length > 45) {
+          td.Desp = td.Desp.substring(0, 44);
+        }
+
+        sobj.TmpDocs.push(td.writeJSONObject());
+      }
+
+      let dataJSON = JSON.stringify(sobj);
+      this._storageService.createLoanDocument(sobj);
+    }
+  }
+
+  public onCancel(): void {
+    this._router.navigate(['/finance/document/']);
+  }
+  
+  private onInitCreateMode() {
+    this.detailObject = new UIFinLoanDocument();
+    this.uiMode = UIMode.Create;
+
+    this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
 }

@@ -20,12 +20,18 @@ export class UIStatusService {
     return this._arrTagType;
   }
 
+  private _arrRepayMethod: UIDisplayString[] = [];
+  get RepaymentMethods(): UIDisplayString[] {
+    return this._arrRepayMethod;
+  }
+
   public arrLabels: UIDisplayString[] = [];
 
   constructor(private _tranService: TranslateService) { 
     this._arrOverviewScopes = UIDisplayStringUtil.getOverviewScopeStrings();
     this._arrQuestionBankType = UIDisplayStringUtil.getQuestionBankTypeStrings();
     this._arrTagType = UIDisplayStringUtil.getTagTypeStrings();
+    this._arrRepayMethod = UIDisplayStringUtil.getRepaymentMethodStrings();
 
     this.arrLabels = UIDisplayStringUtil.getUICommonLabelStrings();
   }

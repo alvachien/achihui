@@ -1,9 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraAsset, RepeatFrequency,
-} from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraLoan } from '../../model';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 
 @Component({
   selector: 'hih-finance-account-ext-loan',
@@ -12,9 +10,23 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from 
 })
 export class AccountExtLoanComponent implements OnInit {
 
-  constructor() { }
+  public currentMode: string;
+
+  @Input() extObject: AccountExtraLoan;
+  @Input() uiMode: UIMode;
+
+  get isFieldChangable(): boolean {
+    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
+  get isCreateMode(): boolean {
+    return this.uiMode === UIMode.Create;
+  }
+  
+  constructor(public _storageService: FinanceStorageService,
+    public _uiStatusService: UIStatusService) {
+    //this._uiStatusService.
+  }
 
   ngOnInit() {
   }
-
 }

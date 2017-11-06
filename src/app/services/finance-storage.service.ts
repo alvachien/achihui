@@ -954,6 +954,53 @@ export class FinanceStorageService {
   }
 
   /**
+   * Crate Loan document
+   * @param jdata JSON format
+   */
+  public createLoanDocument(jdata: any) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/financeloandocument';
+
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of createLoanDocument in FinanceStorageService: ' + response);
+        }
+
+        let hd: Document = new Document();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createLoanDocument in FinanceStorageService: ${x}`);
+        }
+
+        const copiedData = this.Documents.slice();
+        copiedData.push(x);
+        this.listDocumentChange.next(copiedData);
+
+        // Broadcast event
+        this.createDocumentEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in createLoanDocument in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+  
+  /**
    * Create asset document
    * @param jdata Data for creation
    * @param isbuyin Is a buyin doc or soldout doc
@@ -1102,6 +1149,35 @@ export class FinanceStorageService {
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering readADPDocument in FinanceStorageService: ${response}`);
+        }
+
+        // let hd: Document = new Document();
+        // hd.onSetData(response);
+        return response;
+      });
+  }
+
+  /**
+   * Read the Loan document from API, it WONT trigger readDocument event!
+   * @param docid Id of Loan Document
+   */
+  public readLoanDocument(docid: number): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/financeloandocument/' + docid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readLoanDocument in FinanceStorageService: ${response}`);
         }
 
         // let hd: Document = new Document();

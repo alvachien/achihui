@@ -419,11 +419,11 @@ export class UIFinLoanDocument {
   public SourceControlCenterId: number;
   public SourceOrderId: number;
 
-  public AdvPayAccount: HIHFinance.AccountExtraAdvancePayment;
-  public TmpDocs: HIHFinance.TemplateDocADP[] = [];
+  public LoanAccount: HIHFinance.AccountExtraLoan;
+  public TmpDocs: HIHFinance.TemplateDocLoan[] = [];
 
   constructor() {
-    this.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
+    this.LoanAccount = new HIHFinance.AccountExtraLoan();
     this.TranDate = moment();
   }
   public generateDocument(): HIHFinance.Document {
@@ -480,10 +480,10 @@ export class UIFinLoanDocument {
       this.SourceOrderId = +fitem.OrderId;
       this.SourceTranType = +fitem.TranType;
 
-      this.AdvPayAccount.onSetData(doc.accountVM.extraInfo_ADP);
+      this.LoanAccount.onSetData(doc.accountVM.extraInfo_ADP);
 
       for (let it of doc.tmpDocs) {
-        let tdoc: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
+        let tdoc: HIHFinance.TemplateDocLoan = new HIHFinance.TemplateDocLoan();
         tdoc.onSetData(it);
         this.TmpDocs.push(tdoc);
       }
