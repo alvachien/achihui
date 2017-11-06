@@ -152,9 +152,6 @@ export class UIRepeatFrequency {
  * Advance payment: UI part
  */
 export class UIFinAdvPayDocument {
-  // public DocumentObject: HIHFinance.Document;
-  // public AccountObject: HIHFinance.Account;
-
   public TranAmount: number;
   public TranDate: moment.Moment;
   public Desp: string;
@@ -404,6 +401,92 @@ export class UIFinAssetOperationDocument {
       this.TranType = docobj.Items[0].TranType;
 
       this.AssetAccount.onSetData(doc.accountVM.extraInfo_AS);
+    }
+  }
+}
+
+/**
+ * UI Loan document
+ */
+export class UIFinLoanDocument {
+  public TranAmount: number;
+  public TranDate: moment.Moment;
+  public Desp: string;
+  public TranCurr: string;
+
+  public SourceTranType: number;
+  public SourceAccountId: number;
+  public SourceControlCenterId: number;
+  public SourceOrderId: number;
+
+  public AdvPayAccount: HIHFinance.AccountExtraAdvancePayment;
+  public TmpDocs: HIHFinance.TemplateDocADP[] = [];
+
+  constructor() {
+    this.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
+    this.TranDate = moment();
+  }
+  public generateDocument(): HIHFinance.Document {
+    let doc: HIHFinance.Document = new HIHFinance.Document();
+    doc.DocType = hih.FinanceDocType_AdvancePayment;
+    doc.Desp = this.Desp;
+    doc.TranCurr = this.TranCurr;
+    doc.TranDate = this.TranDate.clone();
+
+    let fitem: HIHFinance.DocumentItem = new HIHFinance.DocumentItem();
+    fitem.ItemId = 1;
+    fitem.AccountId = this.SourceAccountId;
+    fitem.ControlCenterId = this.SourceControlCenterId;
+    fitem.OrderId = this.SourceOrderId;
+    fitem.TranType = this.SourceTranType;
+    fitem.TranAmount = this.TranAmount;
+    doc.Items.push(fitem);
+
+    return doc;
+  }
+
+  public parseDocument(doc: HIHFinance.Document | any): void {
+    if (doc instanceof HIHFinance.Document) {
+      this.TranDate = doc.TranDate.clone();
+      this.TranCurr = doc.TranCurr;
+      this.Desp = doc.Desp;
+
+      if (doc.Items.length !== 1) {
+        throw Error('Failed to parse document');
+      }
+
+      let fitem: HIHFinance.DocumentItem = doc.Items[0];
+      this.SourceAccountId = fitem.AccountId;
+      this.SourceControlCenterId = fitem.ControlCenterId;
+      this.SourceOrderId = fitem.OrderId;
+      this.TranAmount = fitem.TranAmount;
+      this.SourceTranType = fitem.TranType;
+    } else {
+      let docobj = new HIHFinance.Document();
+      docobj.onSetData(doc);
+      let acntobj = new HIHFinance.Account();
+      acntobj.onSetData(doc.accountVM);
+
+      this.TranDate = docobj.TranDate.clone();
+      this.TranCurr = docobj.TranCurr;
+      this.Desp = docobj.Desp;
+
+      if (docobj.Items.length !== 1) {
+        throw Error('Failed to parse document');
+      }
+      let fitem = docobj.Items[0];
+      this.SourceAccountId = +fitem.AccountId;
+      this.SourceControlCenterId = +fitem.ControlCenterId;
+      this.SourceOrderId = +fitem.OrderId;
+      this.SourceTranType = +fitem.TranType;
+
+      this.AdvPayAccount.onSetData(doc.accountVM.extraInfo_ADP);
+
+      for (let it of doc.tmpDocs) {
+        let tdoc: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
+        tdoc.onSetData(it);
+        this.TmpDocs.push(tdoc);
+      }
     }
   }
 }

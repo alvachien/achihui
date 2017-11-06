@@ -3,6 +3,24 @@ import * as hih from './common';
 import * as moment from 'moment';
 
 /**
+ * Enum for Account status
+ */
+export enum AccountStatusEnum {
+  Normal = 0,
+  Closed = 1,
+  Frozen = 2
+}
+
+/**
+ * Repayment method
+ */
+export enum RepaymentMethodEnum {
+  EqualPrincipalAndInterset = 1,  // Equal principal & interest
+  EqualPrincipal            = 2,  // Equal principal
+  DueRepayment              = 3,  // Due repayment
+}
+
+/**
  * Currency definition in HIH
  */
 export interface CurrencyJson {
@@ -303,21 +321,6 @@ export abstract class AccountExtra {
   }
 }
 
-export enum AccountStatusEnum {
-  Normal = 0,
-  Closed = 1,
-  Frozen = 2
-}
-export function getAccountStatusDisplayString(stat: AccountStatusEnum): string {
-  switch (stat) {
-    case AccountStatusEnum.Normal: return 'Finance.AccountStatusNormal';
-    case AccountStatusEnum.Closed: return 'Finance.AccountStatusClosed';
-    case AccountStatusEnum.Frozen: return 'Finance.AccountStatusFrozen';
-  }
-
-  return '';
-}
-
 /**
  * Account
  */
@@ -447,7 +450,8 @@ export class Account extends hih.BaseModel {
 
       this.ExtraInfo = ei;
     } else if (data && data.CategoryId === hih.FinanceAccountCategory_Loan && data.extraInfo_LO) {
-      // Todo: Loan
+      let ei = new AccountExtraLoan();
+      ei.onSetData(data.extraINfo_Loan);
     }
   }
 }
@@ -640,6 +644,93 @@ export class AccountExtraAsset extends AccountExtra {
     }
     if (data && data.refDocForSold) {
       this.RefDocForSold = +data.refDocForSold;
+    }
+  }
+}
+
+/**
+ * Extra info: Loan
+ */
+export class AccountExtraLoan extends AccountExtra {
+  private _startDate: moment.Moment;
+  public AnnualRate : number;
+  public InterestFree: boolean;
+  public TotalMonths: number;
+  public RepayMethod: RepaymentMethodEnum;
+  public RefDocId: number;
+  public Comment: string;
+
+  get StartDate(): moment.Moment {
+    return this._startDate;
+  }
+  set StartDate(sd: moment.Moment) {
+    this._startDate = sd;
+  }
+  get StartDateFormatString(): string {
+    return this._startDate.format(hih.MomentDateFormat);
+  }
+
+  constructor() {
+    super();
+
+    this._startDate = moment();
+  }
+
+  public onInit() {
+    super.onInit();
+
+    this._startDate = moment();
+  }
+
+  public clone(): AccountExtraLoan {
+    let aobj: AccountExtraLoan = new AccountExtraLoan();
+    aobj.StartDate = this.StartDate;
+    aobj.AnnualRate = this.AnnualRate;
+    aobj.InterestFree = this.InterestFree;
+    aobj.TotalMonths = this.TotalMonths;
+    aobj.RepayMethod = this.RepayMethod;
+    aobj.RefDocId = this.RefDocId;
+    aobj.Comment = this.Comment;
+
+    return aobj;
+  }
+
+  public writeJSONObject(): any {
+    let rstobj: any = super.writeJSONObject();
+    rstobj.startDate = this._startDate.format(hih.MomentDateFormat);
+    rstobj.annualRate = this.AnnualRate;
+    rstobj.interestFree = this.InterestFree;
+    rstobj.totalMonths = this.TotalMonths;
+    rstobj.repayMethod = <number>this.RepayMethod;
+    rstobj.refDocID = this.RefDocId;
+    rstobj.comment = this.Comment;
+
+    return rstobj;
+  }
+
+  public onSetData(data: any) {
+    super.onSetData(data);
+
+    if (data && data.startDate) {
+      this._startDate = moment(data.startDate, hih.MomentDateFormat);
+    }
+    if (data && data.annualRate) {
+      this.AnnualRate = +data.annualRate;
+    }
+    if (data && data.interestFree) {
+      this.InterestFree = data.interestFree;
+    }
+    if (data && data.totalMonths) {
+      this.TotalMonths = +data.totalMonths;
+    }
+    if (data && data.repayMethod) {
+      this.RepayMethod = +data.repayMethod;
+    }
+    if (data && data.refDocID) {
+      this.RefDocId = +data.refDocID;
+    }
+    if (data && data.comment) {
+      this.Comment = data.comment;
     }
   }
 }

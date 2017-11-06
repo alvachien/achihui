@@ -319,6 +319,12 @@
     "AccountStatusFrozen": "已冻结账户",
     "CreateItem": "新建行项目",
     "TemplateDocument": "模板凭证",
+    "RepaymentMethod": "还款方式",
+    "EqualPrincipalAndInterest": "等额本息",
+    "EqualPrincipal": "等额本金",
+    "DueRepayment": "到期还本",
+    "AnnualRate": "年利率",
+    "InterestFreeLoan": "无息借款",
     "ExchangeRateHint": "100外币所能换到的本币金额",
     "PreviousDocWithPlannedExgRate": "预测汇率的凭证",
     

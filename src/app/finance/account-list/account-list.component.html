@@ -11,7 +11,7 @@
         <mat-select [(ngModel)]="selectedStatus" (change)="onStatusChange()" #select="matSelect">
           <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
           <mat-option *ngFor="let sts of arrayStatus" [value]="sts.value">
-            {{sts.name | translate}}
+            {{sts.i18nterm | translate}}
           </mat-option>
         </mat-select>
       </mat-form-field>

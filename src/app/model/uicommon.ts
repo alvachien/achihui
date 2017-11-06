@@ -1,4 +1,5 @@
 import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum } from './common';
+import { AccountStatusEnum, RepaymentMethodEnum } from './financemodel';
 
 /**
  * UI Status
@@ -67,7 +68,8 @@ export class UINameValuePair<T> {
 /**
  * UI Display string Enum
  */
-export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum;
+export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum | AccountStatusEnum
+  | RepaymentMethodEnum;
 
 /**
  * UI Display string
@@ -98,7 +100,7 @@ export class UIDisplayStringUtil {
 
     return arrst;
   }
-  
+
   public static getQuestionBankTypeStrings(): Array<UIDisplayString> {
     let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
 
@@ -115,7 +117,7 @@ export class UIDisplayStringUtil {
 
     return arrst;
   }
-  
+
   public static getTagTypeStrings(): Array<UIDisplayString> {
     let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
 
@@ -150,9 +152,43 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
+  public static getAccountStatusStrings(): Array<UIDisplayString> {
+    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+
+    for (let se in AccountStatusEnum) {
+      if (Number.isNaN(+se)) {
+      } else {
+        arrst.push({
+          value: +se,
+          i18nterm: UIDisplayStringUtil.getAccountStatusDisplayString(+se),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+
+  public static getRepaymentMethodStrings(): Array<UIDisplayString> {
+    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+
+    for (let se in RepaymentMethodEnum) {
+      if (Number.isNaN(+se)) {
+      } else {
+        arrst.push({
+          value: +se,
+          i18nterm: UIDisplayStringUtil.getRepaymentMethodDisplayString(+se),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+  
   // Get display string for each enum  
   public static getUICommonLabelDisplayString(le: UICommonLabelEnum): string {
-    switch(le) {
+    switch (le) {
       case UICommonLabelEnum.DocumentPosted:
         return 'Finance.DocumentPosted';
 
@@ -173,14 +209,14 @@ export class UIDisplayStringUtil {
 
       case UICommonLabelEnum.Total:
         return 'Common.Total';
-        
+
       default:
         return '';
     }
   }
 
   public static getQuestionBankTypeDisplayString(se: QuestionBankTypeEnum): string {
-    switch(se) {
+    switch (se) {
       case QuestionBankTypeEnum.EssayQuestion:
         return 'Learning.EssayQuestion';
 
@@ -193,7 +229,7 @@ export class UIDisplayStringUtil {
   }
 
   public static getTagTypeDisplayString(se: TagTypeEnum): string {
-    switch(se) {
+    switch (se) {
       case TagTypeEnum.FinanceDocumentItem:
         return 'Finance.Document';
 
@@ -206,7 +242,7 @@ export class UIDisplayStringUtil {
   }
 
   public static getOverviewScopeDisplayString(se: OverviewScopeEnum): string {
-    switch(se) {
+    switch (se) {
       case OverviewScopeEnum.CurrentMonth:
         return 'Common.CurrentMonth';
 
@@ -224,6 +260,24 @@ export class UIDisplayStringUtil {
 
       default:
         return '';
+    }
+  }
+
+  public static getAccountStatusDisplayString(stat: AccountStatusEnum): string {
+    switch (stat) {
+      case AccountStatusEnum.Normal: return 'Finance.AccountStatusNormal';
+      case AccountStatusEnum.Closed: return 'Finance.AccountStatusClosed';
+      case AccountStatusEnum.Frozen: return 'Finance.AccountStatusFrozen';
+      default: return '';
+    }
+  }
+
+  public static getRepaymentMethodDisplayString(pm: RepaymentMethodEnum): string {
+    switch (pm) {
+      case RepaymentMethodEnum.EqualPrincipal: return 'Finance.EqualPrincipal';
+      case RepaymentMethodEnum.EqualPrincipalAndInterset: return 'Finance.EqualPrincipalAndInterest';
+      case RepaymentMethodEnum.DueRepayment: return 'Finance.DueRepayment';
+      default: return '';
     }
   }
 }

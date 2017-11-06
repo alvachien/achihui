@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, AccountStatusEnum, getAccountStatusDisplayString } from '../../model';
+import { LogLevel, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService } from '../../services';
 
 /**
@@ -51,23 +51,12 @@ export class AccountListComponent implements OnInit {
   displayedColumns = ['id', 'name', 'ctgy', 'comment'];
   dataSource: AccountDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  arrayStatus: AccountStatusUI[] = [];
+  arrayStatus: UIDisplayString[] = [];
   selectedStatus: AccountStatusEnum | undefined = AccountStatusEnum.Normal;
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router) {
-    this.arrayStatus.push({
-      name: getAccountStatusDisplayString(AccountStatusEnum.Normal),
-      value: AccountStatusEnum.Normal
-    });
-    this.arrayStatus.push({
-      name: getAccountStatusDisplayString(AccountStatusEnum.Closed),
-      value: AccountStatusEnum.Closed
-    });
-    this.arrayStatus.push({
-      name: getAccountStatusDisplayString(AccountStatusEnum.Frozen),
-      value: AccountStatusEnum.Frozen
-    });
+    this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
   }
 
   ngOnInit() {

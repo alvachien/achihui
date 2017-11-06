@@ -319,6 +319,12 @@
     "AccountStatusFrozen": "Fronze",
     "CreateItem": "Create an item",
     "TemplateDocument": "Template documents",
+    "RepaymentMethod": "Repayment method",
+    "EqualPrincipalAndInterest": "Equal Principal & Interest",
+    "EqualPrincipal": "Equal Principal",
+    "DueRepayment": "Due repayment",
+    "AnnualRate": "Annual Rate",
+    "InterestFreeLoan": "Interest-free Loan",
     "ExchangeRateHint": "The amount of the base currency which 100 foreign currency can buy",
     "PreviousDocWithPlannedExgRate": "Previous documents whose planned exchange rate",
 
