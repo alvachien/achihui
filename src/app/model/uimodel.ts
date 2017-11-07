@@ -414,7 +414,6 @@ export class UIFinLoanDocument {
   public Desp: string;
   public TranCurr: string;
 
-  public SourceTranType: number;
   public SourceAccountId: number;
   public SourceControlCenterId: number;
   public SourceOrderId: number;
@@ -428,7 +427,7 @@ export class UIFinLoanDocument {
   }
   public generateDocument(): HIHFinance.Document {
     let doc: HIHFinance.Document = new HIHFinance.Document();
-    doc.DocType = hih.FinanceDocType_AdvancePayment;
+    doc.DocType = hih.FinanceDocType_Loan;
     doc.Desp = this.Desp;
     doc.TranCurr = this.TranCurr;
     doc.TranDate = this.TranDate.clone();
@@ -438,7 +437,7 @@ export class UIFinLoanDocument {
     fitem.AccountId = this.SourceAccountId;
     fitem.ControlCenterId = this.SourceControlCenterId;
     fitem.OrderId = this.SourceOrderId;
-    fitem.TranType = this.SourceTranType;
+    fitem.TranType = hih.FinanceTranType_LoanIn;
     fitem.TranAmount = this.TranAmount;
     doc.Items.push(fitem);
 
@@ -460,7 +459,6 @@ export class UIFinLoanDocument {
       this.SourceControlCenterId = fitem.ControlCenterId;
       this.SourceOrderId = fitem.OrderId;
       this.TranAmount = fitem.TranAmount;
-      this.SourceTranType = fitem.TranType;
     } else {
       let docobj = new HIHFinance.Document();
       docobj.onSetData(doc);
@@ -478,9 +476,8 @@ export class UIFinLoanDocument {
       this.SourceAccountId = +fitem.AccountId;
       this.SourceControlCenterId = +fitem.ControlCenterId;
       this.SourceOrderId = +fitem.OrderId;
-      this.SourceTranType = +fitem.TranType;
 
-      this.LoanAccount.onSetData(doc.accountVM.extraInfo_ADP);
+      this.LoanAccount.onSetData(doc.accountVM.extraInfo_Loan);
 
       for (let it of doc.tmpDocs) {
         let tdoc: HIHFinance.TemplateDocLoan = new HIHFinance.TemplateDocLoan();

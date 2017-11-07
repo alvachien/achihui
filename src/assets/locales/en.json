@@ -325,6 +325,7 @@
     "DueRepayment": "Due repayment",
     "AnnualRate": "Annual Rate",
     "InterestFreeLoan": "Interest-free Loan",
+    "Interest": "Interest",
     "ExchangeRateHint": "The amount of the base currency which 100 foreign currency can buy",
     "PreviousDocWithPlannedExgRate": "Previous documents whose planned exchange rate",
 

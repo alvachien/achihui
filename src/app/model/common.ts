@@ -17,6 +17,7 @@ export const FinanceDocType_AssetSoldOut: number = 8;
 export const FinanceDocType_Loan: number = 9;
 export const FinanceTranType_TransferIn: number = 37;
 export const FinanceTranType_TransferOut: number = 60;
+export const FinanceTranType_LoanIn: number = 80;
 export const MomentDateFormat: string = 'YYYY-MM-DD';
 
 export enum AuthorizeScope { All = 1, OnlyOwner = 2 };

@@ -325,6 +325,7 @@
     "DueRepayment": "到期还本",
     "AnnualRate": "年利率",
     "InterestFreeLoan": "无息借款",
+    "Interest": "利息",
     "ExchangeRateHint": "100外币所能换到的本币金额",
     "PreviousDocWithPlannedExgRate": "预测汇率的凭证",
     

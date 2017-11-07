@@ -52,7 +52,7 @@ export class DocumentLoanDetailComponent implements OnInit {
   // Enter, comma
   separatorKeysCodes = [ENTER, COMMA];
   tmpDocOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  displayedColumns = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
+  displayedColumns = ['TranDate', 'RefDoc', 'TranAmount', 'InterestAmount', 'Desp'];
   dataSource: TemplateDocLoanDataSource | null;
   
   get isFieldChangable(): boolean {
@@ -103,13 +103,13 @@ export class DocumentLoanDetailComponent implements OnInit {
       
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'createadp') {
+          if (x[0].path === 'createloan') {
             this.onInitCreateMode();
-          } else if (x[0].path === 'editadp') {
+          } else if (x[0].path === 'editloan') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'displayadp') {
+          } else if (x[0].path === 'displayloan') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
@@ -165,6 +165,132 @@ export class DocumentLoanDetailComponent implements OnInit {
 
   public prevStep() {
     this.step--;
+  }
+
+  public onSync(): void {
+    if (this.uiMode === UIMode.Create) {
+      this.detailObject.TmpDocs = [];
+
+      if (this.detailObject.LoanAccount.TotalMonths) {
+
+      } else {
+        // Calculate the 
+      }
+
+      // let rtype = this.detailObject.AdvPayAccount.RepeatType;
+      // if (!this.detailObject.AdvPayAccount.EndDate.isValid || !this.detailObject.AdvPayAccount.StartDate.isValid) {
+      //   return;
+      // }
+
+      // let arDays = [];
+
+      // switch (rtype) {
+      //   case RepeatFrequency.Month:
+      //     let nmon = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'M');
+      //     for (let i = 0; i < nmon; i++) {
+      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+      //       nstart.add(i, 'M');
+      //       arDays.push(nstart);
+      //     }
+      //     break;
+
+      //   case RepeatFrequency.Fortnight:
+      //     let nfort = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd') / 14;
+      //     for (let i = 0; i < nfort; i++) {
+      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+      //       nstart.add(14 * i, 'd');
+      //       arDays.push(nstart);
+      //     }
+      //     break;
+
+      //   case RepeatFrequency.Week:
+      //     let nweek = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd') / 7;
+      //     for (let i = 0; i < nweek; i++) {
+      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+      //       nstart.add(7 * i, 'd');
+      //       arDays.push(nstart);
+      //     }
+      //     break;
+
+      //   case RepeatFrequency.Day:
+      //     let nday = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd');
+      //     for (let i = 0; i < nday; i++) {
+      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+      //       nstart.add(i, 'd');
+      //       arDays.push(nstart);
+      //     }
+      //     break;
+
+      //   case RepeatFrequency.Quarter:
+      //     let nqrt = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'Q');
+      //     for (let i = 0; i < nqrt; i++) {
+      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+      //       nstart.add(i, 'Q');
+      //       arDays.push(nstart);
+      //     }
+      //     break;
+
+      //   case RepeatFrequency.HalfYear:
+      //     let nhalfyear = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'Q') / 2;
+      //     for (let i = 0; i < nhalfyear; i++) {
+      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+      //       nstart.add(2 * i, 'Q');
+      //       arDays.push(nstart);
+      //     }
+      //     break;
+
+      //   case RepeatFrequency.Year:
+      //     let nyear = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'y');
+      //     for (let i = 0; i < nyear; i++) {
+      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+      //       nstart.add(i, 'y');
+      //       arDays.push(nstart);
+      //     }
+      //     break;
+
+      //   case RepeatFrequency.Manual:
+      //     break;
+
+      //   default:
+      //     break;
+      // }
+
+      // let totalAmt: number = 0;
+      // for (let i = 0; i < arDays.length; i++) {
+      //   let item: TemplateDocADP = new TemplateDocADP();
+      //   item.DocId = i + 1;
+      //   item.TranType = this.detailObject.SourceTranType;
+      //   item.TranDate = arDays[i];
+      //   item.TranAmount = Number.parseFloat((this.detailObject.TranAmount / arDays.length).toFixed(2));
+      //   totalAmt += item.TranAmount;
+      //   this.detailObject.TmpDocs.push(item);
+      // }
+      // if (this.detailObject.TranAmount !== totalAmt) {
+      //   this.detailObject.TmpDocs[0].TranAmount += (this.detailObject.TranAmount - totalAmt);
+
+      //   this.detailObject.TmpDocs[0].TranAmount = Number.parseFloat(this.detailObject.TmpDocs[0].TranAmount.toFixed(2));
+      // }
+
+      // if (arDays.length === 0) {
+      //   let item = new TemplateDocADP();
+      //   item.DocId = 1;
+      //   item.TranType = this.detailObject.SourceTranType;
+      //   item.TranDate = this.detailObject.AdvPayAccount.StartDate.clone();
+      //   item.TranAmount = this.detailObject.TranAmount;
+      //   this.detailObject.TmpDocs.push(item);
+      // }
+
+      // // Update the template desp
+      // if(this.detailObject.TmpDocs.length === 1) {
+      //   this.detailObject.TmpDocs[0].Desp = this.detailObject.Desp;
+      // } else {
+      //   for(let i = 0; i < this.detailObject.TmpDocs.length; i ++) {
+      //     this.detailObject.TmpDocs[i].Desp = this.detailObject.Desp + ' | ' + (i+1).toString() + '/' + this.detailObject.TmpDocs.length.toString();
+      //   }
+      // }
+
+      this.tmpDocOperEvent.emit();
+    }    
   }
 
   public canSubmit(): boolean {

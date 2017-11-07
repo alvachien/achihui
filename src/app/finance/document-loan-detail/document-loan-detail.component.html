@@ -33,15 +33,6 @@
           <mat-datepicker #srcdpicker></mat-datepicker>
         </mat-form-field>
 
-        <!-- Tran type -->
-        <mat-form-field class="demo-full-width">
-          <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranType" name="srctt">
-            <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-              <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
         <!-- Account -->
         <mat-form-field class="demo-full-width">
           <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
@@ -160,6 +151,17 @@
               </mat-cell>
             </ng-container>
 
+            <!-- Amount Column -->
+            <ng-container matColumnDef="InterestAmount">
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Interest' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.InterestAmount"
+                    name="tmpamt">
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
+            
             <!-- Desp Column -->
             <ng-container matColumnDef="Desp">
               <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>

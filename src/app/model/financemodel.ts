@@ -1883,6 +1883,7 @@ export class TemplateDocLoan extends hih.BaseModel {
   private _tranDate: moment.Moment;
   public TranType: number;
   public TranAmount: number;
+  public InterestAmount: number;
   public ControlCenterId: number;
   public OrderId: number;
   public Desp: string;
@@ -1928,6 +1929,7 @@ export class TemplateDocLoan extends hih.BaseModel {
     rstObj.tranDate = this._tranDate.format(hih.MomentDateFormat);
     rstObj.tranType = this.TranType;
     rstObj.tranAmount = this.TranAmount;
+    rstObj.interestAmount = this.InterestAmount;
     rstObj.controlCenterID = this.ControlCenterId;
     rstObj.orderID = this.OrderId;
     rstObj.desp = this.Desp;
@@ -1958,6 +1960,9 @@ export class TemplateDocLoan extends hih.BaseModel {
     }
     if (data && data.tranAmount) {
       this.TranAmount = +data.tranAmount;
+    }
+    if (data && data.interestAmount) {
+      this.InterestAmount = +data.interestAmount;
     }
     if (data && data.controlCenterID) {
       this.ControlCenterId = +data.controlCenterID;
