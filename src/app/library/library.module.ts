@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE_PROVIDER, MAT_DATE_LOCALE } from '@angular/material';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
 
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MD_MOMENT_DATE_FORMATS, MomentDateAdapter } from '../utility';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
 import { LibraryRoutingModule } from './library-routing.module';
 
@@ -57,13 +56,19 @@ import { LocationDetailComponent } from './location-detail';
     BookCategoryComponent, 
     BookCategoryListComponent, 
     MovieGenreComponent, 
-    MovieGenreDetailComponent, LocationComponent, LocationListComponent, LocationDetailComponent, BookListComponent, BookSetListComponent, MovieListComponent, MovieGenreListComponent
+    MovieGenreDetailComponent, 
+    LocationComponent, 
+    LocationListComponent, 
+    LocationDetailComponent, 
+    BookListComponent, 
+    BookSetListComponent, 
+    MovieListComponent, 
+    MovieGenreListComponent
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MAT_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
-    { provide: MATERIAL_COMPATIBILITY_MODE, useValue: true },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
   ],
 })
 export class LibraryModule { }

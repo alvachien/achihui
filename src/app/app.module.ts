@@ -4,12 +4,10 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
-import { HttpModule, Http } from '@angular/http';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER } from '@angular/material';
 import { UIDependModule } from './uidepend.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
 import { TagCloudModule } from 'angular-tag-cloud-module';
 
 import { AppComponent } from './app.component';
@@ -24,7 +22,7 @@ import { LearnModule } from './learn';
 import { FinanceModule } from './finance';
 import { FinanceCurrencyComponent } from './finance-currency';
 import { LanguageComponent } from './language';
-import { MD_MOMENT_DATE_FORMATS, MomentDateAdapter } from './utility';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 import { HomeDefComponent } from './home-def';
 import { HomeDefListComponent } from './home-def-list';
@@ -53,7 +51,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
-    HttpModule,
     UIDependModule,
     TagCloudModule,
   ],
@@ -77,8 +74,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MAT_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
-    { provide: MATERIAL_COMPATIBILITY_MODE, useValue: true },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     AuthService,
     AuthGuardService,
     FinCurrencyService,

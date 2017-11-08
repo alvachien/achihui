@@ -6,8 +6,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MD_MOMENT_DATE_FORMATS, MomentDateAdapter } from '../utility';
-import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
 import { FinanceRoutingModule } from './finance-routing.module';
 import { FinanceComponent } from './finance.component';
@@ -98,8 +97,7 @@ import { AccountExtLoanComponent } from './account-ext-loan';
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MAT_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS },
-    { provide: MATERIAL_COMPATIBILITY_MODE, useValue: true },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
   ],
 })
 export class FinanceModule { }
