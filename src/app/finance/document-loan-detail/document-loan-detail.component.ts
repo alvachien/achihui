@@ -173,13 +173,22 @@ export class DocumentLoanDetailComponent implements OnInit {
     if (this.uiMode === UIMode.Create) {
       this.detailObject.TmpDocs = [];
 
+      // Do some basic check
+      if (!this.detailObject.TranAmount) {
+        return;
+      }
+
+      if (!this.detailObject.LoanAccount.RepayMethod) {
+        return;
+      }
+
       // Call the API for Loan template docs.
       let di: FinanceLoanCalAPIInput = {
         TotalAmount: this.detailObject.TranAmount,
         TotalMonths: this.detailObject.LoanAccount.TotalMonths,
         InterestRate: this.detailObject.LoanAccount.AnnualRate / 100,
         StartDate: this.detailObject.LoanAccount.StartDate.clone(),
-        InterestFreeLoan: this.detailObject.LoanAccount.InterestFree,
+        InterestFreeLoan: this.detailObject.LoanAccount.InterestFree ? true : false,
         RepaymentMethod: this.detailObject.LoanAccount.RepayMethod      
       };
       
@@ -301,6 +310,11 @@ export class DocumentLoanDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof Document) {
+          // Ensure refresh the accounts
+          this._storageService.fetchAllAccounts(true).subscribe(act => {
+            // Do nothing just reload accounts
+          });
+          
           // Show the snackbar
           let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {

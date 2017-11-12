@@ -83,7 +83,9 @@
     "PreviousMonth": "上一个月",
     "PreviousYear": "去年",
     "CurrentQuarter": "当前季度",
+    "PreviousQuarter": "上一季度",
     "CurrentWeek": "本周",
+    "PreviousWeek": "上周",
     "CurrentYear": "本年",
     "All": "全部",
     "ChooseThisHome": "选择此家庭",
@@ -109,6 +111,7 @@
     "Host": "户主",
     "Todo": "待处理事项",
     "Total": "总计",
+    "ChartLegend": "图例",
     
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",

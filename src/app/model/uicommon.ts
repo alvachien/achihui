@@ -219,6 +219,9 @@ export class UIDisplayStringUtil {
       case UICommonLabelEnum.Error:
         return 'Common.Error';
         
+      case UICommonLabelEnum.ChartLegend:
+        return 'Common.ChartLegend';
+        
       default:
         return '';
     }
@@ -263,6 +266,18 @@ export class UIDisplayStringUtil {
 
       case OverviewScopeEnum.PreviousYear:
         return 'Common.PreviousYear';
+
+      case OverviewScopeEnum.CurrentQuarter:
+        return 'Common.CurrentQuarter';
+      
+      case OverviewScopeEnum.PreviousQuarter:
+        return 'Common.PreviousQuarter';
+
+      case OverviewScopeEnum.CurrentWeek:
+        return 'Common.CurrentWeek';
+      
+      case OverviewScopeEnum.PreviousWeek:
+        return 'Common.PreviousWeek';
 
       case OverviewScopeEnum.All:
         return 'Common.All';

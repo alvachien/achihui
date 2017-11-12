@@ -1656,7 +1656,8 @@ export class FinanceStorageService {
 
     let apiurl = environment.ApiUrl + '/api/FinanceLoanCalculator';
     let jobject = {
-      interestRate: datainput.InterestRate,
+      interestFreeLoan: datainput.InterestFreeLoan? true: false,
+      interestRate: datainput.InterestRate ? datainput.InterestRate : 0,
       repaymentMethod: datainput.RepaymentMethod,
       startDate: datainput.StartDate.format(MomentDateFormat),
       totalAmount: datainput.TotalAmount,

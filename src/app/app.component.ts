@@ -133,4 +133,12 @@ export class AppComponent implements OnInit {
     //   document.title = x;
     // });
   }
+
+  public onOpenMathExcises() {
+    window.open("http://118.178.58.187:5230", "blank");
+  }
+
+  public onOpenPhotoGallery() {
+    //window.open("http://118.178.58.187:5230", "blank");
+  }
 }

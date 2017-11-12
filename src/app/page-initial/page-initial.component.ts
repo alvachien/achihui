@@ -23,6 +23,7 @@ export class PageInitialComponent implements OnInit {
   yLearnCtgyAxisLabel: string;
   xLearnUserAxisLabel: string;
   yLearnUserAxisLabel: string;
+  legendTitle: string;
   totalLabel: string;
   dataFinTTIn: any[] = [];
   dataFinTTOut: any[] = [];
@@ -48,6 +49,7 @@ export class PageInitialComponent implements OnInit {
     this.xLearnUserAxisLabel = this._uistatusService.getUILabel(UICommonLabelEnum.User);
     this.yLearnUserAxisLabel = this._uistatusService.getUILabel(UICommonLabelEnum.Count);
     this.totalLabel = this._uistatusService.getUILabel(UICommonLabelEnum.Total);
+    this.legendTitle = this._uistatusService.getUILabel(UICommonLabelEnum.ChartLegend);
   }
 
   ngOnInit() {

@@ -353,6 +353,11 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof Document) {
+          // Ensure refresh the accounts
+          this._storageService.fetchAllAccounts(true).subscribe(act => {
+            // Do nothing just reload accounts
+          });
+          
           // Show the snackbar
           let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {

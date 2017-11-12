@@ -28,16 +28,17 @@ export const COMMA = 188;
  * Enum for Common Label
  */
 export enum UICommonLabelEnum {
-  DocumentPosted    = 1,
-  CreateAnotherOne  = 2,
-  CreatedSuccess    = 3,
-  Category          = 4,
-  User              = 5,
-  Count             = 6,
-  Total             = 7,
+  DocumentPosted        = 1,
+  CreateAnotherOne      = 2,
+  CreatedSuccess        = 3,
+  Category              = 4,
+  User                  = 5,
+  Count                 = 6,
+  Total                 = 7,
   DeleteConfirmTitle    = 8,
   DeleteConfrimContent  = 9,
-  Error                 = 10
+  Error                 = 10,
+  ChartLegend           = 11,
 }
 
 /**
@@ -66,6 +67,10 @@ export enum OverviewScopeEnum {
   CurrentYear = 2,
   PreviousMonth = 3,
   PreviousYear = 4,
+  CurrentQuarter = 5,
+  PreviousQuarter = 6,
+  CurrentWeek = 7,
+  PreviousWeek = 8,
 
   All = 9,
 }
@@ -399,6 +404,24 @@ export function getOverviewScopeRange(scope: OverviewScopeEnum): OverviewScopeRa
 
     end = bgn.clone();
     end.endOf('year');
+  } else if (scope === OverviewScopeEnum.CurrentQuarter) {
+    bgn.startOf('quarter');
+    end.endOf('quarter');
+  } else if (scope === OverviewScopeEnum.PreviousQuarter) {
+    bgn.startOf('quarter');
+    bgn.subtract(1, 'Q');
+
+    end = bgn.clone();
+    end.endOf('quarter');
+  } else if (scope === OverviewScopeEnum.CurrentWeek) {
+    bgn.startOf('week');
+    end.endOf('week');
+  } else if (scope === OverviewScopeEnum.PreviousWeek) {
+    bgn.startOf('week');
+    bgn.subtract(1, 'w');
+
+    end = bgn.clone();
+    end.endOf('week');
   } else if (scope === OverviewScopeEnum.All) {
     bgn = moment('19710101');
     end = moment('99991231');
