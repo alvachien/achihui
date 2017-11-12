@@ -219,6 +219,19 @@ export class DocumentListComponent implements OnInit {
           this.onRefreshList();          
         }, err2 => {
           // TBD: handle the error!
+          const dlginfo2: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: err2 ? err2.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+      
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo2
+          }).afterClosed().subscribe(x3 => {
+            // Do nothing
+          });      
         });
 
         this._storageService.deleteDocument(doc.Id);

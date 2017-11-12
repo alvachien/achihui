@@ -77,7 +77,7 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field class="demo-full-width">
           <mat-select placeholder="{{'Finance.TransactionType' | translate}}" 
             [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranType" name="ittt">
             <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">

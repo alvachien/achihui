@@ -1268,21 +1268,21 @@ export class FinanceStorageService {
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Map of deleteDocument in LearnStorageService' + response);
+          console.log('AC_HIH_UI [Debug]: Map of deleteDocument in FinanceStorageService' + response);
         }
 
         return <any>response;
       })
       .subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteDocument in LearnStorageService: ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteDocument in FinanceStorageService: ${x}`);
         }
 
         // Broadcast event
         this.deleteDocumentEvent.emit(x);
       }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in deleteDocument in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Error occurred in deleteDocument in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
