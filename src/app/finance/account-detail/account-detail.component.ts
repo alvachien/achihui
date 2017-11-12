@@ -164,7 +164,7 @@ export class AccountDetailComponent implements OnInit {
         } else {
           // Show error message
           const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Error',
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
             Content: x.toString(),
             Button: MessageDialogButtonEnum.onlyok,
           };

@@ -79,8 +79,8 @@ export class DocumentListComponent implements OnInit {
       // Just ensure the REQUEST has been sent
     }, (error) => {
       const dlginfo: MessageDialogInfo = {
-        Header: 'Common.Error',
-        Content: error ? error.toString() : 'Common.Error',
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
         Button: MessageDialogButtonEnum.onlyok,
       };
 

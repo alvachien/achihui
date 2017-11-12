@@ -216,6 +216,9 @@ export class UIDisplayStringUtil {
       case UICommonLabelEnum.DeleteConfrimContent:
         return 'Common.ConfirmToDeleteSelectedItem';
 
+      case UICommonLabelEnum.Error:
+        return 'Common.Error';
+        
       default:
         return '';
     }

@@ -364,7 +364,8 @@
     "NoExchangeRate": "未定义汇率",
     "UnnecessaryExchangeRate": "本币操作无需汇率",
     "DespIsMust": "描述是必须的",
-    "NoExtraInfo": "没有附加信息"
+    "NoExtraInfo": "没有附加信息",
+    "NoTmpDocGenerated": "没有模板凭证，需要生成模板凭证"
   },
   "Library": {
     "BookCategories": "图书种类",

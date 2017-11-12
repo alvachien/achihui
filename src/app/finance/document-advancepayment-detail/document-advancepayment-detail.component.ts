@@ -143,8 +143,8 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       }
 
       const dlginfo: MessageDialogInfo = {
-        Header: 'Common.Error',
-        Content: error ? error.toString() : 'Common.Error',
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
         Button: MessageDialogButtonEnum.onlyok,
       };
 
@@ -332,7 +332,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       })) {
         // Show a dialog for error details
         const dlginfo: MessageDialogInfo = {
-          Header: 'Common.Error',
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           ContentTable: docObj.VerifiedMsgs,
           Button: MessageDialogButtonEnum.onlyok,
         };
@@ -378,7 +378,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
         } else {
           // Show error message
           const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Error',
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
             Content: x.toString(),
             Button: MessageDialogButtonEnum.onlyok,
           };

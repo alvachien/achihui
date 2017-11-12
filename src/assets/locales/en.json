@@ -364,7 +364,8 @@
     "NoExchangeRate": "No exchange rate",
     "UnnecessaryExchangeRate": "Exchange rate is unnecessary for base currency",
     "DespIsMust": "Desp is must",
-    "NoExtraInfo": "No extra info"
+    "NoExtraInfo": "No extra info",
+    "NoTmpDocGenerated": "No template docs, you shall generate them first"
   },
   "Library": {
     "BookCategories": "Book Categories",

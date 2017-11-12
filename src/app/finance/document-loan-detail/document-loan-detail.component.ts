@@ -142,8 +142,8 @@ export class DocumentLoanDetailComponent implements OnInit {
       }
 
       const dlginfo: MessageDialogInfo = {
-        Header: 'Common.Error',
-        Content: error ? error.toString() : 'Common.Error',
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
         Button: MessageDialogButtonEnum.onlyok,
       };
 
@@ -189,6 +189,7 @@ export class DocumentLoanDetailComponent implements OnInit {
           tmpdoc.InterestAmount = rst.InterestAmount;
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
+          tmpdoc.TranType = this.detailObject.SourceTranType;
           tmpdoc.Desp = this.detailObject.LoanAccount.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString() + ' / ' + x.length.toString();
           this.detailObject.TmpDocs.push(tmpdoc);
         }
@@ -200,8 +201,8 @@ export class DocumentLoanDetailComponent implements OnInit {
         }        
 
         const dlginfo: MessageDialogInfo = {
-          Header: 'Common.Error',
-          Content: error ? error.toString() : 'Common.Error',
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           Button: MessageDialogButtonEnum.onlyok,
         };
   
@@ -244,6 +245,29 @@ export class DocumentLoanDetailComponent implements OnInit {
     if (this.uiMode === UIMode.Create) {
       let docObj = this.detailObject.generateDocument();
 
+      if (this.detailObject.TmpDocs.length <= 0) {
+        this.showErrorDialog('Finance.NoTmpDocGenerated');
+        return;
+      }
+
+      // Check on template docs
+      if (!this.detailObject.LoanAccount.RepayMethod) {
+        this.showErrorDialog('No repayment method!');
+        return;
+      }
+
+      for(let tdoc of this.detailObject.TmpDocs) {
+        if (!tdoc.TranAmount) {
+          this.showErrorDialog("NO tran. amount");
+          return;
+        }
+
+        if (!tdoc.TranType) {
+          this.showErrorDialog("No tran. type");
+          return;
+        }
+      }
+
       // Check!
       if (!docObj.onVerify({
         ControlCenters: this._storageService.ControlCenters,
@@ -256,7 +280,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       })) {
         // Show a dialog for error details
         const dlginfo: MessageDialogInfo = {
-          Header: 'Common.Error',
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           ContentTable: docObj.VerifiedMsgs,
           Button: MessageDialogButtonEnum.onlyok,
         };
@@ -301,7 +325,7 @@ export class DocumentLoanDetailComponent implements OnInit {
         } else {
           // Show error message
           const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Error',
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
             Content: x.toString(),
             Button: MessageDialogButtonEnum.onlyok,
           };
@@ -357,5 +381,22 @@ export class DocumentLoanDetailComponent implements OnInit {
     this.uiMode = UIMode.Create;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
+  }
+
+  private showErrorDialog(errormsg: string) {
+    // Show a dialog for error details
+    const dlginfo: MessageDialogInfo = {
+      Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+      Content: errormsg,
+      Button: MessageDialogButtonEnum.onlyok,
+    };
+
+    this._dialog.open(MessageDialogComponent, {
+      disableClose: false,
+      width: '500px',
+      data: dlginfo,
+    });
+
+    return;
   }
 }

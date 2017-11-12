@@ -198,7 +198,7 @@ export class OrderDetailComponent implements OnInit {
       })) {
         // Show a dialog for error details
         const dlginfo: MessageDialogInfo = {
-          Header: 'Common.Error',
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           ContentTable: this.detailObject.VerifiedMsgs,
           Button: MessageDialogButtonEnum.onlyok,
         };
@@ -242,7 +242,7 @@ export class OrderDetailComponent implements OnInit {
         } else {
           // Show error message
           const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Error',
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
             Content: x.toString(),
             Button: MessageDialogButtonEnum.onlyok,
           };

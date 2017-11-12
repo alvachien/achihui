@@ -417,6 +417,7 @@ export class UIFinLoanDocument {
   public SourceAccountId: number;
   public SourceControlCenterId: number;
   public SourceOrderId: number;
+  public SourceTranType: number; // For each template doc, it shall use tran. type
 
   public LoanAccount: HIHFinance.AccountExtraLoan;
   public TmpDocs: HIHFinance.TemplateDocLoan[] = [];
@@ -437,7 +438,7 @@ export class UIFinLoanDocument {
     fitem.AccountId = this.SourceAccountId;
     fitem.ControlCenterId = this.SourceControlCenterId;
     fitem.OrderId = this.SourceOrderId;
-    fitem.TranType = hih.FinanceTranType_LoanIn;
+    fitem.TranType = hih.FinanceTranType_LoanIn; // Loan in
     fitem.TranAmount = this.TranAmount;
     fitem.Desp = this.Desp;
     doc.Items.push(fitem);
@@ -483,6 +484,11 @@ export class UIFinLoanDocument {
       for (let it of doc.tmpDocs) {
         let tdoc: HIHFinance.TemplateDocLoan = new HIHFinance.TemplateDocLoan();
         tdoc.onSetData(it);
+
+        if (tdoc.TranType !== this.SourceTranType) {
+          this.SourceTranType = tdoc.TranType;
+        }
+        
         this.TmpDocs.push(tdoc);
       }
     }

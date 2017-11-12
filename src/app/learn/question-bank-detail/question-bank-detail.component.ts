@@ -176,7 +176,7 @@ export class QuestionBankDetailComponent implements OnInit {
         } else {
           // Show error message
           const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Error',
+            Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
             Content: x.toString(),
             Button: MessageDialogButtonEnum.onlyok,
           };
