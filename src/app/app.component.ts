@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
         });
       }, (error) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error('AC Math Exercise [Error]: Failed in subscribe to User', error);
+          console.error('AC HIH UI [Error]: Failed in subscribe to User', error);
         }
       }, () => {
         // Completed

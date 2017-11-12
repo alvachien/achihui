@@ -14,12 +14,12 @@
         </mat-toolbar>
     
         <div class="table-container mat-elevation-z8 mt-2">
-          <mat-table #tableADP [dataSource]="dataSourceADP">
+          <mat-table #tableTmpDoc [dataSource]="dataSourceTmpDoc">
             <!-- DocID column -->
             <ng-container matColumnDef="DocID">
               <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <button mat-icon-button color="primary" (click)="onPostADPDocument(row)"><mat-icon class="example-icon">save</mat-icon></button>
+                <button mat-icon-button color="primary" (click)="onPostTmpDocument(row)"><mat-icon class="example-icon">save</mat-icon></button>
                 {{ row.DocId }}
               </mat-cell>
             </ng-container>
@@ -62,10 +62,10 @@
               </mat-cell>
             </ng-container>
 
-            <mat-header-row *matHeaderRowDef="displayedADPColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedADPColumns;"></mat-row>
+            <mat-header-row *matHeaderRowDef="displayedTmpDocColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedTmpDocColumns;"></mat-row>
           </mat-table>
-          <mat-paginator #paginatorADP [length]="ADPTmpDocs.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+          <mat-paginator #paginatorTmpDoc [length]="TmpDocs.length" [pageIndex]="0" [pageSize]="15" [pageSizeOptions]="[5, 10, 25, 100]">
           </mat-paginator>
         </div>
         

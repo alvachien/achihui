@@ -8,7 +8,8 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_CurrencyExchange,
   FinanceDocType_Transfer, FinanceDocType_AdvancePayment, OverviewScopeEnum, getOverviewScopeRange,
   FinanceDocType_CreditcardRepay, FinanceDocType_AssetBuyIn, FinanceDocType_AssetSoldOut, 
-  FinanceDocType_Loan } from '../../model';
+  FinanceDocType_Loan, 
+  UICommonLabelEnum} from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -197,8 +198,8 @@ export class DocumentListComponent implements OnInit {
   public onDeleteDocument(doc: Document) {
     // Show a confirmation dialog for the deletion
     const dlginfo: MessageDialogInfo = {
-      Header: 'Common.DeleteConfirmation',
-      Content: 'ConfirmToDeleteSelectedItem',
+      Header: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
+      Content: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfrimContent),
       Button: MessageDialogButtonEnum.yesno,
     };
 
@@ -214,7 +215,8 @@ export class DocumentListComponent implements OnInit {
 
       if (x2) {
         this._storageService.deleteDocumentEvent.subscribe(x => {
-          // Do nothing!
+          // Refresh the list!
+          this.onRefreshList();          
         }, err2 => {
           // TBD: handle the error!
         });

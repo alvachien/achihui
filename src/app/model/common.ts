@@ -34,7 +34,9 @@ export enum UICommonLabelEnum {
   Category          = 4,
   User              = 5,
   Count             = 6,
-  Total             = 7
+  Total             = 7,
+  DeleteConfirmTitle    = 8,
+  DeleteConfrimContent  = 9
 }
 
 /**

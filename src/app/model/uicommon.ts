@@ -210,6 +210,12 @@ export class UIDisplayStringUtil {
       case UICommonLabelEnum.Total:
         return 'Common.Total';
 
+      case UICommonLabelEnum.DeleteConfirmTitle:
+        return 'Common.DeleteConfirmation';
+
+      case UICommonLabelEnum.DeleteConfrimContent:
+        return 'Common.ConfirmToDeleteSelectedItem';
+
       default:
         return '';
     }

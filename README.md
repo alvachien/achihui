@@ -39,7 +39,7 @@ This project was generated with [angular-cli](https://github.com/angular/angular
 
 This project also require the following components:
 * [Typescript](http://www.typescriptlang.org)
-* [Angular 4](https://github.com/angular/angular)
+* [Angular 5](https://github.com/angular/angular)
 * [Material 2](https://github.com/angular/material2)
 * [Ngx-translate](https://github.com/ngx-translate/core)
 * [Oidc-Client](https://github.com/IdentityModel/oidc-client-js)

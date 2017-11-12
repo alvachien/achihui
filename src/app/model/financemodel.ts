@@ -403,6 +403,8 @@ export class Account extends hih.BaseModel {
       rstObj.extraInfo_ADP = this.ExtraInfo.writeJSONObject();
     } else if (this.CategoryId === hih.FinanceAccountCategory_Asset && this.ExtraInfo) {
       rstObj.extraInfo_AS = this.ExtraInfo.writeJSONObject();
+    } else if(this.CategoryId === hih.FinanceAccountCategory_Loan && this.ExtraInfo) {
+      rstObj.extraInfo_Loan = this.ExtraInfo.writeJSONObject();
     }
 
     return rstObj;
@@ -1774,9 +1776,9 @@ export class DocumentItem {
 }
 
 /**
- * Tempalte doc for Advance payment
+ * Tempalte docs base class
  */
-export class TemplateDocADP extends hih.BaseModel {
+export abstract class TemplateDocBase extends hih.BaseModel {
   public DocId: number;
   public HID: number;
   public RefDocId: number;
@@ -1873,66 +1875,21 @@ export class TemplateDocADP extends hih.BaseModel {
 }
 
 /**
+ * Tempalte doc for Advance payment
+ */
+export class TemplateDocADP extends TemplateDocBase {
+  // Nothing
+}
+
+/**
  * Tempalte doc for Loan
  */
-export class TemplateDocLoan extends hih.BaseModel {
-  public DocId: number;
-  public HID: number;
-  public RefDocId: number;
-  public AccountId: number;
-  private _tranDate: moment.Moment;
-  public TranType: number;
-  public TranAmount: number;
+export class TemplateDocLoan extends TemplateDocBase {
   public InterestAmount: number;
-  public ControlCenterId: number;
-  public OrderId: number;
-  public Desp: string;
-
-  get TranDate(): moment.Moment {
-    return this._tranDate;
-  }
-  set TranDate(td: moment.Moment) {
-    this._tranDate = td;
-  }
-  get TranDateFormatString(): string {
-    return this._tranDate.format(hih.MomentDateFormat);
-  }
-  public AccountName: string;
-  public ControlCenterName: string;
-  public OrderName: string;
-
-  constructor() {
-    super();
-
-    this.TranDate = moment();
-  }
-
-  public onInit() {
-    super.onInit();
-
-    this.TranDate = moment();
-  }
-
-  public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
-      return false;
-
-    return true;
-  }
 
   public writeJSONObject(): any {
     let rstObj = super.writeJSONObject();
-    rstObj.docID = this.DocId;
-    rstObj.hid = this.HID;
-    rstObj.refDocID = this.RefDocId;
-    rstObj.accountID = this.AccountId;
-    rstObj.tranDate = this._tranDate.format(hih.MomentDateFormat);
-    rstObj.tranType = this.TranType;
-    rstObj.tranAmount = this.TranAmount;
     rstObj.interestAmount = this.InterestAmount;
-    rstObj.controlCenterID = this.ControlCenterId;
-    rstObj.orderID = this.OrderId;
-    rstObj.desp = this.Desp;
 
     return rstObj;
   }
@@ -1940,38 +1897,8 @@ export class TemplateDocLoan extends hih.BaseModel {
   public onSetData(data: any) {
     super.onSetData(data);
 
-    if (data && data.docID) {
-      this.DocId = +data.docID;
-    }
-    if (data && data.hid) {
-      this.HID = +data.hid;
-    }
-    if (data && data.refDocID) {
-      this.RefDocId = +data.refDocID;
-    }
-    if (data && data.accountID) {
-      this.AccountId = +data.accountID;
-    }
-    if (data && data.tranDate) {
-      this.TranDate = moment(data.tranDate, hih.MomentDateFormat);
-    }
-    if (data && data.tranType) {
-      this.TranType = +data.tranType;
-    }
-    if (data && data.tranAmount) {
-      this.TranAmount = +data.tranAmount;
-    }
     if (data && data.interestAmount) {
       this.InterestAmount = +data.interestAmount;
-    }
-    if (data && data.controlCenterID) {
-      this.ControlCenterId = +data.controlCenterID;
-    }
-    if (data && data.orderID) {
-      this.OrderId = +data.orderID;
-    }
-    if (data && data.desp) {
-      this.Desp = data.desp;
     }
   }
 }
@@ -2262,4 +2189,25 @@ export class DocumentWithPlanExgRateForUpdate {
   public targetCurrency: string;
   public exchangeRate: number;
   public docIDs: number[] = [];
+}
+
+/**
+ * Finance loan calculator - API input
+ */
+export interface FinanceLoanCalAPIInput {
+  TotalAmount: number;
+  TotalMonths: number;
+  InterestRate: number;
+  StartDate: moment.Moment;
+  InterestFreeLoan: boolean;
+  RepaymentMethod: number;
+}
+
+/**
+ * Finance loan calculator - API output
+ */
+export interface FinanceLoanCalAPIOutput {
+  TranDate: moment.Moment;
+  TranAmount: number;
+  InterestAmount: number;
 }

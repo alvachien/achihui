@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
 import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Account, ControlCenter, Order,
     Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
-    UINameValuePair } from '../model';
+    UINameValuePair, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, TemplateDocLoan } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -1001,6 +1001,68 @@ export class FinanceStorageService {
   }
   
   /**
+   * Get Loan tmp docs: for document item overview page
+   */
+  public getLoanTmpDocs(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceLoanTmpDoc';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(MomentDateFormat));
+    }
+
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering getLoanTmpDocs in FinanceStorageService: ${response}`);
+        }
+
+        return <any>response;
+      });
+  }
+
+  /**
+   * Post the template doc
+   * @param doc Tmplate doc
+   */
+  public doPostLoanTmpDoc(doc: TemplateDocLoan) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceLoanTmpDoc';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('docid', doc.DocId.toString());
+
+    return this._http.post(apiurl, null, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering doPostLoanTmpDoc in FinanceStorageService: ${response}`);
+        }
+
+        return <any>response;
+      });
+  }
+  
+  /**
    * Create asset document
    * @param jdata Data for creation
    * @param isbuyin Is a buyin doc or soldout doc
@@ -1582,4 +1644,50 @@ export class FinanceStorageService {
         return [mapIn, mapOut];
       });
   }
+
+  /**
+   * Utility part
+   */
+  public calcLoanTmpDocs(datainput: FinanceLoanCalAPIInput): Observable<FinanceLoanCalAPIOutput[]> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceLoanCalculator';
+    let jobject = {
+      interestRate: datainput.InterestRate,
+      repaymentMethod: datainput.RepaymentMethod,
+      startDate: datainput.StartDate.format(MomentDateFormat),
+      totalAmount: datainput.TotalAmount,
+      totalMonths: datainput.TotalMonths
+    };
+    const jdata: string = JSON && JSON.stringify(jobject);
+
+    return this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering getLoanTmpDocs in FinanceStorageService: ${response}`);
+        }
+
+        let results: FinanceLoanCalAPIOutput[] = [];
+        // Get the result out.
+        let y = <any>response;
+        if (y instanceof Array && y.length > 0) {
+          for(let tt of y) {
+            let rst: FinanceLoanCalAPIOutput = {
+              TranDate: moment(tt.tranDate, MomentDateFormat),
+              TranAmount: tt.tranAmount,
+              InterestAmount: tt.interestAmount
+            };
+
+            results.push(rst);
+          }
+        }
+        return results;
+      });
+  }  
 }

@@ -439,6 +439,7 @@ export class UIFinLoanDocument {
     fitem.OrderId = this.SourceOrderId;
     fitem.TranType = hih.FinanceTranType_LoanIn;
     fitem.TranAmount = this.TranAmount;
+    fitem.Desp = this.Desp;
     doc.Items.push(fitem);
 
     return doc;

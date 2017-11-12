@@ -5,7 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocADP, UICommonLabelEnum } from '../../model';
+import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
+  TemplateDocADP, TemplateDocLoan, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
@@ -95,7 +96,7 @@ export class DocItemByOrderDataSource extends DataSource<any> {
 }
 
 /**
- * Data source of ADP docs
+ * Data source of ADP & Loan docs 
  */
 export class TmpDocStillOpenDataSource extends DataSource<any> {
   constructor(private _parentComponent: DocumentItemOverviewComponent,
@@ -104,14 +105,14 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
   }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<TemplateDocADP[]> {
+  connect(): Observable<TemplateDocBase[]> {
     const displayDataChanges = [
-      this._parentComponent.ADPTmpDocEvent,
+      this._parentComponent.TmpDocEvent,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._parentComponent.ADPTmpDocs.slice();
+      const data = this._parentComponent.TmpDocs.slice();
 
       // Grab the page's slice of data.
       const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
@@ -132,23 +133,23 @@ export class DocumentItemOverviewComponent implements OnInit {
   displayedByAccountColumns = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   displayedByControlCenterColumns = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   displayedByOrderColumns = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
-  displayedADPColumns = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
+  displayedTmpDocColumns = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSourceByAccount: DocItemByAccountDataSource | null;
   dataSourceByControlCenter: DocItemByControlCenterDataSource | null;
   dataSourceByOrder: DocItemByOrderDataSource | null;
-  dataSourceADP: TmpDocStillOpenDataSource | null;
+  dataSourceTmpDoc: TmpDocStillOpenDataSource | null;
   DocItemByAccountEvent: EventEmitter<null> = new EventEmitter<null>(null);
   DocItemByControlCenterEvent: EventEmitter<null> = new EventEmitter<null>(null);
   DocItemByOrderEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  ADPTmpDocEvent: EventEmitter<null> = new EventEmitter<null>(null);
+  TmpDocEvent: EventEmitter<null> = new EventEmitter<null>(null);
   DocItemsByAccount: DocumentItemWithBalance[] = [];
   DocItemsByControlCenter: DocumentItemWithBalance[] = [];
   DocItemsByOrder: DocumentItemWithBalance[] = [];
-  ADPTmpDocs: TemplateDocADP[] = [];
+  TmpDocs: TemplateDocBase[] = [];
   @ViewChild('paginatorByAccount') paginatorByAccount: MatPaginator;
   @ViewChild('paginatorByControlCenter') paginatorByControlCenter: MatPaginator;
   @ViewChild('paginatorByOrder') paginatorByOrder: MatPaginator;
-  @ViewChild('paginatorADP') paginatorADP: MatPaginator;
+  @ViewChild('paginatorTmpDoc') paginatorTmpDoc: MatPaginator;
 
   selectedAccount: number;
   selectedControlCenter: number;
@@ -168,7 +169,7 @@ export class DocumentItemOverviewComponent implements OnInit {
     this.dataSourceByAccount = new DocItemByAccountDataSource(this, this.paginatorByAccount);
     this.dataSourceByControlCenter = new DocItemByControlCenterDataSource(this, this.paginatorByControlCenter);
     this.dataSourceByOrder = new DocItemByOrderDataSource(this, this.paginatorByOrder);
-    this.dataSourceADP = new TmpDocStillOpenDataSource(this, this.paginatorADP);
+    this.dataSourceTmpDoc = new TmpDocStillOpenDataSource(this, this.paginatorTmpDoc);
 
     Observable.forkJoin([
       this._storageService.fetchAllAccounts(),
@@ -177,48 +178,65 @@ export class DocumentItemOverviewComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._storageService.getADPTmpDocs(),
+      this._storageService.getLoanTmpDocs(),
     ]).subscribe((x) => {
       if (x[5] instanceof Array && x[5].length > 0) {
         for (let dta of x[5]) {
           let adpdoc = new TemplateDocADP();
           adpdoc.onSetData(dta);
-          this.ADPTmpDocs.push(adpdoc);
+          this.TmpDocs.push(adpdoc);
         }
-
-        // Sort it by ADP
-        this.ADPTmpDocs.sort((a, b) => {
-          if (a.TranDate.isSame(b.TranDate)) return 0;
-          if (a.TranDate.isBefore(b.TranDate)) return -1;
-          else 
-            return 1;
-        });
-
-        this.ADPTmpDocEvent.emit();
       }
+      if (x[6] instanceof Array && x[6].length > 0) {
+        for (let dta of x[6]) {
+          let loandoc = new TemplateDocLoan();
+          loandoc.onSetData(dta);
+          this.TmpDocs.push(loandoc);
+        }
+      }
+
+      // Sort it by date
+      this.TmpDocs.sort((a, b) => {
+        if (a.TranDate.isSame(b.TranDate)) return 0;
+        if (a.TranDate.isBefore(b.TranDate)) return -1;
+        else 
+          return 1;
+      });
+
+      this.TmpDocEvent.emit();
     });
   }
 
   public onOverviewRefresh() {
-    this._storageService.getADPTmpDocs().subscribe(x => {
-      this.ADPTmpDocs = [];
-
-      if (x instanceof Array && x.length > 0) {
-        for (let dta of x) {
+    Observable.forkJoin([
+      this._storageService.getADPTmpDocs(),
+      this._storageService.getLoanTmpDocs(),
+    ]).subscribe(x => {
+      if (x[0] instanceof Array && x[0].length > 0) {
+        for (let dta of x[0]) {
           let adpdoc = new TemplateDocADP();
           adpdoc.onSetData(dta);
-          this.ADPTmpDocs.push(adpdoc);
+          this.TmpDocs.push(adpdoc);
         }
-
-        // Sort it by ADP
-        this.ADPTmpDocs.sort((a, b) => {
-          if (a.TranDate.isSame(b.TranDate)) return 0;
-          if (a.TranDate.isBefore(b.TranDate)) return -1;
-          else 
-            return 1;
-        });
-
-        this.ADPTmpDocEvent.emit();
       }
+      if (x[1] instanceof Array && x[1].length > 0) {
+        for (let dta of x[1]) {
+          let loandoc = new TemplateDocLoan();
+          loandoc.onSetData(dta);
+          this.TmpDocs.push(loandoc);
+        }
+      }
+
+      // Sort it by date
+      this.TmpDocs.sort((a, b) => {
+        if (a.TranDate.isSame(b.TranDate)) return 0;
+        if (a.TranDate.isBefore(b.TranDate)) return -1;
+        else 
+          return 1;
+      });
+
+      this.TmpDocEvent.emit();
+
     });
   }
 
@@ -273,18 +291,33 @@ export class DocumentItemOverviewComponent implements OnInit {
     }
   }
 
-  public onPostADPDocument(doc: any) {
-    // Do the posting!
-    this._storageService.doPostADPTmpDoc(doc).subscribe((x) => {
-      // Show the posted document - after the snackbar!
-      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
-        duration: 3000,
-      }).afterDismissed().subscribe(() => {
-        // Navigate to display
-        this._router.navigate(['/finance/document/displaynormal/' + x.id]);
+  public onPostTmpDocument(doc: any) {
+    if (doc instanceof TemplateDocADP) {
+      // Do the ADP posting!
+      this._storageService.doPostADPTmpDoc(doc).subscribe((x) => {
+        // Show the posted document - after the snackbar!
+        this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
+          duration: 3000,
+        }).afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/finance/document/displaynormal/' + x.id]);
+        });
+      }, (error) => {
+        // Show error dialog!
       });
-    }, (error) => {
-      // Show error dialog!
-    });
+    } else if(doc instanceof TemplateDocLoan) {
+      // Do the Loan posting!
+      this._storageService.doPostLoanTmpDoc(doc).subscribe((x) => {
+        // Show the posted document - after the snackbar!
+        this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
+          duration: 3000,
+        }).afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/finance/document/displaynormal/' + x.id]);
+        });
+      }, (error) => {
+        // Show error dialog!
+      });      
+    }
   }
 }

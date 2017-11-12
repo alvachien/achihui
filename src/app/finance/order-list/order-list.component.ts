@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Order } from '../../model';
-import { FinanceStorageService } from '../../services';
+import { LogLevel, Order, UICommonLabelEnum } from '../../model';
+import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 /**
@@ -51,6 +51,7 @@ export class OrderListComponent implements OnInit {
 
   constructor(private _dialog: MatDialog,
     public _storageService: FinanceStorageService,
+    private _uiStatusService: UIStatusService,
     private _router: Router) { }
 
   ngOnInit() {
@@ -80,8 +81,8 @@ export class OrderListComponent implements OnInit {
   public onDeleteOrder(acnt: any) {
     // Show a confirmation dialog for the deletion
     const dlginfo: MessageDialogInfo = {
-      Header: 'Common.DeleteConfirmation',
-      Content: 'ConfirmToDeleteSelectedItem',
+      Header: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
+      Content: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfrimContent),
       Button: MessageDialogButtonEnum.yesno,
     };
 

@@ -4,12 +4,11 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import { Observable } from 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Loan, COMMA, TemplateDocLoan, UIFinLoanDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  FinanceAccountCategory_Loan } from '../../model';
+  FinanceAccountCategory_Loan, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ENTER } from '@angular/cdk/keycodes';
@@ -170,129 +169,48 @@ export class DocumentLoanDetailComponent implements OnInit {
     this.step--;
   }
 
-  public onSync(): void {
+  public onGenerateTmpDocs(): void {
     if (this.uiMode === UIMode.Create) {
       this.detailObject.TmpDocs = [];
 
-      if (this.detailObject.LoanAccount.TotalMonths) {
+      // Call the API for Loan template docs.
+      let di: FinanceLoanCalAPIInput = {
+        TotalAmount: this.detailObject.TranAmount,
+        TotalMonths: this.detailObject.LoanAccount.TotalMonths,
+        InterestRate: this.detailObject.LoanAccount.AnnualRate / 100,
+        StartDate: this.detailObject.LoanAccount.StartDate.clone(),
+        InterestFreeLoan: this.detailObject.LoanAccount.InterestFree,
+        RepaymentMethod: this.detailObject.LoanAccount.RepayMethod      
+      };
+      
+      this._storageService.calcLoanTmpDocs(di).subscribe(x => {
+        for(let rst of x) {
+          let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+          tmpdoc.InterestAmount = rst.InterestAmount;
+          tmpdoc.TranAmount = rst.TranAmount;
+          tmpdoc.TranDate = rst.TranDate;
+          tmpdoc.Desp = this.detailObject.LoanAccount.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString() + ' / ' + x.length.toString();
+          this.detailObject.TmpDocs.push(tmpdoc);
+        }
 
-      } else {
-        // Calculate the 
-      }
+        this.tmpDocOperEvent.emit();
+      }, error => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering onSync, failed to calculate the template docs : ${error}`);
+        }        
 
-      // let rtype = this.detailObject.AdvPayAccount.RepeatType;
-      // if (!this.detailObject.AdvPayAccount.EndDate.isValid || !this.detailObject.AdvPayAccount.StartDate.isValid) {
-      //   return;
-      // }
-
-      // let arDays = [];
-
-      // switch (rtype) {
-      //   case RepeatFrequency.Month:
-      //     let nmon = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'M');
-      //     for (let i = 0; i < nmon; i++) {
-      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
-      //       nstart.add(i, 'M');
-      //       arDays.push(nstart);
-      //     }
-      //     break;
-
-      //   case RepeatFrequency.Fortnight:
-      //     let nfort = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd') / 14;
-      //     for (let i = 0; i < nfort; i++) {
-      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
-      //       nstart.add(14 * i, 'd');
-      //       arDays.push(nstart);
-      //     }
-      //     break;
-
-      //   case RepeatFrequency.Week:
-      //     let nweek = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd') / 7;
-      //     for (let i = 0; i < nweek; i++) {
-      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
-      //       nstart.add(7 * i, 'd');
-      //       arDays.push(nstart);
-      //     }
-      //     break;
-
-      //   case RepeatFrequency.Day:
-      //     let nday = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd');
-      //     for (let i = 0; i < nday; i++) {
-      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
-      //       nstart.add(i, 'd');
-      //       arDays.push(nstart);
-      //     }
-      //     break;
-
-      //   case RepeatFrequency.Quarter:
-      //     let nqrt = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'Q');
-      //     for (let i = 0; i < nqrt; i++) {
-      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
-      //       nstart.add(i, 'Q');
-      //       arDays.push(nstart);
-      //     }
-      //     break;
-
-      //   case RepeatFrequency.HalfYear:
-      //     let nhalfyear = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'Q') / 2;
-      //     for (let i = 0; i < nhalfyear; i++) {
-      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
-      //       nstart.add(2 * i, 'Q');
-      //       arDays.push(nstart);
-      //     }
-      //     break;
-
-      //   case RepeatFrequency.Year:
-      //     let nyear = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'y');
-      //     for (let i = 0; i < nyear; i++) {
-      //       let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
-      //       nstart.add(i, 'y');
-      //       arDays.push(nstart);
-      //     }
-      //     break;
-
-      //   case RepeatFrequency.Manual:
-      //     break;
-
-      //   default:
-      //     break;
-      // }
-
-      // let totalAmt: number = 0;
-      // for (let i = 0; i < arDays.length; i++) {
-      //   let item: TemplateDocADP = new TemplateDocADP();
-      //   item.DocId = i + 1;
-      //   item.TranType = this.detailObject.SourceTranType;
-      //   item.TranDate = arDays[i];
-      //   item.TranAmount = Number.parseFloat((this.detailObject.TranAmount / arDays.length).toFixed(2));
-      //   totalAmt += item.TranAmount;
-      //   this.detailObject.TmpDocs.push(item);
-      // }
-      // if (this.detailObject.TranAmount !== totalAmt) {
-      //   this.detailObject.TmpDocs[0].TranAmount += (this.detailObject.TranAmount - totalAmt);
-
-      //   this.detailObject.TmpDocs[0].TranAmount = Number.parseFloat(this.detailObject.TmpDocs[0].TranAmount.toFixed(2));
-      // }
-
-      // if (arDays.length === 0) {
-      //   let item = new TemplateDocADP();
-      //   item.DocId = 1;
-      //   item.TranType = this.detailObject.SourceTranType;
-      //   item.TranDate = this.detailObject.AdvPayAccount.StartDate.clone();
-      //   item.TranAmount = this.detailObject.TranAmount;
-      //   this.detailObject.TmpDocs.push(item);
-      // }
-
-      // // Update the template desp
-      // if(this.detailObject.TmpDocs.length === 1) {
-      //   this.detailObject.TmpDocs[0].Desp = this.detailObject.Desp;
-      // } else {
-      //   for(let i = 0; i < this.detailObject.TmpDocs.length; i ++) {
-      //     this.detailObject.TmpDocs[i].Desp = this.detailObject.Desp + ' | ' + (i+1).toString() + '/' + this.detailObject.TmpDocs.length.toString();
-      //   }
-      // }
-
-      this.tmpDocOperEvent.emit();
+        const dlginfo: MessageDialogInfo = {
+          Header: 'Common.Error',
+          Content: error ? error.toString() : 'Common.Error',
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+  
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        });            
+      });
     }    
   }
 
@@ -372,7 +290,6 @@ export class DocumentLoanDetailComponent implements OnInit {
             this.onInitCreateMode();
             this.setStep(0);
             this.tmpDocOperEvent.emit();
-            //this._router.navigate(['/finance/document/createadp/']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
