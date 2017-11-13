@@ -109,7 +109,9 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public onLanguageChanged() {
+  public onLanguageChanged(sellang: string) {
+    this.SelectedLanguage = sellang;
+    
     if (this._translate.currentLang !== this.SelectedLanguage &&
       this.SelectedLanguage !== undefined) {
       this._translate.use(this.SelectedLanguage);
