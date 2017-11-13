@@ -1,5 +1,18 @@
 # Change logs
+## Version 0.3
+Released at ......
+Bugs fixing and Feature list
+- Add English Learning
+- Finance Report for Account: Status
+- Multiple items support for Asset buy-in
+- Multiple items support for Asset sold-out
+- Manually exchange rate adjustment for posted documents
+- Finance Report: Monthly expense trend
+- Finance Report: Monthly income trend
+
+
 ## Version 0.2
+Released at 2017.11.13
 Bugs fixing and Feature list
 - Add Routing to Library
 - Add Routing to Event
@@ -7,6 +20,9 @@ Bugs fixing and Feature list
 - Tags support to Question Bank
 - Tags support to Finance Document Item
 - Refine the Exchange Rate definition
+- Create/Delete Finance Document - Loan
+- Finance Report for Order: Status control
+
 
 ## Version 0.1
 Feature list

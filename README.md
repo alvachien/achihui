@@ -13,10 +13,17 @@ Ideally, HIH runs on a NAS or Family Server with ASP.NET Core supporting as well
 ## Live Demo / Example
 ***Live application***  hosted in [Azure Link (will be obseleted soon)](http://achihui.azurewebsites.net).
 
-### Snapshot
+### Snapshots
 ![Image of Index page](https://github.com/alvachien/achihui/blob/master/docs/images/index.JPG)
 
+
 ![Image of Finance report](https://github.com/alvachien/achihui/blob/master/docs/images/finance_report.JPG)
+
+
+![Image of Tag Cloud](https://github.com/alvachien/achihui/blob/master/docs/images/tag_cloud.JPG)
+
+
+![Image of Create Document](https://github.com/alvachien/achihui/blob/master/docs/images/create_doc.JPG)
 
 
 ### Relevant API/App used
