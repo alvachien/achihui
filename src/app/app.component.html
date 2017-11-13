@@ -11,7 +11,7 @@
       <div class="hih-toolbar">
         <h1>H.I.H., by Alva Chien</h1>
         <div>
-          <button mat-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon">{{'Login.Login' | translate }}</button>
+          <button mat-icon-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon" matTooltip="{{'Login.Login' | translate }}"><mat-icon>account_box</mat-icon></button>
           <button mat-icon-button *ngIf="isLoggedIn" [matMenuTriggerFor]="matMenuUser"><mat-icon>account_box</mat-icon></button>
           <mat-menu #matMenuUser="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item disabled>{{titleLogin}}</button>

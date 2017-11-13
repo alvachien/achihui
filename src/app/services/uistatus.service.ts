@@ -25,6 +25,11 @@ export class UIStatusService {
     return this._arrRepayMethod;
   }
 
+  private _arrEnPOS: UIDisplayString[] = [];
+  get EnPOSStrings(): UIDisplayString[] {
+    return this._arrEnPOS;
+  }
+
   public arrLabels: UIDisplayString[] = [];
 
   constructor(private _tranService: TranslateService) { 
@@ -32,6 +37,7 @@ export class UIStatusService {
     this._arrQuestionBankType = UIDisplayStringUtil.getQuestionBankTypeStrings();
     this._arrTagType = UIDisplayStringUtil.getTagTypeStrings();
     this._arrRepayMethod = UIDisplayStringUtil.getRepaymentMethodStrings();
+    this._arrEnPOS = UIDisplayStringUtil.getEnPOSStrings();
 
     this.arrLabels = UIDisplayStringUtil.getUICommonLabelStrings();
   }

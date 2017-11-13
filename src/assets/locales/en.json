@@ -176,6 +176,20 @@
     },
     "BkCtgy": {
       "Novel": "Novel"
+    },
+    "EnPOS": {
+      "n": "noun",
+      "pron": "pronoun",
+      "adj": "adjective",
+      "adv": "adverb",
+      "v": "verb",
+      "num": "numeral",
+      "art": "article",
+      "prep": "preposition",
+      "conj": "conjunction",
+      "interj": "interjection",
+      "vt": "transitive verb",
+      "vi": "intransitive verb"
     }
   },
   "RepeatFrequency": {
@@ -241,6 +255,8 @@
     "LearningAward": "Learning Award",
     "LearningPlan": "Learning Plan",
     "QuestionBank": "Question Bank",
+    "EnglishWord": "English Word",
+    "EnglishSentence": "English Sentence",
     "Ctgy_LAL": "Literature and Language",
     "Ctgy_Poem": "Poem",
     "Ctgy_TangSongPoem": "Tang poem Song jambic verse",

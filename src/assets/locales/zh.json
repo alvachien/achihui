@@ -176,6 +176,20 @@
     },
     "BkCtgy": {
       "Novel": "小说"
+    },
+    "EnPOS": {
+      "n": "名词",
+      "pron": "代词",
+      "adj": "形容词",
+      "adv": "副词",
+      "v": "动词",
+      "num": "数词",
+      "art": "冠词",
+      "prep": "介词",
+      "conj": "连词",
+      "interj": "感叹词",
+      "vt": "及物动词",
+      "vi": "不及物动词"
     }
   },
   "RepeatFrequency": {
@@ -241,6 +255,8 @@
     "LearningAward": "学习成绩",
     "LearningPlan": "学习计划",
     "QuestionBank": "题库",
+    "EnglishWord": "英文单词",
+    "EnglishSentence": "英文例句",    
     "Ctgy_LAL": "语文",
     "Ctgy_Poem": "诗词",
     "Ctgy_TangSongPoem": "唐诗宋词",

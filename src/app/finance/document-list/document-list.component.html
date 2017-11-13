@@ -44,7 +44,7 @@
         <ng-container matColumnDef="DocType">
           <mat-header-cell *matHeaderCellDef>{{'Finance.DocumentType' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row">
-              {{ row.DocTypeName | translate }}
+            {{ row.DocTypeName | translate }}
           </mat-cell>
         </ng-container>
 
@@ -52,7 +52,7 @@
         <ng-container matColumnDef="TranDate">
           <mat-header-cell *matHeaderCellDef>{{'Common.Date' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row">
-              {{ row.TranDateFormatString }}
+            {{ row.TranDateFormatString }}
           </mat-cell>
         </ng-container>
 
@@ -60,7 +60,7 @@
         <ng-container matColumnDef="TranAmount">
           <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row">
-              {{ row.TranAmount | currency: row.TranCurr }}
+            {{ row.TranAmount | currency: row.TranCurr }}
           </mat-cell>
         </ng-container>
 
@@ -68,7 +68,7 @@
         <ng-container matColumnDef="Desp">
           <mat-header-cell *matHeaderCellDef>{{'Common.Description' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row">
-              {{ row.Desp }}
+            {{ row.Desp }}
           </mat-cell>
         </ng-container>
         

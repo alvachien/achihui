@@ -9,10 +9,10 @@
   <p class="text-dark" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.RequireChooseHome' | translate}}</p>
 
   <p class="lead" *ngIf="!IsUserLoggedIn">
-    <a class="btn btn-primary btn-lg" role="button" (click)="onGoLogin()">{{'Login.Login' | translate}}</a>
+    <button mat-raised-button color="primary" (click)="onGoLogin()">{{'Login.Login' | translate}}</button>
   </p>
   <p class="lead" *ngIf="IsUserLoggedIn && !IsHomeChosed">
-    <a class="btn btn-primary btn-lg" role="button" (click)="onGoHomeList()">{{'Nav.HomeList' | translate}}</a>
+    <button mat-raised-button color="primary" (click)="onGoHomeList()">{{'Nav.HomeList' | translate}}</button>
   </p>
 </div>
 

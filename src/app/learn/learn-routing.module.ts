@@ -13,6 +13,12 @@ import { HistoryDetailComponent } from './history-detail';
 import { QuestionBankComponent } from './question-bank';
 import { QuestionBankListComponent } from './question-bank-list';
 import { QuestionBankDetailComponent } from './question-bank-detail';
+import { EnWordComponent } from './en-word';
+import { EnWordListComponent } from './en-word-list';
+import { EnWordDetailComponent } from './en-word-detail';
+import { EnSentenceComponent } from './en-sentence';
+import { EnSentenceListComponent } from './en-sentence-list';
+import { EnSentenceDetailComponent } from './en-sentence-detail';
 
 const routes: Routes = [
   {
@@ -104,6 +110,50 @@ const routes: Routes = [
           {
             path: 'edit/:id',
             component: QuestionBankDetailComponent,
+          },
+        ],
+      },
+      {
+        path: 'enword',
+        component: EnWordComponent,
+        children: [
+          {
+            path: '',
+            component: EnWordListComponent,
+          },
+          {
+            path: 'create',
+            component: EnWordDetailComponent,
+          },
+          {
+            path: 'display/:id',
+            component: EnWordDetailComponent,
+          },
+          {
+            path: 'edit/:id',
+            component: EnWordDetailComponent,
+          },
+        ],
+      },
+      {
+        path: 'ensent',
+        component: EnSentenceComponent,
+        children: [
+          {
+            path: '',
+            component: EnSentenceListComponent,
+          },
+          {
+            path: 'create',
+            component: EnSentenceDetailComponent,
+          },
+          {
+            path: 'display/:id',
+            component: EnSentenceDetailComponent,
+          },
+          {
+            path: 'edit/:id',
+            component: EnSentenceDetailComponent,
           },
         ],
       },

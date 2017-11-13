@@ -66,7 +66,7 @@ Advanced payment shall be splitted into pieces to make the expense more reality.
 #### Loan support
 The Loan involves the interest calculation.
 * Post a loan document will create an account with category Loan automatically.
-* Just like advanced payment, repeat frequency also need be maintained, the template documents will be created automatically;
+* Just like advanced payment, repayment method need be maintained, the template documents will be created automatically;
 * Others
 
 #### Others
@@ -134,6 +134,8 @@ To save the working load the API, also increase the performance of the app from 
 * Finance Document
 * Learn Object
 * Learn History
+* Control Center
+* Order
 
 The buffer can be bypassed if you refresh the list manually via the 'refresh' button.
 

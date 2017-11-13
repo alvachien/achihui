@@ -1,5 +1,6 @@
 import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum } from './common';
 import { AccountStatusEnum, RepaymentMethodEnum } from './financemodel';
+import { EnPOSEnum } from './learnmodel';
 
 /**
  * UI Status
@@ -69,7 +70,7 @@ export class UINameValuePair<T> {
  * UI Display string Enum
  */
 export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum | AccountStatusEnum
-  | RepaymentMethodEnum;
+  | RepaymentMethodEnum | EnPOSEnum;
 
 /**
  * UI Display string
@@ -178,6 +179,23 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getRepaymentMethodDisplayString(+se),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+
+  public static getEnPOSStrings(): Array<UIDisplayString> {
+    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+    
+    for (let pe in EnPOSEnum) {
+      if (Number.isNaN(+pe)) {
+      } else {
+        arrst.push({
+          value: +pe,
+          i18nterm: UIDisplayStringUtil.getEnPOSDisplayString(+pe),
           displaystring: ''
         });
       }
@@ -301,6 +319,24 @@ export class UIDisplayStringUtil {
       case RepaymentMethodEnum.EqualPrincipal: return 'Finance.EqualPrincipal';
       case RepaymentMethodEnum.EqualPrincipalAndInterset: return 'Finance.EqualPrincipalAndInterest';
       case RepaymentMethodEnum.DueRepayment: return 'Finance.DueRepayment';
+      default: return '';
+    }
+  }
+
+  public static getEnPOSDisplayString(ep: EnPOSEnum): string {
+    switch(ep) {
+      case EnPOSEnum.n: return 'Sys.EnPOS.n';
+      case EnPOSEnum.pron: return 'Sys.EnPOS.pron';
+      case EnPOSEnum.adj: return 'Sys.EnPOS.adj';
+      case EnPOSEnum.adv: return 'Sys.EnPOS.adv';
+      case EnPOSEnum.v: return 'Sys.EnPOS.v';
+      case EnPOSEnum.num: return 'Sys.EnPOS.num';
+      case EnPOSEnum.art: return 'Sys.EnPOS.art';
+      case EnPOSEnum.prep: return 'Sys.EnPOS.prep';
+      case EnPOSEnum.conj: return 'Sys.EnPOS.conj';
+      case EnPOSEnum.interj: return 'Sys.EnPOS.interj';
+      case EnPOSEnum.vt: return 'Sys.EnPOS.vt';
+      case EnPOSEnum.vi: return 'Sys.EnPOS.vi';
       default: return '';
     }
   }

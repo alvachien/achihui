@@ -4,36 +4,21 @@ import * as hih from './common';
 import { QuestionBankTypeEnum } from './common';
 
 /**
- * ENPOS: English Part of Speech
+ * English Part of Speech
  */
-export class ENPOS extends hih.BaseModel {
-  public PosAbb: string;
-  public PosName: string;
-  public LangId: number;
-  public PosNativeName: string;
-  constructor() {
-    super();
-  }
-
-  public onInit() {
-    super.onInit();
-  }
-
-  public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
-      return false;
-
-    return true;
-  }
-
-  public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
-    return rstObj;
-  }
-
-  public onSetData(data: any) {
-    super.onSetData(data);
-  }
+export enum EnPOSEnum {
+  n       = 1, // Noun
+  pron    = 2,
+  adj     = 3,
+  adv     = 4,
+  v       = 5,
+  num     = 6,
+  art     = 7,
+  prep    = 8,
+  conj    = 9,
+  interj  = 10,
+  vt      = 11,
+  vi      = 12,
 }
 
 /**
@@ -44,6 +29,7 @@ export class ENWordExplain extends hih.BaseModel {
   public PosAbb: string;
   public LangId: number;
   public ExplainString: string;
+
   constructor() {
     super();
   }
@@ -71,8 +57,8 @@ export class ENWordExplain extends hih.BaseModel {
 export class EnWord extends hih.BaseModel {
   public WordId: number;
   public WordString: string;
-  public Tags: string[];
   public Explains: ENWordExplain[];
+
   constructor() {
     super();
   }
@@ -461,7 +447,7 @@ export class LearnAward extends hih.BaseModel {
 }
 
 /**
- * Question bank: Question bank
+ * Question bank item: Question bank item
  */
 export class QuestionBankItem extends hih.BaseModel {
   public HID: number;

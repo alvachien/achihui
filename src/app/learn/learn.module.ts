@@ -22,6 +22,12 @@ import { HistoryDetailComponent } from './history-detail';
 import { QuestionBankComponent } from './question-bank';
 import { QuestionBankListComponent } from './question-bank-list';
 import { QuestionBankDetailComponent } from './question-bank-detail';
+import { EnWordComponent } from './en-word';
+import { EnWordListComponent } from './en-word-list';
+import { EnWordDetailComponent } from './en-word-detail';
+import { EnSentenceComponent } from './en-sentence';
+import { EnSentenceListComponent } from './en-sentence-list';
+import { EnSentenceDetailComponent } from './en-sentence-detail';
 
 @NgModule({
   imports: [
@@ -47,6 +53,12 @@ import { QuestionBankDetailComponent } from './question-bank-detail';
     QuestionBankComponent,
     QuestionBankListComponent,
     QuestionBankDetailComponent,
+    EnWordComponent,
+    EnWordListComponent,
+    EnWordDetailComponent,
+    EnSentenceComponent,
+    EnSentenceListComponent,
+    EnSentenceDetailComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
