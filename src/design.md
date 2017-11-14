@@ -74,11 +74,9 @@ Others
 
 ### Library Document
 #### Book Category
-Arts & Photography
 Biographies & Memoirs
 Business & Money
 Calendars
-Children's Books
 Christian Books & Bibles
 Comics & Graphic Novels
 Computers & Technology
@@ -88,9 +86,7 @@ Education & Teaching
 Engineering & Transportation
 Gay & Lesbian
 Health, Fitness & Dieting
-History
 Humor & Entertainment
-Law
 Literature & Fiction
 Medical Books
 Mystery, Thriller & Suspense
@@ -105,7 +101,28 @@ Self-Help
 Sports & Outdoors
 Teen & Young Adult
 Test Preparation
-Travel
+
+#### Movie Genre
+Action & Adventure
+Animation
+Anime
+Classics
+Comedy
+Documentary
+Drama
+Exercise & Fitness
+Faith & Spirituality
+Foreign Language & International
+Gay & Lesbian
+Horror
+Indian Cinema & Bollywood
+Indie & Art House
+Kids & Family
+Music Videos & Concerts
+Romance
+Science Fiction
+Western
+
 
 ## UI part
 

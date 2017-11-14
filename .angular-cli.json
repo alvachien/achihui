@@ -43,7 +43,8 @@
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
-        "prod": "environments/environment.prod.ts"
+        "prod": "environments/environment.prod.ts",
+        "azureprod": "environments/environment.azureprod.ts"
       }
     }
   ],
@@ -71,8 +72,8 @@
   "defaults": {
     "styleExt": "scss",
     "serve": {
-        "port": 29521,
-        "host": "localhost"
+      "port": 29521,
+      "host": "localhost"
     }
   }
 }

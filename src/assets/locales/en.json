@@ -175,7 +175,12 @@
       "Parent": "Parent"
     },
     "BkCtgy": {
-      "Novel": "Novel"
+      "ArtPt": "Arts & Photography",
+      "ChildBk": "Children's Books",
+      "History": "History",
+      "Law": "Law",
+      "Novel": "Novel",
+      "Travel": "Travel"
     },
     "EnPOS": {
       "n": "noun",
