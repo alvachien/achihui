@@ -1,0 +1,27 @@
+.table-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+    
+.table-header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  font-size: 20px;
+}
+
+.mat-table {
+  overflow: auto;
+}
+
+.mat-cell, .mat-header-cell {
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.mat-column-id {
+  min-width: 120px;
+  max-width: 200px;
+}

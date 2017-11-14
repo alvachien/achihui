@@ -1,7 +1,5 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+  Input, Output, ViewContainerRef, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';

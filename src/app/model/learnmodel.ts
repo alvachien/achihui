@@ -7,47 +7,57 @@ import { QuestionBankTypeEnum } from './common';
  * English Part of Speech
  */
 export enum EnPOSEnum {
-  n       = 1, // Noun
-  pron    = 2,
-  adj     = 3,
-  adv     = 4,
-  v       = 5,
-  num     = 6,
-  art     = 7,
-  prep    = 8,
-  conj    = 9,
-  interj  = 10,
-  vt      = 11,
-  vi      = 12,
+  n       = 'n', // Noun
+  pron    = 'pron',
+  adj     = 'adj',
+  adv     = 'adv',
+  v       = 'v',
+  num     = 'num',
+  art     = 'art',
+  prep    = 'prep',
+  conj    = 'conj',
+  interj  = 'interj',
+  vt      = 'vt',
+  vi      = 'vi',
 }
 
 /**
- * ENWordExplain: English Word's Explain
+ * EnWordExplain: English Word's Explain
  */
-export class ENWordExplain extends hih.BaseModel {
+export class EnWordExplain {
   public ExplainId: number;
-  public PosAbb: string;
-  public LangId: number;
-  public ExplainString: string;
-
-  constructor() {
-    super();
-  }
-
-  public onInit() {
-    super.onInit();
-  }
+  public PosAbb: EnPOSEnum;
+  public LangKey: number;
+  public Detail: string;
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
-      return false;
-
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = {
+    };
+    rstObj.expID = this.ExplainId;
+    rstObj.posAbb = this.PosAbb;
+    rstObj.languageKey = this.LangKey;
+    rstObj.detail = this.Detail;
+
     return rstObj;
+  }
+
+  public onSetData(data: any) {
+    if (data && data.expID) {
+      this.ExplainId = +data.expID;
+    }
+    if (data && data.posAbb) {
+      this.PosAbb = data.posAbb;
+    }
+    if (data && data.languageKey) {
+      this.LangKey = data.languageKey;
+    }
+    if (data && data.detail) {
+      this.Detail = data.detail;
+    }
   }
 }
 
@@ -55,12 +65,15 @@ export class ENWordExplain extends hih.BaseModel {
  * ENWord: English Word
  */
 export class EnWord extends hih.BaseModel {
-  public WordId: number;
+  public ID: number;
+  public HID: number;
   public WordString: string;
-  public Explains: ENWordExplain[];
+  public Explains: EnWordExplain[];
 
   constructor() {
     super();
+
+    this.Explains = [];
   }
 
   public onInit() {
@@ -76,39 +89,73 @@ export class EnWord extends hih.BaseModel {
 
   public writeJSONObject(): any {
     let rstObj = super.writeJSONObject();
+    rstObj.id = this.ID;
+    rstObj.hid = this.HID;
+    rstObj.word = this.WordString;
+    rstObj.explains = [];
+    for(let exp of this.Explains) {
+      rstObj.explains.push(exp.writeJSONObject());
+    }
+
     return rstObj;
   }
 
   public onSetData(data: any) {
     super.onSetData(data);
+
+    if (data && data.id) {
+      this.ID = data.id;      
+    }
+    if (data && data.hid) {
+      this.HID = data.hid;
+    }
+    if (data && data.word) {
+      this.WordString = data.word;
+    }
+
+    this.Explains = [];
+    if (data && data.explains 
+      && data.explains instanceof Array 
+      && data.explains.length > 0) {
+      for(let exp of data.explains) {
+        let expObj: EnWordExplain = new EnWordExplain();
+        expObj.onSetData(exp);
+        this.Explains.push(expObj);
+      }
+    }
   }
 }
 
 /**
  * ENSentenceExplain: English Sentence's Explain
  */
-export class EnSentenceExplain extends hih.BaseModel {
+export class EnSentenceExplain {
   public ExplainId: number;
-  public LangId: number;
-  public ExplainString: string;
-  constructor() {
-    super();
-  }
-
-  public onInit() {
-    super.onInit();
-  }
+  public LangKey: number;
+  public Detail: string;
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
-      return false;
-
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = {};
+    rstObj.expID = this.ExplainId;
+    rstObj.languageKey = this.LangKey;
+    rstObj.detail = this.Detail;
     return rstObj;
+  }
+
+  public onSetData(data: any) {
+    if (data && data.expID) {
+      this.ExplainId = +data.expID;
+    }
+    if (data && data.langaugeKey) {
+      this.LangKey = data.languageKey;
+    }
+    if (data && data.detail) {
+      this.Detail = data.detail;
+    }
   }
 }
 
@@ -116,13 +163,17 @@ export class EnSentenceExplain extends hih.BaseModel {
  * EnSentence: English Sentence
  */
 export class EnSentence extends hih.BaseModel {
-  public SentenceId: number;
+  public ID: number;
+  public HID: number;
   public SentenceString: string;
-  public Tags: string[];
-  public Explains: ENWordExplain[];
+  public Explains: EnSentenceExplain[];
+  public RelatedWords: number[];
 
   constructor() {
     super();
+
+    this.Explains = [];
+    this.RelatedWords = [];
   }
 
   public onInit() {
@@ -138,11 +189,51 @@ export class EnSentence extends hih.BaseModel {
 
   public writeJSONObject(): any {
     let rstObj = super.writeJSONObject();
+    rstObj.id = this.ID;
+    rstObj.hid = this.HID;
+    rstObj.sentence = this.SentenceString;
+    rstObj.explains = [];
+    for(let exp of this.Explains) {
+      rstObj.explains.push(exp.writeJSONObject());
+    }
+    rstObj.relatedWordIDs = [];
+    for(let wid of this.RelatedWords) {
+      rstObj.relatedWordIDs.push(wid);
+    }
+
     return rstObj;
   }
 
   public onSetData(data: any) {
     super.onSetData(data);
+
+    if (data && data.id) {
+      this.ID = data.id;
+    }
+    if (data && data.hid) {
+      this.HID = data.hid;
+    }
+    if (data && data.sentence) {
+      this.SentenceString = data.sentence;
+    }
+    this.Explains = [];
+    if (data && data.explains 
+      && data.explains instanceof Array 
+      && data.explains.length > 0) {
+      for(let exp of data.explains) {
+        let expObj: EnSentenceExplain = new EnSentenceExplain();
+        expObj.onSetData(exp);
+        this.Explains.push(expObj);
+      }
+    }
+    this.RelatedWords = [];
+    if (data && data.relatedWordIDs 
+      && data.relatedWordIDs instanceof Array 
+      && data.relatedWordIDs.length > 0) {
+      for(let wid of data.relatedWordIDs) {
+        this.RelatedWords.push(wid);
+      }
+    }
   }
 }
 

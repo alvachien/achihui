@@ -4,7 +4,8 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, LearnCategory, LearnObject, LearnHistory, QuestionBankItem, MomentDateFormat } from '../model';
+import { LogLevel, LearnCategory, LearnObject, LearnHistory, QuestionBankItem, MomentDateFormat, 
+  EnSentence, EnWord, EnWordExplain, EnSentenceExplain } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -33,12 +34,23 @@ export class LearnStorageService {
   get QuestionBanks(): QuestionBankItem[] {
     return this.listQtnBankChange.value;
   }
+
+  listEnWordChange: BehaviorSubject<EnWord[]> = new BehaviorSubject<EnWord[]>([]);
+  get EnWords(): EnWord[] {
+    return this.listEnWordChange.value;
+  }
   
+  listEnSentChange: BehaviorSubject<EnSentence[]> = new BehaviorSubject<EnSentence[]>([]);
+  get EnSentences(): EnSentence[] {
+    return this.listEnSentChange.value;
+  }
   // Buffer
   private _isCtgyListLoaded: boolean;
   private _isObjListLoaded: boolean;
   private _isHistListLoaded: boolean;
   private _isQtnBankListLoaded: boolean;
+  private _isEnWordListLoaded: boolean;
+  private _isEnSentListLoaded: boolean;
 
   // Events
   createObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
@@ -49,6 +61,10 @@ export class LearnStorageService {
   readHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
   createQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
   readQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
+  createEnWordEvent: EventEmitter<EnWord | string | null> = new EventEmitter(null);
+  readEnWordEvent: EventEmitter<EnWord | string | null> = new EventEmitter(null);
+  createEnSentenceEvent: EventEmitter<EnSentence | string | null> = new EventEmitter(null);
+  readEnSentenceEvent: EventEmitter<EnSentence | string | null> = new EventEmitter(null);
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -61,6 +77,8 @@ export class LearnStorageService {
     this._isObjListLoaded = false;
     this._isHistListLoaded = false;
     this._isQtnBankListLoaded = false;
+    this._isEnWordListLoaded = false;
+    this._isEnSentListLoaded = false;
   }
 
   // Categories
@@ -738,6 +756,302 @@ export class LearnStorageService {
 
         // Broadcast event: failed
         this.readQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+
+  /**
+   * Fetch all en. word
+   * @param forceReload Force to reload
+   */
+  public fetchAllEnWords(forceReload?: boolean): Observable<EnWord[]> {
+    if (!this._isEnWordListLoaded || forceReload) {
+      const apiurl = environment.ApiUrl + '/api/LearnEnWord';
+
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                .append('Accept', 'application/json')
+                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      return this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true,
+        })
+        .map((response: HttpResponse<any>) => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllEnWord in LearnStorageService: ${response}`);
+          }
+
+          const rjs = <any>response;
+          let listRst = [];
+
+          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+            for (const si of rjs.contentList) {
+              const rst: EnWord = new EnWord();
+              rst.onSetData(si);
+              listRst.push(rst);
+            }
+          }
+
+          this._isEnWordListLoaded = true;
+          this.listEnWordChange.next(listRst);
+          return listRst;
+        })
+        .catch((error: HttpErrorResponse) => {
+          if (environment.LoggingLevel >= LogLevel.Error) {
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllEnWord in LearnStorageService: ${error}`);
+          }
+
+          this._isEnWordListLoaded = true;
+          this.listEnWordChange.next([]);
+
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+        });
+    } else {
+      return Observable.of(this.listEnWordChange.value);
+    }
+  }
+  
+  /**
+   * Create a en. word
+   * @param item english word
+   */
+  public createEnWord(item: EnWord) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnEnWord';
+
+    const jdata: string = item.writeJSONString();
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+
+        let hd: EnWord = new EnWord();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createEnWord in LearnStorageService: ${x}`);
+        }
+
+        const copiedData = this.EnWords.slice();
+        copiedData.push(x);
+        this.listEnWordChange.next(copiedData);
+
+        // Broadcast event
+        this.createEnWordEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in createEnWord in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createEnWordEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+  
+  /**
+   * Read a en word
+   * @param itemid ID of en word
+   */
+  public readEnWord(itemid: number) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnEnWord/' + itemid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readEnWord in LearnStorageService: ${response}`);
+        }
+
+        let hd: EnWord = new EnWord();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in readEnWord in LearnStorageService: ${x}`);
+        }
+
+        // Broadcast event
+        this.readEnWordEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in readEnWord in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.readEnWordEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+  
+  /**
+   * Fetch all en. sentence
+   * @param forceReload Force to reload
+   */
+  public fetchAllEnSentences(forceReload?: boolean): Observable<EnSentence[]> {
+    if (!this._isEnSentListLoaded || forceReload) {
+      const apiurl = environment.ApiUrl + '/api/LearnEnSentence';
+
+      let headers = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+                .append('Accept', 'application/json')
+                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      return this._http.get(apiurl, {
+          headers: headers,
+          params: params,
+          withCredentials: true,
+        })
+        .map((response: HttpResponse<any>) => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllEnSentence in LearnStorageService: ${response}`);
+          }
+
+          const rjs = <any>response;
+          let listRst = [];
+
+          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+            for (const si of rjs.contentList) {
+              const rst: EnSentence = new EnSentence();
+              rst.onSetData(si);
+              listRst.push(rst);
+            }
+          }
+
+          this._isEnSentListLoaded = true;
+          this.listEnSentChange.next(listRst);
+          return listRst;
+        })
+        .catch((error: HttpErrorResponse) => {
+          if (environment.LoggingLevel >= LogLevel.Error) {
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllEnSentence in LearnStorageService: ${error}`);
+          }
+
+          this._isEnSentListLoaded = true;
+          this.listEnSentChange.next([]);
+
+          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+        });
+    } else {
+      return Observable.of(this.listEnSentChange.value);
+    }
+  }
+
+  /**
+   * Create a en. sentence
+   * @param item english sentence
+   */
+  public createEnSentence(item: EnSentence) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnEnSentence';
+
+    const jdata: string = item.writeJSONString();
+    this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+
+        let hd: EnSentence = new EnSentence();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createEnSentence in LearnStorageService: ${x}`);
+        }
+
+        const copiedData = this.EnSentences.slice();
+        copiedData.push(x);
+        this.listEnSentChange.next(copiedData);
+
+        // Broadcast event
+        this.createEnSentenceEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in createEnSentence in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createEnSentenceEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+
+  /**
+   * Read a en sentence
+   * @param itemid ID of en word
+   */
+  public readEnSentence(itemid: number) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnEnSentence/' + itemid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readEnSentence in LearnStorageService: ${response}`);
+        }
+
+        let hd: EnSentence = new EnSentence();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in readEnSentence in LearnStorageService: ${x}`);
+        }
+
+        // Broadcast event
+        this.readEnSentenceEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in readEnSentence in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.readEnSentenceEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }

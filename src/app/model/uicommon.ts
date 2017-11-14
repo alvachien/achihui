@@ -191,14 +191,14 @@ export class UIDisplayStringUtil {
     let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
     
     for (let pe in EnPOSEnum) {
-      if (Number.isNaN(+pe)) {
-      } else {
+      // if (Number.isNaN(+pe)) {
+      // } else {
         arrst.push({
           value: +pe,
-          i18nterm: UIDisplayStringUtil.getEnPOSDisplayString(+pe),
+          i18nterm: UIDisplayStringUtil.getEnPOSDisplayString(<EnPOSEnum>pe),
           displaystring: ''
         });
-      }
+      // }
     }
 
     return arrst;
