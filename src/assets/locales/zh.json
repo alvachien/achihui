@@ -175,7 +175,12 @@
       "Parent": "双亲"
     },
     "BkCtgy": {
-      "Novel": "小说"
+      "ArtPt": "艺术与摄影",
+      "ChildBk": "儿童读物",
+      "History": "历史",
+      "Law": "法律",
+      "Novel": "小说",
+      "Travel": "旅游"
     },
     "EnPOS": {
       "n": "名词",

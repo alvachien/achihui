@@ -6,6 +6,6 @@ export class AchihuiPage {
   }
 
   getParagraphText() {
-    return element(by.css('app-root h1')).getText();
+    return element(by.css('hih-app h1')).getText();
   }
 }
