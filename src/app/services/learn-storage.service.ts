@@ -44,6 +44,7 @@ export class LearnStorageService {
   get EnSentences(): EnSentence[] {
     return this.listEnSentChange.value;
   }
+  
   // Buffer
   private _isCtgyListLoaded: boolean;
   private _isObjListLoaded: boolean;
