@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+  Input, Output, ViewContainerRef, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EnWord, EnWordExplain, UICommonLabelEnum } from '../../model';
@@ -20,6 +20,11 @@ export class EnWordDetailComponent implements OnInit {
   public currentMode: string;
   public detailObject: EnWord = null;
   public uiMode: UIMode = UIMode.Create;
+  displayedColumns = ['id', 'name', 'progress', 'color'];
+  dataSource: MatTableDataSource<EnWordExplain>;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,

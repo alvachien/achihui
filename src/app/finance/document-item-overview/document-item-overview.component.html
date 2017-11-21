@@ -83,6 +83,11 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+          <mat-form-field>
+            <mat-select [(ngModel)]="selectedAccountScope" (change)="onAccountScopeChanged()">
+              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </mat-toolbar>
         <div class="table-container mat-elevation-z8">
           <mat-table #tableByAccount [dataSource]="dataSourceByAccount">
@@ -158,6 +163,11 @@
               <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
                 {{cc.Name}}
               </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select [(ngModel)]="selectedControlCenterScope" (change)="onControlCenterScopeChanged()">
+              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
             </mat-select>
           </mat-form-field>
         </mat-toolbar>
@@ -238,6 +248,11 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+          <mat-form-field>
+            <mat-select [(ngModel)]="selectedOrderScope" (change)="onOrderScopeChanged()">
+              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+            </mat-select>
+          </mat-form-field>          
         </mat-toolbar>
 
         <div class="table-container mat-elevation-z8">

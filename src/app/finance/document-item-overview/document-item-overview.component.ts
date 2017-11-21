@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
-  TemplateDocADP, TemplateDocLoan, UICommonLabelEnum } from '../../model';
+  TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
@@ -154,14 +154,17 @@ export class DocumentItemOverviewComponent implements OnInit {
   selectedAccount: number;
   selectedControlCenter: number;
   selectedOrder: number;
-
+  selectedAccountScope: OverviewScopeEnum;
+  selectedControlCenterScope: OverviewScopeEnum;
+  selectedOrderScope: OverviewScopeEnum;
+  
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
-    private _uiStatusService: UIStatusService,
+    public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
   }
 
@@ -257,6 +260,10 @@ export class DocumentItemOverviewComponent implements OnInit {
     }
   }
 
+  public onAccountScopeChanged() {
+    
+  } 
+  
   public onControlCenterSelectChange() {
     if (this.selectedControlCenter) {
       this._storageService.getDocumentItemByControlCenter(this.selectedControlCenter).subscribe((x) => {
@@ -274,6 +281,10 @@ export class DocumentItemOverviewComponent implements OnInit {
     }
   }
 
+  public onControlCenterScopeChanged() {
+    
+  } 
+
   public onOrderSelectChange() {
     if (this.selectedOrder) {
       this._storageService.getDocumentItemByOrder(this.selectedOrder).subscribe((x) => {
@@ -289,6 +300,10 @@ export class DocumentItemOverviewComponent implements OnInit {
         this.DocItemByOrderEvent.emit();
       });
     }
+  }
+
+  public onOrderScopeChanged() {
+
   }
 
   public onPostTmpDocument(doc: any) {
