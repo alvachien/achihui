@@ -5,6 +5,7 @@ Key components are:
 - Finance trace. This feature allows you record (nearly) all the finance activities, and provides the reports for you to review the healthy of the family, such as the balance report, cash journal, etc;
 - Learning trace. This features enable you to record the target for each family member's learning targets. Learning is a habit of self growth, no matter the ages of the family members.
 - Libraries (Under design phrase). 
+- Events (Under design phrase).
 
 ## How to use it
 **HIH** is expected to run on Cloud or a HTTP/HTTPS server, which shall be easily access by all workstations/mobile devices. 
@@ -34,12 +35,12 @@ The live demo used the following API/App:
 
 ## What's HIH
 **HIH**, the abbreviation of **Home Information Hub**, is a warehouse storing the necessary information among all family memebers.
-For version 0.5, it supports the Finance Traces and Learning Traces. The detail explaination of the modules listed below. 
+Since version 0.1, it supports the Finance Traces and Learning Traces. The detail explaination of the modules listed below. 
 
 ## Histories
 This project is the UI layer of new HIH, and it continues the HIH development since the previous HIH [Github Project](https://github.com/alvachien/hih);
 
-This project used tons of new project, including: ASP.NET Core 1.0, Angular 2, TypeScript 2, BootStrap 4.0 Alpha, etc;
+This project used tons of new UI technologies, including: ASP.NET Core 2, Angular 5, TypeScript 2, BootStrap 4, etc;
 
 ## Credits
 This project was generated with [angular-cli](https://github.com/angular/angular-cli).
