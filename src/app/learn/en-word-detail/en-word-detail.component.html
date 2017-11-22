@@ -3,6 +3,7 @@
     <mat-card-title>{{'Learning.EnglishWord' | translate}}</mat-card-title>
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
+  
   <mat-card-content>
     <mat-form-field class="demo-full-width">
       <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.WordString"
@@ -44,8 +45,8 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
     </div>
-
   </mat-card-content>
+
   <mat-card-actions>
     <button mat-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
     <button mat-button color="primary" (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
