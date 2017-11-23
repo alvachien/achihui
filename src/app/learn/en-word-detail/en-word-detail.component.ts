@@ -11,16 +11,16 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 @Component({
   selector: 'hih-learn-en-word-detail',
   templateUrl: './en-word-detail.component.html',
-  styleUrls: ['./en-word-detail.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./en-word-detail.component.scss']
 })
-export class EnWordDetailComponent implements OnInit {
+export class EnWordDetailComponent implements OnInit, AfterViewInit {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
   public detailObject: EnWord = null;
   public uiMode: UIMode = UIMode.Create;
-  displayedColumns = ['id', 'name', 'progress', 'color'];
+
+  displayedColumns = ['id', 'pos', 'langkey', 'detail'];
   dataSource: MatTableDataSource<EnWordExplain>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -34,6 +34,7 @@ export class EnWordDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
     this.detailObject = new EnWord();
+    this.dataSource = new MatTableDataSource(this.detailObject.Explains);
   }
 
   ngOnInit() {
@@ -71,7 +72,7 @@ export class EnWordDetailComponent implements OnInit {
               this.detailObject = x;
             } else {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readEnWord : ${x}`);
+                console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readEnWord : ${x}`);
               }
               this.detailObject = new EnWord();
             }
@@ -82,7 +83,7 @@ export class EnWordDetailComponent implements OnInit {
       }
     }, (error) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.log(`AC_HIH_UI [Error]: Entering ngOnInit in EnWordDetailComponent with activateRoute URL : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in EnWordDetailComponent with activateRoute URL : ${error}`);
       }
     }, () => {
     });
@@ -94,6 +95,22 @@ export class EnWordDetailComponent implements OnInit {
 
   public canSubmit(): boolean {
     return true;
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+  public onCreateExplain() {
+    let nexp: EnWordExplain = new EnWordExplain();
+    this.detailObject.Explains.push(nexp);
   }
 
   public onSubmit() {
