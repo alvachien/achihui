@@ -1,13 +1,14 @@
 import { Component, OnInit, ElementRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
+import { DateAdapter, MatIconRegistry } from '@angular/material';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN } from './model';
 import { AuthService, HomeDefDetailService, UIStatusService } from './services';
 import * as moment from 'moment';
 import 'moment/locale/zh-cn';
-import { DateAdapter } from '@angular/material';
-import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { LanguageComponent } from './language';
 
 @Component({
@@ -33,7 +34,9 @@ export class AppComponent implements OnInit {
     private _zone: NgZone,
     private _router: Router,
     private _uistatusService: UIStatusService,
-    private _dateAdapter: DateAdapter<MomentDateAdapter>) {
+    private _dateAdapter: DateAdapter<MomentDateAdapter>,
+    private _iconRegistry: MatIconRegistry, 
+    private _sanitizer: DomSanitizer) {
     // Setup the translate
     this.userDisplayAs = '';
     this.curChosenHome = null;
@@ -63,6 +66,11 @@ export class AppComponent implements OnInit {
     } else {
       this.isLoggedIn = false;
     }
+
+    // ICON
+    this._iconRegistry.addSvgIcon(
+      'github',
+      this._sanitizer.bypassSecurityTrustResourceUrl('../../assets/images/github-circle-white-transparent.svg'));
   }
 
   ngOnInit() {
@@ -143,5 +151,9 @@ export class AppComponent implements OnInit {
 
   public onOpenPhotoGallery() {
     //window.open("http://118.178.58.187:5230", "_blank");
+  }
+
+  public onOpenGithubRepo() {
+    window.open("https://github.com/alvachien/achihui", "_blank");
   }
 }

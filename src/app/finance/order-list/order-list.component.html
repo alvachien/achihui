@@ -15,7 +15,6 @@
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
           <mat-cell *matCellDef="let row">
-              <button mat-icon-button (click)="onDisplayOrder(row)" matTooltip="{{'Common.DisplayDetails' | translate}}"><mat-icon color="primary"  class="example-icon">search</mat-icon></button>
               <button mat-icon-button (click)="onChangeOrder(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
               <button mat-icon-button (click)="onDeleteOrder(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="example-icon">delete</mat-icon></button>
               <a routerLink='/finance/order/display/{{row.Id}}' routerLinkActive="active" *ngIf="row.Id">{{row.Id}}</a>

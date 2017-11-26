@@ -13,29 +13,63 @@
 }
 
 .table-container {
-    display: flex;
-    flex-direction: column;
-    min-width: 300px;
- }
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
   
- .table-header {
-   min-height: 64px;
-   display: flex;
-   align-items: center;
-   padding-left: 24px;
-   font-size: 20px;
- }
+.table-header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  font-size: 20px;
+}
   
- .mat-table {
-   overflow: auto;
-   max-height: 600px;
- }
+.mat-table {
+  overflow: auto;
+  max-height: 600px;
+}
 
- .example-icon {
-    padding: 0 14px;
-  }
+.example-icon {
+  padding: 0 14px;
+}
   
-  .example-spacer {
-    flex: 1 1 auto;
-  }
-  
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-column-Account {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.mat-column-Category {
+  min-width: 100px;
+  max-width: 150px;
+}
+
+.mat-column-ControlCenter {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.mat-column-Order {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.mat-column-Debit {
+  min-width: 100px;
+  max-width: 150px;
+}
+
+.mat-column-Credit {
+  min-width: 100px;
+  max-width: 150px;
+}
+
+.mat-column-Balance {
+  min-width: 100px;
+  max-width: 150px;
+}
