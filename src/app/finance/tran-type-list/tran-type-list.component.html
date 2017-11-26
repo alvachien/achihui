@@ -32,10 +32,16 @@
 
         <!-- Full display -->
         <ng-container matColumnDef="fulldisplay">
-          <mat-header-cell *matHeaderCellDef>{{'Common.Name' | translate}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef>{{'Common.LongText' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row"> {{row.FullDisplayText}} </mat-cell>
         </ng-container>
 
+        <!-- Hierarchy level -->
+        <ng-container matColumnDef="hierlvl">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Level' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.HierLevel}} </mat-cell>
+        </ng-container>
+        
         <!-- Parent ID -->
         <ng-container matColumnDef="parent">
           <mat-header-cell *matHeaderCellDef>{{'Common.Parent' | translate}}</mat-header-cell>

@@ -112,6 +112,8 @@
     "Todo": "Todo",
     "Total": "Total",
     "ChartLegend": "Legend",
+    "Level": "Level",
+    "LongText": "Long Text",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",

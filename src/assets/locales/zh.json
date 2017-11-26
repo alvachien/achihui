@@ -112,6 +112,8 @@
     "Todo": "待处理事项",
     "Total": "总计",
     "ChartLegend": "图例",
+    "Level": "层次",
+    "LongText": "长文本",
     
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",
