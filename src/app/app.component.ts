@@ -2,12 +2,13 @@ import { Component, OnInit, ElementRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
-import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef } from './model';
+import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN } from './model';
 import { AuthService, HomeDefDetailService, UIStatusService } from './services';
 import * as moment from 'moment';
 import 'moment/locale/zh-cn';
 import { DateAdapter } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { LanguageComponent } from './language';
 
 @Component({
   selector: 'hih-app',
@@ -65,11 +66,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._translate.setDefaultLang('zh');
-    this._translate.use('zh').subscribe((x) => {
-      this.SelectedLanguage = 'zh';
+    this._translate.setDefaultLang(Language_Zh);
+    this._translate.use(Language_Zh).subscribe((x) => {
+      this.SelectedLanguage = Language_Zh;
       this._uistatusService.CurrentLanguage = this.SelectedLanguage;
-      this._dateAdapter.setLocale('zh-cn');
+      this._dateAdapter.setLocale(Language_ZhCN);
       this.updateDocumentTitle();
     });
   }
@@ -116,12 +117,12 @@ export class AppComponent implements OnInit {
       this.SelectedLanguage !== undefined) {
       this._translate.use(this.SelectedLanguage);
 
-      if (this.SelectedLanguage === 'zh') {
-        moment.locale('zh-cn');
-        this._dateAdapter.setLocale('zh-cn');
-      } else if (this.SelectedLanguage === 'en') {
-        moment.locale('en');
-        this._dateAdapter.setLocale('en');
+      if (this.SelectedLanguage === Language_Zh) {
+        moment.locale(Language_ZhCN);
+        this._dateAdapter.setLocale(Language_ZhCN);
+      } else if (this.SelectedLanguage === Language_En) {
+        moment.locale(Language_En);
+        this._dateAdapter.setLocale(Language_En);
       }
 
       this._uistatusService.CurrentLanguage = this.SelectedLanguage;
@@ -137,10 +138,10 @@ export class AppComponent implements OnInit {
   }
 
   public onOpenMathExcises() {
-    window.open("http://118.178.58.187:5230", "blank");
+    window.open("http://118.178.58.187:5230", "_blank");
   }
 
   public onOpenPhotoGallery() {
-    //window.open("http://118.178.58.187:5230", "blank");
+    //window.open("http://118.178.58.187:5230", "_blank");
   }
 }

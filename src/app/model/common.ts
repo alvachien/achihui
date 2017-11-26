@@ -3,10 +3,12 @@ import * as moment from 'moment';
 
 export const TypeParentSplitter: string = ' > ';
 export const IDSplitChar: string = ',';
+
 export const DateSplitChar: string = '-';
 export const FinanceAccountCategory_Asset: number = 7;
 export const FinanceAccountCategory_AdvancePayment: number = 8; // Advance payment
 export const FinanceAccountCategory_Loan: number = 9;
+
 export const FinanceDocType_Normal: number = 1;
 export const FinanceDocType_Transfer: number = 2; // Transfer doc
 export const FinanceDocType_CurrencyExchange: number = 3; // Currency exchange
@@ -15,9 +17,15 @@ export const FinanceDocType_CreditcardRepay: number = 6;
 export const FinanceDocType_AssetBuyIn: number = 7;
 export const FinanceDocType_AssetSoldOut: number = 8;
 export const FinanceDocType_Loan: number = 9;
+
 export const FinanceTranType_TransferIn: number = 37;
 export const FinanceTranType_TransferOut: number = 60;
 export const FinanceTranType_LoanIn: number = 80;
+
+export const Language_En: string = 'en';
+export const Language_Zh: string = 'zh';
+export const Language_ZhCN: string = 'zh-cn';
+
 export const MomentDateFormat: string = 'YYYY-MM-DD';
 
 export enum AuthorizeScope { All = 1, OnlyOwner = 2 };

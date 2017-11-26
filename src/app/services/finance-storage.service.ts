@@ -230,8 +230,10 @@ export class FinanceStorageService {
               listRst.push(rst);
             }
           }
+
           // Prepare for the hierarchy
           this.buildTranTypeHierarchy(listRst);
+          
           // Sort it
           listRst.sort((a, b) => {
             if (a.Expense) {
