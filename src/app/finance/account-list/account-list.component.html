@@ -26,7 +26,7 @@
           <mat-cell *matCellDef="let row">
             <button mat-icon-button (click)="onChangeAccount(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
             <button mat-icon-button (click)="onDeleteAccount(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="example-icon">delete</mat-icon></button>
-            <a class="mt-1" routerLink='/finance/account/display/{{row.Id}}' routerLinkActive="active" *ngIf="row.Id">{{row.Id}}</a>
+            {{row.Id}}
           </mat-cell>
         </ng-container>
 
@@ -57,9 +57,9 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onDisplayAccount(row)"></mat-row>
       </mat-table>
-      <mat-paginator #paginator [length]="_storageService.Accounts.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+      <mat-paginator #paginator [length]="_storageService.Accounts.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
     </div>
   </mat-card-content>

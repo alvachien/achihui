@@ -17,7 +17,7 @@
           <mat-cell *matCellDef="let row">
               <button mat-icon-button (click)="onChangeOrder(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
               <button mat-icon-button (click)="onDeleteOrder(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="example-icon">delete</mat-icon></button>
-              <a routerLink='/finance/order/display/{{row.Id}}' routerLinkActive="active" *ngIf="row.Id">{{row.Id}}</a>
+              {{row.Id}}
           </mat-cell>
         </ng-container>
 
@@ -46,12 +46,12 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onDisplayOrder(row)"></mat-row>
       </mat-table>
       <mat-paginator #paginator 
         [length]="_storageService.Orders.length" 
         [pageIndex]="0" 
-        [pageSize]="25" 
+        [pageSize]="10" 
         [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
     </div>

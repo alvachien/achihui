@@ -82,6 +82,14 @@ export class HomeDefListComponent implements OnInit {
     }
   }
 
+  public onHomeDefRowSelect(row: HomeDef) {
+    if (!this.IsCurrentHomeChosed) {
+      this.onChooseHome(row);
+    } else {
+      this.onDisplayHome(row);
+    }
+  }
+
   public onRefresh(): void {
     this._homedefService.fetchAllHomeDef(true);
   }
