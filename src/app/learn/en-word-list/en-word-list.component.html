@@ -17,7 +17,7 @@
           <mat-cell *matCellDef="let row">
             <button mat-icon-button (click)="onChangeEnWord(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="mt-3">edit</mat-icon></button>
             <button mat-icon-button (click)="onDeleteEnWord(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="mt-3">delete</mat-icon></button>
-            <a class="mt-1" routerLink='/learn/enword/display/{{row.Id}}' routerLinkActive="active" *ngIf="row.Id">{{row.Id}}</a>
+            {{row.Id}}
           </mat-cell>
         </ng-container>
 
@@ -28,8 +28,9 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onDisplayEnWord(row)"></mat-row>
       </mat-table>
+
       <mat-paginator #paginator [length]="_storageService.EnWords.length" [pageIndex]="0" [pageSize]="15" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
     </div>

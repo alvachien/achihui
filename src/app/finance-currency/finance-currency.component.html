@@ -7,7 +7,7 @@
     <mat-card-content>
       <div class="table-container mat-elevation-z8">
         <mat-table #table [dataSource]="dataSource">
-          <!-- ID Column -->
+          <!-- Currency Column -->
           <ng-container matColumnDef="curr">
             <mat-header-cell *matHeaderCellDef>{{'Finance.Currency' | translate}}</mat-header-cell>
             <mat-cell *matCellDef="let row">
@@ -30,7 +30,7 @@
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
-        <mat-paginator #paginator [length]="_currService.Currencies.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+        <mat-paginator #paginator [length]="_currService.Currencies.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
         </mat-paginator>
       </div>
     </mat-card-content>

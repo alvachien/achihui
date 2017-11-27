@@ -6,9 +6,9 @@
       </angular-tag-cloud>
     </div>
   </mat-tab>
-  <mat-tab label="{{'Common.Tag' | translate}}l">
+  <mat-tab label="{{'Common.Tag' | translate}}">
     <ng-template mat-tab-label>
-      ⭐
+      {{'Common.Tag' | translate}}
     </ng-template>
     <div class="demo-tab-content">
       <mat-form-field>
@@ -22,7 +22,7 @@
         </mat-select>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" (click)="onSearchTagTerm()">Go</button>
+      <button mat-raised-button color="primary" (click)="onSearchTagTerm()">{{'Common.Search' | translate}}</button>
 
       <mat-nav-list>
         <mat-list-item *ngFor="let rs of rstSearch">

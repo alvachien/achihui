@@ -446,3 +446,12 @@ export function getOverviewScopeRange(scope: OverviewScopeEnum): OverviewScopeRa
   return { BeginDate: bgn, EndDate: end };
 }
 
+export function isOverviewDateInScope(dt: moment.Moment, scope: OverviewScopeEnum): boolean {
+  let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(scope);
+
+  if (dt.isBefore(end) && dt.isAfter(bgn)) {
+    return true;
+  }
+
+  return false;
+}

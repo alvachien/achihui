@@ -67,10 +67,10 @@
           </mat-table>
           <mat-paginator #paginatorTmpDoc [length]="TmpDocs.length" [pageIndex]="0" [pageSize]="15" [pageSizeOptions]="[5, 10, 25, 100]">
           </mat-paginator>
-        </div>
-        
+        </div>        
       </mat-tab> 
 
+      <!-- Accounts -->
       <mat-tab>
         <ng-template mat-tab-label>
           {{'Finance.Accounts' | translate}}
@@ -85,7 +85,9 @@
           </mat-form-field>
           <mat-form-field>
             <mat-select [(ngModel)]="selectedAccountScope" (change)="onAccountScopeChanged()">
-              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>
+                {{scp.i18nterm | translate}}
+              </mat-option>
             </mat-select>
           </mat-form-field>
         </mat-toolbar>
@@ -148,11 +150,13 @@
             <mat-header-row *matHeaderRowDef="displayedByAccountColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedByAccountColumns;"></mat-row>
           </mat-table>
-          <mat-paginator #paginatorByAccount [length]="DocItemsByAccount.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+
+          <mat-paginator #paginatorByAccount [length]="DocItemsByAccount.length" [pageIndex]="0" [pageSize]="15" [pageSizeOptions]="[5, 10, 25, 100]">
           </mat-paginator>
         </div>
       </mat-tab>
 
+      <!-- Control centers -->
       <mat-tab>
         <ng-template mat-tab-label>
             {{'Finance.ControlCenters' | translate}}
@@ -167,7 +171,9 @@
           </mat-form-field>
           <mat-form-field>
             <mat-select [(ngModel)]="selectedControlCenterScope" (change)="onControlCenterScopeChanged()">
-              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>
+                {{scp.i18nterm | translate}}
+              </mat-option>
             </mat-select>
           </mat-form-field>
         </mat-toolbar>
@@ -231,14 +237,15 @@
             <mat-header-row *matHeaderRowDef="displayedByControlCenterColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedByControlCenterColumns;"></mat-row>
           </mat-table>
-          <mat-paginator #paginatorByControlCenter [length]="DocItemsByControlCenter.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+          <mat-paginator #paginatorByControlCenter [length]="DocItemsByControlCenter.length" [pageIndex]="0" [pageSize]="15" [pageSizeOptions]="[5, 10, 25, 100]">
           </mat-paginator>
         </div>
       </mat-tab>
 
+      <!-- Order -->
       <mat-tab>
         <ng-template mat-tab-label>
-            {{'Finance.Orders' | translate}}
+          {{'Finance.Orders' | translate}}
         </ng-template>
         <mat-toolbar>
           <mat-form-field>
@@ -250,7 +257,9 @@
           </mat-form-field>
           <mat-form-field>
             <mat-select [(ngModel)]="selectedOrderScope" (change)="onOrderScopeChanged()">
-              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>
+                {{scp.i18nterm | translate}}
+              </mat-option>
             </mat-select>
           </mat-form-field>          
         </mat-toolbar>
@@ -314,7 +323,7 @@
             <mat-header-row *matHeaderRowDef="displayedByOrderColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedByOrderColumns;"></mat-row>
           </mat-table>
-          <mat-paginator #paginatorByOrder [length]="DocItemsByOrder.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+          <mat-paginator #paginatorByOrder [length]="DocItemsByOrder.length" [pageIndex]="0" [pageSize]="15" [pageSizeOptions]="[5, 10, 25, 100]">
           </mat-paginator>
         </div>
       </mat-tab>

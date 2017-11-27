@@ -1,0 +1,36 @@
+.table-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+ }
+  
+ .table-header {
+   min-height: 64px;
+   display: flex;
+   align-items: center;
+   padding-left: 24px;
+   font-size: 20px;
+ }
+  
+.mat-table {
+  overflow: auto;
+  max-height: 600px;
+}
+
+.mat-column-id {
+  min-width: 150px;
+  max-width: 200px;
+}
+  
+.mat-row:hover {
+  background-color: #ffff99;
+  cursor: pointer;
+}
+
+.mat-row:nth-child(even) {
+  background-color: lightgoldenrodyellow;
+}
+
+.mat-row:nth-child(odd) {
+  background-color: white;
+}

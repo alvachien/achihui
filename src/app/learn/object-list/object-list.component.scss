@@ -56,3 +56,11 @@
   background-color: #ffff99;
   cursor: pointer;
 }
+
+.mat-row:nth-child(even) {
+  background-color: lightgoldenrodyellow;
+}
+
+.mat-row:nth-child(odd) {
+  background-color: white;
+}

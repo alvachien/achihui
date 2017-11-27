@@ -22,3 +22,26 @@
 {
   flex: 0 0 10%;
 }
+
+.mat-row:nth-child(even) {
+  background-color: lightgoldenrodyellow;
+}
+
+.mat-row:nth-child(odd) {
+  background-color: white;
+}
+
+.mat-column-currency {
+  min-width: 100px;
+  max-width: 120px;
+}
+
+.mat-column-name {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.mat-column-symbol {
+  min-width: 50px;
+  max-width: 100px;
+}

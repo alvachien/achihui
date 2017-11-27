@@ -21,8 +21,31 @@
   word-wrap: break-word;
 }
 
+.mat-row:nth-child(even) {
+  background-color: lightgoldenrodyellow;
+}
+
+.mat-row:nth-child(odd) {
+  background-color: white;
+}
+
 .mat-column-id {
   min-width: 100px;
+  max-width: 100px;
+}
+
+.mat-column-name {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.mat-column-host {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.mat-column-currency {
+  min-width: 50px;
   max-width: 100px;
 }
 

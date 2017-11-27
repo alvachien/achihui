@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
-  TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange } from '../../model';
+  TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, isOverviewDateInScope } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
@@ -57,7 +57,7 @@ export class DocItemByControlCenterDataSource extends DataSource<any> {
 
     return Observable.merge(...displayDataChanges).map(() => {
       const data = this._parentComponent.DocItemsByControlCenter.slice();
-
+      
       // Grab the page's slice of data.
       const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
@@ -143,8 +143,11 @@ export class DocumentItemOverviewComponent implements OnInit {
   DocItemByOrderEvent: EventEmitter<null> = new EventEmitter<null>(null);
   TmpDocEvent: EventEmitter<null> = new EventEmitter<null>(null);
   DocItemsByAccount: DocumentItemWithBalance[] = [];
+  DocItemsByAccount_Org: DocumentItemWithBalance[] = [];
   DocItemsByControlCenter: DocumentItemWithBalance[] = [];
+  DocItemsByControlCenter_Org: DocumentItemWithBalance[] = [];
   DocItemsByOrder: DocumentItemWithBalance[] = [];
+  DocItemsByOrder_Org: DocumentItemWithBalance[] = [];
   TmpDocs: TemplateDocBase[] = [];
   @ViewChild('paginatorByAccount') paginatorByAccount: MatPaginator;
   @ViewChild('paginatorByControlCenter') paginatorByControlCenter: MatPaginator;
@@ -166,6 +169,9 @@ export class DocumentItemOverviewComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
+    this.selectedAccountScope = OverviewScopeEnum.All;
+    this.selectedControlCenterScope = OverviewScopeEnum.All;
+    this.selectedOrderScope = OverviewScopeEnum.All;
   }
 
   ngOnInit() {
@@ -246,12 +252,18 @@ export class DocumentItemOverviewComponent implements OnInit {
   public onAccountSelectChange() {
     if (this.selectedAccount) {
       this._storageService.getDocumentItemByAccount(this.selectedAccount).subscribe((x) => {
+        this.DocItemsByAccount_Org = [];
         this.DocItemsByAccount = [];
+
         if (x instanceof Array && x.length > 0) {
           for (let di of x) {
             let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
             docitem.onSetData(di);
-            this.DocItemsByAccount.push(docitem);
+            this.DocItemsByAccount_Org.push(docitem);
+
+            if (isOverviewDateInScope(docitem.TranDate, this.selectedAccountScope)) {
+              this.DocItemsByAccount.push(docitem);
+            }
           }
         }
 
@@ -261,18 +273,34 @@ export class DocumentItemOverviewComponent implements OnInit {
   }
 
   public onAccountScopeChanged() {
-    
+    if (this.DocItemsByAccount_Org.length > 0) {
+      this.DocItemsByAccount = [];
+      
+      for(let docitem of this.DocItemsByAccount_Org) {
+        if (isOverviewDateInScope(docitem.TranDate, this.selectedAccountScope)) {
+          this.DocItemsByAccount.push(docitem);
+        }
+      }
+
+      this.DocItemByAccountEvent.emit();
+    }
   } 
   
   public onControlCenterSelectChange() {
     if (this.selectedControlCenter) {
       this._storageService.getDocumentItemByControlCenter(this.selectedControlCenter).subscribe((x) => {
+        this.DocItemsByControlCenter_Org = [];
         this.DocItemsByControlCenter = [];
+
         if (x instanceof Array && x.length > 0) {
           for (let di of x) {
             let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
             docitem.onSetData(di);
-            this.DocItemsByControlCenter.push(docitem);
+            this.DocItemsByControlCenter_Org.push(docitem);
+
+            if (isOverviewDateInScope(docitem.TranDate, this.selectedControlCenterScope)) {
+              this.DocItemsByControlCenter.push(docitem);
+            }    
           }
         }
 
@@ -282,18 +310,34 @@ export class DocumentItemOverviewComponent implements OnInit {
   }
 
   public onControlCenterScopeChanged() {
-    
+    if (this.DocItemsByControlCenter_Org.length > 0) {
+      this.DocItemsByControlCenter = [];
+      
+      for(let docitem of this.DocItemsByControlCenter_Org) {
+        if (isOverviewDateInScope(docitem.TranDate, this.selectedControlCenterScope)) {
+          this.DocItemsByControlCenter.push(docitem);
+        }
+      }
+
+      this.DocItemByControlCenterEvent.emit();
+    }
   } 
 
   public onOrderSelectChange() {
     if (this.selectedOrder) {
       this._storageService.getDocumentItemByOrder(this.selectedOrder).subscribe((x) => {
+        this.DocItemsByOrder_Org = [];
         this.DocItemsByOrder = [];
+
         if (x instanceof Array && x.length > 0) {
           for (let di of x) {
             let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
             docitem.onSetData(di);
-            this.DocItemsByOrder.push(docitem);
+            this.DocItemsByOrder_Org.push(docitem);
+
+            if (isOverviewDateInScope(docitem.TranDate, this.selectedOrderScope)) {
+              this.DocItemsByOrder.push(docitem);
+            }    
           }
         }
 
@@ -303,7 +347,17 @@ export class DocumentItemOverviewComponent implements OnInit {
   }
 
   public onOrderScopeChanged() {
+    if (this.DocItemsByOrder_Org.length > 0) {
+      this.DocItemsByOrder = [];
 
+      for(let docitem of this.DocItemsByOrder_Org) {
+        if (isOverviewDateInScope(docitem.TranDate, this.selectedOrderScope)) {
+          this.DocItemsByOrder.push(docitem);
+        }
+      }
+
+      this.DocItemByOrderEvent.emit();
+    }
   }
 
   public onPostTmpDocument(doc: any) {
