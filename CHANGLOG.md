@@ -1,6 +1,7 @@
 # Change logs
 ## Version 0.3
 Released at ......
+
 Bugs fixing and Feature list
 - Add English Learning
 - Finance Report for Account: Status
@@ -13,6 +14,7 @@ Bugs fixing and Feature list
 
 ## Version 0.2
 Released at 2017.11.13
+
 Bugs fixing and Feature list
 - Add Routing to Library
 - Add Routing to Event
@@ -25,6 +27,8 @@ Bugs fixing and Feature list
 
 
 ## Version 0.1
+Released at 2017.10.10
+
 Feature list
 - Concept of 'Home' now available!
 - Create/Display/Change Learn object
