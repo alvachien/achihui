@@ -160,7 +160,7 @@
               </mat-cell>
             </ng-container>
 
-            <!-- Amount Column -->
+            <!-- Interest Column -->
             <ng-container matColumnDef="InterestAmount">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Interest' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
@@ -192,7 +192,6 @@
   
   <mat-card-actions>
     <button mat-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
-    <button mat-button color="primary" (click)="onCancel()">{{'Common.Cancel' | translate}}</button>
-  </mat-card-actions>
-  
+    <button mat-button color="primary" (click)="onBackToList()">{{'Common.BackToList' | translate}}</button>
+  </mat-card-actions>  
 </mat-card>

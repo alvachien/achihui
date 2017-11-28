@@ -17,13 +17,13 @@
    max-height: 600px;
  }
 
- .example-icon {
-    padding: 0 2px;
-  }
+.example-icon {
+  padding: 0 2px;
+}
   
-  .example-spacer {
-    flex: 1 1 auto;
-  }
+.example-spacer {
+  flex: 1 1 auto;
+}
 
 .mat-cell:nth-child(1),
 .mat-header-cell:nth-child(1),
@@ -42,4 +42,14 @@
 
 .mat-row:nth-child(odd) {
   background-color: white;
+}
+
+.mat-column-id {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.mat-column-name {
+  min-width: 200px;
+  max-width: 300px;
 }

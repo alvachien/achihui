@@ -73,3 +73,11 @@
   min-width: 100px;
   max-width: 150px;
 }
+
+.mat-row:nth-child(even) {
+  background-color: lightgoldenrodyellow;
+}
+
+.mat-row:nth-child(odd) {
+  background-color: white;
+}

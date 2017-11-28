@@ -318,7 +318,7 @@ export class DocumentNormalDetailComponent implements OnInit {
     }
   }
 
-  public onCancel(): void {
+  public onBackToList(): void {
     this._router.navigate(['/finance/document/']);
   }
 

@@ -30,7 +30,7 @@
         <!-- Full display Column -->
         <ng-container matColumnDef="fulldisplay">
           <mat-header-cell *matHeaderCellDef>{{'Common.Name' | translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.FullDisplayText}} </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.FullDisplayText | translate}} </mat-cell>
         </ng-container>
         
         <!-- Comment Column -->

@@ -79,7 +79,7 @@
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="selectedAccount" name="rptacnt" (change)="onAccountSelectChange()">
               <mat-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
-                {{acnt.Name}}
+                <span [class.incomingtrantype]="!acnt.Expense" [class.outgoingtrantype]="acnt.Expense">{{acnt.FullDisplayText}}</span>
               </mat-option>
             </mat-select>
           </mat-form-field>

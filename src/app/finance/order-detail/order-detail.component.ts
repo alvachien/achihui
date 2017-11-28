@@ -265,6 +265,10 @@ export class OrderDetailComponent implements OnInit {
     }
   }
 
+  public onBackToList() {
+    this._router.navigate(['/finance/order/']);
+  }
+
   private onInitCreateMode() {
     this.detailObject = new Order();
     this.uiMode = UIMode.Create;

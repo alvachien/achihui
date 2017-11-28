@@ -332,7 +332,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
     }
   }
 
-  public onCancel(): void {
+  public onBackToList(): void {
     this._router.navigate(['/finance/document/']);
   }
 

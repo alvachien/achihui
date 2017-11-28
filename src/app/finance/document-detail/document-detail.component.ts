@@ -311,4 +311,8 @@ export class DocumentDetailComponent implements OnInit {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
+
+  public onBackToList(): void {
+    this._router.navigate(['/finance/document/']);
+  }
 }

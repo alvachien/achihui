@@ -72,3 +72,18 @@
 .mat-row:nth-child(odd) {
   background-color: white;
 }
+
+.mat-column-id {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.mat-column-DocType {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.mat-column-TranDate {
+  min-width: 100px;
+  max-width: 150px;
+}

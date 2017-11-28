@@ -33,8 +33,7 @@
           <mat-header-cell *matHeaderCellDef>{{'Common.Category' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row">
             <mat-form-field>
-              <mat-select placeholder="{{'Common.Category' | translate}}" 
-                disabled [(ngModel)]="row.QBType" name="itbt">
+              <mat-select disabled [(ngModel)]="row.QBType" name="itbt">
                 <mat-option *ngFor="let qbt of _uiService.QuestionBankTypeStrings" [value]="qbt.value">
                   {{qbt.i18nterm | translate}}
                 </mat-option>
