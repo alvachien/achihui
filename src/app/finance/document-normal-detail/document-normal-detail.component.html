@@ -205,6 +205,10 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
+        <section class="mat-typography">
+          <h1>{{detailObject?.Desp}}</h1>
+        </section>
+
         <mat-action-row>
           <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
           <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>

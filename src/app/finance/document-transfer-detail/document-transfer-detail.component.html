@@ -124,9 +124,10 @@
 
       <mat-step>
         <ng-template matStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
-        <p>
-          {{detailObject.SourceAccountId}} ... {{detailObject.TargetAccountId}}
-        </p>
+        <section class="mat-typography">
+          <h1>{{detailObject?.SourceAccountId}} ... {{detailObject?.TargetAccountId}}</h1>
+        </section>
+
         <div>
           <button mat-button matStepperPrevious>{{'Common.BackButton' | translate}}</button>
           <button mat-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
