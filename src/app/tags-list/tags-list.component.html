@@ -10,10 +10,11 @@
     <ng-template mat-tab-label>
       {{'Common.Tag' | translate}}
     </ng-template>
-    <div class="demo-tab-content">
+    <div>
       <mat-form-field>
         <input matInput type="text" placeholder="{{'Common.Tag' |translate}}" [(ngModel)]="tagTerm" name="term">
       </mat-form-field>
+
       <mat-form-field>
         <mat-select placeholder="{{'Common.Category' | translate}}" [(ngModel)]="tagType" name="ctgy">
           <mat-option *ngFor="let tgtype of _uiService.TagTypeStrings" [value]="tgtype.value">

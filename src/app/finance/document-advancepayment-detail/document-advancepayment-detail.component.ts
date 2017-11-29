@@ -9,8 +9,8 @@ import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_AdvancePayment,
-  UIFinAdvPayDocument, TemplateDocADP, UIRepeatFrequency, AccountExtraAdvancePayment, RepeatFrequency, COMMA,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum
+  UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum, COMMA,
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum, UIDisplayStringUtil
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -60,7 +60,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   displayedColumns = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
   dataSource: TemplateDocADPDataSource | null;
   tmpDocOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  arFrequencies = UIRepeatFrequency.getRepeatFrequencies();
+  arFrequencies = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -182,7 +182,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       let arDays = [];
 
       switch (rtype) {
-        case RepeatFrequency.Month:
+        case RepeatFrequencyEnum.Month:
           let nmon = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'M');
           for (let i = 0; i < nmon; i++) {
             let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
@@ -191,7 +191,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           }
           break;
 
-        case RepeatFrequency.Fortnight:
+        case RepeatFrequencyEnum.Fortnight:
           let nfort = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd') / 14;
           for (let i = 0; i < nfort; i++) {
             let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
@@ -200,7 +200,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           }
           break;
 
-        case RepeatFrequency.Week:
+        case RepeatFrequencyEnum.Week:
           let nweek = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd') / 7;
           for (let i = 0; i < nweek; i++) {
             let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
@@ -209,7 +209,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           }
           break;
 
-        case RepeatFrequency.Day:
+        case RepeatFrequencyEnum.Day:
           let nday = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd');
           for (let i = 0; i < nday; i++) {
             let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
@@ -218,7 +218,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           }
           break;
 
-        case RepeatFrequency.Quarter:
+        case RepeatFrequencyEnum.Quarter:
           let nqrt = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'Q');
           for (let i = 0; i < nqrt; i++) {
             let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
@@ -227,7 +227,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           }
           break;
 
-        case RepeatFrequency.HalfYear:
+        case RepeatFrequencyEnum.HalfYear:
           let nhalfyear = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'Q') / 2;
           for (let i = 0; i < nhalfyear; i++) {
             let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
@@ -236,7 +236,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           }
           break;
 
-        case RepeatFrequency.Year:
+        case RepeatFrequencyEnum.Year:
           let nyear = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'y');
           for (let i = 0; i < nyear; i++) {
             let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
@@ -245,7 +245,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           }
           break;
 
-        case RepeatFrequency.Manual:
+        case RepeatFrequencyEnum.Manual:
           break;
 
         default:

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, 
-  AccountExtraAdvancePayment, RepeatFrequency, UIRepeatFrequency
+  AccountExtraAdvancePayment, RepeatFrequencyEnum, UIDisplayStringUtil
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 
@@ -13,7 +13,7 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from 
 })
 export class AccountExtADPComponent implements OnInit {
   public currentMode: string;
-  public arFrequencies = UIRepeatFrequency.getRepeatFrequencies();
+  public arFrequencies = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
 
   @Input() extObject: AccountExtraAdvancePayment;
   @Input() uiMode: UIMode;

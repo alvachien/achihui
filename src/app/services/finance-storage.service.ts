@@ -56,12 +56,13 @@ export class FinanceStorageService {
     return this.listDocumentChange.value;
   }
 
-  // Event
+  // Events
   createAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
   readAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
   createControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
   readControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
   createOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
+  changeOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
   readOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
   createDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
   readDocumentEvent: EventEmitter<Document | string | any | null> = new EventEmitter(null);
@@ -756,6 +757,50 @@ export class FinanceStorageService {
       });
   }
 
+  /**
+   * Change an order
+   * @param ord Order instance to change
+   */
+  public changeOrder(objDetail: Order) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceOrder';
+
+    const jdata: string = objDetail.writeJSONString();
+    this._http.put(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of changeOrder in FinanceStorageService: ' + response);
+        }
+
+        let hd: Order = new Order();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in changeOrder in FinanceStorageService: ${x}`);
+        }
+
+        // Broadcast event
+        this.changeOrderEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in changeOrder in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.changeOrderEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+  
   /**
    * Read the order from API
    * @param ordid Id of Order

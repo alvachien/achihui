@@ -1,6 +1,7 @@
-import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum } from './common';
+import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum, RepeatFrequencyEnum } from './common';
 import { AccountStatusEnum, RepaymentMethodEnum } from './financemodel';
 import { EnPOSEnum } from './learnmodel';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * UI Status
@@ -70,7 +71,7 @@ export class UINameValuePair<T> {
  * UI Display string Enum
  */
 export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum | AccountStatusEnum
-  | RepaymentMethodEnum | EnPOSEnum;
+  | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum;
 
 /**
  * UI Display string
@@ -199,6 +200,23 @@ export class UIDisplayStringUtil {
           displaystring: ''
         });
       // }
+    }
+
+    return arrst;
+  }
+
+  public static getRepeatFrequencyDisplayStrings(): Array<UIDisplayString> {
+    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+    
+    for (let rfe in RepeatFrequencyEnum) {
+      if (Number.isNaN(+rfe)) {
+      } else {
+        arrst.push({
+          value: +rfe,
+          i18nterm: UIDisplayStringUtil.getRepeatFrequencyDisplayString(<RepeatFrequencyEnum>+rfe),
+          displaystring: ''
+        });
+      }
     }
 
     return arrst;
@@ -337,6 +355,20 @@ export class UIDisplayStringUtil {
       case EnPOSEnum.interj: return 'Sys.EnPOS.interj';
       case EnPOSEnum.vt: return 'Sys.EnPOS.vt';
       case EnPOSEnum.vi: return 'Sys.EnPOS.vi';
+      default: return '';
+    }
+  }
+
+  public static getRepeatFrequencyDisplayString(frq: RepeatFrequencyEnum): string {
+    switch (frq) {
+      case RepeatFrequencyEnum.Day: return 'RepeatFrequency.Day';
+      case RepeatFrequencyEnum.Month: return 'RepeatFrequency.Month';
+      case RepeatFrequencyEnum.Fortnight: return 'RepeatFrequency.Fortnight';
+      case RepeatFrequencyEnum.Manual:  return 'RepeatFrequency.Manual';
+      case RepeatFrequencyEnum.HalfYear: return 'RepeatFrequency.HalfYear';
+      case RepeatFrequencyEnum.Year: return 'RepeatFrequency.Year';
+      case RepeatFrequencyEnum.Quarter: return 'RepeatFrequency.Quarter';
+      case RepeatFrequencyEnum.Week: return 'RepeatFrequency.Week';
       default: return '';
     }
   }

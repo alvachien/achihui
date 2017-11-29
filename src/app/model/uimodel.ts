@@ -21,13 +21,6 @@ export class UIFinTransferDocument {
   public SourceOrderId: number;
   public TargetOrderId: number;
 
-  public SourceAccountName: string;
-  public TargetAccountName: string;
-  public SourceControlCenterName: string;
-  public TargetControlCenterName: string;
-  public SourceOrderName: string;
-  public TargetOrderName: string;
-
   constructor() {
     this.TranDate = moment();
   }
@@ -91,60 +84,6 @@ export class UIFinTransferDocument {
         this.TargetOrderId = di.OrderId;
       }
     }
-  }
-}
-
-/**
- * Repeat Frequency
- */
-export class UIRepeatFrequency {
-  public Id: hih.RepeatFrequency;
-  public DisplayString: string;
-
-  public static getRepeatFrequencies(): UIRepeatFrequency[] {
-    let rst: UIRepeatFrequency[] = new Array<UIRepeatFrequency>();
-
-    let item: UIRepeatFrequency = new UIRepeatFrequency();
-    item.Id = hih.RepeatFrequency.Month;
-    item.DisplayString = 'RepeatFrequency.Month';
-    rst.push(item);
-
-    item = new UIRepeatFrequency();
-    item.Id = hih.RepeatFrequency.Fortnight;
-    item.DisplayString = 'RepeatFrequency.Fortnight';
-    rst.push(item);
-
-    item = new UIRepeatFrequency();
-    item.Id = hih.RepeatFrequency.Week;
-    item.DisplayString = 'RepeatFrequency.Week';
-    rst.push(item);
-
-    item = new UIRepeatFrequency();
-    item.Id = hih.RepeatFrequency.Day;
-    item.DisplayString = 'RepeatFrequency.Day';
-    rst.push(item);
-
-    item = new UIRepeatFrequency();
-    item.Id = hih.RepeatFrequency.Quarter;
-    item.DisplayString = 'RepeatFrequency.Quarter';
-    rst.push(item);
-
-    item = new UIRepeatFrequency();
-    item.Id = hih.RepeatFrequency.HalfYear;
-    item.DisplayString = 'RepeatFrequency.HalfYear';
-    rst.push(item);
-
-    item = new UIRepeatFrequency();
-    item.Id = hih.RepeatFrequency.Year;
-    item.DisplayString = 'RepeatFrequency.Year';
-    rst.push(item);
-
-    item = new UIRepeatFrequency();
-    item.Id = hih.RepeatFrequency.Manual;
-    item.DisplayString = 'RepeatFrequency.Manual';
-    rst.push(item);
-
-    return rst;
   }
 }
 

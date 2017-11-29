@@ -52,6 +52,7 @@ export class TagsService {
       if (tagterm) {
         params = params.append('tagterm', tagterm);
       }
+
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
@@ -65,6 +66,7 @@ export class TagsService {
           let listCountRst: TagCount[] = [];
           let listRst: Tag[] = [];
           const rjs = <any>response;
+          let mapIDs: Map<string, string> = new Map<string, string>();
 
           for (const si of rjs) {
             if (reqamt) {
@@ -74,6 +76,14 @@ export class TagsService {
             } else {
               let tag: Tag = new Tag();
               tag.onSetData(si);
+
+              let rids = (<number>tag.TagType).toString() + "_" + tag.TagID.toString();
+              if (mapIDs.has(rids)) {
+                continue;
+              } else {                
+                mapIDs.set(rids, rids);
+              }
+
               listRst.push(tag);
             }
           }

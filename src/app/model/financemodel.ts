@@ -465,7 +465,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   public Direct: boolean;
   private _startDate: moment.Moment;
   private _endDate: moment.Moment;
-  public RepeatType: hih.RepeatFrequency;
+  public RepeatType: hih.RepeatFrequencyEnum;
   public RefDocId: number;
   public DeferredDays: number;
   public Comment: string;
@@ -573,7 +573,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     if (data && data.rptType) {
       this.RepeatType = data.rptType;
     } else {
-      this.RepeatType = hih.RepeatFrequency.Month;
+      this.RepeatType = hih.RepeatFrequencyEnum.Month;
     }
     if (data && data.refDocID) {
       this.RefDocId = +data.refDocID;

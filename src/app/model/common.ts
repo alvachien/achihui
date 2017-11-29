@@ -128,7 +128,7 @@ export interface IUIDetailPage {
 /**
  * Repeat frequency
  */
-export enum RepeatFrequency {
+export enum RepeatFrequencyEnum {
   Month = 0,
   Fortnight = 1,
   Week = 2,

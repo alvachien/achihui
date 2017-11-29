@@ -9,7 +9,7 @@ import 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_Asset,
-  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequency, UICommonLabelEnum, COMMA,
+  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
@@ -280,7 +280,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     }
   }
 
-  public onCancel(): void {
+  public onBackToList(): void {
     this._router.navigate(['/finance/document/']);
   }
 

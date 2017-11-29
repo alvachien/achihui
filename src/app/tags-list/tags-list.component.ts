@@ -19,7 +19,7 @@ export class TagsListComponent implements OnInit {
     width: 0.8,
     height: 400,
     overflow: false,
-  }
+  };
   dataCloud: Array<CloudData> = [];
   tagTerm: string;
   tagType: TagTypeEnum;
