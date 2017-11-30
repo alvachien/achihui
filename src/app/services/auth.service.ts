@@ -51,16 +51,15 @@ export class AuthService {
 
         // Broadcast event
         that.userLoadededEvent.emit(u);
-      }
-      else {
+      } else {
         that.authSubject.value.cleanContent();
       }
 
       that.authSubject.next(that.authSubject.value);
     }, function (reason) {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.log('AC_HIH_UI [Error]: AuthService failed to fetch user:');
-        console.log(reason);
+        console.error('AC_HIH_UI [Error]: AuthService failed to fetch user:');
+        console.error(reason);
       }
     });
 
@@ -78,6 +77,7 @@ export class AuthService {
         console.warn('AC_HIH_UI [Debug]: token expiring');
       }
     });
+
     this.mgr.events.addAccessTokenExpired(function () {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.error('AC_HIH_UI [Debug]: token expired');
@@ -98,8 +98,7 @@ export class AuthService {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.info('AC_HIH_UI [Debug]: Redirecting for login...');
         }
-      })
-      .catch(function (er) {
+      }).catch(function (er) {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error('AC_HIH_UI [Error]: Sign-in error', er);
         }
@@ -117,12 +116,11 @@ export class AuthService {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.info('AC_HIH_UI [Debug]: redirecting for logout...');
         }
-      })
-        .catch(function (er) {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error('AC_HIH_UI [Error]: Sign-out error', er);
-          }
-        });
+      }).catch(function (er) {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error('AC_HIH_UI [Error]: Sign-out error', er);
+        }
+      });
     }
   }
 
@@ -132,8 +130,8 @@ export class AuthService {
         console.log('AC_HIH_UI [Debug]: clearStateState success');
       }
     }).catch(function (e) {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: clearStateState error', e.message);
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error('AC_HIH_UI [Debug]: clearStateState error', e.message);
       }
     });
   }
@@ -146,7 +144,9 @@ export class AuthService {
 
       this.userLoadededEvent.emit(user);
     }).catch(function (err) {
-      console.log(err);
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(err);
+      }
     });
   }
 
@@ -157,7 +157,9 @@ export class AuthService {
         console.log('AC_HIH_UI [Debug]: user removed');
       }
     }).catch(function (err) {
-      console.log(err);
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(err);
+      }
     });
   }
 
@@ -167,7 +169,9 @@ export class AuthService {
         console.log('AC_HIH_UI [Debug]: signinRedirect done');
       }
     }).catch(function (err) {
-      console.log(err);
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(err);
+      }
     });
   }
 
@@ -177,7 +181,9 @@ export class AuthService {
         console.log('AC_HIH_UI [Debug]: signed in', user);
       }
     }).catch(function (err) {
-      console.log(err);
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(err);
+      }
     });
   }
 
@@ -190,7 +196,9 @@ export class AuthService {
         console.log('AC_HIH_UI [Debug]: testing to see if fired...');
       });
     }).catch(function (err) {
-      console.log(err);
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(err);
+      }
     });
   };
 
@@ -200,84 +208,9 @@ export class AuthService {
         console.log('AC_HIH_UI [Debug]: signed out', resp);
       }
     }).catch(function (err) {
-      console.log(err);
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(err);
+      }
     });
   };
-
-  // /**
-  //  * @param options if options are not supplied the default content type is application/json
-  //  */
-  // AuthGet(url: string, options?: RequestOptions): Observable<Response> {
-  //   if (options) {
-  //     options = this._setRequestOptions(options);
-  //   }
-  //   else {
-  //     options = this._setRequestOptions();
-  //   }
-  //   return this.http.get(url, options);
-  // }
-
-  // /**
-  //  * @param options if options are not supplied the default content type is application/json
-  //  */
-  // AuthPut(url: string, data: any, options?: RequestOptions): Observable<Response> {
-
-  //   const body = JSON.stringify(data);
-
-  //   if (options) {
-  //     options = this._setRequestOptions(options);
-  //   }
-  //   else {
-  //     options = this._setRequestOptions();
-  //   }
-  //   return this.http.put(url, body, options);
-  // }
-
-  // /**
-  //  * @param options if options are not supplied the default content type is application/json
-  //  */
-  // AuthDelete(url: string, options?: RequestOptions): Observable<Response> {
-
-  //   if (options) {
-  //     options = this._setRequestOptions(options);
-  //   }
-  //   else {
-  //     options = this._setRequestOptions();
-  //   }
-  //   return this.http.delete(url, options);
-  // }
-
-  // /**
-  //  * @param options if options are not supplied the default content type is application/json
-  //  */
-  // AuthPost(url: string, data: any, options?: RequestOptions): Observable<Response> {
-
-  //   const body = JSON.stringify(data);
-
-  //   if (options) {
-  //     options = this._setRequestOptions(options);
-  //   }
-  //   else {
-  //     options = this._setRequestOptions();
-  //   }
-  //   return this.http.post(url, body, options);
-  // }
-
-  // private _setAuthHeaders(user: any) {
-  //   this.authHeaders = new Headers();
-  //   this.authHeaders.append('Authorization', user.token_type + ' ' + user.access_token);
-  //   this.authHeaders.append('Content-Type', 'application/json');
-  // }
-
-  // private _setRequestOptions(options?: RequestOptions) {
-
-  //   if (options) {
-  //     options.headers.append(this.authHeaders.keys[0], this.authHeaders.values[0]);
-  //   }
-  //   else {
-  //     options = new RequestOptions({ headers: this.authHeaders, body: '' });
-  //   }
-
-  //   return options;
-  // }
 }
