@@ -16,12 +16,14 @@
         
     <mat-form-field class="demo-full-width">
       <textarea matInput placeholder="{{'Learning.Question' | translate}}" #qtn maxlength="200" 
+        rows="5"
         [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Question"></textarea>
         <mat-hint align="end">{{qtn.value.length}} / 200</mat-hint>
     </mat-form-field>
 
     <mat-form-field class="demo-full-width">
-      <textarea matInput placeholder="{{'Learning.BriefAnswer' | translate}}" #brfawr maxlength="200" 
+      <textarea matInput placeholder="{{'Learning.BriefAnswer' | translate}}" #brfawr maxlength="200"
+        rows="5"
         [disabled]="!isFieldChangable" [(ngModel)]="detailObject.BriefAnswer"></textarea>
       <mat-hint align="end">{{brfawr.value.length}} / 200</mat-hint>
     </mat-form-field>

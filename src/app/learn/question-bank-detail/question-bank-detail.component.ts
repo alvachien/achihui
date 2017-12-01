@@ -147,55 +147,6 @@ export class QuestionBankDetailComponent implements OnInit {
   
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
-      this._storageService.createQuestionEvent.subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createQuestionEvent in QuestionBankDetailComponent with : ${x}`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof QuestionBankItem) {
-          // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
-            this._uiService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-            this.onInitCreateMode();
-            //this._router.navigate(['/learn/questionbank/create']);
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
-            }            
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-
-      this.detailObject.HID = this._homedefService.ChosedHome.ID;
-      this._storageService.createQuestionBankItem(this.detailObject);
     } else if (this.uiMode === UIMode.Change) {
       // Update mode
       // TBD
@@ -211,5 +162,57 @@ export class QuestionBankDetailComponent implements OnInit {
     this.detailObject = new QuestionBankItem();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
+  }
+
+  private onQtnBankCreate() {
+    this._storageService.createQuestionEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createQuestionEvent in QuestionBankDetailComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof QuestionBankItem) {
+        // Show the snackbar
+        let snackbarRef = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+          this._uiService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
+
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
+          this.onInitCreateMode();
+          //this._router.navigate(['/learn/questionbank/create']);
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
+          }            
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
+    this._storageService.createQuestionBankItem(this.detailObject);
   }
 }

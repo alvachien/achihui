@@ -61,6 +61,7 @@ export class LearnStorageService {
   createHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
   readHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
   createQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
+  updateQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
   readQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
   createEnWordEvent: EventEmitter<EnWord | string | null> = new EventEmitter(null);
   readEnWordEvent: EventEmitter<EnWord | string | null> = new EventEmitter(null);
@@ -712,6 +713,54 @@ export class LearnStorageService {
 
         // Broadcast event: failed
         this.createQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+
+  /**
+   * Update an item of Question Bank
+   * @param item Question bank item to change
+   */
+  public updateQuestionBankItem(item: QuestionBankItem) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnQuestionBank';
+
+    const jdata: string = item.writeJSONString();
+    this._http.put(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+
+        let hd: QuestionBankItem = new QuestionBankItem();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in updateQuestionBankItem in LearnStorageService: ${x}`);
+        }
+
+        const copiedData = this.QuestionBanks.slice();
+        copiedData.push(x);
+        this.listQtnBankChange.next(copiedData);
+
+        // Broadcast event
+        this.updateQuestionEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in updateQuestionBankItem in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.updateQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
