@@ -147,9 +147,9 @@ export class QuestionBankDetailComponent implements OnInit {
   
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
+      this.onQtnBankCreate();
     } else if (this.uiMode === UIMode.Change) {
-      // Update mode
-      // TBD
+      this.onQtnBankUpdate();
     }
   }
 
@@ -214,5 +214,46 @@ export class QuestionBankDetailComponent implements OnInit {
 
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this._storageService.createQuestionBankItem(this.detailObject);
+  }
+
+  private onQtnBankUpdate() {
+    this._storageService.updateQuestionEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving updateQuestionEvent in QuestionBankDetailComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof QuestionBankItem) {
+        // Show the snackbar
+        let snackbarRef = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
+          duration: 1000
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    this._storageService.updateQuestionBankItem(this.detailObject);
   }
 }

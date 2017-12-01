@@ -127,7 +127,8 @@
     "InputtedCategoryIsInvalid": "输入的类别无效",
     "CategoryIsMust": "类别必须输入",
     "CreateAnotherOne": "再创建一个",
-    "CreatedSuccessfully": "创建成功"
+    "CreatedSuccessfully": "创建成功",
+    "UpdatedSuccessfully": "修改成功"
   },
   "Sys":{
     "Currency": {

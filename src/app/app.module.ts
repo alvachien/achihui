@@ -4,7 +4,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
-import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER } from '@angular/material';
+import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl } from '@angular/material';
 import { UIDependModule } from './uidepend.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -31,6 +31,7 @@ import { PageNotFoundComponent } from './page-not-found';
 import { SideNavComponent } from './side-nav';
 import { SideNavItemComponent } from './side-nav-item';
 import { TagsListComponent } from './tags-list';
+//import { MatPaginatorIntlCN  } from './utility';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -75,6 +76,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MAT_DATE_LOCALE_PROVIDER,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
+    //{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlCN },
     AuthService,
     AuthGuardService,
     FinCurrencyService,

@@ -62,6 +62,7 @@ export class LearnStorageService {
   readHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
   createQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
   updateQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
+  deleteQuestionEvent: EventEmitter<string | null> = new EventEmitter(null);
   readQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
   createEnWordEvent: EventEmitter<EnWord | string | null> = new EventEmitter(null);
   readEnWordEvent: EventEmitter<EnWord | string | null> = new EventEmitter(null);
@@ -293,9 +294,16 @@ export class LearnStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in updateObject in LearnStorageService: ${x}`);
         }
 
-        // const copiedData = this.Objects.slice();
-        // copiedData.push(x);
-        // this.listObjectChange.next(copiedData);
+        const copiedData = this.Objects.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.Id === x.Id;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+        } else {
+          copiedData.push(x);
+        }
+        this.listObjectChange.next(copiedData);
 
         // Broadcast event
         this.updateObjectEvent.emit(x);
@@ -340,6 +348,15 @@ export class LearnStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteObject in LearnStorageService: ${x}`);
         }
 
+        const copiedData = this.Objects.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.Id === oid;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1);
+          this.listObjectChange.next(copiedData);
+        }
+        
         // Broadcast event
         this.deleteObjectEvent.emit(x);
       }, (error: HttpErrorResponse) => {
@@ -385,6 +402,17 @@ export class LearnStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readObject in LearnStorageService: ${x}`);
         }
 
+        const copiedData = this.Objects.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.Id === x.Id;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+        } else {
+          copiedData.push(x);
+        }
+        this.listObjectChange.next(copiedData);
+        
         // Broadcast event
         this.readObjectEvent.emit(x);
       }, (error: HttpErrorResponse) => {
@@ -530,10 +558,16 @@ export class LearnStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readHistory in LearnStorageService: ${x}`);
         }
 
-        // Todo, update the list buffer?
-        // const copiedData = this.Accounts.slice();
-        // copiedData.push(x);
-        // this.listAccountChange.next(copiedData);
+        const copiedData = this.Histories.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.generateKey() === x.generateKey();
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+        } else {
+          copiedData.push(x);
+        }
+        this.listHistoryChange.next(copiedData);
 
         // Broadcast event
         this.readHistoryEvent.emit(x);
@@ -727,7 +761,7 @@ export class LearnStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnQuestionBank';
+    let apiurl = environment.ApiUrl + '/api/LearnQuestionBank/' + item.ID.toString();
 
     const jdata: string = item.writeJSONString();
     this._http.put(apiurl, jdata, {
@@ -748,9 +782,15 @@ export class LearnStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in updateQuestionBankItem in LearnStorageService: ${x}`);
         }
 
+        // Remove it from the buffer
         const copiedData = this.QuestionBanks.slice();
-        copiedData.push(x);
-        this.listQtnBankChange.next(copiedData);
+        let idx = copiedData.findIndex((val) => {
+          return val.ID === x.ID;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+          this.listQtnBankChange.next(copiedData);
+        }
 
         // Broadcast event
         this.updateQuestionEvent.emit(x);
@@ -761,6 +801,57 @@ export class LearnStorageService {
 
         // Broadcast event: failed
         this.updateQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+
+  /**
+   * Delete an item of Question Bank
+   * @param itemid Question bank item's ID'
+   */
+  public deleteQuestionBankItem(item: QuestionBankItem) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/LearnQuestionBank/' + item.ID.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    this._http.delete(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteQuestionBankItem in LearnStorageService: ${x}`);
+        }
+
+        // Remove it from the buffer
+        const copiedData = this.QuestionBanks.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.ID === item.ID;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx);
+          this.listQtnBankChange.next(copiedData);
+        }
+
+        // Broadcast event
+        this.deleteQuestionEvent.emit();
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in deleteQuestionBankItem in LearnStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.deleteQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
   }
@@ -796,6 +887,17 @@ export class LearnStorageService {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readQuestionBank in LearnStorageService: ${x}`);
         }
+
+        const copiedData = this.QuestionBanks.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.ID === x.ID;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+        } else {
+          copiedData.push(x);
+        }
+        this.listQtnBankChange.next(copiedData);
 
         // Broadcast event
         this.readQuestionEvent.emit(x);

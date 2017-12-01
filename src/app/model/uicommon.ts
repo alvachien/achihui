@@ -257,6 +257,9 @@ export class UIDisplayStringUtil {
         
       case UICommonLabelEnum.ChartLegend:
         return 'Common.ChartLegend';
+
+      case UICommonLabelEnum.UpdatedSuccess:
+        return 'Common.UpdatedSuccessfully';
         
       default:
         return '';

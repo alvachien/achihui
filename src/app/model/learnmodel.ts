@@ -590,8 +590,16 @@ export class QuestionBankItem extends hih.BaseModel {
     rst.questionType = <number>this.QBType;
     rst.question = this.Question;
     rst.briefAnswer = this.BriefAnswer;
+    rst.id = this.ID;
 
-    // TBD: subitem
+    if (this.SubItems.length > 0) {
+      rst.subItemList = [];
+
+      for(let si of this.SubItems) {
+        let siobj = si.writeJSONObject();
+        rst.subItemList.push(siobj);
+      }
+    }
 
     if (this.Tags.length > 0) {
       rst.tagTerms = [];
@@ -617,5 +625,14 @@ export class QuestionBankSubItem {
 
   public onSetData(data?: any) {
     //if (data && data.)
+  }
+
+  public writeJSONObject() {
+    let rst: any = {};
+    rst.subItem = this.SubItem;
+    rst.detail = this.Detail;
+    rst.others = this.Others;
+
+    return rst;
   }
 }

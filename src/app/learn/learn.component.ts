@@ -8,53 +8,53 @@ import { DateAdapter } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 
 @Component({
-    selector: 'hih-learn',
-    template: `<router-outlet></router-outlet>`,
+  selector: 'hih-learn',
+  template: `<router-outlet></router-outlet>`,
 })
 export class LearnComponent implements OnInit, OnDestroy {
-    private _langChangeSub: any;
+  private _langChangeSub: any;
 
-    constructor(private _authService: AuthService,
-        private _homeDefService: HomeDefDetailService,
-        private _uistatusService: UIStatusService,
-        private _dateAdapter: DateAdapter<MomentDateAdapter>) {
+  constructor(private _authService: AuthService,
+    private _homeDefService: HomeDefDetailService,
+    private _uistatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<MomentDateAdapter>) {
+  }
+
+  ngOnInit() {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Enter FinanceComponent's ngOnInit`);
     }
+    this.onSetLanguage(this._uistatusService.CurrentLanguage);
 
-    ngOnInit() {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Enter FinanceComponent's ngOnInit`);
-        }
-        this.onSetLanguage(this._uistatusService.CurrentLanguage);
+    this._langChangeSub = this._uistatusService.langChangeEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Enter language change event in FinanceComponent: ${x}`);
+      }
 
-        this._langChangeSub = this._uistatusService.langChangeEvent.subscribe((x) => {
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Enter language change event in FinanceComponent: ${x}`);
-            }
+      this.onSetLanguage(x);
+    });
+  }
 
-            this.onSetLanguage(x);
-        });
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale(x);
     }
+  }
 
-    private onSetLanguage(x: string): void {
-        if (x === 'zh') {
-            moment.locale('zh-cn');
-            this._dateAdapter.setLocale('zh-cn');
-        } else if (x === 'en') {
-            moment.locale(x);
-            this._dateAdapter.setLocale(x);
-        }
+  ngOnDestroy() {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Enter FinanceComponent's ngOnDestroy`);
     }
-
-    ngOnDestroy() {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Enter FinanceComponent's ngOnDestroy`);
-        }
-        try {
-            if (this._langChangeSub) {
-                this._langChangeSub.unsubscribe();
-            }
-        } catch (err) {
-            console.error(err);
-        }
+    try {
+      if (this._langChangeSub) {
+        this._langChangeSub.unsubscribe();
+      }
+    } catch (err) {
+      console.error(err);
     }
+  }
 }

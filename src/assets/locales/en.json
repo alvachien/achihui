@@ -127,7 +127,8 @@
     "InputtedCategoryIsInvalid": "Inputted category is invalid",
     "CategoryIsMust": "Category is a must",
     "CreateAnotherOne": "Create another One",
-    "CreatedSuccessfully": "Created successfully"
+    "CreatedSuccessfully": "Created successfully",
+    "UpdatedSuccessfully": "Updated successfully"
   },
   "Sys":{
     "Currency": {
