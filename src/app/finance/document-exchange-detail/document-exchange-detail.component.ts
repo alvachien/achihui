@@ -297,7 +297,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
             });
           } else {
             // Show the snackbar
-            this._snackbar.open('Document Posted', 'OK', {
+            this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
               duration: 3000,
             }).afterDismissed().subscribe(() => {
               // Navigate to display

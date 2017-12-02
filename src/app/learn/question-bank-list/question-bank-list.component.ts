@@ -47,11 +47,14 @@ export class QuestionBankListComponent implements OnInit {
   dataSource: QuestionBankDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   allTags: string[] = [];
+  isSlideMode: boolean = false;
 
   constructor(public _storageService: LearnStorageService,
     public _uiService: UIStatusService,
     public _tagService: TagsService,
-    private _router: Router) { }
+    private _router: Router) { 
+    this.isSlideMode = false;
+  }
 
   ngOnInit() {
     this.dataSource = new QuestionBankDataSource(this._storageService, this.paginator);
@@ -60,12 +63,6 @@ export class QuestionBankListComponent implements OnInit {
       //this._tagService.fetchAllTags(TagTypeEnum.LearnQuestionBank),
       this._storageService.fetchAllQuestionBankItem()
     ]).subscribe(x => {
-      // if (x[0] instanceof Array && x[0].length > 0) {
-      //   for(let tag of x[0]) {
-      //     let tag2: any = tag;
-      //     this.allTags.push(tag2);
-      //   }
-      // }
     });
   }
 
@@ -101,5 +98,13 @@ export class QuestionBankListComponent implements OnInit {
   public onRefresh() {
     this._storageService.fetchAllQuestionBankItem(true).subscribe(x => {
     });
+  }
+
+  public onToggleSlide() {
+    if (!this.isSlideMode) {
+      this.isSlideMode = true;
+    } else {
+      this.isSlideMode = false;
+    }
   }
 }

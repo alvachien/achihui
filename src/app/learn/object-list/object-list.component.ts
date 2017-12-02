@@ -47,9 +47,12 @@ export class ObjectListComponent implements OnInit {
   displayedColumns = ['id', 'category', 'name', 'comment'];
   dataSource: LearnObjectDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
+  isSlideMode: boolean = false;
+  
   constructor(public _storageService: LearnStorageService,
-    private _router: Router) { }
+    private _router: Router) {
+    this.isSlideMode = false;
+  }
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -64,7 +67,7 @@ export class ObjectListComponent implements OnInit {
     ]).subscribe((x) => {
       // Just ensure the REQUEST has been sent
       if (x) {
-
+        // Do NOTHING
       }
     });
   }
@@ -86,5 +89,13 @@ export class ObjectListComponent implements OnInit {
 
   public onRefresh(): void {
     this._storageService.fetchAllObjects(true);
+  }
+
+  public onToggleSlide() {
+    if (!this.isSlideMode) {
+      this.isSlideMode = true;
+    } else {
+      this.isSlideMode = false;
+    }
   }
 }

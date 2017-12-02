@@ -114,6 +114,8 @@
     "ChartLegend": "图例",
     "Level": "层次",
     "LongText": "长文本",
+    "Start": "启动",
+    "Stop": "停止",
     
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",

@@ -114,6 +114,8 @@
     "ChartLegend": "Legend",
     "Level": "Level",
     "LongText": "Long Text",
+    "Start": "Start",
+    "Stop": "Stop",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",
