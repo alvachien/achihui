@@ -122,6 +122,7 @@ export class UIFinAdvPayDocument {
     fitem.OrderId = this.SourceOrderId;
     fitem.TranType = this.SourceTranType;
     fitem.TranAmount = this.TranAmount;
+    fitem.Desp = this.Desp;
     doc.Items.push(fitem);
 
     return doc;

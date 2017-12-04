@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import {
+  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
@@ -56,7 +57,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
   separatorKeysCodes = [ENTER, COMMA];
-  
+
   displayedColumns = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
   dataSource: TemplateDocADPDataSource | null;
   tmpDocOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
@@ -103,7 +104,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
-      
+
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createadp') {
@@ -278,11 +279,11 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       }
 
       // Update the template desp
-      if(this.detailObject.TmpDocs.length === 1) {
+      if (this.detailObject.TmpDocs.length === 1) {
         this.detailObject.TmpDocs[0].Desp = this.detailObject.Desp;
       } else {
-        for(let i = 0; i < this.detailObject.TmpDocs.length; i ++) {
-          this.detailObject.TmpDocs[i].Desp = this.detailObject.Desp + ' | ' + (i+1).toString() + '/' + this.detailObject.TmpDocs.length.toString();
+        for (let i = 0; i < this.detailObject.TmpDocs.length; i++) {
+          this.detailObject.TmpDocs[i].Desp = this.detailObject.Desp + ' | ' + (i + 1).toString() + '/' + this.detailObject.TmpDocs.length.toString();
         }
       }
 
@@ -318,115 +319,9 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
-      let docObj = this.detailObject.generateDocument();
-
-      // Check!
-      if (!docObj.onVerify({
-        ControlCenters: this._storageService.ControlCenters,
-        Orders: this._storageService.Orders,
-        Accounts: this._storageService.Accounts,
-        DocumentTypes: this._storageService.DocumentTypes,
-        TransactionTypes: this._storageService.TranTypes,
-        Currencies: this._currService.Currencies,
-        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
-      })) {
-        // Show a dialog for error details
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          ContentTable: docObj.VerifiedMsgs,
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
-
-        return;
-      }
-
-      this._storageService.createDocumentEvent.subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAdvancepaymentDetailComponent with : ${x}`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof Document) {
-          // Ensure refresh the accounts
-          this._storageService.fetchAllAccounts(true).subscribe(act => {
-            // Do nothing just reload accounts
-          });
-          
-          // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-          
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-
-            this.onInitCreateMode();
-            this.setStep(0);
-            this.tmpDocOperEvent.emit();
-            //this._router.navigate(['/finance/document/createadp/']);
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/finance/document/displayadp/' + x.Id.toString()]);
-            }            
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-
-      docObj.HID = this._homedefService.ChosedHome.ID;
-
-      // Build the JSON file to API
-      let sobj = docObj.writeJSONObject(); // Document first
-      let acntobj: Account = new Account();
-      acntobj.HID = this._homedefService.ChosedHome.ID;
-      acntobj.CategoryId = FinanceAccountCategory_AdvancePayment;
-      acntobj.Name = docObj.Desp;
-      acntobj.Comment = docObj.Desp;
-      acntobj.ExtraInfo = this.detailObject.AdvPayAccount;
-      sobj.accountVM = acntobj.writeJSONObject();
-
-      sobj.TmpDocs = [];
-      for (let td of this.detailObject.TmpDocs) {
-        td.HID = acntobj.HID;
-        td.ControlCenterId = this.detailObject.SourceControlCenterId;
-        td.OrderId = this.detailObject.SourceOrderId;
-        if (td.Desp.length > 45) {
-          td.Desp = td.Desp.substring(0, 44);
-        }
-
-        sobj.TmpDocs.push(td.writeJSONObject());
-      }
-
-      let dataJSON = JSON.stringify(sobj);
-      this._storageService.createADPDocument(sobj);
+      this.onCreateADPDoc();
+    } else if(this.uiMode === UIMode.Change) {
+      this.onUpdateADPDoc();
     }
   }
 
@@ -439,5 +334,121 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     this.uiMode = UIMode.Create;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
+  }
+
+  private onCreateADPDoc() {
+    let docObj = this.detailObject.generateDocument();
+
+    // Check!
+    if (!docObj.onVerify({
+      ControlCenters: this._storageService.ControlCenters,
+      Orders: this._storageService.Orders,
+      Accounts: this._storageService.Accounts,
+      DocumentTypes: this._storageService.DocumentTypes,
+      TransactionTypes: this._storageService.TranTypes,
+      Currencies: this._currService.Currencies,
+      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+    })) {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: docObj.VerifiedMsgs,
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+
+      return;
+    }
+
+    this._storageService.createDocumentEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAdvancepaymentDetailComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof Document) {
+        // Ensure refresh the accounts
+        this._storageService.fetchAllAccounts(true).subscribe(act => {
+          // Do nothing just reload accounts
+        });
+
+        // Show the snackbar
+        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
+          });
+
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
+
+          this.onInitCreateMode();
+          this.setStep(0);
+          this.tmpDocOperEvent.emit();
+          //this._router.navigate(['/finance/document/createadp/']);
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/finance/document/displayadp/' + x.Id.toString()]);
+          }
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    docObj.HID = this._homedefService.ChosedHome.ID;
+
+    // Build the JSON file to API
+    let sobj = docObj.writeJSONObject(); // Document first
+    let acntobj: Account = new Account();
+    acntobj.HID = this._homedefService.ChosedHome.ID;
+    acntobj.CategoryId = FinanceAccountCategory_AdvancePayment;
+    acntobj.Name = docObj.Desp;
+    acntobj.Comment = docObj.Desp;
+    acntobj.ExtraInfo = this.detailObject.AdvPayAccount;
+    sobj.accountVM = acntobj.writeJSONObject();
+
+    sobj.TmpDocs = [];
+    for (let td of this.detailObject.TmpDocs) {
+      td.HID = acntobj.HID;
+      td.ControlCenterId = this.detailObject.SourceControlCenterId;
+      td.OrderId = this.detailObject.SourceOrderId;
+      if (td.Desp.length > 45) {
+        td.Desp = td.Desp.substring(0, 44);
+      }
+
+      sobj.TmpDocs.push(td.writeJSONObject());
+    }
+
+    let dataJSON = JSON.stringify(sobj);
+    this._storageService.createADPDocument(sobj);
+  }
+
+  private onUpdateADPDoc() {
+    // TBD.
   }
 }
