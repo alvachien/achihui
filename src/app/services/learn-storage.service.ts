@@ -782,7 +782,7 @@ export class LearnStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in updateQuestionBankItem in LearnStorageService: ${x}`);
         }
 
-        // Remove it from the buffer
+        // Update it in the buffer
         const copiedData = this.QuestionBanks.slice();
         let idx = copiedData.findIndex((val) => {
           return val.ID === x.ID;

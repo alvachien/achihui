@@ -480,10 +480,15 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readAccount in FinanceStorageService: ${x}`);
         }
 
-        // Todo, update the list buffer?
-        // const copiedData = this.Accounts.slice();
-        // copiedData.push(x);
-        // this.listAccountChange.next(copiedData);
+        // Update the buffer if necessary
+        const copiedData = this.Accounts.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.Id === x.Id;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+          this.listAccountChange.next(copiedData);
+        }
 
         // Broadcast event
         this.readAccountEvent.emit(x);
@@ -635,10 +640,15 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readControlCenter in FinanceStorageService: ${x}`);
         }
 
-        // Todo, update the memory
-        // const copiedData = this.ControlCenters.slice();
-        // copiedData.push(x);
-        // this.listControlCenterChange.next(copiedData);
+        // Update the buffer if necessary
+        const copiedData = this.ControlCenters.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.Id === x.Id;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+          this.listControlCenterChange.next(copiedData);
+        }
 
         // Broadcast event
         this.readControlCenterEvent.emit(x);
@@ -740,6 +750,7 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createOrder in FinanceStorageService: ${x}`);
         }
 
+        // Add it to the buffer
         const copiedData = this.Orders.slice();
         copiedData.push(x);
         this.listOrderChange.next(copiedData);
@@ -788,6 +799,16 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in changeOrder in FinanceStorageService: ${x}`);
         }
 
+        // Update the buffer if necessary
+        const copiedData = this.Orders.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.Id === x.Id;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+          this.listOrderChange.next(copiedData);
+        }
+
         // Broadcast event
         this.changeOrderEvent.emit(x);
       }, (error: HttpErrorResponse) => {
@@ -833,11 +854,16 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readOrder in FinanceStorageService: ${x}`);
         }
 
-        // Todo, update the memory
-        // const copiedData = this.Orders.slice();
-        // copiedData.push(x);
-        // this.listOrderChange.next(copiedData);
-
+        // Update the buffer if necessary
+        const copiedData = this.Orders.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.Id === x.Id;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+          this.listOrderChange.next(copiedData);
+        }
+        
         // Broadcast event
         this.readOrderEvent.emit(x);
       }, (error: HttpErrorResponse) => {

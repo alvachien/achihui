@@ -23,13 +23,13 @@
         <div class="carousel-inner">
           <div class="carousel-item" *ngFor="let qbank of _storageService.QuestionBanks; let i = index" style="padding: 20%;text-align:center;" [class.active]="i === 0" >
             <div class="d-block w-100">
-              <p>
+              <textarea readonly rows="10">
                 {{qbank.Question}}
-              </p> 
+              </textarea> 
               <hr />
-              <p>
+              <textarea readonly rows="10">
                 {{qbank.BriefAnswer}}
-              </p> 
+              </textarea> 
             </div>
           </div>
         </div>
