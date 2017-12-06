@@ -102,55 +102,9 @@ export class ControlCenterDetailComponent implements OnInit {
 
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
-      this._storageService.createControlCenterEvent.subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createControlCenterEvent in ControlCenterDetailComponent with : ${x}`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof ControlCenter) {
-          // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-          
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-
-            this.onInitCreateMode();
-            //this._router.navigate(['/finance/controlcenter/create/']);
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
-            }            
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-
-      this._storageService.createControlCenter(this.detailObject);
+      this.onCreateControlCenter();
+    } else if (this.uiMode === UIMode.Change) {
+      this.onUpdateControlCenter();
     }
   }
 
@@ -162,5 +116,98 @@ export class ControlCenterDetailComponent implements OnInit {
     this.detailObject = new ControlCenter();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
+  }
+
+  private onCreateControlCenter(): void {
+    this._storageService.createControlCenterEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createControlCenterEvent in ControlCenterDetailComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof ControlCenter) {
+        // Show the snackbar
+        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
+        
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
+
+          this.onInitCreateMode();
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
+          }            
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    this._storageService.createControlCenter(this.detailObject);
+  }
+
+  private onUpdateControlCenter(): void {
+    this._storageService.changeControlCenterEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving changeControlCenterEvent in ControlCenterDetailComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof ControlCenter) {
+        // Show the snackbar
+        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
+          'OK', {
+          duration: 3000,
+        });
+        
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    this._storageService.changeControlCenter(this.detailObject);
   }
 }

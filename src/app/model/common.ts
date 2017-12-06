@@ -198,7 +198,7 @@ export class BaseModel {
   public UpdatedBy: string;
 
   // For checking
-  public VerifiedMsgs: InfoMessage[];
+  public VerifiedMsgs: InfoMessage[] = [];
 
   get CreatedAt(): moment.Moment {
     return this._createdAt;

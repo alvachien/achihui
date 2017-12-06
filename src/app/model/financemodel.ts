@@ -856,14 +856,14 @@ export class Order extends hih.BaseModel {
     super();
 
     this._validFrom = moment();
-    this._validTo = this._validFrom.day(30);
+    this._validTo = this._validFrom.clone().add(1, 'months');
   }
 
   public onInit() {
     super.onInit();
 
     this._validFrom = moment();
-    this._validTo = this._validFrom.day(30);
+    this._validTo = this._validFrom.clone().add(1, 'months');
   }
 
   public onVerify(context?: OrderVerifyContext): boolean {
@@ -1008,7 +1008,7 @@ export class Order extends hih.BaseModel {
 /**
  * Settlement rule
  */
-export class SettlementRule extends hih.BaseModel {
+export class SettlementRule {
   public OrdId: number;
   public RuleId: number;
   public ControlCenterId: number;
@@ -1016,21 +1016,15 @@ export class SettlementRule extends hih.BaseModel {
   public Comment: string;
 
   public ControlCenterName: string;
-
+  public VerifiedMsgs: hih.InfoMessage[] = [];
+  
   constructor() {
-    super();
-    this.RuleId = 0;
-  }
-
-  public onInit() {
-    super.onInit();
+    this.RuleId = -1;
   }
 
   public onVerify(context?: OrderVerifyContext): boolean {
-    if (!super.onVerify(context))
-      return false;
-
     let brst: boolean = true;
+
     // ID
     if (this.RuleId <= 0) {
       let msg: hih.InfoMessage = new hih.InfoMessage();
@@ -1045,11 +1039,7 @@ export class SettlementRule extends hih.BaseModel {
     // Control center
     if (context !== null || context !== undefined || context.ControlCenters.length > 0) {
       if (context.ControlCenters.findIndex((value, index) => {
-        if (value.Id === this.ControlCenterId) {
-          return true;
-        }
-
-        return false;
+        return value.Id === this.ControlCenterId;
       }) !== -1) {
       } else {
         let msg: hih.InfoMessage = new hih.InfoMessage();
@@ -1077,8 +1067,8 @@ export class SettlementRule extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
-    rstObj.ruleId = this.RuleId;
+    let rstObj: any = { };
+    rstObj.ruleID = this.RuleId;
     rstObj.controlCenterID = this.ControlCenterId;
     rstObj.precent = this.Precent;
     rstObj.comment = this.Comment;

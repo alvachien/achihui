@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator } from '@angular/material';
+import { MatPaginator, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, ControlCenter } from '../../model';
-import { FinanceStorageService } from '../../services';
+import { LogLevel, ControlCenter, UICommonLabelEnum } from '../../model';
+import { FinanceStorageService, UIStatusService } from '../../services';
 import { fadeAnimation } from '../../utility';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 /**
  * Data source of Control center
@@ -50,7 +51,9 @@ export class ControlCenterListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: FinanceStorageService,
-    private _router: Router) { }
+    private _router: Router,
+    private _uiStatusService: UIStatusService,
+    private _dialog: MatDialog) { }
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -76,7 +79,27 @@ export class ControlCenterListComponent implements OnInit {
   }
 
   public onDeleteCC(acnt: any) {
+    // Show a confirmation dialog for the deletion
+    const dlginfo: MessageDialogInfo = {
+      Header: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
+      Content: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfrimContent),
+      Button: MessageDialogButtonEnum.yesno,
+    };
 
+    this._dialog.open(MessageDialogComponent, {
+      disableClose: false,
+      width: '500px',
+      data: dlginfo,
+    }).afterClosed().subscribe((x2) => {
+      // Do nothing!
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+      }
+
+      if (x2) {
+        // Todo!
+      }
+    });
   }
 
   public onRefresh() {

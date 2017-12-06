@@ -21,15 +21,15 @@
           <li data-target="#carouselSlideIndicators" *ngFor="let qbank of _storageService.QuestionBanks; let i = index" [attr.data-slide-to]="i" [class.active]="i === 0"></li>
         </ol>
         <div class="carousel-inner">
-          <div class="carousel-item" *ngFor="let qbank of _storageService.QuestionBanks; let i = index" style="padding: 20%;text-align:center;" [class.active]="i === 0" >
+          <div class="carousel-item" *ngFor="let qbank of _storageService.QuestionBanks; let i = index" style="padding: 10%;text-align:center;" [class.active]="i === 0" >
             <div class="d-block w-100">
-              <textarea readonly rows="10">
+              <p>
                 {{qbank.Question}}
-              </textarea> 
+              </p> 
               <hr />
-              <textarea readonly rows="10">
+              <p>
                 {{qbank.BriefAnswer}}
-              </textarea> 
+              </p> 
             </div>
           </div>
         </div>

@@ -58,13 +58,16 @@ export class FinanceStorageService {
 
   // Events
   createAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
+  changeAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
   readAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
   createControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
+  changeControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
   readControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
   createOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
   changeOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
   readOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
   createDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
+  changeDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
   readDocumentEvent: EventEmitter<Document | string | any | null> = new EventEmitter(null);
   deleteDocumentEvent: EventEmitter<any | null> = new EventEmitter(null);
 
@@ -449,6 +452,62 @@ export class FinanceStorageService {
   }
 
   /**
+   * Change an account
+   * @param objAcnt Instance of Account to change
+   */
+  public changeAccount(objAcnt: Account) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceAccount/' + objAcnt.Id.toString();
+
+    const jdata: string = objAcnt.writeJSONString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    this._http.put(apiurl, jdata, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of changeAccount in FinanceStorageService: ' + response);
+        }
+
+        let hd: Account = new Account();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in changeAccount in FinanceStorageService: ${x}`);
+        }
+
+        const copiedData = this.Accounts.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.Id === x.Id;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+          this.listAccountChange.next(copiedData);
+        }
+
+        // Broadcast event
+        this.changeAccountEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in changeAccount in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.changeAccountEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+  
+  /**
    * Read an account
    * @param acntid ID of the account to read
    */
@@ -608,6 +667,62 @@ export class FinanceStorageService {
       });
   }
 
+  /**
+   * Change a control center
+   * @param objDetail Instance of control center to change
+   */
+  public changeControlCenter(objDetail: ControlCenter) {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceControlCenter/' + objDetail.Id.toString();
+
+    const jdata: string = objDetail.writeJSONString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    this._http.put(apiurl, jdata, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of changeControlCenter in FinanceStorageService: ' + response);
+        }
+
+        let hd: ControlCenter = new ControlCenter();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in changeControlCenter in FinanceStorageService: ${x}`);
+        }
+
+        const copiedData = this.ControlCenters.slice();
+        let idx = copiedData.findIndex((val) => {
+          return val.Id === x.Id;
+        });
+        if (idx !== -1) {
+          copiedData.splice(idx, 1, x);
+          this.listControlCenterChange.next(copiedData);
+        }
+
+        // Broadcast event
+        this.changeControlCenterEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in changeControlCenter in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.changeControlCenterEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+      }, () => {
+      });
+  }
+  
   /**
    * Read control center
    * @param ccid ID of the control center
@@ -778,11 +893,13 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceOrder';
-
+    let apiurl = environment.ApiUrl + '/api/FinanceOrder/' + objDetail.Id.toString();
     const jdata: string = objDetail.writeJSONString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.put(apiurl, jdata, {
         headers: headers,
+        params: params,
         withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
@@ -836,10 +953,10 @@ export class FinanceStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-      withCredentials: true,
-    })
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering readOrder in FinanceStorageService: ${response}`);

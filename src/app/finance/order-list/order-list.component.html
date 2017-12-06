@@ -6,8 +6,7 @@
   <mat-card-content>
     <mat-toolbar>      
       <button mat-icon-button color="primary" (click)="onCreateOrder()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></button>
-      <mat-checkbox [(ngModel)]="includeInvalid">{{'Finance.InvalidOnes' | translate}}</mat-checkbox>
-      <button mat-icon-button color="primary" (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
+      <mat-slide-toggle color="primary" [checked]="includeInvalid" (change)="onRefresh()">{{'Finance.InvalidOnes' | translate}}</mat-slide-toggle>
     </mat-toolbar>
     <div class="table-container mat-elevation-z8">
       <mat-table #table [dataSource]="dataSource">
@@ -15,9 +14,9 @@
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
           <mat-cell *matCellDef="let row">
-              <button mat-icon-button (click)="onChangeOrder(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
-              <button mat-icon-button (click)="onDeleteOrder(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="example-icon">delete</mat-icon></button>
-              {{row.Id}}
+            <button mat-icon-button (click)="onChangeOrder(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
+            <button mat-icon-button (click)="onDeleteOrder(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="example-icon">delete</mat-icon></button>
+            {{row.Id}}
           </mat-cell>
         </ng-container>
 

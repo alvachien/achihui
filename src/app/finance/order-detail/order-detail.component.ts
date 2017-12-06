@@ -309,25 +309,14 @@ export class OrderDetailComponent implements OnInit {
 
       // Navigate back to list view
       if (x instanceof Order) {
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
-          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
+          'OK', {
           duration: 3000,
         });
         
-        let recreate: boolean = false;
-        snackbarRef.onAction().subscribe(() => {
-          recreate = true;
-
-          this.onInitCreateMode();
-          this.setStep(0);
-          //this._router.navigate(['/finance/order/create']);
-        });
-
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
-          if (!recreate) {
-            this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
-          }            
+          this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
         });
       } else {
         // Show error message

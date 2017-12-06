@@ -103,8 +103,10 @@ export class OrderListComponent implements OnInit {
   }
 
   public onRefresh() {
-    this._storageService.fetchAllOrders(true, this.includeInvalid).subscribe((x) => {
+    this.includeInvalid = !this.includeInvalid;
 
+    this._storageService.fetchAllOrders(true, this.includeInvalid).subscribe((x) => {
+      // Ensure the HTTP get is fired
     });
   }
 }

@@ -18,7 +18,8 @@ $candy-app-theme:   mat-light-theme($candy-app-primary, $candy-app-accent, $cand
 //@include angular-material-theme($candy-app-theme);
 
 // Try some colors else
-$ac-app-primary: mat-palette($mat-yellow);
+//$ac-app-primary: mat-palette($mat-yellow);
+$ac-app-primary: mat-palette($mat-light-blue);
 $ac-app-accent:  mat-palette($mat-blue-grey);
 $ac-app-warn:    mat-palette($mat-deep-orange);
 $ac-app-theme:   mat-light-theme($ac-app-primary, $ac-app-accent, $ac-app-warn);
