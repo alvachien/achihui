@@ -5,6 +5,14 @@
   </mat-card-header>
   <mat-card-content>
     <mat-toolbar>
+      <mat-form-field>
+        <mat-select color="accent" class="mt-1" [(ngModel)]="selectedDocScope" (change)="onDocScopeChanged()">
+          <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-icon-button (click)="onRefreshList()" matTooltip="{{'Common.Refresh' | translate}}">
+        <mat-icon mat-icon-button color="primary" class="cell-icon">refresh</mat-icon>
+      </button>
       <button mat-icon-button color="accent" matTooltip="{{'Common.Create' | translate}}" [matMenuTriggerFor]="matMenuCreateDoc">
         <mat-icon>add</mat-icon>
       </button>
@@ -17,15 +25,6 @@
         <button mat-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | translate}}</button>
         <button mat-menu-item (click)="onCreateLoanDocument()">{{'Sys.DocTy.Loan' | translate}}</button>
       </mat-menu>
-
-      <mat-form-field>
-        <mat-select color="accent" class="mt-1" [(ngModel)]="selectedDocScope" (change)="onDocScopeChanged()">
-          <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <button mat-icon-button (click)="onRefreshList()" matTooltip="{{'Common.Refresh' | translate}}">
-        <mat-icon mat-icon-button color="primary" class="cell-icon">refresh</mat-icon>
-      </button>
     </mat-toolbar>
 
     <div class="table-container mat-elevation-z8">

@@ -209,8 +209,7 @@
         </ng-template>
 
         <mat-toolbar>
-          <mat-checkbox [(ngModel)]="includeInvalid">{{'Finance.InvalidOnes' | translate}}</mat-checkbox>
-          <button mat-icon-button color="primary" (click)="onReportOrderRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
+          <mat-slide-toggle color="primary" [checked]="includeInvalid" (change)="onReportOrderRefresh()">{{'Finance.InvalidOnes' | translate}}</mat-slide-toggle>
         </mat-toolbar>
             
         <div class="container mt-2">
