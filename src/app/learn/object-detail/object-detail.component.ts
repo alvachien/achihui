@@ -165,105 +165,9 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
-      this._storageService.createObjectEvent.subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createObjectEvent in ObjectDetailComponent with : ${x}`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof LearnObject) {
-          // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-          
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-            this.onInitCreateMode();
-            //this._router.navigate(['/learn/object/create']);
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
-            }            
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-
-      this.detailObject.Content = tinymce.activeEditor.getContent();
-      this._storageService.createObject(this.detailObject);
+      this.onCreateObject();
     } else if (this.uiMode === UIMode.Change) {
-      this._storageService.updateObjectEvent.subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving updateObjectEvent in ObjectDetailComponent with : ${x}`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof LearnObject) {
-          // Show a dialog, then jump to the display view
-          const dlginfo: MessageDialogInfo = {
-            Header: 'Common.Success',
-            Content: x.Id.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
-            this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-
-      // Update mode
-      this.detailObject.Content = tinymce.activeEditor.getContent();
-      this._storageService.updateObject(this.detailObject);
+      this.onUpdateObject();
     }
   }
 
@@ -276,5 +180,101 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     this.detailObject = new LearnObject();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
+  }
+
+  private onCreateObject(){
+    this._storageService.createObjectEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createObjectEvent in ObjectDetailComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof LearnObject) {
+        // Show the snackbar
+        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
+        
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
+          this.onInitCreateMode();
+          //this._router.navigate(['/learn/object/create']);
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
+          }            
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    this.detailObject.Content = tinymce.activeEditor.getContent();
+    this._storageService.createObject(this.detailObject);
+  }
+
+  private onUpdateObject() {
+    this._storageService.updateObjectEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving updateObjectEvent in ObjectDetailComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof LearnObject) {
+        // Show the snackbar
+        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
+          'OK', {
+          duration: 3000,
+        });
+        
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
+        });
+      } else {
+        // Show error message with dialog
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    // Update mode
+    this.detailObject.Content = tinymce.activeEditor.getContent();
+    this._storageService.updateObject(this.detailObject);
   }
 }

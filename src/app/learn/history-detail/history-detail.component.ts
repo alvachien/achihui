@@ -100,57 +100,7 @@ export class HistoryDetailComponent implements OnInit {
 
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
-      this._storageService.createHistoryEvent.subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createObjectEvent in HistoryDetailComponent with : ${x}`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof LearnHistory) {
-          // Show a dialog, then jump to the display view
-          // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-        
-          let recreate: boolean = false;
-
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-            this.onInitCreateMode();
-            //this._router.navigate(['/learn/history/create']);
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/learn/history/display/' + x.generateKey()]);
-            }            
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-
-      this.detailObject.HID = this._homedefService.ChosedHome.ID;
-      this._storageService.createHistory(this.detailObject);
+      this.onCreateHistory();
     } else if (this.uiMode === UIMode.Change) {
       // Update mode
     }
@@ -165,5 +115,59 @@ export class HistoryDetailComponent implements OnInit {
     this.detailObject = new LearnHistory();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
+  }
+
+  private onCreateHistory(): void {
+    this._storageService.createHistoryEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createObjectEvent in HistoryDetailComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof LearnHistory) {
+        // Show a dialog, then jump to the display view
+        // Show the snackbar
+        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
+      
+        let recreate: boolean = false;
+
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
+          this.onInitCreateMode();
+          //this._router.navigate(['/learn/history/create']);
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/learn/history/display/' + x.generateKey()]);
+          }            
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
+    this._storageService.createHistory(this.detailObject);
   }
 }
