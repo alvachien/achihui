@@ -103,6 +103,7 @@ export class HistoryDetailComponent implements OnInit {
       this.onCreateHistory();
     } else if (this.uiMode === UIMode.Change) {
       // Update mode
+      this.onUpdateHistory();
     }
   }
 
@@ -169,5 +170,9 @@ export class HistoryDetailComponent implements OnInit {
 
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this._storageService.createHistory(this.detailObject);
+  }
+
+  private onUpdateHistory() : void {
+
   }
 }
