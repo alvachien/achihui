@@ -6,10 +6,10 @@
   </mat-card-header>
   <mat-card-content>
     <div class="table-container mat-elevation-z8">
-      <mat-table #table [dataSource]="dataSource">
+      <mat-table #table [dataSource]="dataSource" matSort>
         <!-- ID Column -->
         <ng-container matColumnDef="id">
-          <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>#</mat-header-cell>
           <mat-cell *matCellDef="let row">
             {{ row.Id }}
           </mat-cell>
@@ -17,13 +17,13 @@
 
         <!-- Name Column -->
         <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef>{{'Common.Name' | translate}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Common.Name' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row"> {{row.Name}} </mat-cell>
         </ng-container>
 
         <!-- Expense flag column -->
         <ng-container matColumnDef="expflag">
-          <mat-header-cell *matHeaderCellDef>{{'Finance.IsExpense' | translate}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Finance.IsExpense' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row">
             <mat-checkbox [(ngModel)]="row.Expense" disabled>
             </mat-checkbox>
@@ -32,25 +32,25 @@
 
         <!-- Full display -->
         <ng-container matColumnDef="fulldisplay">
-          <mat-header-cell *matHeaderCellDef>{{'Common.LongText' | translate}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Common.LongText' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row"> {{row.FullDisplayText}} </mat-cell>
         </ng-container>
 
         <!-- Hierarchy level -->
         <ng-container matColumnDef="hierlvl">
-          <mat-header-cell *matHeaderCellDef>{{'Common.Level' | translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.HierLevel}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Common.Level' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{getTranTypeLevelString(row.HierLevel) | translate}} </mat-cell>
         </ng-container>
         
         <!-- Parent ID -->
         <ng-container matColumnDef="parent">
-          <mat-header-cell *matHeaderCellDef>{{'Common.Parent' | translate}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{'Common.Parent' | translate}}</mat-header-cell>
           <mat-cell *matCellDef="let row"> {{row.ParId}} </mat-cell>
         </ng-container>
       
         <!-- Comment Column -->
         <ng-container matColumnDef="comment">
-          <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.Comment' | translate}} </mat-header-cell>
           <mat-cell *matCellDef="let row"> {{row.Comment}} </mat-cell>
         </ng-container>
 

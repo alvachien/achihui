@@ -65,6 +65,11 @@
           <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedTranTypeLevel" (change)="onFinanceTranTypeLevelChanged()">
+          <mat-option *ngFor="let ttl of _uistatusService.TranTypeLevelStrings" [value]='ttl.value'>{{ttl.i18nterm | translate}}</mat-option>
+        </mat-select>
+      </mat-form-field>
       <span class="example-spacer"></span>
       <span>{{'Nav.FinanceTrace' | translate}}</span>
     </mat-toolbar>

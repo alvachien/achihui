@@ -1,5 +1,5 @@
 import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum, RepeatFrequencyEnum } from './common';
-import { AccountStatusEnum, RepaymentMethodEnum } from './financemodel';
+import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum } from './financemodel';
 import { EnPOSEnum } from './learnmodel';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -71,7 +71,7 @@ export class UINameValuePair<T> {
  * UI Display string Enum
  */
 export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum | AccountStatusEnum
-  | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum;
+  | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum | TranTypeLevelEnum;
 
 /**
  * UI Display string
@@ -214,6 +214,23 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +rfe,
           i18nterm: UIDisplayStringUtil.getRepeatFrequencyDisplayString(<RepeatFrequencyEnum>+rfe),
+          displaystring: ''
+        });
+      }
+    }
+
+    return arrst;
+  }
+
+  public static getTranTypeLevelDisplayStrings(): Array<UIDisplayString> {
+    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+    
+    for (let rfe in TranTypeLevelEnum) {
+      if (Number.isNaN(+rfe)) {
+      } else {
+        arrst.push({
+          value: +rfe,
+          i18nterm: UIDisplayStringUtil.getTranTypeLevelDisplayString(<TranTypeLevelEnum>+rfe),
           displaystring: ''
         });
       }
@@ -372,6 +389,15 @@ export class UIDisplayStringUtil {
       case RepeatFrequencyEnum.Year: return 'RepeatFrequency.Year';
       case RepeatFrequencyEnum.Quarter: return 'RepeatFrequency.Quarter';
       case RepeatFrequencyEnum.Week: return 'RepeatFrequency.Week';
+      default: return '';
+    }
+  }
+
+  public static getTranTypeLevelDisplayString(ttl: TranTypeLevelEnum): string  {
+    switch(ttl) {
+      case TranTypeLevelEnum.TopLevel: return 'Finance.TranTypeTopLevel';
+      case TranTypeLevelEnum.FirstLevel: return 'Finance.TranTypeFirstLevel';
+      case TranTypeLevelEnum.SecondLevel: return 'Finance.TranTypeSecondLevel';
       default: return '';
     }
   }

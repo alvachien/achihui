@@ -30,6 +30,11 @@ export class UIStatusService {
     return this._arrEnPOS;
   }
 
+  private _arrTranTypeLevel: UIDisplayString[] = [];
+  get TranTypeLevelStrings(): UIDisplayString[] {
+    return  this._arrTranTypeLevel;
+  }
+
   public arrLabels: UIDisplayString[] = [];
 
   constructor(private _tranService: TranslateService) { 
@@ -38,6 +43,7 @@ export class UIStatusService {
     this._arrTagType = UIDisplayStringUtil.getTagTypeStrings();
     this._arrRepayMethod = UIDisplayStringUtil.getRepaymentMethodStrings();
     this._arrEnPOS = UIDisplayStringUtil.getEnPOSStrings();
+    this._arrTranTypeLevel = UIDisplayStringUtil.getTranTypeLevelDisplayStrings();
 
     this.arrLabels = UIDisplayStringUtil.getUICommonLabelStrings();
   }

@@ -3,7 +3,7 @@ import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageS
   FinCurrencyService, UIStatusService } from '../services';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair } from '../model';
+import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum } from '../model';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 
@@ -15,6 +15,7 @@ import 'rxjs/Rx';
 export class PageInitialComponent implements OnInit {
   selectedFinanceScope: OverviewScopeEnum;
   selectedLearnScope: OverviewScopeEnum;
+  selectedTranTypeLevel: TranTypeLevelEnum;
   view: any[] = [400, 300];
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
@@ -59,6 +60,8 @@ export class PageInitialComponent implements OnInit {
 
       this.selectedLearnScope = OverviewScopeEnum.CurrentYear;
       this.onLearnScopeChanged();
+      this.selectedTranTypeLevel = TranTypeLevelEnum.SecondLevel;
+      this.onFinanceTranTypeLevelChanged();
     }
   }
 
@@ -113,6 +116,12 @@ export class PageInitialComponent implements OnInit {
           this.dataFinTTOut.push(value);
         });        
       });
+  }
+
+  public onFinanceTranTypeLevelChanged() {
+    if (this.dataFinTTIn.length > 0 || this.dataFinTTOut.length > 0) {
+      
+    }
   }
 
   public onGoHomeList(): void {

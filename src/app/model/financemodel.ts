@@ -1096,6 +1096,12 @@ export class SettlementRule {
   }
 }
 
+export enum TranTypeLevelEnum {
+  TopLevel = 0,
+  FirstLevel = 1,
+  SecondLevel = 2
+};
+
 /**
  * Tran type
  */
@@ -1108,7 +1114,7 @@ export class TranType extends hih.BaseModel {
   public Comment: string;
 
   // For UI display
-  public HierLevel: number;
+  public HierLevel: TranTypeLevelEnum;
   public FullDisplayText: string;
 
   constructor() {
