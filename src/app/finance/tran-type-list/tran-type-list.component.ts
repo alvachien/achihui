@@ -89,7 +89,23 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
-    private _router: Router) { }
+    private _router: Router) {
+
+    this.dataSource.sortingDataAccessor = (data: TranType, property: string) => {
+      switch (property) {
+        case 'id': return +data.Id;
+        case 'name': return data.Name;
+        case 'expflag': return +data.Expense;
+        case 'fulldisplay': return data.FullDisplayText;
+        case 'hierlvl': return data.HierLevel;
+        case 'parent': return data.ParId;
+        case 'comment': return data.Comment;
+        default: return '';
+      }
+    };
+    this.dataSource.filterPredicate =
+      (data: TranType, filter: string) => (data.Name.indexOf(filter) !== -1 ) || (data.Comment && data.Comment.indexOf(filter) !== -1);    
+  }
 
   ngOnInit() {
     // !!! First option !!!
@@ -138,5 +154,11 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
 
   getTranTypeLevelString(trantype: TranTypeLevelEnum): string {
     return UIDisplayStringUtil.getTranTypeLevelDisplayString(trantype);
-  } 
+  }
+  
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
 }

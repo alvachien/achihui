@@ -1,16 +1,26 @@
+
+.example-header {
+  min-height: 64px;
+  padding: 8px 24px 0;
+}
+
+.demo-full-width {
+  width: 100%;
+}
+
 .table-container {
     display: flex;
     flex-direction: column;
     min-width: 300px;
  }
   
- .table-header {
-   min-height: 64px;
-   display: flex;
-   align-items: center;
-   padding-left: 24px;
-   font-size: 20px;
- }
+.table-header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  font-size: 20px;
+}
   
 .mat-table {
   overflow: auto;
@@ -45,7 +55,7 @@
 
 .mat-column-fulldisplay {
   min-width: 100px;
-  max-width: 150px;
+  max-width: 200px;
 }
 
 .mat-column-parent {

@@ -116,6 +116,7 @@
     "LongText": "长文本",
     "Start": "启动",
     "Stop": "停止",
+    "Filter": "过滤",
     
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",

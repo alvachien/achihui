@@ -1,11 +1,16 @@
 <mat-card>
   <mat-card-header>
-    <div></div>
     <mat-card-title>{{'Finance.TransactionTypes' | translate}}</mat-card-title>
     <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <div class="table-container mat-elevation-z8">
+      <div class="example-header">
+        <mat-form-field class="demo-full-width">
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'Common.Filter' | translate}}">
+        </mat-form-field>
+      </div>
+      
       <mat-table #table [dataSource]="dataSource" matSort>
         <!-- ID Column -->
         <ng-container matColumnDef="id">

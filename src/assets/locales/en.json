@@ -116,6 +116,7 @@
     "LongText": "Long Text",
     "Start": "Start",
     "Stop": "Stop",
+    "Filter": "Filter",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",
