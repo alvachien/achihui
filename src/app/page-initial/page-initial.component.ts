@@ -3,7 +3,8 @@ import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageS
   FinCurrencyService, UIStatusService } from '../services';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum } from '../model';
+import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
+  TranType } from '../model';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 
@@ -30,6 +31,9 @@ export class PageInitialComponent implements OnInit {
   dataFinTTOut: any[] = [];
   dataLrnUser: any[] = [];
   dataLrnCtgy: any[] = [];
+  listTranType: TranType[] = [];
+  mapFinTTIn: Map<number, UINameValuePair<number>> = null;
+  mapFinTTOut: Map<number, UINameValuePair<number>> = null;
 
   get IsUserLoggedIn(): boolean {
     return this._authService.authSubject.value.isAuthorized;
@@ -55,6 +59,10 @@ export class PageInitialComponent implements OnInit {
 
   ngOnInit() {
     if (this.IsUserLoggedIn && this.IsHomeChosed) {
+      this._finstorageService.fetchAllTranTypes().subscribe(x => {
+        this.listTranType = x;
+      });
+
       this.selectedFinanceScope = OverviewScopeEnum.CurrentMonth;
       this.onFinanceScopeChanged();
 
@@ -106,21 +114,89 @@ export class PageInitialComponent implements OnInit {
         this.dataFinTTIn = [];
         this.dataFinTTOut = [];
 
-        let mapin = <Map<number, UINameValuePair<number>>>val1;
-        let mapout = <Map<number, UINameValuePair<number>>>val2;
+        this.mapFinTTIn = <Map<number, UINameValuePair<number>>>val1;
+        this.mapFinTTOut = <Map<number, UINameValuePair<number>>>val2;
 
-        mapin.forEach((value) => {
+        this.mapFinTTIn.forEach((value) => {
           this.dataFinTTIn.push(value);
         });
-        mapout.forEach((value) => {
+        this.mapFinTTOut.forEach((value) => {
           this.dataFinTTOut.push(value);
         });        
       });
   }
 
   public onFinanceTranTypeLevelChanged() {
-    if (this.dataFinTTIn.length > 0 || this.dataFinTTOut.length > 0) {
-      
+    if (this.mapFinTTIn !== null && this.mapFinTTOut !== null) {
+      this.dataFinTTIn = [];
+      this.dataFinTTOut = [];
+
+      switch(this.selectedTranTypeLevel) {
+        case TranTypeLevelEnum.TopLevel: {
+          this.mapFinTTIn.forEach((value, key) => {
+            let idx = this.listTranType.findIndex(value2 => {
+              return value2.Id === key;
+            });
+
+            if (idx !== -1) {
+              if (this.listTranType[idx].HierLevel === 0) {
+                this.dataFinTTIn.push(value);
+              } else {
+                let idxroot = -1;
+                let parid = this.listTranType[idx].ParId;
+
+                while(!parid) {
+                  idxroot = this.listTranType.findIndex(value3 => {
+                    return value3.Id === this.listTranType[idx].ParId;
+                  });
+
+                  parid = this.listTranType[idxroot].ParId;
+                }
+                
+                // Now check the root item exist or not
+                if (idxroot !== -1) {
+                  //let idxrst = this.dataFinTTIn.findIndex(valuerst => {
+                  //  return valuerst
+                  //});
+                }
+              }
+              
+            } else {
+              // Shall never happen!
+            }
+          });
+
+          this.mapFinTTOut.forEach(value => {
+
+          });
+        }
+        break;
+
+        case TranTypeLevelEnum.FirstLevel: {
+          this.mapFinTTIn.forEach(value => {
+            
+          });
+
+          this.mapFinTTOut.forEach(value => {
+
+          });
+        }
+        break;
+
+        case TranTypeLevelEnum.SecondLevel: {
+          this.mapFinTTIn.forEach(value => {
+            
+          });
+
+          this.mapFinTTOut.forEach(value => {
+
+          });            
+        }
+        break;
+
+        default:
+        break;
+      }
     }
   }
 
