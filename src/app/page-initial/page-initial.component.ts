@@ -4,7 +4,7 @@ import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageS
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
-  TranType } from '../model';
+  TranType, FinanceTranType_TransferIn, FinanceTranType_TransferOut } from '../model';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 
@@ -17,6 +17,7 @@ export class PageInitialComponent implements OnInit {
   selectedFinanceScope: OverviewScopeEnum;
   selectedLearnScope: OverviewScopeEnum;
   selectedTranTypeLevel: TranTypeLevelEnum;
+  excludeTransfer: boolean;
   view: any[] = [400, 300];
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
@@ -55,6 +56,12 @@ export class PageInitialComponent implements OnInit {
     this.yLearnUserAxisLabel = this._uistatusService.getUILabel(UICommonLabelEnum.Count);
     this.totalLabel = this._uistatusService.getUILabel(UICommonLabelEnum.Total);
     this.legendTitle = this._uistatusService.getUILabel(UICommonLabelEnum.ChartLegend);
+
+    // Default values
+    this.selectedLearnScope = OverviewScopeEnum.CurrentYear;
+    this.selectedFinanceScope = OverviewScopeEnum.CurrentMonth;
+    this.selectedTranTypeLevel = TranTypeLevelEnum.TopLevel;
+    this.excludeTransfer = true; 
   }
 
   ngOnInit() {
@@ -63,13 +70,8 @@ export class PageInitialComponent implements OnInit {
         this.listTranType = x;
       });
 
-      this.selectedFinanceScope = OverviewScopeEnum.CurrentMonth;
+      this.onLearnScopeChanged();      
       this.onFinanceScopeChanged();
-
-      this.selectedLearnScope = OverviewScopeEnum.CurrentYear;
-      this.onLearnScopeChanged();
-      this.selectedTranTypeLevel = TranTypeLevelEnum.SecondLevel;
-      this.onFinanceTranTypeLevelChanged();
     }
   }
 
@@ -111,86 +113,267 @@ export class PageInitialComponent implements OnInit {
     let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedFinanceScope);
 
     this._finstorageService.getReportTranType(bgn, end).subscribe(([val1, val2]) => {
-        this.dataFinTTIn = [];
-        this.dataFinTTOut = [];
+      this.mapFinTTIn = <Map<number, UINameValuePair<number>>>val1;
+      this.mapFinTTOut = <Map<number, UINameValuePair<number>>>val2;
 
-        this.mapFinTTIn = <Map<number, UINameValuePair<number>>>val1;
-        this.mapFinTTOut = <Map<number, UINameValuePair<number>>>val2;
-
-        this.mapFinTTIn.forEach((value) => {
-          this.dataFinTTIn.push(value);
-        });
-        this.mapFinTTOut.forEach((value) => {
-          this.dataFinTTOut.push(value);
-        });        
-      });
+      this.onFinanceTranTypeChartRedraw();
+    });
   }
 
-  public onFinanceTranTypeLevelChanged() {
-    if (this.mapFinTTIn !== null && this.mapFinTTOut !== null) {
+  public onFinanceExcludeTransfer(): void {
+    this.excludeTransfer = !this.excludeTransfer;
+
+    this.onFinanceTranTypeChartRedraw();
+  }
+
+  public onFinanceTranTypeChartRedraw() {
+    if (this.mapFinTTIn !== null || this.mapFinTTOut !== null) {
       this.dataFinTTIn = [];
       this.dataFinTTOut = [];
 
       switch(this.selectedTranTypeLevel) {
         case TranTypeLevelEnum.TopLevel: {
           this.mapFinTTIn.forEach((value, key) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
+              return;
+            }
+
             let idx = this.listTranType.findIndex(value2 => {
               return value2.Id === key;
             });
 
             if (idx !== -1) {
               if (this.listTranType[idx].HierLevel === 0) {
-                this.dataFinTTIn.push(value);
+                this.dataFinTTIn.push({
+                  name: value.name,
+                  value: +value.value,
+                  key: key
+                });
               } else {
                 let idxroot = -1;
+                let parlevel = this.listTranType[idx].HierLevel;
                 let parid = this.listTranType[idx].ParId;
 
-                while(!parid) {
+                while(parlevel > 0) {
                   idxroot = this.listTranType.findIndex(value3 => {
-                    return value3.Id === this.listTranType[idx].ParId;
+                    return value3.Id === parid;
                   });
 
-                  parid = this.listTranType[idxroot].ParId;
+                  parlevel = this.listTranType[idxroot].HierLevel;
+                  if (parlevel > 0) {
+                    parid = this.listTranType[idxroot].ParId;
+                  }
                 }
                 
                 // Now check the root item exist or not
                 if (idxroot !== -1) {
-                  //let idxrst = this.dataFinTTIn.findIndex(valuerst => {
-                  //  return valuerst
-                  //});
+                  let idxrst = this.dataFinTTIn.findIndex(valuerst => {
+                    return valuerst.key === this.listTranType[idxroot].Id;
+                  });
+                  if (idxrst === -1) {
+                    this.dataFinTTIn.push({
+                      name: value.name,
+                      value: +value.value,
+                      key: key
+                    });
+                  } else {
+                    this.dataFinTTIn[idxrst].value += +value.value;
+                  }
                 }
-              }
-              
+              }              
             } else {
               // Shall never happen!
             }
           });
 
-          this.mapFinTTOut.forEach(value => {
+          this.mapFinTTOut.forEach((value, key) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
+              return;
+            }
 
+            let idx = this.listTranType.findIndex(value2 => {
+              return value2.Id === key;
+            });
+
+            if (idx !== -1) {
+              if (this.listTranType[idx].HierLevel === 0) {
+                this.dataFinTTOut.push({
+                  name: value.name,
+                  value: +value.value,
+                  key: key
+                });
+              } else {
+                let idxroot = -1;
+                let parlevel = this.listTranType[idx].HierLevel;
+                let parid = this.listTranType[idx].ParId;
+
+                while(parlevel > 0) {
+                  idxroot = this.listTranType.findIndex(value3 => {
+                    return value3.Id === parid;
+                  });
+
+                  parlevel = this.listTranType[idxroot].HierLevel;
+                  if (parlevel > 0) {
+                    parid = this.listTranType[idxroot].ParId;
+                  }
+                }
+                
+                // Now check the root item exist or not
+                if (idxroot !== -1) {
+                  let idxrst = this.dataFinTTOut.findIndex(valuerst => {
+                    return valuerst.key === this.listTranType[idxroot].Id;
+                  });
+                  if (idxrst === -1) {
+                    this.dataFinTTOut.push({
+                      name: value.name,
+                      value: +value.value,
+                      key: key
+                    });
+                  } else {
+                    this.dataFinTTOut[idxrst].value += +value.value;
+                  }
+                }
+              }              
+            } else {
+              // Shall never happen!
+            }
           });
         }
         break;
 
         case TranTypeLevelEnum.FirstLevel: {
-          this.mapFinTTIn.forEach(value => {
-            
+          this.mapFinTTIn.forEach((value, key) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
+              return;
+            }
+
+            let idx = this.listTranType.findIndex(value2 => {
+              return value2.Id === key;
+            });
+
+            if (idx !== -1) {
+              if (this.listTranType[idx].HierLevel <= 1) {
+                this.dataFinTTIn.push({
+                  name: value.name,
+                  value: +value.value,
+                  key: key
+                });
+              } else {
+                let idxroot = -1;
+                let parlevel = this.listTranType[idx].HierLevel;
+                let parid = this.listTranType[idx].ParId;
+
+                while(parlevel > 1) {
+                  idxroot = this.listTranType.findIndex(value3 => {
+                    return value3.Id === parid;
+                  });
+
+                  parlevel = this.listTranType[idxroot].HierLevel;
+                  if (parlevel > 1) {
+                    parid = this.listTranType[idxroot].ParId;
+                  }
+                }
+                
+                // Now check the root item exist or not
+                if (idxroot !== -1) {
+                  let idxrst = this.dataFinTTIn.findIndex(valuerst => {
+                    return valuerst.key === this.listTranType[idxroot].Id;
+                  });
+                  if (idxrst === -1) {
+                    this.dataFinTTIn.push({
+                      name: value.name,
+                      value: +value.value,
+                      key: key
+                    });
+                  } else {
+                    this.dataFinTTIn[idxrst].value += +value.value;
+                  }
+                }
+              }              
+            } else {
+              // Shall never happen!
+            }
           });
 
-          this.mapFinTTOut.forEach(value => {
+          this.mapFinTTOut.forEach((value, key) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
+              return;
+            }
 
+            let idx = this.listTranType.findIndex(value2 => {
+              return value2.Id === key;
+            });
+
+            if (idx !== -1) {
+              if (this.listTranType[idx].HierLevel <= 1) {
+                this.dataFinTTOut.push({
+                  name: value.name,
+                  value: +value.value,
+                  key: key
+                });
+              } else {
+                let idxroot = -1;
+                let parlevel = this.listTranType[idx].HierLevel;
+                let parid = this.listTranType[idx].ParId;
+
+                while(parlevel > 1) {
+                  idxroot = this.listTranType.findIndex(value3 => {
+                    return value3.Id === parid;
+                  });
+
+                  parlevel = this.listTranType[idxroot].HierLevel;
+                  if (parlevel > 1) {
+                    parid = this.listTranType[idxroot].ParId;
+                  }
+                }
+                
+                // Now check the root item exist or not
+                if (idxroot !== -1) {
+                  let idxrst = this.dataFinTTOut.findIndex(valuerst => {
+                    return valuerst.key === this.listTranType[idxroot].Id;
+                  });
+                  if (idxrst === -1) {
+                    this.dataFinTTOut.push({
+                      name: value.name,
+                      value: +value.value,
+                      key: key
+                    });
+                  } else {
+                    this.dataFinTTOut[idxrst].value += +value.value;
+                  }
+                }
+              }              
+            } else {
+              // Shall never happen!
+            }
           });
         }
         break;
 
         case TranTypeLevelEnum.SecondLevel: {
-          this.mapFinTTIn.forEach(value => {
+          this.mapFinTTIn.forEach((value, key) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
+              return;
+            }
             
+            this.dataFinTTIn.push({
+              name: value.name,
+              value: value.value,
+              key: key
+            });
           });
 
-          this.mapFinTTOut.forEach(value => {
+          this.mapFinTTOut.forEach((value, key) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
+              return;
+            }
 
-          });            
+            this.dataFinTTOut.push({
+              name: value.name,
+              value: value.value,
+              key: key
+            });
+          });
         }
         break;
 

@@ -66,10 +66,11 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field>
-        <mat-select [(ngModel)]="selectedTranTypeLevel" (change)="onFinanceTranTypeLevelChanged()">
+        <mat-select [(ngModel)]="selectedTranTypeLevel" (change)="onFinanceTranTypeChartRedraw()">
           <mat-option *ngFor="let ttl of _uistatusService.TranTypeLevelStrings" [value]='ttl.value'>{{ttl.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-slide-toggle color="primary" [checked]="excludeTransfer" (change)="onFinanceExcludeTransfer()">{{'Finance.ExcludeTransfer' | translate}}</mat-slide-toggle>
       <span class="example-spacer"></span>
       <span>{{'Nav.FinanceTrace' | translate}}</span>
     </mat-toolbar>

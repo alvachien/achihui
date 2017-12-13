@@ -344,6 +344,7 @@
     "IsExpense": "Is Expense",
     "IsAsset": "Is Asset",
     "InvalidOnes": "Invalid Ones",
+    "ExcludeTransfer": "Exclude transfer",
     "AccountStatusNormal": "Normal",
     "AccountStatusClosed": "Closed",
     "AccountStatusFrozen": "Fronze",

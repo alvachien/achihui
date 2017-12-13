@@ -344,6 +344,7 @@
     "IsExpense": "开销",
     "IsAsset": "资产",
     "InvalidOnes": "失效项",
+    "ExcludeTransfer": "排除转账类开支",
     "AccountStatusNormal": "正常",
     "AccountStatusClosed": "已关闭账户",
     "AccountStatusFrozen": "已冻结账户",
