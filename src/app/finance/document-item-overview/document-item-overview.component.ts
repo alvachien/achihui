@@ -6,7 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
-  TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, isOverviewDateInScope } from '../../model';
+  TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, isOverviewDateInScope,
+  UIOrderForSelection, UIAccountForSelection, BuildupAccountForSelection, BuildupOrderForSelection } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
@@ -149,6 +150,8 @@ export class DocumentItemOverviewComponent implements OnInit {
   DocItemsByOrder: DocumentItemWithBalance[] = [];
   DocItemsByOrder_Org: DocumentItemWithBalance[] = [];
   TmpDocs: TemplateDocBase[] = [];
+  public arUIAccount: UIAccountForSelection[] = [];
+  public arUIOrder: UIOrderForSelection[] = [];
   @ViewChild('paginatorByAccount') paginatorByAccount: MatPaginator;
   @ViewChild('paginatorByControlCenter') paginatorByControlCenter: MatPaginator;
   @ViewChild('paginatorByOrder') paginatorByOrder: MatPaginator;
@@ -189,6 +192,11 @@ export class DocumentItemOverviewComponent implements OnInit {
       this._storageService.getADPTmpDocs(),
       this._storageService.getLoanTmpDocs(),
     ]).subscribe((x) => {
+      // Accounts
+      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+      // Orders
+      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      
       if (x[5] instanceof Array && x[5].length > 0) {
         for (let dta of x[5]) {
           let adpdoc = new TemplateDocADP();

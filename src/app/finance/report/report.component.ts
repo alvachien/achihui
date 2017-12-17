@@ -130,6 +130,7 @@ export class ReportComponent implements OnInit {
   dataCCCredit: any[] = [];
   dataOrderDebit: any[] = [];
   dataOrderCredit: any[] = [];
+  dataTrend: any[] = [];
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,

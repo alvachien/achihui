@@ -68,10 +68,11 @@ export class PageInitialComponent implements OnInit {
     if (this.IsUserLoggedIn && this.IsHomeChosed) {
       this._finstorageService.fetchAllTranTypes().subscribe(x => {
         this.listTranType = x;
+        
+        this.onFinanceScopeChanged();
       });
 
-      this.onLearnScopeChanged();      
-      this.onFinanceScopeChanged();
+      this.onLearnScopeChanged();
     }
   }
 

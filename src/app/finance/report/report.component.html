@@ -4,6 +4,30 @@
   </mat-card-header>
   <mat-card-content>
     <mat-tab-group>
+      <!-- Tab: Overview -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          {{'Common.Overview' | translate}}
+        </ng-template>
+        <div class="container mt-2">
+          <div class="row">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Month on Month</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <ngx-charts-bar-vertical-2d
+                  [scheme]="colorScheme"
+                  [results]="dataTrend"
+                  (select)="onTrendSelect($event)">
+                </ngx-charts-bar-vertical-2d>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Tab: Balance sheet -->
       <mat-tab>
         <ng-template mat-tab-label>
           {{'Finance.BalanceSheetReport' | translate}}
@@ -123,6 +147,7 @@
         </div>
       </mat-tab>
 
+      <!-- Tab: Control center report -->
       <mat-tab>
         <ng-template mat-tab-label>
           {{'Finance.ControlCenterReport' | translate}}
@@ -203,6 +228,8 @@
           </mat-paginator>
         </div>
       </mat-tab>
+
+      <!-- Tab: Order report -->
       <mat-tab>
         <ng-template mat-tab-label>
           {{'Finance.OrderReport' | translate}}
