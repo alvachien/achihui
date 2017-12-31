@@ -9,7 +9,7 @@ import { LogLevel, UserAuthInfo } from '../model';
 import { AuthService } from './auth.service';
 
 @Injectable()
-export class AuthGuardService {
+export class AuthGuardService implements CanActivate {
   constructor(private authService: AuthService, private router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {

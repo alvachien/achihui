@@ -292,6 +292,8 @@ export class ReportComponent implements OnInit {
   }
   public onOrderCreditSelect($event) {
   }
+  public onTrendSelect($event) {    
+  }
 
   // Refresh the Order Report
   public onReportOrderRefresh() {
