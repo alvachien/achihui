@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
     private _router: Router,
     private _uistatusService: UIStatusService,
     private _dateAdapter: DateAdapter<MomentDateAdapter>,
-    private _iconRegistry: MatIconRegistry, 
+    private _iconRegistry: MatIconRegistry,
     private _sanitizer: DomSanitizer) {
     // Setup the translate
     this.userDisplayAs = '';
@@ -56,7 +56,7 @@ export class AppComponent implements OnInit {
             this._homeDefService.fetchAllHomeDef();
           }
         });
-      }, (error) => {
+      }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error('AC HIH UI [Error]: Failed in subscribe to User', error);
         }
@@ -83,7 +83,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  public onLogon() {
+  public onLogon(): void {
     if (environment.LoginRequired) {
       this._authService.doLogin();
     } else {
@@ -118,9 +118,9 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public onLanguageChanged(sellang: string) {
+  public onLanguageChanged(sellang: string): void {
     this.SelectedLanguage = sellang;
-    
+
     if (this._translate.currentLang !== this.SelectedLanguage &&
       this.SelectedLanguage !== undefined) {
       this._translate.use(this.SelectedLanguage);
@@ -139,21 +139,21 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private updateDocumentTitle() {
+  public onOpenMathExcises(): void {
+    window.open('http://118.178.58.187:5230', '_blank');
+  }
+
+  public onOpenPhotoGallery(): void {
+    window.open('http://118.178.58.187:5210', '_blank');
+  }
+
+  public onOpenGithubRepo(): void {
+    window.open('https://github.com/alvachien/achihui', '_blank');
+  }
+
+  private updateDocumentTitle(): void {
     // this._translate.get('Home.AppTitle').subscribe(x => {
     //   document.title = x;
     // });
-  }
-
-  public onOpenMathExcises() {
-    window.open("http://118.178.58.187:5230", "_blank");
-  }
-
-  public onOpenPhotoGallery() {
-    //window.open("http://118.178.58.187:5230", "_blank");
-  }
-
-  public onOpenGithubRepo() {
-    window.open("https://github.com/alvachien/achihui", "_blank");
   }
 }
