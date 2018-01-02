@@ -31,6 +31,9 @@ import { PageNotFoundComponent } from './page-not-found';
 import { SideNavComponent } from './side-nav';
 import { SideNavItemComponent } from './side-nav-item';
 import { TagsListComponent } from './tags-list';
+import { AboutComponent } from './about';
+import { CreditsComponent } from './credits';
+import { VersionComponent } from './version';
 //import { MatPaginatorIntlCN  } from './utility';
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -68,6 +71,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     SideNavComponent,
     SideNavItemComponent,
     TagsListComponent,
+    AboutComponent,
+    CreditsComponent,
+    VersionComponent,
   ],
   entryComponents: [
     MessageDialogComponent,

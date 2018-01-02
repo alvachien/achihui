@@ -51,7 +51,12 @@ export class SideNavService {
     const event = this.addItem('Nav.EventTrace', 'event', null, 5);
     this.addSubItem(event, 'Common.Categories', '/event/category', 1, 'toc');
     this.addSubItem(event, 'Nav.EventTrace', '/event/recurevent', 2, 'schedule');
-    this.addSubItem(event, 'Nav.EventTrace', '/event/timeline', 2, 'timeline');
+    this.addSubItem(event, 'Nav.EventTrace', '/event/timeline', 3, 'timeline');
+
+    const about = this.addItem('Nav.About', 'help', null, 6);
+    this.addSubItem(about, 'Nav.About', '/about', 1, 'help');
+    this.addSubItem(about, 'Nav.Credits', '/credits', 2, 'thumb_up');
+    this.addSubItem(about, 'Nav.Version', '/version', 3, 'update');
   }
 
   addItem(name: string, icon: string, route: any, position: number, badge?: string, badgeColor?: string, customClass?: string, color?: string) {

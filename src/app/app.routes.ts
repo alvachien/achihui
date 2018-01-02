@@ -9,6 +9,9 @@ import { HomeDefListComponent } from './home-def-list';
 import { HomeDefDetailComponent } from './home-def-detail';
 import { PageNotFoundComponent } from './page-not-found';
 import { TagsListComponent } from './tags-list';
+import { AboutComponent } from './about';
+import { CreditsComponent } from './credits';
+import { VersionComponent } from './version';
 
 export const AppRoutes: Routes = [
     {
@@ -58,5 +61,8 @@ export const AppRoutes: Routes = [
         canActivate: [HomeChoseGuardService],
         loadChildren: 'app/library/library.module#LibraryModule',
     },
+    { path: 'about', component: AboutComponent },
+    { path: 'credits', component: CreditsComponent },
+    { path: 'version', component: VersionComponent },
     { path: '**', component: PageNotFoundComponent },
 ];

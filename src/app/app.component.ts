@@ -4,6 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { DateAdapter, MatIconRegistry } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { TranslateService } from '@ngx-translate/core';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN } from './model';
 import { AuthService, HomeDefDetailService, UIStatusService } from './services';
@@ -36,10 +37,18 @@ export class AppComponent implements OnInit {
     private _uistatusService: UIStatusService,
     private _dateAdapter: DateAdapter<MomentDateAdapter>,
     private _iconRegistry: MatIconRegistry,
+    private _http: HttpClient,
     private _sanitizer: DomSanitizer) {
     // Setup the translate
     this.userDisplayAs = '';
     this.curChosenHome = null;
+
+    // Wakeup the API
+    this._http.get(environment.ApiUrl + '/api/wakeup').subscribe(y => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC HIH UI [Debug]: Wakeup API in AppComponent' + y.toString());
+      }
+    });
 
     // Register the Auth service
     if (environment.LoginRequired) {
