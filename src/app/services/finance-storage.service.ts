@@ -60,14 +60,14 @@ export class FinanceStorageService {
   createAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
   changeAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
   readAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
-  createControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
-  changeControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
+  createControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
+  changeControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
   readControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
-  createOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
-  changeOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
+  createOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
+  changeOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
   readOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
   createDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
-  changeDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
+  changeDocumentEvent: EventEmitter<Document | string | undefined> = new EventEmitter(undefined);
   readDocumentEvent: EventEmitter<Document | string | any | null> = new EventEmitter(null);
   deleteDocumentEvent: EventEmitter<any | null> = new EventEmitter(null);
 
@@ -654,12 +654,12 @@ export class FinanceStorageService {
    * @param objDetail Instance of control center to change
    */
   public changeControlCenter(objDetail: ControlCenter) {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceControlCenter/' + objDetail.Id.toString();
+    let apiurl: string = environment.ApiUrl + '/api/FinanceControlCenter/' + objDetail.Id.toString();
 
     const jdata: string = objDetail.writeJSONString();
     let params: HttpParams = new HttpParams();
@@ -1088,7 +1088,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + '/api/FinanceDocument';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceDocument/' + objDetail.Id.toString();
 
     const jdata: string = objDetail.writeJSONString();
     this._http.put(apiurl, jdata, {
@@ -1114,14 +1114,14 @@ export class FinanceStorageService {
         this.listDocumentChange.next(copiedData);
 
         // Broadcast event
-        this.createDocumentEvent.emit(x);
+        this.changeDocumentEvent.emit(x);
       }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in createDocument in FinanceStorageService:  ${error}`);
         }
 
         // Broadcast event: failed
-        this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
+        this.changeDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
       });
   }

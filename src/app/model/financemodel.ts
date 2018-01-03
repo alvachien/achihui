@@ -979,7 +979,7 @@ export class Order extends hih.BaseModel {
       this.Id = +data.id;
     }
     if (data && data.hid) {
-      this.HID = +data.id;
+      this.HID = +data.hid;
     }
     if (data && data.name && data.name.length > 0) {
       this.Name = data.name;

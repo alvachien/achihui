@@ -5,7 +5,7 @@ import {
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Order, SettlementRule, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
@@ -132,11 +132,11 @@ export class OrderDetailComponent implements OnInit {
     this.step = index;
   }
 
-  public nextStep() {
+  public nextStep(): void {
     this.step++;
   }
 
-  public prevStep() {
+  public prevStep(): void {
     this.step--;
   }
 
@@ -154,7 +154,7 @@ export class OrderDetailComponent implements OnInit {
     return true;
   }
 
-  public onCreateRule() {
+  public onCreateRule(): void {
     let srule: SettlementRule = new SettlementRule();
     srule.RuleId = this.getNextRuleID();
     this.detailObject.SRules.push(srule);
@@ -162,7 +162,7 @@ export class OrderDetailComponent implements OnInit {
     this.ruleOperEvent.emit();
   }
 
-  public onDeleteRule(rule) {
+  public onDeleteRule(rule): void {
     let idx: number = 0;
     for (let i: number = 0; i < this.detailObject.SRules.length; i ++) {
       if (this.detailObject.SRules[i].RuleId === rule.RuleId) {
@@ -190,7 +190,7 @@ export class OrderDetailComponent implements OnInit {
     return nMax + 1;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.onCreateOrder();
     } else if (this.uiMode === UIMode.Change) {
@@ -198,17 +198,17 @@ export class OrderDetailComponent implements OnInit {
     }
   }
 
-  public onBackToList() {
+  public onBackToList(): void {
     this._router.navigate(['/finance/order/']);
   }
 
-  private onInitCreateMode() {
+  private onInitCreateMode(): void {
     this.detailObject = new Order();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
 
-  private onCreateOrder() {
+  private onCreateOrder(): void {
     // Check!
     if (!this.detailObject.onVerify({
       ControlCenters: this._storageService.ControlCenters,
@@ -281,7 +281,7 @@ export class OrderDetailComponent implements OnInit {
     this._storageService.createOrder(this.detailObject);
   }
 
-  private onChangeOrder() {
+  private onChangeOrder(): void {
     // Check!
     if (!this.detailObject.onVerify({
       ControlCenters: this._storageService.ControlCenters,
