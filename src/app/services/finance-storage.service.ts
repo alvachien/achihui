@@ -143,7 +143,7 @@ export class FinanceStorageService {
           this._isAcntCtgyListLoaded = false;
           this.listAccountCategoryChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listAccountCategoryChange.value);
@@ -153,9 +153,9 @@ export class FinanceStorageService {
   // Doc type
   public fetchAllDocTypes(forceReload?: boolean): Observable<DocumentType[]> {
     if (!this._isDocTypeListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/FinanceDocType';
+      const apiurl: string = environment.ApiUrl + '/api/FinanceDocType';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -195,7 +195,7 @@ export class FinanceStorageService {
           this._isDocTypeListLoaded = false;
           this.listDocTypeChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listDocTypeChange.value);
@@ -205,9 +205,9 @@ export class FinanceStorageService {
   // Tran type
   public fetchAllTranTypes(forceReload?: boolean): Observable<TranType[]> {
     if (!this._isTranTypeListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/FinanceTranType';
+      const apiurl: string = environment.ApiUrl + '/api/FinanceTranType';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -237,7 +237,7 @@ export class FinanceStorageService {
 
           // Prepare for the hierarchy
           this.buildTranTypeHierarchy(listRst);
-          
+
           // Sort it
           listRst.sort((a, b) => {
             if (a.Expense) {
@@ -269,39 +269,19 @@ export class FinanceStorageService {
           this._isTranTypeListLoaded = false;
           this.listTranTypeChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listTranTypeChange.value);
     }
   }
-  private buildTranTypeHierarchy(listTranType: TranType[]) {
-    listTranType.forEach((value, index, array) => {
-      if (!value.ParId) {
-        value.HierLevel = 0;
-        value.FullDisplayText = value.Name;
-
-        this.buildTranTypeHierarchyImpl(value, listTranType, 1);
-      }
-    });
-  }
-  private buildTranTypeHierarchyImpl(par: TranType, listTranType: TranType[], curLvl: number) {
-    listTranType.forEach((value, index, array) => {
-      if (value.ParId === par.Id) {
-        value.HierLevel = curLvl;
-        value.FullDisplayText = par.FullDisplayText + "." + value.Name;
-
-        this.buildTranTypeHierarchyImpl(value, listTranType, value.HierLevel + 1);
-      }
-    });
-  }
 
   // Asset categories
   public fetchAllAssetCategories(forceReload?: boolean): Observable<AssetCategory[]> {
     if (!this._isAsstCtgyListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/FinanceAssetCategory';
+      const apiurl: string = environment.ApiUrl + '/api/FinanceAssetCategory';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -342,27 +322,29 @@ export class FinanceStorageService {
           this._isAsstCtgyListLoaded = false;
           this.listAssetCategoryChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listAssetCategoryChange.value);
     }
   }
-  
+
   // Account
   public fetchAllAccounts(forceReload?: boolean, status?: AccountStatusEnum): Observable<Account[]> {
     if (!this._isAccountListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/FinanceAccount';
+      const apiurl: string = environment.ApiUrl + '/api/FinanceAccount';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      if (status !== null && status !== undefined)
+      if (status !== null && status !== undefined) {
         params = params.append('status', status.toString());
+      }
+
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
@@ -396,7 +378,7 @@ export class FinanceStorageService {
           this._isAccountListLoaded = false;
           this.listAccountChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listAccountChange.value);
@@ -408,12 +390,12 @@ export class FinanceStorageService {
    * @param objAcnt Account to create
    */
   public createAccount(objAcnt: Account) {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceAccount';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAccount';
 
     const jdata: string = objAcnt.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -446,7 +428,7 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.createAccountEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createAccountEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
       });
   }
@@ -456,12 +438,12 @@ export class FinanceStorageService {
    * @param objAcnt Instance of Account to change
    */
   public changeAccount(objAcnt: Account) {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceAccount/' + objAcnt.Id.toString();
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAccount/' + objAcnt.Id.toString();
 
     const jdata: string = objAcnt.writeJSONString();
     let params: HttpParams = new HttpParams();
@@ -486,7 +468,7 @@ export class FinanceStorageService {
         }
 
         const copiedData = this.Accounts.slice();
-        let idx = copiedData.findIndex((val) => {
+        let idx: number = copiedData.findIndex((val) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
@@ -502,22 +484,22 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.changeAccountEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.changeAccountEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
       });
   }
-  
+
   /**
    * Read an account
    * @param acntid ID of the account to read
    */
   public readAccount(acntid: number) {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceAccount/' + acntid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAccount/' + acntid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
@@ -541,7 +523,7 @@ export class FinanceStorageService {
 
         // Update the buffer if necessary
         const copiedData = this.Accounts.slice();
-        let idx = copiedData.findIndex((val) => {
+        let idx: number = copiedData.findIndex((val) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
@@ -557,7 +539,7 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.readAccountEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.readAccountEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
       });
   }
@@ -567,7 +549,7 @@ export class FinanceStorageService {
    */
   public fetchAllControlCenters(forceReload?: boolean): Observable<any> {
     if (!this._isConctrolCenterListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/FinanceControlCenter';
+      const apiurl: string = environment.ApiUrl + '/api/FinanceControlCenter';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -612,7 +594,7 @@ export class FinanceStorageService {
           this._isConctrolCenterListLoaded = false;
           this.listControlCenterChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listControlCenterChange.value);
@@ -1097,6 +1079,54 @@ export class FinanceStorageService {
   }
 
   /**
+   * Update a normal document
+   * @param objDetail instance of document which to be created
+   */
+  public updateNormalDocument(objDetail: Document) {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    const apiurl: string = environment.ApiUrl + '/api/FinanceDocument';
+
+    const jdata: string = objDetail.writeJSONString();
+    this._http.put(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of createDocument in FinanceStorageService: ' + response);
+        }
+
+        let hd: Document = new Document();
+        hd.onSetData(response);
+        return hd;
+      })
+      .subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in createDocument in FinanceStorageService: ${x}`);
+        }
+
+        const copiedData = this.Documents.slice();
+        copiedData.push(x);
+        this.listDocumentChange.next(copiedData);
+
+        // Broadcast event
+        this.createDocumentEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in createDocument in FinanceStorageService:  ${error}`);
+        }
+
+        // Broadcast event: failed
+        this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
+      }, () => {
+      });
+  }
+
+  /**
    * Crate ADP document
    * @param jdata JSON format
    */
@@ -1144,16 +1174,16 @@ export class FinanceStorageService {
   }
 
   /**
-   * Crate Loan document
+   * Create Loan document
    * @param jdata JSON format
    */
   public createLoanDocument(jdata: any) {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/financeloandocument';
+    let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
 
     this._http.post(apiurl, jdata, {
         headers: headers,
@@ -1185,21 +1215,21 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.createDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
       });
   }
-  
+
   /**
    * Get Loan tmp docs: for document item overview page
    */
   public getLoanTmpDocs(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceLoanTmpDoc';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanTmpDoc';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
@@ -1228,12 +1258,12 @@ export class FinanceStorageService {
    * @param doc Tmplate doc
    */
   public doPostLoanTmpDoc(doc: TemplateDocLoan) {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceLoanTmpDoc';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanTmpDoc';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('docid', doc.DocId.toString());
@@ -1251,19 +1281,19 @@ export class FinanceStorageService {
         return <any>response;
       });
   }
-  
+
   /**
    * Create asset document
    * @param jdata Data for creation
    * @param isbuyin Is a buyin doc or soldout doc
    */
   public createAssetDocument(jdata: any, isbuyin: boolean) {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + (isbuyin? '/api/FinanceAssetBuyDocument' : '/api/FinanceAssetSoldDocument');
+    let apiurl: string = environment.ApiUrl + (isbuyin? '/api/FinanceAssetBuyDocument' : '/api/FinanceAssetSoldDocument');
 
     this._http.post(apiurl, jdata, {
         headers: headers,
@@ -1305,12 +1335,12 @@ export class FinanceStorageService {
    * @param docid Id of Document
    */
   public readDocument(docid: number) {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceDocument/' + docid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/FinanceDocument/' + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
@@ -1345,7 +1375,7 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.readDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.readDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
       });
   }
@@ -1356,12 +1386,12 @@ export class FinanceStorageService {
    * @param isbuyin Is buyin document, otherwise is a soldout document
    */
   public readAssetDocument(docid: number, isbuyin: boolean): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + (isbuyin? '/api/FinanceAssetBuyDocument/' : '/api/FinanceAssetSoldDocument/') + docid.toString();
+    let apiurl: string = environment.ApiUrl + (isbuyin? '/api/FinanceAssetBuyDocument/' : '/api/FinanceAssetSoldDocument/') + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -1385,12 +1415,12 @@ export class FinanceStorageService {
    * @param docid Id of ADP Document
    */
   public readADPDocument(docid: number): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/financeadpdocument/' + docid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/financeadpdocument/' + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -1414,12 +1444,12 @@ export class FinanceStorageService {
    * @param docid Id of Loan Document
    */
   public readLoanDocument(docid: number): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/financeloandocument/' + docid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/financeloandocument/' + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -1443,12 +1473,12 @@ export class FinanceStorageService {
    * @param docid ID fo the doc
    */
   public deleteDocument(docid: number) {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/financedocument/' + docid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/financedocument/' + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.delete(apiurl, {
@@ -1478,19 +1508,19 @@ export class FinanceStorageService {
         // Broadcast event: failed
         this.deleteDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
-      });    
+      });
   }
 
   /**
    * Get ADP tmp docs: for document item overview page
    */
   public getADPTmpDocs(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceADPTmpDoc';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceADPTmpDoc';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
@@ -1519,12 +1549,12 @@ export class FinanceStorageService {
    * @param doc Tmplate doc
    */
   public doPostADPTmpDoc(doc: TemplateDocADP) {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceADPTmpDoc';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceADPTmpDoc';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('docid', doc.DocId.toString());
@@ -1548,12 +1578,12 @@ export class FinanceStorageService {
    * @param tgtcurr Target currency
    */
   public fetchPreviousDocWithPlanExgRate(tgtcurr: string): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate/';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate/';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('tgtcurr', tgtcurr);
@@ -1830,7 +1860,7 @@ export class FinanceStorageService {
             }
           }
         }
-        
+
         return [mapIn, mapOut];
       });
   }
@@ -1851,7 +1881,7 @@ export class FinanceStorageService {
       repaymentMethod: datainput.RepaymentMethod,
       startDate: datainput.StartDate.format(MomentDateFormat),
       totalAmount: datainput.TotalAmount,
-      totalMonths: datainput.TotalMonths
+      totalMonths: datainput.TotalMonths,
     };
     const jdata: string = JSON && JSON.stringify(jobject);
 
@@ -1881,4 +1911,26 @@ export class FinanceStorageService {
         return results;
       });
   }  
+
+  // Private methods
+  private buildTranTypeHierarchy(listTranType: TranType[]) {
+    listTranType.forEach((value, index, array) => {
+      if (!value.ParId) {
+        value.HierLevel = 0;
+        value.FullDisplayText = value.Name;
+
+        this.buildTranTypeHierarchyImpl(value, listTranType, 1);
+      }
+    });
+  }
+  private buildTranTypeHierarchyImpl(par: TranType, listTranType: TranType[], curLvl: number) {
+    listTranType.forEach((value, index, array) => {
+      if (value.ParId === par.Id) {
+        value.HierLevel = curLvl;
+        value.FullDisplayText = par.FullDisplayText + "." + value.Name;
+
+        this.buildTranTypeHierarchyImpl(value, listTranType, value.HierLevel + 1);
+      }
+    });
+  }
 }

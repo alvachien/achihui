@@ -15,6 +15,14 @@ import * as moment from 'moment';
 
 @Injectable()
 export class LearnStorageService {
+  // Buffer
+  private _isCtgyListLoaded: boolean = false;
+  private _isObjListLoaded: boolean = false;
+  private _isHistListLoaded: boolean = false;
+  private _isQtnBankListLoaded: boolean = false;
+  private _isEnWordListLoaded: boolean = false;
+  private _isEnSentListLoaded: boolean = false;
+
   listCategoryChange: BehaviorSubject<LearnCategory[]> = new BehaviorSubject<LearnCategory[]>([]);
   get Categories(): LearnCategory[] {
     return this.listCategoryChange.value;
@@ -39,19 +47,11 @@ export class LearnStorageService {
   get EnWords(): EnWord[] {
     return this.listEnWordChange.value;
   }
-  
+
   listEnSentChange: BehaviorSubject<EnSentence[]> = new BehaviorSubject<EnSentence[]>([]);
   get EnSentences(): EnSentence[] {
     return this.listEnSentChange.value;
   }
-  
-  // Buffer
-  private _isCtgyListLoaded: boolean;
-  private _isObjListLoaded: boolean;
-  private _isHistListLoaded: boolean;
-  private _isQtnBankListLoaded: boolean;
-  private _isEnWordListLoaded: boolean;
-  private _isEnSentListLoaded: boolean;
 
   // Events
   createObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
@@ -87,9 +87,9 @@ export class LearnStorageService {
   // Categories
   public fetchAllCategories(forceReload?: boolean): Observable<any> {
     if (!this._isCtgyListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/learncategory';
+      const apiurl: string = environment.ApiUrl + '/api/learncategory';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
