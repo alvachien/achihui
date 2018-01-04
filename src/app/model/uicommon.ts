@@ -108,11 +108,12 @@ export class UIDisplayStringUtil {
 
     for (let se in QuestionBankTypeEnum) {
       if (Number.isNaN(+se)) {
+        // Do nothing
       } else {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getQuestionBankTypeDisplayString(+se),
-          displaystring: ''
+          displaystring: '',
         });
       }
     }
@@ -125,11 +126,12 @@ export class UIDisplayStringUtil {
 
     for (let se in TagTypeEnum) {
       if (Number.isNaN(+se)) {
+        // Do nothing
       } else {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getTagTypeDisplayString(+se),
-          displaystring: ''
+          displaystring: '',
         });
       }
     }
@@ -142,11 +144,12 @@ export class UIDisplayStringUtil {
 
     for (let se in OverviewScopeEnum) {
       if (Number.isNaN(+se)) {
+        // Do nothing
       } else {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getOverviewScopeDisplayString(+se),
-          displaystring: ''
+          displaystring: '',
         });
       }
     }
@@ -159,11 +162,12 @@ export class UIDisplayStringUtil {
 
     for (let se in AccountStatusEnum) {
       if (Number.isNaN(+se)) {
+        // Do nothing
       } else {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getAccountStatusDisplayString(+se),
-          displaystring: ''
+          displaystring: '',
         });
       }
     }
@@ -176,11 +180,12 @@ export class UIDisplayStringUtil {
 
     for (let se in RepaymentMethodEnum) {
       if (Number.isNaN(+se)) {
+        // Do nothing
       } else {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getRepaymentMethodDisplayString(+se),
-          displaystring: ''
+          displaystring: '',
         });
       }
     }
@@ -197,7 +202,7 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +pe,
           i18nterm: UIDisplayStringUtil.getEnPOSDisplayString(<EnPOSEnum>pe),
-          displaystring: ''
+          displaystring: '',
         });
       // }
     }
@@ -207,14 +212,15 @@ export class UIDisplayStringUtil {
 
   public static getRepeatFrequencyDisplayStrings(): Array<UIDisplayString> {
     let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
-    
+
     for (let rfe in RepeatFrequencyEnum) {
       if (Number.isNaN(+rfe)) {
+        // Do nothing
       } else {
         arrst.push({
           value: +rfe,
           i18nterm: UIDisplayStringUtil.getRepeatFrequencyDisplayString(<RepeatFrequencyEnum>+rfe),
-          displaystring: ''
+          displaystring: '',
         });
       }
     }
@@ -224,22 +230,23 @@ export class UIDisplayStringUtil {
 
   public static getTranTypeLevelDisplayStrings(): Array<UIDisplayString> {
     let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
-    
+
     for (let rfe in TranTypeLevelEnum) {
       if (Number.isNaN(+rfe)) {
+        // Do nothing
       } else {
         arrst.push({
           value: +rfe,
           i18nterm: UIDisplayStringUtil.getTranTypeLevelDisplayString(<TranTypeLevelEnum>+rfe),
-          displaystring: ''
+          displaystring: '',
         });
       }
     }
 
     return arrst;
   }
-  
-  // Get display string for each enum  
+
+  // Get display string for each enum
   public static getUICommonLabelDisplayString(le: UICommonLabelEnum): string {
     switch (le) {
       case UICommonLabelEnum.DocumentPosted:
@@ -271,13 +278,13 @@ export class UIDisplayStringUtil {
 
       case UICommonLabelEnum.Error:
         return 'Common.Error';
-        
+
       case UICommonLabelEnum.ChartLegend:
         return 'Common.ChartLegend';
 
       case UICommonLabelEnum.UpdatedSuccess:
         return 'Common.UpdatedSuccessfully';
-        
+
       default:
         return '';
     }
@@ -325,13 +332,13 @@ export class UIDisplayStringUtil {
 
       case OverviewScopeEnum.CurrentQuarter:
         return 'Common.CurrentQuarter';
-      
+
       case OverviewScopeEnum.PreviousQuarter:
         return 'Common.PreviousQuarter';
 
       case OverviewScopeEnum.CurrentWeek:
         return 'Common.CurrentWeek';
-      
+
       case OverviewScopeEnum.PreviousWeek:
         return 'Common.PreviousWeek';
 
