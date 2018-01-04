@@ -7,8 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EventListComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    console.log('Enter constructor of EventListComponent');
+  }
 
   ngOnInit() {
+    console.log('Enter ngOnInit of EventListComponent');
   }
 }

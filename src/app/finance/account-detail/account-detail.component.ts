@@ -68,6 +68,14 @@ export class AccountDetailComponent implements OnInit {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readAccount : ${x}`);
                 }
                 this.detailObject = x;
+
+                if (this.uiMode === UIMode.Change) {
+                  if (this.detailObject.CategoryId === FinanceAccountCategory_Asset 
+                  || this.detailObject.CategoryId === FinanceAccountCategory_AdvancePayment 
+                  || this.detailObject.CategoryId === FinanceAccountCategory_Loan) {
+                    this.uiMode = UIMode.Display; // Not support for those accounts yet
+                  }
+                }
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readAccount : ${x}`);
@@ -131,59 +139,9 @@ export class AccountDetailComponent implements OnInit {
 
   public onSubmit() {
     if (this.uiMode === UIMode.Create) {
-      this._storageService.createAccountEvent.subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createAccountEvent in AccountDetailComponent with : ${x}`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof Account) {
-          // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-          
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-
-            this.onInitCreateMode();
-            this.setStep(0);
-            // this._router.navigate(['/finance/account/create']);
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
-            }
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-
-      this._storageService.createAccount(this.detailObject);
+      this.onCreateImpl();
     } else if (this.uiMode === UIMode.Change) {
-      // Update current account
-      // TBD!
+      this.onUpdateImpl();
     }
   }
 
@@ -191,5 +149,104 @@ export class AccountDetailComponent implements OnInit {
     this.detailObject = new Account();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
+  }
+
+  private onCreateImpl(): void {
+    this._storageService.createAccountEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createAccountEvent in AccountDetailComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof Account) {
+        // Show the snackbar
+        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
+        
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
+
+          this.onInitCreateMode();
+          this.setStep(0);
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+          }
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    this._storageService.createAccount(this.detailObject);
+  }
+
+  private onUpdateImpl(): void {
+    this._storageService.changeAccountEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving changeAccountEvent in AccountDetailComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof Account) {
+        // Show the snackbar
+        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
+          'OK', {
+          duration: 3000,
+        });
+        
+        snackbarRef.onAction().subscribe(() => {
+          this.onInitCreateMode();
+          this.setStep(0);
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    this._storageService.changeAccount(this.detailObject);
   }
 }

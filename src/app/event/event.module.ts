@@ -8,12 +8,15 @@ import { UIDependModule } from '../uidepend.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
+import { EventRoutingModule } from './event-routing.module';
+
 import { EventComponent } from './event.component';
-import { CategoryComponent } from './category/category.component';
-import { EventListComponent } from './event-list/event-list.component';
-import { EventDetailComponent } from './event-detail/event-detail.component';
-import { RecurrEventComponent } from './recurr-event/recurr-event.component';
-import { RecurrEventDetailComponent } from './recurr-event-detail/recurr-event-detail.component';
+import { CategoryComponent } from './category';
+import { CategoryListComponent } from './category-list';
+import { EventListComponent } from './event-list';
+import { EventDetailComponent } from './event-detail';
+import { RecurrEventComponent } from './recurr-event';
+import { RecurrEventDetailComponent } from './recurr-event-detail';
 
 @NgModule({
   imports: [
@@ -21,12 +24,14 @@ import { RecurrEventDetailComponent } from './recurr-event-detail/recurr-event-d
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    EventRoutingModule,
     UIDependModule,
     TranslateModule.forChild(),
   ],
   declarations: [
     EventComponent, 
     CategoryComponent, 
+    CategoryListComponent,
     EventListComponent, 
     EventDetailComponent, 
     RecurrEventComponent, 

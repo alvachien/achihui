@@ -57,6 +57,11 @@ export const AppRoutes: Routes = [
         loadChildren: 'app/finance/finance.module#FinanceModule',
     },
     {
+        path: 'event',
+        canActivate: [HomeChoseGuardService],
+        loadChildren: 'app/event/event.module#EventModule',
+    },
+    {
         path: 'library',
         canActivate: [HomeChoseGuardService],
         loadChildren: 'app/library/library.module#LibraryModule',

@@ -50,7 +50,7 @@ export class SideNavService {
 
     const event = this.addItem('Nav.EventTrace', 'event', null, 5);
     this.addSubItem(event, 'Common.Categories', '/event/category', 1, 'toc');
-    this.addSubItem(event, 'Nav.EventTrace', '/event/recurevent', 2, 'schedule');
+    this.addSubItem(event, 'Nav.EventTrace', '/event/recur', 2, 'schedule');
     this.addSubItem(event, 'Nav.EventTrace', '/event/timeline', 3, 'timeline');
 
     const about = this.addItem('Nav.About', 'help', null, 6);
