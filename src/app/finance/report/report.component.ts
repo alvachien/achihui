@@ -2,8 +2,7 @@ import { Component, OnInit, EventEmitter, ViewChild, ElementRef } from '@angular
 import { DataSource } from '@angular/cdk/collections';
 import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable, BehaviorSubject } from 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
@@ -34,7 +33,9 @@ export class ReportBSDataSource extends DataSource<any> {
     });
   }
 
-  disconnect() { }
+  disconnect() {
+    // Empty
+   }
 }
 
 /**
@@ -62,7 +63,9 @@ export class ReportCCDataSource extends DataSource<any> {
     });
   }
 
-  disconnect() { }
+  disconnect() {
+    // Empty
+   }
 }
 
 /**
@@ -90,7 +93,9 @@ export class ReportOrderDataSource extends DataSource<any> {
     });
   }
 
-  disconnect() { }
+  disconnect() {
+    // Empty
+   }
 }
 
 @Component({
@@ -130,7 +135,7 @@ export class ReportComponent implements OnInit {
   dataCCCredit: any[] = [];
   dataOrderDebit: any[] = [];
   dataOrderCredit: any[] = [];
-  dataTrend: any[] = [];
+  dataMOM: any[] = [];
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -141,7 +146,7 @@ export class ReportComponent implements OnInit {
     public _currService: FinCurrencyService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSourceBS = new ReportBSDataSource(this, this.paginatorBS);
     this.dataSourceCC = new ReportCCDataSource(this, this.paginatorCC);
     this.dataSourceOrder = new ReportOrderDataSource(this, this.paginatorOrder);
@@ -154,7 +159,8 @@ export class ReportComponent implements OnInit {
       this._storageService.getReportBS(),
       this._storageService.getReportCC(),
       this._storageService.getReportOrder(),
-    ]).subscribe((x) => {
+      this._storageService.getReportMonthOnMonth()
+    ]).subscribe((x: any) => {
       this.ReportBS = [];
       this.dataBSAccountDebit = [];
       this.dataBSAccountCredit = [];
@@ -164,8 +170,14 @@ export class ReportComponent implements OnInit {
       this.dataCCCredit = [];
       this.ReportCC = [];
       this.ReportOrder = [];
+      this.dataMOM = [];
 
-      let idxbs = 4, idxcc = 5, idxorder = 6;
+      let idxbs: number = 4;
+      let idxcc: number = 5;
+      let idxorder: number = 6;
+      let idxmom: number = 7;
+
+      // Balance sheet
       if (x[idxbs] instanceof Array && x[idxbs].length > 0) {
         for (let bs of x[idxbs]) {
           let rbs: BalanceSheetReport  = new BalanceSheetReport();
@@ -177,7 +189,7 @@ export class ReportComponent implements OnInit {
               value: rbs.DebitBalance,
             });
 
-            let ctgyExist = false;
+            let ctgyExist: boolean = false;
             for (let cd of this.dataBSCategoryDebit) {
               if (cd.name === rbs.AccountCategoryName) {
                 ctgyExist = true;
@@ -201,7 +213,7 @@ export class ReportComponent implements OnInit {
               value: rbs.CreditBalance,
             });
 
-            let ctgyExist = false;
+            let ctgyExist: boolean = false;
             for (let cd of this.dataBSCategoryCredit) {
               if (cd.name === rbs.AccountCategoryName) {
                 ctgyExist = true;
@@ -223,6 +235,7 @@ export class ReportComponent implements OnInit {
         }
       }
 
+      // Control center
       if (x[idxcc] instanceof Array && x[idxcc].length > 0) {
         for (let bs of x[idxcc]) {
           let rbs: ControlCenterReport  = new ControlCenterReport();
@@ -246,6 +259,7 @@ export class ReportComponent implements OnInit {
         }
       }
 
+      // Order report
       if (x[idxorder] instanceof Array && x[idxorder].length > 0) {
         for (let bs of x[idxorder]) {
           let rbs: OrderReport  = new OrderReport();
@@ -269,6 +283,47 @@ export class ReportComponent implements OnInit {
         }
       }
 
+      // Month on month
+      if (x[idxmom] instanceof Array && x[idxmom].length > 0) {
+        this.dataMOM = [];
+        for (let inmom of x[idxmom]) {
+          let outidx: number = this.dataMOM.findIndex((val: any) => {
+            return val.name === (inmom.year.toString() + inmom.month.toString());
+          });
+
+          if (outidx === -1) {
+            let outmom: any = {};
+            outmom.name = inmom.year.toString() + inmom.month.toString();
+            outmom.series = [];
+            if (inmom.expense) {
+              outmom.series.push({
+                name: 'Expense',
+                value: inmom.tranAmount,
+              });
+            } else {
+              outmom.series.push({
+                name: 'Revenue',
+                value: inmom.tranAmount,
+              });
+            }
+
+            this.dataMOM.push(outmom);
+          } else {
+            if (inmom.expense) {
+              this.dataMOM[outidx].series.push({
+                name: 'Expense',
+                value: inmom.tranAmount,
+              });
+            } else {
+              this.dataMOM[outidx].series.push({
+                name: 'Revenue',
+                value: inmom.tranAmount,
+              });
+            }
+          }
+        }
+      }
+
       // Trigger the events
       this.ReportBSEvent.emit();
       this.ReportCCEvent.emit();
@@ -276,27 +331,36 @@ export class ReportComponent implements OnInit {
     });
   }
 
-  public onBSAccountDebitSelect($event) {
+  public onBSAccountDebitSelect($event): void {
+    // Do nothing
   }
-  public onBSAccountCreditSelect($event) {
+  public onBSAccountCreditSelect($event): void {
+    // Do nothing
   }
-  public onBSCategoryDebitSelect($event) {
+  public onBSCategoryDebitSelect($event): void {
+    // Do nothing
   }
-  public onBSCategoryCreditSelect($event) {
+  public onBSCategoryCreditSelect($event): void {
+    // Do nothing
   }
-  public onCCDebitSelect($event) {
+  public onCCDebitSelect($event): void {
+    // Do nothing
   }
-  public onCCCreditSelect($event) {
+  public onCCCreditSelect($event): void {
+    // Do nothing
   }
-  public onOrderDebitSelect($event) {
+  public onOrderDebitSelect($event): void {
+    // Do nothing
   }
-  public onOrderCreditSelect($event) {
+  public onOrderCreditSelect($event): void {
+    // Do nothing
   }
-  public onTrendSelect($event) {    
+  public onTrendSelect($event): void {
+    // Do nothing
   }
 
   // Refresh the Order Report
-  public onReportOrderRefresh() {
-
+  public onReportOrderRefresh(): void {
+    // Do nothing
   }
 }

@@ -13,12 +13,12 @@
           <div class="row">
             <mat-card>
               <mat-card-header>
-                <mat-card-title>Month on Month</mat-card-title>
+                <mat-card-title>{{'Finance.MonthOnMonth' | translate}}</mat-card-title>
               </mat-card-header>
               <mat-card-content>
                 <ngx-charts-bar-vertical-2d
                   [scheme]="colorScheme"
-                  [results]="dataTrend"
+                  [results]="dataMOM"
                   (select)="onTrendSelect($event)">
                 </ngx-charts-bar-vertical-2d>
               </mat-card-content>

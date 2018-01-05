@@ -2022,6 +2022,31 @@ export class TranTypeReport {
 }
 
 /**
+ * Trend report
+ */
+export class MonthOnMonthReport {
+  public year: number;
+  public month: number;
+  public expense: boolean;
+  public tranAmount: number;
+
+  public onSetData(data: any): void {
+    if (data && data.year) {
+      this.year = data.year;
+    }
+    if (data && data.month) {
+      this.month = data.month;
+    }
+    if (data && data.expense) {
+      this.expense = data.expense;
+    }
+    if (data && data.tranAmount) {
+      this.tranAmount = data.tranAmount;
+    }
+  }
+}
+
+/**
  * Document item with balance
  */
 export class DocumentItemWithBalance {

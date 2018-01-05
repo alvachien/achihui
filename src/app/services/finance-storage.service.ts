@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
 import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Account, ControlCenter, Order,
     Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
-    UINameValuePair, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, TemplateDocLoan } from '../model';
+    UINameValuePair, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, TemplateDocLoan, MonthOnMonthReport } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -1862,6 +1862,50 @@ export class FinanceStorageService {
         }
 
         return [mapIn, mapOut];
+      });
+  }
+
+  /**
+   * Get Month on Month report
+   */
+  public getReportMonthOnMonth(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl = environment.ApiUrl + '/api/FinanceReportTrend';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(MomentDateFormat));
+    }
+
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering getReportTranType in FinanceStorageService: ${response}`);
+        }
+
+        // Do the grouping here.
+        let rst: any[] = [];
+
+        if (response instanceof Array && response.length > 0) {
+          for (let tt of response) {
+            let mmp: MonthOnMonthReport = new MonthOnMonthReport();
+            mmp.onSetData(tt);
+            rst.push(mmp);
+          }
+        }
+
+        return rst;
       });
   }
 
