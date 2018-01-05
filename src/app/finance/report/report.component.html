@@ -9,8 +9,17 @@
         <ng-template mat-tab-label>
           {{'Common.Overview' | translate}}
         </ng-template>
-        <div class="container mt-2">
-          <div class="row">
+        <div class="container mt-2 w-100">
+          <div class="row w-100">
+            <mat-toolbar>
+              <mat-form-field>
+                <mat-select [(ngModel)]="selectedMOMScope" (change)="onMOMScopeChanged()">
+                  <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>
+                    {{scp.i18nterm | translate}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-toolbar>
             <mat-card>
               <mat-card-header>
                 <mat-card-title>{{'Finance.MonthOnMonth' | translate}}</mat-card-title>

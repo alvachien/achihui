@@ -1891,7 +1891,7 @@ export class FinanceStorageService {
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering getReportTranType in FinanceStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering getReportMonthOnMonth in FinanceStorageService: ${response}`);
         }
 
         // Do the grouping here.

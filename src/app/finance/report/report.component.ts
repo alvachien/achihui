@@ -4,8 +4,8 @@ import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
+import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum, getOverviewScopeRange } from '../../model';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 /**
@@ -104,6 +104,8 @@ export class ReportOrderDataSource extends DataSource<any> {
   styleUrls: ['./report.component.scss'],
 })
 export class ReportComponent implements OnInit {
+  selectedMOMScope: OverviewScopeEnum;
+
   displayedBSColumns = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
   dataSourceBS: ReportBSDataSource | null;
   ReportBS: BalanceSheetReport[] = [];
@@ -135,7 +137,7 @@ export class ReportComponent implements OnInit {
   dataCCCredit: any[] = [];
   dataOrderDebit: any[] = [];
   dataOrderCredit: any[] = [];
-  dataMOM: any[] = [];
+  dataMOM: any[] = [];  
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -143,7 +145,9 @@ export class ReportComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
+    public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
+    this.selectedMOMScope = OverviewScopeEnum.All;
   }
 
   ngOnInit(): void {
@@ -285,43 +289,7 @@ export class ReportComponent implements OnInit {
 
       // Month on month
       if (x[idxmom] instanceof Array && x[idxmom].length > 0) {
-        this.dataMOM = [];
-        for (let inmom of x[idxmom]) {
-          let outidx: number = this.dataMOM.findIndex((val: any) => {
-            return val.name === (inmom.year.toString() + inmom.month.toString());
-          });
-
-          if (outidx === -1) {
-            let outmom: any = {};
-            outmom.name = inmom.year.toString() + inmom.month.toString();
-            outmom.series = [];
-            if (inmom.expense) {
-              outmom.series.push({
-                name: 'Expense',
-                value: inmom.tranAmount,
-              });
-            } else {
-              outmom.series.push({
-                name: 'Revenue',
-                value: inmom.tranAmount,
-              });
-            }
-
-            this.dataMOM.push(outmom);
-          } else {
-            if (inmom.expense) {
-              this.dataMOM[outidx].series.push({
-                name: 'Expense',
-                value: inmom.tranAmount,
-              });
-            } else {
-              this.dataMOM[outidx].series.push({
-                name: 'Revenue',
-                value: inmom.tranAmount,
-              });
-            }
-          }
-        }
+        this.refreshMoMData(x[idxmom]);
       }
 
       // Trigger the events
@@ -331,6 +299,15 @@ export class ReportComponent implements OnInit {
     });
   }
 
+  public onMOMScopeChanged(): void {
+    let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedMOMScope);
+
+    this._storageService.getReportMonthOnMonth(bgn, end).subscribe(x => {
+      if (x instanceof Array && x.length > 0) {
+        this.refreshMoMData(x);
+      }
+    });
+  }
   public onBSAccountDebitSelect($event): void {
     // Do nothing
   }
@@ -362,5 +339,45 @@ export class ReportComponent implements OnInit {
   // Refresh the Order Report
   public onReportOrderRefresh(): void {
     // Do nothing
+  }
+
+  private refreshMoMData(data: any): void {
+    this.dataMOM = [];
+    for (let inmom of data) {
+      let outidx: number = this.dataMOM.findIndex((val: any) => {
+        return val.name === (inmom.year.toString() + inmom.month.toString());
+      });
+
+      if (outidx === -1) {
+        let outmom: any = {};
+        outmom.name = inmom.year.toString() + inmom.month.toString();
+        outmom.series = [];
+        if (inmom.expense) {
+          outmom.series.push({
+            name: 'Expense',
+            value: inmom.tranAmount,
+          });
+        } else {
+          outmom.series.push({
+            name: 'Revenue',
+            value: inmom.tranAmount,
+          });
+        }
+
+        this.dataMOM.push(outmom);
+      } else {
+        if (inmom.expense) {
+          this.dataMOM[outidx].series.push({
+            name: 'Expense',
+            value: inmom.tranAmount,
+          });
+        } else {
+          this.dataMOM[outidx].series.push({
+            name: 'Revenue',
+            value: inmom.tranAmount,
+          });
+        }
+      }
+    }
   }
 }
