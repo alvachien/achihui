@@ -4,7 +4,8 @@ import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum, getOverviewScopeRange } from '../../model';
+import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum, 
+  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -105,6 +106,8 @@ export class ReportOrderDataSource extends DataSource<any> {
 })
 export class ReportComponent implements OnInit {
   selectedMOMScope: OverviewScopeEnum;
+  momExcludeTransfer: boolean;
+  momScopes: UIDisplayString[];
 
   displayedBSColumns = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
   dataSourceBS: ReportBSDataSource | null;
@@ -147,7 +150,16 @@ export class ReportComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
-    this.selectedMOMScope = OverviewScopeEnum.All;
+    this.selectedMOMScope = OverviewScopeEnum.All;    
+    this.momScopes = [];
+
+    this._uiStatusService.OverviewScopeStrings.forEach((val: UIDisplayString) => {
+      if (val.value === OverviewScopeEnum.All || val.value === OverviewScopeEnum.CurrentQuarter
+        || val.value === OverviewScopeEnum.CurrentYear || val.value === OverviewScopeEnum.PreviousQuarter
+        || val.value === OverviewScopeEnum.PreviousYear) {
+        this.momScopes.push(val);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -183,108 +195,17 @@ export class ReportComponent implements OnInit {
 
       // Balance sheet
       if (x[idxbs] instanceof Array && x[idxbs].length > 0) {
-        for (let bs of x[idxbs]) {
-          let rbs: BalanceSheetReport  = new BalanceSheetReport();
-          rbs.onSetData(bs);
-
-          if (rbs.DebitBalance) {
-            this.dataBSAccountDebit.push({
-              name: rbs.AccountName,
-              value: rbs.DebitBalance,
-            });
-
-            let ctgyExist: boolean = false;
-            for (let cd of this.dataBSCategoryDebit) {
-              if (cd.name === rbs.AccountCategoryName) {
-                ctgyExist = true;
-
-                cd.value += rbs.DebitBalance;
-                break;
-              }
-            }
-
-            if (!ctgyExist) {
-              this.dataBSCategoryDebit.push({
-                name: rbs.AccountCategoryName,
-                value: rbs.DebitBalance,
-              });
-            }
-          }
-
-          if (rbs.CreditBalance) {
-            this.dataBSAccountCredit.push({
-              name: rbs.AccountName,
-              value: rbs.CreditBalance,
-            });
-
-            let ctgyExist: boolean = false;
-            for (let cd of this.dataBSCategoryCredit) {
-              if (cd.name === rbs.AccountCategoryName) {
-                ctgyExist = true;
-
-                cd.value += rbs.CreditBalance;
-                break;
-              }
-            }
-
-            if (!ctgyExist) {
-              this.dataBSCategoryCredit.push({
-                name: rbs.AccountCategoryName,
-                value: rbs.CreditBalance,
-              });
-            }
-          }
-
-          this.ReportBS.push(rbs);
-        }
+        this.refreshBalanceSheetReportData(x[idxbs]);
       }
 
       // Control center
       if (x[idxcc] instanceof Array && x[idxcc].length > 0) {
-        for (let bs of x[idxcc]) {
-          let rbs: ControlCenterReport  = new ControlCenterReport();
-          rbs.onSetData(bs);
-
-          if (rbs.DebitBalance) {
-            this.dataCCDebit.push({
-              name: rbs.ControlCenterName,
-              value: rbs.DebitBalance,
-            });
-          }
-
-          if (rbs.CreditBalance) {
-            this.dataCCCredit.push({
-              name: rbs.ControlCenterName,
-              value: rbs.CreditBalance,
-            });
-          }
-
-          this.ReportCC.push(rbs);
-        }
+        this.refreshControlCenterReportData(x[idxcc]);
       }
 
       // Order report
       if (x[idxorder] instanceof Array && x[idxorder].length > 0) {
-        for (let bs of x[idxorder]) {
-          let rbs: OrderReport  = new OrderReport();
-          rbs.onSetData(bs);
-
-          if (rbs.DebitBalance) {
-            this.dataCCDebit.push({
-              name: rbs.OrderName,
-              value: rbs.DebitBalance,
-            });
-          }
-
-          if (rbs.CreditBalance) {
-            this.dataCCCredit.push({
-              name: rbs.OrderName,
-              value: rbs.CreditBalance,
-            });
-          }
-
-          this.ReportOrder.push(rbs);
-        }
+        this.refreshOrderReportData(x[idxorder]);
       }
 
       // Month on month
@@ -302,11 +223,16 @@ export class ReportComponent implements OnInit {
   public onMOMScopeChanged(): void {
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedMOMScope);
 
-    this._storageService.getReportMonthOnMonth(bgn, end).subscribe(x => {
+    this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end).subscribe(x => {
       if (x instanceof Array && x.length > 0) {
         this.refreshMoMData(x);
       }
     });
+  }
+  public onMOMExcludeTransferChanged(): void {
+    this.momExcludeTransfer = !this.momExcludeTransfer;
+
+    this.onMOMScopeChanged();
   }
   public onBSAccountDebitSelect($event): void {
     // Do nothing
@@ -343,23 +269,25 @@ export class ReportComponent implements OnInit {
 
   private refreshMoMData(data: any): void {
     this.dataMOM = [];
+
     for (let inmom of data) {
+      const strmonth = inmom.year.toString() + Utility.prefixInteger(inmom.month, 2);
       let outidx: number = this.dataMOM.findIndex((val: any) => {
-        return val.name === (inmom.year.toString() + inmom.month.toString());
+        return val.name === strmonth;
       });
 
       if (outidx === -1) {
         let outmom: any = {};
-        outmom.name = inmom.year.toString() + inmom.month.toString();
+        outmom.name = strmonth;
         outmom.series = [];
         if (inmom.expense) {
           outmom.series.push({
-            name: 'Expense',
+            name: this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing),
             value: inmom.tranAmount,
           });
         } else {
           outmom.series.push({
-            name: 'Revenue',
+            name: this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming),
             value: inmom.tranAmount,
           });
         }
@@ -368,16 +296,116 @@ export class ReportComponent implements OnInit {
       } else {
         if (inmom.expense) {
           this.dataMOM[outidx].series.push({
-            name: 'Expense',
+            name: this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing),
             value: inmom.tranAmount,
           });
         } else {
           this.dataMOM[outidx].series.push({
-            name: 'Revenue',
+            name: this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming),
             value: inmom.tranAmount,
           });
         }
       }
     }
   }
+  private refreshOrderReportData(data: any): void {
+    for (let bs of data) {
+      let rbs: OrderReport  = new OrderReport();
+      rbs.onSetData(bs);
+
+      if (rbs.DebitBalance) {
+        this.dataCCDebit.push({
+          name: rbs.OrderName,
+          value: rbs.DebitBalance,
+        });
+      }
+
+      if (rbs.CreditBalance) {
+        this.dataCCCredit.push({
+          name: rbs.OrderName,
+          value: rbs.CreditBalance,
+        });
+      }
+
+      this.ReportOrder.push(rbs);
+    }
+  }
+  private refreshControlCenterReportData(data: any): void {
+    for (let bs of data) {
+      let rbs: ControlCenterReport  = new ControlCenterReport();
+      rbs.onSetData(bs);
+
+      if (rbs.DebitBalance) {
+        this.dataCCDebit.push({
+          name: rbs.ControlCenterName,
+          value: rbs.DebitBalance,
+        });
+      }
+
+      if (rbs.CreditBalance) {
+        this.dataCCCredit.push({
+          name: rbs.ControlCenterName,
+          value: rbs.CreditBalance,
+        });
+      }
+
+      this.ReportCC.push(rbs);
+    }
+  }
+  private refreshBalanceSheetReportData(data: any): void {
+    for (let bs of data) {
+      let rbs: BalanceSheetReport  = new BalanceSheetReport();
+      rbs.onSetData(bs);
+
+      if (rbs.DebitBalance) {
+        this.dataBSAccountDebit.push({
+          name: rbs.AccountName,
+          value: rbs.DebitBalance,
+        });
+
+        let ctgyExist: boolean = false;
+        for (let cd of this.dataBSCategoryDebit) {
+          if (cd.name === rbs.AccountCategoryName) {
+            ctgyExist = true;
+
+            cd.value += rbs.DebitBalance;
+            break;
+          }
+        }
+
+        if (!ctgyExist) {
+          this.dataBSCategoryDebit.push({
+            name: rbs.AccountCategoryName,
+            value: rbs.DebitBalance,
+          });
+        }
+      }
+
+      if (rbs.CreditBalance) {
+        this.dataBSAccountCredit.push({
+          name: rbs.AccountName,
+          value: rbs.CreditBalance,
+        });
+
+        let ctgyExist: boolean = false;
+        for (let cd of this.dataBSCategoryCredit) {
+          if (cd.name === rbs.AccountCategoryName) {
+            ctgyExist = true;
+
+            cd.value += rbs.CreditBalance;
+            break;
+          }
+        }
+
+        if (!ctgyExist) {
+          this.dataBSCategoryCredit.push({
+            name: rbs.AccountCategoryName,
+            value: rbs.CreditBalance,
+          });
+        }
+      }
+
+      this.ReportBS.push(rbs);
+    }
+  }  
 }

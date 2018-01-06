@@ -9,30 +9,35 @@
         <ng-template mat-tab-label>
           {{'Common.Overview' | translate}}
         </ng-template>
-        <div class="container mt-2 w-100">
-          <div class="row w-100">
-            <mat-toolbar>
-              <mat-form-field>
-                <mat-select [(ngModel)]="selectedMOMScope" (change)="onMOMScopeChanged()">
-                  <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>
-                    {{scp.i18nterm | translate}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </mat-toolbar>
-            <mat-card>
-              <mat-card-header>
-                <mat-card-title>{{'Finance.MonthOnMonth' | translate}}</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
+        <div class="container mt-2">
+          <mat-card class="demo-full-width">
+            <mat-card-header>
+              <mat-card-title>{{'Finance.MonthOnMonth' | translate}}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-toolbar>
+                <mat-form-field>
+                  <mat-select [(ngModel)]="selectedMOMScope" (change)="onMOMScopeChanged()">
+                    <mat-option *ngFor="let scp of momScopes" [value]='scp.value'>
+                      {{scp.i18nterm | translate}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-slide-toggle color="primary" [checked]="momExcludeTransfer" (change)="onMOMExcludeTransferChanged()">{{'Finance.ExcludeTransfer' | translate}}</mat-slide-toggle>
+              </mat-toolbar>
+              <div style="height:500px;">
                 <ngx-charts-bar-vertical-2d
                   [scheme]="colorScheme"
                   [results]="dataMOM"
-                  (select)="onTrendSelect($event)">
+                  xAxis="true"
+                  yAxis="true"
+                  legend="true"
+                  showXAxisLabel="true"
+                  showYAxisLabel="true">
                 </ngx-charts-bar-vertical-2d>
-              </mat-card-content>
-            </mat-card>
-          </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
         </div>
       </mat-tab>
 

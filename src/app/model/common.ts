@@ -47,7 +47,9 @@ export enum UICommonLabelEnum {
   DeleteConfrimContent  = 9,
   Error                 = 10,
   ChartLegend           = 11,
-  UpdatedSuccess        = 12
+  UpdatedSuccess        = 12,
+  Incoming              = 13,
+  Outgoing              = 14,
 }
 
 /**

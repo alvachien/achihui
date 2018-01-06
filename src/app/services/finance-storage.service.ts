@@ -1868,7 +1868,7 @@ export class FinanceStorageService {
   /**
    * Get Month on Month report
    */
-  public getReportMonthOnMonth(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+  public getReportMonthOnMonth(exctran?: boolean, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1877,6 +1877,9 @@ export class FinanceStorageService {
     let apiurl = environment.ApiUrl + '/api/FinanceReportTrend';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (exctran) {
+      params = params.append('exctran', exctran.toString());
+    }
     if (dtbgn) {
       params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
     }

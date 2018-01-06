@@ -285,6 +285,12 @@ export class UIDisplayStringUtil {
       case UICommonLabelEnum.UpdatedSuccess:
         return 'Common.UpdatedSuccessfully';
 
+      case UICommonLabelEnum.Incoming:
+        return 'Finance.Incoming';
+
+      case UICommonLabelEnum.Outgoing:
+        return 'Finance.Outgoing';
+
       default:
         return '';
     }
