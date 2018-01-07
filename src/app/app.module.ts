@@ -34,7 +34,7 @@ import { TagsListComponent } from './tags-list';
 import { AboutComponent } from './about';
 import { CreditsComponent } from './credits';
 import { VersionComponent } from './version';
-import { HomeMessageComponent } from './home-message';
+import { HomeMessageComponent, HomeMessageDialog } from './home-message';
 //import { MatPaginatorIntlCN  } from './utility';
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -76,9 +76,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     CreditsComponent,
     VersionComponent,
     HomeMessageComponent,
+    HomeMessageDialog,
   ],
   entryComponents: [
     MessageDialogComponent,
+    HomeMessageDialog,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
