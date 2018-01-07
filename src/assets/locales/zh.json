@@ -117,6 +117,10 @@
     "Start": "启动",
     "Stop": "停止",
     "Filter": "过滤",
+    "Messages": "消息",
+    "Message": "消息",
+    "Members": "成员",
+    "Member": "成员",
     
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",

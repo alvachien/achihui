@@ -8,10 +8,10 @@ import { Component, OnInit } from '@angular/core';
 export class EventComponent implements OnInit {
 
   constructor() {
-    console.log('Enter constructor of EventComponent');
+    //console.log('Enter constructor of EventComponent');
   }
 
   ngOnInit() {
-    console.log('Enter ngOnInit of EventComponent');
+    //console.log('Enter ngOnInit of EventComponent');
   }
 }

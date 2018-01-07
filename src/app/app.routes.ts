@@ -7,6 +7,7 @@ import { LanguageComponent } from './language';
 import { HomeDefComponent } from './home-def';
 import { HomeDefListComponent } from './home-def-list';
 import { HomeDefDetailComponent } from './home-def-detail';
+import { HomeMessageComponent } from './home-message';
 import { PageNotFoundComponent } from './page-not-found';
 import { TagsListComponent } from './tags-list';
 import { AboutComponent } from './about';
@@ -45,6 +46,7 @@ export const AppRoutes: Routes = [
         ],
     },
     { path: 'currency', component: FinanceCurrencyComponent, canActivate: [AuthGuardService], },
+    { path: 'homemsg', component: HomeMessageComponent, canActivate: [HomeChoseGuardService], },
     { path: 'tag', component: TagsListComponent, canActivate: [AuthGuardService], },
     {
         path: 'learn',

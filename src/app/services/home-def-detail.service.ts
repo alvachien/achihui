@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson } from '../model';
+import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, HomeMsg } from '../model';
 import { AuthService } from './auth.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
@@ -309,5 +309,50 @@ export class HomeDefDetailService {
         }, () => {
         });
     }
+  }
+
+  /**
+   * Get messages of current user
+   * @param top Total messages to fetch
+   * @param skip Skip the first X messages
+   */
+  public getHomeMessages(top: number, skip: number): Observable<any> {
+    const apiurl = environment.ApiUrl + '/api/homemsg';
+    const curhid = this.ChosedHome.ID;
+    const requestUrl = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
+
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+                      .append('Accept', 'application/json')
+                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+  
+    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
+  }
+
+  /**
+   * Create message
+   * @param data Message content
+   */
+  public createHomeMessage(data: HomeMsg): Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+                     .append('Accept', 'application/json')
+                     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    const apiurl = environment.ApiUrl + '/api/homemsg';
+
+    const jdata = JSON && JSON.stringify(data.writeJSONObject());
+    return this._http.post(apiurl, jdata, {
+        headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+
+        let hd: HomeMsg = new HomeMsg();
+        hd.onSetData(<any>response);
+        return hd;
+      });   
   }
 }

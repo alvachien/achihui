@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import * as hih from './common';
 
 /**
  * Relationship
@@ -196,7 +197,14 @@ export class HomeDef {
  * Home message JSON
  */
 export interface HomeMsgJson {
+  id: number;
   hid: number;
+  userFrom: string;
+  userTo: string;
+  sendDate: string;
+  title: string;
+  content: string;
+  readFlag: boolean;
 }
 
 /**
@@ -204,7 +212,105 @@ export interface HomeMsgJson {
  */
 export class HomeMsg {
   private _hid: number;
+  private _id: number;
   private _usrto: string;
   private _usrfrom: string;
   private _senddate: moment.Moment;
+  private _readflag: boolean;
+  private _title: string;
+  private _content: string;
+
+  constructor() {
+    this._senddate = moment();
+  }
+
+  get HID(): number {
+    return this._hid;
+  }
+  set HID(hid: number) {
+    this._hid = hid;
+  }
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get UserTo(): string {
+    return this._usrto;
+  }
+  set UserTo(ut: string) {
+    this._usrto = ut;
+  }
+  get UserFrom(): string {
+    return this._usrfrom;
+  }
+  set UserFrom(uf: string) {
+    this._usrfrom = uf;
+  }
+  get SendDate(): moment.Moment {
+    return this._senddate;
+  }
+  set SendDate(sd: moment.Moment) {
+    this._senddate = sd;
+  }
+  get Title(): string {
+    return this._title;
+  }
+  set Title(title: string) {
+    this._title = title;
+  }
+  get Content(): string {
+    return this._content;
+  }
+  set Content(content: string) {
+    this._content = content;
+  }
+  get ReadFlag(): boolean {
+    return this._readflag;
+  }
+  set ReadFlag(rf: boolean) {
+    this._readflag = rf;
+  }
+
+  public onSetData(data: any) {
+    if (data && data.id) {
+      this._id = +data.id;
+    }
+    if (data && data.hid) {
+      this._hid = +data.hid;
+    }
+    if (data && data.userTo) {
+      this._usrto = data.userTo;
+    }
+    if (data && data.userFrom) {
+      this._usrfrom = data.userFrom;
+    }
+    if (data && data.sendDate) {
+      this._senddate = moment(data.sendDate, hih.MomentDateFormat)
+    }
+    if (data && data.title) {
+      this._title = data.title;
+    }
+    if (data && data.content) {
+      this._content = data.content;
+    }
+    if (data && data.readFlag) {
+      this._readflag = data.readFlag;
+    }
+  }
+  public writeJSONObject(): HomeMsgJson {
+    let hmj: HomeMsgJson = {
+      id: this._id,
+      hid: this._hid,
+      userFrom: this._usrfrom,
+      userTo: this._usrto,
+      sendDate: this._senddate.format(hih.MomentDateFormat),
+      title: this._title,
+      content: this._content,
+      readFlag: this._readflag,          
+    };
+
+    return hmj;
+  }
 }

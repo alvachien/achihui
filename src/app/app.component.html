@@ -12,12 +12,19 @@
         <h1>H.I.H.</h1>
         <div>
           <button mat-icon-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon" matTooltip="{{'Login.Login' | translate }}"><mat-icon color="accent">account_box</mat-icon></button>
-          <button mat-icon-button *ngIf="isLoggedIn" [matMenuTriggerFor]="matMenuUser"><mat-icon color="accent">account_box</mat-icon></button>
+          <button mat-icon-button *ngIf="isLoggedIn" [matMenuTriggerFor]="matMenuUser">
+            <mat-icon color="accent">account_box</mat-icon>
+            <span *ngIf="curChosenHome" class="badge badge-light">4</span>
+          </button>
           <mat-menu #matMenuUser="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item disabled>{{titleLogin}}</button>
             <button mat-menu-item (click)="onUserDetail()">
               <mat-icon color="accent">account_circle</mat-icon>
               <span class="title">{{'Nav.UserDetail' | translate}}</span>
+            </button>
+            <button mat-menu-item (click)="onCheckMessages()">
+              <mat-icon color="accent">message</mat-icon>
+              <span>{{'Common.Message' | translate}}</span>
             </button>
             <button mat-menu-item (click)="onLogout()">
               <mat-icon color="accent">exit_to_app</mat-icon>
@@ -42,9 +49,10 @@
             </button>
           </mat-menu>
 
-          <a mat-icon-button (click)="toggleFullscreen()" title="Toggle fullscreen">
+          <button mat-icon-button (click)="toggleFullscreen()" title="Toggle fullscreen">
             <mat-icon color="accent" class="mat-24">fullscreen</mat-icon>
-          </a>
+          </button>
+
           <button mat-icon-button (click)="onOpenGithubRepo()">
             <mat-icon svgIcon="github"></mat-icon>
           </button>
@@ -64,7 +72,7 @@
     </div>
 
     <footer class="text-center font-weight-ligh" style="border-top:1px solid #009688; padding:10px 0 30px 0; width:100%">
-      © Alva Chien, 2016 - 2018
+      © 2016 - 2018 Alva Chien. All rights reserved.
     </footer>
   </div>
 </mat-sidenav-container>

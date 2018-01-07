@@ -117,6 +117,10 @@
     "Start": "Start",
     "Stop": "Stop",
     "Filter": "Filter",
+    "Messages": "Messages",
+    "Message": "Message",
+    "Members": "Members",
+    "Member": "Member",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",
