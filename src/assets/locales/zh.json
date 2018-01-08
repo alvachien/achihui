@@ -128,6 +128,7 @@
     "RecurEvents": "重复事务",
     "RecurEvent": "重复事务",
     "EventsByTimeline": "时间维度的事务",
+    "SentBox": "发件箱",
     
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",

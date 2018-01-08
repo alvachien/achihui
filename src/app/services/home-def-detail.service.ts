@@ -317,10 +317,10 @@ export class HomeDefDetailService {
    * @param top Total messages to fetch
    * @param skip Skip the first X messages
    */
-  public getHomeMessages(top: number, skip: number): Observable<any> {
+  public getHomeMessages(sentbox: boolean, top: number, skip: number): Observable<any> {
     const apiurl = environment.ApiUrl + '/api/homemsg';
     const curhid = this.ChosedHome.ID;
-    const requestUrl = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
+    const requestUrl = `${apiurl}?hid=${curhid}&sentbox=${sentbox}&top=${top}&skip=${skip}`;
 
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')

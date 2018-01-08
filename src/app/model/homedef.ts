@@ -214,7 +214,9 @@ export class HomeMsg {
   private _hid: number;
   private _id: number;
   private _usrto: string;
+  private _usrtoDisplayAs: string;
   private _usrfrom: string;
+  private _usrfromDisplayAs: string;
   private _senddate: moment.Moment;
   private _readflag: boolean;
   private _title: string;
@@ -242,17 +244,32 @@ export class HomeMsg {
   set UserTo(ut: string) {
     this._usrto = ut;
   }
+  get UserToDisplayAs(): string {
+    return this._usrtoDisplayAs;
+  }
+  set UserToDisplayAs(uds: string) {
+    this._usrtoDisplayAs = uds;
+  }
   get UserFrom(): string {
     return this._usrfrom;
   }
   set UserFrom(uf: string) {
     this._usrfrom = uf;
   }
+  get UserFromDisplayAs(): string {
+    return this._usrfromDisplayAs;
+  }
+  set UserFromDisplayAs(uds: string) {
+    this._usrfromDisplayAs = uds;
+  }
   get SendDate(): moment.Moment {
     return this._senddate;
   }
   set SendDate(sd: moment.Moment) {
     this._senddate = sd;
+  }
+  get SendDateFormatString(): string {
+    return this._senddate.format(hih.MomentDateFormat);
   }
   get Title(): string {
     return this._title;
@@ -283,8 +300,14 @@ export class HomeMsg {
     if (data && data.userTo) {
       this._usrto = data.userTo;
     }
+    if (data && data.userTo_DisplayAs) {
+      this._usrtoDisplayAs = data.userTo_DisplayAs;
+    }
     if (data && data.userFrom) {
       this._usrfrom = data.userFrom;
+    }
+    if (data && data.userFrom_DisplayAs) {
+      this._usrfromDisplayAs = data.userFrom_DisplayAs;
     }
     if (data && data.sendDate) {
       this._senddate = moment(data.sendDate, hih.MomentDateFormat)

@@ -1,11 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject } from 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, BookCategory } from '../../model';
 import { LibraryStorageService } from '../../services';
-
+import { Observable } from 'rxjs/Observable';
+import { merge } from 'rxjs/observable/merge';
+import { of as observableOf } from 'rxjs/observable/of';
+import { catchError } from 'rxjs/operators/catchError';
+import { map } from 'rxjs/operators/map';
+import { startWith } from 'rxjs/operators/startWith';
+import { switchMap } from 'rxjs/operators/switchMap';
 
 @Component({
   selector: 'hih-event-category-list',

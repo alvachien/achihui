@@ -12,7 +12,7 @@
         <button mat-icon-button (click)="onCreateMessage()" matTooltip="{{'Common.Create' | translate}}">
           <mat-icon color="primary" class="mt-3">add</mat-icon>
         </button>
-        <mat-slide-toggle color="primary" [checked]="incSentByMe" (change)="onIncludeSentByMe()">{{'Common.SentByMe' | translate}}</mat-slide-toggle>
+        <mat-slide-toggle color="primary" [checked]="sentBox" (change)="onSwitchSentBox()">{{'Common.SentBox' | translate}}</mat-slide-toggle>
       </mat-toolbar>
 
       <div class="example-container mat-elevation-z8">
@@ -24,10 +24,16 @@
             <mat-cell *matCellDef="let row"> {{row.ID}} </mat-cell>
           </ng-container>
 
+          <!-- User From Column -->
+          <ng-container matColumnDef="userfrom">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> From </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.UserFromDisplayAs}} </mat-cell>
+          </ng-container>
+          
           <!-- User To Column -->
           <ng-container matColumnDef="userto">
             <mat-header-cell *matHeaderCellDef mat-sort-header> To </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.UserTo}} </mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.UserToDisplayAs}} </mat-cell>
           </ng-container>
 
           <!-- Title Column -->
@@ -39,7 +45,7 @@
           <!-- SendDate Column -->
           <ng-container matColumnDef="senddate">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Sent </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.SendDate}} </mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.SendDateFormatString}} </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

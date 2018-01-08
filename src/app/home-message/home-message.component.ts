@@ -19,9 +19,9 @@ import { switchMap } from 'rxjs/operators/switchMap';
   ],
 })
 export class HomeMessageComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['id', 'userto', 'title', 'senddate'];
+  displayedColumns = ['id', 'userfrom', 'userto', 'title', 'senddate'];
   dataSource: MatTableDataSource<HomeMsg>;
-  incSentByMe: boolean;
+  sentBox: boolean;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -32,7 +32,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
     private _authService: AuthService,
     public _dialog: MatDialog) {
     this.isLoadingResults = true;
-    this.incSentByMe = false;
+    this.sentBox = false;
 
     this._homeDefService.fetchAllMembersInChosedHome();
 
@@ -48,41 +48,14 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this.paginator.page
-      .pipe(
-      startWith({}),
-      switchMap(() => {
-        this.isLoadingResults = true;
-        return this._homeDefService!.getHomeMessages(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize );
-      }),
-      map(data => {
-        // Flip flag to show that loading has finished.
-        this.isLoadingResults = false;
-
-        let rslts: HomeMsg[] = [];
-        if (data && data.contentList && data.contentList instanceof Array) {
-          for (let ci of data.contentList) {
-            let rst: HomeMsg = new HomeMsg();
-            rst.onSetData(ci);
-
-            rslts.push(rst);
-          }
-        }
-
-        return rslts;
-      }),
-      catchError(() => {
-        this.isLoadingResults = false;
-
-        return observableOf([]);
-      }),
-      ).subscribe(data => this.dataSource.data = data);
+    this.fetchMessages();
   }
 
-  public onIncludeSentByMe(): void {
-    this.incSentByMe = !this.incSentByMe;
+  public onSwitchSentBox(): void {
+    this.sentBox = !this.sentBox;
 
     // Update
+    this.fetchMessages();
   }
 
   public onCreateMessage(): void {
@@ -92,7 +65,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
     let content: string = '';
 
     let dialogRef: any = this._dialog.open(HomeMessageDialogComponent, {
-      width: '250px',
+      width: '500px',
       data: { Members: this._homeDefService.MembersInChosedHome, UserTo: usrTo, Title: title, Content: content },
     });
 
@@ -119,6 +92,39 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+
+  // Fetch all messages
+  private fetchMessages(): void {
+    this.paginator.page
+      .pipe(
+      startWith({}),
+      switchMap(() => {
+        this.isLoadingResults = true;
+        return this._homeDefService!.getHomeMessages(this.sentBox, this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize );
+      }),
+      map(data => {
+        // Flip flag to show that loading has finished.
+        this.isLoadingResults = false;
+
+        let rslts: HomeMsg[] = [];
+        if (data && data.contentList && data.contentList instanceof Array) {
+          for (let ci of data.contentList) {
+            let rst: HomeMsg = new HomeMsg();
+            rst.onSetData(ci);
+
+            rslts.push(rst);
+          }
+        }
+
+        return rslts;
+      }),
+      catchError(() => {
+        this.isLoadingResults = false;
+
+        return observableOf([]);
+      }),
+      ).subscribe(data => this.dataSource.data = data);    
   }
 }
 
