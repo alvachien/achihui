@@ -2,19 +2,19 @@
 <mat-dialog-content>
   <div class="example-container">
     <mat-form-field>
-      <mat-select placeholder="{{'Common.Member' | translate}}" [(ngModel)]="UserTo" name="usrTo">
-        <mat-option *ngFor="let mem of Members" [value]="mem.User">
+      <mat-select placeholder="{{'Common.Member' | translate}}" [(ngModel)]="data.UserTo" name="usrTo">
+        <mat-option *ngFor="let mem of data.Members" [value]="mem.User">
           {{mem.DisplayAs}} - {{mem.User}} 
         </mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="{{'Common.Title' | translate}}" [(ngModel)]="Title">
+      <input matInput placeholder="{{'Common.Title' | translate}}" [(ngModel)]="data.Title">
     </mat-form-field>
   
     <mat-form-field>
-      <textarea matInput placeholder="{{'Common.Content' | translate}}" [(ngModel)]="Content"></textarea>
+      <textarea matInput placeholder="{{'Common.Content' | translate}}" [(ngModel)]="data.Content"></textarea>
     </mat-form-field>  
   </div>
 </mat-dialog-content>

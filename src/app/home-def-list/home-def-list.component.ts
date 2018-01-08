@@ -57,7 +57,7 @@ export class HomeDefListComponent implements OnInit {
   constructor(public _homedefService: HomeDefDetailService,
     private _router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSource = new HomeDefDataSource(this._homedefService, this.paginator);
   }
 

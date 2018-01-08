@@ -253,9 +253,10 @@ export class HomeDefDetailService {
           this.curHomeMembers.next(copiedData);
         }, (error) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllMembersInChosedHome in HomeDefDetailService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Error occurred in fetchAllMembersInChosedHome in HomeDefDetailService: ${error}`);
           }
         }, () => {
+          // Empty
         });
     }
   }

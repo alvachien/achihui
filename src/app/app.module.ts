@@ -11,10 +11,9 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TagCloudModule } from 'angular-tag-cloud-module';
 
 import { AppComponent } from './app.component';
-import {
-  AuthService, AuthGuardService,
+import { AuthService, AuthGuardService,
   FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService, LibraryStorageService,
-  HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService
+  HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService,
 } from './services';
 import { AppRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
@@ -34,8 +33,8 @@ import { TagsListComponent } from './tags-list';
 import { AboutComponent } from './about';
 import { CreditsComponent } from './credits';
 import { VersionComponent } from './version';
-import { HomeMessageComponent, HomeMessageDialog } from './home-message';
-//import { MatPaginatorIntlCN  } from './utility';
+import { HomeMessageComponent, HomeMessageDialogComponent } from './home-message';
+// import { MatPaginatorIntlCN  } from './utility';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -76,17 +75,17 @@ export function HttpLoaderFactory(http: HttpClient) {
     CreditsComponent,
     VersionComponent,
     HomeMessageComponent,
-    HomeMessageDialog,
+    HomeMessageDialogComponent,
   ],
   entryComponents: [
     MessageDialogComponent,
-    HomeMessageDialog,
+    HomeMessageDialogComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
-    //{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlCN },
+    // { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCN },
     AuthService,
     AuthGuardService,
     FinCurrencyService,

@@ -13,10 +13,12 @@ import { switchMap } from 'rxjs/operators/switchMap';
 
 @Component({
   selector: 'app-home-msg',
-  templateUrl: './home-msg.component.html',
-  styleUrls: ['./home-msg.component.scss']
+  templateUrl: './home-message.component.html',
+  styleUrls: [
+    './home-message.component.scss',
+  ],
 })
-export class HomeMessageComponent implements OnInit {
+export class HomeMessageComponent implements OnInit, AfterViewInit {
   displayedColumns = ['id', 'userto', 'title', 'senddate'];
   dataSource: MatTableDataSource<HomeMsg>;
 
@@ -36,10 +38,11 @@ export class HomeMessageComponent implements OnInit {
     this.dataSource = new MatTableDataSource([]);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Empty
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
@@ -70,32 +73,31 @@ export class HomeMessageComponent implements OnInit {
         this.isLoadingResults = false;
 
         return observableOf([]);
-      })
+      }),
       ).subscribe(data => this.dataSource.data = data);
   }
 
-  
   public onCreateMessage(): void {
     // Show a dialog to create message
     let usrTo: string = '';
     let title: string = '';
     let content: string = '';
 
-    let dialogRef = this._dialog.open(HomeMessageDialog, {
+    let dialogRef: any = this._dialog.open(HomeMessageDialogComponent, {
       width: '250px',
-      data: { Members: this._homeDefService.curHomeMembers, UserTo: usrTo, Title: title, Content: content  }
+      data: { Members: this._homeDefService.MembersInChosedHome, UserTo: usrTo, Title: title, Content: content },
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
-      //this.animal = result;
+      // this.animal = result;
     });
 
     // let msg: HomeMsg = new HomeMsg();
     // msg.HID = this._homeDefService.ChosedHome.ID;
     // msg.Content = 'Test';
     // msg.Title = 'Test';
-    // msg.ReadFlag = false;    
+    // msg.ReadFlag = false;
     // msg.UserFrom = this._authService.authSubject.getValue().getUserId();
     // msg.UserTo = msg.UserFrom;
 
@@ -112,11 +114,19 @@ export class HomeMessageComponent implements OnInit {
   templateUrl: 'home-message.dialog.html',
   styleUrls: ['./home-message.dialog.scss'],
 })
-export class HomeMessageDialog {
+export class HomeMessageDialogComponent {
+  // Members: any[] = [];
+  // Title: string;
+  // Content: string;
+  // UserTo: string;
 
   constructor(
-    public dialogRef: MatDialogRef<HomeMessageDialog>,
+    public dialogRef: MatDialogRef<HomeMessageDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
+    // this.Members = data.Members;
+    // this.Title = data.Title;
+    // this.Content = data.Content;
+    // this.UserTo = data.UserTo;
   }
 
   onNoClick(): void {

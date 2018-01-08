@@ -41,7 +41,7 @@ export class HomeDefDetailComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     // Distinguish current mode
     this._activateRoute.url.subscribe((x) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -80,6 +80,7 @@ export class HomeDefDetailComponent implements OnInit {
         console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HomeDefDetailComponent with activateRoute URL : ${error}`);
       }
     }, () => {
+      // Empty
     });
   }
 
@@ -101,6 +102,7 @@ export class HomeDefDetailComponent implements OnInit {
     // Submit to DB
     if (this.detailObject.ID === null || this.detailObject.ID === undefined) {
       this.detailObject.Host = this._authService.authSubject.value.getUserId();
+
       this._homedefService.createEvent.subscribe((x) => {
         if (x) {
           // Success!
@@ -112,14 +114,16 @@ export class HomeDefDetailComponent implements OnInit {
         } else {
           // Failed
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Entering onSubmit of HomeDefDetailComponent... ${x}`);
+            console.error(`AC_HIH_UI [Error]: Failed in onSubmit of HomeDefDetailComponent... ${x}`);
           }
 
           // Show error dialog!
         }
       });
+
       this._homedefService.createHomeDef(this.detailObject);
     } else {
+      // Empty
     }
   }
 
