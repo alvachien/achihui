@@ -1508,6 +1508,7 @@ export class FinanceStorageService {
         // Broadcast event: failed
         this.deleteDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
+        // Empty
       });
   }
 

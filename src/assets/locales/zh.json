@@ -123,6 +123,11 @@
     "Member": "成员",
     "Title": "标题",
     "SentByMe": "已发送",
+    "Events": "事务",
+    "Event": "事务",
+    "RecurEvents": "重复事务",
+    "RecurEvent": "重复事务",
+    "EventsByTimeline": "时间维度的事务",
     
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",

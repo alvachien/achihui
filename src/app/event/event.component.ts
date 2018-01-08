@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { LogLevel, LearnObject } from '../model';
 
 @Component({
   selector: 'app-event',
@@ -8,10 +10,14 @@ import { Component, OnInit } from '@angular/core';
 export class EventComponent implements OnInit {
 
   constructor() {
-    //console.log('Enter constructor of EventComponent');
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Enter constructor of EventComponent`);
+    }
   }
 
-  ngOnInit() {
-    //console.log('Enter ngOnInit of EventComponent');
+  ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Enter constructor of EventComponent`);
+    }
   }
 }

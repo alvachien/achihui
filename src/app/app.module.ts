@@ -14,6 +14,7 @@ import { AppComponent } from './app.component';
 import { AuthService, AuthGuardService,
   FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService, LibraryStorageService,
   HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService,
+  EventStorageService,
 } from './services';
 import { AppRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
@@ -99,6 +100,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     UIStatusService,
     SideNavService,
     TagsService,
+    EventStorageService,
   ],
   bootstrap: [AppComponent],
 })

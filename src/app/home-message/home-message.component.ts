@@ -128,18 +128,10 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
   styleUrls: ['./home-message.dialog.scss'],
 })
 export class HomeMessageDialogComponent {
-  // Members: any[] = [];
-  // Title: string;
-  // Content: string;
-  // UserTo: string;
-
   constructor(
     public dialogRef: MatDialogRef<HomeMessageDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    // this.Members = data.Members;
-    // this.Title = data.Title;
-    // this.Content = data.Content;
-    // this.UserTo = data.UserTo;
+      // Empty
   }
 
   onNoClick(): void {

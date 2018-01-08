@@ -6,21 +6,21 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class SideNavService {
   private _itemsSubject: BehaviorSubject<SidenavItem[]> = new BehaviorSubject<SidenavItem[]>([]);
   private _items: SidenavItem[] = [];
-  items$: Observable<SidenavItem[]> = this._itemsSubject.asObservable();
-
   private _currentlyOpenSubject: BehaviorSubject<SidenavItem[]> = new BehaviorSubject<SidenavItem[]>([]);
   private _currentlyOpen: SidenavItem[] = [];
+
+  items$: Observable<SidenavItem[]> = this._itemsSubject.asObservable();
   currentlyOpen$: Observable<SidenavItem[]> = this._currentlyOpenSubject.asObservable();
-  
+
   constructor() {
-    const overall = this.addItem('Common.Overview', 'weekend', '/', 1);
+    const overall: any = this.addItem('Common.Overview', 'weekend', '/', 1);
     this.addSubItem(overall, 'Nav.InitialPage', '/initial', 1, 'dashboard');
     this.addSubItem(overall, 'Common.Languages', '/language', 2, 'language');
     this.addSubItem(overall, 'Nav.HomeList', '/homedef', 3, 'domain');
     this.addSubItem(overall, 'Finance.Currency', '/currency', 4, 'euro_symbol');
     this.addSubItem(overall, 'Common.Tags', '/tag', 5, 'filter_vintage');
 
-    const learn = this.addItem('Nav.LearningTrace', 'event_note', null, 2);
+    const learn: any = this.addItem('Nav.LearningTrace', 'event_note', undefined, 2);
     this.addSubItem(learn, 'Learning.LearningCategory', '/learn/category', 1, 'settings_input_composite');
     this.addSubItem(learn, 'Learning.LearningObjects', '/learn/object', 2, 'lightbulb_outline');
     this.addSubItem(learn, 'Learning.LearningHistories', '/learn/history', 3, 'history');
@@ -28,7 +28,7 @@ export class SideNavService {
     this.addSubItem(learn, 'Learning.EnglishWord', '/learn/enword', 5, 'text_fields');
     this.addSubItem(learn, 'Learning.EnglishSentence', '/learn/ensent', 6, 'short_text');
 
-    const finance = this.addItem('Nav.FinanceTrace', 'art_track', null, 3);
+    const finance: any = this.addItem('Nav.FinanceTrace', 'art_track', undefined, 3);
     this.addSubItem(finance, 'Common.Overview', '/finance/overview', 1, 'today');
     this.addSubItem(finance, 'Finance.AccountCategories', '/finance/acntctgy', 2, 'settings_input_component');
     this.addSubItem(finance, 'Finance.DocumentTypes', '/finance/doctype', 3, 'view_comfy');
@@ -40,7 +40,7 @@ export class SideNavService {
     this.addSubItem(finance, 'Finance.Documents', '/finance/document', 9, 'poll');
     this.addSubItem(finance, 'Finance.Reports', '/finance/report', 10, 'account_balance');
 
-    const library = this.addItem('Nav.Libraries', 'subject', null, 4);
+    const library: any = this.addItem('Nav.Libraries', 'subject', undefined, 4);
     this.addSubItem(library, 'Nav.Person', '/library/person', 1, 'face');
     this.addSubItem(library, 'Nav.Location', '/library/location', 2, 'storage');
     this.addSubItem(library, 'Library.BookCategories', '/library/bookcategory', 3, 'settings');
@@ -48,12 +48,13 @@ export class SideNavService {
     this.addSubItem(library, 'Library.MovieGenres', '/library/moviegenre', 5, 'video_library');
     this.addSubItem(library, 'Library.Movies', '/library/movie', 6, 'movie');
 
-    const event = this.addItem('Nav.EventTrace', 'event', null, 5);
+    const event: any = this.addItem('Nav.EventTrace', 'event', undefined, 5);
     this.addSubItem(event, 'Common.Categories', '/event/category', 1, 'toc');
-    this.addSubItem(event, 'Nav.EventTrace', '/event/recur', 2, 'schedule');
-    this.addSubItem(event, 'Nav.EventTrace', '/event/timeline', 3, 'timeline');
+    this.addSubItem(event, 'Common.Events', '/event', 2, 'schedule');
+    this.addSubItem(event, 'Common.RecurEvents', '/event/recur', 3, 'repeat');
+    this.addSubItem(event, 'Common.EventsByTimeline', '/event/timeline', 4, 'timeline');
 
-    const about = this.addItem('Nav.About', 'help', null, 6);
+    const about: any = this.addItem('Nav.About', 'help', undefined, 6);
     this.addSubItem(about, 'Nav.About', '/about', 1, 'help');
     this.addSubItem(about, 'Nav.Credits', '/credits', 2, 'thumb_up');
     this.addSubItem(about, 'Nav.Version', '/version', 3, 'update');
@@ -69,7 +70,7 @@ export class SideNavService {
       badge: badge || null,
       badgeColor: badgeColor || null,
       customClass: customClass || null,
-      color: color || 'primary'
+      color: color || 'primary',
     });
 
     this._items.push(item);
@@ -86,7 +87,7 @@ export class SideNavService {
       subItems: [],
       position: position || 99,
       icon: icon || null,
-      color: color || 'accent'
+      color: color || 'accent',
     });
 
     parent.subItems.push(item);
@@ -105,7 +106,7 @@ export class SideNavService {
   }
 
   isOpen(item: SidenavItem) {
-    return (this._currentlyOpen.indexOf(item) != -1);
+    return (this._currentlyOpen.indexOf(item) !== -1);
   }
 
   toggleCurrentlyOpen(item: SidenavItem) {
@@ -174,5 +175,5 @@ export class SideNavService {
 
   getSidenavItemByRoute(route) {
     return this.findByRouteRecursive(route, this._items);
-  }  
+  }
 }

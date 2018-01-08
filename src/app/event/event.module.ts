@@ -29,13 +29,13 @@ import { RecurrEventDetailComponent } from './recurr-event-detail';
     TranslateModule.forChild(),
   ],
   declarations: [
-    EventComponent, 
-    CategoryComponent, 
+    EventComponent,
+    CategoryComponent,
     CategoryListComponent,
-    EventListComponent, 
-    EventDetailComponent, 
-    RecurrEventComponent, 
-    RecurrEventDetailComponent
+    EventListComponent,
+    EventDetailComponent,
+    RecurrEventComponent,
+    RecurrEventDetailComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

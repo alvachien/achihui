@@ -11,6 +11,7 @@ export * from './learn-storage.service';
 export * from './library-storage.service';
 export * from './language.service';
 export * from './tags.service';
+export * from './event-storage.service';
 
 export * from './uistatus.service';
 export * from './side-nav.service';
