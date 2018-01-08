@@ -21,6 +21,7 @@ import { switchMap } from 'rxjs/operators/switchMap';
 export class HomeMessageComponent implements OnInit, AfterViewInit {
   displayedColumns = ['id', 'userto', 'title', 'senddate'];
   dataSource: MatTableDataSource<HomeMsg>;
+  incSentByMe: boolean;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -31,6 +32,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
     private _authService: AuthService,
     public _dialog: MatDialog) {
     this.isLoadingResults = true;
+    this.incSentByMe = false;
 
     this._homeDefService.fetchAllMembersInChosedHome();
 
@@ -77,6 +79,12 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
       ).subscribe(data => this.dataSource.data = data);
   }
 
+  public onIncludeSentByMe(): void {
+    this.incSentByMe = !this.incSentByMe;
+
+    // Update
+  }
+
   public onCreateMessage(): void {
     // Show a dialog to create message
     let usrTo: string = '';
@@ -89,23 +97,28 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-      // this.animal = result;
+      if (result) {
+        if (!result.UserTo || !result.Title || !result.Content) {
+          // Show error dialog
+          return;
+        }
+
+        // Create the real message
+        let msg: HomeMsg = new HomeMsg();
+        msg.HID = this._homeDefService.ChosedHome.ID;
+        msg.Content = result.Content;
+        msg.Title = result.Title;
+        msg.ReadFlag = false;
+        msg.UserFrom = this._authService.authSubject.getValue().getUserId();
+        msg.UserTo = result.UserTo;
+
+        this._homeDefService.createHomeMessage(msg).subscribe(x => {
+          let data = this.dataSource.data.slice();
+          data.push(x);
+          this.dataSource.data = data;
+        });
+      }
     });
-
-    // let msg: HomeMsg = new HomeMsg();
-    // msg.HID = this._homeDefService.ChosedHome.ID;
-    // msg.Content = 'Test';
-    // msg.Title = 'Test';
-    // msg.ReadFlag = false;
-    // msg.UserFrom = this._authService.authSubject.getValue().getUserId();
-    // msg.UserTo = msg.UserFrom;
-
-    // this._homeDefService.createHomeMessage(msg).subscribe(x => {
-    //   let data = this.dataSource.data.slice();
-    //   data.push(x);
-    //   this.dataSource.data = data;
-    // });
   }
 }
 
@@ -130,6 +143,6 @@ export class HomeMessageDialogComponent {
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(undefined);
   }
 }

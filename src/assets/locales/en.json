@@ -121,6 +121,8 @@
     "Message": "Message",
     "Members": "Members",
     "Member": "Member",
+    "Title": "Title",
+    "SentByMe": "Sent by me",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",

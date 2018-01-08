@@ -121,6 +121,8 @@
     "Message": "消息",
     "Members": "成员",
     "Member": "成员",
+    "Title": "标题",
+    "SentByMe": "已发送",
     
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",

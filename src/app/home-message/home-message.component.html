@@ -12,6 +12,7 @@
         <button mat-icon-button (click)="onCreateMessage()" matTooltip="{{'Common.Create' | translate}}">
           <mat-icon color="primary" class="mt-3">add</mat-icon>
         </button>
+        <mat-slide-toggle color="primary" [checked]="incSentByMe" (change)="onIncludeSentByMe()">{{'Common.SentByMe' | translate}}</mat-slide-toggle>
       </mat-toolbar>
 
       <div class="example-container mat-elevation-z8">
@@ -20,7 +21,7 @@
           <!-- ID Column -->
           <ng-container matColumnDef="id">
             <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.ID}} </mat-cell>
           </ng-container>
 
           <!-- User To Column -->
