@@ -21,7 +21,22 @@ export class EventStorageService {
     private _homeService: HomeDefDetailService) {
   }
 
-  fetchAllEvents() {
+  /**
+   * Get All events
+   * @param top Amount of records to fetch
+   * @param skip Skip the records
+   */
+  fetchAllEvents(top: number, skip: number): Observable<any> {
     // Fetch all events
+    const apiurl: string = environment.ApiUrl + '/api/event';
+    const curhid: number = this._homeService.ChosedHome.ID;
+    const requestUrl: any = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+                      .append('Accept', 'application/json')
+                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
   }
 }

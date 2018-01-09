@@ -24,28 +24,34 @@
             <mat-cell *matCellDef="let row"> {{row.ID}} </mat-cell>
           </ng-container>
 
-          <!-- User From Column -->
-          <ng-container matColumnDef="userfrom">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> From </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.UserFromDisplayAs}} </mat-cell>
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.Name}} </mat-cell>
           </ng-container>
 
-          <!-- User To Column -->
-          <ng-container matColumnDef="userto">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> To </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.UserToDisplayAs}} </mat-cell>
+          <!-- Assignee Column -->
+          <ng-container matColumnDef="assignee">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Assignee </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.Assignee}} </mat-cell>
           </ng-container>
 
-          <!-- Title Column -->
-          <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Title </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.Title}} </mat-cell>
+          <!-- Start  Column -->
+          <ng-container matColumnDef="start">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Start </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.StartTimeFormatString}} </mat-cell>
           </ng-container>
 
-          <!-- SendDate Column -->
-          <ng-container matColumnDef="senddate">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Sent </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.SendDateFormatString}} </mat-cell>
+          <!-- End Column -->
+          <ng-container matColumnDef="end">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> End </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.EndTimeFormatString}} </mat-cell>
+          </ng-container>
+
+          <!-- Completed Column -->
+          <ng-container matColumnDef="complete">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Complete </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.CompleteTimeFormatString}} </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

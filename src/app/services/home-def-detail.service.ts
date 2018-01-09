@@ -308,6 +308,7 @@ export class HomeDefDetailService {
           }
           this.readHomeMembersEvent.emit(null);
         }, () => {
+          // Empty
         });
     }
   }
@@ -318,15 +319,15 @@ export class HomeDefDetailService {
    * @param skip Skip the first X messages
    */
   public getHomeMessages(sentbox: boolean, top: number, skip: number): Observable<any> {
-    const apiurl = environment.ApiUrl + '/api/homemsg';
-    const curhid = this.ChosedHome.ID;
-    const requestUrl = `${apiurl}?hid=${curhid}&sentbox=${sentbox}&top=${top}&skip=${skip}`;
+    const apiurl: string = environment.ApiUrl + '/api/homemsg';
+    const curhid: number = this.ChosedHome.ID;
+    const requestUrl: any = `${apiurl}?hid=${curhid}&sentbox=${sentbox}&top=${top}&skip=${skip}`;
 
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-  
+
     return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
   }
 
@@ -354,6 +355,6 @@ export class HomeDefDetailService {
         let hd: HomeMsg = new HomeMsg();
         hd.onSetData(<any>response);
         return hd;
-      });   
+      });
   }
 }
