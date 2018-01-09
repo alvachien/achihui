@@ -1,17 +1,30 @@
 .table-container {
-    display: flex;
-    flex-direction: column;
-    min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
  }
   
- .table-header {
-   min-height: 64px;
-   display: flex;
-   align-items: center;
-   padding-left: 24px;
-   font-size: 20px;
- }
-  
+.table-header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  font-size: 20px;
+}
+
+.example-loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .mat-table {
   overflow: auto;
   max-height: 600px;

@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, GeneralEvent } from '../../model';
@@ -27,12 +28,15 @@ export class EventListComponent implements OnInit, AfterViewInit {
 
   constructor(private _homeDefService: HomeDefDetailService,
     private _authService: AuthService,
-    private _storageService: EventStorageService) {
+    private _storageService: EventStorageService,
+    private _router: Router) {
     this.isLoadingResults = true;
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Enter constructor of EventListComponent`);
     }
+
+    this.dataSource = new MatTableDataSource([]);
   }
 
   ngOnInit(): void {
@@ -53,7 +57,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
   }
 
   public onCreateEvent(): void {
-    // Empty
+    this._router.navigate(['/event/create']);
   }
 
   public fetchEvents(): void {

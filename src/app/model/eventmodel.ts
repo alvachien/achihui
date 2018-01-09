@@ -155,6 +155,29 @@ export class GeneralEvent extends hih.BaseModel {
       this._refRecurID = data.refRecurrID;
     }
   }
+
+  writeJSONObject(): any {
+    let robj = super.writeJSONObject();
+    robj.id = this._id;
+    robj.hid = this._hid;
+    robj.name = this._name;
+    if (this._assignee) {
+      robj.assignee = this._assignee;
+    }
+    robj.content = this._content;
+    robj.startTimePoint = this.StartTimeFormatString;
+    if (this._endTime) {
+      robj.endTimePoint = this.EndTimeFormatString;
+    }
+    if (this._completeTime) {
+      robj.completeTimePoint = this.CompleteTimeFormatString;
+    }
+    robj.isPublic = this._ispublic;
+    if (this._refRecurID) {
+      robj.refRecurrID = this._refRecurID;
+    }
+    return robj;
+  }
 }
 
 export class RecurrEvent {

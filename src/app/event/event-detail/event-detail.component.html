@@ -4,8 +4,18 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
+    <div class="example-loading-shade" *ngIf="isLoadingData">
+      <mat-spinner></mat-spinner>
+    </div>
+    
+    <div *ngIf="!isLoadingData">
+      <mat-form-field>
+        <input matInput type="text" placeholder="{{'Common.Name' | translate}}" [readonly]="!isFieldChangable" 
+          [(ngModel)]="detailObject.Name" name="name" #eventname maxlength="30">
+        <mat-hint align="end">{{eventname.value.length}} / 30</mat-hint>
+      </mat-form-field>
+    </div>
   </mat-card-content>
   <mat-card-actions>
   </mat-card-actions>
 </mat-card>
-

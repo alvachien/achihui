@@ -34,7 +34,7 @@ export class AccountDetailComponent implements OnInit {
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering ngOnInit of AccountDetailComponent ...');
     }
 
     Observable.forkJoin([
