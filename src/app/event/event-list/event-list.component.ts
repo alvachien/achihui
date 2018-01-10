@@ -57,7 +57,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
   }
 
   public onCreateEvent(): void {
-    this._router.navigate(['/event/create']);
+    this._router.navigate(['/event/general/create']);
   }
 
   public fetchEvents(): void {
@@ -68,7 +68,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
         this.isLoadingResults = true;
         return this._storageService!.fetchAllEvents(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize );
       }),
-      map(data => {
+      map((data) => {
         // Flip flag to show that loading has finished.
         this.isLoadingResults = false;
 
@@ -89,6 +89,6 @@ export class EventListComponent implements OnInit, AfterViewInit {
 
         return observableOf([]);
       }),
-      ).subscribe(data => this.dataSource.data = data);
+      ).subscribe((data) => this.dataSource.data = data);
   }
 }

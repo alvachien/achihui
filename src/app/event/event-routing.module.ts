@@ -6,6 +6,7 @@ import { CategoryComponent } from './category';
 import { CategoryListComponent } from './category-list';
 import { EventListComponent } from './event-list';
 import { EventDetailComponent } from './event-detail';
+import { GeneralEventComponent } from './general-event';
 import { RecurrEventComponent } from './recurr-event';
 import { RecurrEventDetailComponent } from './recurr-event-detail';
 
@@ -15,9 +16,13 @@ const routes: Routes = [
     component: EventComponent,
     children: [
       {
-        path: '',
-        component: EventListComponent,
+        path: 'general',
+        component: GeneralEventComponent,
         children: [
+          {
+            path: '',
+            component: EventListComponent,
+          },
           {
             path: 'create',
             component: EventDetailComponent,

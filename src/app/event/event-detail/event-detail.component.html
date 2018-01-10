@@ -11,9 +11,23 @@
     <div *ngIf="!isLoadingData">
       <mat-form-field>
         <input matInput type="text" placeholder="{{'Common.Name' | translate}}" [readonly]="!isFieldChangable" 
-          [(ngModel)]="detailObject.Name" name="name" #eventname maxlength="30">
-        <mat-hint align="end">{{eventname.value.length}} / 30</mat-hint>
+          [(ngModel)]="detailObject.Name" name="name" #eventname maxlength="50">
+        <mat-hint align="end">{{eventname.value.length}} / 50</mat-hint>
       </mat-form-field>
+
+      <mat-form-field>
+        <textarea matInput type="text" placeholder="{{'Common.Content' | translate}}" [readonly]="!isFieldChangable" 
+          [(ngModel)]="detailObject.Content" name="content" #eventcontent></textarea>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select placeholder="{{'Common.Assignee' | translate}}" [(ngModel)]="detailObject.Assignee" name="assgnee">
+          <mat-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
+            {{mem.DisplayAs}} - {{ mem.User }} 
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+        
     </div>
   </mat-card-content>
   <mat-card-actions>

@@ -50,7 +50,7 @@ export class SideNavService {
 
     const event: any = this.addItem('Nav.EventTrace', 'event', undefined, 5);
     this.addSubItem(event, 'Common.Categories', '/event/category', 1, 'toc');
-    this.addSubItem(event, 'Common.Events', '/event', 2, 'schedule');
+    this.addSubItem(event, 'Common.Events', '/event/general', 2, 'schedule');
     this.addSubItem(event, 'Common.RecurEvents', '/event/recur', 3, 'repeat');
     this.addSubItem(event, 'Common.EventsByTimeline', '/event/timeline', 4, 'timeline');
 
@@ -147,14 +147,14 @@ export class SideNavService {
   }
 
   findByRouteRecursive(route: string, collection: SidenavItem[]) {
-    let result = collection.filter((item)=> {
-      if(item.route === route) {
+    let result = collection.filter((item) => {
+      if (item.route === route) {
         return item;
       }
     });
 
     if (!result) {
-      collection.forEach((item)=> {
+      collection.forEach((item) => {
         if (item.hasSubItems()) {
           let found = this.findByRouteRecursive(route, item.subItems);
 

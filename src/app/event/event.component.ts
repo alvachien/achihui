@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { LogLevel, LearnObject } from '../model';
 
 @Component({
-  selector: 'app-event',
+  selector: 'hih-event',
   template: `<router-outlet></router-outlet>`,
   styleUrls: ['./event.component.scss']
 })

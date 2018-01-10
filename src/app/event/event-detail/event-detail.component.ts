@@ -15,7 +15,7 @@ import { switchMap } from 'rxjs/operators/switchMap';
 @Component({
   selector: 'app-event-detail',
   templateUrl: './event-detail.component.html',
-  styleUrls: ['./event-detail.component.scss']
+  styleUrls: ['./event-detail.component.scss'],
 })
 export class EventDetailComponent implements OnInit {
   private uiMode: UIMode;
@@ -36,7 +36,7 @@ export class EventDetailComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering constructor of EventDetailComponent...');
     }
-    
+
     this.onInitCreateMode();
     this.isLoadingData = false;
   }
@@ -68,20 +68,20 @@ export class EventDetailComponent implements OnInit {
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
           this.isLoadingData = true;
-          this._storageService.readGeneralEvent(this.routerID).subscribe(y => {
+          this._storageService.readGeneralEvent(this.routerID).subscribe((y) => {
             this.detailObject = y;
             this.isLoadingData = false;
           });
         }
       }
-    }, error => {
-
+    }, (error) => {
+      // Empty
     }, () => {
-
+      // Empty
     });
   }
 
-  private onInitCreateMode() {
+  private onInitCreateMode(): void {
     this.detailObject = new GeneralEvent();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
