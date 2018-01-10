@@ -1,24 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
   FinCurrencyService, UIStatusService } from '../services';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
   TranType, FinanceTranType_TransferIn, FinanceTranType_TransferOut } from '../model';
+import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { merge } from 'rxjs/observable/merge';
+import { of as observableOf } from 'rxjs/observable/of';
+import { catchError } from 'rxjs/operators/catchError';
+import { map } from 'rxjs/operators/map';
+import { startWith } from 'rxjs/operators/startWith';
+import { switchMap } from 'rxjs/operators/switchMap';
+import { takeUntil } from 'rxjs/operators/takeUntil';
 
 @Component({
   selector: 'hih-page-initial',
   templateUrl: './page-initial.component.html',
   styleUrls: ['./page-initial.component.scss'],
 })
-export class PageInitialComponent implements OnInit {
+export class PageInitialComponent implements OnInit, OnDestroy {
+  private ngUnsubscribe$: ReplaySubject<boolean> = new ReplaySubject(1);
+
   selectedFinanceScope: OverviewScopeEnum;
   selectedLearnScope: OverviewScopeEnum;
   selectedTranTypeLevel: TranTypeLevelEnum;
   excludeTransfer: boolean;
-  view: any[] = [400, 300];
+  view: Array<number> = [];
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
   };
@@ -49,6 +59,7 @@ export class PageInitialComponent implements OnInit {
     private _finstorageService: FinanceStorageService,
     private _currService: FinCurrencyService,
     public _uistatusService: UIStatusService,
+    private media: ObservableMedia,
     private _router: Router) {
     this.xLearnCtgyAxisLabel = this._uistatusService.getUILabel(UICommonLabelEnum.Category);
     this.yLearnCtgyAxisLabel = this._uistatusService.getUILabel(UICommonLabelEnum.Count);
@@ -74,6 +85,19 @@ export class PageInitialComponent implements OnInit {
 
       this.onLearnScopeChanged();
     }
+
+    this.media.asObservable()
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe((change: MediaChange) => {
+        this.changeGraphSize();
+      });
+      
+    this.changeGraphSize();
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe$.next(true);
+    this.ngUnsubscribe$.complete();
   }
 
   public onLearnScopeChanged() {
@@ -390,5 +414,21 @@ export class PageInitialComponent implements OnInit {
 
   public onGoLogin(): void {
     this._authService.doLogin();
+  }
+
+  private changeGraphSize() {
+    let graphSize = 0;
+
+    if (this.media.isActive('xs')) {
+      graphSize = 150;
+    } else if (this.media.isActive('sm')) {
+      graphSize = 300;
+    } else if (this.media.isActive('md')) {
+      graphSize = 450;
+    } else {      
+      graphSize = 500;
+    }
+
+    this.view = [graphSize, graphSize / 1.33];
   }
 }

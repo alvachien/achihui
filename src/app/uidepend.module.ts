@@ -42,29 +42,14 @@ import { PlatformModule } from '@angular/cdk/platform';
 import { ObserversModule } from '@angular/cdk/observers';
 import { PortalModule } from '@angular/cdk/portal';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import {
-    AuthService, AuthGuardService,
-    FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService,
-    HomeDefDetailService, CanDeactivateGuardService,
-} from './services';
 import { TinyMceDirective } from './directives/tinymce.directive';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
     imports: [CommonModule],
     declarations: [
         TinyMceDirective,
     ],
-    // providers: [
-    //     AuthService,
-    //     AuthGuardService,
-    //     FinCurrencyService,
-    //     UserDetailService,
-    //     HomeChoseGuardService,
-    //     HomeDefDetailService,
-    //     CanDeactivateGuardService,
-    //     FinanceStorageService,
-    //     LearnStorageService,
-    // ],
     exports: [
         MatAutocompleteModule,
         MatButtonModule,
@@ -107,30 +92,8 @@ import { TinyMceDirective } from './directives/tinymce.directive';
         PortalModule,
         NgxChartsModule,
         TinyMceDirective,
+        FlexLayoutModule,
     ],
 })
 export class UIDependModule {
-    // constructor( @Optional() @SkipSelf() parentModule: UIDependModule) {
-    //     if (parentModule) {
-    //         throw new Error(
-    //             'UIDependModule is already loaded. Import it in the AppModule only');
-    //     }
-    // }
-
-    // static forRoot(): ModuleWithProviders {
-    //     return {
-    //         ngModule: UIDependModule,
-    //         providers: [
-    //             AuthService,
-    //             AuthGuardService,
-    //             FinCurrencyService,
-    //             UserDetailService,
-    //             HomeChoseGuardService,
-    //             HomeDefDetailService,
-    //             CanDeactivateGuardService,
-    //             FinanceStorageService,
-    //             LearnStorageService,
-    //         ]
-    //     };
-    // }
 }

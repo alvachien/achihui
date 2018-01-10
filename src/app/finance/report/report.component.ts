@@ -1,13 +1,23 @@
-import { Component, OnInit, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum, 
   getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { ObservableMedia, MediaChange } from '@angular/flex-layout';
+import { Observable } from 'rxjs/Observable';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { merge } from 'rxjs/observable/merge';
+import { of as observableOf } from 'rxjs/observable/of';
+import { catchError } from 'rxjs/operators/catchError';
+import { map } from 'rxjs/operators/map';
+import { startWith } from 'rxjs/operators/startWith';
+import { switchMap } from 'rxjs/operators/switchMap';
+import { takeUntil } from 'rxjs/operators/takeUntil';
 
 /**
  * Data source of BS
@@ -104,7 +114,9 @@ export class ReportOrderDataSource extends DataSource<any> {
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.scss'],
 })
-export class ReportComponent implements OnInit {
+export class ReportComponent implements OnInit, OnDestroy {
+  private ngUnsubscribe$: ReplaySubject<boolean> = new ReplaySubject(1);
+
   selectedMOMScope: OverviewScopeEnum;
   momExcludeTransfer: boolean;
   momScopes: UIDisplayString[];
@@ -128,7 +140,6 @@ export class ReportComponent implements OnInit {
   ReportOrderEvent: EventEmitter<null> = new EventEmitter<null>(null);
   @ViewChild('paginatorOrder') paginatorOrder: MatPaginator;
 
-  view: any[] = [700, 400];
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
   };
@@ -142,6 +153,8 @@ export class ReportComponent implements OnInit {
   dataOrderCredit: any[] = [];
   dataMOM: any[] = [];  
 
+	view: Array<number> = [];
+  
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
@@ -149,7 +162,8 @@ export class ReportComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
-    public _currService: FinCurrencyService) {
+    public _currService: FinCurrencyService,
+    private media: ObservableMedia) {
     this.selectedMOMScope = OverviewScopeEnum.All;    
     this.momScopes = [];
 
@@ -167,6 +181,14 @@ export class ReportComponent implements OnInit {
     this.dataSourceCC = new ReportCCDataSource(this, this.paginatorCC);
     this.dataSourceOrder = new ReportOrderDataSource(this, this.paginatorOrder);
 
+    this.media.asObservable()
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe((change: MediaChange) => {
+        this.changeGraphSize();
+      });
+      
+    this.changeGraphSize();
+    
     Observable.forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAccounts(),
@@ -218,6 +240,11 @@ export class ReportComponent implements OnInit {
       this.ReportCCEvent.emit();
       this.ReportOrderEvent.emit();
     });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe$.next(true);
+    this.ngUnsubscribe$.complete();
   }
 
   public onMOMScopeChanged(): void {
@@ -408,4 +435,20 @@ export class ReportComponent implements OnInit {
       this.ReportBS.push(rbs);
     }
   }  
+  
+  private changeGraphSize() {
+    let graphSize = 0;
+
+    if (this.media.isActive('xs')) {
+      graphSize = 150;
+    } else if (this.media.isActive('sm')) {
+      graphSize = 300;
+    } else if (this.media.isActive('md')) {
+      graphSize = 450;
+    } else {      
+      graphSize = 500;
+    }
+
+    this.view = [graphSize, graphSize / 1.33];
+  }
 }

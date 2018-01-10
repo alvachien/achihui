@@ -16,7 +16,7 @@
   </p>
 </div>
 
-<div class="container mt-2" *ngIf="IsUserLoggedIn && IsHomeChosed">
+<div class="mt-2" *ngIf="IsUserLoggedIn && IsHomeChosed">
   <mat-toolbar>
     <mat-form-field>
       <mat-select [(ngModel)]="selectedLearnScope" (change)="onLearnScopeChanged()">
@@ -28,14 +28,14 @@
   </mat-toolbar>
 
   <!-- Show Learn history -->
-  <div class="row container mt-2">
+  <div class="row mt-2">
     <div class="col-12 col-md-6 container">
       <mat-card>
         <mat-card-header>
           <mat-card-title>{{'Learning.LearningCategory' | translate}}</mat-card-title>
         </mat-card-header>
         <mat-card-content style="height: 350px;">
-          <ngx-charts-bar-vertical [view]="view" [scheme]="colorScheme" [results]="dataLrnCtgy" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
+          <ngx-charts-bar-vertical [scheme]="colorScheme" [results]="dataLrnCtgy" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
             [showYAxisLabel]="true" [xAxisLabel]="xLearnCtgyAxisLabel" [yAxisLabel]="yLearnCtgyAxisLabel" [legend]="true" [legendTitle]="legendTitle">
           </ngx-charts-bar-vertical>
         </mat-card-content>
@@ -48,7 +48,7 @@
           <mat-card-title>{{'Nav.Users' | translate}}</mat-card-title>
         </mat-card-header>
         <mat-card-content style="height: 350px;">
-          <ngx-charts-bar-vertical [view]="view" [scheme]="colorScheme" [results]="dataLrnUser" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
+          <ngx-charts-bar-vertical [scheme]="colorScheme" [results]="dataLrnUser" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
             [showYAxisLabel]="true" [xAxisLabel]="xLearnUserAxisLabel" [yAxisLabel]="yLearnUserAxisLabel" [legend]="true" [legendTitle]="legendTitle">
           </ngx-charts-bar-vertical>
         </mat-card-content>
@@ -58,7 +58,7 @@
   <hr />
 
   <!-- Show Finance transaction type report -->
-  <div class="row container mt-2">
+  <div class="row mt-2">
     <mat-toolbar>
       <mat-form-field>
         <mat-select [(ngModel)]="selectedFinanceScope" (change)="onFinanceScopeChanged()">
@@ -75,31 +75,29 @@
       <span>{{'Nav.FinanceTrace' | translate}}</span>
     </mat-toolbar>
 
-    <div class="container mt-2">
-      <div class="row container">
-        <div class="col-12 col-md-6 container">
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTIn">
-              </ngx-charts-advanced-pie-chart>
-            </mat-card-content>
-          </mat-card>
-        </div>
+    <div class="row mt-2 w-100">
+      <div class="col-12 col-md-6 container">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="height: 350px;">
+            <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTIn">
+            </ngx-charts-advanced-pie-chart>
+          </mat-card-content>
+        </mat-card>
+      </div>
 
-        <div class="col-12 col-md-6 container">
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTOut">
-              </ngx-charts-advanced-pie-chart>
-            </mat-card-content>
-          </mat-card>
-        </div>
+      <div class="col-12 col-md-6 container">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="height: 350px;">
+            <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTOut">
+            </ngx-charts-advanced-pie-chart>
+          </mat-card-content>
+        </mat-card>
       </div>
     </div>
   </div>

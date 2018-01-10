@@ -60,6 +60,10 @@ export class EventListComponent implements OnInit, AfterViewInit {
     this._router.navigate(['/event/general/create']);
   }
 
+  public onRefresh(): void {
+    
+  }
+
   public fetchEvents(): void {
     this.paginator.page
       .pipe(

@@ -41,7 +41,7 @@ export class EventDetailComponent implements OnInit {
     this.isLoadingData = false;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ngOnInit of EventDetailComponent...');
     }
@@ -49,7 +49,7 @@ export class EventDetailComponent implements OnInit {
     // Distinguish current mode
     this._activateRoute.url.subscribe((x) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit for activateRoute URL: ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnInit for activateRoute URL: ${x}`);
       }
 
       if (x instanceof Array && x.length > 0) {
@@ -68,6 +68,7 @@ export class EventDetailComponent implements OnInit {
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
           this.isLoadingData = true;
+
           this._storageService.readGeneralEvent(this.routerID).subscribe((y) => {
             this.detailObject = y;
             this.isLoadingData = false;
@@ -81,9 +82,30 @@ export class EventDetailComponent implements OnInit {
     });
   }
 
+  public onCancel(): void {
+
+  }
+
+  public onSubmit(): void {
+    if (this.uiMode === UIMode.Create) {
+      this.createImpl();
+    } else if (this.uiMode === UIMode.Change) {
+      this.updateImpl();
+    }
+  }
+
   private onInitCreateMode(): void {
     this.detailObject = new GeneralEvent();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
+  }
+  private createImpl(): void {
+    this._storageService.createGeneralEvent(this.detailObject).subscribe(x => {
+      // Navigate to display
+      this._router.navigate(['/event/general/display', x.ID]);
+    });
+  }
+  private updateImpl(): void {
+
   }
 }

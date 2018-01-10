@@ -129,6 +129,7 @@
     "RecurEvent": "Recur Event",
     "EventsByTimeline": "Events by Timeline",
     "SentBox": "Sent Box",
+    "Assignee": "Assignee",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",

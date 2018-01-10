@@ -1,6 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HomeDefDetailService, AuthService, UIStatusService,
+  FinanceStorageService, FinCurrencyService,
+} from '../services';
 import { environment } from '../../environments/environment';
-import { LogLevel, LearnObject } from '../model';
+import { LogLevel } from '../model';
+import * as moment from 'moment';
+import 'moment/locale/zh-cn';
+import { DateAdapter } from '@angular/material';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 
 @Component({
   selector: 'hih-event',
@@ -8,16 +15,51 @@ import { LogLevel, LearnObject } from '../model';
   styleUrls: ['./event.component.scss']
 })
 export class EventComponent implements OnInit {
+  private _langChangeSub: any;
+  constructor(private _authService: AuthService,
+    private _homeDefService: HomeDefDetailService,
+    private _storageService: FinanceStorageService,
+    private _currService: FinCurrencyService,
+    private _uistatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<MomentDateAdapter>) {
+  }
 
-  constructor() {
+  ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter constructor of EventComponent`);
+      console.log(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnInit`);
+    }
+    this.onSetLanguage(this._uistatusService.CurrentLanguage);
+
+    this._langChangeSub = this._uistatusService.langChangeEvent.subscribe((x) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Enter language change event in EventComponent: ${x}`);
+      }
+
+      this.onSetLanguage(x);
+    });
+  }
+
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale(x);
     }
   }
 
-  ngOnInit(): void {
+  ngOnDestroy() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter constructor of EventComponent`);
+      console.log(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnDestroy`);
+    }
+    
+    try {
+      if (this._langChangeSub) {
+        this._langChangeSub.unsubscribe();
+      }
+    } catch (err) {
+      console.error(err);
     }
   }
 }

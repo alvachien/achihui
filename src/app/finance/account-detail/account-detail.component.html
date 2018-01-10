@@ -61,7 +61,7 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <div class="container" class="demo-full-width">
+        <div class="demo-full-width">
           <hih-finance-account-ext-adp *ngIf="isADPAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-adp>
           <hih-finance-account-ext-asset *ngIf="isAssetAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-asset>
           <div *ngIf="!isAssetAccount && !isADPAccount">{{'Finance.NoExtraInfo' | translate}}</div>
