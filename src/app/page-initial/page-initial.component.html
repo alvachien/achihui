@@ -17,42 +17,62 @@
 </div>
 
 <div class="mt-2" *ngIf="IsUserLoggedIn && IsHomeChosed">
-  <mat-toolbar>
-    <mat-form-field>
-      <mat-select [(ngModel)]="selectedLearnScope" (change)="onLearnScopeChanged()">
-        <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <span class="example-spacer"></span>
-    <span>{{'Nav.LearningTrace' | translate}}</span>
-  </mat-toolbar>
-
+  <!-- Key figures -->
+  <div class="row mt-2">
+    <mat-toolbar>
+      <span>{{'Common.KeyFigure' | translate}}</span>
+    </mat-toolbar>
+    <div>
+      <section class="mat-typography">
+        <p class="mat-body-1">{{'Common.TotalAssets' | translate}}: {{keyFigure.TotalAssets | currency: baseCurr}}</p>
+        <p class="mat-body-1">{{'Common.TotalLiabilities' | translate}}: {{keyFigure.TotalLiabilities | currency: baseCurr}}</p>
+        <p class="mat-body-2">{{'Common.TotalAssetOfMyAccounts' | translate}}: {{keyFigure.TotalAssetsUnderMyName | currency: baseCurr}}</p>
+        <p class="mat-body-2">{{'Common.TotalLiabilitiesOfMyAccounts' | translate}}: {{keyFigure.TotalLiabilitiesUnderMyName | currency: baseCurr}}</p>
+        <p class="mat-caption">{{'Common.MyUnreadMessages' | translate}}: {{keyFigure.TotalUnreadMessage}}</p>
+        <p class="mat-caption">{{'Common.MyCompletedEvents' | translate}}: {{keyFigure.MyCompletedEvents}}</p>
+        <p class="mat-caption">{{'Common.MyUncompletedEvents' | translate}}: {{keyFigure.MyUnCompletedEvents}}</p>
+      </section>
+    </div>
+  </div>
+  
   <!-- Show Learn history -->
   <div class="row mt-2">
-    <div class="col-12 col-md-6 container">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>{{'Learning.LearningCategory' | translate}}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="height: 350px;">
-          <ngx-charts-bar-vertical [scheme]="colorScheme" [results]="dataLrnCtgy" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
-            [showYAxisLabel]="true" [xAxisLabel]="xLearnCtgyAxisLabel" [yAxisLabel]="yLearnCtgyAxisLabel" [legend]="true" [legendTitle]="legendTitle">
-          </ngx-charts-bar-vertical>
-        </mat-card-content>
-      </mat-card>
-    </div>
+    <mat-toolbar>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedLearnScope" (change)="onLearnScopeChanged()">
+          <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <span class="example-spacer"></span>
+      <span>{{'Nav.LearningTrace' | translate}}</span>
+    </mat-toolbar>
 
-    <div class="col-12 col-md-6 container">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>{{'Nav.Users' | translate}}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="height: 350px;">
-          <ngx-charts-bar-vertical [scheme]="colorScheme" [results]="dataLrnUser" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
-            [showYAxisLabel]="true" [xAxisLabel]="xLearnUserAxisLabel" [yAxisLabel]="yLearnUserAxisLabel" [legend]="true" [legendTitle]="legendTitle">
-          </ngx-charts-bar-vertical>
-        </mat-card-content>
-      </mat-card>
+    <div class="row mt-2 w-100">
+      <div class="col-12 col-md-6 container">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>{{'Learning.LearningCategory' | translate}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="height: 350px;">
+            <ngx-charts-bar-vertical [scheme]="colorScheme" [results]="dataLrnCtgy" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
+              [showYAxisLabel]="true" [xAxisLabel]="xLearnCtgyAxisLabel" [yAxisLabel]="yLearnCtgyAxisLabel" [legend]="true" [legendTitle]="legendTitle">
+            </ngx-charts-bar-vertical>
+          </mat-card-content>
+        </mat-card>
+      </div>
+  
+      <div class="col-12 col-md-6 container">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>{{'Nav.Users' | translate}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="height: 350px;">
+            <ngx-charts-bar-vertical [scheme]="colorScheme" [results]="dataLrnUser" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
+              [showYAxisLabel]="true" [xAxisLabel]="xLearnUserAxisLabel" [yAxisLabel]="yLearnUserAxisLabel" [legend]="true" [legendTitle]="legendTitle">
+            </ngx-charts-bar-vertical>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
   </div>
   <hr />

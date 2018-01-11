@@ -357,4 +357,20 @@ export class HomeDefDetailService {
         return hd;
       });
   }
+
+  /**
+   * Get Key Figure
+   */
+  public getHomeKeyFigure(): Observable<any> {
+    const apiurl: string = environment.ApiUrl + '/api/HomeKeyFigure';
+    const curhid: number = this.ChosedHome.ID;
+    const requestUrl: any = `${apiurl}?hid=${curhid}`;
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+                      .append('Accept', 'application/json')
+                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
+  }
 }

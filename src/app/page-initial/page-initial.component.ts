@@ -4,7 +4,7 @@ import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageS
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
-  TranType, FinanceTranType_TransferIn, FinanceTranType_TransferOut } from '../model';
+  TranType, FinanceTranType_TransferIn, FinanceTranType_TransferOut, HomeKeyFigure } from '../model';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
@@ -45,6 +45,8 @@ export class PageInitialComponent implements OnInit, OnDestroy {
   listTranType: TranType[] = [];
   mapFinTTIn: Map<number, UINameValuePair<number>> = null;
   mapFinTTOut: Map<number, UINameValuePair<number>> = null;
+  keyFigure: HomeKeyFigure;
+  baseCurr: string;
 
   get IsUserLoggedIn(): boolean {
     return this._authService.authSubject.value.isAuthorized;
@@ -73,10 +75,13 @@ export class PageInitialComponent implements OnInit, OnDestroy {
     this.selectedFinanceScope = OverviewScopeEnum.CurrentMonth;
     this.selectedTranTypeLevel = TranTypeLevelEnum.TopLevel;
     this.excludeTransfer = true; 
+
+    this.keyFigure = new HomeKeyFigure();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.IsUserLoggedIn && this.IsHomeChosed) {
+      this.baseCurr = this._homeDefService.ChosedHome.BaseCurrency;
       this._finstorageService.fetchAllTranTypes().subscribe(x => {
         this.listTranType = x;
         
@@ -84,6 +89,8 @@ export class PageInitialComponent implements OnInit, OnDestroy {
       });
 
       this.onLearnScopeChanged();
+
+      this.onGetHomeKeyFigure();
     }
 
     this.media.asObservable()
@@ -95,12 +102,19 @@ export class PageInitialComponent implements OnInit, OnDestroy {
     this.changeGraphSize();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.ngUnsubscribe$.next(true);
     this.ngUnsubscribe$.complete();
   }
 
-  public onLearnScopeChanged() {
+  public onGetHomeKeyFigure(): void {
+    this._homeDefService.getHomeKeyFigure().subscribe((x) => {
+      this.keyFigure = new HomeKeyFigure();
+      this.keyFigure.onSetData(x);
+    });
+  }
+
+  public onLearnScopeChanged(): void {
     // Destructing an object syntax!
     let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedLearnScope);
 
@@ -134,7 +148,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onFinanceScopeChanged() {
+  public onFinanceScopeChanged(): void {
     let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedFinanceScope);
 
     this._finstorageService.getReportTranType(bgn, end).subscribe(([val1, val2]) => {
@@ -151,7 +165,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
     this.onFinanceTranTypeChartRedraw();
   }
 
-  public onFinanceTranTypeChartRedraw() {
+  public onFinanceTranTypeChartRedraw(): void {
     if (this.mapFinTTIn !== null || this.mapFinTTOut !== null) {
       this.dataFinTTIn = [];
       this.dataFinTTOut = [];

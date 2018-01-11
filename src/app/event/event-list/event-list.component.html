@@ -27,25 +27,33 @@
 
           <!-- Name Column -->
           <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.Name' | translate}} </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.Name}} </mat-cell>
           </ng-container>
 
           <!-- Assignee Column -->
           <ng-container matColumnDef="assignee">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Assignee </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.Assignee}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.Assignee' | translate}} </mat-header-cell>
+            <mat-cell *matCellDef="let row"> 
+              <mat-form-field>
+                <mat-select [(ngModel)]="row.Assignee" name="assgnee">
+                  <mat-option *ngFor="let mem of _homeDefService.MembersInChosedHome" [value]="mem.User">
+                    {{mem.DisplayAs}} - {{ mem.User }} 
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-cell>
           </ng-container>
 
           <!-- Start  Column -->
           <ng-container matColumnDef="start">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Start </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.StartDate' | translate}} </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.StartTimeFormatString}} </mat-cell>
           </ng-container>
 
           <!-- End Column -->
           <ng-container matColumnDef="end">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> End </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.EndDate' | translate}} </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.EndTimeFormatString}} </mat-cell>
           </ng-container>
 

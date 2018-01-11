@@ -9,8 +9,8 @@ import { switchMap } from 'rxjs/operators/switchMap';
 
 @Component({
   selector: 'app-category',
-  templateUrl: './category.component.html',
-  styleUrls: ['./category.component.scss']
+  template: `<router-outlet></router-outlet>`,
+  styleUrls: ['./category.component.scss'],
 })
 export class CategoryComponent implements OnInit {
 

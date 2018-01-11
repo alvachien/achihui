@@ -46,39 +46,41 @@ export class EventDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering ngOnInit of EventDetailComponent...');
     }
 
-    // Distinguish current mode
-    this._activateRoute.url.subscribe((x) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnInit for activateRoute URL: ${x}`);
-      }
-
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.onInitCreateMode();
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
-
-          this.uiMode = UIMode.Change;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
-
-          this.uiMode = UIMode.Display;
+    this._homedefService.curHomeMembers.subscribe((mem) => {
+      // Distinguish current mode
+      this._activateRoute.url.subscribe((x) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
-        this.currentMode = getUIModeString(this.uiMode);
 
-        if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this.isLoadingData = true;
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.onInitCreateMode();
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
 
-          this._storageService.readGeneralEvent(this.routerID).subscribe((y) => {
-            this.detailObject = y;
-            this.isLoadingData = false;
-          });
+            this.uiMode = UIMode.Change;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
+
+            this.uiMode = UIMode.Display;
+          }
+          this.currentMode = getUIModeString(this.uiMode);
+
+          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+            this.isLoadingData = true;
+
+            this._storageService.readGeneralEvent(this.routerID).subscribe((y) => {
+              this.detailObject = y;
+              this.isLoadingData = false;
+            });
+          }
         }
-      }
-    }, (error) => {
-      // Empty
-    }, () => {
-      // Empty
+      }, (error) => {
+        // Empty
+      }, () => {
+        // Empty
+      });
     });
   }
 
@@ -103,7 +105,9 @@ export class EventDetailComponent implements OnInit {
   private createImpl(): void {
     this._storageService.createGeneralEvent(this.detailObject).subscribe((x) => {
       // Navigate to display
-      this._router.navigate(['/event/general/display' + x.ID.toString()]);
+      let gevnt: GeneralEvent = new GeneralEvent();
+      gevnt.onSetData(x);
+      this._router.navigate(['/event/general/display/' + gevnt.ID.toString()]);
     });
   }
   private updateImpl(): void {

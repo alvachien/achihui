@@ -337,3 +337,40 @@ export class HomeMsg {
     return hmj;
   }
 }
+
+/**
+ * Key Figure
+ */
+export class HomeKeyFigure {
+  public TotalAssets: number
+  public TotalLiabilities: number;
+  public TotalAssetsUnderMyName: number;
+  public TotalLiabilitiesUnderMyName: number;
+  public TotalUnreadMessage: number;
+  public MyUnCompletedEvents: number;
+  public MyCompletedEvents: number;
+
+  public onSetData(data: any): void {
+    if (data && data.totalAsset) {
+      this.TotalAssets = +data.totalAsset;
+    }
+    if (data && data.totalLiability) {
+      this.TotalLiabilities = +data.totalLiability;
+    }
+    if (data && data.totalAssetUnderMyName) {
+      this.TotalAssetsUnderMyName = +data.totalAssetUnderMyName;
+    }
+    if (data && data.totalLiabilityUnderMyName) {
+      this.TotalLiabilitiesUnderMyName = +data.totalLiabilityUnderMyName;
+    }
+    if (data && data.totalUnreadMessage) {
+      this.TotalUnreadMessage = +data.totalUnreadMessage;
+    }
+    if (data && data.myUnCompletedEvents) {
+      this.MyUnCompletedEvents = +data.myUnCompletedEvents;
+    }
+    if (data && data.myCompletedEvents) {
+      this.MyCompletedEvents = +data.myCompletedEvents;
+    }
+  }
+}

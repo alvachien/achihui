@@ -130,6 +130,7 @@
     "EventsByTimeline": "时间维度的事务",
     "SentBox": "发件箱",
     "Assignee": "负责人",
+    "KeyFigure": "核心数字",
     
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",
@@ -144,7 +145,14 @@
     "CategoryIsMust": "类别必须输入",
     "CreateAnotherOne": "再创建一个",
     "CreatedSuccessfully": "创建成功",
-    "UpdatedSuccessfully": "修改成功"
+    "UpdatedSuccessfully": "修改成功",
+    "TotalAssets": "总资产",
+    "TotalAssetOfMyAccounts": "本人账户下总资产",
+    "TotalLiabilities": "总负债",
+    "TotalLiabilitiesOfMyAccounts": "本人账户下总负债",
+    "MyUnreadMessages": "本人未读信息",
+    "MyCompletedEvents": "我完成的事物",
+    "MyUncompletedEvents": "我未完成的事物"
   },
   "Sys":{
     "Currency": {

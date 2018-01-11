@@ -82,7 +82,7 @@ export class AppComponent implements OnInit {
       this._sanitizer.bypassSecurityTrustResourceUrl('../../assets/images/github-circle-white-transparent.svg'));
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this._translate.setDefaultLang(Language_Zh);
     this._translate.use(Language_Zh).subscribe((x) => {
       this.SelectedLanguage = Language_Zh;

@@ -26,7 +26,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
 
   isLoadingResults: boolean;
 
-  constructor(private _homeDefService: HomeDefDetailService,
+  constructor(public _homeDefService: HomeDefDetailService,
     private _authService: AuthService,
     private _storageService: EventStorageService,
     private _router: Router) {
@@ -53,7 +53,9 @@ export class EventListComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this.fetchEvents();
+    this._homeDefService.curHomeMembers.subscribe((x) => {
+      this.fetchEvents();
+    });
   }
 
   public onCreateEvent(): void {
@@ -62,6 +64,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
 
   public onRefresh(): void {
     // Refresh the whole list
+    this.fetchEvents();
   }
 
   public onEventRowSelect(row: GeneralEvent): void {

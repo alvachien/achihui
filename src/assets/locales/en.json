@@ -130,6 +130,7 @@
     "EventsByTimeline": "Events by Timeline",
     "SentBox": "Sent Box",
     "Assignee": "Assignee",
+    "KeyFigure": "Key Figure",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",
@@ -144,7 +145,14 @@
     "CategoryIsMust": "Category is a must",
     "CreateAnotherOne": "Create another One",
     "CreatedSuccessfully": "Created successfully",
-    "UpdatedSuccessfully": "Updated successfully"
+    "UpdatedSuccessfully": "Updated successfully",
+    "TotalAssets": "Total Assets",
+    "TotalAssetOfMyAccounts": "Total Assets under My Accounts",
+    "TotalLiabilities": "Total Liabilities",
+    "TotalLiabilitiesOfMyAccounts": "Total Liabilities of My Accounts",
+    "MyUnreadMessages": "My Unread Messages",
+    "MyCompletedEvents": "My Completed Events",
+    "MyUncompletedEvents": "My Uncompleted Events"
   },
   "Sys":{
     "Currency": {
