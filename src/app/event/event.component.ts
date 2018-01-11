@@ -12,9 +12,9 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 @Component({
   selector: 'hih-event',
   template: `<router-outlet></router-outlet>`,
-  styleUrls: ['./event.component.scss']
+  styleUrls: ['./event.component.scss'],
 })
-export class EventComponent implements OnInit {
+export class EventComponent implements OnInit, OnDestroy {
   private _langChangeSub: any;
   constructor(private _authService: AuthService,
     private _homeDefService: HomeDefDetailService,
@@ -24,7 +24,7 @@ export class EventComponent implements OnInit {
     private _dateAdapter: DateAdapter<MomentDateAdapter>) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnInit`);
     }
@@ -39,6 +39,20 @@ export class EventComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnDestroy`);
+    }
+
+    try {
+      if (this._langChangeSub) {
+        this._langChangeSub.unsubscribe();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   private onSetLanguage(x: string): void {
     if (x === 'zh') {
       moment.locale('zh-cn');
@@ -46,20 +60,6 @@ export class EventComponent implements OnInit {
     } else if (x === 'en') {
       moment.locale(x);
       this._dateAdapter.setLocale(x);
-    }
-  }
-
-  ngOnDestroy() {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnDestroy`);
-    }
-    
-    try {
-      if (this._langChangeSub) {
-        this._langChangeSub.unsubscribe();
-      }
-    } catch (err) {
-      console.error(err);
     }
   }
 }

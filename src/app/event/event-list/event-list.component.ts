@@ -61,7 +61,11 @@ export class EventListComponent implements OnInit, AfterViewInit {
   }
 
   public onRefresh(): void {
-    
+    // Refresh the whole list
+  }
+
+  public onEventRowSelect(row: GeneralEvent): void {
+    this._router.navigate(['/event/general/display/' + row.ID.toString()]);
   }
 
   public fetchEvents(): void {

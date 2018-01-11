@@ -19,8 +19,20 @@
         <input matInput [(ngModel)]="detailObject.StartTime" [matDatepicker]="startdpicker" placeholder="{{'Common.Date' | translate}}">
         <mat-datepicker-toggle matSuffix [for]="startdpicker"></mat-datepicker-toggle>
         <mat-datepicker #startdpicker></mat-datepicker>
-      </mat-form-field>        
-    
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="detailObject!.EndTime" [matDatepicker]="enddpicker" placeholder="{{'Common.Date' | translate}}">
+        <mat-datepicker-toggle matSuffix [for]="enddpicker"></mat-datepicker-toggle>
+        <mat-datepicker #enddpicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="detailObject!.CompleteTime" [matDatepicker]="cmpdpicker" placeholder="{{'Common.Date' | translate}}">
+        <mat-datepicker-toggle matSuffix [for]="cmpdpicker"></mat-datepicker-toggle>
+        <mat-datepicker #cmpdpicker></mat-datepicker>
+      </mat-form-field>
+      
       <mat-form-field>
         <textarea matInput type="text" placeholder="{{'Common.Content' | translate}}" [readonly]="!isFieldChangable" 
           [(ngModel)]="detailObject.Content" name="content" #eventcontent></textarea>

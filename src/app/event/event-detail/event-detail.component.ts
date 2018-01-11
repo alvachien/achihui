@@ -83,7 +83,8 @@ export class EventDetailComponent implements OnInit {
   }
 
   public onCancel(): void {
-
+    // Jump to list page
+    this._router.navigate(['/event/general']);
   }
 
   public onSubmit(): void {
@@ -100,12 +101,12 @@ export class EventDetailComponent implements OnInit {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
   private createImpl(): void {
-    this._storageService.createGeneralEvent(this.detailObject).subscribe(x => {
+    this._storageService.createGeneralEvent(this.detailObject).subscribe((x) => {
       // Navigate to display
-      this._router.navigate(['/event/general/display', x.ID]);
+      this._router.navigate(['/event/general/display' + x.ID.toString()]);
     });
   }
   private updateImpl(): void {
-
+    // TBD.
   }
 }
