@@ -11,6 +11,7 @@ import { catchError } from 'rxjs/operators/catchError';
 import { map } from 'rxjs/operators/map';
 import { startWith } from 'rxjs/operators/startWith';
 import { switchMap } from 'rxjs/operators/switchMap';
+// import * as moment from 'moment';
 
 @Component({
   selector: 'hih-event-list',
@@ -101,5 +102,13 @@ export class EventListComponent implements OnInit, AfterViewInit {
         return observableOf([]);
       }),
       ).subscribe((data) => this.dataSource.data = data);
+  }
+
+  public onMarkAsDone(row: GeneralEvent): void {
+    // Update the row
+    // row.CompleteTime = moment();
+
+    // Then submit to server
+    //this._storageService.
   }
 }

@@ -119,7 +119,7 @@ export class AppComponent implements OnInit {
   }
 
   public toggleFullscreen(): void {
-    const elem = this._element.nativeElement.querySelector('.hih-content');
+    const elem: any = this._element.nativeElement.querySelector('.hih-content');
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
     } else if (elem.webkitRequestFullScreen) {

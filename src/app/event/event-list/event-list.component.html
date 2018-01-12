@@ -11,9 +11,9 @@
     <div>
       <mat-toolbar>
         <button mat-icon-button (click)="onCreateEvent()" matTooltip="{{'Common.Create' | translate}}">
-          <mat-icon color="primary" class="mt-3">add</mat-icon>
+          <mat-icon color="primary">add</mat-icon>
         </button>
-        <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent">refresh</mat-icon></button>
+        <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent">refresh</mat-icon></button>        
       </mat-toolbar>
 
       <div class="example-container mat-elevation-z8">
@@ -22,7 +22,10 @@
           <!-- ID Column -->
           <ng-container matColumnDef="id">
             <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.ID}} </mat-cell>
+            <mat-cell *matCellDef="let row"> 
+              <button *ngIf="!row.CompleteTimeFormatString" mat-icon-button (click)="onMarkAsDone(row)" matTooltip="{{'Common.MarkAsDone' | translate}}">done</button>
+              {{row.ID}}
+            </mat-cell>
           </ng-container>
 
           <!-- Name Column -->

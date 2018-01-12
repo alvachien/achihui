@@ -48,7 +48,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/event/' + eid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/event/' + eid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -82,6 +82,30 @@ export class EventStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.post(apiurl, jdata, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      });
+  }
+
+  /**
+   * Complete general event
+   * @param gevnt Event to  create
+   */
+  public completeGeneralEvent(gevnt: GeneralEvent): Observable<any> {
+    // Set complete time - now
+    gevnt.CompleteTime = moment();
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/event';
+    let jdata: string = gevnt.writeJSONString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.put(apiurl, jdata, {
         headers: headers,
         params: params,
         withCredentials: true,
