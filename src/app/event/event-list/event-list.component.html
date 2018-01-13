@@ -23,7 +23,9 @@
           <ng-container matColumnDef="id">
             <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
             <mat-cell *matCellDef="let row"> 
-              <button *ngIf="!row.CompleteTimeFormatString" mat-icon-button (click)="onMarkAsDone(row)" matTooltip="{{'Common.MarkAsDone' | translate}}">done</button>
+              <button *ngIf="!row.CompleteTimeFormatString" mat-icon-button (click)="onMarkAsDone(row)" matTooltip="{{'Common.MarkasDone' | translate}}">
+                <mat-icon color="accent">done</mat-icon>
+              </button>
               {{row.ID}}
             </mat-cell>
           </ng-container>

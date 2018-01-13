@@ -101,7 +101,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/event';
+    let apiurl: string = environment.ApiUrl + '/api/event/' + gevnt.ID.toString();
     let jdata: string = gevnt.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());

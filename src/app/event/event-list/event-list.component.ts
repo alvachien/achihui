@@ -105,10 +105,11 @@ export class EventListComponent implements OnInit, AfterViewInit {
   }
 
   public onMarkAsDone(row: GeneralEvent): void {
-    // Update the row
-    // row.CompleteTime = moment();
-
-    // Then submit to server
-    //this._storageService.
+    this._storageService.completeGeneralEvent(row).subscribe((x) => {
+      // Jump to display mode
+      this._router.navigate(['/event/general/display/' + row.ID.toString()]);
+    }, (error) => {
+      // Show dialog?
+    });
   }
 }
