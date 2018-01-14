@@ -8,6 +8,7 @@ import { EventListComponent } from './event-list';
 import { EventDetailComponent } from './event-detail';
 import { GeneralEventComponent } from './general-event';
 import { RecurrEventComponent } from './recurr-event';
+import { RecurrEventListComponent } from './recurr-event-list';
 import { RecurrEventDetailComponent } from './recurr-event-detail';
 
 const routes: Routes = [
@@ -51,6 +52,10 @@ const routes: Routes = [
         path: 'recur',
         component: RecurrEventComponent,
         children: [
+          {
+            path: '',
+            component: RecurrEventListComponent,
+          },
           {
             path: 'create',
             component: RecurrEventDetailComponent,

@@ -132,6 +132,7 @@
     "Assignee": "Assignee",
     "KeyFigure": "Key Figure",
     "MarkasDone": "Mark as Done",
+    "CompleteDate": "Complete Date",
 
     "InvalidName": "Invalid name",
     "NameIsMust": "Name is a must",

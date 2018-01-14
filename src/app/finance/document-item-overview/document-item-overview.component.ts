@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
+import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase, 
   TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, isOverviewDateInScope,
   UIOrderForSelection, UIAccountForSelection, BuildupAccountForSelection, BuildupOrderForSelection } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
@@ -163,6 +163,7 @@ export class DocumentItemOverviewComponent implements OnInit {
   selectedAccountScope: OverviewScopeEnum;
   selectedControlCenterScope: OverviewScopeEnum;
   selectedOrderScope: OverviewScopeEnum;
+  selectedTmpScope: OverviewScopeEnum;
   
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -175,6 +176,7 @@ export class DocumentItemOverviewComponent implements OnInit {
     this.selectedAccountScope = OverviewScopeEnum.All;
     this.selectedControlCenterScope = OverviewScopeEnum.All;
     this.selectedOrderScope = OverviewScopeEnum.All;
+    this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
   }
 
   ngOnInit() {
@@ -189,46 +191,25 @@ export class DocumentItemOverviewComponent implements OnInit {
       this._storageService.fetchAllTranTypes(),
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
-      this._storageService.getADPTmpDocs(),
-      this._storageService.getLoanTmpDocs(),
     ]).subscribe((x) => {
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
-      
-      if (x[5] instanceof Array && x[5].length > 0) {
-        for (let dta of x[5]) {
-          let adpdoc = new TemplateDocADP();
-          adpdoc.onSetData(dta);
-          this.TmpDocs.push(adpdoc);
-        }
-      }
-      if (x[6] instanceof Array && x[6].length > 0) {
-        for (let dta of x[6]) {
-          let loandoc = new TemplateDocLoan();
-          loandoc.onSetData(dta);
-          this.TmpDocs.push(loandoc);
-        }
-      }
 
-      // Sort it by date
-      this.TmpDocs.sort((a, b) => {
-        if (a.TranDate.isSame(b.TranDate)) return 0;
-        if (a.TranDate.isBefore(b.TranDate)) return -1;
-        else 
-          return 1;
-      });
-
-      this.TmpDocEvent.emit();
+      // Refresh the template documents
+      this.onTmpDocsRefresh();
     });
   }
 
-  public onOverviewRefresh() {
+  public onTmpDocsRefresh(): void {
+    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedTmpScope);
     Observable.forkJoin([
-      this._storageService.getADPTmpDocs(),
-      this._storageService.getLoanTmpDocs(),
+      this._storageService.getADPTmpDocs(bgn, end),
+      this._storageService.getLoanTmpDocs(bgn, end),
     ]).subscribe(x => {
+      this.TmpDocs = [];
+      
       if (x[0] instanceof Array && x[0].length > 0) {
         for (let dta of x[0]) {
           let adpdoc = new TemplateDocADP();
@@ -253,7 +234,6 @@ export class DocumentItemOverviewComponent implements OnInit {
       });
 
       this.TmpDocEvent.emit();
-
     });
   }
 

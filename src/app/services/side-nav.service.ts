@@ -37,7 +37,7 @@ export class SideNavService {
     this.addSubItem(finance, 'Finance.Accounts', '/finance/account', 6, 'library_books');
     this.addSubItem(finance, 'Finance.ControlCenters', '/finance/controlcenter', 7, 'store');
     this.addSubItem(finance, 'Finance.Orders', '/finance/order', 8, 'tune');
-    this.addSubItem(finance, 'Finance.Documents', '/finance/document', 9, 'poll');
+    this.addSubItem(finance, 'Finance.Documents', '/finance/document', 9, 'assignment');
     this.addSubItem(finance, 'Finance.Reports', '/finance/report', 10, 'account_balance');
 
     const library: any = this.addItem('Nav.Libraries', 'subject', undefined, 4);

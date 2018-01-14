@@ -10,4 +10,7 @@ export const environment = {
   AppLoginSlientRevewCallbackUrl: 'http://achihui.azurewebsites.net/silentrenewcallback.html',
   AppHost: 'http://achihui.azurewebsites.net',
   ApiUrl: 'http://achihapi.azurewebsites.net',
+
+  AppMathExercise: 'http://acmath.azurewebsites.net',
+  AppGallery: 'http://acgallery.azurewebsites.net'
 };

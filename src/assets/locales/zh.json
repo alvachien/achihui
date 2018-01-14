@@ -132,6 +132,7 @@
     "Assignee": "负责人",
     "KeyFigure": "核心数字",
     "MarkasDone": "标识完成",
+    "CompleteDate": "完成日期",
     
     "InvalidName": "无效的名字",
     "NameIsMust": "名字必须输入",
@@ -152,8 +153,8 @@
     "TotalLiabilities": "总负债",
     "TotalLiabilitiesOfMyAccounts": "本人账户下总负债",
     "MyUnreadMessages": "本人未读信息",
-    "MyCompletedEvents": "我完成的事物",
-    "MyUncompletedEvents": "我未完成的事物"
+    "MyCompletedEvents": "我完成的事务",
+    "MyUncompletedEvents": "我未完成的事务"
   },
   "Sys":{
     "Currency": {

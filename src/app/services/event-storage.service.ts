@@ -102,10 +102,16 @@ export class EventStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     let apiurl: string = environment.ApiUrl + '/api/event/' + gevnt.ID.toString();
-    let jdata: string = gevnt.writeJSONString();
+    let jdata: any[] = [{
+        'op': 'add', 
+        'path': '/completeTimePoint', 
+        'value': gevnt.CompleteTimeFormatString,
+      },
+    ];
+    
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.put(apiurl, jdata, {
+    return this._http.patch(apiurl, jdata, {
         headers: headers,
         params: params,
         withCredentials: true,

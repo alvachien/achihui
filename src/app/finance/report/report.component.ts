@@ -164,7 +164,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService,
     private media: ObservableMedia) {
-    this.selectedMOMScope = OverviewScopeEnum.All;    
+    this.selectedMOMScope = OverviewScopeEnum.CurrentYear;    
     this.momScopes = [];
 
     this._uiStatusService.OverviewScopeStrings.forEach((val: UIDisplayString) => {

@@ -10,7 +10,12 @@
         </ng-template>
 
         <mat-toolbar class="mt-2">
-          <button mat-icon-button (click)="onOverviewRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent" class="example-icon">refresh</mat-icon></button>
+          <mat-form-field>
+            <mat-select color="accent" class="mt-1" [(ngModel)]="selectedTmpScope" (change)="onTmpDocsRefresh()">
+              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button (click)="onTmpDocsRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent" class="example-icon">refresh</mat-icon></button>
         </mat-toolbar>
     
         <div class="table-container mat-elevation-z8 mt-2">

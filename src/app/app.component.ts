@@ -153,11 +153,11 @@ export class AppComponent implements OnInit {
   }
 
   public onOpenMathExcises(): void {
-    window.open('http://118.178.58.187:5230', '_blank');
+    window.open(environment.AppMathExercise, '_blank');
   }
 
   public onOpenPhotoGallery(): void {
-    window.open('http://118.178.58.187:5210', '_blank');
+    window.open(environment.AppGallery, '_blank');
   }
 
   public onOpenGithubRepo(): void {

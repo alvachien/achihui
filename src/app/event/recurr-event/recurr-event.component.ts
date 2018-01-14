@@ -9,7 +9,7 @@ import { switchMap } from 'rxjs/operators/switchMap';
 
 @Component({
   selector: 'app-recurr-event',
-  templateUrl: './recurr-event.component.html',
+  template: `<router-outlet></router-outlet>`,
   styleUrls: ['./recurr-event.component.scss']
 })
 export class RecurrEventComponent implements OnInit {
@@ -18,5 +18,4 @@ export class RecurrEventComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }
