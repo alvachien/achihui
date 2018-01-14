@@ -14,7 +14,7 @@
           <button mat-icon-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon" matTooltip="{{'Login.Login' | translate }}"><mat-icon color="accent">account_box</mat-icon></button>
           <button mat-icon-button *ngIf="isLoggedIn" [matMenuTriggerFor]="matMenuUser">
             <mat-icon color="accent">account_box</mat-icon>
-            <span *ngIf="curChosenHome" class="badge badge-light">4</span>
+            <span *ngIf="curChosenHome" class="badge badge-light">{{_homeDefService.keyFigure?.TotalUnreadMessage}}</span>
           </button>
           <mat-menu #matMenuUser="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item disabled>{{titleLogin}}</button>

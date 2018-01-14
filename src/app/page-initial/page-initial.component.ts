@@ -45,7 +45,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
   listTranType: TranType[] = [];
   mapFinTTIn: Map<number, UINameValuePair<number>> = null;
   mapFinTTOut: Map<number, UINameValuePair<number>> = null;
-  keyFigure: HomeKeyFigure;
+  //keyFigure: HomeKeyFigure;
   baseCurr: string;
 
   get IsUserLoggedIn(): boolean {
@@ -56,7 +56,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
   }
 
   constructor(private _authService: AuthService,
-    private _homeDefService: HomeDefDetailService,
+    public _homeDefService: HomeDefDetailService,
     private _lrnstorageService: LearnStorageService,
     private _finstorageService: FinanceStorageService,
     private _currService: FinCurrencyService,
@@ -76,7 +76,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
     this.selectedTranTypeLevel = TranTypeLevelEnum.TopLevel;
     this.excludeTransfer = true; 
 
-    this.keyFigure = new HomeKeyFigure();
+    //this.keyFigure = new HomeKeyFigure();
   }
 
   ngOnInit(): void {
@@ -108,10 +108,18 @@ export class PageInitialComponent implements OnInit, OnDestroy {
   }
 
   public onGetHomeKeyFigure(): void {
-    this._homeDefService.getHomeKeyFigure().subscribe((x) => {
-      this.keyFigure = new HomeKeyFigure();
-      this.keyFigure.onSetData(x);
+    this._homeDefService.getHomeKeyFigure().subscribe((x: HomeKeyFigure) => {
+      // this.keyFigure = x;
+      // Do nothing is better
     });
+  }
+
+  public onNvgToEventList(): void {
+    this._router.navigate(['/event/general']);
+  }
+
+  public onNvgToMsgList(): void {
+    this._router.navigate(['/homemsg']);
   }
 
   public onLearnScopeChanged(): void {

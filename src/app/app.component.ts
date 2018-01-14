@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
   constructor(private _element: ElementRef,
     private _translate: TranslateService,
     private _authService: AuthService,
-    private _homeDefService: HomeDefDetailService,
+    public _homeDefService: HomeDefDetailService,
     private _zone: NgZone,
     private _router: Router,
     private _uistatusService: UIStatusService,

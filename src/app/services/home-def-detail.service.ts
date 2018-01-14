@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, HomeMsg } from '../model';
+import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, HomeMsg, HomeKeyFigure } from '../model';
 import { AuthService } from './auth.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
@@ -59,13 +59,16 @@ export class HomeDefDetailService {
   readHomeDefEvent: EventEmitter<HomeDef | null> = new EventEmitter<HomeDef | null>(null);
   readHomeMembersEvent: EventEmitter<HomeMember[] | null> = new EventEmitter<HomeMember[] | null>(null);
 
+  // Properties
+  keyFigure: HomeKeyFigure;
+
   constructor(private _http: HttpClient,
     private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HomeDefDetailService constructor...');
     }
 
-    this._islistLoaded = false; // Performance improvement
+    this._islistLoaded = false; // Performance improvement    
   }
 
   /**
@@ -371,6 +374,11 @@ export class HomeDefDetailService {
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
+    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true})
+      .map(x => {
+        this.keyFigure = new HomeKeyFigure();
+        this.keyFigure.onSetData(x);
+        return this.keyFigure;
+      });
   }
 }
