@@ -103,12 +103,12 @@ export class EventStorageService {
 
     let apiurl: string = environment.ApiUrl + '/api/event/' + gevnt.ID.toString();
     let jdata: any[] = [{
-        'op': 'add', 
-        'path': '/completeTimePoint', 
+        'op': 'add',
+        'path': '/completeTimePoint',
         'value': gevnt.CompleteTimeFormatString,
       },
     ];
-    
+
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.patch(apiurl, jdata, {

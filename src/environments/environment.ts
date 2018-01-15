@@ -11,6 +11,6 @@ export const environment = {
   AppHost: 'http://localhost:29521',
   ApiUrl: 'http://localhost:25688',
 
-  AppMathExercise: 'http://localhost',
-  AppGallery: 'http://localhost:2601'
+  AppMathExercise: 'http://localhost:20000',
+  AppGallery: 'http://localhost:2601',
 };

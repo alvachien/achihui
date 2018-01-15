@@ -12,5 +12,5 @@ export const environment = {
   ApiUrl: 'http://achihapi.azurewebsites.net',
 
   AppMathExercise: 'http://acmath.azurewebsites.net',
-  AppGallery: 'http://acgallery.azurewebsites.net'
+  AppGallery: 'http://acgallery.azurewebsites.net',
 };

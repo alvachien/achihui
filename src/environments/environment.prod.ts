@@ -12,5 +12,5 @@ export const environment = {
   ApiUrl: 'http://118.178.58.187:5300',
 
   AppMathExercise: 'http://118.178.58.187:5230',
-  AppGallery: 'http://118.178.58.187:5210'
+  AppGallery: 'http://118.178.58.187:5210',
 };
