@@ -1,8 +1,9 @@
-<h2 mat-dialog-title>Create Message</h2>
+<h2 mat-dialog-title *ngIf="data.isCreateMode">Create Message</h2>
+<h2 mat-dialog-title *ngIf="!data.isCreateMode">Read Message</h2>
 <mat-dialog-content>
   <div class="example-container">
     <mat-form-field>
-      <mat-select placeholder="{{'Common.Member' | translate}}" [(ngModel)]="data.UserTo" name="usrTo">
+      <mat-select placeholder="{{'Common.Member' | translate}}" [disabled]="!data.isCreateMode" [(ngModel)]="data.UserTo" name="usrTo">
         <mat-option *ngFor="let mem of data.Members" [value]="mem.User">
           {{mem.DisplayAs}} - {{mem.User}} 
         </mat-option>
@@ -10,15 +11,15 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="{{'Common.Title' | translate}}" [(ngModel)]="data.Title">
+      <input matInput [disabled]="!data.isCreateMode" placeholder="{{'Common.Title' | translate}}" [(ngModel)]="data.Title">
     </mat-form-field>
   
     <mat-form-field>
-      <textarea matInput placeholder="{{'Common.Content' | translate}}" [(ngModel)]="data.Content"></textarea>
+      <textarea matInput [disabled]="!data.isCreateMode" placeholder="{{'Common.Content' | translate}}" [(ngModel)]="data.Content"></textarea>
     </mat-form-field>  
   </div>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button [mat-dialog-close]="data">Save</button>
+  <button mat-button *ngIf="data.isCreateMode" [mat-dialog-close]="data">Save</button>
 </mat-dialog-actions>

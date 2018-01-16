@@ -66,7 +66,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
 
     let dialogRef: any = this._dialog.open(HomeMessageDialogComponent, {
       width: '500px',
-      data: { Members: this._homeDefService.MembersInChosedHome, UserTo: usrTo, Title: title, Content: content },
+      data: { Members: this._homeDefService.MembersInChosedHome, UserTo: usrTo, Title: title, Content: content, isCreateMode: true },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -106,7 +106,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
     // Have to re-read the message?
     let dialogRef: any = this._dialog.open(HomeMessageDialogComponent, {
       width: '500px',
-      data: { Members: this._homeDefService.MembersInChosedHome, UserTo: row.UserTo, Title: row.Title, Content: row.Content },
+      data: { Members: this._homeDefService.MembersInChosedHome, UserTo: row.UserTo, Title: row.Title, Content: row.Content, isCreateMode: false },
     });
 
     dialogRef.afterClosed().subscribe(x => {
