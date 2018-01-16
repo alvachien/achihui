@@ -69,7 +69,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
       data: { Members: this._homeDefService.MembersInChosedHome, UserTo: usrTo, Title: title, Content: content },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (!result.UserTo || !result.Title || !result.Content) {
           // Show error dialog
@@ -85,12 +85,34 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
         msg.UserFrom = this._authService.authSubject.getValue().getUserId();
         msg.UserTo = result.UserTo;
 
-        this._homeDefService.createHomeMessage(msg).subscribe(x => {
+        this._homeDefService.createHomeMessage(msg).subscribe((x) => {
           let data = this.dataSource.data.slice();
           data.push(x);
           this.dataSource.data = data;
         });
       }
+    });
+  }
+
+  public onDeleteMsg(row: any): void {
+    // Delete the message
+    this._homeDefService.deleteHomeMessage(row, this.sentBox).subscribe(x => {
+      // Do a refresh?
+      this.fetchMessages();
+    });
+  }
+
+  public onOpenMsg(row: HomeMsg): void {
+    // Have to re-read the message?
+    let dialogRef: any = this._dialog.open(HomeMessageDialogComponent, {
+      width: '500px',
+      data: { Members: this._homeDefService.MembersInChosedHome, UserTo: row.UserTo, Title: row.Title, Content: row.Content },
+    });
+
+    dialogRef.afterClosed().subscribe(x => {
+      this._homeDefService.markHomeMessageHasRead(row).subscribe(y => {
+        // Empty
+      });
     });
   }
 

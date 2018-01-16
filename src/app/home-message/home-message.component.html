@@ -22,7 +22,8 @@
           <ng-container matColumnDef="id">
             <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
             <mat-cell *matCellDef="let row">
-              {{row.ID}}
+              <button mat-icon-button (click)="onDeleteMsg(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="mt-3">delete</mat-icon></button>
+              <button (click)="onOpenMsg(row)">{{row.ID}}</button>              
             </mat-cell>
           </ng-container>
 

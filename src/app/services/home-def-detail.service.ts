@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
+import { HttpHeaderResponse } from '@angular/common/http/src/response';
 
 @Injectable()
 export class HomeDefDetailService {
@@ -68,13 +69,13 @@ export class HomeDefDetailService {
       console.log('AC_HIH_UI [Debug]: Entering HomeDefDetailService constructor...');
     }
 
-    this._islistLoaded = false; // Performance improvement    
+    this._islistLoaded = false; // Performance improvement
   }
 
   /**
    * Read all home defs in the system which current user can view
    */
-  public fetchAllHomeDef(forceReload?: boolean) {
+  public fetchAllHomeDef(forceReload?: boolean): void {
     if (!this._islistLoaded || forceReload) {
       const apiurl = environment.ApiUrl + '/api/homedef';
 
@@ -119,6 +120,7 @@ export class HomeDefDetailService {
 
           this._islistLoaded = false;
         }, () => {
+          // Empty
         });
     }
   }
@@ -126,10 +128,10 @@ export class HomeDefDetailService {
   /**
    * Read a specified home defs
    */
-  public readHomeDef(hid: number) {
-    const apiurl = environment.ApiUrl + '/api/homedef/' + hid.toString();
+  public readHomeDef(hid: number): void {
+    const apiurl: string = environment.ApiUrl + '/api/homedef/' + hid.toString();
 
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -160,6 +162,7 @@ export class HomeDefDetailService {
 
         this.readHomeDefEvent.emit(null);
       }, () => {
+        // Empty
       });
   }
 
@@ -167,15 +170,15 @@ export class HomeDefDetailService {
    * Create a home def
    * @param objhd Home def to be created
    */
-  public createHomeDef(objhd: HomeDef) {
-    let headers = new HttpHeaders();
+  public createHomeDef(objhd: HomeDef): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let apiurl = environment.ApiUrl + '/api/homedef';
+    let apiurl: string = environment.ApiUrl + '/api/homedef';
 
     const data: HomeDefJson = objhd.generateJSONData(true);
-    const jdata = JSON && JSON.stringify(data);
+    const jdata: any = JSON && JSON.stringify(data);
     this._http.post(apiurl, jdata, {
         headers: headers,
         withCredentials: true,
@@ -208,17 +211,18 @@ export class HomeDefDetailService {
         // Broadcast event: failed
         this.createEvent.emit(null);
       }, () => {
+        // Empty
       });
   }
 
   /**
    * Fetch all members in the chosed home
    */
-  public fetchAllMembersInChosedHome() {
+  public fetchAllMembersInChosedHome(): void {
     if (this.ChosedHome) {
-      const apiurl = environment.ApiUrl + '/api/homemember';
+      const apiurl: string = environment.ApiUrl + '/api/homemember';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                        .append('Accept', 'application/json')
                        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -267,11 +271,11 @@ export class HomeDefDetailService {
   /**
    * Fetch all members for specified homedef
    */
-  public fetchHomeMembers(hid: number) {
+  public fetchHomeMembers(hid: number): void {
     if (!this.curHomeSelected) {
-      const apiurl = environment.ApiUrl + '/api/homemember';
+      const apiurl: string = environment.ApiUrl + '/api/homemember';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                        .append('Accept', 'application/json')
                        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -339,15 +343,83 @@ export class HomeDefDetailService {
    * @param data Message content
    */
   public createHomeMessage(data: HomeMsg): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    const apiurl = environment.ApiUrl + '/api/homemsg';
+    const apiurl: string = environment.ApiUrl + '/api/homemsg';
 
-    const jdata = JSON && JSON.stringify(data.writeJSONObject());
+    const jdata: any = JSON && JSON.stringify(data.writeJSONObject());
     return this._http.post(apiurl, jdata, {
         headers: headers,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+
+        let hd: HomeMsg = new HomeMsg();
+        hd.onSetData(<any>response);
+        return hd;
+      });
+  }
+
+  /**
+   * Mark home message as read
+   */
+  public markHomeMessageHasRead(msg: HomeMsg): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+                     .append('Accept', 'application/json')
+                     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    const apiurl: string = environment.ApiUrl + '/api/homemsg/' + msg.ID.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this.ChosedHome.ID.toString());
+    let jdata: any[] = [{
+        'op': 'replace',
+        'path': '/readFlag',
+        'value': true,
+      },
+    ];
+
+    return this._http.patch(apiurl, jdata, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]:' + response);
+        }
+
+        let hd: HomeMsg = new HomeMsg();
+        hd.onSetData(<any>response);
+        return hd;
+      });
+  }
+
+  /**
+   * Delete home message
+   */
+  public deleteHomeMessage(msg: HomeMsg, senderdel?: boolean): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+                     .append('Accept', 'application/json')
+                     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    const apiurl: string = environment.ApiUrl + '/api/homemsg/' + msg.ID.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this.ChosedHome.ID.toString());
+    let jdata: any[] = [{
+        'op': 'replace',
+        'path': senderdel ?  '/senderDeletion' : '/receiverDeletion',
+        'value': true,
+      },
+    ];
+
+    return this._http.patch(apiurl, jdata, {
+        headers: headers,
+        params: params,
         withCredentials: true,
       })
       .map((response: HttpResponse<any>) => {
@@ -375,7 +447,7 @@ export class HomeDefDetailService {
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true})
-      .map(x => {
+      .map((x) => {
         this.keyFigure = new HomeKeyFigure();
         this.keyFigure.onSetData(x);
         return this.keyFigure;

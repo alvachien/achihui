@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
     this.curChosenHome = null;
 
     // Wakeup the API
-    this._http.get(environment.ApiUrl + '/api/wakeup').subscribe(y => {
+    this._http.get(environment.ApiUrl + '/api/wakeup').subscribe((y) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC HIH UI [Debug]: Wakeup API in AppComponent' + y.toString());
       }
