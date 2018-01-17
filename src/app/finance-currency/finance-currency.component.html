@@ -1,40 +1,39 @@
 <mat-card>
-    <mat-card-header>
-      <div></div>
-      <mat-card-title>{{'Finance.Currencies' | translate}}</mat-card-title>
-      <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="table-container mat-elevation-z8">
-        <mat-table #table [dataSource]="dataSource">
-          <!-- Currency Column -->
-          <ng-container matColumnDef="curr">
-            <mat-header-cell *matHeaderCellDef>{{'Finance.Currency' | translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let row">
-              {{row.Currency}}
-            </mat-cell>
-          </ng-container>
-  
-          <!-- Name Column -->
-          <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef>{{'Common.Name' | translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.Name | translate}} </mat-cell>
-          </ng-container>
-  
-          <!-- Symbol Column -->
-          <ng-container matColumnDef="symbol">
-            <mat-header-cell *matHeaderCellDef> {{'Finance.CurrencySymbol' | translate}} </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.Symbol}} </mat-cell>
-          </ng-container>
-  
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-        </mat-table>
-        <mat-paginator #paginator [length]="_currService.Currencies.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
-        </mat-paginator>
-      </div>
-    </mat-card-content>
-    <mat-card-actions>
-    </mat-card-actions>
-  </mat-card>
-  
+  <mat-card-header>
+    <div></div>
+    <mat-card-title>{{'Finance.Currencies' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="table-container mat-elevation-z8">
+      <mat-table #table [dataSource]="dataSource">
+        <!-- Currency Column -->
+        <ng-container matColumnDef="curr">
+          <mat-header-cell *matHeaderCellDef>{{'Finance.Currency' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            {{row.Currency}}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Name' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.Name | translate}} </mat-cell>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="symbol">
+          <mat-header-cell *matHeaderCellDef> {{'Finance.CurrencySymbol' | translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.Symbol}} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator #paginator [length]="_currService.Currencies.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+  </mat-card-actions>
+</mat-card>
