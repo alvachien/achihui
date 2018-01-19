@@ -13,7 +13,7 @@ import { startWith } from 'rxjs/operators/startWith';
 import { switchMap } from 'rxjs/operators/switchMap';
 
 @Component({
-  selector: 'app-event-detail',
+  selector: 'hih-event-detail',
   templateUrl: './event-detail.component.html',
   styleUrls: ['./event-detail.component.scss'],
 })

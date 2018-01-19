@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, GeneralEvent } from '../../model';
+import { LogLevel, GeneralEvent, RecurEvent } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
 import { Observable } from 'rxjs/Observable';
 import { merge } from 'rxjs/observable/merge';
@@ -18,8 +18,8 @@ import { switchMap } from 'rxjs/operators/switchMap';
   styleUrls: ['./recurr-event-list.component.scss']
 })
 export class RecurrEventListComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['id', 'name', 'start', 'end', 'complete', 'assignee'];
-  dataSource: MatTableDataSource<GeneralEvent>;
+  displayedColumns: string[] = ['id', 'name', 'start', 'end', 'assignee'];
+  dataSource: MatTableDataSource<RecurEvent>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -54,7 +54,7 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
 
     this._homeDefService.curHomeMembers.subscribe((x) => {
-      this.fetchEvents();
+      this.fetchRecurEvents();
     });
   }
 
@@ -64,29 +64,29 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit {
 
   public onRefresh(): void {
     // Refresh the whole list
-    this.fetchEvents();
+    this.fetchRecurEvents();
   }
 
-  public onEventRowSelect(row: GeneralEvent): void {
+  public onRecurEventRowSelect(row: GeneralEvent): void {
     this._router.navigate(['/event/recur/display/' + row.ID.toString()]);
   }
 
-  public fetchEvents(): void {
+  public fetchRecurEvents(): void {
     this.paginator.page
       .pipe(
       startWith({}),
       switchMap(() => {
         this.isLoadingResults = true;
-        return this._storageService!.fetchAllEvents(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize );
+        return this._storageService!.fetchAllRecurEvents(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize );
       }),
       map((data) => {
         // Flip flag to show that loading has finished.
         this.isLoadingResults = false;
 
-        let rslts: GeneralEvent[] = [];
+        let rslts: RecurEvent[] = [];
         if (data && data.contentList && data.contentList instanceof Array) {
           for (let ci of data.contentList) {
-            let rst: GeneralEvent = new GeneralEvent();
+            let rst: RecurEvent = new RecurEvent();
             rst.onSetData(ci);
 
             rslts.push(rst);

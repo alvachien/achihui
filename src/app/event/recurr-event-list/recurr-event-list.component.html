@@ -62,14 +62,8 @@
             <mat-cell *matCellDef="let row"> {{row.EndTimeFormatString}} </mat-cell>
           </ng-container>
 
-          <!-- Completed Column -->
-          <ng-container matColumnDef="complete">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.CompleteDate' | translate}} </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.CompleteTimeFormatString}} </mat-cell>
-          </ng-container>
-
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onEventRowSelect(row)">
+          <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRecurEventRowSelect(row)">
           </mat-row>
         </mat-table>
 
