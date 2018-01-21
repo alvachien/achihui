@@ -295,6 +295,11 @@ export class RecurEvent extends hih.BaseModel {
     if (data && data.isPublic) {
       this._ispublic = data.isPublic;
     }
+    if (data && data.rptType) {
+      this.RepeatType = data.rptType;
+    } else {
+      this.RepeatType = hih.RepeatFrequencyEnum.Month;
+    }
   }
 
   writeJSONObject(): any {
@@ -311,6 +316,7 @@ export class RecurEvent extends hih.BaseModel {
       robj.endTimePoint = this.EndTimeFormatString;
     }
     robj.isPublic = this._ispublic;
+    robj.rptType = this.RepeatType;
     return robj;
   }
 }
