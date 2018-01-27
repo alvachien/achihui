@@ -138,7 +138,7 @@ export class EventStorageService {
   }
 
   /**
-   * Read general event
+   * Read recur event
    * @param eid Event ID
    */
   public readRecurEvent(eid: number): Observable<RecurEvent> {
@@ -158,7 +158,64 @@ export class EventStorageService {
       })
       .map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readObject in EventStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering readRecurEvent in EventStorageService: ${response}`);
+        }
+
+        let hd: RecurEvent = new RecurEvent();
+        hd.onSetData(response);
+        return hd;
+      });
+  }
+
+  /**
+   * Create recur event
+   */
+  public createRecurEvent(reobj: RecurEvent): Observable<RecurEvent> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/recurevent/';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    let jdata = reobj.writeJSONString();
+
+    return this._http.post(apiurl, jdata, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering createRecurEvent in EventStorageService: ${response}`);
+        }
+
+        let hd: RecurEvent = new RecurEvent();
+        hd.onSetData(response);
+        return hd;
+      });
+  }
+
+  public calcRecurEvents(reobj: RecurEvent): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/recurevent/';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    let jdata = reobj.writeJSONString();
+
+    return this._http.post(apiurl, jdata, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering createRecurEvent in EventStorageService: ${response}`);
         }
 
         let hd: RecurEvent = new RecurEvent();

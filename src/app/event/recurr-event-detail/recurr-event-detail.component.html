@@ -29,8 +29,7 @@
 
       <mat-form-field>
         <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}" [disabled]="!isFieldChangable" 
-          [ngModel]="detailObject!.RepeatType" (ngModelChange)="detailObject.RepeatType=$event"
-          name="rpttype">
+          [ngModel]="detailObject!.RepeatType" (ngModelChange)="detailObject.RepeatType=$event" name="rpttype">
           <mat-option *ngFor="let rt of arFrequencies" [value]="rt.value">
             {{rt.i18nterm | translate}}
           </mat-option>

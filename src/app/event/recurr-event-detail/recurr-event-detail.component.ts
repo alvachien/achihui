@@ -90,6 +90,12 @@ export class RecurrEventDetailComponent implements OnInit {
     this._router.navigate(['/event/recur']);
   }
 
+  public onGenerateRecurEvents(): void {
+    this._storageService.calcRecurEvents(this.detailObject).subscribe(x => {
+
+    });
+  }
+
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.createImpl();
@@ -104,12 +110,12 @@ export class RecurrEventDetailComponent implements OnInit {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
   private createImpl(): void {
-    // this._storageService.createRecurEvent(this.detailObject).subscribe((x) => {
-    //   // Navigate to display
-    //   let gevnt: RecurEvent = new RecurEvent();
-    //   gevnt.onSetData(x);
-    //   this._router.navigate(['/event/recur/display/' + gevnt.ID.toString()]);
-    // });
+    this._storageService.createRecurEvent(this.detailObject).subscribe((x) => {
+      // Navigate to display
+      let gevnt: RecurEvent = new RecurEvent();
+      gevnt.onSetData(x);
+      this._router.navigate(['/event/recur/display/' + gevnt.ID.toString()]);
+    });
   }
   private updateImpl(): void {
     // TBD.
