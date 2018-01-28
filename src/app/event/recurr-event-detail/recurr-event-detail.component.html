@@ -48,9 +48,12 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <!-- Simulate results -->
     </div>
   </mat-card-content>
   <mat-card-actions>
+    <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onGenerateRecurEvents()">{{'Common.Submit' | translate}}</button>
     <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
     <button mat-button color="warn" (click)="onCancel()">{{'Common.BackToList' | translate}}</button>
   </mat-card-actions>
