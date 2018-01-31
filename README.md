@@ -40,7 +40,8 @@ Since version 0.1, it supports the Finance Traces and Learning Traces. The detai
 ## Histories
 This project is the UI layer of new HIH, and it continues the HIH development since the previous HIH [Github Project](https://github.com/alvachien/hih);
 
-This project used tons of new UI technologies, including: ASP.NET Core 2, Angular 5, TypeScript 2, BootStrap 4, etc;
+This project used tons of new UI technologies, including: Angular 5/6, TypeScript 2+, Material 2, BootStrap 4, Ngx-charts etc;
+
 
 ## Credits
 This project was generated with [angular-cli](https://github.com/angular/angular-cli).
@@ -53,7 +54,7 @@ This project also require the following components:
 * [Oidc-Client](https://github.com/IdentityModel/oidc-client-js)
 * [TinyMce](https://www.tinymce.com/)
 * [Moment.js](https://momentjs.com/)
-* [Ngx-Chart](https://github.com/swimlane/ngx-charts)
+* [Ngx-Charts](https://github.com/swimlane/ngx-charts)
 
 ## Contact me
 **Alva Chien | 钱红俊**

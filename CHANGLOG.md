@@ -10,7 +10,8 @@ Bugs fixing and Feature list
 - Manually exchange rate adjustment for posted documents
 - Finance Report: Monthly expense trend
 - Finance Report: Monthly income trend
-
+- Event: Create the event and assign to one home member;
+- Recur event: Create the recur event;
 
 ## Version 0.2
 Released at 2017.11.13
