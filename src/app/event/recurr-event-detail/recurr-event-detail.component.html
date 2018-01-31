@@ -50,10 +50,35 @@
       </mat-form-field>
 
       <!-- Simulate results -->
+      <div class="example-container mat-elevation-z8">
+        <mat-table #table [dataSource]="dataSourceSimulateResult">
+      
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.Name}} </mat-cell>
+          </ng-container>
+      
+          <!-- Start date Column -->
+          <ng-container matColumnDef="startdate">
+            <mat-header-cell *matHeaderCellDef> Start </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.StartTimeFormatString}} </mat-cell>
+          </ng-container>
+      
+          <!-- End date Column -->
+          <ng-container matColumnDef="enddate">
+            <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.EndTimeFormatString}} </mat-cell>
+          </ng-container>
+      
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>      
     </div>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onGenerateRecurEvents()">{{'Common.Submit' | translate}}</button>
+    <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onGenerateRecurEvents()">{{'Common.Simulate' | translate}}</button>
     <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
     <button mat-button color="warn" (click)="onCancel()">{{'Common.BackToList' | translate}}</button>
   </mat-card-actions>

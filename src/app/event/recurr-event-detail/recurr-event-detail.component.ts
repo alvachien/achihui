@@ -24,6 +24,9 @@ export class RecurrEventDetailComponent implements OnInit {
   public detailObject: RecurEvent;
   public isLoadingData: boolean;
   arFrequencies = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  displayedColumns = ['name', 'startdate', 'enddate'];
+  dataSourceSimulateResult = new MatTableDataSource<GeneralEvent>([]);
+  // arSimulateResults: GeneralEvent[] = [];
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -92,7 +95,8 @@ export class RecurrEventDetailComponent implements OnInit {
 
   public onGenerateRecurEvents(): void {
     this._storageService.calcRecurEvents(this.detailObject).subscribe(x => {
-
+      // Show the result.
+      this.dataSourceSimulateResult.data = x;
     });
   }
 
