@@ -4,7 +4,7 @@ import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum, 
+import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
   getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -30,21 +30,21 @@ export class ReportBSDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<BalanceSheetReport[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.ReportBSEvent,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._parentComponent.ReportBS.slice();
+      const data: any = this._parentComponent.ReportBS.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() {
+  disconnect(): void {
     // Empty
    }
 }
@@ -60,21 +60,21 @@ export class ReportCCDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<ControlCenterReport[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.ReportCCEvent,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._parentComponent.ReportCC.slice();
+      const data: any = this._parentComponent.ReportCC.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() {
+  disconnect(): void {
     // Empty
    }
 }
@@ -90,23 +90,23 @@ export class ReportOrderDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<OrderReport[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.ReportOrderEvent,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._parentComponent.ReportOrder.slice();
+      const data: any = this._parentComponent.ReportOrder.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() {
+  disconnect(): void {
     // Empty
-   }
+  }
 }
 
 @Component({
@@ -121,26 +121,26 @@ export class ReportComponent implements OnInit, OnDestroy {
   momExcludeTransfer: boolean;
   momScopes: UIDisplayString[];
 
-  displayedBSColumns = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
+  displayedBSColumns: string[] = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
   dataSourceBS: ReportBSDataSource | null;
   ReportBS: BalanceSheetReport[] = [];
-  ReportBSEvent: EventEmitter<null> = new EventEmitter<null>(null);
+  ReportBSEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorBS') paginatorBS: MatPaginator;
 
-  displayedCCColumns = ['ControlCenter', 'Debit', 'Credit', 'Balance'];
-  dataSourceCC: ReportCCDataSource | null;
+  displayedCCColumns: string[] = ['ControlCenter', 'Debit', 'Credit', 'Balance'];
+  dataSourceCC: ReportCCDataSource | undefined;
   ReportCC: ControlCenterReport[] = [];
-  ReportCCEvent: EventEmitter<null> = new EventEmitter<null>(null);
+  ReportCCEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorCC') paginatorCC: MatPaginator;
 
   includeInvalid: boolean = false;
-  displayedOrderColumns = ['Order', 'Debit', 'Credit', 'Balance'];
-  dataSourceOrder: ReportOrderDataSource | null;
+  displayedOrderColumns: string[] = ['Order', 'Debit', 'Credit', 'Balance'];
+  dataSourceOrder: ReportOrderDataSource | undefined;
   ReportOrder: OrderReport[] = [];
-  ReportOrderEvent: EventEmitter<null> = new EventEmitter<null>(null);
+  ReportOrderEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorOrder') paginatorOrder: MatPaginator;
 
-  colorScheme = {
+  colorScheme: any = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
   };
   dataBSAccountDebit: any[] = [];
@@ -151,10 +151,10 @@ export class ReportComponent implements OnInit, OnDestroy {
   dataCCCredit: any[] = [];
   dataOrderDebit: any[] = [];
   dataOrderCredit: any[] = [];
-  dataMOM: any[] = [];  
+  dataMOM: any[] = [];
 
-	view: Array<number> = [];
-  
+  view: number[] = [];
+
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
@@ -164,7 +164,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService,
     private media: ObservableMedia) {
-    this.selectedMOMScope = OverviewScopeEnum.CurrentYear;    
+    this.selectedMOMScope = OverviewScopeEnum.CurrentYear;
     this.momScopes = [];
 
     this._uiStatusService.OverviewScopeStrings.forEach((val: UIDisplayString) => {
@@ -186,9 +186,9 @@ export class ReportComponent implements OnInit, OnDestroy {
       .subscribe((change: MediaChange) => {
         this.changeGraphSize();
       });
-      
+
     this.changeGraphSize();
-    
+
     Observable.forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAccounts(),
@@ -242,7 +242,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.ngUnsubscribe$.next(true);
     this.ngUnsubscribe$.complete();
   }
@@ -256,36 +256,37 @@ export class ReportComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   public onMOMExcludeTransferChanged(): void {
     this.momExcludeTransfer = !this.momExcludeTransfer;
 
     this.onMOMScopeChanged();
   }
-  public onBSAccountDebitSelect($event): void {
+  public onBSAccountDebitSelect($event: any): void {
     // Do nothing
   }
-  public onBSAccountCreditSelect($event): void {
+  public onBSAccountCreditSelect($event: any): void {
     // Do nothing
   }
-  public onBSCategoryDebitSelect($event): void {
+  public onBSCategoryDebitSelect($event: any): void {
     // Do nothing
   }
-  public onBSCategoryCreditSelect($event): void {
+  public onBSCategoryCreditSelect($event: any): void {
     // Do nothing
   }
-  public onCCDebitSelect($event): void {
+  public onCCDebitSelect($event: any): void {
     // Do nothing
   }
-  public onCCCreditSelect($event): void {
+  public onCCCreditSelect($event: any): void {
     // Do nothing
   }
-  public onOrderDebitSelect($event): void {
+  public onOrderDebitSelect($event: any): void {
     // Do nothing
   }
-  public onOrderCreditSelect($event): void {
+  public onOrderCreditSelect($event: any): void {
     // Do nothing
   }
-  public onTrendSelect($event): void {
+  public onTrendSelect($event: any): void {
     // Do nothing
   }
 
@@ -298,7 +299,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     this.dataMOM = [];
 
     for (let inmom of data) {
-      const strmonth = inmom.year.toString() + Utility.prefixInteger(inmom.month, 2);
+      const strmonth: any = inmom.year.toString() + Utility.prefixInteger(inmom.month, 2);
       let outidx: number = this.dataMOM.findIndex((val: any) => {
         return val.name === strmonth;
       });
@@ -434,10 +435,10 @@ export class ReportComponent implements OnInit, OnDestroy {
 
       this.ReportBS.push(rbs);
     }
-  }  
-  
-  private changeGraphSize() {
-    let graphSize = 0;
+  }
+
+  private changeGraphSize(): void {
+    let graphSize: number = 0;
 
     if (this.media.isActive('xs')) {
       graphSize = 150;
@@ -445,7 +446,7 @@ export class ReportComponent implements OnInit, OnDestroy {
       graphSize = 300;
     } else if (this.media.isActive('md')) {
       graphSize = 450;
-    } else {      
+    } else {
       graphSize = 500;
     }
 

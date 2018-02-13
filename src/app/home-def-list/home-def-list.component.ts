@@ -22,21 +22,23 @@ export class HomeDefDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<HomeDef[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._homedefService.listDataChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._homedefService.HomeDefs.slice();
+      const data: any = this._homedefService.HomeDefs.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -46,7 +48,7 @@ export class HomeDefDataSource extends DataSource<any> {
 })
 export class HomeDefListComponent implements OnInit {
 
-  displayedColumns = ['id', 'name', 'host', 'currency', 'details'];
+  displayedColumns: string[] = ['id', 'name', 'host', 'currency', 'details'];
   dataSource: HomeDefDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -61,19 +63,19 @@ export class HomeDefListComponent implements OnInit {
     this.dataSource = new HomeDefDataSource(this._homedefService, this.paginator);
   }
 
-  public onCreateHome() {
+  public onCreateHome(): void {
     this._router.navigate(['/homedef/create']);
   }
 
-  public onDisplayHome(row: HomeDef) {
+  public onDisplayHome(row: HomeDef): void {
     this._router.navigate(['/homedef/display/' + row.ID.toString()]);
   }
 
-  public onChooseHome(row: HomeDef) {
+  public onChooseHome(row: HomeDef): void {
     this._homedefService.ChosedHome = row;
 
     if (this._homedefService.RedirectURL) {
-      let url = this._homedefService.RedirectURL;
+      let url: string = this._homedefService.RedirectURL;
       this._homedefService.RedirectURL = '';
 
       this._router.navigate([url]);
@@ -82,7 +84,7 @@ export class HomeDefListComponent implements OnInit {
     }
   }
 
-  public onHomeDefRowSelect(row: HomeDef) {
+  public onHomeDefRowSelect(row: HomeDef): void {
     if (!this.IsCurrentHomeChosed) {
       this.onChooseHome(row);
     } else {

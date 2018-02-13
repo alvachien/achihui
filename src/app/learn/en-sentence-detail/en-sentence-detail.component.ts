@@ -12,13 +12,13 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   selector: 'hih-learn-en-sentence-detail',
   templateUrl: './en-sentence-detail.component.html',
   styleUrls: ['./en-sentence-detail.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class EnSentenceDetailComponent implements OnInit {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: EnSentence = null;
+  public detailObject: EnSentence | undefined;
   public uiMode: UIMode = UIMode.Create;
 
   constructor(private _dialog: MatDialog,
@@ -31,13 +31,13 @@ export class EnSentenceDetailComponent implements OnInit {
     this.detailObject = new EnSentence();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent ngOnInit...');
     }
 
     // Distinguish current mode
-    this._activateRoute.url.subscribe((x) => {
+    this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent ngOnInit for activateRoute URL: ${x}`);
       }
@@ -57,7 +57,7 @@ export class EnSentenceDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readEnSentenceEvent.subscribe((x) => {
+          this._storageService.readEnSentenceEvent.subscribe((x: any) => {
             if (x instanceof EnSentence) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readEnWord : ${x}`);
@@ -75,11 +75,12 @@ export class EnSentenceDetailComponent implements OnInit {
           this._storageService.readEnSentence(this.routerID);
         }
       }
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.log(`AC_HIH_UI [Error]: Entering ngOnInit in EnSentenceDetailComponent with activateRoute URL : ${error}`);
       }
     }, () => {
+      // Empty
     });
   }
 
@@ -91,9 +92,9 @@ export class EnSentenceDetailComponent implements OnInit {
     return true;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
-      this._storageService.createEnSentenceEvent.subscribe((x) => {
+      this._storageService.createEnSentenceEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createEnSentenceEvent in EnWordDetailComponent with : ${x}`);
         }
@@ -101,11 +102,11 @@ export class EnSentenceDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof EnSentence) {
           // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });
-          
+
           let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
             recreate = true;
@@ -131,7 +132,7 @@ export class EnSentenceDetailComponent implements OnInit {
             disableClose: false,
             width: '500px',
             data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
+          }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -147,11 +148,11 @@ export class EnSentenceDetailComponent implements OnInit {
     }
   }
 
-  public onCancel() {
-    
+  public onCancel(): void {
+    // Empty
   }
 
-  private onInitCreateMode() {
+  private onInitCreateMode(): void {
     this.detailObject = new EnSentence();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;

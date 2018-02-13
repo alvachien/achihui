@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-version',
+  selector: 'hih-version',
   templateUrl: './version.component.html',
-  styleUrls: ['./version.component.scss']
+  styleUrls: ['./version.component.scss'],
 })
 export class VersionComponent implements OnInit {
 
-  constructor() { }
+  constructor(): void {
+    // Empty
+  }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Empty
   }
 }

@@ -21,7 +21,7 @@ export class SRuleDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<SettlementRule[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.ruleOperEvent,
     ];
 
@@ -30,7 +30,9 @@ export class SRuleDataSource extends DataSource<any> {
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -42,16 +44,16 @@ export class OrderDetailComponent implements OnInit {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: Order = null;
+  public detailObject: Order | undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   get SRules(): SettlementRule[] {
     return this.detailObject.SRules;
   }
 
-  displayedColumns = ['rid', 'ccid', 'precent', 'comment'];
+  displayedColumns: string[] = ['rid', 'ccid', 'precent', 'comment'];
   dataSource: SRuleDataSource | null;
-  ruleOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
+  ruleOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -67,13 +69,13 @@ export class OrderDetailComponent implements OnInit {
     this.dataSource = new SRuleDataSource(this);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit...');
     }
 
-    this._storageService.fetchAllControlCenters().subscribe((cc) => {
-      this._activateRoute.url.subscribe((x) => {
+    this._storageService.fetchAllControlCenters().subscribe((cc: any) => {
+      this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
@@ -93,7 +95,7 @@ export class OrderDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readOrderEvent.subscribe((x2) => {
+            this._storageService.readOrderEvent.subscribe((x2: any) => {
               if (x2 instanceof Order) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readOrder : ${x2}`);
@@ -113,14 +115,15 @@ export class OrderDetailComponent implements OnInit {
             this._storageService.readOrder(this.routerID);
           }
         }
-      }, (error) => {
+      }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering ngOnInit in OrderDetailComponent with activateRoute URL : ${error}`);
         }
         this.uiMode = UIMode.Invalid;
       }, () => {
+        // Empty
       });
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOnInit in OrderDetailComponent with activateRoute URL : ${error}`);
       }
@@ -128,7 +131,7 @@ export class OrderDetailComponent implements OnInit {
     });
   }
 
-  public setStep(index: number) {
+  public setStep(index: number): void {
     this.step = index;
   }
 
@@ -162,7 +165,7 @@ export class OrderDetailComponent implements OnInit {
     this.ruleOperEvent.emit();
   }
 
-  public onDeleteRule(rule): void {
+  public onDeleteRule(rule: any): void {
     let idx: number = 0;
     for (let i: number = 0; i < this.detailObject.SRules.length; i ++) {
       if (this.detailObject.SRules[i].RuleId === rule.RuleId) {
@@ -173,21 +176,6 @@ export class OrderDetailComponent implements OnInit {
 
     this.detailObject.SRules.splice(idx);
     this.ruleOperEvent.emit();
-  }
-
-  private getNextRuleID(): number {
-    if (this.detailObject.SRules.length <= 0) {
-      return 1;
-    }
-
-    let nMax: number = 0;
-    for (let rule of this.detailObject.SRules) {
-      if (rule.RuleId > nMax) {
-        nMax = rule.RuleId;
-      }
-    }
-
-    return nMax + 1;
   }
 
   public onSubmit(): void {
@@ -206,6 +194,21 @@ export class OrderDetailComponent implements OnInit {
     this.detailObject = new Order();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
+  }
+
+  private getNextRuleID(): number {
+    if (this.detailObject.SRules.length <= 0) {
+      return 1;
+    }
+
+    let nMax: number = 0;
+    for (let rule of this.detailObject.SRules) {
+      if (rule.RuleId > nMax) {
+        nMax = rule.RuleId;
+      }
+    }
+
+    return nMax + 1;
   }
 
   private onCreateOrder(): void {
@@ -229,32 +232,32 @@ export class OrderDetailComponent implements OnInit {
       return;
     }
 
-    this._storageService.createOrderEvent.subscribe((x) => {
+    this._storageService.createOrderEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving createOrderEvent in OrderDetailComponent with : ${x}`);
       }
 
       // Navigate back to list view
       if (x instanceof Order) {
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });
-        
+
         let recreate: boolean = false;
         snackbarRef.onAction().subscribe(() => {
           recreate = true;
 
           this.onInitCreateMode();
           this.setStep(0);
-          //this._router.navigate(['/finance/order/create']);
+          // this._router.navigate(['/finance/order/create']);
         });
 
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           if (!recreate) {
             this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
-          }            
+          }
         });
       } else {
         // Show error message
@@ -268,7 +271,7 @@ export class OrderDetailComponent implements OnInit {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe((x2) => {
+        }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -302,18 +305,18 @@ export class OrderDetailComponent implements OnInit {
       return;
     }
 
-    this._storageService.changeOrderEvent.subscribe((x) => {
+    this._storageService.changeOrderEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving changeOrderEvent in OrderDetailComponent with : ${x}`);
       }
 
       // Navigate back to list view
       if (x instanceof Order) {
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
           'OK', {
           duration: 3000,
         });
-        
+
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
@@ -330,7 +333,7 @@ export class OrderDetailComponent implements OnInit {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe((x2) => {
+        }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);

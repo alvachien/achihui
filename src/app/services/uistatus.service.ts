@@ -48,7 +48,7 @@ export class UIStatusService {
   }
 
   public arrLabels: UIDisplayString[] = [];
-  public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(null);
+  public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 
   constructor(private _tranService: TranslateService) {
     this._arrOverviewScopes = UIDisplayStringUtil.getOverviewScopeStrings();
@@ -62,7 +62,7 @@ export class UIStatusService {
   }
 
   public getUILabel(le: UICommonLabelEnum): string {
-    for(let lab of this.arrLabels) {
+    for (let lab of this.arrLabels) {
       if (lab.value === le) {
         return lab.displaystring;
       }
@@ -77,7 +77,7 @@ export class UIStatusService {
       arstrings.push(lab.i18nterm);
     }
 
-    this._tranService.get(arstrings).subscribe(x => {
+    this._tranService.get(arstrings).subscribe((x: any) => {
       for (let attr in x) {
         for (let lab of this.arrLabels) {
           if (lab.i18nterm === attr) {

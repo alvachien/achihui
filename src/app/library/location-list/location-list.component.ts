@@ -20,59 +20,52 @@ export class LibLocationDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Location[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listLocationChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.Locations.slice();
+      const data: any = this._storageService.Locations.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
   selector: 'hih-lib-location-list',
   templateUrl: './location-list.component.html',
-  styleUrls: ['./location-list.component.scss']
+  styleUrls: ['./location-list.component.scss'],
 })
 export class LocationListComponent implements OnInit {
 
-  displayedColumns = ['id', 'category', 'name', 'comment'];
+  displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: LibLocationDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LibraryStorageService,
     private _router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering LocationListComponent ngOnInit...');
     }
 
     this.dataSource = new LibLocationDataSource(this._storageService, this.paginator);
-
-    Observable.forkJoin([
-      // this._storageService.fetchAllCategories(),
-      // this._storageService.fetchAllObjects(),
-    ]).subscribe((x) => {
-      // Just ensure the REQUEST has been sent
-      if (x) {
-
-      }
-    });
   }
 
-  public onCreateLocation() {    
+  public onCreateLocation(): void {
+    // Empty
   }
 
-  public onRefresh() {
-    
+  public onRefresh(): void {
+    // Empty
   }
 }

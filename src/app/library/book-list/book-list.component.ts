@@ -20,38 +20,40 @@ export class LibBookDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Book[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listBookChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.Books.slice();
+      const data: any = this._storageService.Books.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
   selector: 'hih-lib-book-list',
   templateUrl: './book-list.component.html',
-  styleUrls: ['./book-list.component.scss']
+  styleUrls: ['./book-list.component.scss'],
 })
 export class BookListComponent implements OnInit {
 
-  displayedColumns = ['id', 'category', 'name', 'comment'];
+  displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: LibBookDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LibraryStorageService,
     private _router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering BookListComponent ngOnInit...');
     }
@@ -60,20 +62,20 @@ export class BookListComponent implements OnInit {
 
     Observable.forkJoin([
       this._storageService.fetchAllBookCategories(),
-      //this._storageService.fetchAllObjects(),
-    ]).subscribe((x) => {
+      // this._storageService.fetchAllObjects(),
+    ]).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (x) {
-
+        // Do nothing
       }
     });
   }
 
-  public onCreateBook() {
-
+  public onCreateBook(): void {
+    // Empty
   }
 
-  public onRefresh() {
-    
+  public onRefresh(): void {
+    // Empty
   }
 }

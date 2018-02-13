@@ -1,5 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -17,13 +16,13 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private routerID: number = -1; // Current object ID in routing
+  private editor: any;
   public currentMode: string;
-  public detailObject: LearnObject | null = null;
+  public detailObject: LearnObject | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   elementId: String;
-  @Output() onEditorKeyup = new EventEmitter<any>();
-  private editor: any = null;
-  
+  @Output() onEditorKeyup: EventEmitter<any> = new EventEmitter<any>();
+
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
@@ -36,13 +35,13 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     this.elementId = 'tinymce' + Math.round(100 * Math.random()).toString();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering LearnObjectDetail ngOnInit...');
     }
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of LearnObjectDetail');
     }
@@ -53,20 +52,20 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         schema: 'html5',
         height: 500,
         menubar: false,
-        toolbar: 'fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link forecolor backcolor | removeformat',
+        toolbar: 'fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify' 
+          + ' | bullist numlist outdent indent | link forecolor backcolor | removeformat',
         plugins: 'advlist autolink link image lists charmap print preview',
         skin_url: '../../../assets/tinymceskins/lightgray',
-        setup: (editor) => {
+        setup: (editor: any) => {
           this.editor = editor;
 
           editor.on('keyup change', () => {
-            const content = editor.getContent();
+            const content: any = editor.getContent();
             this.onEditorKeyup.emit(content);
           });
         },
       });
-    }
-    catch (err) {
+    } catch (err) {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Debug]: Exception in ngAfterViewInit of LearnObjectDetail: ${err ? err.toString() : ''}`);
       }
@@ -74,9 +73,9 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this._storageService.fetchAllCategories().subscribe((x1) => {
+    this._storageService.fetchAllCategories().subscribe((x1: any) => {
       // Distinguish current mode
-      this._activateRoute.url.subscribe((x) => {
+      this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngAfterViewInit for activateRoute URL: ${x}`);
         }
@@ -96,15 +95,15 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readObjectEvent.subscribe((x) => {
-              if (x instanceof LearnObject) {
+            this._storageService.readObjectEvent.subscribe((x2: any) => {
+              if (x2 instanceof LearnObject) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngAfterViewInit in ObjectDetailComponent, succeed to readControlCenterEvent : ${x}`);
+                  console.log(`AC_HIH_UI [Debug]: Entering ngAfterViewInit in ObjectDetailComponent, succeed to readControlCenterEvent : ${x2}`);
                 }
-                this.detailObject = x;
+                this.detailObject = x2;
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit in ObjectDetailComponent, failed to readControlCenterEvent : ${x}`);
+                  console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit in ObjectDetailComponent, failed to readControlCenterEvent : ${x2}`);
                 }
                 this.detailObject = new LearnObject();
               }
@@ -113,7 +112,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
               tinymce.activeEditor.setContent(this.detailObject.Content);
               if (this.uiMode === UIMode.Display) {
                 tinymce.activeEditor.setMode('readonly');
-              } else if(this.uiMode === UIMode.Create || this.uiMode === UIMode.Change) {
+              } else if (this.uiMode === UIMode.Create || this.uiMode === UIMode.Change) {
                 tinymce.activeEditor.setMode('design');
               }
             });
@@ -121,17 +120,19 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
             this._storageService.readObject(this.routerID);
           }
         }
-      }, (error) => {
+      }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering ngOnInit in ObjectDetailComponent with activateRoute URL : ${error}`);
         }
       }, () => {
+        // Empty
       });
-    }, (error) => {
+    }, (error: any) => {
+      // Empty
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ngOnDestroy of LearnObjectDetail');
     }
@@ -163,7 +164,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     return true;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.onCreateObject();
     } else if (this.uiMode === UIMode.Change) {
@@ -171,19 +172,19 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  public onCancel() {
+  public onCancel(): void {
     // Jump back to the list view
     this._router.navigate(['/learn/object']);
   }
 
-  private onInitCreateMode() {
+  private onInitCreateMode(): void {
     this.detailObject = new LearnObject();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
 
-  private onCreateObject(){
-    this._storageService.createObjectEvent.subscribe((x) => {
+  private onCreateObject(): void {
+    this._storageService.createObjectEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving createObjectEvent in ObjectDetailComponent with : ${x}`);
       }
@@ -191,23 +192,23 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       // Navigate back to list view
       if (x instanceof LearnObject) {
         // Show the snackbar
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });
-        
+
         let recreate: boolean = false;
         snackbarRef.onAction().subscribe(() => {
           recreate = true;
           this.onInitCreateMode();
-          //this._router.navigate(['/learn/object/create']);
+          // this._router.navigate(['/learn/object/create']);
         });
 
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           if (!recreate) {
             this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
-          }            
+          }
         });
       } else {
         // Show error message
@@ -221,7 +222,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe((x2) => {
+        }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -234,8 +235,8 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     this._storageService.createObject(this.detailObject);
   }
 
-  private onUpdateObject() {
-    this._storageService.updateObjectEvent.subscribe((x) => {
+  private onUpdateObject(): void {
+    this._storageService.updateObjectEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving updateObjectEvent in ObjectDetailComponent with : ${x}`);
       }
@@ -243,11 +244,11 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       // Navigate back to list view
       if (x instanceof LearnObject) {
         // Show the snackbar
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
           'OK', {
           duration: 3000,
         });
-        
+
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
@@ -264,7 +265,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe((x2) => {
+        }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);

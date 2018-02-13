@@ -20,21 +20,23 @@ export class OrderDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Order[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listOrderChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.Orders.slice();
+      const data: any = this._storageService.Orders.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -44,7 +46,7 @@ export class OrderDataSource extends DataSource<any> {
 })
 export class OrderListComponent implements OnInit {
 
-  displayedColumns = ['id', 'name', 'ValidFrom', 'ValidTo', 'comment'];
+  displayedColumns: string[] = ['id', 'name', 'ValidFrom', 'ValidTo', 'comment'];
   dataSource: OrderDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   includeInvalid: boolean = false;
@@ -54,7 +56,7 @@ export class OrderListComponent implements OnInit {
     private _uiStatusService: UIStatusService,
     private _router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...');
     }
@@ -66,19 +68,19 @@ export class OrderListComponent implements OnInit {
     });
   }
 
-  public onCreateOrder() {
+  public onCreateOrder(): void {
     this._router.navigate(['/finance/order/create']);
   }
 
-  public onDisplayOrder(acnt: Order) {
+  public onDisplayOrder(acnt: Order): void {
     this._router.navigate(['/finance/order/display', acnt.Id]);
   }
 
-  public onChangeOrder(acnt: Order) {
+  public onChangeOrder(acnt: Order): void {
     this._router.navigate(['/finance/order/edit', acnt.Id]);
   }
 
-  public onDeleteOrder(acnt: any) {
+  public onDeleteOrder(acnt: any): void {
     // Show a confirmation dialog for the deletion
     const dlginfo: MessageDialogInfo = {
       Header: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
@@ -90,7 +92,7 @@ export class OrderListComponent implements OnInit {
       disableClose: false,
       width: '500px',
       data: dlginfo,
-    }).afterClosed().subscribe((x2) => {
+    }).afterClosed().subscribe((x2: any) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -102,7 +104,7 @@ export class OrderListComponent implements OnInit {
     });
   }
 
-  public onRefresh() {
+  public onRefresh(): void {
     this.includeInvalid = !this.includeInvalid;
 
     this._storageService.fetchAllOrders(true, this.includeInvalid).subscribe((x) => {

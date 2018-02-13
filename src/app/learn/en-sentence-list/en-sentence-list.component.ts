@@ -20,39 +20,41 @@ export class EnSentenceDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<EnSentence[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listEnSentChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.EnSentences.slice();
+      const data: any = this._storageService.EnSentences.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
   selector: 'hih-learn-en-sentence-list',
   templateUrl: './en-sentence-list.component.html',
   styleUrls: ['./en-sentence-list.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class EnSentenceListComponent implements OnInit {
 
-  displayedColumns = ['id', 'sent' ];
-  dataSource: EnSentenceDataSource | null = null;
+  displayedColumns: string[] = ['id', 'sent' ];
+  dataSource: EnSentenceDataSource | undefined = undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LearnStorageService,
     private _router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngOnInit...');
     }
@@ -60,28 +62,29 @@ export class EnSentenceListComponent implements OnInit {
     this.dataSource = new EnSentenceDataSource(this._storageService, this.paginator);
 
     Observable.forkJoin([
-      this._storageService.fetchAllEnSentences()
-    ]).subscribe((x) => {
+      this._storageService.fetchAllEnSentences(),
+    ]).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (x) {
-
+        // Do nothing
       }
     });
   }
 
-  public onCreateEnSentence() {
+  public onCreateEnSentence(): void {
     this._router.navigate(['/learn/ensent/create']);
   }
 
-  public onDisplayEnSentence(obj: EnSentence) {
+  public onDisplayEnSentence(obj: EnSentence): void {
     this._router.navigate(['/learn/ensent/display', obj.ID]);
   }
 
-  public onChangeEnSentence(obj: EnSentence) {
+  public onChangeEnSentence(obj: EnSentence): void {
     this._router.navigate(['/learn/ensent/edit', obj.ID]);
   }
 
-  public onDeleteEnSentence(obj: any) {
+  public onDeleteEnSentence(obj: any): void {
+    // Empty
   }
 
   public onRefresh(): void {

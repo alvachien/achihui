@@ -12,38 +12,40 @@ import { Observable } from 'rxjs/Observable';
  * Data source of Question bank
  */
 export class QuestionBankDataSource extends DataSource<any> {
-  constructor(private _storageService: LearnStorageService,    
+  constructor(private _storageService: LearnStorageService,
     private _paginator: MatPaginator) {
     super();
   }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<QuestionBankItem[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listQtnBankChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.QuestionBanks.slice();
+      const data: any = this._storageService.QuestionBanks.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
   selector: 'hih-learn-question-bank-list',
   templateUrl: './question-bank-list.component.html',
-  styleUrls: ['./question-bank-list.component.scss']
+  styleUrls: ['./question-bank-list.component.scss'],
 })
 export class QuestionBankListComponent implements OnInit {
 
-  displayedColumns = ['id', 'type', 'question', 'briefawr' ];
+  displayedColumns: string[] = ['id', 'type', 'question', 'briefawr' ];
   dataSource: QuestionBankDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   allTags: string[] = [];
@@ -52,55 +54,58 @@ export class QuestionBankListComponent implements OnInit {
   constructor(public _storageService: LearnStorageService,
     public _uiService: UIStatusService,
     public _tagService: TagsService,
-    private _router: Router) { 
+    private _router: Router) {
     this.isSlideMode = false;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSource = new QuestionBankDataSource(this._storageService, this.paginator);
-    
+
     Observable.forkJoin([
-      //this._tagService.fetchAllTags(TagTypeEnum.LearnQuestionBank),
-      this._storageService.fetchAllQuestionBankItem()
-    ]).subscribe(x => {
+      // this._tagService.fetchAllTags(TagTypeEnum.LearnQuestionBank),
+      this._storageService.fetchAllQuestionBankItem(),
+    ]).subscribe((x: any) => {
+      // DO nothing
     });
   }
 
-  public onCreateQuestion() {
+  public onCreateQuestion(): void {
     this._router.navigate(['/learn/questionbank/create']);
   }
 
-  public onDisplayQuestion(qst: QuestionBankItem) {
+  public onDisplayQuestion(qst: QuestionBankItem): void {
     this._router.navigate(['/learn/questionbank/display', qst.ID]);
   }
 
-  public onChangeQuestion(qst: QuestionBankItem) {
+  public onChangeQuestion(qst: QuestionBankItem): void {
     this._router.navigate(['/learn/questionbank/edit', qst.ID]);
   }
 
-  public onDeleteQuestion(qst: QuestionBankItem) {
+  public onDeleteQuestion(qst: QuestionBankItem): void {
     this._storageService.deleteQuestionEvent.subscribe(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving deleteQuestionEvent in QuestionBankListComponent`);
       }
 
       // Do nothing
-    }, error => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Debug]: Receiving deleteQuestionEvent in QuestionBankListComponent with : ${error}`);
       }
     }, () => {
+      // Empty
     });
-    
+
     this._storageService.deleteQuestionBankItem(qst);
   }
 
-  public onRefresh() {
-    this._storageService.fetchAllQuestionBankItem(true).subscribe(x => {
+  public onRefresh(): void {
+    this._storageService.fetchAllQuestionBankItem(true).subscribe((x: any) => {
+      // Do nothing
     });
   }
 
-  public onToggleSlide() {
+  public onToggleSlide(): void {
     if (!this.isSlideMode) {
       this.isSlideMode = true;
     } else {

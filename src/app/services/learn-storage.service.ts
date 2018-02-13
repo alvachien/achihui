@@ -54,20 +54,20 @@ export class LearnStorageService {
   }
 
   // Events
-  createObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
-  updateObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
-  readObjectEvent: EventEmitter<LearnObject | string | null> = new EventEmitter(null);
-  deleteObjectEvent: EventEmitter<string | null> = new EventEmitter(null);
-  createHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
-  readHistoryEvent: EventEmitter<LearnHistory | string | null> = new EventEmitter(null);
-  createQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
-  updateQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
-  deleteQuestionEvent: EventEmitter<string | null> = new EventEmitter(null);
-  readQuestionEvent: EventEmitter<QuestionBankItem | string | null> = new EventEmitter(null);
-  createEnWordEvent: EventEmitter<EnWord | string | null> = new EventEmitter(null);
-  readEnWordEvent: EventEmitter<EnWord | string | null> = new EventEmitter(null);
-  createEnSentenceEvent: EventEmitter<EnSentence | string | null> = new EventEmitter(null);
-  readEnSentenceEvent: EventEmitter<EnSentence | string | null> = new EventEmitter(null);
+  createObjectEvent: EventEmitter<LearnObject | string | undefined> = new EventEmitter(undefined);
+  updateObjectEvent: EventEmitter<LearnObject | string | undefined> = new EventEmitter(undefined);
+  readObjectEvent: EventEmitter<LearnObject | string | undefined> = new EventEmitter(undefined);
+  deleteObjectEvent: EventEmitter<string | undefined> = new EventEmitter(undefined);
+  createHistoryEvent: EventEmitter<LearnHistory | string | undefined> = new EventEmitter(undefined);
+  readHistoryEvent: EventEmitter<LearnHistory | string | undefined> = new EventEmitter(undefined);
+  createQuestionEvent: EventEmitter<QuestionBankItem | string | undefined> = new EventEmitter(undefined);
+  updateQuestionEvent: EventEmitter<QuestionBankItem | string | undefined> = new EventEmitter(undefined);
+  deleteQuestionEvent: EventEmitter<string | undefined> = new EventEmitter(undefined);
+  readQuestionEvent: EventEmitter<QuestionBankItem | string | undefined> = new EventEmitter(undefined);
+  createEnWordEvent: EventEmitter<EnWord | string | undefined> = new EventEmitter(undefined);
+  readEnWordEvent: EventEmitter<EnWord | string | undefined> = new EventEmitter(undefined);
+  createEnSentenceEvent: EventEmitter<EnSentence | string | undefined> = new EventEmitter(undefined);
+  readEnSentenceEvent: EventEmitter<EnSentence | string | undefined> = new EventEmitter(undefined);
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -106,7 +106,7 @@ export class LearnStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCategories in LearnStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
+          const rjs: any = <any>response;
           let listRst: LearnCategory[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -120,9 +120,9 @@ export class LearnStorageService {
           // Prepare for the hierarchy
           this.buildLearnCategoryHierarchy(listRst);
           // Sort it
-          listRst.sort((a, b) => {
+          listRst.sort((a: any, b: any) => {
             return a.FullDisplayText.localeCompare(b.FullDisplayText);
-          })
+          });
 
           this._isCtgyListLoaded = true;
           this.listCategoryChange.next(listRst);
@@ -136,39 +136,19 @@ export class LearnStorageService {
           this._isCtgyListLoaded = false;
           this.listCategoryChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listCategoryChange.value);
     }
   }
-  private buildLearnCategoryHierarchy(listCtgy: LearnCategory[]) {
-    listCtgy.forEach((value, index, array) => {
-      if (!value.ParentId) {
-        value.HierLevel = 0;
-        value.FullDisplayText = value.Name;
-
-        this.buildLearnCategoryHiercharyImpl(value, listCtgy, 1);
-      }
-    });
-  }
-  private buildLearnCategoryHiercharyImpl(par: LearnCategory, listCtgy: LearnCategory[], curLevel: number) {
-    listCtgy.forEach((value, index, array) => {
-      if (value.ParentId === par.Id) {
-        value.HierLevel = curLevel;
-        value.FullDisplayText = par.FullDisplayText + "." + value.Name;
-
-        this.buildLearnCategoryHiercharyImpl(value, listCtgy, value.HierLevel + 1);
-      }
-    });
-  }
 
   // Object
   public fetchAllObjects(forceReload?: boolean): Observable<any> {
     if (!this._isObjListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/learnobject';
+      const apiurl: string = environment.ApiUrl + '/api/learnobject';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -185,7 +165,7 @@ export class LearnStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
+          const rjs: any = <any>response;
           let listRst: LearnObject[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -208,7 +188,7 @@ export class LearnStorageService {
           this._isObjListLoaded = true;
           this.listObjectChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listObjectChange.value);
@@ -219,13 +199,13 @@ export class LearnStorageService {
    * Create an object
    * @param obj Object to create
    */
-  public createObject(obj: LearnObject) {
-    let headers = new HttpHeaders();
+  public createObject(obj: LearnObject): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnObject';
+    let apiurl: string = environment.ApiUrl + '/api/LearnObject';
 
     const jdata: string = obj.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -241,12 +221,12 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createObject in LearnStorageService: ${x}`);
         }
 
-        const copiedData = this.Objects.slice();
+        const copiedData: any = this.Objects.slice();
         copiedData.push(x);
         this.listObjectChange.next(copiedData);
 
@@ -258,8 +238,9 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.createObjectEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createObjectEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -267,13 +248,13 @@ export class LearnStorageService {
    * Update an object
    * @param obj Object to create
    */
-  public updateObject(obj: LearnObject) {
-    let headers = new HttpHeaders();
+  public updateObject(obj: LearnObject): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnObject/' + obj.Id.toString();
+    let apiurl: string = environment.ApiUrl + '/api/LearnObject/' + obj.Id.toString();
 
     const jdata: string = obj.writeJSONString();
     this._http.put(apiurl, jdata, {
@@ -289,13 +270,13 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in updateObject in LearnStorageService: ${x}`);
         }
 
-        const copiedData = this.Objects.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.Objects.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
@@ -313,8 +294,9 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.updateObjectEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.updateObjectEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -322,7 +304,7 @@ export class LearnStorageService {
    * Delete an object
    * @param obj Object to create
    */
-  public deleteObject(oid: number) {
+  public deleteObject(oid: number): void {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1206,5 +1188,26 @@ export class LearnStorageService {
         this.readEnSentenceEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
       }, () => {
       });
+  }
+
+  private buildLearnCategoryHierarchy(listCtgy: LearnCategory[]) {
+    listCtgy.forEach((value, index, array) => {
+      if (!value.ParentId) {
+        value.HierLevel = 0;
+        value.FullDisplayText = value.Name;
+
+        this.buildLearnCategoryHiercharyImpl(value, listCtgy, 1);
+      }
+    });
+  }
+  private buildLearnCategoryHiercharyImpl(par: LearnCategory, listCtgy: LearnCategory[], curLevel: number) {
+    listCtgy.forEach((value, index, array) => {
+      if (value.ParentId === par.Id) {
+        value.HierLevel = curLevel;
+        value.FullDisplayText = par.FullDisplayText + '.' + value.Name;
+
+        this.buildLearnCategoryHiercharyImpl(value, listCtgy, value.HierLevel + 1);
+      }
+    });
   }
 }

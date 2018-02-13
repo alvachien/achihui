@@ -16,14 +16,14 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 import { ENTER } from '@angular/cdk/keycodes';
 
 @Component({
-  selector: 'app-document-transfer-detail',
+  selector: 'hih-finance-document-transfer-detail',
   templateUrl: './document-transfer-detail.component.html',
   styleUrls: ['./document-transfer-detail.component.scss'],
 })
 export class DocumentTransferDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: UIFinTransferDocument | null = null;
+  public detailObject: UIFinTransferDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   // public commonFormGroup: FormGroup;
@@ -32,8 +32,8 @@ export class DocumentTransferDetailComponent implements OnInit {
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
-  separatorKeysCodes = [ENTER, COMMA];
-    
+  separatorKeysCodes: any[] = [ENTER, COMMA];
+
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -53,11 +53,11 @@ export class DocumentTransferDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
-    //private _formBuilder: FormBuilder) {
+    // private _formBuilder: FormBuilder) {
     this.detailObject = new UIFinTransferDocument();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentTransferDetailComponent ngOnInit...');
     }
@@ -82,7 +82,7 @@ export class DocumentTransferDetailComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst) => {
+    ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentTransferDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
@@ -91,7 +91,7 @@ export class DocumentTransferDetailComponent implements OnInit {
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
-      
+
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createtransfer') {
@@ -108,7 +108,7 @@ export class DocumentTransferDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocumentEvent.subscribe((x2) => {
+            this._storageService.readDocumentEvent.subscribe((x2: any) => {
               if (x2 instanceof Document) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
@@ -131,7 +131,7 @@ export class DocumentTransferDetailComponent implements OnInit {
           this.uiMode = UIMode.Invalid;
         }
       });
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
       }
@@ -174,9 +174,9 @@ export class DocumentTransferDetailComponent implements OnInit {
     return true;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
-      let docObj = this.detailObject.generateDocument();
+      let docObj: any = this.detailObject.generateDocument();
 
       // Check!
       if (!docObj.onVerify({
@@ -204,7 +204,7 @@ export class DocumentTransferDetailComponent implements OnInit {
         return;
       }
 
-      this._storageService.createDocumentEvent.subscribe((x) => {
+      this._storageService.createDocumentEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentTransferDetailComponent with : ${x}`);
         }
@@ -212,11 +212,11 @@ export class DocumentTransferDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });
-        
+
           let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
 
@@ -228,7 +228,7 @@ export class DocumentTransferDetailComponent implements OnInit {
             // Navigate to display
             if (!recreate) {
               this._router.navigate(['/finance/document/displaytransfer/' + x.Id.toString()]);
-            }            
+            }
           });
         } else {
           // Show error message
@@ -242,7 +242,7 @@ export class DocumentTransferDetailComponent implements OnInit {
             disableClose: false,
             width: '500px',
             data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
+          }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -260,7 +260,7 @@ export class DocumentTransferDetailComponent implements OnInit {
     this._router.navigate(['/finance/document/']);
   }
 
-  private onInitCreateMode() {
+  private onInitCreateMode(): void {
     this.detailObject = new UIFinTransferDocument();
     this.uiMode = UIMode.Create;
 

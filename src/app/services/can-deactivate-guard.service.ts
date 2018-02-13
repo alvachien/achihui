@@ -11,7 +11,7 @@ export interface CanComponentDeactivate {
 @Injectable()
 export class CanDeactivateGuardService implements CanDeactivate<CanComponentDeactivate> {
 
-  canDeactivate(component: CanComponentDeactivate) {
+  canDeactivate(component: CanComponentDeactivate): Observable<boolean> | Promise<boolean> | boolean {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: entering canDeactivate of CanDeactivateGuard');
     }

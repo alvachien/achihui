@@ -22,21 +22,23 @@ export class CurrencyDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Currency[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._currService.listDataChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._currService.Currencies.slice();
+      const data: any = this._currService.Currencies.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -46,17 +48,18 @@ export class CurrencyDataSource extends DataSource<any> {
 })
 export class FinanceCurrencyComponent implements OnInit {
 
-  displayedColumns = ['curr', 'name', 'symbol'];
+  displayedColumns: string[] = ['curr', 'name', 'symbol'];
   dataSource: CurrencyDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _currService: FinCurrencyService,
     private _router: Router) {
-    this._currService.fetchAllCurrencies().subscribe((x) => {
+    this._currService.fetchAllCurrencies().subscribe((x: any) => {
+      // Do nothing
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSource = new CurrencyDataSource(this._currService, this.paginator);
   }
 }

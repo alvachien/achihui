@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-location',
+  selector: 'hih-lib-location',
   template: `<router-outlet></router-outlet>`,
   styleUrls: ['./location.component.scss']
 })
 export class LocationComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    // Empty
   }
 
+  ngOnInit(): void {
+    // Empty
+  }
 }

@@ -31,10 +31,10 @@ export class HomeDefDetailComponent implements OnInit {
     private _activateRoute: ActivatedRoute) {
 
     this.detailObject = new HomeDef();
-    this._fincurrService.fetchAllCurrencies().subscribe((x) => {
+    this._fincurrService.fetchAllCurrencies().subscribe((x: any) => {
       // Ensure the GET is fired
     });
-    this._homedefService.listDataChange.subscribe((x) => {
+    this._homedefService.listDataChange.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering listDataChange of HomeDefDetailComponent... ${x}`);
       }
@@ -43,7 +43,7 @@ export class HomeDefDetailComponent implements OnInit {
 
   ngOnInit(): void {
     // Distinguish current mode
-    this._activateRoute.url.subscribe((x) => {
+    this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit for activateRoute URL: ${x}`);
       }
@@ -64,7 +64,7 @@ export class HomeDefDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._homedefService.readHomeDefEvent.subscribe((x) => {
+          this._homedefService.readHomeDefEvent.subscribe((x: any) => {
             if (x !== null) {
               this.detailObject = x;
             } else {
@@ -75,7 +75,7 @@ export class HomeDefDetailComponent implements OnInit {
           this._homedefService.readHomeDef(this.routerID);
         }
       }
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HomeDefDetailComponent with activateRoute URL : ${error}`);
       }
@@ -103,7 +103,7 @@ export class HomeDefDetailComponent implements OnInit {
     if (this.detailObject.ID === null || this.detailObject.ID === undefined) {
       this.detailObject.Host = this._authService.authSubject.value.getUserId();
 
-      this._homedefService.createEvent.subscribe((x) => {
+      this._homedefService.createEvent.subscribe((x: any) => {
         if (x) {
           // Success!
           if (environment.LoggingLevel >= LogLevel.Debug) {

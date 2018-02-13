@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-person-detail',
+  selector: 'hih-lib-person-detail',
   templateUrl: './person-detail.component.html',
-  styleUrls: ['./person-detail.component.scss']
+  styleUrls: ['./person-detail.component.scss'],
 })
 export class PersonDetailComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    // Empty
   }
 
+  ngOnInit(): void {
+    // Empty
+  }
 }

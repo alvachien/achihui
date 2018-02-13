@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
-  FinCurrencyService, UIStatusService } from '../services';
+  FinCurrencyService, UIStatusService,
+} from '../services';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
-  TranType, FinanceTranType_TransferIn, FinanceTranType_TransferOut, HomeKeyFigure } from '../model';
+import {
+  LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
+  TranType, FinanceTranType_TransferIn, FinanceTranType_TransferOut, HomeKeyFigure,
+} from '../model';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
@@ -28,8 +31,8 @@ export class PageInitialComponent implements OnInit, OnDestroy {
   selectedLearnScope: OverviewScopeEnum;
   selectedTranTypeLevel: TranTypeLevelEnum;
   excludeTransfer: boolean;
-  view: Array<number> = [];
-  colorScheme = {
+  view: number[] = [];
+  colorScheme: any = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
   };
   xLearnCtgyAxisLabel: string;
@@ -43,9 +46,9 @@ export class PageInitialComponent implements OnInit, OnDestroy {
   dataLrnUser: any[] = [];
   dataLrnCtgy: any[] = [];
   listTranType: TranType[] = [];
-  mapFinTTIn: Map<number, UINameValuePair<number>> = null;
-  mapFinTTOut: Map<number, UINameValuePair<number>> = null;
-  //keyFigure: HomeKeyFigure;
+  mapFinTTIn: Map<number, UINameValuePair<number>> = undefined;
+  mapFinTTOut: Map<number, UINameValuePair<number>> = undefined;
+  // keyFigure: HomeKeyFigure;
   baseCurr: string;
 
   get IsUserLoggedIn(): boolean {
@@ -74,17 +77,17 @@ export class PageInitialComponent implements OnInit, OnDestroy {
     this.selectedLearnScope = OverviewScopeEnum.CurrentYear;
     this.selectedFinanceScope = OverviewScopeEnum.CurrentMonth;
     this.selectedTranTypeLevel = TranTypeLevelEnum.TopLevel;
-    this.excludeTransfer = true; 
+    this.excludeTransfer = true;
 
-    //this.keyFigure = new HomeKeyFigure();
+    // this.keyFigure = new HomeKeyFigure();
   }
 
   ngOnInit(): void {
     if (this.IsUserLoggedIn && this.IsHomeChosed) {
       this.baseCurr = this._homeDefService.ChosedHome.BaseCurrency;
-      this._finstorageService.fetchAllTranTypes().subscribe(x => {
+      this._finstorageService.fetchAllTranTypes().subscribe((x: any) => {
         this.listTranType = x;
-        
+
         this.onFinanceScopeChanged();
       });
 
@@ -98,7 +101,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
       .subscribe((change: MediaChange) => {
         this.changeGraphSize();
       });
-      
+
     this.changeGraphSize();
   }
 
@@ -124,12 +127,12 @@ export class PageInitialComponent implements OnInit, OnDestroy {
 
   public onLearnScopeChanged(): void {
     // Destructing an object syntax!
-    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedLearnScope);
+    let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedLearnScope);
 
     Observable.forkJoin([
       this._lrnstorageService.getHistoryReportByCategory(bgn, end),
       this._lrnstorageService.getHistoryReportByUser(bgn, end),
-    ]).subscribe((x) => {
+    ]).subscribe((x: any) => {
 
       this.dataLrnCtgy = [];
       this.dataLrnUser = [];
@@ -157,7 +160,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
   }
 
   public onFinanceScopeChanged(): void {
-    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedFinanceScope);
+    let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedFinanceScope);
 
     this._finstorageService.getReportTranType(bgn, end).subscribe(([val1, val2]) => {
       this.mapFinTTIn = <Map<number, UINameValuePair<number>>>val1;
@@ -178,14 +181,14 @@ export class PageInitialComponent implements OnInit, OnDestroy {
       this.dataFinTTIn = [];
       this.dataFinTTOut = [];
 
-      switch(this.selectedTranTypeLevel) {
+      switch (this.selectedTranTypeLevel) {
         case TranTypeLevelEnum.TopLevel: {
-          this.mapFinTTIn.forEach((value, key) => {
+          this.mapFinTTIn.forEach((value: any, key: any) => {
             if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
               return;
             }
 
-            let idx = this.listTranType.findIndex(value2 => {
+            let idx: number = this.listTranType.findIndex((value2: any) => {
               return value2.Id === key;
             });
 
@@ -194,15 +197,15 @@ export class PageInitialComponent implements OnInit, OnDestroy {
                 this.dataFinTTIn.push({
                   name: value.name,
                   value: +value.value,
-                  key: key
+                  key: key,
                 });
               } else {
-                let idxroot = -1;
-                let parlevel = this.listTranType[idx].HierLevel;
-                let parid = this.listTranType[idx].ParId;
+                let idxroot: number = -1;
+                let parlevel: any = this.listTranType[idx].HierLevel;
+                let parid: any = this.listTranType[idx].ParId;
 
-                while(parlevel > 0) {
-                  idxroot = this.listTranType.findIndex(value3 => {
+                while (parlevel > 0) {
+                  idxroot = this.listTranType.findIndex((value3: any) => {
                     return value3.Id === parid;
                   });
 
@@ -211,34 +214,34 @@ export class PageInitialComponent implements OnInit, OnDestroy {
                     parid = this.listTranType[idxroot].ParId;
                   }
                 }
-                
+
                 // Now check the root item exist or not
                 if (idxroot !== -1) {
-                  let idxrst = this.dataFinTTIn.findIndex(valuerst => {
+                  let idxrst: number = this.dataFinTTIn.findIndex((valuerst: any) => {
                     return valuerst.key === this.listTranType[idxroot].Id;
                   });
                   if (idxrst === -1) {
                     this.dataFinTTIn.push({
                       name: value.name,
                       value: +value.value,
-                      key: key
+                      key: key,
                     });
                   } else {
                     this.dataFinTTIn[idxrst].value += +value.value;
                   }
                 }
-              }              
+              }
             } else {
               // Shall never happen!
             }
           });
 
-          this.mapFinTTOut.forEach((value, key) => {
+          this.mapFinTTOut.forEach((value: any, key: any) => {
             if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
               return;
             }
 
-            let idx = this.listTranType.findIndex(value2 => {
+            let idx: number = this.listTranType.findIndex((value2: any) => {
               return value2.Id === key;
             });
 
@@ -247,15 +250,15 @@ export class PageInitialComponent implements OnInit, OnDestroy {
                 this.dataFinTTOut.push({
                   name: value.name,
                   value: +value.value,
-                  key: key
+                  key: key,
                 });
               } else {
-                let idxroot = -1;
-                let parlevel = this.listTranType[idx].HierLevel;
-                let parid = this.listTranType[idx].ParId;
+                let idxroot: number = -1;
+                let parlevel: any = this.listTranType[idx].HierLevel;
+                let parid: any = this.listTranType[idx].ParId;
 
-                while(parlevel > 0) {
-                  idxroot = this.listTranType.findIndex(value3 => {
+                while (parlevel > 0) {
+                  idxroot = this.listTranType.findIndex((value3: any) => {
                     return value3.Id === parid;
                   });
 
@@ -264,23 +267,23 @@ export class PageInitialComponent implements OnInit, OnDestroy {
                     parid = this.listTranType[idxroot].ParId;
                   }
                 }
-                
+
                 // Now check the root item exist or not
                 if (idxroot !== -1) {
-                  let idxrst = this.dataFinTTOut.findIndex(valuerst => {
+                  let idxrst: number = this.dataFinTTOut.findIndex((valuerst: any) => {
                     return valuerst.key === this.listTranType[idxroot].Id;
                   });
                   if (idxrst === -1) {
                     this.dataFinTTOut.push({
                       name: value.name,
                       value: +value.value,
-                      key: key
+                      key: key,
                     });
                   } else {
                     this.dataFinTTOut[idxrst].value += +value.value;
                   }
                 }
-              }              
+              }
             } else {
               // Shall never happen!
             }
@@ -289,12 +292,12 @@ export class PageInitialComponent implements OnInit, OnDestroy {
         break;
 
         case TranTypeLevelEnum.FirstLevel: {
-          this.mapFinTTIn.forEach((value, key) => {
+          this.mapFinTTIn.forEach((value: any, key: any) => {
             if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
               return;
             }
 
-            let idx = this.listTranType.findIndex(value2 => {
+            let idx: number = this.listTranType.findIndex((value2: any) => {
               return value2.Id === key;
             });
 
@@ -303,15 +306,15 @@ export class PageInitialComponent implements OnInit, OnDestroy {
                 this.dataFinTTIn.push({
                   name: value.name,
                   value: +value.value,
-                  key: key
+                  key: key,
                 });
               } else {
-                let idxroot = -1;
-                let parlevel = this.listTranType[idx].HierLevel;
-                let parid = this.listTranType[idx].ParId;
+                let idxroot: number = -1;
+                let parlevel: any = this.listTranType[idx].HierLevel;
+                let parid: any = this.listTranType[idx].ParId;
 
-                while(parlevel > 1) {
-                  idxroot = this.listTranType.findIndex(value3 => {
+                while (parlevel > 1) {
+                  idxroot = this.listTranType.findIndex((value3: any) => {
                     return value3.Id === parid;
                   });
 
@@ -320,34 +323,34 @@ export class PageInitialComponent implements OnInit, OnDestroy {
                     parid = this.listTranType[idxroot].ParId;
                   }
                 }
-                
+
                 // Now check the root item exist or not
                 if (idxroot !== -1) {
-                  let idxrst = this.dataFinTTIn.findIndex(valuerst => {
+                  let idxrst: number = this.dataFinTTIn.findIndex((valuerst: any) => {
                     return valuerst.key === this.listTranType[idxroot].Id;
                   });
                   if (idxrst === -1) {
                     this.dataFinTTIn.push({
                       name: value.name,
                       value: +value.value,
-                      key: key
+                      key: key,
                     });
                   } else {
                     this.dataFinTTIn[idxrst].value += +value.value;
                   }
                 }
-              }              
+              }
             } else {
               // Shall never happen!
             }
           });
 
-          this.mapFinTTOut.forEach((value, key) => {
+          this.mapFinTTOut.forEach((value: any, key: any) => {
             if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
               return;
             }
 
-            let idx = this.listTranType.findIndex(value2 => {
+            let idx: number = this.listTranType.findIndex((value2: any) => {
               return value2.Id === key;
             });
 
@@ -356,15 +359,15 @@ export class PageInitialComponent implements OnInit, OnDestroy {
                 this.dataFinTTOut.push({
                   name: value.name,
                   value: +value.value,
-                  key: key
+                  key: key,
                 });
               } else {
-                let idxroot = -1;
-                let parlevel = this.listTranType[idx].HierLevel;
-                let parid = this.listTranType[idx].ParId;
+                let idxroot: number = -1;
+                let parlevel: any = this.listTranType[idx].HierLevel;
+                let parid: any = this.listTranType[idx].ParId;
 
-                while(parlevel > 1) {
-                  idxroot = this.listTranType.findIndex(value3 => {
+                while (parlevel > 1) {
+                  idxroot = this.listTranType.findIndex((value3: any) => {
                     return value3.Id === parid;
                   });
 
@@ -373,23 +376,23 @@ export class PageInitialComponent implements OnInit, OnDestroy {
                     parid = this.listTranType[idxroot].ParId;
                   }
                 }
-                
+
                 // Now check the root item exist or not
                 if (idxroot !== -1) {
-                  let idxrst = this.dataFinTTOut.findIndex(valuerst => {
+                  let idxrst: number = this.dataFinTTOut.findIndex((valuerst: any) => {
                     return valuerst.key === this.listTranType[idxroot].Id;
                   });
                   if (idxrst === -1) {
                     this.dataFinTTOut.push({
                       name: value.name,
                       value: +value.value,
-                      key: key
+                      key: key,
                     });
                   } else {
                     this.dataFinTTOut[idxrst].value += +value.value;
                   }
                 }
-              }              
+              }
             } else {
               // Shall never happen!
             }
@@ -398,19 +401,19 @@ export class PageInitialComponent implements OnInit, OnDestroy {
         break;
 
         case TranTypeLevelEnum.SecondLevel: {
-          this.mapFinTTIn.forEach((value, key) => {
+          this.mapFinTTIn.forEach((value: any, key: any) => {
             if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
               return;
             }
-            
+
             this.dataFinTTIn.push({
               name: value.name,
               value: value.value,
-              key: key
+              key: key,
             });
           });
 
-          this.mapFinTTOut.forEach((value, key) => {
+          this.mapFinTTOut.forEach((value: any, key: any) => {
             if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
               return;
             }
@@ -418,14 +421,14 @@ export class PageInitialComponent implements OnInit, OnDestroy {
             this.dataFinTTOut.push({
               name: value.name,
               value: value.value,
-              key: key
+              key: key,
             });
           });
         }
-        break;
+          break;
 
         default:
-        break;
+          break;
       }
     }
   }
@@ -438,8 +441,8 @@ export class PageInitialComponent implements OnInit, OnDestroy {
     this._authService.doLogin();
   }
 
-  private changeGraphSize() {
-    let graphSize = 0;
+  private changeGraphSize(): void {
+    let graphSize: number = 0;
 
     if (this.media.isActive('xs')) {
       graphSize = 150;
@@ -447,7 +450,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
       graphSize = 300;
     } else if (this.media.isActive('md')) {
       graphSize = 450;
-    } else {      
+    } else {
       graphSize = 500;
     }
 

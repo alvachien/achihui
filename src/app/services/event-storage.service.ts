@@ -179,7 +179,7 @@ export class EventStorageService {
     let apiurl: string = environment.ApiUrl + '/api/recurevent/';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    let jdata = reobj.writeJSONString();
+    let jdata: string = reobj.writeJSONString();
 
     return this._http.post(apiurl, jdata, {
         headers: headers,
@@ -209,11 +209,11 @@ export class EventStorageService {
     let apiurl: string = environment.ApiUrl + '/api/RecurEventSimulator';
     // let params: HttpParams = new HttpParams();
     // params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    let jdata = {
+    let jdata: any = {
       startTimePoint: reobj.StartTimeFormatString,
       endTimePoint: reobj.EndTimeFormatString,
       rptType: <number>reobj.RepeatType,
-      name: reobj.Name
+      name: reobj.Name,
     };
 
     return this._http.post(apiurl, jdata, {
@@ -227,8 +227,8 @@ export class EventStorageService {
         }
 
         let arRst: GeneralEvent[] = [];
-        if (response instanceof Array && response.length> 0) {
-          for(let rdata of response) {
+        if (response instanceof Array && response.length > 0) {
+          for (let rdata of response) {
             let hd: GeneralEvent = new GeneralEvent();
             hd.onSetData(response);
 

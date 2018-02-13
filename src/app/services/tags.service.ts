@@ -26,19 +26,19 @@ export class TagsService {
       console.log('AC_HIH_UI [Debug]: Entering TagsService constructor...');
     }
 
-    //this._islistLoaded = false; // Performance improvement
+    // this._islistLoaded = false; // Performance improvement
   }
 
   public fetchAllTags(
-    //forceReload?: boolean
+    // forceReload?: boolean
     reqamt: boolean,
     tagtype?: TagTypeEnum,
-    tagterm?: string
+    tagterm?: string,
   ): Observable<TagCount[] | Tag[]> {
-    //if (!this._islistLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/Tag';
+    // if (!this._islistLoaded || forceReload) {
+      const apiurl: string = environment.ApiUrl + '/api/Tag';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -65,7 +65,7 @@ export class TagsService {
 
           let listCountRst: TagCount[] = [];
           let listRst: Tag[] = [];
-          const rjs = <any>response;
+          const rjs: any = <any>response;
           let mapIDs: Map<string, string> = new Map<string, string>();
 
           for (const si of rjs) {
@@ -77,10 +77,10 @@ export class TagsService {
               let tag: Tag = new Tag();
               tag.onSetData(si);
 
-              let rids = (<number>tag.TagType).toString() + "_" + tag.TagID.toString();
+              let rids: string = (<number>tag.TagType).toString() + '_' + tag.TagID.toString();
               if (mapIDs.has(rids)) {
                 continue;
-              } else {                
+              } else {
                 mapIDs.set(rids, rids);
               }
 
@@ -91,9 +91,9 @@ export class TagsService {
           // this._islistLoaded = true;
           // this.listDataChange.next(listRst);
 
-          return reqamt? listCountRst : listRst;
+          return reqamt ? listCountRst : listRst;
         })
-        .catch(err => {
+        .catch((err: any) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllTags in TagsService: ${err}`);
           }

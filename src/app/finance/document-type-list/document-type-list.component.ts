@@ -19,21 +19,23 @@ export class DocumentTypeDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<DocumentType[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listDocTypeChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.DocumentTypes.slice();
+      const data: any = this._storageService.DocumentTypes.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -43,17 +45,17 @@ export class DocumentTypeDataSource extends DataSource<any> {
 })
 export class DocumentTypeListComponent implements OnInit {
 
-  displayedColumns = ['id', 'name', 'comment'];
-  dataSource: DocumentTypeDataSource | null;
+  displayedColumns: string[] = ['id', 'name', 'comment'];
+  dataSource: DocumentTypeDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSource = new DocumentTypeDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllDocTypes().subscribe((x) => {
+    this._storageService.fetchAllDocTypes().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
     });
   }

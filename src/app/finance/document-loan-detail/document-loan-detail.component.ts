@@ -23,7 +23,7 @@ export class TemplateDocLoanDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<TemplateDocLoan[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.tmpDocOperEvent,
     ];
 
@@ -32,28 +32,30 @@ export class TemplateDocLoanDataSource extends DataSource<any> {
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
-  selector: 'app-document-loan-detail',
+  selector: 'hih-finance-document-loan-detail',
   templateUrl: './document-loan-detail.component.html',
-  styleUrls: ['./document-loan-detail.component.scss']
+  styleUrls: ['./document-loan-detail.component.scss'],
 })
 export class DocumentLoanDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: UIFinLoanDocument | null = null;
+  public detailObject: UIFinLoanDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
-  separatorKeysCodes = [ENTER, COMMA];
-  tmpDocOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  displayedColumns = ['TranDate', 'RefDoc', 'TranAmount', 'InterestAmount', 'Desp'];
+  separatorKeysCodes: any[] = [ENTER, COMMA];
+  tmpDocOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'InterestAmount', 'Desp'];
   dataSource: TemplateDocLoanDataSource | null;
-  
+
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -80,7 +82,7 @@ export class DocumentLoanDetailComponent implements OnInit {
     this.dataSource = new TemplateDocLoanDataSource(this);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngOnInit...');
     }
@@ -93,7 +95,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst) => {
+    ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
@@ -102,8 +104,8 @@ export class DocumentLoanDetailComponent implements OnInit {
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
-      
-      this._activateRoute.url.subscribe((x) => {
+
+      this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createloan') {
             this.onInitCreateMode();
@@ -119,14 +121,14 @@ export class DocumentLoanDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readLoanDocument(this.routerID).subscribe((x2) => {
+            this._storageService.readLoanDocument(this.routerID).subscribe((x2: any) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngOnInit for activateRoute URL: ${x2}`);
               }
 
               this.detailObject.parseDocument(x2);
               this.tmpDocOperEvent.emit();
-            }, (error2) => {
+            }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readLoanDocument : ${error2}`);
               }
@@ -136,7 +138,7 @@ export class DocumentLoanDetailComponent implements OnInit {
           this.uiMode = UIMode.Invalid;
         }
       });
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
       }
@@ -157,15 +159,15 @@ export class DocumentLoanDetailComponent implements OnInit {
     });
   }
 
-  public setStep(index: number) {
+  public setStep(index: number): void {
     this.step = index;
   }
 
-  public nextStep() {
+  public nextStep(): void {
     this.step++;
   }
 
-  public prevStep() {
+  public prevStep(): void {
     this.step--;
   }
 
@@ -189,39 +191,40 @@ export class DocumentLoanDetailComponent implements OnInit {
         InterestRate: this.detailObject.LoanAccount.AnnualRate / 100,
         StartDate: this.detailObject.LoanAccount.StartDate.clone(),
         InterestFreeLoan: this.detailObject.LoanAccount.InterestFree ? true : false,
-        RepaymentMethod: this.detailObject.LoanAccount.RepayMethod      
+        RepaymentMethod: this.detailObject.LoanAccount.RepayMethod,
       };
-      
-      this._storageService.calcLoanTmpDocs(di).subscribe(x => {
-        for(let rst of x) {
+
+      this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
+        for (let rst of x) {
           let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
           tmpdoc.InterestAmount = rst.InterestAmount;
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
           tmpdoc.TranType = this.detailObject.SourceTranType;
-          tmpdoc.Desp = this.detailObject.LoanAccount.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString() + ' / ' + x.length.toString();
+          tmpdoc.Desp = this.detailObject.LoanAccount.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString() 
+            + ' / ' + x.length.toString();
           this.detailObject.TmpDocs.push(tmpdoc);
         }
 
         this.tmpDocOperEvent.emit();
-      }, error => {
+      }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering onSync, failed to calculate the template docs : ${error}`);
-        }        
+        }
 
         const dlginfo: MessageDialogInfo = {
           Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           Button: MessageDialogButtonEnum.onlyok,
         };
-  
+
         this._dialog.open(MessageDialogComponent, {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        });            
+        });
       });
-    }    
+    }
   }
 
   public canSubmit(): boolean {
@@ -249,10 +252,10 @@ export class DocumentLoanDetailComponent implements OnInit {
 
     return true;
   }
-  
-  public onSubmit() {
+
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
-      let docObj = this.detailObject.generateDocument();
+      let docObj: any = this.detailObject.generateDocument();
 
       if (this.detailObject.TmpDocs.length <= 0) {
         this.showErrorDialog('Finance.NoTmpDocGenerated');
@@ -265,14 +268,14 @@ export class DocumentLoanDetailComponent implements OnInit {
         return;
       }
 
-      for(let tdoc of this.detailObject.TmpDocs) {
+      for (let tdoc of this.detailObject.TmpDocs) {
         if (!tdoc.TranAmount) {
-          this.showErrorDialog("NO tran. amount");
+          this.showErrorDialog('NO tran. amount');
           return;
         }
 
         if (!tdoc.TranType) {
-          this.showErrorDialog("No tran. type");
+          this.showErrorDialog('No tran. type');
           return;
         }
       }
@@ -303,7 +306,7 @@ export class DocumentLoanDetailComponent implements OnInit {
         return;
       }
 
-      this._storageService.createDocumentEvent.subscribe((x) => {
+      this._storageService.createDocumentEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAdvancepaymentDetailComponent with : ${x}`);
         }
@@ -311,16 +314,16 @@ export class DocumentLoanDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           // Ensure refresh the accounts
-          this._storageService.fetchAllAccounts(true).subscribe(act => {
+          this._storageService.fetchAllAccounts(true).subscribe((act: any) => {
             // Do nothing just reload accounts
           });
-          
+
           // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });
-          
+
           let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
             recreate = true;
@@ -334,7 +337,7 @@ export class DocumentLoanDetailComponent implements OnInit {
             // Navigate to display
             if (!recreate) {
               this._router.navigate(['/finance/document/displayloan/' + x.Id.toString()]);
-            }            
+            }
           });
         } else {
           // Show error message
@@ -348,7 +351,7 @@ export class DocumentLoanDetailComponent implements OnInit {
             disableClose: false,
             width: '500px',
             data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
+          }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -360,7 +363,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       docObj.HID = this._homedefService.ChosedHome.ID;
 
       // Build the JSON file to API
-      let sobj = docObj.writeJSONObject(); // Document first
+      let sobj: any = docObj.writeJSONObject(); // Document first
       let acntobj: Account = new Account();
       acntobj.HID = this._homedefService.ChosedHome.ID;
       acntobj.CategoryId = FinanceAccountCategory_Loan;
@@ -381,7 +384,6 @@ export class DocumentLoanDetailComponent implements OnInit {
         sobj.TmpDocs.push(td.writeJSONObject());
       }
 
-      let dataJSON = JSON.stringify(sobj);
       this._storageService.createLoanDocument(sobj);
     }
   }
@@ -389,15 +391,15 @@ export class DocumentLoanDetailComponent implements OnInit {
   public onBackToList(): void {
     this._router.navigate(['/finance/document/']);
   }
-  
-  private onInitCreateMode() {
+
+  private onInitCreateMode(): void {
     this.detailObject = new UIFinLoanDocument();
     this.uiMode = UIMode.Create;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
 
-  private showErrorDialog(errormsg: string) {
+  private showErrorDialog(errormsg: string): void {
     // Show a dialog for error details
     const dlginfo: MessageDialogInfo = {
       Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),

@@ -1,6 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, EventEmitter,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
@@ -32,14 +30,14 @@ export class HistoryDetailComponent implements OnInit {
     this.detailObject = new LearnHistory();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HistoryDetailComponent ngOnInit...');
     }
 
-    this._storageService.fetchAllObjects().subscribe((x1) => {
+    this._storageService.fetchAllObjects().subscribe((x1: any) => {
       // Distinguish current mode
-      this._activateRoute.url.subscribe((x) => {
+      this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
@@ -59,7 +57,7 @@ export class HistoryDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readHistoryEvent.subscribe((x) => {
+            this._storageService.readHistoryEvent.subscribe((x: any) => {
               if (x instanceof LearnHistory) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in HistoryDetailComponent, succeed to readControlCenterEvent : ${x}`);
@@ -76,13 +74,15 @@ export class HistoryDetailComponent implements OnInit {
             this._storageService.readHistory(this.routerID);
           }
         }
-      }, (error) => {
+      }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent with activateRoute URL : ${error}`);
         }
       }, () => {
+        // Empty
       });
-    }, (error) => {
+    }, (error: any) => {
+      // empty
     });
   }
 
@@ -98,7 +98,7 @@ export class HistoryDetailComponent implements OnInit {
     return true;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.onCreateHistory();
     } else if (this.uiMode === UIMode.Change) {
@@ -107,45 +107,44 @@ export class HistoryDetailComponent implements OnInit {
     }
   }
 
-  public onCancel() {
+  public onCancel(): void {
     // Jump back to the list view
     this._router.navigate(['/learn/history']);
   }
 
-  private onInitCreateMode() {
+  private onInitCreateMode(): void {
     this.detailObject = new LearnHistory();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
 
   private onCreateHistory(): void {
-    this._storageService.createHistoryEvent.subscribe((x) => {
+    this._storageService.createHistoryEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving createObjectEvent in HistoryDetailComponent with : ${x}`);
       }
 
       // Navigate back to list view
       if (x instanceof LearnHistory) {
-        // Show a dialog, then jump to the display view
         // Show the snackbar
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });
-      
+
         let recreate: boolean = false;
 
         snackbarRef.onAction().subscribe(() => {
           recreate = true;
           this.onInitCreateMode();
-          //this._router.navigate(['/learn/history/create']);
+          // this._router.navigate(['/learn/history/create']);
         });
 
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           if (!recreate) {
             this._router.navigate(['/learn/history/display/' + x.generateKey()]);
-          }            
+          }
         });
       } else {
         // Show error message
@@ -159,7 +158,7 @@ export class HistoryDetailComponent implements OnInit {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe((x2) => {
+        }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -172,7 +171,7 @@ export class HistoryDetailComponent implements OnInit {
     this._storageService.createHistory(this.detailObject);
   }
 
-  private onUpdateHistory() : void {
-
+  private onUpdateHistory(): void {
+    // Empty
   }
 }

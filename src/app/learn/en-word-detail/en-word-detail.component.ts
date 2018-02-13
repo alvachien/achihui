@@ -17,10 +17,10 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: EnWord = null;
+  public detailObject: EnWord | undefined;
   public uiMode: UIMode = UIMode.Create;
 
-  displayedColumns = ['id', 'pos', 'langkey', 'detail'];
+  displayedColumns: string[] = ['id', 'pos', 'langkey', 'detail'];
   dataSource: MatTableDataSource<EnWordExplain>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -37,13 +37,13 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
     this.dataSource = new MatTableDataSource(this.detailObject.Explains);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnInit...');
     }
 
     // Distinguish current mode
-    this._activateRoute.url.subscribe((x) => {
+    this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnInit for activateRoute URL: ${x}`);
       }
@@ -63,7 +63,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readEnWordEvent.subscribe((x) => {
+          this._storageService.readEnWordEvent.subscribe((x: any) => {
             if (x instanceof EnWord) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readEnWord : ${x}`);
@@ -81,11 +81,12 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
           this._storageService.readEnWord(this.routerID);
         }
       }
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOnInit in EnWordDetailComponent with activateRoute URL : ${error}`);
       }
     }, () => {
+      // Empty
     });
   }
 
@@ -97,23 +98,23 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
     return true;
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(filterValue: string) {
+  applyFilter(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
 
-  public onCreateExplain() {
+  public onCreateExplain(): void {
     let nexp: EnWordExplain = new EnWordExplain();
     this.detailObject.Explains.push(nexp);
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this._storageService.createEnWordEvent.subscribe((x) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -123,11 +124,11 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
         // Navigate back to list view
         if (x instanceof EnWord) {
           // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });
-          
+
           let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
             recreate = true;
@@ -153,7 +154,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
             disableClose: false,
             width: '500px',
             data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
+          }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -169,11 +170,11 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public onCancel() {
-
+  public onCancel(): void {
+    // Empty
   }
 
-  private onInitCreateMode() {
+  private onInitCreateMode(): void {
     this.detailObject = new EnWord();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;

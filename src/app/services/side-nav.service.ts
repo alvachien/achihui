@@ -60,16 +60,17 @@ export class SideNavService {
     this.addSubItem(about, 'Nav.Version', '/version', 3, 'update');
   }
 
-  addItem(name: string, icon: string, route: any, position: number, badge?: string, badgeColor?: string, customClass?: string, color?: string) {
-    const item = new SidenavItem({
+  addItem(name: string, icon: string, route: any, position: number, badge?: string,
+    badgeColor?: string, customClass?: string, color?: string): SidenavItem {
+    const item: SidenavItem = new SidenavItem({
       name: name,
       icon: icon,
       route: route,
       subItems: [],
       position: position || 99,
-      badge: badge || null,
-      badgeColor: badgeColor || null,
-      customClass: customClass || null,
+      badge: badge || undefined,
+      badgeColor: badgeColor || undefined,
+      customClass: customClass || undefined,
       color: color || 'primary',
     });
 
@@ -79,14 +80,14 @@ export class SideNavService {
     return item;
   }
 
-  addSubItem(parent: SidenavItem, name: string, route: any, position: number, icon?: string, color?: string) {
-    const item = new SidenavItem({
+  addSubItem(parent: SidenavItem, name: string, route: any, position: number, icon?: string, color?: string): SidenavItem {
+    const item: SidenavItem = new SidenavItem({
       name: name,
       route: route,
       parent: parent,
       subItems: [],
       position: position || 99,
-      icon: icon || null,
+      icon: icon || undefined,
       color: color || 'accent',
     });
 
@@ -96,8 +97,8 @@ export class SideNavService {
     return item;
   }
 
-  removeItem(item: SidenavItem) {
-    let index = this._items.indexOf(item);
+  removeItem(item: SidenavItem): void {
+    let index: number = this._items.indexOf(item);
     if (index > -1) {
       this._items.splice(index, 1);
     }
@@ -105,12 +106,12 @@ export class SideNavService {
     this._itemsSubject.next(this._items);
   }
 
-  isOpen(item: SidenavItem) {
+  isOpen(item: SidenavItem): boolean {
     return (this._currentlyOpen.indexOf(item) !== -1);
   }
 
-  toggleCurrentlyOpen(item: SidenavItem) {
-    let currentlyOpen = this._currentlyOpen;
+  toggleCurrentlyOpen(item: SidenavItem): void {
+    let currentlyOpen: any = this._currentlyOpen;
     if (this.isOpen(item)) {
       if (currentlyOpen.length > 1) {
         currentlyOpen.length = this._currentlyOpen.indexOf(item);
@@ -125,7 +126,7 @@ export class SideNavService {
     this._currentlyOpenSubject.next(currentlyOpen);
   }
 
-  getAllParents(item: SidenavItem, currentlyOpen: SidenavItem[] = []) {
+  getAllParents(item: SidenavItem, currentlyOpen: SidenavItem[] = []): any {
     currentlyOpen.unshift(item);
 
     if (item.hasParent()) {
@@ -135,28 +136,28 @@ export class SideNavService {
     }
   }
 
-  nextCurrentlyOpen(currentlyOpen: SidenavItem[]) {
+  nextCurrentlyOpen(currentlyOpen: SidenavItem[]): void {
     this._currentlyOpen = currentlyOpen;
     this._currentlyOpenSubject.next(currentlyOpen);
   }
 
-  nextCurrentlyOpenByRoute(route: string) {
-    let currentlyOpen = [];
+  nextCurrentlyOpenByRoute(route: string): void {
+    let currentlyOpen: any[] = [];
 
-    let item = this.findByRouteRecursive(route, this._items);
+    let item: any = this.findByRouteRecursive(route, this._items);
   }
 
-  findByRouteRecursive(route: string, collection: SidenavItem[]) {
-    let result = collection.filter((item) => {
+  findByRouteRecursive(route: string, collection: SidenavItem[]): any {
+    let result: any = collection.filter((item: any) => {
       if (item.route === route) {
         return item;
       }
     });
 
     if (!result) {
-      collection.forEach((item) => {
+      collection.forEach((item: any) => {
         if (item.hasSubItems()) {
-          let found = this.findByRouteRecursive(route, item.subItems);
+          let found: any = this.findByRouteRecursive(route, item.subItems);
 
           if (found) {
             result = found;
@@ -169,11 +170,11 @@ export class SideNavService {
     return result;
   }
 
-  get currentlyOpen() {
+  get currentlyOpen(): any {
     return this._currentlyOpen;
   }
 
-  getSidenavItemByRoute(route) {
+  getSidenavItemByRoute(route: any): any {
     return this.findByRouteRecursive(route, this._items);
   }
 }

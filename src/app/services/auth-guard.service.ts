@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate, Router,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot,
 } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { LogLevel, UserAuthInfo } from '../model';
@@ -37,7 +34,7 @@ export class AuthGuardService implements CanActivate {
 
     // For AC_HIH_UI: we cannot store the attempted URL because the whole page will be reloaded.
     // Store the attempted URL for redirecting
-    //this.authService.redirectUrl = url;
+    // this.authService.redirectUrl = url;
 
     // Navigate to the login page with extras
     if (environment.LoggingLevel >= LogLevel.Debug) {

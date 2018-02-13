@@ -20,21 +20,23 @@ export class LearnHistoryDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<LearnHistory[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listHistoryChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.Histories.slice();
+      const data: any = this._storageService.Histories.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -44,14 +46,14 @@ export class LearnHistoryDataSource extends DataSource<any> {
 })
 export class HistoryListComponent implements OnInit {
 
-  displayedColumns = ['objid', 'objname', 'usrname', 'learndate'];
-  dataSource: LearnHistoryDataSource | null;
+  displayedColumns: string[] = ['objid', 'objname', 'usrname', 'learndate'];
+  dataSource: LearnHistoryDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LearnStorageService,
     private _router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HistoryListComponent ngOnInit...');
     }
@@ -62,26 +64,28 @@ export class HistoryListComponent implements OnInit {
       this._storageService.fetchAllCategories(),
       this._storageService.fetchAllObjects(),
       this._storageService.fetchAllHistories(),
-    ]).subscribe((x) => {
+    ]).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (x) {
+        // Empty
       }
     });
   }
 
-  public onCreateHistory() {
+  public onCreateHistory(): void {
     this._router.navigate(['/learn/history/create']);
   }
 
-  public onDisplayHistory(hist: LearnHistory) {
+  public onDisplayHistory(hist: LearnHistory): void {
     this._router.navigate(['/learn/history/display', hist.generateKey()]);
   }
 
-  public onChangeHistory(hist: LearnHistory) {
+  public onChangeHistory(hist: LearnHistory): void {
     this._router.navigate(['/learn/history/edit', hist.generateKey()]);
   }
 
-  public onDeleteHistory(hist: any) {
+  public onDeleteHistory(hist: any): void {
+    // Empty
   }
 
   public onRefresh(): void {

@@ -12,14 +12,14 @@ import { startWith } from 'rxjs/operators/startWith';
 import { switchMap } from 'rxjs/operators/switchMap';
 
 @Component({
-  selector: 'app-home-msg',
+  selector: 'hih-home-msg',
   templateUrl: './home-message.component.html',
   styleUrls: [
     './home-message.component.scss',
   ],
 })
 export class HomeMessageComponent implements OnInit, AfterViewInit {
-  displayedColumns = ['id', 'userfrom', 'userto', 'title', 'senddate'];
+  displayedColumns: string[] = ['id', 'userfrom', 'userto', 'title', 'senddate'];
   dataSource: MatTableDataSource<HomeMsg>;
   sentBox: boolean;
 
@@ -69,7 +69,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
       data: { Members: this._homeDefService.MembersInChosedHome, UserTo: usrTo, Title: title, Content: content, isCreateMode: true },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         if (!result.UserTo || !result.Title || !result.Content) {
           // Show error dialog
@@ -85,8 +85,8 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
         msg.UserFrom = this._authService.authSubject.getValue().getUserId();
         msg.UserTo = result.UserTo;
 
-        this._homeDefService.createHomeMessage(msg).subscribe((x) => {
-          let data = this.dataSource.data.slice();
+        this._homeDefService.createHomeMessage(msg).subscribe((x: any) => {
+          let data: any = this.dataSource.data.slice();
           data.push(x);
           this.dataSource.data = data;
         });
@@ -96,7 +96,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
 
   public onDeleteMsg(row: any): void {
     // Delete the message
-    this._homeDefService.deleteHomeMessage(row, this.sentBox).subscribe(x => {
+    this._homeDefService.deleteHomeMessage(row, this.sentBox).subscribe((x: any) => {
       // Do a refresh?
       this.fetchMessages();
     });
@@ -109,8 +109,8 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
       data: { Members: this._homeDefService.MembersInChosedHome, UserTo: row.UserTo, Title: row.Title, Content: row.Content, isCreateMode: false },
     });
 
-    dialogRef.afterClosed().subscribe(x => {
-      this._homeDefService.markHomeMessageHasRead(row).subscribe(y => {
+    dialogRef.afterClosed().subscribe((x: any) => {
+      this._homeDefService.markHomeMessageHasRead(row).subscribe((y: any) => {
         // Empty
       });
     });
@@ -125,7 +125,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
         this.isLoadingResults = true;
         return this._homeDefService!.getHomeMessages(this.sentBox, this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize );
       }),
-      map(data => {
+      map((data: any) => {
         // Flip flag to show that loading has finished.
         this.isLoadingResults = false;
 
@@ -146,12 +146,12 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
 
         return observableOf([]);
       }),
-      ).subscribe(data => this.dataSource.data = data);    
+      ).subscribe((data: any) => this.dataSource.data = data);
   }
 }
 
 @Component({
-  selector: 'app-home-msg-dialog',
+  selector: 'hih-home-msg-dialog',
   templateUrl: 'home-message.dialog.html',
   styleUrls: ['./home-message.dialog.scss'],
 })

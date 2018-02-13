@@ -21,21 +21,23 @@ export class LanguageDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<AppLanguage[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listDataChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.Languages.slice();
+      const data: any = this._storageService.Languages.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -45,14 +47,14 @@ export class LanguageDataSource extends DataSource<any> {
 })
 export class LanguageComponent implements OnInit {
 
-  displayedColumns = ['lcid', 'isoname', 'enname', 'nvname', 'appflag'];
+  displayedColumns: string[] = ['lcid', 'isoname', 'enname', 'nvname', 'appflag'];
   dataSource: LanguageDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LanguageService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSource = new LanguageDataSource(this._storageService, this.paginator);
 
     this._storageService.fetchAllLanguages();

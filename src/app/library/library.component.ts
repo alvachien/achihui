@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-library',
+  selector: 'hih-library',
   template: `<router-outlet></router-outlet>`,
-  styleUrls: ['./library.component.scss']
+  styleUrls: ['./library.component.scss'],
 })
 export class LibraryComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    // Empty
   }
 
+  ngOnInit(): void {
+    // Empty
+  }
 }

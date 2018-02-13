@@ -1,5 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
@@ -24,7 +23,7 @@ export class NormalDocumentItemDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<DocumentItem[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.itemOperEvent,
     ];
 
@@ -33,29 +32,30 @@ export class NormalDocumentItemDataSource extends DataSource<any> {
     });
   }
 
-  disconnect() {
+  disconnect(): void {
+    // Empty
   }
 }
 
 @Component({
-  selector: 'app-document-normal-detail',
+  selector: 'hih-finance-document-normal-detail',
   templateUrl: './document-normal-detail.component.html',
   styleUrls: ['./document-normal-detail.component.scss'],
 })
 export class DocumentNormalDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: Document | null = null;
+  public detailObject: Document | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
-  separatorKeysCodes = [ENTER, COMMA];
+  separatorKeysCodes: any[] = [ENTER, COMMA];
 
-  displayedColumns = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
+  displayedColumns: string[] = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
   dataSource: NormalDocumentItemDataSource | null;
-  itemOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
+  itemOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -94,7 +94,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst) => {
+    ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
@@ -104,7 +104,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
 
-      this._activateRoute.url.subscribe((x) => {
+      this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createnormal') {
             this.onInitCreateMode();
@@ -120,7 +120,7 @@ export class DocumentNormalDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocumentEvent.subscribe((x2) => {
+            this._storageService.readDocumentEvent.subscribe((x2: any) => {
               if (x2 instanceof Document) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
@@ -198,7 +198,7 @@ export class DocumentNormalDetailComponent implements OnInit {
     this.itemOperEvent.emit();
   }
 
-  public onDeleteDocItem(di): void {
+  public onDeleteDocItem(di: any): void {
     let idx: number = -1;
     for (let i: number = 0; i < this.detailObject.Items.length; i ++) {
       if (this.detailObject.Items[i].ItemId === di.ItemId) {
@@ -216,7 +216,7 @@ export class DocumentNormalDetailComponent implements OnInit {
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.onCreationImpl();
-    } else if(this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Change) {
       this.onUpdateImpl();
     }
   }
@@ -226,8 +226,8 @@ export class DocumentNormalDetailComponent implements OnInit {
   }
 
   public addItemTag(row: DocumentItem, $event: MatChipInputEvent): void {
-    let input = $event.input;
-    let value = $event.value;
+    let input: any = $event.input;
+    let value: any = $event.value;
 
     // Add new Tag
     if ((value || '').trim()) {
@@ -299,7 +299,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       return;
     }
 
-    this._storageService.createDocumentEvent.subscribe((x) => {
+    this._storageService.createDocumentEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentNormalDetailComponent with : ${x}`);
       }
@@ -307,7 +307,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof Document) {
         // Show the snackbar
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });
@@ -347,7 +347,7 @@ export class DocumentNormalDetailComponent implements OnInit {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe(x2 => {
+        }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);
@@ -388,7 +388,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       return;
     }
 
-    this._storageService.changeDocumentEvent.subscribe((x) => {
+    this._storageService.changeDocumentEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving changeDocumentEvent in DocumentNormalDetailComponent with : ${x}`);
       }
@@ -396,7 +396,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof Document) {
         // Show the snackbar
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });
@@ -436,7 +436,7 @@ export class DocumentNormalDetailComponent implements OnInit {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe(x2 => {
+        }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);

@@ -11,7 +11,7 @@ import { UIStatusService } from '../services/uistatus.service';
 @Component({
   selector: 'hih-tags-list',
   templateUrl: './tags-list.component.html',
-  styleUrls: ['./tags-list.component.scss']
+  styleUrls: ['./tags-list.component.scss'],
 })
 export class TagsListComponent implements OnInit {
   optionsCloud: CloudOptions = {
@@ -31,7 +31,7 @@ export class TagsListComponent implements OnInit {
     this.tagType = TagTypeEnum.LearnQuestionBank;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this._tagService.fetchAllTags(true).subscribe(x => {
       this.dataCloud = [];
       for (let s1 of x) {
@@ -46,11 +46,11 @@ export class TagsListComponent implements OnInit {
     });
   }
 
-  public tagClicked(clicked: CloudData) {
+  public tagClicked(clicked: CloudData): void {
     console.log(clicked);
   }
 
-  public onSearchTagTerm() {
+  public onSearchTagTerm(): void {
     this._tagService.fetchAllTags(false, this.tagType, this.tagTerm).subscribe(x => {
       this.rstSearch = [];
 

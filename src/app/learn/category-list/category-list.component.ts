@@ -19,21 +19,23 @@ export class LearnCategoryDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<LearnCategory[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listCategoryChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.Categories.slice();
+      const data: any = this._storageService.Categories.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -42,16 +44,16 @@ export class LearnCategoryDataSource extends DataSource<any> {
   styleUrls: ['./category-list.component.scss'],
 })
 export class CategoryListComponent implements OnInit {
-  displayedColumns = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
-  dataSource: LearnCategoryDataSource | null;
+  displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
+  dataSource: LearnCategoryDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LearnStorageService,
     private _router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSource = new LearnCategoryDataSource(this._storageService, this.paginator);
-    this._storageService.fetchAllCategories().subscribe((x) => {
+    this._storageService.fetchAllCategories().subscribe((x: any) => {
       // Just ensure the request has been fired
     });
   }

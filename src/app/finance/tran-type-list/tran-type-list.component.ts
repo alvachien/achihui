@@ -19,9 +19,9 @@ import { switchMap } from 'rxjs/operators/switchMap';
 //  * Data access object for Tran. Type List
 //  */
 // export class TranTypeListDao {
-//   constructor(private _storageService: FinanceStorageService) {    
+//   constructor(private _storageService: FinanceStorageService) {
 //   }
-  
+
 //   getTranTypeList(): Observable<TranType[]> {
 //     // const href = 'https://api.github.com/search/issues';
 //     // const requestUrl =
@@ -70,16 +70,16 @@ import { switchMap } from 'rxjs/operators/switchMap';
 })
 export class TranTypeListComponent implements OnInit, AfterViewInit {
 
-  displayedColumns = ['id', 'name', 'expflag', 'fulldisplay', 'hierlvl', 'parent', 'comment'];
+  displayedColumns: string[] = ['id', 'name', 'expflag', 'fulldisplay', 'hierlvl', 'parent', 'comment'];
   // !!! Second option !!!
-  //ttDatabase: TranTypeListDao | null;
-  //dataSource = new MatTableDataSource();
+  // ttDatabase: TranTypeListDao | null;
+  // dataSource = new MatTableDataSource();
   // resultsLength = 0;
   // isLoadingResults = false;
   // !!! Second option !!!
 
   // !!! First option !!!
-  //dataSource = new TranTypeDataSource();
+  // dataSource = new TranTypeDataSource();
   // !!! First option !!!
 
   dataSource: MatTableDataSource<TranType> = new MatTableDataSource<TranType>();
@@ -104,10 +104,10 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
       }
     };
     this.dataSource.filterPredicate =
-      (data: TranType, filter: string) => (data.Name.indexOf(filter) !== -1 ) || (data.Comment && data.Comment.indexOf(filter) !== -1);    
+      (data: TranType, filter: string) => (data.Name.indexOf(filter) !== -1 ) || (data.Comment && data.Comment.indexOf(filter) !== -1);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     // !!! First option !!!
     // this.dataSource = new TranTypeDataSource(this._storageService, this.paginator);
 
@@ -116,12 +116,12 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
     // });
     // !!! First option !!!
 
-    this._storageService.fetchAllTranTypes().subscribe((x) => {
+    this._storageService.fetchAllTranTypes().subscribe((x: any) => {
       this.dataSource.data = x;
-    });    
+    });
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     // !!! Second option !!!
     // this.ttDatabase = new TranTypeListDao(this._storageService);
     // // If the user changes the sort order, reset back to the first page.
@@ -150,13 +150,13 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
 
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-  }  
+  }
 
   getTranTypeLevelString(trantype: TranTypeLevelEnum): string {
     return UIDisplayStringUtil.getTranTypeLevelDisplayString(trantype);
   }
-  
-  applyFilter(filterValue: string) {
+
+  applyFilter(filterValue: string): void {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;

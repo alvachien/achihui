@@ -19,21 +19,23 @@ export class BookCategoryDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<BookCategory[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listBookCategoryChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.BookCategories.slice();
+      const data: any = this._storageService.BookCategories.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -42,16 +44,16 @@ export class BookCategoryDataSource extends DataSource<any> {
   styleUrls: ['./book-category-list.component.scss']
 })
 export class BookCategoryListComponent implements OnInit {
-  displayedColumns = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
+  displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   dataSource: BookCategoryDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LibraryStorageService,
     private _router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSource = new BookCategoryDataSource(this._storageService, this.paginator);
-    this._storageService.fetchAllBookCategories().subscribe((x) => {
+    this._storageService.fetchAllBookCategories().subscribe((x: any) => {
       // Just ensure the request has been fired
     });
   }

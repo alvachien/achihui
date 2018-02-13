@@ -14,6 +14,13 @@ import * as moment from 'moment';
 
 @Injectable()
 export class LibraryStorageService {
+  // Buffer
+  private _isBookCtgyListLoaded: boolean;
+  private _isMovieGenreListLoaded: boolean;
+  private _isBookListLoaded: boolean;
+  private _isLocationListLoaded: boolean;
+  private _isMovieListLoaded: boolean;
+
   listBookCategoryChange: BehaviorSubject<BookCategory[]> = new BehaviorSubject<BookCategory[]>([]);
   get BookCategories(): BookCategory[] {
     return this.listBookCategoryChange.value;
@@ -35,13 +42,6 @@ export class LibraryStorageService {
     return this.listMovieChange.value;
   }
 
-  // Buffer
-  private _isBookCtgyListLoaded: boolean;
-  private _isMovieGenreListLoaded: boolean;
-  private _isBookListLoaded: boolean;
-  private _isLocationListLoaded: boolean;
-  private _isMovieListLoaded: boolean;
-  
   constructor(private _http: HttpClient,
     private _authService: AuthService,
     private _homeService: HomeDefDetailService) {
@@ -59,9 +59,9 @@ export class LibraryStorageService {
   // Book Categories
   public fetchAllBookCategories(forceReload?: boolean): Observable<any> {
     if (!this._isBookCtgyListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/LibBookCategory';
+      const apiurl: string = environment.ApiUrl + '/api/LibBookCategory';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -78,7 +78,7 @@ export class LibraryStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllBookCategories in LibraryStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
+          const rjs: any = <any>response;
           let listRst: BookCategory[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -94,7 +94,7 @@ export class LibraryStorageService {
           // Sort it
           listRst.sort((a, b) => {
             return a.FullDisplayText.localeCompare(b.FullDisplayText);
-          })
+          });
 
           this._isBookCtgyListLoaded = true;
           this.listBookCategoryChange.next(listRst);
@@ -108,7 +108,7 @@ export class LibraryStorageService {
           this._isBookCtgyListLoaded = false;
           this.listBookCategoryChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listBookCategoryChange.value);
@@ -128,12 +128,12 @@ export class LibraryStorageService {
     listCtgy.forEach((value, index, array) => {
       if (value.ParentID === par.ID) {
         value.HierLevel = curLevel;
-        value.FullDisplayText = par.FullDisplayText + "." + value.Name;
+        value.FullDisplayText = par.FullDisplayText + '.' + value.Name;
 
         this.buildBookCategoryHiercharyImpl(value, listCtgy, value.HierLevel + 1);
       }
     });
-  }  
+  }
 
   // Location
   public fetchAllLocations(forceReload?: boolean): Observable<any> {

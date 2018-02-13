@@ -4,13 +4,15 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   selector: 'hih-learn-en-sentence',
   template: `<router-outlet></router-outlet>`,
   styleUrls: ['./en-sentence.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class EnSentenceComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    // Empty
   }
 
+  ngOnInit(): void {
+    // Empty
+  }
 }

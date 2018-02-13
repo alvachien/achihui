@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 import { LogLevel, UserAuthInfo } from '../model';
 import { UserManager, Log, MetadataService, User } from 'oidc-client';
 
-const AuthSettings: any = {
+const authSettings: any = {
   authority: environment.IDServerUrl,
   client_id: 'achihui.js',
   redirect_uri: environment.AppLoginCallbackUrl,
@@ -17,7 +17,7 @@ const AuthSettings: any = {
   silent_redirect_uri: environment.AppLoginSlientRevewCallbackUrl,
   automaticSilentRenew: true,
   accessTokenExpiringNotificationTime: 4,
-  //silentRequestTimeout:10000,
+  // silentRequestTimeout:10000,
 
   filterProtocolClaims: true,
   loadUserInfo: true,
@@ -25,10 +25,11 @@ const AuthSettings: any = {
 
 @Injectable()
 export class AuthService {
-  public authSubject: BehaviorSubject<UserAuthInfo> = new BehaviorSubject(new UserAuthInfo());
-  public authContent: Observable<UserAuthInfo> = this.authSubject.asObservable();
   private mgr: UserManager;
   private authHeaders: Headers;
+
+  public authSubject: BehaviorSubject<UserAuthInfo> = new BehaviorSubject(new UserAuthInfo());
+  public authContent: Observable<UserAuthInfo> = this.authSubject.asObservable();
   public userLoadededEvent: EventEmitter<User> = new EventEmitter<User>();
 
   constructor() {
@@ -36,10 +37,9 @@ export class AuthService {
       console.log('AC_HIH_UI [Debug]: Entering AuthService constructor...');
     }
 
-    this.mgr = new UserManager(AuthSettings);
+    this.mgr = new UserManager(authSettings);
 
-    const that = this;
-    this.mgr.getUser().then(function (u) {
+    this.mgr.getUser().then((u: any) => {
       if (u) {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log('AC_HIH_UI [Debug]: AuthService constructor, user get successfully as following: ');
@@ -47,58 +47,58 @@ export class AuthService {
         }
 
         // Set the content
-        that.authSubject.value.setContent(u);
+        this.authSubject.value.setContent(u);
 
         // Broadcast event
-        that.userLoadededEvent.emit(u);
+        this.userLoadededEvent.emit(u);
       } else {
-        that.authSubject.value.cleanContent();
+        this.authSubject.value.cleanContent();
       }
 
-      that.authSubject.next(that.authSubject.value);
-    }, function (reason) {
+      this.authSubject.next(this.authSubject.value);
+    }, (reason: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error('AC_HIH_UI [Error]: AuthService failed to fetch user:');
         console.error(reason);
       }
     });
 
-    this.mgr.events.addUserUnloaded((e) => {
+    this.mgr.events.addUserUnloaded((e: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: User unloaded');
       }
-      that.authSubject.value.cleanContent();
+      this.authSubject.value.cleanContent();
 
-      that.authSubject.next(that.authSubject.value);
+      this.authSubject.next(this.authSubject.value);
     });
 
-    this.mgr.events.addAccessTokenExpiring(function () {
+    this.mgr.events.addAccessTokenExpiring(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.warn('AC_HIH_UI [Debug]: token expiring');
       }
     });
 
-    this.mgr.events.addAccessTokenExpired(function () {
+    this.mgr.events.addAccessTokenExpired(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.error('AC_HIH_UI [Debug]: token expired');
       }
 
-      that.doLogin();
+      this.doLogin();
     });
   }
 
-  public doLogin() {
+  public doLogin(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Start the login...');
     }
 
     if (this.mgr) {
-      this.mgr.signinRedirect().then(function () {
-      //this.mgr.signinSilent().then(function(){
+      this.mgr.signinRedirect().then(() => {
+      // this.mgr.signinSilent().then(function(){
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.info('AC_HIH_UI [Debug]: Redirecting for login...');
         }
-      }).catch(function (er) {
+      }).catch((er: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error('AC_HIH_UI [Error]: Sign-in error', er);
         }
@@ -106,17 +106,17 @@ export class AuthService {
     }
   }
 
-  public doLogout() {
+  public doLogout(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Start the logout...');
     }
 
     if (this.mgr) {
-      this.mgr.signoutRedirect().then(function () {
+      this.mgr.signoutRedirect().then(() => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.info('AC_HIH_UI [Debug]: redirecting for logout...');
         }
-      }).catch(function (er) {
+      }).catch((er: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error('AC_HIH_UI [Error]: Sign-out error', er);
         }
@@ -124,93 +124,93 @@ export class AuthService {
     }
   }
 
-  clearState() {
-    this.mgr.clearStaleState().then(function () {
+  clearState(): void {
+    this.mgr.clearStaleState().then(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: clearStateState success');
       }
-    }).catch(function (e) {
+    }).catch((e: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error('AC_HIH_UI [Debug]: clearStateState error', e.message);
       }
     });
   }
 
-  getUser() {
-    this.mgr.getUser().then((user) => {
+  getUser(): void {
+    this.mgr.getUser().then((user: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: got user', user);
       }
 
       this.userLoadededEvent.emit(user);
-    }).catch(function (err) {
+    }).catch((err: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(err);
       }
     });
   }
 
-  removeUser() {
+  removeUser(): void {
     this.mgr.removeUser().then(() => {
       this.userLoadededEvent.emit(null);
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: user removed');
       }
-    }).catch(function (err) {
+    }).catch((err: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(err);
       }
     });
   }
 
-  startSigninMainWindow() {
-    this.mgr.signinRedirect({ data: 'some data' }).then(function () {
+  startSigninMainWindow(): void {
+    this.mgr.signinRedirect({ data: 'some data' }).then(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: signinRedirect done');
       }
-    }).catch(function (err) {
+    }).catch((err: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(err);
       }
     });
   }
 
-  endSigninMainWindow() {
-    this.mgr.signinRedirectCallback().then(function (user) {
+  endSigninMainWindow(): void {
+    this.mgr.signinRedirectCallback().then((user: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: signed in', user);
       }
-    }).catch(function (err) {
+    }).catch((err: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(err);
       }
     });
   }
 
-  startSignoutMainWindow() {
-    this.mgr.signoutRedirect().then(function (resp) {
+  startSignoutMainWindow(): void {
+    this.mgr.signoutRedirect().then((resp: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: signed out', resp);
       }
       setTimeout(5000, () => {
         console.log('AC_HIH_UI [Debug]: testing to see if fired...');
       });
-    }).catch(function (err) {
+    }).catch((err) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(err);
       }
     });
-  };
+  }
 
-  endSignoutMainWindow() {
-    this.mgr.signoutRedirectCallback().then(function (resp) {
+  endSignoutMainWindow(): void {
+    this.mgr.signoutRedirectCallback().then((resp) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: signed out', resp);
       }
-    }).catch(function (err) {
+    }).catch((err) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(err);
       }
     });
-  };
+  }
 }

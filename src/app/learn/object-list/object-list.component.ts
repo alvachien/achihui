@@ -20,21 +20,23 @@ export class LearnObjectDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<LearnObject[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listObjectChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.Objects.slice();
+      const data: any = this._storageService.Objects.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -44,17 +46,17 @@ export class LearnObjectDataSource extends DataSource<any> {
 })
 export class ObjectListComponent implements OnInit {
 
-  displayedColumns = ['id', 'category', 'name', 'comment'];
+  displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: LearnObjectDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isSlideMode: boolean = false;
-  
+
   constructor(public _storageService: LearnStorageService,
     private _router: Router) {
     this.isSlideMode = false;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnInit...');
     }
@@ -64,7 +66,7 @@ export class ObjectListComponent implements OnInit {
     Observable.forkJoin([
       this._storageService.fetchAllCategories(),
       this._storageService.fetchAllObjects(),
-    ]).subscribe((x) => {
+    ]).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (x) {
         // Do NOTHING
@@ -72,26 +74,27 @@ export class ObjectListComponent implements OnInit {
     });
   }
 
-  public onCreateObject() {
+  public onCreateObject(): void {
     this._router.navigate(['/learn/object/create']);
   }
 
-  public onDisplayObject(obj: LearnObject) {
+  public onDisplayObject(obj: LearnObject): void {
     this._router.navigate(['/learn/object/display', obj.Id]);
   }
 
-  public onChangeObject(obj: LearnObject) {
+  public onChangeObject(obj: LearnObject): void {
     this._router.navigate(['/learn/object/edit', obj.Id]);
   }
 
-  public onDeleteObject(obj: any) {
+  public onDeleteObject(obj: any): void {
+    // Empty
   }
 
   public onRefresh(): void {
     this._storageService.fetchAllObjects(true);
   }
 
-  public onToggleSlide() {
+  public onToggleSlide(): void {
     if (!this.isSlideMode) {
       this.isSlideMode = true;
     } else {

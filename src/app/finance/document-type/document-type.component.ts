@@ -7,9 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DocumentTypeComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    // Empty
   }
 
+  ngOnInit(): void {
+    // Empty
+  }
 }
