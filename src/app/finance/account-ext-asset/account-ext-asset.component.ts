@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraAsset, RepeatFrequencyEnum, UIDisplayStringUtil
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraAsset, 
+  RepeatFrequencyEnum, UIDisplayStringUtil,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 
@@ -21,12 +21,13 @@ export class AccountExtAssetComponent implements OnInit {
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
-  
+
   constructor(public _storageService: FinanceStorageService) {
   }
 
-  ngOnInit() {
-    this._storageService.fetchAllAssetCategories().subscribe(x => {
+  ngOnInit(): void {
+    this._storageService.fetchAllAssetCategories().subscribe((x: any) => {
+      // Empty
     });
   }
 }

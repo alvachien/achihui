@@ -7,7 +7,7 @@ import * as hih from './common';
  */
 export enum GenderEnum {
   Male = 1,
-  Female = 2
+  Female = 2,
 }
 
 /**
@@ -56,7 +56,7 @@ export class Location extends hih.BaseModel {
   constructor() {
     super();
 
-    this._hid = null;
+    this._hid = undefined;
   }
 
   public onVerify(context?: any): boolean {
@@ -73,7 +73,7 @@ export class Location extends hih.BaseModel {
     return rstobj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -121,8 +121,8 @@ export class BookCategory extends hih.BaseModel {
   constructor() {
     super();
 
-    this._hid = null;
-    this._parid = null;
+    this._hid = undefined;
+    this._parid = undefined;
   }
 
   public onVerify(context?: any): boolean {
@@ -139,7 +139,7 @@ export class BookCategory extends hih.BaseModel {
     return rstobj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {

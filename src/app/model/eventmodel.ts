@@ -160,7 +160,7 @@ export class GeneralEvent extends hih.BaseModel {
   }
 
   writeJSONObject(): any {
-    let robj = super.writeJSONObject();
+    let robj: any = super.writeJSONObject();
     robj.id = this._id;
     robj.hid = this._hid;
     robj.name = this._name;
@@ -303,7 +303,7 @@ export class RecurEvent extends hih.BaseModel {
   }
 
   writeJSONObject(): any {
-    let robj = super.writeJSONObject();
+    let robj: any = super.writeJSONObject();
     robj.id = this._id;
     robj.hid = this._hid;
     robj.name = this._name;

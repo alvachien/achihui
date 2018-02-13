@@ -38,7 +38,7 @@ export class UIFinTransferDocument {
       doc.ExgRate_Plan = this.ExgRate_Plan;
     }
 
-    let docitem = new HIHFinance.DocumentItem();
+    let docitem: HIHFinance.DocumentItem = new HIHFinance.DocumentItem();
     docitem.ItemId = 1;
     docitem.AccountId = this.SourceAccountId;
     docitem.ControlCenterId = this.SourceControlCenterId;
@@ -145,9 +145,9 @@ export class UIFinAdvPayDocument {
       this.TranAmount = fitem.TranAmount;
       this.SourceTranType = fitem.TranType;
     } else {
-      let docobj = new HIHFinance.Document();
+      let docobj: HIHFinance.Document = new HIHFinance.Document();
       docobj.onSetData(doc);
-      let acntobj = new HIHFinance.Account();
+      let acntobj: HIHFinance.Account = new HIHFinance.Account();
       acntobj.onSetData(doc.accountVM);
 
       this.TranDate = docobj.TranDate.clone();
@@ -157,7 +157,7 @@ export class UIFinAdvPayDocument {
       if (docobj.Items.length !== 1) {
         throw Error('Failed to parse document');
       }
-      let fitem = docobj.Items[0];
+      let fitem: any = docobj.Items[0];
       this.SourceAccountId = +fitem.AccountId;
       this.SourceControlCenterId = +fitem.ControlCenterId;
       this.SourceOrderId = +fitem.OrderId;
@@ -212,7 +212,7 @@ export class UIFinCurrencyExchangeDocument {
     doc.ExgRate = this.SourceExchangeRate;
     doc.ExgRate2 = this.TargetExchangeRate;
 
-    let docitem = new HIHFinance.DocumentItem();
+    let docitem: HIHFinance.DocumentItem = new HIHFinance.DocumentItem();
     docitem.ItemId = 1;
     docitem.AccountId = this.SourceAccountId;
     docitem.ControlCenterId = this.SourceControlCenterId;
@@ -278,7 +278,7 @@ export class UIFinAssetOperationDocument {
   public TranType: number;
 
   public AssetAccount: HIHFinance.AccountExtraAsset;
-  
+
   constructor() {
     this.TranDate = moment();
     this.AssetAccount = new HIHFinance.AccountExtraAsset();
@@ -290,13 +290,14 @@ export class UIFinAssetOperationDocument {
       doc.DocType = hih.FinanceDocType_AssetBuyIn;
     } else {
       doc.DocType = hih.FinanceDocType_AssetSoldOut;
-    }      
+    }
+
     doc.Desp = this.Desp;
     doc.TranCurr = this.TranCurr;
     doc.ExgRate = this.ExgRate;
     doc.ExgRate_Plan = this.ExgRate_Plan;
 
-    let docitem = new HIHFinance.DocumentItem();
+    let docitem: HIHFinance.DocumentItem = new HIHFinance.DocumentItem();
     docitem.ItemId = 1;
     docitem.AccountId = this.AccountId;
     docitem.ControlCenterId = this.ControlCenterId;
@@ -316,16 +317,16 @@ export class UIFinAssetOperationDocument {
       this.ExgRate = doc.ExgRate;
       this.ExgRate_Plan = doc.ExgRate_Plan;
       this.TranCurr = doc.TranCurr;
-      
+
       this.AccountId = doc.Items[0].AccountId;
       this.ControlCenterId = doc.Items[0].ControlCenterId;
       this.OrderId = doc.Items[0].OrderId;
       this.TranAmount = doc.Items[0].TranAmount;
       this.TranType = doc.Items[0].TranType;
     } else {
-      let docobj = new HIHFinance.Document();
+      let docobj: HIHFinance.Document = new HIHFinance.Document();
       docobj.onSetData(doc);
-      let acntobj = new HIHFinance.Account();
+      let acntobj: HIHFinance.Account = new HIHFinance.Account();
       acntobj.onSetData(doc.accountVM);
 
       this.TranDate = docobj.TranDate.clone();
@@ -333,7 +334,7 @@ export class UIFinAssetOperationDocument {
       this.ExgRate = docobj.ExgRate;
       this.ExgRate_Plan = docobj.ExgRate_Plan;
       this.TranCurr = docobj.TranCurr;
-      
+
       this.AccountId = docobj.Items[0].AccountId;
       this.ControlCenterId = docobj.Items[0].ControlCenterId;
       this.OrderId = docobj.Items[0].OrderId;
@@ -402,9 +403,9 @@ export class UIFinLoanDocument {
       this.SourceOrderId = fitem.OrderId;
       this.TranAmount = fitem.TranAmount;
     } else {
-      let docobj = new HIHFinance.Document();
+      let docobj: HIHFinance.Document = new HIHFinance.Document();
       docobj.onSetData(doc);
-      let acntobj = new HIHFinance.Account();
+      let acntobj: HIHFinance.Account = new HIHFinance.Account();
       acntobj.onSetData(doc.accountVM);
 
       this.TranDate = docobj.TranDate.clone();
@@ -412,9 +413,9 @@ export class UIFinLoanDocument {
       this.Desp = docobj.Desp;
 
       if (docobj.Items.length !== 1) {
-        throw Error('Failed to parse document');
+        throw new Error('Failed to parse document');
       }
-      let fitem = docobj.Items[0];
+      let fitem: any = docobj.Items[0];
       this.SourceAccountId = +fitem.AccountId;
       this.SourceControlCenterId = +fitem.ControlCenterId;
       this.SourceOrderId = +fitem.OrderId;
@@ -428,7 +429,7 @@ export class UIFinLoanDocument {
         if (tdoc.TranType !== this.SourceTranType) {
           this.SourceTranType = tdoc.TranType;
         }
-        
+
         this.TmpDocs.push(tdoc);
       }
     }
@@ -448,7 +449,7 @@ export class SidenavItem {
   badgeColor: string;
   customClass: string;
 
-  constructor(model: any = null) {
+  constructor(model?: any) {
     if (model) {
       this.name = model.name;
       this.icon = model.icon;
@@ -463,20 +464,21 @@ export class SidenavItem {
     }
   }
 
-  hasSubItems() {
+  hasSubItems(): boolean {
     if (this.subItems) {
       return this.subItems.length > 0;
     }
+
     return false;
   }
 
-  hasParent() {
+  hasParent(): boolean {
     return !!this.parent;
   }
 
-  mapSubItems(list: SidenavItem[]) {
+  mapSubItems(list: SidenavItem[]): SidenavItem[] {
     if (list) {
-      list.forEach((item, index) => {
+      list.forEach((item: any, index: number) => {
         list[index] = new SidenavItem(item);
       });
 
@@ -484,7 +486,7 @@ export class SidenavItem {
     }
   }
 
-  isRouteString() {
+  isRouteString(): boolean {
     return this.route instanceof String || typeof this.route === 'string';
   }
 }
@@ -494,7 +496,7 @@ export class SidenavItem {
  */
 export class UIAccountForSelection {
   public Id: number;
-  public CategoryId: number;  
+  public CategoryId: number;
   public Name: string;
   public CategoryName: string;
   public AssetFlag: boolean;
@@ -509,11 +511,11 @@ export class UIAccountForSelection {
  * @param skiploan Skip Loan accounts
  * @param skipasset Skip Asset accounts
  */
-export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg: HIHFinance.AccountCategory[], 
+export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg: HIHFinance.AccountCategory[],
   skipadp?: boolean, skiploan?: boolean, skipasset?: boolean): UIAccountForSelection[] {
   let arrst: UIAccountForSelection[] = [];
 
-  for(let acnt of acnts) {
+  for (let acnt of acnts) {
     let rst: UIAccountForSelection = new UIAccountForSelection();
     rst.CategoryId = acnt.CategoryId;
     rst.Id = acnt.Id;
@@ -537,7 +539,7 @@ export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg:
       }
     }
 
-    for(let ctgy of acntctg) {
+    for (let ctgy of acntctg) {
       if (ctgy.ID === rst.CategoryId) {
         rst.CategoryName = ctgy.Name;
         rst.AssetFlag = ctgy.AssetFlag;
@@ -568,7 +570,7 @@ export class UIOrderForSelection {
 export function BuildupOrderForSelection(orders: HIHFinance.Order[], skipinv?: boolean): UIOrderForSelection[] {
   let arrst: UIOrderForSelection[] = [];
 
-  for(let ord of orders) {
+  for (let ord of orders) {
     let rst: UIOrderForSelection = new UIOrderForSelection();
     rst.Id = ord.Id;
     rst.Name = ord.Name;

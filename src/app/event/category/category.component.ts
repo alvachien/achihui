@@ -8,14 +8,17 @@ import { startWith } from 'rxjs/operators/startWith';
 import { switchMap } from 'rxjs/operators/switchMap';
 
 @Component({
-  selector: 'app-category',
+  selector: 'hih-event-category',
   template: `<router-outlet></router-outlet>`,
   styleUrls: ['./category.component.scss'],
 })
 export class CategoryComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    // Empty
+  }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Empty
   }
 }

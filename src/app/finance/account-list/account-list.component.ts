@@ -19,21 +19,23 @@ export class AccountDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Account[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listAccountChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.Accounts.slice();
+      const data: any = this._storageService.Accounts.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 export interface AccountStatusUI {
@@ -48,7 +50,7 @@ export interface AccountStatusUI {
 })
 export class AccountListComponent implements OnInit {
 
-  displayedColumns = ['id', 'name', 'ctgy', 'comment'];
+  displayedColumns: string[] = ['id', 'name', 'ctgy', 'comment'];
   dataSource: AccountDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   arrayStatus: UIDisplayString[] = [];
@@ -59,7 +61,7 @@ export class AccountListComponent implements OnInit {
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...');
     }
@@ -69,31 +71,32 @@ export class AccountListComponent implements OnInit {
     Observable.forkJoin([
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllAccountCategories(),
-    ]).subscribe((x) => {
+    ]).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
     });
   }
 
-  public onCreateAccount() {
+  public onCreateAccount(): void {
     this._router.navigate(['/finance/account/create']);
   }
 
-  public onDisplayAccount(acnt: Account) {
+  public onDisplayAccount(acnt: Account): void {
     this._router.navigate(['/finance/account/display', acnt.Id]);
   }
 
-  public onChangeAccount(acnt: Account) {
+  public onChangeAccount(acnt: Account): void {
     this._router.navigate(['/finance/account/edit', acnt.Id]);
   }
 
-  public onDeleteAccount(acnt: any) {
+  public onDeleteAccount(acnt: any): void {
+    // Empty
   }
 
-  public onRefresh() {
+  public onRefresh(): void {
     this.onStatusChange();
   }
 
-  public onStatusChange() {
+  public onStatusChange(): void {
     this._storageService.fetchAllAccounts(true, this.selectedStatus).subscribe((x) => {
       // Just ensure the REQUEST has been sent
     });

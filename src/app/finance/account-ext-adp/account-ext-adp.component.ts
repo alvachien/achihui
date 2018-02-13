@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import {
-  LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, 
-  AccountExtraAdvancePayment, RepeatFrequencyEnum, UIDisplayStringUtil
+  LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account,
+  AccountExtraAdvancePayment, RepeatFrequencyEnum, UIDisplayStringUtil,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 
@@ -13,7 +13,7 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from 
 })
 export class AccountExtADPComponent implements OnInit {
   public currentMode: string;
-  public arFrequencies = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
 
   @Input() extObject: AccountExtraAdvancePayment;
   @Input() uiMode: UIMode;
@@ -24,10 +24,11 @@ export class AccountExtADPComponent implements OnInit {
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
-  
+
   constructor(public _storageService: FinanceStorageService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Empty
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-credits',
+  selector: 'hih-credits',
   templateUrl: './credits.component.html',
   styleUrls: ['./credits.component.scss'],
 })

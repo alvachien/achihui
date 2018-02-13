@@ -20,21 +20,23 @@ export class AccountCategoryDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<AccountCategory[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listAccountCategoryChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.AccountCategories.slice();
+      const data: any = this._storageService.AccountCategories.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -44,17 +46,17 @@ export class AccountCategoryDataSource extends DataSource<any> {
   animations: [fadeAnimation],
 })
 export class AccountCategoryListComponent implements OnInit {
-  displayedColumns = ['id', 'name', 'assetflag', 'comment'];
+  displayedColumns: string[] = ['id', 'name', 'assetflag', 'comment'];
   dataSource: AccountCategoryDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSource = new AccountCategoryDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllAccountCategories().subscribe((x) => {
+    this._storageService.fetchAllAccountCategories().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
     });
   }

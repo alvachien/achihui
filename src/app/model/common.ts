@@ -53,12 +53,11 @@ export enum UICommonLabelEnum {
 }
 
 /**
- * Enum for Question bank type 
+ * Enum for Question bank type
  */
-export enum QuestionBankTypeEnum
-{
+export enum QuestionBankTypeEnum {
     EssayQuestion       = 1,
-    MultipleChoice      = 2
+    MultipleChoice      = 2,
 }
 
 /**
@@ -68,8 +67,8 @@ export enum TagTypeEnum {
   LearnQuestionBank   = 1,
   EnglishWord         = 2,
   EnglishSentence     = 3,
-  
-  FinanceDocumentItem = 10,  
+
+  FinanceDocumentItem = 10,
 }
 
 /**
@@ -97,7 +96,7 @@ export enum UIMode {
   Display = 3,
 
   Invalid = 9,
-};
+}
 
 export function isUIEditable(mode: UIMode): boolean {
   return mode === UIMode.Create || mode === UIMode.Change;
@@ -140,7 +139,7 @@ export enum RepeatFrequencyEnum {
   HalfYear = 5,
   Year = 6,
   Manual = 7,
-};
+}
 
 /**
  * Log Level enum
@@ -195,8 +194,8 @@ export interface BaseModelJson {
  */
 export class BaseModel {
   protected _createdAt: moment.Moment;
-  public CreatedBy: string;
   protected _updatedAt: moment.Moment;
+  public CreatedBy: string;
   public UpdatedBy: string;
 
   // For checking
@@ -220,7 +219,8 @@ export class BaseModel {
     this.UpdatedAt = moment();
   }
 
-  public onInit() {
+  public onInit(): void {
+    // Emtpy
   }
 
   public onVerify(context?: any): boolean {
@@ -230,12 +230,13 @@ export class BaseModel {
   }
 
   public onComplete(): void {
+    // Empty
   }
 
   public writeJSONObject(): any {
     let rstobj: any = {
-
     };
+
     if (this._createdAt) {
       rstobj.createdAt = this._createdAt.format(MomentDateFormat);
     }
@@ -253,7 +254,7 @@ export class BaseModel {
   }
 
   public writeJSONString(): string {
-    let forJSON = this.writeJSONObject();
+    let forJSON: any = this.writeJSONObject();
     if (forJSON) {
       return JSON && JSON.stringify(forJSON);
     }
@@ -296,12 +297,13 @@ export class Tag {
 
       case TagTypeEnum.FinanceDocumentItem:
         return '/finance/document/display/' + this.TagID.toString();
-    }
 
-    return '';
+      default:
+        throw new Error('Unsupportted tag type');
+    }
   }
 
-  public onSetData(data?: any) {
+  public onSetData(data?: any): void {
     if (data && data.tagType) {
       this.TagType = <TagTypeEnum>data.tagType;
     }
@@ -402,8 +404,8 @@ export interface OverviewScopeRange {
 }
 
 export function getOverviewScopeRange(scope: OverviewScopeEnum): OverviewScopeRange {
-  let bgn = moment();
-  let end = moment();
+  let bgn: any = moment();
+  let end: any = moment();
 
   if (scope === OverviewScopeEnum.CurrentMonth) {
     bgn.startOf('month');

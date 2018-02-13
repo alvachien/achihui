@@ -8,14 +8,17 @@ import { startWith } from 'rxjs/operators/startWith';
 import { switchMap } from 'rxjs/operators/switchMap';
 
 @Component({
-  selector: 'app-recurr-event',
+  selector: 'hih-event-recurrevent',
   template: `<router-outlet></router-outlet>`,
-  styleUrls: ['./recurr-event.component.scss']
+  styleUrls: ['./recurr-event.component.scss'],
 })
 export class RecurrEventComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    // Empty
+   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Empty
   }
 }

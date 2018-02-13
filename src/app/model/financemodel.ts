@@ -8,7 +8,7 @@ import * as moment from 'moment';
 export enum AccountStatusEnum {
   Normal = 0,
   Closed = 1,
-  Frozen = 2
+  Frozen = 2,
 }
 
 /**
@@ -63,28 +63,32 @@ export class Currency extends hih.BaseModel {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
-    if (data && data.curr)
+
+    if (data && data.curr) {
       this.Currency = data.curr;
-    if (data && data.name)
+    }
+    if (data && data.name) {
       this.Name = data.name;
+    }
     if (data && data.symbol) {
       this.Symbol = data.symbol;
     }
@@ -150,23 +154,24 @@ export class AccountCategory extends hih.BaseModel {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
     if (data && data.id) {
       this.ID = +data.id;
@@ -196,24 +201,26 @@ export class DocumentType extends hih.BaseModel {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
+
     if (data && data.hid) {
       this.HID = +data.hid;
     }
@@ -269,23 +276,24 @@ export class AssetCategory extends hih.BaseModel {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
     if (data && data.id) {
       this.ID = +data.id;
@@ -314,10 +322,13 @@ export abstract class AccountExtra {
     return {};
   }
   public onInit(): void {
+    // Empty
   }
   public onComplete(): void {
+    // Empty
   }
   public onSetData(data: any): void {
+    // Empty
   }
 }
 
@@ -336,7 +347,7 @@ export class Account extends hih.BaseModel {
   public CategoryName: string;
   public OwnerDisplayAs: string;
 
-  public ExtraInfo: AccountExtra = null;
+  public ExtraInfo: AccountExtra = undefined;
 
   constructor() {
     super();
@@ -344,13 +355,14 @@ export class Account extends hih.BaseModel {
     this.Status = AccountStatusEnum.Normal;
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     let brst: boolean = true;
 
@@ -391,7 +403,7 @@ export class Account extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     rstObj.id = this.Id;
     rstObj.hid = this.HID;
     rstObj.ctgyId = this.CategoryId;
@@ -410,7 +422,7 @@ export class Account extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -442,17 +454,17 @@ export class Account extends hih.BaseModel {
     }
 
     if (data && this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && data.extraInfo_ADP) {
-      let ei = new AccountExtraAdvancePayment();
+      let ei: any = new AccountExtraAdvancePayment();
       ei.onSetData(data.extraInfo_ADP);
 
       this.ExtraInfo = ei;
     } else if (data && this.CategoryId === hih.FinanceAccountCategory_Asset && data.extraInfo_AS) {
-      let ei = new AccountExtraAsset();
+      let ei: any = new AccountExtraAsset();
       ei.onSetData(data.extraInfo_AS);
 
       this.ExtraInfo = ei;
     } else if (data && data.CategoryId === hih.FinanceAccountCategory_Loan && data.extraInfo_LO) {
-      let ei = new AccountExtraLoan();
+      let ei: any = new AccountExtraLoan();
       ei.onSetData(data.extraINfo_Loan);
     }
   }
@@ -462,9 +474,9 @@ export class Account extends hih.BaseModel {
  * Extra info: Advance payment
  */
 export class AccountExtraAdvancePayment extends AccountExtra {
-  public Direct: boolean;
   private _startDate: moment.Moment;
   private _endDate: moment.Moment;
+  public Direct: boolean;
   public RepeatType: hih.RepeatFrequencyEnum;
   public RefDocId: number;
   public DeferredDays: number;
@@ -497,7 +509,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     this._endDate = moment().add(1, 'y');
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
 
     this._startDate = moment();
@@ -556,7 +568,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     return rstobj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.direct) {
@@ -601,7 +613,7 @@ export class AccountExtraAsset extends AccountExtra {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
@@ -629,7 +641,7 @@ export class AccountExtraAsset extends AccountExtra {
     return rstobj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.categoryID) {
@@ -678,7 +690,7 @@ export class AccountExtraLoan extends AccountExtra {
     this._startDate = moment();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
 
     this._startDate = moment();
@@ -710,7 +722,7 @@ export class AccountExtraLoan extends AccountExtra {
     return rstobj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.startDate) {
@@ -752,16 +764,18 @@ export class ControlCenter extends hih.BaseModel {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     let bRst: boolean = true;
     if (this.Name && this.Name.length > 0) {
+      // Empty
     } else {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTitle = 'Common.InvalidName';
@@ -776,20 +790,22 @@ export class ControlCenter extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     rstObj.hid = this.HID;
     rstObj.id = this.Id;
     rstObj.name = this.Name;
     rstObj.comment = this.Comment;
-    if (this.ParentId)
+    if (this.ParentId) {
       rstObj.parId = this.ParentId;
-    if (this.Owner && this.Owner.length > 0)
+    }
+    if (this.Owner && this.Owner.length > 0) {
       rstObj.owner = this.Owner;
+    }
 
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.hid) {
@@ -859,7 +875,7 @@ export class Order extends hih.BaseModel {
     this._validTo = this._validFrom.clone().add(1, 'months');
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
 
     this._validFrom = moment();
@@ -867,13 +883,15 @@ export class Order extends hih.BaseModel {
   }
 
   public onVerify(context?: OrderVerifyContext): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
-    let chkrst = true;
+    let chkrst: boolean = true;
 
     // Name
     if (this.Name && this.Name.length > 0) {
+      // Allowed
     } else {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTime = moment();
@@ -885,6 +903,7 @@ export class Order extends hih.BaseModel {
     }
     // Valid from
     if (this.ValidFrom) {
+      // Allowed
     } else {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTime = moment();
@@ -896,6 +915,7 @@ export class Order extends hih.BaseModel {
     }
     // Valid to
     if (this.ValidTo) {
+      // Allowed
     } else {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTime = moment();
@@ -907,6 +927,7 @@ export class Order extends hih.BaseModel {
     }
     // Valid to > valid from
     if (this.ValidTo > this.ValidFrom) {
+      // Allowed
     } else {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTime = moment();
@@ -931,7 +952,7 @@ export class Order extends hih.BaseModel {
         }
       }
 
-      if (ntotal != 100) {
+      if (ntotal !== 100) {
         let msg: hih.InfoMessage = new hih.InfoMessage();
         msg.MsgTime = moment();
         msg.MsgType = hih.MessageType.Error;
@@ -954,7 +975,7 @@ export class Order extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     rstObj.id = this.Id;
     rstObj.hid = this.HID;
     rstObj.name = this.Name;
@@ -964,7 +985,7 @@ export class Order extends hih.BaseModel {
     rstObj.sRuleList = [];
 
     for (let srule of this.SRules) {
-      let sruleinfo = srule.writeJSONObject();
+      let sruleinfo: any = srule.writeJSONObject();
       sruleinfo.ordId = this.Id;
       rstObj.sRuleList.push(sruleinfo);
     }
@@ -1017,7 +1038,7 @@ export class SettlementRule {
 
   public ControlCenterName: string;
   public VerifiedMsgs: hih.InfoMessage[] = [];
-  
+
   constructor() {
     this.RuleId = -1;
   }
@@ -1038,9 +1059,10 @@ export class SettlementRule {
 
     // Control center
     if (context !== null || context !== undefined || context.ControlCenters.length > 0) {
-      if (context.ControlCenters.findIndex((value, index) => {
+      if (context.ControlCenters.findIndex((value: any) => {
         return value.Id === this.ControlCenterId;
       }) !== -1) {
+        // Allowed
       } else {
         let msg: hih.InfoMessage = new hih.InfoMessage();
         msg.MsgTitle = 'Finance.InvalidControlCenter';
@@ -1075,7 +1097,7 @@ export class SettlementRule {
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     // Not need call for the super class's method, because createdat and modifiedat not required here
 
     if (data && data.ruleID) {
@@ -1099,8 +1121,8 @@ export class SettlementRule {
 export enum TranTypeLevelEnum {
   TopLevel = 0,
   FirstLevel = 1,
-  SecondLevel = 2
-};
+  SecondLevel = 2,
+}
 
 /**
  * Tran type
@@ -1121,23 +1143,24 @@ export class TranType extends hih.BaseModel {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.hid) {
@@ -1211,13 +1234,14 @@ export class Document extends hih.BaseModel {
     this.TranDate = moment();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: DocumentVerifyContext): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     let chkrst: boolean = true;
 
@@ -1281,7 +1305,8 @@ export class Document extends hih.BaseModel {
             }
           } else {
             if (this.ExgRate) {
-              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
+              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 
+                'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
               this.VerifiedMsgs.push(msg);
             }
           }
@@ -1316,7 +1341,8 @@ export class Document extends hih.BaseModel {
             }
           } else {
             if (this.ExgRate2) {
-              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
+              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 
+                'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
               this.VerifiedMsgs.push(msg);
             }
           }
@@ -1336,7 +1362,7 @@ export class Document extends hih.BaseModel {
     let amtTotal: number = 0;
     if (this.Items instanceof Array && this.Items.length > 0) {
       for (let fit of this.Items) {
-        //amtTotal += fit.TranAmount;
+        // amtTotal += fit.TranAmount;
         if (!fit.onVerify(context)) {
           for (let imsg of fit.VerifiedMsgs) {
             this.VerifiedMsgs.push(imsg);
@@ -1392,7 +1418,7 @@ export class Document extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     rstObj.id = this.Id;
     rstObj.hid = this.HID;
     rstObj.docType = this.DocType;
@@ -1424,7 +1450,7 @@ export class Document extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -1623,9 +1649,11 @@ export class DocumentItem {
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       } else {
+        // Allowed
       }
     } else {
       if (this.OrderId) {
+        // Allowed
       } else {
         // Neither inputted
         bccord = false;
@@ -1726,7 +1754,7 @@ export class DocumentItem {
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     if (data && data.itemID) {
       this.ItemId = +data.itemID;
     }
@@ -1764,9 +1792,9 @@ export class DocumentItem {
       this.Desp = data.desp;
     }
     if (data && data.tagTerms && data.tagTerms instanceof Array && data.tagTerms.length > 0) {
-      for(let term of data.tagTerms) {
+      for (let term of data.tagTerms) {
         this.Tags.push(term);
-      }      
+      }
     }
   }
 }
@@ -1775,11 +1803,11 @@ export class DocumentItem {
  * Tempalte docs base class
  */
 export abstract class TemplateDocBase extends hih.BaseModel {
+  private _tranDate: moment.Moment;
   public DocId: number;
   public HID: number;
   public RefDocId: number;
   public AccountId: number;
-  private _tranDate: moment.Moment;
   public TranType: number;
   public TranAmount: number;
   public ControlCenterId: number;
@@ -1805,21 +1833,22 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     this.TranDate = moment();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
 
     this.TranDate = moment();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     rstObj.docID = this.DocId;
     rstObj.hid = this.HID;
     rstObj.refDocID = this.RefDocId;
@@ -1834,7 +1863,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.docID) {
@@ -1884,13 +1913,13 @@ export class TemplateDocLoan extends TemplateDocBase {
   public InterestAmount: number;
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     rstObj.interestAmount = this.InterestAmount;
 
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.interestAmount) {
@@ -1907,7 +1936,7 @@ export class FinanceReportBase {
   public CreditBalance: number;
   public Balance: number;
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     if (data && data.debitBalance) {
       this.DebitBalance = +data.debitBalance;
     } else {
@@ -1937,7 +1966,7 @@ export class BalanceSheetReport extends FinanceReportBase {
   public AccountCategoryId: number;
   public AccountCategoryName: string;
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.accountID) {
@@ -1961,7 +1990,7 @@ export class BalanceSheetReport extends FinanceReportBase {
 export class ControlCenterReport extends FinanceReportBase {
   public ControlCenterId: number;
   public ControlCenterName: string;
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.controlCenterID) {
@@ -1980,7 +2009,7 @@ export class OrderReport extends FinanceReportBase {
   public OrderId: number;
   public OrderName: string;
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.orderID) {
@@ -2002,7 +2031,7 @@ export class TranTypeReport {
   public TranAmount: number;
   public TranDate: moment.Moment;
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     if (data && data.tranType) {
       this.TranType = +data.tranType;
     }
@@ -2050,13 +2079,13 @@ export class MonthOnMonthReport {
  * Document item with balance
  */
 export class DocumentItemWithBalance {
+  private _tranDate: moment.Moment;
   public TranType_Exp: boolean;
   public TranCurr: string;
   public TranAmount: number;
   public TranAmount_Org: number;
   public TranAmount_LC: number;
   public Balance: number;
-  private _tranDate: moment.Moment;
   public DocDesp: string;
   public DocId: number;
   public ItemId: number;
@@ -2081,7 +2110,7 @@ export class DocumentItemWithBalance {
     return this._tranDate.format(hih.MomentDateFormat);
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     if (data && data.accountID) {
       this.AccountId = + data.accountID;
     }
@@ -2168,7 +2197,7 @@ export class DocumentWithPlanExgRate {
   public ExgRate2: number;
   public ExgRate_Plan2: boolean;
 
-  public onSetData(jdata: any) {
+  public onSetData(jdata: any): void {
     if (jdata && jdata.hid) {
       this.HID = +jdata.hid;
     }

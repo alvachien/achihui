@@ -10,11 +10,7 @@ export class UserDetail {
   public Email: string;
   public Others: string;
 
-  public onSetData(data: any) {
-    // if (environment.DebugLogging) {
-    //     console.log("Entering onSetData of UserDetail");
-    // }
-
+  public onSetData(data: any): void {
     this.UserId = data.userID;
     this.DisplayAs = data.displayAs;
     this.Email = data.email;
@@ -36,12 +32,13 @@ export class UserDetail {
  * User Auth Info
  */
 export class UserAuthInfo {
-  public isAuthorized: boolean;
   private currentUser: User;
   private userName: string;
   private userId: string;
   private userMailbox: string;
   private accessToken: string;
+
+  public isAuthorized: boolean;
 
   public setContent(user: User): void {
     if (user) {
@@ -58,7 +55,7 @@ export class UserAuthInfo {
   }
 
   public cleanContent(): void {
-    this.currentUser = null;
+    this.currentUser = undefined;
     this.isAuthorized = false;
   }
 

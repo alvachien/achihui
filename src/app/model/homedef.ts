@@ -11,7 +11,7 @@ export enum HomeMemberRelationEnum {
   Parent = 3,
 }
 
-export function getHomeMemberRelationString(re: HomeMemberRelationEnum) {
+export function getHomeMemberRelationString(re: HomeMemberRelationEnum): string {
   switch (re) {
     case HomeMemberRelationEnum.Self: return 'Sys.MemRel.Self';
     case HomeMemberRelationEnum.Couple: return 'Sys.MemRel.Couple';
@@ -69,9 +69,10 @@ export class HomeMember {
   }
 
   constructor() {
+    // Empty
   }
 
-  public parseJSONData(data: HomeMemberJson) {
+  public parseJSONData(data: HomeMemberJson): void {
     this._hid = data.homeID;
     this._user = data.user;
     this._displayas = data.displayAs;
@@ -159,7 +160,7 @@ export class HomeDef {
     this._listMembers = [];
   }
 
-  public parseJSONData(data: HomeDefJson) {
+  public parseJSONData(data: HomeDefJson): void {
     this._id = data.id;
     this._name = data.name;
     this._details = data.details;
@@ -290,7 +291,7 @@ export class HomeMsg {
     this._readflag = rf;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     if (data && data.id) {
       this._id = +data.id;
     }
@@ -310,7 +311,7 @@ export class HomeMsg {
       this._usrfromDisplayAs = data.userFrom_DisplayAs;
     }
     if (data && data.sendDate) {
-      this._senddate = moment(data.sendDate, hih.MomentDateFormat)
+      this._senddate = moment(data.sendDate, hih.MomentDateFormat);
     }
     if (data && data.title) {
       this._title = data.title;
@@ -331,7 +332,7 @@ export class HomeMsg {
       sendDate: this._senddate.format(hih.MomentDateFormat),
       title: this._title,
       content: this._content,
-      readFlag: this._readflag,          
+      readFlag: this._readflag,
     };
 
     return hmj;
@@ -342,7 +343,7 @@ export class HomeMsg {
  * Key Figure
  */
 export class HomeKeyFigure {
-  public TotalAssets: number
+  public TotalAssets: number;
   public TotalLiabilities: number;
   public TotalAssetsUnderMyName: number;
   public TotalLiabilitiesUnderMyName: number;

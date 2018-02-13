@@ -21,21 +21,23 @@ export class ControlCenterDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<ControlCenter[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listControlCenterChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.ControlCenters.slice();
+      const data: any = this._storageService.ControlCenters.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -46,7 +48,7 @@ export class ControlCenterDataSource extends DataSource<any> {
 })
 export class ControlCenterListComponent implements OnInit {
 
-  displayedColumns = ['id', 'name', 'comment'];
+  displayedColumns: string[] = ['id', 'name', 'comment'];
   dataSource: ControlCenterDataSource | null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -55,7 +57,7 @@ export class ControlCenterListComponent implements OnInit {
     private _uiStatusService: UIStatusService,
     private _dialog: MatDialog) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...');
     }
@@ -66,19 +68,19 @@ export class ControlCenterListComponent implements OnInit {
     });
   }
 
-  public onCreateCC() {
+  public onCreateCC(): void {
     this._router.navigate(['/finance/controlcenter/create']);
   }
 
-  public onDisplayCC(acnt: ControlCenter) {
+  public onDisplayCC(acnt: ControlCenter): void {
     this._router.navigate(['/finance/controlcenter/display', acnt.Id]);
   }
 
-  public onChangeCC(acnt: ControlCenter) {
+  public onChangeCC(acnt: ControlCenter): void {
     this._router.navigate(['/finance/controlcenter/edit', acnt.Id]);
   }
 
-  public onDeleteCC(acnt: any) {
+  public onDeleteCC(acnt: any): void {
     // Show a confirmation dialog for the deletion
     const dlginfo: MessageDialogInfo = {
       Header: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
@@ -90,7 +92,7 @@ export class ControlCenterListComponent implements OnInit {
       disableClose: false,
       width: '500px',
       data: dlginfo,
-    }).afterClosed().subscribe((x2) => {
+    }).afterClosed().subscribe((x2: any) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -102,7 +104,7 @@ export class ControlCenterListComponent implements OnInit {
     });
   }
 
-  public onRefresh() {
+  public onRefresh(): void {
     this._storageService.fetchAllControlCenters(true).subscribe((x) => {
       // Just ensure the REQUEST has been sent
     });

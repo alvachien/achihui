@@ -86,16 +86,17 @@ export class UIDisplayString {
  * Utility class for UI display string
  */
 export class UIDisplayStringUtil {
-  public static getUICommonLabelStrings(): Array<UIDisplayString> {
-    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+  public static getUICommonLabelStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
 
     for (let se in UICommonLabelEnum) {
       if (Number.isNaN(+se)) {
+        // Allowed
       } else {
         arrst.push({
           value: +se,
           i18nterm: UIDisplayStringUtil.getUICommonLabelDisplayString(+se),
-          displaystring: ''
+          displaystring: '',
         });
       }
     }
@@ -103,8 +104,8 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
-  public static getQuestionBankTypeStrings(): Array<UIDisplayString> {
-    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+  public static getQuestionBankTypeStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
 
     for (let se in QuestionBankTypeEnum) {
       if (Number.isNaN(+se)) {
@@ -121,8 +122,8 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
-  public static getTagTypeStrings(): Array<UIDisplayString> {
-    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+  public static getTagTypeStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
 
     for (let se in TagTypeEnum) {
       if (Number.isNaN(+se)) {
@@ -139,8 +140,8 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
-  public static getOverviewScopeStrings(): Array<UIDisplayString> {
-    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+  public static getOverviewScopeStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
 
     for (let se in OverviewScopeEnum) {
       if (Number.isNaN(+se)) {
@@ -157,8 +158,8 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
-  public static getAccountStatusStrings(): Array<UIDisplayString> {
-    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+  public static getAccountStatusStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
 
     for (let se in AccountStatusEnum) {
       if (Number.isNaN(+se)) {
@@ -175,8 +176,8 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
-  public static getRepaymentMethodStrings(): Array<UIDisplayString> {
-    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+  public static getRepaymentMethodStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
 
     for (let se in RepaymentMethodEnum) {
       if (Number.isNaN(+se)) {
@@ -193,9 +194,9 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
-  public static getEnPOSStrings(): Array<UIDisplayString> {
-    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
-    
+  public static getEnPOSStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
+
     for (let pe in EnPOSEnum) {
       // if (Number.isNaN(+pe)) {
       // } else {
@@ -210,8 +211,8 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
-  public static getRepeatFrequencyDisplayStrings(): Array<UIDisplayString> {
-    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+  public static getRepeatFrequencyDisplayStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
 
     for (let rfe in RepeatFrequencyEnum) {
       if (Number.isNaN(+rfe)) {
@@ -228,8 +229,8 @@ export class UIDisplayStringUtil {
     return arrst;
   }
 
-  public static getTranTypeLevelDisplayStrings(): Array<UIDisplayString> {
-    let arrst: Array<UIDisplayString> = new Array<UIDisplayString>();
+  public static getTranTypeLevelDisplayStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
 
     for (let rfe in TranTypeLevelEnum) {
       if (Number.isNaN(+rfe)) {
@@ -375,7 +376,7 @@ export class UIDisplayStringUtil {
   }
 
   public static getEnPOSDisplayString(ep: EnPOSEnum): string {
-    switch(ep) {
+    switch (ep) {
       case EnPOSEnum.n: return 'Sys.EnPOS.n';
       case EnPOSEnum.pron: return 'Sys.EnPOS.pron';
       case EnPOSEnum.adj: return 'Sys.EnPOS.adj';
@@ -407,7 +408,7 @@ export class UIDisplayStringUtil {
   }
 
   public static getTranTypeLevelDisplayString(ttl: TranTypeLevelEnum): string  {
-    switch(ttl) {
+    switch (ttl) {
       case TranTypeLevelEnum.TopLevel: return 'Finance.TranTypeTopLevel';
       case TranTypeLevelEnum.FirstLevel: return 'Finance.TranTypeFirstLevel';
       case TranTypeLevelEnum.SecondLevel: return 'Finance.TranTypeSecondLevel';

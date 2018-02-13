@@ -16,7 +16,7 @@ import {
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
-//import 'moment/locale/zh-cn';
+// import 'moment/locale/zh-cn';
 import { ENTER } from '@angular/cdk/keycodes';
 
 /**
@@ -29,7 +29,7 @@ export class TemplateDocADPDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<TemplateDocADP[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.tmpDocOperEvent,
     ];
 
@@ -38,7 +38,9 @@ export class TemplateDocADPDataSource extends DataSource<any> {
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -50,18 +52,18 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: UIFinAdvPayDocument | null = null;
+  public detailObject: UIFinAdvPayDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
-  separatorKeysCodes = [ENTER, COMMA];
+  separatorKeysCodes: any[] = [ENTER, COMMA];
 
-  displayedColumns = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
-  dataSource: TemplateDocADPDataSource | null;
-  tmpDocOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  arFrequencies = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
+  dataSource: TemplateDocADPDataSource | undefined;
+  tmpDocOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  arFrequencies: any = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -82,7 +84,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     this.dataSource = new TemplateDocADPDataSource(this);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit...');
     }
@@ -95,7 +97,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst) => {
+    ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
@@ -121,14 +123,14 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readADPDocument(this.routerID).subscribe((x2) => {
+            this._storageService.readADPDocument(this.routerID).subscribe((x2: any) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit for activateRoute URL: ${x2}`);
               }
 
               this.detailObject.parseDocument(x2);
               this.tmpDocOperEvent.emit();
-            }, (error2) => {
+            }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error2}`);
               }
@@ -138,7 +140,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           this.uiMode = UIMode.Invalid;
         }
       });
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
       }
@@ -159,15 +161,15 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     });
   }
 
-  public setStep(index: number) {
+  public setStep(index: number): void {
     this.step = index;
   }
 
-  public nextStep() {
+  public nextStep(): void {
     this.step++;
   }
 
-  public prevStep() {
+  public prevStep(): void {
     this.step--;
   }
 
@@ -175,72 +177,72 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     if (this.uiMode === UIMode.Create) {
       this.detailObject.TmpDocs = [];
 
-      let rtype = this.detailObject.AdvPayAccount.RepeatType;
+      let rtype: any = this.detailObject.AdvPayAccount.RepeatType;
       if (!this.detailObject.AdvPayAccount.EndDate.isValid || !this.detailObject.AdvPayAccount.StartDate.isValid) {
         return;
       }
 
-      let arDays = [];
+      let arDays: any[] = [];
 
       switch (rtype) {
         case RepeatFrequencyEnum.Month:
-          let nmon = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'M');
-          for (let i = 0; i < nmon; i++) {
-            let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+          let nmon: number = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'M');
+          for (let i: number = 0; i < nmon; i++) {
+            let nstart: any = this.detailObject.AdvPayAccount.StartDate.clone();
             nstart.add(i, 'M');
             arDays.push(nstart);
           }
           break;
 
         case RepeatFrequencyEnum.Fortnight:
-          let nfort = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd') / 14;
-          for (let i = 0; i < nfort; i++) {
-            let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+          let nfort: number = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd') / 14;
+          for (let i: number = 0; i < nfort; i++) {
+            let nstart: any = this.detailObject.AdvPayAccount.StartDate.clone();
             nstart.add(14 * i, 'd');
             arDays.push(nstart);
           }
           break;
 
         case RepeatFrequencyEnum.Week:
-          let nweek = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd') / 7;
-          for (let i = 0; i < nweek; i++) {
-            let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+          let nweek: number = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd') / 7;
+          for (let i: number = 0; i < nweek; i++) {
+            let nstart: any = this.detailObject.AdvPayAccount.StartDate.clone();
             nstart.add(7 * i, 'd');
             arDays.push(nstart);
           }
           break;
 
         case RepeatFrequencyEnum.Day:
-          let nday = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd');
-          for (let i = 0; i < nday; i++) {
-            let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+          let nday: number = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'd');
+          for (let i: number = 0; i < nday; i++) {
+            let nstart: any = this.detailObject.AdvPayAccount.StartDate.clone();
             nstart.add(i, 'd');
             arDays.push(nstart);
           }
           break;
 
         case RepeatFrequencyEnum.Quarter:
-          let nqrt = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'Q');
-          for (let i = 0; i < nqrt; i++) {
-            let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+          let nqrt: number = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'Q');
+          for (let i: number = 0; i < nqrt; i++) {
+            let nstart: any = this.detailObject.AdvPayAccount.StartDate.clone();
             nstart.add(i, 'Q');
             arDays.push(nstart);
           }
           break;
 
         case RepeatFrequencyEnum.HalfYear:
-          let nhalfyear = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'Q') / 2;
-          for (let i = 0; i < nhalfyear; i++) {
-            let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+          let nhalfyear: number = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'Q') / 2;
+          for (let i: number = 0; i < nhalfyear; i++) {
+            let nstart: any = this.detailObject.AdvPayAccount.StartDate.clone();
             nstart.add(2 * i, 'Q');
             arDays.push(nstart);
           }
           break;
 
         case RepeatFrequencyEnum.Year:
-          let nyear = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'y');
-          for (let i = 0; i < nyear; i++) {
-            let nstart = this.detailObject.AdvPayAccount.StartDate.clone();
+          let nyear: number = this.detailObject.AdvPayAccount.EndDate.diff(this.detailObject.AdvPayAccount.StartDate, 'y');
+          for (let i: number = 0; i < nyear; i++) {
+            let nstart: any = this.detailObject.AdvPayAccount.StartDate.clone();
             nstart.add(i, 'y');
             arDays.push(nstart);
           }
@@ -254,7 +256,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       }
 
       let totalAmt: number = 0;
-      for (let i = 0; i < arDays.length; i++) {
+      for (let i: number = 0; i < arDays.length; i++) {
         let item: TemplateDocADP = new TemplateDocADP();
         item.DocId = i + 1;
         item.TranType = this.detailObject.SourceTranType;
@@ -270,7 +272,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       }
 
       if (arDays.length === 0) {
-        let item = new TemplateDocADP();
+        let item: TemplateDocADP = new TemplateDocADP();
         item.DocId = 1;
         item.TranType = this.detailObject.SourceTranType;
         item.TranDate = this.detailObject.AdvPayAccount.StartDate.clone();
@@ -282,7 +284,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       if (this.detailObject.TmpDocs.length === 1) {
         this.detailObject.TmpDocs[0].Desp = this.detailObject.Desp;
       } else {
-        for (let i = 0; i < this.detailObject.TmpDocs.length; i++) {
+        for (let i: number = 0; i < this.detailObject.TmpDocs.length; i++) {
           this.detailObject.TmpDocs[i].Desp = this.detailObject.Desp + ' | ' + (i + 1).toString() + '/' + this.detailObject.TmpDocs.length.toString();
         }
       }
@@ -317,10 +319,10 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     return true;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.onCreateADPDoc();
-    } else if(this.uiMode === UIMode.Change) {
+    } else if (this.uiMode === UIMode.Change) {
       this.onUpdateADPDoc();
     }
   }
@@ -329,15 +331,15 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     this._router.navigate(['/finance/document/']);
   }
 
-  private onInitCreateMode() {
+  private onInitCreateMode(): void {
     this.detailObject = new UIFinAdvPayDocument();
     this.uiMode = UIMode.Create;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
 
-  private onCreateADPDoc() {
-    let docObj = this.detailObject.generateDocument();
+  private onCreateADPDoc(): void {
+    let docObj: any = this.detailObject.generateDocument();
 
     // Check!
     if (!docObj.onVerify({
@@ -365,7 +367,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       return;
     }
 
-    this._storageService.createDocumentEvent.subscribe((x) => {
+    this._storageService.createDocumentEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAdvancepaymentDetailComponent with : ${x}`);
       }
@@ -373,12 +375,12 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof Document) {
         // Ensure refresh the accounts
-        this._storageService.fetchAllAccounts(true).subscribe(act => {
+        this._storageService.fetchAllAccounts(true).subscribe((act: any) => {
           // Do nothing just reload accounts
         });
 
         // Show the snackbar
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });
@@ -390,7 +392,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           this.onInitCreateMode();
           this.setStep(0);
           this.tmpDocOperEvent.emit();
-          //this._router.navigate(['/finance/document/createadp/']);
+          // this._router.navigate(['/finance/document/createadp/']);
         });
 
         snackbarRef.afterDismissed().subscribe(() => {
@@ -411,7 +413,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe((x2) => {
+        }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -423,7 +425,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     docObj.HID = this._homedefService.ChosedHome.ID;
 
     // Build the JSON file to API
-    let sobj = docObj.writeJSONObject(); // Document first
+    let sobj: any = docObj.writeJSONObject(); // Document first
     let acntobj: Account = new Account();
     acntobj.HID = this._homedefService.ChosedHome.ID;
     acntobj.CategoryId = FinanceAccountCategory_AdvancePayment;
@@ -444,11 +446,10 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       sobj.TmpDocs.push(td.writeJSONObject());
     }
 
-    let dataJSON = JSON.stringify(sobj);
     this._storageService.createADPDocument(sobj);
   }
 
-  private onUpdateADPDoc() {
+  private onUpdateADPDoc(): void {
     // TBD.
   }
 }

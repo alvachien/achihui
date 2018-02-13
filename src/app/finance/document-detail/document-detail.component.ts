@@ -24,7 +24,7 @@ export class DocumentItemDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<DocumentItem[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.itemOperEvent,
     ];
 
@@ -33,7 +33,9 @@ export class DocumentItemDataSource extends DataSource<any> {
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -44,17 +46,17 @@ export class DocumentItemDataSource extends DataSource<any> {
 export class DocumentDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: Document | null = null;
+  public detailObject: Document | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
-  separatorKeysCodes = [ENTER, COMMA];
-  
-  displayedColumns = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order'];
+  separatorKeysCodes: any[] = [ENTER, COMMA];
+
+  displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order'];
   dataSource: DocumentItemDataSource | null;
-  itemOperEvent: EventEmitter<null> = new EventEmitter<null>(null);
+  itemOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -79,7 +81,7 @@ export class DocumentDetailComponent implements OnInit {
     this.dataSource = new DocumentItemDataSource(this);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...');
     }
@@ -92,7 +94,7 @@ export class DocumentDetailComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst) => {
+    ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
@@ -101,8 +103,8 @@ export class DocumentDetailComponent implements OnInit {
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true);
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
-      
-      this._activateRoute.url.subscribe((x) => {
+
+      this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
             this.onInitCreateMode();
@@ -118,7 +120,7 @@ export class DocumentDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocumentEvent.subscribe((x2) => {
+            this._storageService.readDocumentEvent.subscribe((x2: any) => {
               if (x2 instanceof Document) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
@@ -141,7 +143,7 @@ export class DocumentDetailComponent implements OnInit {
           this.uiMode = UIMode.Invalid;
         }
       });
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
       }
@@ -162,15 +164,15 @@ export class DocumentDetailComponent implements OnInit {
     });
   }
 
-  public setStep(index: number) {
+  public setStep(index: number): void {
     this.step = index;
   }
 
-  public nextStep() {
+  public nextStep(): void {
     this.step++;
   }
 
-  public prevStep() {
+  public prevStep(): void {
     this.step--;
   }
 
@@ -188,14 +190,14 @@ export class DocumentDetailComponent implements OnInit {
     return true;
   }
 
-  public onCreateDocItem() {
+  public onCreateDocItem(): void {
     let di: DocumentItem = new DocumentItem();
     di.ItemId = this.getNextItemID();
     this.detailObject.Items.push(di);
     this.itemOperEvent.emit();
   }
 
-  public onDeleteDocItem(di) {
+  public onDeleteDocItem(di: any): void {
     let idx: number = 0;
     for (let i: number = 0; i < this.detailObject.Items.length; i ++) {
       if (this.detailObject.Items[i].ItemId === di.ItemId) {
@@ -208,22 +210,7 @@ export class DocumentDetailComponent implements OnInit {
     this.itemOperEvent.emit();
   }
 
-  private getNextItemID(): number {
-    if (this.detailObject.Items.length <= 0) {
-      return 1;
-    }
-
-    let nMax: number = 0;
-    for (let item of this.detailObject.Items) {
-      if (item.ItemId > nMax) {
-        nMax = item.ItemId;
-      }
-    }
-
-    return nMax + 1;
-  }
-
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       // Check!
       if (!this.detailObject.onVerify({
@@ -258,11 +245,11 @@ export class DocumentDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof Document) {
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });
-          
+
           let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
             recreate = true;
@@ -270,14 +257,14 @@ export class DocumentDetailComponent implements OnInit {
             this.onInitCreateMode();
             this.setStep(0);
             this.itemOperEvent.emit();
-            //this._router.navigate(['/finance/document/create/']);
+            // this._router.navigate(['/finance/document/create/']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             if (!recreate) {
               this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-            }            
+            }
           });
         } else {
           // Show error message
@@ -291,7 +278,7 @@ export class DocumentDetailComponent implements OnInit {
             disableClose: false,
             width: '500px',
             data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
+          }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -305,14 +292,29 @@ export class DocumentDetailComponent implements OnInit {
     }
   }
 
-  private onInitCreateMode() {
+  public onBackToList(): void {
+    this._router.navigate(['/finance/document/']);
+  }
+
+  private getNextItemID(): number {
+    if (this.detailObject.Items.length <= 0) {
+      return 1;
+    }
+
+    let nMax: number = 0;
+    for (let item of this.detailObject.Items) {
+      if (item.ItemId > nMax) {
+        nMax = item.ItemId;
+      }
+    }
+
+    return nMax + 1;
+  }
+
+  private onInitCreateMode(): void {
     this.detailObject = new Document();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
-  }
-
-  public onBackToList(): void {
-    this._router.navigate(['/finance/document/']);
   }
 }

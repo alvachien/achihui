@@ -46,9 +46,9 @@ export class EventDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering ngOnInit of EventDetailComponent...');
     }
 
-    this._homedefService.curHomeMembers.subscribe((mem) => {
+    this._homedefService.curHomeMembers.subscribe((mem: any) => {
       // Distinguish current mode
-      this._activateRoute.url.subscribe((x) => {
+      this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
@@ -70,13 +70,13 @@ export class EventDetailComponent implements OnInit {
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this.isLoadingData = true;
 
-            this._storageService.readGeneralEvent(this.routerID).subscribe((y) => {
+            this._storageService.readGeneralEvent(this.routerID).subscribe((y: any) => {
               this.detailObject = y;
               this.isLoadingData = false;
             });
           }
         }
-      }, (error) => {
+      }, (error: any) => {
         // Empty
       }, () => {
         // Empty
@@ -103,7 +103,7 @@ export class EventDetailComponent implements OnInit {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
   private createImpl(): void {
-    this._storageService.createGeneralEvent(this.detailObject).subscribe((x) => {
+    this._storageService.createGeneralEvent(this.detailObject).subscribe((x: any) => {
       // Navigate to display
       let gevnt: GeneralEvent = new GeneralEvent();
       gevnt.onSetData(x);

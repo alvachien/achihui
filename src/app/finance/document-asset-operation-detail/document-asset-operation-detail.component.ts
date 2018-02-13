@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_Asset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum, COMMA,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -20,20 +20,20 @@ import { ENTER } from '@angular/cdk/keycodes';
 @Component({
   selector: 'hih-document-asset-operation-detail',
   templateUrl: './document-asset-operation-detail.component.html',
-  styleUrls: ['./document-asset-operation-detail.component.scss']
+  styleUrls: ['./document-asset-operation-detail.component.scss'],
 })
 export class DocumentAssetOperationDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: UIFinAssetOperationDocument | null = null;
+  public detailObject: UIFinAssetOperationDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public PageTitle: string;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
-  separatorKeysCodes = [ENTER, COMMA];
-  
+  separatorKeysCodes: any[] = [ENTER, COMMA];
+
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -53,7 +53,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     this.detailObject.isBuyin = true;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent ngOnInit...');
     }
@@ -67,7 +67,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst) => {
+    ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
@@ -76,8 +76,8 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
-            
-      this._activateRoute.url.subscribe((x) => {
+
+      this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createassetbuy') {
             this.onInitCreateMode(true);
@@ -86,35 +86,35 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
           } else if (x[0].path === 'editassetbuy') {
             this.routerID = +x[1].path;
             this.detailObject.isBuyin = true;
-            
+
             this.uiMode = UIMode.Change;
           } else if (x[0].path === 'editassetsold') {
             this.routerID = +x[1].path;
             this.detailObject.isBuyin = false;
-            
+
             this.uiMode = UIMode.Change;
           } else if (x[0].path === 'displayassetbuy') {
             this.routerID = +x[1].path;
             this.detailObject.isBuyin = true;
-            
+
             this.uiMode = UIMode.Display;
           } else if (x[0].path === 'displayassetsold') {
             this.routerID = +x[1].path;
             this.detailObject.isBuyin = false;
-            
+
             this.uiMode = UIMode.Display;
           }
           this.currentMode = getUIModeString(this.uiMode);
           this.PageTitle = this.detailObject.isBuyin ? 'Sys.DocTy.AssetBuyIn' : 'Sys.DocTy.AssetSoldOut';
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readAssetDocument(this.routerID, this.detailObject.isBuyin).subscribe((x2) => {
+            this._storageService.readAssetDocument(this.routerID, this.detailObject.isBuyin).subscribe((x2: any) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent ngOnInit for activateRoute URL: ${x2}`);
               }
 
               this.detailObject.parseDocument(x2);
-            }, (error2) => {
+            }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error2}`);
               }
@@ -124,7 +124,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
           this.uiMode = UIMode.Invalid;
         }
       });
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering DocumentAssetOperationDetailComponent's ngOninit, failed to load depended objects : ${error}`);
       }
@@ -145,15 +145,15 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     });
   }
 
-  public setStep(index: number) {
+  public setStep(index: number): void {
     this.step = index;
   }
 
-  public nextStep() {
+  public nextStep(): void {
     this.step++;
   }
 
-  public prevStep() {
+  public prevStep(): void {
     this.step--;
   }
 
@@ -179,9 +179,9 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     return true;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
-      let docObj = this.detailObject.generateDocument();
+      let docObj: any = this.detailObject.generateDocument();
 
       // Check!
       if (!docObj.onVerify({
@@ -209,7 +209,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
         return;
       }
 
-      this._storageService.createDocumentEvent.subscribe((x) => {
+      this._storageService.createDocumentEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAssetOperationDetailComponent with : ${x}`);
         }
@@ -217,30 +217,31 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           // Ensure refresh the accounts
-          this._storageService.fetchAllAccounts(true).subscribe(act => {
+          this._storageService.fetchAllAccounts(true).subscribe((act: any) => {
             // Do nothing just reload accounts
           });
-          
+
           // Show the snackbar
-          let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });
-          
+
           let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
             recreate = true;
 
             this.onInitCreateMode(this.detailObject.isBuyin);
             this.setStep(0);
-            //this._router.navigate([this.detailObject.isBuyin? '/finance/document/createassetbuy/' : '/finance/document/createassetsold/']);
+            // this._router.navigate([this.detailObject.isBuyin? '/finance/document/createassetbuy/' : '/finance/document/createassetsold/']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             if (!recreate) {
-              this._router.navigate([(this.detailObject.isBuyin? '/finance/document/displayassetbuy/' : '/finance/document/displayassetsold/') + x.Id.toString()]);
-            }            
+              this._router.navigate([(this.detailObject.isBuyin ? '/finance/document/displayassetbuy/' : '/finance/document/displayassetsold/')
+                + x.Id.toString()]);
+            }
           });
         } else {
           // Show error message
@@ -254,7 +255,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
             disableClose: false,
             width: '500px',
             data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
+          }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -263,10 +264,10 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
         }
       });
 
-      docObj.HID = this._homedefService.ChosedHome.ID;      
+      docObj.HID = this._homedefService.ChosedHome.ID;
 
       // Build the JSON file to API
-      let sobj = docObj.writeJSONObject(); // Document first
+      let sobj: any = docObj.writeJSONObject(); // Document first
       let acntobj: Account = new Account();
       acntobj.HID = this._homedefService.ChosedHome.ID;
       acntobj.CategoryId = FinanceAccountCategory_Asset;
@@ -275,7 +276,6 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       acntobj.ExtraInfo = this.detailObject.AssetAccount;
       sobj.AccountVM = acntobj.writeJSONObject();
 
-      let dataJSON = JSON.stringify(sobj);
       this._storageService.createAssetDocument(sobj, this.detailObject.isBuyin);
     }
   }
@@ -284,7 +284,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     this._router.navigate(['/finance/document/']);
   }
 
-  private onInitCreateMode(isbuyin: boolean) {
+  private onInitCreateMode(isbuyin: boolean): void {
     this.detailObject = new UIFinAssetOperationDocument();
     this.detailObject.isBuyin = isbuyin;
 

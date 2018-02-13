@@ -31,7 +31,7 @@ export class ControlCenterDetailComponent implements OnInit {
     this.detailObject = new ControlCenter();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...');
     }
@@ -74,11 +74,12 @@ export class ControlCenterDetailComponent implements OnInit {
           this._storageService.readControlCenter(this.routerID);
         }
       }
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOnInit in ControlCenterDetailComponent with activateRoute URL : ${error}`);
       }
     }, () => {
+      // Empty
     });
   }
 
@@ -100,7 +101,7 @@ export class ControlCenterDetailComponent implements OnInit {
     return true;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.onCreateControlCenter();
     } else if (this.uiMode === UIMode.Change) {
@@ -108,11 +109,11 @@ export class ControlCenterDetailComponent implements OnInit {
     }
   }
 
-  public onBackToList() {
+  public onBackToList(): void {
     this._router.navigate(['/finance/controlcenter']);
   }
 
-  private onInitCreateMode() {
+  private onInitCreateMode(): void {
     this.detailObject = new ControlCenter();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
@@ -127,11 +128,11 @@ export class ControlCenterDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof ControlCenter) {
         // Show the snackbar
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });
-        
+
         let recreate: boolean = false;
         snackbarRef.onAction().subscribe(() => {
           recreate = true;
@@ -143,7 +144,7 @@ export class ControlCenterDetailComponent implements OnInit {
           // Navigate to display
           if (!recreate) {
             this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
-          }            
+          }
         });
       } else {
         // Show error message
@@ -157,7 +158,7 @@ export class ControlCenterDetailComponent implements OnInit {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe((x2) => {
+        }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -178,11 +179,11 @@ export class ControlCenterDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof ControlCenter) {
         // Show the snackbar
-        let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
           'OK', {
           duration: 3000,
         });
-        
+
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
@@ -199,7 +200,7 @@ export class ControlCenterDetailComponent implements OnInit {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe((x2) => {
+        }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);

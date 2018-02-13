@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase, 
+import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
   TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, isOverviewDateInScope,
   UIOrderForSelection, UIAccountForSelection, BuildupAccountForSelection, BuildupOrderForSelection } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
@@ -23,21 +23,23 @@ export class DocItemByAccountDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<DocumentItemWithBalance[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.DocItemByAccountEvent,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._parentComponent.DocItemsByAccount.slice();
+      const data: any = this._parentComponent.DocItemsByAccount.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 /**
@@ -51,21 +53,23 @@ export class DocItemByControlCenterDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<DocumentItemWithBalance[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.DocItemByControlCenterEvent,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._parentComponent.DocItemsByControlCenter.slice();
-      
+      const data: any = this._parentComponent.DocItemsByControlCenter.slice();
+
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 /**
@@ -79,25 +83,27 @@ export class DocItemByOrderDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<DocumentItemWithBalance[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.DocItemByOrderEvent,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._parentComponent.DocItemsByOrder.slice();
+      const data: any = this._parentComponent.DocItemsByOrder.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 /**
- * Data source of ADP & Loan docs 
+ * Data source of ADP & Loan docs
  */
 export class TmpDocStillOpenDataSource extends DataSource<any> {
   constructor(private _parentComponent: DocumentItemOverviewComponent,
@@ -107,21 +113,23 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<TemplateDocBase[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._parentComponent.TmpDocEvent,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._parentComponent.TmpDocs.slice();
+      const data: any = this._parentComponent.TmpDocs.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -131,18 +139,18 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
 })
 export class DocumentItemOverviewComponent implements OnInit {
 
-  displayedByAccountColumns = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
-  displayedByControlCenterColumns = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
-  displayedByOrderColumns = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
-  displayedTmpDocColumns = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
+  displayedByAccountColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
+  displayedByControlCenterColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
+  displayedByOrderColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
+  displayedTmpDocColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSourceByAccount: DocItemByAccountDataSource | null;
   dataSourceByControlCenter: DocItemByControlCenterDataSource | null;
   dataSourceByOrder: DocItemByOrderDataSource | null;
   dataSourceTmpDoc: TmpDocStillOpenDataSource | null;
-  DocItemByAccountEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  DocItemByControlCenterEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  DocItemByOrderEvent: EventEmitter<null> = new EventEmitter<null>(null);
-  TmpDocEvent: EventEmitter<null> = new EventEmitter<null>(null);
+  DocItemByAccountEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  DocItemByControlCenterEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  DocItemByOrderEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  TmpDocEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   DocItemsByAccount: DocumentItemWithBalance[] = [];
   DocItemsByAccount_Org: DocumentItemWithBalance[] = [];
   DocItemsByControlCenter: DocumentItemWithBalance[] = [];
@@ -164,7 +172,7 @@ export class DocumentItemOverviewComponent implements OnInit {
   selectedControlCenterScope: OverviewScopeEnum;
   selectedOrderScope: OverviewScopeEnum;
   selectedTmpScope: OverviewScopeEnum;
-  
+
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
@@ -179,7 +187,7 @@ export class DocumentItemOverviewComponent implements OnInit {
     this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSourceByAccount = new DocItemByAccountDataSource(this, this.paginatorByAccount);
     this.dataSourceByControlCenter = new DocItemByControlCenterDataSource(this, this.paginatorByControlCenter);
     this.dataSourceByOrder = new DocItemByOrderDataSource(this, this.paginatorByOrder);
@@ -191,7 +199,7 @@ export class DocumentItemOverviewComponent implements OnInit {
       this._storageService.fetchAllTranTypes(),
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
-    ]).subscribe((x) => {
+    ]).subscribe((x: any) => {
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
       // Orders
@@ -207,39 +215,37 @@ export class DocumentItemOverviewComponent implements OnInit {
     Observable.forkJoin([
       this._storageService.getADPTmpDocs(bgn, end),
       this._storageService.getLoanTmpDocs(bgn, end),
-    ]).subscribe(x => {
+    ]).subscribe((x: any) => {
       this.TmpDocs = [];
-      
+
       if (x[0] instanceof Array && x[0].length > 0) {
         for (let dta of x[0]) {
-          let adpdoc = new TemplateDocADP();
+          let adpdoc: TemplateDocADP = new TemplateDocADP();
           adpdoc.onSetData(dta);
           this.TmpDocs.push(adpdoc);
         }
       }
       if (x[1] instanceof Array && x[1].length > 0) {
         for (let dta of x[1]) {
-          let loandoc = new TemplateDocLoan();
+          let loandoc: TemplateDocLoan = new TemplateDocLoan();
           loandoc.onSetData(dta);
           this.TmpDocs.push(loandoc);
         }
       }
 
       // Sort it by date
-      this.TmpDocs.sort((a, b) => {
-        if (a.TranDate.isSame(b.TranDate)) return 0;
-        if (a.TranDate.isBefore(b.TranDate)) return -1;
-        else 
-          return 1;
+      this.TmpDocs.sort((a: any, b: any) => {
+        if (a.TranDate.isSame(b.TranDate)) { return 0; }
+        if (a.TranDate.isBefore(b.TranDate)) { return -1; } else { return 1; }
       });
 
       this.TmpDocEvent.emit();
     });
   }
 
-  public onAccountSelectChange() {
+  public onAccountSelectChange(): void {
     if (this.selectedAccount) {
-      this._storageService.getDocumentItemByAccount(this.selectedAccount).subscribe((x) => {
+      this._storageService.getDocumentItemByAccount(this.selectedAccount).subscribe((x: any) => {
         this.DocItemsByAccount_Org = [];
         this.DocItemsByAccount = [];
 
@@ -260,11 +266,11 @@ export class DocumentItemOverviewComponent implements OnInit {
     }
   }
 
-  public onAccountScopeChanged() {
+  public onAccountScopeChanged(): void {
     if (this.DocItemsByAccount_Org.length > 0) {
       this.DocItemsByAccount = [];
-      
-      for(let docitem of this.DocItemsByAccount_Org) {
+
+      for (let docitem of this.DocItemsByAccount_Org) {
         if (isOverviewDateInScope(docitem.TranDate, this.selectedAccountScope)) {
           this.DocItemsByAccount.push(docitem);
         }
@@ -272,11 +278,11 @@ export class DocumentItemOverviewComponent implements OnInit {
 
       this.DocItemByAccountEvent.emit();
     }
-  } 
-  
-  public onControlCenterSelectChange() {
+  }
+
+  public onControlCenterSelectChange(): void {
     if (this.selectedControlCenter) {
-      this._storageService.getDocumentItemByControlCenter(this.selectedControlCenter).subscribe((x) => {
+      this._storageService.getDocumentItemByControlCenter(this.selectedControlCenter).subscribe((x: any) => {
         this.DocItemsByControlCenter_Org = [];
         this.DocItemsByControlCenter = [];
 
@@ -288,7 +294,7 @@ export class DocumentItemOverviewComponent implements OnInit {
 
             if (isOverviewDateInScope(docitem.TranDate, this.selectedControlCenterScope)) {
               this.DocItemsByControlCenter.push(docitem);
-            }    
+            }
           }
         }
 
@@ -297,11 +303,11 @@ export class DocumentItemOverviewComponent implements OnInit {
     }
   }
 
-  public onControlCenterScopeChanged() {
+  public onControlCenterScopeChanged(): void {
     if (this.DocItemsByControlCenter_Org.length > 0) {
       this.DocItemsByControlCenter = [];
-      
-      for(let docitem of this.DocItemsByControlCenter_Org) {
+
+      for (let docitem of this.DocItemsByControlCenter_Org) {
         if (isOverviewDateInScope(docitem.TranDate, this.selectedControlCenterScope)) {
           this.DocItemsByControlCenter.push(docitem);
         }
@@ -309,11 +315,11 @@ export class DocumentItemOverviewComponent implements OnInit {
 
       this.DocItemByControlCenterEvent.emit();
     }
-  } 
+  }
 
-  public onOrderSelectChange() {
+  public onOrderSelectChange(): void {
     if (this.selectedOrder) {
-      this._storageService.getDocumentItemByOrder(this.selectedOrder).subscribe((x) => {
+      this._storageService.getDocumentItemByOrder(this.selectedOrder).subscribe((x: any) => {
         this.DocItemsByOrder_Org = [];
         this.DocItemsByOrder = [];
 
@@ -325,7 +331,7 @@ export class DocumentItemOverviewComponent implements OnInit {
 
             if (isOverviewDateInScope(docitem.TranDate, this.selectedOrderScope)) {
               this.DocItemsByOrder.push(docitem);
-            }    
+            }
           }
         }
 
@@ -334,11 +340,11 @@ export class DocumentItemOverviewComponent implements OnInit {
     }
   }
 
-  public onOrderScopeChanged() {
+  public onOrderScopeChanged(): void {
     if (this.DocItemsByOrder_Org.length > 0) {
       this.DocItemsByOrder = [];
 
-      for(let docitem of this.DocItemsByOrder_Org) {
+      for (let docitem of this.DocItemsByOrder_Org) {
         if (isOverviewDateInScope(docitem.TranDate, this.selectedOrderScope)) {
           this.DocItemsByOrder.push(docitem);
         }
@@ -348,10 +354,10 @@ export class DocumentItemOverviewComponent implements OnInit {
     }
   }
 
-  public onPostTmpDocument(doc: any) {
+  public onPostTmpDocument(doc: any): void {
     if (doc instanceof TemplateDocADP) {
       // Do the ADP posting!
-      this._storageService.doPostADPTmpDoc(doc).subscribe((x) => {
+      this._storageService.doPostADPTmpDoc(doc).subscribe((x: any) => {
         // Show the posted document - after the snackbar!
         this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
           duration: 3000,
@@ -359,12 +365,12 @@ export class DocumentItemOverviewComponent implements OnInit {
           // Navigate to display
           this._router.navigate(['/finance/document/displaynormal/' + x.id]);
         });
-      }, (error) => {
+      }, (error: any) => {
         // Show error dialog!
       });
-    } else if(doc instanceof TemplateDocLoan) {
+    } else if (doc instanceof TemplateDocLoan) {
       // Do the Loan posting!
-      this._storageService.doPostLoanTmpDoc(doc).subscribe((x) => {
+      this._storageService.doPostLoanTmpDoc(doc).subscribe((x: any) => {
         // Show the posted document - after the snackbar!
         this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
           duration: 3000,
@@ -372,9 +378,9 @@ export class DocumentItemOverviewComponent implements OnInit {
           // Navigate to display
           this._router.navigate(['/finance/document/displaynormal/' + x.id]);
         });
-      }, (error) => {
+      }, (error: any) => {
         // Show error dialog!
-      });      
+      });
     }
   }
 }

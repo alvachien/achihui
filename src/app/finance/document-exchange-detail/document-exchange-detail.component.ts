@@ -16,7 +16,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 import { ENTER } from '@angular/cdk/keycodes';
 
 @Component({
-  selector: 'app-document-exchange-detail',
+  selector: 'hih-finance-document-exchange-detail',
   templateUrl: './document-exchange-detail.component.html',
   styleUrls: ['./document-exchange-detail.component.scss'],
 })
@@ -24,14 +24,14 @@ export class DocumentExchangeDetailComponent implements OnInit {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: UIFinCurrencyExchangeDocument | null = null;
+  public detailObject: UIFinCurrencyExchangeDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
-  separatorKeysCodes = [ENTER, COMMA];
-  
+  separatorKeysCodes: any[] = [ENTER, COMMA];
+
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -65,7 +65,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
     this.detailObject = new UIFinCurrencyExchangeDocument();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentExchangeDetailComponent ngOnInit...');
     }
@@ -88,7 +88,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst) => {
+    ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
@@ -97,7 +97,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
-      
+
       this._activateRoute.url.subscribe((x) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createexg') {
@@ -114,7 +114,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocumentEvent.subscribe((x2) => {
+            this._storageService.readDocumentEvent.subscribe((x2: any) => {
               if (x2 instanceof Document) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
@@ -136,7 +136,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
           this.uiMode = UIMode.Invalid;
         }
       });
-    }, (error) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
       }
@@ -206,9 +206,9 @@ export class DocumentExchangeDetailComponent implements OnInit {
     return true;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
-      let docObj = this.detailObject.generateDocument();
+      let docObj: any = this.detailObject.generateDocument();
 
       // Check!
       if (!docObj.onVerify({
@@ -236,7 +236,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
         return;
       }
 
-      this._storageService.createDocumentEvent.subscribe((x) => {
+      this._storageService.createDocumentEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentExchangeDetailComponent with : ${x}`);
         }
@@ -262,29 +262,29 @@ export class DocumentExchangeDetailComponent implements OnInit {
               cobj.exchangeRate = this.detailObject.TargetExchangeRate;
             }
 
-            this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe((rst) => {
-              let snackbarRef = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+            this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe((rst: any) => {
+              let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
                 this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
                 duration: 3000,
               });
-              
+
               let recreate: boolean = false;
               snackbarRef.onAction().subscribe(() => {
                 recreate = true;
-    
+
                 this.onInitCreateMode();
-                //this._router.navigate(['/finance/document/create/']);
+                // this._router.navigate(['/finance/document/create/']);
               });
-    
+
               snackbarRef.afterDismissed().subscribe(() => {
                 // Navigate to display
                 if (!recreate) {
                   this._router.navigate(['/finance/document/displayexg/' + x.Id.toString()]);
-                }            
+                }
               });
-            }, (rerror) => {
+            }, (error: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Debug]: Message dialog result ${rerror}`);
+                console.error(`AC_HIH_UI [Debug]: Message dialog result ${error}`);
               }
 
               // Show something?
@@ -316,7 +316,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
             disableClose: false,
             width: '500px',
             data: dlginfo,
-          }).afterClosed().subscribe((x2) => {
+          }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
               console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
@@ -328,7 +328,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
       docObj.HID = this._homedefService.ChosedHome.ID;
       this._storageService.createDocument(docObj);
     } else if (this.uiMode === UIMode.Change) {
-
+      // Empty
     }
   }
 
@@ -336,7 +336,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
     this._router.navigate(['/finance/document/']);
   }
 
-  private onInitCreateMode() {
+  private onInitCreateMode(): void {
     this.detailObject = new UIFinCurrencyExchangeDocument();
     this.uiMode = UIMode.Create;
 

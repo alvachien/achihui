@@ -7,9 +7,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_CurrencyExchange,
   FinanceDocType_Transfer, FinanceDocType_AdvancePayment, OverviewScopeEnum, getOverviewScopeRange,
-  FinanceDocType_CreditcardRepay, FinanceDocType_AssetBuyIn, FinanceDocType_AssetSoldOut, 
-  FinanceDocType_Loan, 
-  UICommonLabelEnum} from '../../model';
+  FinanceDocType_CreditcardRepay, FinanceDocType_AssetBuyIn, FinanceDocType_AssetSoldOut,
+  FinanceDocType_Loan, UICommonLabelEnum, } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -24,21 +23,23 @@ export class DocumentDataSource extends DataSource<any> {
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Document[]> {
-    const displayDataChanges = [
+    const displayDataChanges: any[] = [
       this._storageService.listDocumentChange,
       this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._storageService.Documents.slice();
+      const data: any = this._storageService.Documents.slice();
 
       // Grab the page's slice of data.
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
-  disconnect() { }
+  disconnect(): void {
+    // Empty
+  }
 }
 
 @Component({
@@ -48,7 +49,7 @@ export class DocumentDataSource extends DataSource<any> {
 })
 export class DocumentListComponent implements OnInit {
 
-  displayedColumns = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
+  displayedColumns: string[] = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
   dataSource: DocumentDataSource | null;
   selectedDocScope: OverviewScopeEnum;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -56,10 +57,11 @@ export class DocumentListComponent implements OnInit {
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     private _router: Router,
-    private _dialog: MatDialog) {      
+    private _dialog: MatDialog) {
+      // Empty
     }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit...');
     }
@@ -75,9 +77,9 @@ export class DocumentListComponent implements OnInit {
 
   public onDocScopeChanged(): void {
     let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
-    this._storageService.fetchAllDocuments(bgn, end).subscribe((x) => {
+    this._storageService.fetchAllDocuments(bgn, end).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
-    }, (error) => {
+    }, (error: any) => {
       const dlginfo: MessageDialogInfo = {
         Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
         Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
@@ -92,32 +94,32 @@ export class DocumentListComponent implements OnInit {
     });
   }
 
-  public onCreateDocument() {
+  public onCreateDocument(): void {
     this._router.navigate(['/finance/document/create']);
   }
-  public onCreateNormalDocument() {
+  public onCreateNormalDocument(): void {
     this._router.navigate(['/finance/document/createnormal']);
   }
-  public onCreateTransferDocument() {
+  public onCreateTransferDocument(): void {
     this._router.navigate(['/finance/document/createtransfer']);
   }
-  public onCreateADPDocument() {
+  public onCreateADPDocument(): void {
     this._router.navigate(['/finance/document/createadp']);
   }
-  public onCreateExgDocument() {
+  public onCreateExgDocument(): void {
     this._router.navigate(['/finance/document/createexg']);
   }
-  public onCreateAssetBuyInDocument() {
+  public onCreateAssetBuyInDocument(): void {
     this._router.navigate(['/finance/document/createassetbuy']);
   }
-  public onCreateAssetSoldOutDocument() {
+  public onCreateAssetSoldOutDocument(): void {
     this._router.navigate(['/finance/document/createassetsold']);
   }
-  public onCreateLoanDocument() {
+  public onCreateLoanDocument(): void {
     this._router.navigate(['/finance/document/createloan']);
   }
 
-  public onDisplayDocument(doc: Document) {
+  public onDisplayDocument(doc: Document): void {
     if (doc.DocType === FinanceDocType_Normal) {
       this.onDisplayNormalDocument(doc);
     } else if (doc.DocType === FinanceDocType_Transfer) {
@@ -134,29 +136,29 @@ export class DocumentListComponent implements OnInit {
       this.onDisplayLoanDocument(doc);
     }
   }
-  public onDisplayNormalDocument(doc: Document) {
+  public onDisplayNormalDocument(doc: Document): void {
     this._router.navigate(['/finance/document/displaynormal', doc.Id]);
   }
-  public onDisplayTransferDocument(doc: Document) {
+  public onDisplayTransferDocument(doc: Document): void {
     this._router.navigate(['/finance/document/displaytransfer', doc.Id]);
   }
-  public onDisplayExgDocument(doc: Document) {
+  public onDisplayExgDocument(doc: Document): void {
     this._router.navigate(['/finance/document/displayexg', doc.Id]);
   }
-  public onDisplayADPDocument(doc: Document) {
+  public onDisplayADPDocument(doc: Document): void {
     this._router.navigate(['/finance/document/displayadp', doc.Id]);
   }
-  public onDisplayAssetBuyInDocument(doc: Document) {
+  public onDisplayAssetBuyInDocument(doc: Document): void {
     this._router.navigate(['/finance/document/displayassetbuy', doc.Id]);
   }
-  public onDisplayAssetSoldOutDocument(doc: Document) {
+  public onDisplayAssetSoldOutDocument(doc: Document): void {
     this._router.navigate(['/finance/document/displayassetsold', doc.Id]);
   }
-  public onDisplayLoanDocument(doc: Document) {
+  public onDisplayLoanDocument(doc: Document): void {
     this._router.navigate(['/finance/document/displayloan', doc.Id]);
   }
 
-  public onChangeDocument(doc: Document) {
+  public onChangeDocument(doc: Document): void {
     if (doc.DocType === FinanceDocType_Normal) {
       this.onChangeNormalDocument(doc);
     } else if (doc.DocType === FinanceDocType_Transfer) {
@@ -173,29 +175,29 @@ export class DocumentListComponent implements OnInit {
       this.onChangeLoanDocument(doc);
     }
   }
-  public onChangeNormalDocument(doc: Document) {
+  public onChangeNormalDocument(doc: Document): void {
     this._router.navigate(['/finance/document/editnormal', doc.Id]);
   }
-  public onChangeTransferDocument(doc: Document) {
+  public onChangeTransferDocument(doc: Document): void {
     this._router.navigate(['/finance/document/edittransfer', doc.Id]);
   }
-  public onChangeADPDocument(doc: Document) {
+  public onChangeADPDocument(doc: Document): void {
     this._router.navigate(['/finance/document/editadp', doc.Id]);
   }
-  public onChangeExgDocument(doc: Document) {
+  public onChangeExgDocument(doc: Document): void {
     this._router.navigate(['/finance/document/editexg', doc.Id]);
   }
-  public onChangeAssetBuyInDocument(doc: Document) {
+  public onChangeAssetBuyInDocument(doc: Document): void {
     this._router.navigate(['/finance/document/editassetbuy', doc.Id]);
   }
-  public onChangeAssetSoldOutDocument(doc: Document) {
+  public onChangeAssetSoldOutDocument(doc: Document): void {
     this._router.navigate(['/finance/document/editassetsold', doc.Id]);
   }
-  public onChangeLoanDocument(doc: Document) {
+  public onChangeLoanDocument(doc: Document): void {
     this._router.navigate(['/finance/document/editloan', doc.Id]);
   }
 
-  public onDeleteDocument(doc: Document) {
+  public onDeleteDocument(doc: Document): void {
     // Show a confirmation dialog for the deletion
     const dlginfo: MessageDialogInfo = {
       Header: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
@@ -207,31 +209,31 @@ export class DocumentListComponent implements OnInit {
       disableClose: false,
       width: '500px',
       data: dlginfo,
-    }).afterClosed().subscribe((x2) => {
+    }).afterClosed().subscribe((x2: any) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
       }
 
       if (x2) {
-        this._storageService.deleteDocumentEvent.subscribe(x => {
+        this._storageService.deleteDocumentEvent.subscribe((x: any) => {
           // Refresh the list!
-          this.onRefreshList();          
-        }, err2 => {
+          this.onRefreshList();
+        }, (err2: any) => {
           // TBD: handle the error!
           const dlginfo2: MessageDialogInfo = {
             Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
             Content: err2 ? err2.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
             Button: MessageDialogButtonEnum.onlyok,
           };
-      
+
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
-            data: dlginfo2
-          }).afterClosed().subscribe(x3 => {
+            data: dlginfo2,
+          }).afterClosed().subscribe((x3: any) => {
             // Do nothing
-          });      
+          });
         });
 
         this._storageService.deleteDocument(doc.Id);

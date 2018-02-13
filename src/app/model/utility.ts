@@ -15,10 +15,11 @@ export class Utility {
   }
 
   public static String2Date(s: string): Date {
-    if (!s)
+    if (!s) {
       return new Date();
+    }
 
-    let ss = (s.split(DateSplitChar));
+    let ss: any = (s.split(DateSplitChar));
     let y: number = parseInt(ss[0], 10);
     let m: number = parseInt(ss[1], 10);
     let d: number = parseInt(ss[2], 10);
@@ -36,16 +37,16 @@ export class Utility {
     let two: Date = new Date(second.getFullYear(), second.getMonth(), second.getDate());
 
     // Do the math.
-    let millisecondsPerDay = 1000 * 60 * 60 * 24;
-    let millisBetween = two.getTime() - one.getTime();
-    let days = millisBetween / millisecondsPerDay;
+    let millisecondsPerDay: number = 1000 * 60 * 60 * 24;
+    let millisBetween: number = two.getTime() - one.getTime();
+    let days: number = millisBetween / millisecondsPerDay;
 
     // Round down.
     return Math.floor(days);
   }
 
   public static Round2Two(num: number): number {
-    //return +(Math.round(num + "e+2")  + "e-2");
+    // return +(Math.round(num + "e+2")  + "e-2");
     return Math.round(num * 100) / 100;
   }
 
@@ -53,10 +54,10 @@ export class Utility {
     let isValid: boolean = false;
 
     if (strMail.indexOf('@') >= 1) {
-      let m_valid_dom = strMail.substr(strMail.indexOf('@') + 1);
+      let m_valid_dom: string = strMail.substr(strMail.indexOf('@') + 1);
       if (m_valid_dom.indexOf('@') === -1) {
         if (m_valid_dom.indexOf('.') >= 1) {
-          let m_valid_dom_e = m_valid_dom.substr(m_valid_dom.indexOf('.') + 1);
+          let m_valid_dom_e: string = m_valid_dom.substr(m_valid_dom.indexOf('.') + 1);
           if (m_valid_dom_e.length >= 1) {
             isValid = true;
           }
@@ -91,7 +92,9 @@ export class Utility {
       pass_level++;
     }
     if (strField.length < 5) {
-      if (pass_level >= 1) pass_level--;
+      if (pass_level >= 1) {
+        pass_level--;
+      }
     } else if (strField.length >= 20) {
       pass_level++;
     }
@@ -100,9 +103,9 @@ export class Utility {
   }
 
   public static hasDuplicatesInStringArray(strarray: string): boolean {
-    let valuesSoFar = Object.create(null);
-    for (let i = 0; i < strarray.length; ++i) {
-      let value = strarray[i];
+    let valuesSoFar: any = Object.create(undefined);
+    for (let i: number = 0; i < strarray.length; ++i) {
+      let value: any = strarray[i];
       if (value in valuesSoFar) {
         return true;
       }
@@ -111,7 +114,7 @@ export class Utility {
     return false;
   }
 
-  public static prefixInteger(num, length: number): string {
+  public static prefixInteger(num: number, length: number): string {
     return (Array(length).join('0') + num).slice(-length);
-  } 
+  }
 }

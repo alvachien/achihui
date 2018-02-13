@@ -30,7 +30,7 @@ export class EventComponent implements OnInit, OnDestroy {
     }
     this.onSetLanguage(this._uistatusService.CurrentLanguage);
 
-    this._langChangeSub = this._uistatusService.langChangeEvent.subscribe((x) => {
+    this._langChangeSub = this._uistatusService.langChangeEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Enter language change event in EventComponent: ${x}`);
       }

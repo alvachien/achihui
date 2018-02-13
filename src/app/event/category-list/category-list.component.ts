@@ -15,20 +15,21 @@ import { switchMap } from 'rxjs/operators/switchMap';
 @Component({
   selector: 'hih-event-category-list',
   templateUrl: './category-list.component.html',
-  styleUrls: ['./category-list.component.scss']
+  styleUrls: ['./category-list.component.scss'],
 })
 export class CategoryListComponent implements OnInit {
-  displayedColumns = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
-  //dataSource: BookCategoryDataSource | null;
+  displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LibraryStorageService,
     private _router: Router) { }
 
-  ngOnInit() {
-    //this.dataSource = new BookCategoryDataSource(this._storageService, this.paginator);
-    //this._storageService.fetchAllBookCategories().subscribe((x) => {
+  ngOnInit(): void {
+    // Empty for now
+
+    // this.dataSource = new BookCategoryDataSource(this._storageService, this.paginator);
+    // this._storageService.fetchAllBookCategories().subscribe((x) => {
     //  // Just ensure the request has been fired
-    //});
+    // });
   }
 }

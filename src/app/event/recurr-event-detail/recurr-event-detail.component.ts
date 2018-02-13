@@ -13,7 +13,7 @@ import { startWith } from 'rxjs/operators/startWith';
 import { switchMap } from 'rxjs/operators/switchMap';
 
 @Component({
-  selector: 'hih-recurr-event-detail',
+  selector: 'hih-event-recurrevent-detail',
   templateUrl: './recurr-event-detail.component.html',
   styleUrls: ['./recurr-event-detail.component.scss']
 })
@@ -23,9 +23,9 @@ export class RecurrEventDetailComponent implements OnInit {
   public currentMode: string;
   public detailObject: RecurEvent;
   public isLoadingData: boolean;
-  arFrequencies = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
-  displayedColumns = ['name', 'startdate', 'enddate'];
-  dataSourceSimulateResult = new MatTableDataSource<GeneralEvent>([]);
+  arFrequencies: any = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  displayedColumns: string[] = ['name', 'startdate', 'enddate'];
+  dataSourceSimulateResult: MatTableDataSource<GeneralEvent> = new MatTableDataSource<GeneralEvent>([]);
   // arSimulateResults: GeneralEvent[] = [];
 
   get isFieldChangable(): boolean {
@@ -50,9 +50,9 @@ export class RecurrEventDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering ngOnInit of RecurrEventDetailComponent...');
     }
 
-    this._homedefService.curHomeMembers.subscribe((mem) => {
+    this._homedefService.curHomeMembers.subscribe((mem: any) => {
       // Distinguish current mode
-      this._activateRoute.url.subscribe((x) => {
+      this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
@@ -80,7 +80,7 @@ export class RecurrEventDetailComponent implements OnInit {
             });
           }
         }
-      }, (error) => {
+      }, (error: any) => {
         // Empty
       }, () => {
         // Empty
@@ -94,7 +94,7 @@ export class RecurrEventDetailComponent implements OnInit {
   }
 
   public onGenerateRecurEvents(): void {
-    this._storageService.calcRecurEvents(this.detailObject).subscribe(x => {
+    this._storageService.calcRecurEvents(this.detailObject).subscribe((x: any) => {
       // Show the result.
       this.dataSourceSimulateResult.data = x;
     });

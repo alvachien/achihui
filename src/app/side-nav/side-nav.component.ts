@@ -7,24 +7,24 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'hih-sidenav',
   templateUrl: './side-nav.component.html',
-  styleUrls: ['./side-nav.component.scss']
+  styleUrls: ['./side-nav.component.scss', ],
 })
 export class SideNavComponent implements OnInit, OnDestroy {
 
-  items: SidenavItem[] = [];
   private _itemsSubscription: Subscription;
   private _routerEventsSubscription: Subscription;
+  items: SidenavItem[] = [];
 
   constructor(private _service: SideNavService,
     private _router: Router) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this._itemsSubscription = this._service.items$.subscribe((items: SidenavItem[]) => {
       this.items = this.sortRecursive(items, 'position');
     });
 
-    this._routerEventsSubscription = this._router.events.subscribe((event) => {
+    this._routerEventsSubscription = this._router.events.subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
         this._service.nextCurrentlyOpenByRoute(event.url);
         setTimeout(() => {
@@ -34,17 +34,17 @@ export class SideNavComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleIconSidenav() {
+  public toggleIconSidenav(): void {
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 300);
   }
 
-  sortRecursive(array: SidenavItem[], propertyName: string) {
+  sortRecursive(array: SidenavItem[], propertyName: string): SidenavItem[] {
     return array;
-  };
+  }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this._itemsSubscription.unsubscribe();
     this._routerEventsSubscription.unsubscribe();
   }

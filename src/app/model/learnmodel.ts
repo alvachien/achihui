@@ -45,7 +45,7 @@ export class EnWordExplain {
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     if (data && data.expID) {
       this.ExplainId = +data.expID;
     }
@@ -76,35 +76,36 @@ export class EnWord extends hih.BaseModel {
     this.Explains = [];
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     rstObj.id = this.ID;
     rstObj.hid = this.HID;
     rstObj.word = this.WordString;
     rstObj.explains = [];
-    for(let exp of this.Explains) {
+    for (let exp of this.Explains) {
       rstObj.explains.push(exp.writeJSONObject());
     }
 
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
-      this.ID = data.id;      
+      this.ID = data.id;
     }
     if (data && data.hid) {
       this.HID = data.hid;
@@ -114,10 +115,10 @@ export class EnWord extends hih.BaseModel {
     }
 
     this.Explains = [];
-    if (data && data.explains 
-      && data.explains instanceof Array 
+    if (data && data.explains
+      && data.explains instanceof Array
       && data.explains.length > 0) {
-      for(let exp of data.explains) {
+      for (let exp of data.explains) {
         let expObj: EnWordExplain = new EnWordExplain();
         expObj.onSetData(exp);
         this.Explains.push(expObj);
@@ -146,7 +147,7 @@ export class EnSentenceExplain {
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     if (data && data.expID) {
       this.ExplainId = +data.expID;
     }
@@ -176,35 +177,36 @@ export class EnSentence extends hih.BaseModel {
     this.RelatedWords = [];
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     rstObj.id = this.ID;
     rstObj.hid = this.HID;
     rstObj.sentence = this.SentenceString;
     rstObj.explains = [];
-    for(let exp of this.Explains) {
+    for (let exp of this.Explains) {
       rstObj.explains.push(exp.writeJSONObject());
     }
     rstObj.relatedWordIDs = [];
-    for(let wid of this.RelatedWords) {
+    for (let wid of this.RelatedWords) {
       rstObj.relatedWordIDs.push(wid);
     }
 
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -217,20 +219,20 @@ export class EnSentence extends hih.BaseModel {
       this.SentenceString = data.sentence;
     }
     this.Explains = [];
-    if (data && data.explains 
-      && data.explains instanceof Array 
+    if (data && data.explains
+      && data.explains instanceof Array
       && data.explains.length > 0) {
-      for(let exp of data.explains) {
+      for (let exp of data.explains) {
         let expObj: EnSentenceExplain = new EnSentenceExplain();
         expObj.onSetData(exp);
         this.Explains.push(expObj);
       }
     }
     this.RelatedWords = [];
-    if (data && data.relatedWordIDs 
-      && data.relatedWordIDs instanceof Array 
+    if (data && data.relatedWordIDs
+      && data.relatedWordIDs instanceof Array
       && data.relatedWordIDs.length > 0) {
-      for(let wid of data.relatedWordIDs) {
+      for (let wid of data.relatedWordIDs) {
         this.RelatedWords.push(wid);
       }
     }
@@ -248,7 +250,7 @@ export class LearnCategory extends hih.BaseModel {
   public SysFlag: boolean;
 
   // Runtime information
-  public ParentIdForJsTree: number;  
+  public ParentIdForJsTree: number;
   public HierLevel: number; // Level in the hierarchy: 0 stands for the root
   public FullDisplayText: string;
 
@@ -256,23 +258,24 @@ export class LearnCategory extends hih.BaseModel {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -281,7 +284,7 @@ export class LearnCategory extends hih.BaseModel {
     if (data && data.parID) {
       this.ParentId = +data.parID;
     } else {
-      this.ParentId = null;
+      this.ParentId = undefined;
     }
     if (data && data.name) {
       this.Name = data.name;
@@ -314,19 +317,20 @@ export class LearnObject extends hih.BaseModel {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     rstObj.hid = this.HID;
     rstObj.id = this.Id;
     rstObj.categoryId = this.CategoryId;
@@ -335,7 +339,7 @@ export class LearnObject extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.hid) {
@@ -364,11 +368,11 @@ export class LearnObject extends hih.BaseModel {
  * Learn History: History of the learn object and the user
  */
 export class LearnHistory extends hih.BaseModel {
+  private _learnDate: moment.Moment;
   public HID: number;
   public UserId: string;
   public ObjectId: number;
   public Comment: string;
-  private _learnDate: moment.Moment;
 
   // Additional info, not need for saving
   public UserDisplayAs: string;
@@ -394,13 +398,14 @@ export class LearnHistory extends hih.BaseModel {
     return this._learnDate.format(hih.MomentDateFormat);
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     let chkrst: boolean = true;
     if (context.arObjects && context.arObjects.length > 0) {
@@ -458,6 +463,7 @@ export class LearnHistory extends hih.BaseModel {
     }
 
     if (this.LearnDate) {
+      // Allowed
     } else {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgContent = 'Learn date is invalid.';
@@ -472,7 +478,7 @@ export class LearnHistory extends hih.BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     rstObj.hid = this.HID;
     rstObj.userID = this.UserId;
     rstObj.objectID = this.ObjectId;
@@ -481,7 +487,7 @@ export class LearnHistory extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
 
     if (data && data.hid) {
@@ -516,23 +522,24 @@ export class LearnAward extends hih.BaseModel {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 
   public onVerify(context?: any): boolean {
-    if (!super.onVerify(context))
+    if (!super.onVerify(context)) {
       return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
-    let rstObj = super.writeJSONObject();
+    let rstObj: any = super.writeJSONObject();
     return rstObj;
   }
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     super.onSetData(data);
   }
 }
@@ -550,7 +557,7 @@ export class QuestionBankItem extends hih.BaseModel {
   public SubItems: QuestionBankSubItem[] = [];
   public Tags: string[] = [];
 
-  public onSetData(data?: any) {
+  public onSetData(data?: any): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -570,12 +577,12 @@ export class QuestionBankItem extends hih.BaseModel {
     }
 
     if (data && data.tagTerms && data.tagTerms.length > 0) {
-      for(let tt of data.tagTerms) {
+      for (let tt of data.tagTerms) {
         this.Tags.push(tt);
       }
     }
     if (data && data.subItemList && data.subItemList.length > 0) {
-      for(let si of data.subItemList) {
+      for (let si of data.subItemList) {
         let nsi: QuestionBankSubItem = new QuestionBankSubItem();
         nsi.onSetData(si);
         this.SubItems.push(nsi);
@@ -583,8 +590,8 @@ export class QuestionBankItem extends hih.BaseModel {
     }
   }
 
-  public writeJSONObject() {
-    let rst = super.writeJSONObject();
+  public writeJSONObject(): any {
+    let rst: any = super.writeJSONObject();
 
     rst.hid = this.HID;
     rst.questionType = <number>this.QBType;
@@ -595,8 +602,8 @@ export class QuestionBankItem extends hih.BaseModel {
     if (this.SubItems.length > 0) {
       rst.subItemList = [];
 
-      for(let si of this.SubItems) {
-        let siobj = si.writeJSONObject();
+      for (let si of this.SubItems) {
+        let siobj: any = si.writeJSONObject();
         rst.subItemList.push(siobj);
       }
     }
@@ -604,7 +611,7 @@ export class QuestionBankItem extends hih.BaseModel {
     if (this.Tags.length > 0) {
       rst.tagTerms = [];
 
-      for(let term of this.Tags) {
+      for (let term of this.Tags) {
         rst.tagTerms.push(term);
       }
     }
@@ -623,11 +630,11 @@ export class QuestionBankSubItem {
   public Detail: string;
   public Others: string;
 
-  public onSetData(data?: any) {
-    //if (data && data.)
+  public onSetData(data?: any): void {
+    // if (data && data.)
   }
 
-  public writeJSONObject() {
+  public writeJSONObject(): any {
     let rst: any = {};
     rst.subItem = this.SubItem;
     rst.detail = this.Detail;

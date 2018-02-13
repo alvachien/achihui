@@ -13,9 +13,9 @@ import { startWith } from 'rxjs/operators/startWith';
 import { switchMap } from 'rxjs/operators/switchMap';
 
 @Component({
-  selector: 'app-recurr-event-list',
+  selector: 'hih-event-recurrevent-list',
   templateUrl: './recurr-event-list.component.html',
-  styleUrls: ['./recurr-event-list.component.scss']
+  styleUrls: ['./recurr-event-list.component.scss'],
 })
 export class RecurrEventListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'assignee'];
@@ -79,7 +79,7 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit {
         this.isLoadingResults = true;
         return this._storageService!.fetchAllRecurEvents(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize );
       }),
-      map((data) => {
+      map((data: any) => {
         // Flip flag to show that loading has finished.
         this.isLoadingResults = false;
 
@@ -100,16 +100,15 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit {
 
         return observableOf([]);
       }),
-      ).subscribe((data) => this.dataSource.data = data);
+      ).subscribe((data: any) => this.dataSource.data = data);
   }
 
   public onMarkAsDone(row: GeneralEvent): void {
     this._storageService.completeGeneralEvent(row).subscribe((x) => {
       // Jump to display mode
       this._router.navigate(['/event/recur/display/' + row.ID.toString()]);
-    }, (error) => {
+    }, (error: any) => {
       // Show dialog?
     });
   }
 }
-

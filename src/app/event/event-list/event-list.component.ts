@@ -80,7 +80,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
         this.isLoadingResults = true;
         return this._storageService!.fetchAllEvents(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize );
       }),
-      map((data) => {
+      map((data: any) => {
         // Flip flag to show that loading has finished.
         this.isLoadingResults = false;
 
@@ -101,14 +101,14 @@ export class EventListComponent implements OnInit, AfterViewInit {
 
         return observableOf([]);
       }),
-      ).subscribe((data) => this.dataSource.data = data);
+      ).subscribe((data: any) => this.dataSource.data = data);
   }
 
   public onMarkAsDone(row: GeneralEvent): void {
     this._storageService.completeGeneralEvent(row).subscribe((x) => {
       // Jump to display mode
       this._router.navigate(['/event/general/display/' + row.ID.toString()]);
-    }, (error) => {
+    }, (error: any) => {
       // Show dialog?
     });
   }
