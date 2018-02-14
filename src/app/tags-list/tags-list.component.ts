@@ -15,12 +15,12 @@ import { UIStatusService } from '../services/uistatus.service';
 })
 export class TagsListComponent implements OnInit {
   optionsCloud: CloudOptions = {
-    // if width is between 0 and 1 it will be set to the size of the upper element multiplied by the value  
+    // if width is between 0 and 1 it will be set to the size of the upper element multiplied by the value
     width: 0.8,
     height: 400,
     overflow: false,
   };
-  dataCloud: Array<CloudData> = [];
+  dataCloud: CloudData[] = [];
   tagTerm: string;
   tagType: TagTypeEnum;
   rstSearch: Tag[] = [];
@@ -32,14 +32,14 @@ export class TagsListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._tagService.fetchAllTags(true).subscribe(x => {
+    this._tagService.fetchAllTags(true).subscribe((x: any) => {
       this.dataCloud = [];
       for (let s1 of x) {
-        let s2 = <TagCount>s1;
+        let s2: TagCount = <TagCount>s1;
 
         let cd: CloudData = {
           text: s2.Term,
-          weight: s2.TermCount
+          weight: s2.TermCount,
         };
         this.dataCloud.push(cd);
       }
@@ -51,7 +51,7 @@ export class TagsListComponent implements OnInit {
   }
 
   public onSearchTagTerm(): void {
-    this._tagService.fetchAllTags(false, this.tagType, this.tagTerm).subscribe(x => {
+    this._tagService.fetchAllTags(false, this.tagType, this.tagTerm).subscribe((x: any) => {
       this.rstSearch = [];
 
       for (let s1 of x) {
@@ -60,7 +60,7 @@ export class TagsListComponent implements OnInit {
     });
   }
 
-  public showDetailInfo(rst: Tag) {
+  public showDetailInfo(rst: Tag): void {
     this._router.navigate([rst.LinkTarget]);
   }
 }

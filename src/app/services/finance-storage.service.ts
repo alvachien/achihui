@@ -16,6 +16,16 @@ import * as moment from 'moment';
 
 @Injectable()
 export class FinanceStorageService {
+  // Buffer
+  private _isAcntCtgyListLoaded: boolean;
+  private _isDocTypeListLoaded: boolean;
+  private _isTranTypeListLoaded: boolean;
+  private _isAsstCtgyListLoaded: boolean;
+  private _isAccountListLoaded: boolean;
+  private _isConctrolCenterListLoaded: boolean;
+  private _isOrderListLoaded: boolean;
+  // private _isDocumentListLoaded: boolean;
+
   listAccountCategoryChange: BehaviorSubject<AccountCategory[]> = new BehaviorSubject<AccountCategory[]>([]);
   get AccountCategories(): AccountCategory[] {
     return this.listAccountCategoryChange.value;
@@ -57,29 +67,19 @@ export class FinanceStorageService {
   }
 
   // Events
-  createAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
-  changeAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
-  readAccountEvent: EventEmitter<Account | string | null> = new EventEmitter(null);
+  createAccountEvent: EventEmitter<Account | string | undefined> = new EventEmitter(undefined);
+  changeAccountEvent: EventEmitter<Account | string | undefined> = new EventEmitter(undefined);
+  readAccountEvent: EventEmitter<Account | string | undefined> = new EventEmitter(undefined);
   createControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
   changeControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
-  readControlCenterEvent: EventEmitter<ControlCenter | string | null> = new EventEmitter(null);
+  readControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
   createOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
   changeOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
-  readOrderEvent: EventEmitter<Order | string | null> = new EventEmitter(null);
-  createDocumentEvent: EventEmitter<Document | string | null> = new EventEmitter(null);
+  readOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
+  createDocumentEvent: EventEmitter<Document | string | undefined> = new EventEmitter(undefined);
   changeDocumentEvent: EventEmitter<Document | string | undefined> = new EventEmitter(undefined);
-  readDocumentEvent: EventEmitter<Document | string | any | null> = new EventEmitter(null);
-  deleteDocumentEvent: EventEmitter<any | null> = new EventEmitter(null);
-
-  // Buffer
-  private _isAcntCtgyListLoaded: boolean;
-  private _isDocTypeListLoaded: boolean;
-  private _isTranTypeListLoaded: boolean;
-  private _isAsstCtgyListLoaded: boolean;
-  private _isAccountListLoaded: boolean;
-  private _isConctrolCenterListLoaded: boolean;
-  private _isOrderListLoaded: boolean;
-  //private _isDocumentListLoaded: boolean;
+  readDocumentEvent: EventEmitter<Document | string | any | undefined> = new EventEmitter(undefined);
+  deleteDocumentEvent: EventEmitter<any | undefined> = new EventEmitter(undefined);
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -94,15 +94,15 @@ export class FinanceStorageService {
     this._isAccountListLoaded = false;
     this._isConctrolCenterListLoaded = false;
     this._isOrderListLoaded = false;
-    //this._isDocumentListLoaded = false;
+    // this._isDocumentListLoaded = false;
   }
 
   // Account categories
   public fetchAllAccountCategories(forceReload?: boolean): Observable<AccountCategory[]> {
     if (!this._isAcntCtgyListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/FinanceAccountCategory';
+      const apiurl: string = environment.ApiUrl + '/api/FinanceAccountCategory';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -120,7 +120,7 @@ export class FinanceStorageService {
           }
 
           let listRst: AccountCategory[] = [];
-          const rjs = <any>response;
+          const rjs: any = <any>response;
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -174,7 +174,7 @@ export class FinanceStorageService {
 
           let listRst: DocumentType[] = [];
 
-          const rjs = <any>response;
+          const rjs: any = <any>response;
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: DocumentType = new DocumentType();
@@ -226,7 +226,7 @@ export class FinanceStorageService {
 
           let listRst: TranType[] = [];
 
-          const rjs = <any>response;
+          const rjs: any = <any>response;
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: TranType = new TranType();
@@ -239,7 +239,7 @@ export class FinanceStorageService {
           this.buildTranTypeHierarchy(listRst);
 
           // Sort it
-          listRst.sort((a, b) => {
+          listRst.sort((a: any, b: any) => {
             if (a.Expense) {
               if (b.Expense) {
                 // Both are expense
@@ -299,7 +299,7 @@ export class FinanceStorageService {
           }
 
           let listRst: AssetCategory[] = [];
-          const rjs = <any>response;
+          const rjs: any = <any>response;
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -356,7 +356,7 @@ export class FinanceStorageService {
           }
 
           let listRst: Account[] = [];
-          const rjs = <any>response;
+          const rjs: any = <any>response;
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -389,7 +389,7 @@ export class FinanceStorageService {
    * Create an account
    * @param objAcnt Account to create
    */
-  public createAccount(objAcnt: Account) {
+  public createAccount(objAcnt: Account): void {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -411,12 +411,12 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createAccount in FinanceStorageService: ${x}`);
         }
 
-        const copiedData = this.Accounts.slice();
+        const copiedData: any = this.Accounts.slice();
         copiedData.push(x);
         this.listAccountChange.next(copiedData);
 
@@ -430,6 +430,7 @@ export class FinanceStorageService {
         // Broadcast event: failed
         this.createAccountEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -437,7 +438,7 @@ export class FinanceStorageService {
    * Change an account
    * @param objAcnt Instance of Account to change
    */
-  public changeAccount(objAcnt: Account) {
+  public changeAccount(objAcnt: Account): void {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -462,13 +463,13 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in changeAccount in FinanceStorageService: ${x}`);
         }
 
-        const copiedData = this.Accounts.slice();
-        let idx: number = copiedData.findIndex((val) => {
+        const copiedData: any = this.Accounts.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
@@ -486,6 +487,7 @@ export class FinanceStorageService {
         // Broadcast event: failed
         this.changeAccountEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -493,7 +495,7 @@ export class FinanceStorageService {
    * Read an account
    * @param acntid ID of the account to read
    */
-  public readAccount(acntid: number) {
+  public readAccount(acntid: number): void {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -516,14 +518,14 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readAccount in FinanceStorageService: ${x}`);
         }
 
         // Update the buffer if necessary
-        const copiedData = this.Accounts.slice();
-        let idx: number = copiedData.findIndex((val) => {
+        const copiedData: any = this.Accounts.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
@@ -541,6 +543,7 @@ export class FinanceStorageService {
         // Broadcast event: failed
         this.readAccountEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -564,15 +567,14 @@ export class FinanceStorageService {
           params: params,
           withCredentials: true,
         })
-        //.retry(3)
+        // .retry(3)
         .map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceStorageService: ${response}`);
           }
 
           let listRst: ControlCenter[] = [];
-
-          const rjs = <any>response;
+          const rjs: any = <any>response;
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -605,13 +607,13 @@ export class FinanceStorageService {
    * Create a control center
    * @param objDetail Instance of control center to create
    */
-  public createControlCenter(objDetail: ControlCenter) {
-    let headers = new HttpHeaders();
+  public createControlCenter(objDetail: ControlCenter): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceControlCenter';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceControlCenter';
 
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -627,12 +629,12 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createControlCenter in FinanceStorageService: ${x}`);
         }
 
-        const copiedData = this.ControlCenters.slice();
+        const copiedData: any = this.ControlCenters.slice();
         copiedData.push(x);
         this.listControlCenterChange.next(copiedData);
 
@@ -644,8 +646,9 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.createControlCenterEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createControlCenterEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -653,7 +656,7 @@ export class FinanceStorageService {
    * Change a control center
    * @param objDetail Instance of control center to change
    */
-  public changeControlCenter(objDetail: ControlCenter) {
+  public changeControlCenter(objDetail: ControlCenter): void {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -678,13 +681,13 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in changeControlCenter in FinanceStorageService: ${x}`);
         }
 
-        const copiedData = this.ControlCenters.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.ControlCenters.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
@@ -700,22 +703,23 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.changeControlCenterEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.changeControlCenterEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
-  
+
   /**
    * Read control center
    * @param ccid ID of the control center
    */
-  public readControlCenter(ccid: number) {
-    let headers = new HttpHeaders();
+  public readControlCenter(ccid: number): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceControlCenter/' + ccid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/FinanceControlCenter/' + ccid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
@@ -732,14 +736,14 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readControlCenter in FinanceStorageService: ${x}`);
         }
 
         // Update the buffer if necessary
-        const copiedData = this.ControlCenters.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.ControlCenters.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
@@ -755,8 +759,9 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.readControlCenterEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.readControlCenterEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -765,17 +770,19 @@ export class FinanceStorageService {
    */
   public fetchAllOrders(forceReload?: boolean, invalidone?: boolean): Observable<Order[]> {
     if (!this._isOrderListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/FinanceOrder';
+      const apiurl: string = environment.ApiUrl + '/api/FinanceOrder';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      if (invalidone)
+      if (invalidone) {
         params = params.append('incInv', invalidone.valueOf().toString());
+      }
+
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
@@ -788,7 +795,7 @@ export class FinanceStorageService {
 
           let listRst: Order[] = [];
 
-          const rjs = <any>response;
+          const rjs: any = <any>response;
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: Order = new Order();
@@ -809,7 +816,7 @@ export class FinanceStorageService {
           this._isOrderListLoaded = false;
           this.listOrderChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listOrderChange.value);
@@ -820,13 +827,13 @@ export class FinanceStorageService {
    * Create an order
    * @param ord Order instance to create
    */
-  public createOrder(objDetail: Order) {
-    let headers = new HttpHeaders();
+  public createOrder(objDetail: Order): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceOrder';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceOrder';
 
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -842,13 +849,13 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createOrder in FinanceStorageService: ${x}`);
         }
 
         // Add it to the buffer
-        const copiedData = this.Orders.slice();
+        const copiedData: any = this.Orders.slice();
         copiedData.push(x);
         this.listOrderChange.next(copiedData);
 
@@ -860,8 +867,9 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.createOrderEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createOrderEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -869,13 +877,13 @@ export class FinanceStorageService {
    * Change an order
    * @param ord Order instance to change
    */
-  public changeOrder(objDetail: Order) {
-    let headers = new HttpHeaders();
+  public changeOrder(objDetail: Order): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceOrder/' + objDetail.Id.toString();
+    let apiurl: string = environment.ApiUrl + '/api/FinanceOrder/' + objDetail.Id.toString();
     const jdata: string = objDetail.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
@@ -893,14 +901,14 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in changeOrder in FinanceStorageService: ${x}`);
         }
 
         // Update the buffer if necessary
-        const copiedData = this.Orders.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.Orders.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
@@ -916,22 +924,23 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.changeOrderEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.changeOrderEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
-  
+
   /**
    * Read the order from API
    * @param ordid Id of Order
    */
-  public readOrder(ordid: number) {
-    let headers = new HttpHeaders();
+  public readOrder(ordid: number): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceOrder/' + ordid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/FinanceOrder/' + ordid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
@@ -948,21 +957,21 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readOrder in FinanceStorageService: ${x}`);
         }
 
         // Update the buffer if necessary
-        const copiedData = this.Orders.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.Orders.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
           copiedData.splice(idx, 1, x);
           this.listOrderChange.next(copiedData);
         }
-        
+
         // Broadcast event
         this.readOrderEvent.emit(x);
       }, (error: HttpErrorResponse) => {
@@ -971,8 +980,9 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.readOrderEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.readOrderEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -980,9 +990,9 @@ export class FinanceStorageService {
    * Read all documents out
    */
   public fetchAllDocuments(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<Document[]> {
-    const apiurl = environment.ApiUrl + '/api/FinanceDocument';
+    const apiurl: string = environment.ApiUrl + '/api/FinanceDocument';
 
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -1007,7 +1017,7 @@ export class FinanceStorageService {
         }
 
         let listRst: Document[] = [];
-        const rjs = <any>response;
+        const rjs: any = <any>response;
         if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
           for (const si of rjs.contentList) {
             const rst: Document = new Document();
@@ -1026,7 +1036,7 @@ export class FinanceStorageService {
 
         this.listDocumentChange.next([]);
 
-        return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+        return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
       });
   }
 
@@ -1034,13 +1044,13 @@ export class FinanceStorageService {
    * Create a document
    * @param objDetail instance of document which to be created
    */
-  public createDocument(objDetail: Document) {
-    let headers = new HttpHeaders();
+  public createDocument(objDetail: Document): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceDocument';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceDocument';
 
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -1056,12 +1066,12 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createDocument in FinanceStorageService: ${x}`);
         }
 
-        const copiedData = this.Documents.slice();
+        const copiedData: any = this.Documents.slice();
         copiedData.push(x);
         this.listDocumentChange.next(copiedData);
 
@@ -1073,8 +1083,9 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.createDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -1082,7 +1093,7 @@ export class FinanceStorageService {
    * Update a normal document
    * @param objDetail instance of document which to be created
    */
-  public updateNormalDocument(objDetail: Document) {
+  public updateNormalDocument(objDetail: Document): void {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1104,12 +1115,12 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createDocument in FinanceStorageService: ${x}`);
         }
 
-        const copiedData = this.Documents.slice();
+        const copiedData: any = this.Documents.slice();
         copiedData.push(x);
         this.listDocumentChange.next(copiedData);
 
@@ -1123,6 +1134,7 @@ export class FinanceStorageService {
         // Broadcast event: failed
         this.changeDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -1130,13 +1142,13 @@ export class FinanceStorageService {
    * Crate ADP document
    * @param jdata JSON format
    */
-  public createADPDocument(jdata: any) {
-    let headers = new HttpHeaders();
+  public createADPDocument(jdata: any): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/financeadpdocument';
+    let apiurl: string = environment.ApiUrl + '/api/financeadpdocument';
 
     this._http.post(apiurl, jdata, {
         headers: headers,
@@ -1151,12 +1163,12 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createADPDocument in FinanceStorageService: ${x}`);
         }
 
-        const copiedData = this.Documents.slice();
+        const copiedData: any = this.Documents.slice();
         copiedData.push(x);
         this.listDocumentChange.next(copiedData);
 
@@ -1168,8 +1180,9 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.createDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -1177,7 +1190,7 @@ export class FinanceStorageService {
    * Create Loan document
    * @param jdata JSON format
    */
-  public createLoanDocument(jdata: any) {
+  public createLoanDocument(jdata: any): void {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1198,12 +1211,12 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createLoanDocument in FinanceStorageService: ${x}`);
         }
 
-        const copiedData = this.Documents.slice();
+        const copiedData: any = this.Documents.slice();
         copiedData.push(x);
         this.listDocumentChange.next(copiedData);
 
@@ -1217,6 +1230,7 @@ export class FinanceStorageService {
         // Broadcast event: failed
         this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -1257,7 +1271,7 @@ export class FinanceStorageService {
    * Post the template doc
    * @param doc Tmplate doc
    */
-  public doPostLoanTmpDoc(doc: TemplateDocLoan) {
+  public doPostLoanTmpDoc(doc: TemplateDocLoan): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1268,7 +1282,7 @@ export class FinanceStorageService {
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('docid', doc.DocId.toString());
 
-    return this._http.post(apiurl, null, {
+    return this._http.post(apiurl, undefined, {
         headers: headers,
         params: params,
         withCredentials: true,
@@ -1287,13 +1301,13 @@ export class FinanceStorageService {
    * @param jdata Data for creation
    * @param isbuyin Is a buyin doc or soldout doc
    */
-  public createAssetDocument(jdata: any, isbuyin: boolean) {
+  public createAssetDocument(jdata: any, isbuyin: boolean): void {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + (isbuyin? '/api/FinanceAssetBuyDocument' : '/api/FinanceAssetSoldDocument');
+    let apiurl: string = environment.ApiUrl + (isbuyin ? '/api/FinanceAssetBuyDocument' : '/api/FinanceAssetSoldDocument');
 
     this._http.post(apiurl, jdata, {
         headers: headers,
@@ -1308,12 +1322,12 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createAssetDocument in FinanceStorageService: ${x}`);
         }
 
-        const copiedData = this.Documents.slice();
+        const copiedData: any = this.Documents.slice();
         copiedData.push(x);
         this.listDocumentChange.next(copiedData);
 
@@ -1325,8 +1339,9 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.createDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -1334,7 +1349,7 @@ export class FinanceStorageService {
    * Read the document from API
    * @param docid Id of Document
    */
-  public readDocument(docid: number) {
+  public readDocument(docid: number): void {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1357,13 +1372,13 @@ export class FinanceStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readDocument in FinanceStorageService: ${x}`);
         }
 
         // Todo, update the memory
-        // const copiedData = this.Orders.slice();
+        // const copiedData: any = this.Orders.slice();
         // copiedData.push(x);
         // this.listOrderChange.next(copiedData);
 
@@ -1377,6 +1392,7 @@ export class FinanceStorageService {
         // Broadcast event: failed
         this.readDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -1391,7 +1407,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + (isbuyin? '/api/FinanceAssetBuyDocument/' : '/api/FinanceAssetSoldDocument/') + docid.toString();
+    let apiurl: string = environment.ApiUrl + (isbuyin ? '/api/FinanceAssetBuyDocument/' : '/api/FinanceAssetSoldDocument/') + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -1472,7 +1488,7 @@ export class FinanceStorageService {
    * Delete the document
    * @param docid ID fo the doc
    */
-  public deleteDocument(docid: number) {
+  public deleteDocument(docid: number): void {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1493,7 +1509,7 @@ export class FinanceStorageService {
 
         return <any>response;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteDocument in FinanceStorageService: ${x}`);
         }
@@ -1506,7 +1522,7 @@ export class FinanceStorageService {
         }
 
         // Broadcast event: failed
-        this.deleteDocumentEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.deleteDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
         // Empty
       });
@@ -1549,7 +1565,7 @@ export class FinanceStorageService {
    * Post the template doc
    * @param doc Tmplate doc
    */
-  public doPostADPTmpDoc(doc: TemplateDocADP) {
+  public doPostADPTmpDoc(doc: TemplateDocADP): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1560,7 +1576,7 @@ export class FinanceStorageService {
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('docid', doc.DocId.toString());
 
-    return this._http.post(apiurl, null, {
+    return this._http.post(apiurl, undefined, {
         headers: headers,
         params: params,
         withCredentials: true,
@@ -1607,13 +1623,13 @@ export class FinanceStorageService {
    * Update previous document with planned exchange rate
    * @param obj Object for planned exchange rate
    */
-  public updatePreviousDocWithPlanExgRate(obj: DocumentWithPlanExgRateForUpdate) {
-    let headers = new HttpHeaders();
+  public updatePreviousDocWithPlanExgRate(obj: DocumentWithPlanExgRateForUpdate): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
     const jdata: string = JSON && JSON.stringify(obj);
 
     return this._http.post(apiurl, jdata, {
@@ -1634,12 +1650,12 @@ export class FinanceStorageService {
    * @param acntid Account ID
    */
   public getDocumentItemByAccount(acntid: number): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/financedocumentitem';
+    let apiurl: string = environment.ApiUrl + '/api/financedocumentitem';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('acntid', acntid.toString());
@@ -1663,12 +1679,12 @@ export class FinanceStorageService {
    * @param ccid Control center ID
    */
   public getDocumentItemByControlCenter(ccid: number): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/financedocumentitem';
+    let apiurl: string = environment.ApiUrl + '/api/financedocumentitem';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('ccid', ccid.toString());
@@ -1692,12 +1708,12 @@ export class FinanceStorageService {
    * @param ordid Order ID
    */
   public getDocumentItemByOrder(ordid: number): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/financedocumentitem';
+    let apiurl: string = environment.ApiUrl + '/api/financedocumentitem';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('ordid', ordid.toString());
@@ -1720,12 +1736,12 @@ export class FinanceStorageService {
    * Get Balance sheet report
    */
   public getReportBS(): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceReportBS';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportBS';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
 
@@ -1747,12 +1763,12 @@ export class FinanceStorageService {
    * Get Control center report
    */
   public getReportCC(): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceReportCC';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportCC';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
 
@@ -1774,12 +1790,12 @@ export class FinanceStorageService {
    * Get Order report
    */
   public getReportOrder(): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceReportOrder';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportOrder';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
 
@@ -1801,12 +1817,12 @@ export class FinanceStorageService {
    * Get tran type report
    */
   public getReportTranType(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceReportTranType';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTranType';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
@@ -1827,7 +1843,7 @@ export class FinanceStorageService {
         }
 
         // Do the grouping here.
-        let y = <any>response;
+        let y: any = <any>response;
         let mapOut: Map<number, UINameValuePair<number>> = new Map<number, UINameValuePair<number>>();
         let mapIn: Map<number, UINameValuePair<number>> = new Map<number, UINameValuePair<number>>();
 
@@ -1838,7 +1854,7 @@ export class FinanceStorageService {
 
             if (rtt.ExpenseFlag) {
               if (mapOut.has(rtt.TranType)) {
-                let val = mapOut.get(rtt.TranType);
+                let val: any = mapOut.get(rtt.TranType);
                 val.value += Math.abs(rtt.TranAmount);
                 mapOut.set(rtt.TranType, val);
               } else {
@@ -1849,7 +1865,7 @@ export class FinanceStorageService {
               }
             } else {
               if (mapIn.has(rtt.TranType)) {
-                let val = mapIn.get(rtt.TranType);
+                let val: any = mapIn.get(rtt.TranType);
                 val.value += Math.abs(rtt.TranAmount);
                 mapIn.set(rtt.TranType, val);
               } else {
@@ -1870,12 +1886,12 @@ export class FinanceStorageService {
    * Get Month on Month report
    */
   public getReportMonthOnMonth(exctran?: boolean, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceReportTrend';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTrend';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (exctran) {
@@ -1917,14 +1933,14 @@ export class FinanceStorageService {
    * Utility part
    */
   public calcLoanTmpDocs(datainput: FinanceLoanCalAPIInput): Observable<FinanceLoanCalAPIOutput[]> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/FinanceLoanCalculator';
-    let jobject = {
-      interestFreeLoan: datainput.InterestFreeLoan? true: false,
+    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanCalculator';
+    let jobject: any = {
+      interestFreeLoan: datainput.InterestFreeLoan ? true : false,
       interestRate: datainput.InterestRate ? datainput.InterestRate : 0,
       repaymentMethod: datainput.RepaymentMethod,
       startDate: datainput.StartDate.format(MomentDateFormat),
@@ -1944,13 +1960,13 @@ export class FinanceStorageService {
 
         let results: FinanceLoanCalAPIOutput[] = [];
         // Get the result out.
-        let y = <any>response;
+        let y: any = <any>response;
         if (y instanceof Array && y.length > 0) {
-          for(let tt of y) {
+          for (let tt of y) {
             let rst: FinanceLoanCalAPIOutput = {
               TranDate: moment(tt.tranDate, MomentDateFormat),
               TranAmount: tt.tranAmount,
-              InterestAmount: tt.interestAmount
+              InterestAmount: tt.interestAmount,
             };
 
             results.push(rst);
@@ -1958,11 +1974,11 @@ export class FinanceStorageService {
         }
         return results;
       });
-  }  
+  }
 
   // Private methods
-  private buildTranTypeHierarchy(listTranType: TranType[]) {
-    listTranType.forEach((value, index, array) => {
+  private buildTranTypeHierarchy(listTranType: TranType[]): void {
+    listTranType.forEach((value: any, index: number) => {
       if (!value.ParId) {
         value.HierLevel = 0;
         value.FullDisplayText = value.Name;
@@ -1971,11 +1987,12 @@ export class FinanceStorageService {
       }
     });
   }
-  private buildTranTypeHierarchyImpl(par: TranType, listTranType: TranType[], curLvl: number) {
-    listTranType.forEach((value, index, array) => {
+
+  private buildTranTypeHierarchyImpl(par: TranType, listTranType: TranType[], curLvl: number): void {
+    listTranType.forEach((value: any, index: number) => {
       if (value.ParId === par.Id) {
         value.HierLevel = curLvl;
-        value.FullDisplayText = par.FullDisplayText + "." + value.Name;
+        value.FullDisplayText = par.FullDisplayText + '.' + value.Name;
 
         this.buildTranTypeHierarchyImpl(value, listTranType, value.HierLevel + 1);
       }

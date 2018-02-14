@@ -12,12 +12,12 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class FinCurrencyService {
+  private _islistLoaded: boolean;
+
   listDataChange: BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
   get Currencies(): Currency[] {
     return this.listDataChange.value;
   }
-
-  private _islistLoaded: boolean;
 
   constructor(private _http: HttpClient,
     private _authService: AuthService) {
@@ -30,9 +30,9 @@ export class FinCurrencyService {
 
   public fetchAllCurrencies(forceReload?: boolean): Observable<Currency[]> {
     if (!this._islistLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/FinanceCurrency';
+      const apiurl: string = environment.ApiUrl + '/api/FinanceCurrency';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -47,7 +47,7 @@ export class FinCurrencyService {
           }
 
           let listRst: Currency[] = [];
-          const rjs = <any>response;
+          const rjs: any = <any>response;
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {

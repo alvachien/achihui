@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, LearnCategory, LearnObject, LearnHistory, QuestionBankItem, MomentDateFormat, 
+import { LogLevel, LearnCategory, LearnObject, LearnHistory, QuestionBankItem, MomentDateFormat,
   EnSentence, EnWord, EnWordExplain, EnSentenceExplain } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -305,12 +305,12 @@ export class LearnStorageService {
    * @param obj Object to create
    */
   public deleteObject(oid: number): void {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnObject/' + oid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/LearnObject/' + oid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.delete(apiurl, {
@@ -325,20 +325,20 @@ export class LearnStorageService {
 
         return <any>response;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteObject in LearnStorageService: ${x}`);
         }
 
-        const copiedData = this.Objects.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.Objects.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.Id === oid;
         });
         if (idx !== -1) {
           copiedData.splice(idx, 1);
           this.listObjectChange.next(copiedData);
         }
-        
+
         // Broadcast event
         this.deleteObjectEvent.emit(x);
       }, (error: HttpErrorResponse) => {
@@ -347,8 +347,9 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.deleteObjectEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.deleteObjectEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -356,13 +357,13 @@ export class LearnStorageService {
    * Read an object
    * @param objid ID of the object to read
    */
-  public readObject(objid: number) {
-    let headers = new HttpHeaders();
+  public readObject(objid: number): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnObject/' + objid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/LearnObject/' + objid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
@@ -379,13 +380,13 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readObject in LearnStorageService: ${x}`);
         }
 
-        const copiedData = this.Objects.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.Objects.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
@@ -394,7 +395,7 @@ export class LearnStorageService {
           copiedData.push(x);
         }
         this.listObjectChange.next(copiedData);
-        
+
         // Broadcast event
         this.readObjectEvent.emit(x);
       }, (error: HttpErrorResponse) => {
@@ -403,8 +404,9 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.readObjectEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.readObjectEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -414,9 +416,9 @@ export class LearnStorageService {
    */
   public fetchAllHistories(forceReload?: boolean): Observable<LearnHistory[]> {
     if (!this._isHistListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/learnhistory';
+      const apiurl: string = environment.ApiUrl + '/api/learnhistory';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -433,8 +435,8 @@ export class LearnStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHistories in LearnStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
-          let listRst = [];
+          const rjs: any = <any>response;
+          let listRst: any[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -456,7 +458,7 @@ export class LearnStorageService {
           this._isHistListLoaded = true;
           this.listHistoryChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listHistoryChange.value);
@@ -467,13 +469,13 @@ export class LearnStorageService {
    * Create a history
    * @param hist History to create
    */
-  public createHistory(hist: LearnHistory) {
-    let headers = new HttpHeaders();
+  public createHistory(hist: LearnHistory): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnHistory';
+    let apiurl: string = environment.ApiUrl + '/api/LearnHistory';
 
     const jdata: string = hist.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -489,12 +491,12 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createHistory in LearnStorageService: ${x}`);
         }
 
-        const copiedData = this.Histories.slice();
+        const copiedData: any = this.Histories.slice();
         copiedData.push(x);
         this.listHistoryChange.next(copiedData);
 
@@ -506,8 +508,9 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.createHistoryEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createHistoryEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -515,13 +518,13 @@ export class LearnStorageService {
    * Read a history
    * @param histid ID of the history to read
    */
-  public readHistory(histid: string) {
-    let headers = new HttpHeaders();
+  public readHistory(histid: string): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnHistory/' + histid;
+    let apiurl: string = environment.ApiUrl + '/api/LearnHistory/' + histid;
     this._http.get(apiurl, {
         headers: headers,
         withCredentials: true,
@@ -535,13 +538,13 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readHistory in LearnStorageService: ${x}`);
         }
 
-        const copiedData = this.Histories.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.Histories.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.generateKey() === x.generateKey();
         });
         if (idx !== -1) {
@@ -559,8 +562,9 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.readHistoryEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.readHistoryEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -568,12 +572,12 @@ export class LearnStorageService {
    * Get history report by user
    */
   public getHistoryReportByUser(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnReportUserDate';
+    let apiurl: string = environment.ApiUrl + '/api/LearnReportUserDate';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
@@ -601,12 +605,12 @@ export class LearnStorageService {
    * Get history report by category
    */
   public getHistoryReportByCategory(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
-    let headers = new HttpHeaders();
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnReportCtgyDate';
+    let apiurl: string = environment.ApiUrl + '/api/LearnReportCtgyDate';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
@@ -636,9 +640,9 @@ export class LearnStorageService {
    */
   public fetchAllQuestionBankItem(forceReload?: boolean): Observable<QuestionBankItem[]> {
     if (!this._isQtnBankListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/LearnQuestionBank';
+      const apiurl: string = environment.ApiUrl + '/api/LearnQuestionBank';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -655,8 +659,8 @@ export class LearnStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllQuestionBankItem in LearnStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
-          let listRst = [];
+          const rjs: any = <any>response;
+          let listRst: any[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -678,7 +682,7 @@ export class LearnStorageService {
           this._isQtnBankListLoaded = true;
           this.listQtnBankChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listQtnBankChange.value);
@@ -689,13 +693,13 @@ export class LearnStorageService {
    * Create an item of Question Bank
    * @param item Question bank item to create
    */
-  public createQuestionBankItem(item: QuestionBankItem) {
-    let headers = new HttpHeaders();
+  public createQuestionBankItem(item: QuestionBankItem): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnQuestionBank';
+    let apiurl: string = environment.ApiUrl + '/api/LearnQuestionBank';
 
     const jdata: string = item.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -711,12 +715,12 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createQuestionBankItem in LearnStorageService: ${x}`);
         }
 
-        const copiedData = this.QuestionBanks.slice();
+        const copiedData: any = this.QuestionBanks.slice();
         copiedData.push(x);
         this.listQtnBankChange.next(copiedData);
 
@@ -728,8 +732,9 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.createQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createQuestionEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -737,13 +742,13 @@ export class LearnStorageService {
    * Update an item of Question Bank
    * @param item Question bank item to change
    */
-  public updateQuestionBankItem(item: QuestionBankItem) {
-    let headers = new HttpHeaders();
+  public updateQuestionBankItem(item: QuestionBankItem): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnQuestionBank/' + item.ID.toString();
+    let apiurl: string = environment.ApiUrl + '/api/LearnQuestionBank/' + item.ID.toString();
 
     const jdata: string = item.writeJSONString();
     this._http.put(apiurl, jdata, {
@@ -759,14 +764,14 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in updateQuestionBankItem in LearnStorageService: ${x}`);
         }
 
         // Update it in the buffer
-        const copiedData = this.QuestionBanks.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.QuestionBanks.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.ID === x.ID;
         });
         if (idx !== -1) {
@@ -782,8 +787,9 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.updateQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.updateQuestionEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -791,13 +797,13 @@ export class LearnStorageService {
    * Delete an item of Question Bank
    * @param itemid Question bank item's ID'
    */
-  public deleteQuestionBankItem(item: QuestionBankItem) {
-    let headers = new HttpHeaders();
+  public deleteQuestionBankItem(item: QuestionBankItem): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnQuestionBank/' + item.ID.toString();
+    let apiurl: string = environment.ApiUrl + '/api/LearnQuestionBank/' + item.ID.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.delete(apiurl, {
@@ -810,14 +816,14 @@ export class LearnStorageService {
           console.log('AC_HIH_UI [Debug]:' + response);
         }
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteQuestionBankItem in LearnStorageService: ${x}`);
         }
 
         // Remove it from the buffer
-        const copiedData = this.QuestionBanks.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.QuestionBanks.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.ID === item.ID;
         });
         if (idx !== -1) {
@@ -833,22 +839,23 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.deleteQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.deleteQuestionEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
-  
+
   /**
    * Read an item of question bank
    * @param itemid ID of question bank item
    */
-  public readQuestionBank(itemid: number) {
-    let headers = new HttpHeaders();
+  public readQuestionBank(itemid: number): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnQuestionBank/' + itemid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/LearnQuestionBank/' + itemid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
@@ -865,13 +872,13 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readQuestionBank in LearnStorageService: ${x}`);
         }
 
-        const copiedData = this.QuestionBanks.slice();
-        let idx = copiedData.findIndex((val) => {
+        const copiedData: any = this.QuestionBanks.slice();
+        let idx: number = copiedData.findIndex((val: any) => {
           return val.ID === x.ID;
         });
         if (idx !== -1) {
@@ -889,8 +896,9 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.readQuestionEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.readQuestionEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -900,9 +908,9 @@ export class LearnStorageService {
    */
   public fetchAllEnWords(forceReload?: boolean): Observable<EnWord[]> {
     if (!this._isEnWordListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/LearnEnWord';
+      const apiurl: string = environment.ApiUrl + '/api/LearnEnWord';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -919,8 +927,8 @@ export class LearnStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllEnWord in LearnStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
-          let listRst = [];
+          const rjs: any = <any>response;
+          let listRst: any[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -942,24 +950,24 @@ export class LearnStorageService {
           this._isEnWordListLoaded = true;
           this.listEnWordChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listEnWordChange.value);
     }
   }
-  
+
   /**
    * Create a en. word
    * @param item english word
    */
-  public createEnWord(item: EnWord) {
-    let headers = new HttpHeaders();
+  public createEnWord(item: EnWord): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnEnWord';
+    let apiurl: string = environment.ApiUrl + '/api/LearnEnWord';
 
     const jdata: string = item.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -975,12 +983,12 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createEnWord in LearnStorageService: ${x}`);
         }
 
-        const copiedData = this.EnWords.slice();
+        const copiedData: any = this.EnWords.slice();
         copiedData.push(x);
         this.listEnWordChange.next(copiedData);
 
@@ -992,22 +1000,23 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.createEnWordEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createEnWordEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
-  
+
   /**
    * Read a en word
    * @param itemid ID of en word
    */
-  public readEnWord(itemid: number) {
-    let headers = new HttpHeaders();
+  public readEnWord(itemid: number): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnEnWord/' + itemid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/LearnEnWord/' + itemid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
@@ -1024,7 +1033,7 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readEnWord in LearnStorageService: ${x}`);
         }
@@ -1037,20 +1046,21 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.readEnWordEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.readEnWordEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
-  
+
   /**
    * Fetch all en. sentence
    * @param forceReload Force to reload
    */
   public fetchAllEnSentences(forceReload?: boolean): Observable<EnSentence[]> {
     if (!this._isEnSentListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/LearnEnSentence';
+      const apiurl: string = environment.ApiUrl + '/api/LearnEnSentence';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -1067,8 +1077,8 @@ export class LearnStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllEnSentence in LearnStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
-          let listRst = [];
+          const rjs: any = <any>response;
+          let listRst: any[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -1090,7 +1100,7 @@ export class LearnStorageService {
           this._isEnSentListLoaded = true;
           this.listEnSentChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listEnSentChange.value);
@@ -1101,13 +1111,13 @@ export class LearnStorageService {
    * Create a en. sentence
    * @param item english sentence
    */
-  public createEnSentence(item: EnSentence) {
-    let headers = new HttpHeaders();
+  public createEnSentence(item: EnSentence): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnEnSentence';
+    let apiurl: string = environment.ApiUrl + '/api/LearnEnSentence';
 
     const jdata: string = item.writeJSONString();
     this._http.post(apiurl, jdata, {
@@ -1123,12 +1133,12 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createEnSentence in LearnStorageService: ${x}`);
         }
 
-        const copiedData = this.EnSentences.slice();
+        const copiedData: any = this.EnSentences.slice();
         copiedData.push(x);
         this.listEnSentChange.next(copiedData);
 
@@ -1140,8 +1150,9 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.createEnSentenceEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.createEnSentenceEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
@@ -1149,13 +1160,13 @@ export class LearnStorageService {
    * Read a en sentence
    * @param itemid ID of en word
    */
-  public readEnSentence(itemid: number) {
-    let headers = new HttpHeaders();
+  public readEnSentence(itemid: number): void {
+    let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl = environment.ApiUrl + '/api/LearnEnSentence/' + itemid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/LearnEnSentence/' + itemid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     this._http.get(apiurl, {
@@ -1172,7 +1183,7 @@ export class LearnStorageService {
         hd.onSetData(response);
         return hd;
       })
-      .subscribe((x) => {
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in readEnSentence in LearnStorageService: ${x}`);
         }
@@ -1185,13 +1196,14 @@ export class LearnStorageService {
         }
 
         // Broadcast event: failed
-        this.readEnSentenceEvent.emit(error.statusText + "; " + error.error + "; " + error.message);
+        this.readEnSentenceEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
+        // Empty
       });
   }
 
-  private buildLearnCategoryHierarchy(listCtgy: LearnCategory[]) {
-    listCtgy.forEach((value, index, array) => {
+  private buildLearnCategoryHierarchy(listCtgy: LearnCategory[]): void {
+    listCtgy.forEach((value: any, index: number) => {
       if (!value.ParentId) {
         value.HierLevel = 0;
         value.FullDisplayText = value.Name;
@@ -1200,8 +1212,8 @@ export class LearnStorageService {
       }
     });
   }
-  private buildLearnCategoryHiercharyImpl(par: LearnCategory, listCtgy: LearnCategory[], curLevel: number) {
-    listCtgy.forEach((value, index, array) => {
+  private buildLearnCategoryHiercharyImpl(par: LearnCategory, listCtgy: LearnCategory[], curLevel: number): void {
+    listCtgy.forEach((value: any, index: number) => {
       if (value.ParentId === par.Id) {
         value.HierLevel = curLevel;
         value.FullDisplayText = par.FullDisplayText + '.' + value.Name;

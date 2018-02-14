@@ -415,7 +415,7 @@ export class Account extends hih.BaseModel {
       rstObj.extraInfo_ADP = this.ExtraInfo.writeJSONObject();
     } else if (this.CategoryId === hih.FinanceAccountCategory_Asset && this.ExtraInfo) {
       rstObj.extraInfo_AS = this.ExtraInfo.writeJSONObject();
-    } else if(this.CategoryId === hih.FinanceAccountCategory_Loan && this.ExtraInfo) {
+    } else if (this.CategoryId === hih.FinanceAccountCategory_Loan && this.ExtraInfo) {
       rstObj.extraInfo_Loan = this.ExtraInfo.writeJSONObject();
     }
 
@@ -1305,7 +1305,7 @@ export class Document extends hih.BaseModel {
             }
           } else {
             if (this.ExgRate) {
-              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 
+              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
                 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
               this.VerifiedMsgs.push(msg);
             }
@@ -1341,7 +1341,7 @@ export class Document extends hih.BaseModel {
             }
           } else {
             if (this.ExgRate2) {
-              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 
+              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
                 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
               this.VerifiedMsgs.push(msg);
             }
@@ -1746,7 +1746,7 @@ export class DocumentItem {
     rstObj.desp = this.Desp;
     if (this.Tags.length > 0) {
       rstObj.tagTerms = [];
-      for(let tag of this.Tags) {
+      for (let tag of this.Tags) {
         rstObj.tagTerms.push(tag);
       }
     }

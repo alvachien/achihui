@@ -92,7 +92,7 @@ export class LibraryStorageService {
           // Prepare for the hierarchy
           this.buildBookCategoryHierarchy(listRst);
           // Sort it
-          listRst.sort((a, b) => {
+          listRst.sort((a: any, b: any) => {
             return a.FullDisplayText.localeCompare(b.FullDisplayText);
           });
 
@@ -114,33 +114,13 @@ export class LibraryStorageService {
       return Observable.of(this.listBookCategoryChange.value);
     }
   }
-  private buildBookCategoryHierarchy(listCtgy: BookCategory[]) {
-    listCtgy.forEach((value, index, array) => {
-      if (!value.ParentID) {
-        value.HierLevel = 0;
-        value.FullDisplayText = value.Name;
-
-        this.buildBookCategoryHiercharyImpl(value, listCtgy, 1);
-      }
-    });
-  }
-  private buildBookCategoryHiercharyImpl(par: BookCategory, listCtgy: BookCategory[], curLevel: number) {
-    listCtgy.forEach((value, index, array) => {
-      if (value.ParentID === par.ID) {
-        value.HierLevel = curLevel;
-        value.FullDisplayText = par.FullDisplayText + '.' + value.Name;
-
-        this.buildBookCategoryHiercharyImpl(value, listCtgy, value.HierLevel + 1);
-      }
-    });
-  }
 
   // Location
   public fetchAllLocations(forceReload?: boolean): Observable<any> {
     if (!this._isLocationListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/LibLocation';
+      const apiurl: string = environment.ApiUrl + '/api/LibLocation';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -157,13 +137,13 @@ export class LibraryStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllLocations in LibraryStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
+          const rjs: any = <any>response;
           let listRst: Location[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: Location = new Location();
-              //rst.onSetData(si);
+              // rst.onSetData(si);
               listRst.push(rst);
             }
           }
@@ -180,7 +160,7 @@ export class LibraryStorageService {
           this._isLocationListLoaded = false;
           this.listLocationChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listLocationChange.value);
@@ -190,9 +170,9 @@ export class LibraryStorageService {
   // Book
   public fetchAllBooks(forceReload?: boolean): Observable<any> {
     if (!this._isBookListLoaded || forceReload) {
-      const apiurl = environment.ApiUrl + '/api/LibBook';
+      const apiurl: string = environment.ApiUrl + '/api/LibBook';
 
-      let headers = new HttpHeaders();
+      let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
                 .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
@@ -209,13 +189,13 @@ export class LibraryStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllBooks in LibraryStorageService: ${response}`);
           }
 
-          const rjs = <any>response;
+          const rjs: any = <any>response;
           let listRst: Book[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: Book = new Book();
-              //rst.onSetData(si);
+              // rst.onSetData(si);
               listRst.push(rst);
             }
           }
@@ -232,10 +212,31 @@ export class LibraryStorageService {
           this._isBookListLoaded = false;
           this.listBookChange.next([]);
 
-          return Observable.throw(error.statusText + "; " + error.error + "; " + error.message);
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         });
     } else {
       return Observable.of(this.listLocationChange.value);
     }
-  }  
+  }
+
+  private buildBookCategoryHierarchy(listCtgy: BookCategory[]): void {
+    listCtgy.forEach((value: any, index: number) => {
+      if (!value.ParentID) {
+        value.HierLevel = 0;
+        value.FullDisplayText = value.Name;
+
+        this.buildBookCategoryHiercharyImpl(value, listCtgy, 1);
+      }
+    });
+  }
+  private buildBookCategoryHiercharyImpl(par: BookCategory, listCtgy: BookCategory[], curLevel: number): void {
+    listCtgy.forEach((value: any, index: number) => {
+      if (value.ParentID === par.ID) {
+        value.HierLevel = curLevel;
+        value.FullDisplayText = par.FullDisplayText + '.' + value.Name;
+
+        this.buildBookCategoryHiercharyImpl(value, listCtgy, value.HierLevel + 1);
+      }
+    });
+  }
 }

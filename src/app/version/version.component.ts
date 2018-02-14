@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class VersionComponent implements OnInit {
 
-  constructor(): void {
+  constructor() {
     // Empty
   }
 
