@@ -1,29 +1,13 @@
 {
-  "compileOnSave": false,
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "declaration": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "lib": ["es2016", "dom"],
+    "outDir": "../out-tsc/app",
     "module": "es2015",
-    "moduleResolution": "node",
-    "outDir": "../dist/out-tsc",
-    "sourceMap": true,
-    "target": "es2015",
-    "typeRoots": [
-      "../node_modules/@types"
-    ],
-    "types": [
-      "hammerjs"
-    ],
-    "noUnusedParameters": false,
-    "noUnusedLocals": false,
-    "allowUnreachableCode": false,
-    "pretty": true
+    "baseUrl": "",
+    "types": []
   },
   "exclude": [
     "test.ts",
-    "**/*.spec.*"
+    "**/*.spec.ts"
   ]
 }

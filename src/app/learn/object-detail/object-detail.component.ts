@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+declare var tinymce: any;
 
 @Component({
   selector: 'hih-learn-object-detail',
@@ -52,7 +53,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         schema: 'html5',
         height: 500,
         menubar: false,
-        toolbar: 'fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify' 
+        toolbar: 'fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify'
           + ' | bullist numlist outdent indent | link forecolor backcolor | removeformat',
         plugins: 'advlist autolink link image lists charmap print preview',
         skin_url: '../../../assets/tinymceskins/lightgray',
@@ -192,7 +193,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       // Navigate back to list view
       if (x instanceof LearnObject) {
         // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });
@@ -244,7 +245,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       // Navigate back to list view
       if (x instanceof LearnObject) {
         // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
           'OK', {
           duration: 3000,
         });

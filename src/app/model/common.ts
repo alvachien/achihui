@@ -28,8 +28,8 @@ export const Language_ZhCN: string = 'zh-cn';
 
 export const MomentDateFormat: string = 'YYYY-MM-DD';
 
-export enum AuthorizeScope { All = 1, OnlyOwner = 2 };
-export enum MessageType { Info = 1, Warning = 2, Error = 3 };
+export enum AuthorizeScope { All = 1, OnlyOwner = 2 }
+export enum MessageType { Info = 1, Warning = 2, Error = 3 }
 export const COMMA = 188;
 
 /**
@@ -358,7 +358,7 @@ export class MultipleNamesObject extends BaseModel {
     super();
   }
 
-  public onInit() {
+  public onInit(): void {
     super.onInit();
   }
 

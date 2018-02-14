@@ -13,7 +13,7 @@
     "serve": "ng serve",
     "reinstall": "rm -rf node_modules tmp deploy dist && npm i",
     "postinstall": "webdriver-manager update --ignore_ssl",
-    "test": "ng test --code-coverage --single-run"
+    "test": "karma start ./karma.conf.js"
   },
   "engines": {
     "node": ">4.4 < 7",
@@ -71,8 +71,10 @@
     "karma": "1.5.0",
     "karma-chrome-launcher": "2.0.0",
     "karma-cli": "1.0.1",
+    "karma-coverage-istanbul-reporter": "^1.4.1",
     "karma-firefox-launcher": "^1.0.0",
     "karma-jasmine": "1.1.0",
+    "karma-jasmine-html-reporter": "^0.2.2",
     "karma-phantomjs-launcher": "1.0.2",
     "karma-remap-istanbul": "0.6.0",
     "phantomjs-prebuilt": "2.1.14",

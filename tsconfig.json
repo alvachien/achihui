@@ -1,29 +1,20 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": ".",
+    "outDir": "./dist/out-tsc",
+    "baseUrl": "src",
+    "sourceMap": true,
     "declaration": false,
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["es2016", "dom"],
-    "module": "es2015",
-    "moduleResolution": "node",
-    "outDir": "../dist/out-tsc",
-    "sourceMap": true,
-    "target": "es2015",
+    "target": "es6",
     "typeRoots": [
-      "./node_modules/@types"
+      "node_modules/@types"
     ],
-    "types": [
-      "hammerjs"
-    ],
-    "noUnusedParameters": false,
-    "noUnusedLocals": false,
-    "allowUnreachableCode": false,
-    "pretty": true
-  },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.*"
-  ]
+    "lib": [
+      "es2016",
+      "dom"
+    ]
+  }
 }
