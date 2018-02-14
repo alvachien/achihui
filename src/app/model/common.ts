@@ -279,13 +279,38 @@ export class BaseModel {
 
 // Tag
 export class Tag {
-  public TagType: TagTypeEnum;
-  public TagID: number;
-  public TagSubID: number;
-  public Term: string;
+  private _tagtype: TagTypeEnum;
+  private _tagid: number;
+  private _tagsubid: number;
+  private _term: string;
+
+  get TagType(): TagTypeEnum {
+    return this._tagtype;
+  }
+  set TagType(tt: TagTypeEnum) {
+    this._tagtype = tt;
+  }
+  get TagID(): number {
+    return this._tagid;
+  }
+  set TagID(ti: number) {
+    this._tagid = ti;
+  }
+  get TagSubID(): number {
+    return this._tagsubid;
+  }
+  set TagSubID(tsi: number) {
+    this._tagsubid = tsi;
+  }
+  get Term(): string {
+    return this._term;
+  }
+  set Term(term: string) {
+    this._term = term;
+  }
 
   get LinkTarget(): string {
-    switch(this.TagType) {
+    switch (this.TagType) {
       case TagTypeEnum.LearnQuestionBank:
         return '/learn/questionbank/display/' + this.TagID.toString();
 
@@ -324,10 +349,23 @@ export class Tag {
 
 // Tag count
 export class TagCount {
-  public Term: string;
-  public TermCount: number;
+  private _term: string;
+  private _termcount: number;
 
-  public onSetData(data?: any) {
+  get Term(): string {
+    return this._term;
+  }
+  set Term(term: string) {
+    this._term = term;
+  }
+  get TermCount(): number {
+    return this._termcount;
+  }
+  set TermCount(tc: number) {
+    this._termcount = tc;
+  }
+
+  public onSetData(data?: any): void {
     if (data && data.term) {
       this.Term = data.term;
     }
@@ -339,11 +377,42 @@ export class TagCount {
 
 // App language: the language set which supported by current app.
 export class AppLanguage {
-  public Lcid: number;
-  public IsoName: string;
-  public EnglishName: string;
-  public NativeName: string;
-  public AppFlag: boolean;
+  private _lcid: number;
+  private _isoname: string;
+  private _enname: string;
+  private _navname: string;
+  private _appflag: boolean;
+
+  get Lcid(): number {
+    return this._lcid;
+  }
+  set Lcid(lcid: number) {
+    this._lcid = lcid;
+  }
+  get IsoName(): string {
+    return this._isoname;
+  }
+  set IsoName(iso: string) {
+    this._isoname = iso;
+  }
+  get EnglishName(): string {
+    return this._enname;
+  }
+  set EnglishName(enname: string) {
+    this._enname = enname;
+  }
+  get NativeName(): string {
+    return this._navname;
+  }
+  set NativeName(navname: string) {
+    this._navname = navname;
+  }
+  get AppFlag(): boolean {
+    return this._appflag;
+  }
+  set AppFlag(af: boolean) {
+    this._appflag = af;
+  }
 }
 
 /**
