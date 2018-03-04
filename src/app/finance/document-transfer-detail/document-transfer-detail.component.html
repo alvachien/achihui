@@ -17,8 +17,8 @@
 
         <!-- Desp -->
         <mat-form-field class="demo-full-width">
-          <input matInput type="text" placeholder="{{'Common.Description' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
-            name="desp">
+          <input matInput type="text" placeholder="{{'Common.Description' | translate}}" [readonly]="!isFieldChangable" 
+            [(ngModel)]="detailObject.Desp" maxlength="44" name="desp">
         </mat-form-field>
 
         <!-- Currency -->

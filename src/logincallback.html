@@ -14,7 +14,7 @@
   <script>
     //Oidc.Log.logger = console;
     new Oidc.UserManager().signinRedirectCallback().then(function (user) {
-      if (user == null) {
+      if (user === null || user === undefined) {
         document.getElementById("waiting").style.display = "none";
         document.getElementById("error").innerText = "No sign-in request pending.";
       }

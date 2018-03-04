@@ -55,7 +55,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
     return this._authService.authSubject.value.isAuthorized;
   }
   get IsHomeChosed(): boolean {
-    return this._homeDefService.ChosedHome !== null;
+    return this._homeDefService.ChosedHome !== undefined;
   }
 
   constructor(private _authService: AuthService,
@@ -177,7 +177,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
   }
 
   public onFinanceTranTypeChartRedraw(): void {
-    if (this.mapFinTTIn !== null || this.mapFinTTOut !== null) {
+    if (this.mapFinTTIn !== undefined || this.mapFinTTOut !== undefined) {
       this.dataFinTTIn = [];
       this.dataFinTTOut = [];
 

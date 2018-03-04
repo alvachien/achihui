@@ -12,7 +12,7 @@ import { AuthService, HomeDefDetailService, FinCurrencyService } from '../servic
 })
 export class HomeDefDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
-  public detailObject: HomeDef | null;
+  public detailObject: HomeDef | undefined;
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
 
@@ -65,7 +65,7 @@ export class HomeDefDetailComponent implements OnInit {
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
           this._homedefService.readHomeDefEvent.subscribe((x: any) => {
-            if (x !== null) {
+            if (x !== undefined) {
               this.detailObject = x;
             } else {
               // Show error dialog!
@@ -85,12 +85,12 @@ export class HomeDefDetailComponent implements OnInit {
   }
 
   public canSubmit(): boolean {
-    if (this.detailObject.Name === null || this.detailObject.Name === undefined
+    if (this.detailObject.Name === undefined || this.detailObject.Name === undefined
       || this.detailObject.Name.length <= 0) {
       return false;
     }
 
-    if (this.detailObject.BaseCurrency === null || this.detailObject.BaseCurrency === undefined
+    if (this.detailObject.BaseCurrency === undefined || this.detailObject.BaseCurrency === undefined
       || this.detailObject.BaseCurrency.length <= 0) {
       return false;
     }
@@ -100,7 +100,7 @@ export class HomeDefDetailComponent implements OnInit {
 
   public onSubmit(): void {
     // Submit to DB
-    if (this.detailObject.ID === null || this.detailObject.ID === undefined) {
+    if (this.detailObject.ID === undefined || this.detailObject.ID === undefined) {
       this.detailObject.Host = this._authService.authSubject.value.getUserId();
 
       this._homedefService.createEvent.subscribe((x: any) => {

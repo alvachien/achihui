@@ -49,7 +49,7 @@ export class ControlCenterDataSource extends DataSource<any> {
 export class ControlCenterListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'name', 'comment'];
-  dataSource: ControlCenterDataSource | null;
+  dataSource: ControlCenterDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: FinanceStorageService,

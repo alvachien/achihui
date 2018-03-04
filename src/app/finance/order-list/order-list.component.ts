@@ -47,7 +47,7 @@ export class OrderDataSource extends DataSource<any> {
 export class OrderListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'name', 'ValidFrom', 'ValidTo', 'comment'];
-  dataSource: OrderDataSource | null;
+  dataSource: OrderDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   includeInvalid: boolean = false;
 

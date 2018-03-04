@@ -45,7 +45,7 @@ export class BookCategoryDataSource extends DataSource<any> {
 })
 export class BookCategoryListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
-  dataSource: BookCategoryDataSource | null;
+  dataSource: BookCategoryDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LibraryStorageService,

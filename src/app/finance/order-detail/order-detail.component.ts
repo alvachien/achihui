@@ -52,7 +52,7 @@ export class OrderDetailComponent implements OnInit {
   }
 
   displayedColumns: string[] = ['rid', 'ccid', 'precent', 'comment'];
-  dataSource: SRuleDataSource | null;
+  dataSource: SRuleDataSource | undefined;
   ruleOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;

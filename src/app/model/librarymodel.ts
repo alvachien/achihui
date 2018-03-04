@@ -22,8 +22,8 @@ export class Person extends hih.MultipleNamesObject {
 
   get ID(): number { return this._id; }
   set ID(id: number) { this._id = id; }
-  get HID(): number | null { return this._hid; }
-  set HID(hid: number | null) { this._hid = hid; }
+  get HID(): number | undefined { return this._hid; }
+  set HID(hid: number | undefined) { this._hid = hid; }
   get Gender(): GenderEnum { return this._gend; }
   set Gender(gen: GenderEnum) { this._gend = gen; }
   get ShortIntro(): string { return this._shrtintro; }
@@ -44,8 +44,8 @@ export class Location extends hih.BaseModel {
 
   get ID(): number { return this._id; }
   set ID(id: number) { this._id = id; }
-  get HID(): number | null { return this._hid; }
-  set HID(hid: number | null) { this._hid = hid; }
+  get HID(): number | undefined { return this._hid; }
+  set HID(hid: number | undefined) { this._hid = hid; }
   get Name(): string { return this._name; }
   set Name(name: string) { this._name = name; }
   get IsDevice(): boolean { return this._isdevice; }
@@ -106,12 +106,12 @@ export class BookCategory extends hih.BaseModel {
 
   get ID(): number { return this._id; }
   set ID(id: number) { this._id = id; }
-  get HID(): number | null { return this._hid; }
-  set HID(hid: number | null) { this._hid = hid; }
+  get HID(): number | undefined { return this._hid; }
+  set HID(hid: number | undefined) { this._hid = hid; }
   get Name(): string { return this._name; }
   set Name(name: string) { this._name = name; }
-  get ParentID(): number | null { return this._parid; }
-  set ParentID(pid: number | null) { this._parid = pid; }
+  get ParentID(): number | undefined { return this._parid; }
+  set ParentID(pid: number | undefined) { this._parid = pid; }
   get Others(): string { return this._others; }
   set Others(oth: string) { this._others = oth; }
 

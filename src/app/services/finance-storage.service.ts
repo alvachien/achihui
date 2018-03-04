@@ -341,7 +341,7 @@ export class FinanceStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      if (status !== null && status !== undefined) {
+      if (status !== undefined && status !== undefined) {
         params = params.append('status', status.toString());
       }
 

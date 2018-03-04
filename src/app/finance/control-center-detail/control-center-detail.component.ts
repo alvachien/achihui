@@ -18,7 +18,7 @@ export class ControlCenterDetailComponent implements OnInit {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
-  public detailObject: ControlCenter | null;
+  public detailObject: ControlCenter | undefined;
   public uiMode: UIMode = UIMode.Create;
 
   constructor(private _dialog: MatDialog,

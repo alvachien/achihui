@@ -50,7 +50,7 @@ export class DocumentDataSource extends DataSource<any> {
 export class DocumentListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
-  dataSource: DocumentDataSource | null;
+  dataSource: DocumentDataSource | undefined;
   selectedDocScope: OverviewScopeEnum;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 

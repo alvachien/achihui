@@ -1058,7 +1058,7 @@ export class SettlementRule {
     }
 
     // Control center
-    if (context !== null || context !== undefined || context.ControlCenters.length > 0) {
+    if (context !== undefined || context !== undefined || context.ControlCenters.length > 0) {
       if (context.ControlCenters.findIndex((value: any) => {
         return value.Id === this.ControlCenterId;
       }) !== -1) {
@@ -1281,6 +1281,26 @@ export class Document extends hih.BaseModel {
       msg.MsgContent = 'Finance.DocumentTypeFetchFailed';
       this.VerifiedMsgs.push(msg);
       chkrst = false;
+    }
+    // Desp
+    if (!this.Desp) {
+      let msg: hih.InfoMessage = new hih.InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = hih.MessageType.Error;
+      msg.MsgTitle = 'Finance.DespIsMust';
+      msg.MsgContent = 'Finance.DespIsMust';
+      this.VerifiedMsgs.push(msg);
+      chkrst = false;
+    } else {
+      if (this.Desp.length > 44) {
+        let msg: hih.InfoMessage = new hih.InfoMessage();
+        msg.MsgTime = moment();
+        msg.MsgType = hih.MessageType.Error;
+        msg.MsgTitle = 'Finance.DespIsTooLong';
+        msg.MsgContent = 'Finance.DespIsTooLong';
+        this.VerifiedMsgs.push(msg);
+        chkrst = false;          
+      }      
     }
 
     // Currency check
@@ -1633,6 +1653,16 @@ export class DocumentItem {
       msg.MsgContent = 'Finance.DespIsMust';
       this.VerifiedMsgs.push(msg);
       chkrst = false;
+    } else {
+      if (this.Desp.length > 44) {
+        let msg: hih.InfoMessage = new hih.InfoMessage();
+        msg.MsgTime = moment();
+        msg.MsgType = hih.MessageType.Error;
+        msg.MsgTitle = 'Finance.DespIsTooLong';
+        msg.MsgContent = 'Finance.DespIsTooLong';
+        this.VerifiedMsgs.push(msg);
+        chkrst = false;          
+      }
     }
     // Either control center or order must be exist
     let bccord: boolean = true;

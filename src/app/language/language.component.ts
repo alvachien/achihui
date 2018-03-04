@@ -48,7 +48,7 @@ export class LanguageDataSource extends DataSource<any> {
 export class LanguageComponent implements OnInit {
 
   displayedColumns: string[] = ['lcid', 'isoname', 'enname', 'nvname', 'appflag'];
-  dataSource: LanguageDataSource | null;
+  dataSource: LanguageDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LanguageService) {

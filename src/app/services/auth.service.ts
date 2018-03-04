@@ -152,7 +152,7 @@ export class AuthService {
 
   removeUser(): void {
     this.mgr.removeUser().then(() => {
-      this.userLoadededEvent.emit(null);
+      this.userLoadededEvent.emit(undefined);
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: user removed');
       }

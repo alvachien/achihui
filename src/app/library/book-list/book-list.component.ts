@@ -47,7 +47,7 @@ export class LibBookDataSource extends DataSource<any> {
 export class BookListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
-  dataSource: LibBookDataSource | null;
+  dataSource: LibBookDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LibraryStorageService,

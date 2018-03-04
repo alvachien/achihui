@@ -47,7 +47,7 @@ export class LearnObjectDataSource extends DataSource<any> {
 export class ObjectListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
-  dataSource: LearnObjectDataSource | null;
+  dataSource: LearnObjectDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isSlideMode: boolean = false;
 

@@ -61,7 +61,7 @@
         <!-- Desp -->
         <mat-form-field class="demo-full-width">
           <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
-            name="desp" #desp maxlength="45">
+            name="desp" #desp maxlength="44">
           <mat-hint align="end">{{desp.value.length}} / 45</mat-hint>
         </mat-form-field>
 
@@ -166,8 +166,8 @@
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
                   <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.Desp"
-                    name="tmpdesp" #tmpdesp maxlength="45">
-                  <mat-hint align="end">{{tmpdesp.value.length}} / 45</mat-hint>
+                    name="tmpdesp" #tmpdesp maxlength="44">
+                  <mat-hint align="end">{{tmpdesp.value.length}} / 44</mat-hint>
                 </mat-form-field>
               </mat-cell>
             </ng-container>

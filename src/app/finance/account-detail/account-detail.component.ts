@@ -101,21 +101,21 @@ export class AccountDetailComponent implements OnInit {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
   get isAssetAccount(): boolean {
-    if (this.detailObject !== null && (this.detailObject.CategoryId === FinanceAccountCategory_Asset)) {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === FinanceAccountCategory_Asset)) {
       return true;
     }
 
     return false;
   }
   get isADPAccount(): boolean {
-    if (this.detailObject !== null && (this.detailObject.CategoryId === FinanceAccountCategory_AdvancePayment)) {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === FinanceAccountCategory_AdvancePayment)) {
       return true;
     }
 
     return false;
   }
   get isLoanAccount(): boolean {
-    if (this.detailObject !== null && (this.detailObject.CategoryId === FinanceAccountCategory_Loan)) {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === FinanceAccountCategory_Loan)) {
       return true;
     }
 

@@ -46,7 +46,7 @@ export class QuestionBankDataSource extends DataSource<any> {
 export class QuestionBankListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'type', 'question', 'briefawr' ];
-  dataSource: QuestionBankDataSource | null;
+  dataSource: QuestionBankDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   allTags: string[] = [];
   isSlideMode: boolean = false;

@@ -51,7 +51,7 @@ export interface AccountStatusUI {
 export class AccountListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'name', 'ctgy', 'comment'];
-  dataSource: AccountDataSource | null;
+  dataSource: AccountDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   arrayStatus: UIDisplayString[] = [];
   selectedStatus: AccountStatusEnum | undefined = AccountStatusEnum.Normal;

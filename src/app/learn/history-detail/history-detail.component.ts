@@ -17,7 +17,7 @@ export class HistoryDetailComponent implements OnInit {
 
   private routerID: string = ''; // Current history ID in routing
   public currentMode: string;
-  public detailObject: LearnHistory | null;
+  public detailObject: LearnHistory | undefined;
   public uiMode: UIMode = UIMode.Create;
 
   constructor(private _dialog: MatDialog,

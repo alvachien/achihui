@@ -49,11 +49,11 @@ export class HomeDefDataSource extends DataSource<any> {
 export class HomeDefListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'name', 'host', 'currency', 'details'];
-  dataSource: HomeDefDataSource | null;
+  dataSource: HomeDefDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   get IsCurrentHomeChosed(): boolean {
-    return this._homedefService.ChosedHome !== null;
+    return this._homedefService.ChosedHome !== undefined;
   }
 
   constructor(public _homedefService: HomeDefDetailService,

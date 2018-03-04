@@ -47,7 +47,7 @@ export class AssetCategoryDataSource extends DataSource<any> {
 })
 export class AssetCategoryListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'desp'];
-  dataSource: AssetCategoryDataSource | null;
+  dataSource: AssetCategoryDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: FinanceStorageService,

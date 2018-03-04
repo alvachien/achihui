@@ -423,6 +423,7 @@
     "NoExchangeRate": "No exchange rate",
     "UnnecessaryExchangeRate": "Exchange rate is unnecessary for base currency",
     "DespIsMust": "Desp is must",
+    "DespIsTooLong": "Desp is too long",
     "NoExtraInfo": "No extra info",
     "NoTmpDocGenerated": "No template docs, you shall generate them first"
   },

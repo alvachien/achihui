@@ -122,7 +122,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   momScopes: UIDisplayString[];
 
   displayedBSColumns: string[] = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
-  dataSourceBS: ReportBSDataSource | null;
+  dataSourceBS: ReportBSDataSource | undefined;
   ReportBS: BalanceSheetReport[] = [];
   ReportBSEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorBS') paginatorBS: MatPaginator;

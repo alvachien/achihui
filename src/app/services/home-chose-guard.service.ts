@@ -30,8 +30,7 @@ export class HomeChoseGuardService {
     // Has logged in but no home chosen yet.
     this.homedefService.RedirectURL = url;
 
-    if (this.homedefService.ChosedHome === null
-      || this.homedefService.ChosedHome === undefined) {
+    if (this.homedefService.ChosedHome === undefined) {
         // Navigate to other page
         this.router.navigate(['/homedef']);
         return false;

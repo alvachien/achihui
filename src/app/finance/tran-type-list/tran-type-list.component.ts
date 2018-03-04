@@ -72,7 +72,7 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['id', 'name', 'expflag', 'fulldisplay', 'hierlvl', 'parent', 'comment'];
   // !!! Second option !!!
-  // ttDatabase: TranTypeListDao | null;
+  // ttDatabase: TranTypeListDao | undefined;
   // dataSource = new MatTableDataSource();
   // resultsLength = 0;
   // isLoadingResults = false;

@@ -34,7 +34,8 @@
         </mat-form-field>        
         
         <mat-form-field class="demo-full-width">
-          <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp" name="dsp">
+          <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" maxlength="44"
+            [(ngModel)]="detailObject.Desp" name="dsp">
         </mat-form-field>
 
         <!-- Exchange rate -->
@@ -125,7 +126,7 @@
               <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field class="demo-full-width">
-                  <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" 
+                  <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" maxlength="44"
                     [readonly]="!isFieldChangable" [(ngModel)]="row.Desp" name="itdesp">
                 </mat-form-field> 
               </mat-cell>

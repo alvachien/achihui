@@ -54,7 +54,7 @@ export class DocumentNormalDetailComponent implements OnInit {
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
   displayedColumns: string[] = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
-  dataSource: NormalDocumentItemDataSource | null;
+  dataSource: NormalDocumentItemDataSource | undefined;
   itemOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
 
   get isFieldChangable(): boolean {

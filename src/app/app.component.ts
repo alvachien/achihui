@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
     private _sanitizer: DomSanitizer) {
     // Setup the translate
     this.userDisplayAs = '';
-    this.curChosenHome = null;
+    this.curChosenHome = undefined;
 
     // Wakeup the API
     this._http.get(environment.ApiUrl + '/api/wakeup').subscribe((y) => {

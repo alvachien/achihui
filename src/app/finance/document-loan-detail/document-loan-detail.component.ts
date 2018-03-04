@@ -54,7 +54,7 @@ export class DocumentLoanDetailComponent implements OnInit {
   separatorKeysCodes: any[] = [ENTER, COMMA];
   tmpDocOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'InterestAmount', 'Desp'];
-  dataSource: TemplateDocLoanDataSource | null;
+  dataSource: TemplateDocLoanDataSource | undefined;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;

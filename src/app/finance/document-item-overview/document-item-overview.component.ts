@@ -143,10 +143,10 @@ export class DocumentItemOverviewComponent implements OnInit {
   displayedByControlCenterColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   displayedByOrderColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   displayedTmpDocColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
-  dataSourceByAccount: DocItemByAccountDataSource | null;
-  dataSourceByControlCenter: DocItemByControlCenterDataSource | null;
-  dataSourceByOrder: DocItemByOrderDataSource | null;
-  dataSourceTmpDoc: TmpDocStillOpenDataSource | null;
+  dataSourceByAccount: DocItemByAccountDataSource | undefined;
+  dataSourceByControlCenter: DocItemByControlCenterDataSource | undefined;
+  dataSourceByOrder: DocItemByOrderDataSource | undefined;
+  dataSourceTmpDoc: TmpDocStillOpenDataSource | undefined;
   DocItemByAccountEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   DocItemByControlCenterEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   DocItemByOrderEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);

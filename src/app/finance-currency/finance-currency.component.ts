@@ -49,7 +49,7 @@ export class CurrencyDataSource extends DataSource<any> {
 export class FinanceCurrencyComponent implements OnInit {
 
   displayedColumns: string[] = ['curr', 'name', 'symbol'];
-  dataSource: CurrencyDataSource | null;
+  dataSource: CurrencyDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _currService: FinCurrencyService,

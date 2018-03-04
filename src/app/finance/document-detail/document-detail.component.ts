@@ -55,7 +55,7 @@ export class DocumentDetailComponent implements OnInit {
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
   displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order'];
-  dataSource: DocumentItemDataSource | null;
+  dataSource: DocumentItemDataSource | undefined;
   itemOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
 
   get isFieldChangable(): boolean {

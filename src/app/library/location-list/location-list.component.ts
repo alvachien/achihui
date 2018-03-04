@@ -47,7 +47,7 @@ export class LibLocationDataSource extends DataSource<any> {
 export class LocationListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
-  dataSource: LibLocationDataSource | null;
+  dataSource: LibLocationDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LibraryStorageService,
