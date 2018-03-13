@@ -19,6 +19,9 @@ import { RecurrEventComponent } from './recurr-event';
 import { RecurrEventDetailComponent } from './recurr-event-detail';
 import { GeneralEventComponent } from './general-event';
 import { RecurrEventListComponent } from './recurr-event-list';
+import { HabitListComponent } from './habit-list';
+import { HabitDetailComponent } from './habit-detail';
+import { HabitComponent } from './habit';
 
 @NgModule({
   imports: [
@@ -40,6 +43,9 @@ import { RecurrEventListComponent } from './recurr-event-list';
     RecurrEventDetailComponent,
     GeneralEventComponent,
     RecurrEventListComponent,
+    HabitListComponent,
+    HabitDetailComponent,
+    HabitComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
