@@ -320,3 +320,178 @@ export class RecurEvent extends hih.BaseModel {
     return robj;
   }
 }
+
+/**
+ * Habit event
+ */
+export class EventHabit extends hih.BaseModel {
+  private _id: number;
+  private _hid: number;
+  private _name: string;
+  private _startDate: moment.Moment;
+  private _endDate: moment.Moment;
+  public repeatType: hih.RepeatFrequencyEnum;
+  public content: string;
+  public count: number;
+  public isPublic: boolean;
+  public assignee: string;
+  public details: EventHabitDetail[] = [];
+
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HID(): number {
+    return this._hid;
+  }
+  set HID(hid: number) {
+    this._hid = hid;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get StartDate(): moment.Moment {
+    return this._startDate;
+  }
+  get StartDateDisplayString(): string {
+    return this._startDate.format(hih.MomentDateFormat);
+  }
+  set StartDate(sd: moment.Moment) {
+    this._startDate = sd;
+  }
+  get EndDate(): moment.Moment {
+    return this._endDate;
+  }
+  get EndDateDisplayString(): string {
+    return this._endDate.format(hih.MomentDateFormat);
+  }
+  set EndDate(ed: moment.Moment) {
+    this._endDate = ed;
+  }
+
+  onSetData(data: any): void {
+    super.onSetData(data);
+
+    if (data && data.id) {
+      this._id = +data.id;
+    }
+    if (data && data.hid) {
+      this._hid = +data.hid;
+    }
+    if (data && data.name) {
+      this._name = data.name;
+    }
+    if (data && data.assignee) {
+      this.assignee = data.assignee;
+    }
+    if (data && data.content) {
+      this.content = data.content;
+    }
+    if (data && data.count) {
+      this.count = data.count;
+    }
+    if (data && data.startDate) {
+      this._startDate = moment(data.startDate, hih.MomentDateFormat);
+    }
+    if (data && data.endDate) {
+      this._endDate = moment(data.endDate, hih.MomentDateFormat);
+    }
+    if (data && data.isPublic) {
+      this.isPublic = data.isPublic;
+    }
+    if (data && data.rptType) {
+      this.repeatType = data.rptType;
+    } else {
+      this.repeatType = hih.RepeatFrequencyEnum.Month;
+    }
+
+    if (data && data.details) {
+      this.details = [];
+      for (let dtl of data.details) {
+        let detail: EventHabitDetail = new EventHabitDetail();
+        detail.onSetData(dtl);
+        this.details.push(detail);
+      }
+    }
+  }
+
+  writeJSONObject(): any {
+    let robj: any = super.writeJSONObject();
+    robj.id = this._id;
+    robj.hid = this._hid;
+    robj.name = this._name;
+    if (this.assignee) {
+      robj.assignee = this.assignee;
+    }
+    robj.content = this.content;
+    robj.startDate = this.StartDateDisplayString;
+    robj.endDate = this.EndDateDisplayString;
+    robj.isPublic = this.isPublic;
+    robj.rptType = this.repeatType;
+    robj.count = this.count;
+
+    return robj;
+  }
+}
+
+export class EventHabitDetail {
+  private _id: number;
+  private _habitID: number;
+  private _startDate: moment.Moment;
+  private _endDate: moment.Moment;
+
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HabitID(): number {
+    return this._habitID;
+  }
+  set HID(hid: number) {
+    this._habitID = hid;
+  }
+  get StartDate(): moment.Moment {
+    return this._startDate;
+  }
+  get StartDateDisplayString(): string {
+    return this._startDate.format(hih.MomentDateFormat);
+  }
+  set StartDate(sd: moment.Moment) {
+    this._startDate = sd;
+  }
+  get EndDate(): moment.Moment {
+    return this._endDate;
+  }
+  get EndDateDisplayString(): string {
+    return this._endDate.format(hih.MomentDateFormat);
+  }
+  set EndDate(ed: moment.Moment) {
+    this._endDate = ed;
+  }
+
+  onSetData(data: any): void {
+    if (data && data.id) {
+      this._id = +data.id;
+    }
+    if (data && data.habitID) {
+      this._habitID = +data.habitID;
+    }
+    if (data && data.startDate) {
+      this._startDate = moment(data.startDate, hih.MomentDateFormat);
+    }
+    if (data && data.endDate) {
+      this._endDate = moment(data.endDate, hih.MomentDateFormat);
+    }
+  }
+}
+
+export class EventHabitCheckin {
+
+}

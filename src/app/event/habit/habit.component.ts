@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'hih-event-habit',
-  templateUrl: './habit.component.html',
-  styleUrls: ['./habit.component.scss',]
+  template: `<router-outlet></router-outlet>`,
+  styleUrls: ['./habit.component.scss',],
 })
 export class HabitComponent implements OnInit {
 

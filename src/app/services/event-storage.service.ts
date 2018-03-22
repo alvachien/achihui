@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, MomentDateFormat, GeneralEvent, RecurEvent } from '../model';
+import { LogLevel, MomentDateFormat, GeneralEvent, RecurEvent, EventHabit } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -237,6 +237,75 @@ export class EventStorageService {
         }
 
         return arRst;
+      });
+  }
+
+  /**
+   * Get All habit events
+   * @param top Amount of records to fetch
+   * @param skip Skip the records
+   */
+  public fetchAllHabitEvents(top: number, skip: number): Observable<any> {
+    // Fetch all events
+    const apiurl: string = environment.ApiUrl + '/api/eventhabit';
+    const curhid: number = this._homeService.ChosedHome.ID;
+    const requestUrl: any = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+                      .append('Accept', 'application/json')
+                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
+  }
+
+  /**
+   * Read habit event
+   * @param eid Event ID
+   */
+  public readHabitEvent(eid: number): Observable<EventHabit> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/eventhabit/' + eid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readHabitEvent in EventStorageService: ${response}`);
+        }
+
+        let hd: EventHabit = new EventHabit();
+        hd.onSetData(response);
+        return hd;
+      });
+  }
+
+  /**
+   * Create habit event
+   * @param hevnt Event to  create
+   */
+  public createHabitEvent(hevnt: EventHabit): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/eventhabit';
+    let jdata: string = hevnt.writeJSONString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.post(apiurl, jdata, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
       });
   }
 }

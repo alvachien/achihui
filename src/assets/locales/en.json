@@ -128,6 +128,8 @@
     "Event": "Event",
     "RecurEvents": "Recur Events",
     "RecurEvent": "Recur Event",
+    "HabitEvents": "Habit Events",
+    "HabitEvent": "Habit Event",
     "EventsByTimeline": "Events by Timeline",
     "SentBox": "Sent Box",
     "Assignee": "Assignee",

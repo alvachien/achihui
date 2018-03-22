@@ -128,6 +128,8 @@
     "Event": "事务",
     "RecurEvents": "重复事务",
     "RecurEvent": "重复事务",
+    "HabitEvents": "习惯性事务",
+    "HabitEvent": "习惯性事务",
     "EventsByTimeline": "时间维度的事务",
     "SentBox": "发件箱",
     "Assignee": "负责人",
