@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, GeneralEvent, RecurEvent } from '../../model';
+import { LogLevel, EventHabit, EventHabitDetail } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
 import { Observable } from 'rxjs/Observable';
 import { merge } from 'rxjs/observable/merge';
@@ -19,7 +19,7 @@ import { switchMap } from 'rxjs/operators/switchMap';
 })
 export class HabitListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'assignee'];
-  dataSource: MatTableDataSource<RecurEvent>;
+  dataSource: MatTableDataSource<EventHabit>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -67,7 +67,7 @@ export class HabitListComponent implements OnInit, AfterViewInit {
     this.fetchRecurEvents();
   }
 
-  public onHabitEventRowSelect(row: GeneralEvent): void {
+  public onHabitEventRowSelect(row: EventHabit): void {
     this._router.navigate(['/event/habit/display/' + row.ID.toString()]);
   }
 
@@ -83,10 +83,10 @@ export class HabitListComponent implements OnInit, AfterViewInit {
         // Flip flag to show that loading has finished.
         this.isLoadingResults = false;
 
-        let rslts: RecurEvent[] = [];
+        let rslts: EventHabit[] = [];
         if (data && data.contentList && data.contentList instanceof Array) {
           for (let ci of data.contentList) {
-            let rst: RecurEvent = new RecurEvent();
+            let rst: EventHabit = new EventHabit();
             rst.onSetData(ci);
 
             rslts.push(rst);

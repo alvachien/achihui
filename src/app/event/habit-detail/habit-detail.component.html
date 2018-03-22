@@ -35,6 +35,11 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="number" placeholder="{{'Common.Count' | translate}}" [readonly]="!isFieldChangable" 
+          [(ngModel)]="detailObject.Count" name="cnt" #eventcnt>
+      </mat-form-field>
           
       <mat-form-field>
         <textarea matInput type="text" placeholder="{{'Common.Content' | translate}}" [readonly]="!isFieldChangable" 

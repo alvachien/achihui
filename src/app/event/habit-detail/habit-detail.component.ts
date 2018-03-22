@@ -90,7 +90,7 @@ export class HabitDetailComponent implements OnInit {
 
   public onCancel(): void {
     // Jump to list page
-    this._router.navigate(['/event/recur']);
+    this._router.navigate(['/event/habit']);
   }
 
   public onGenerateDetail(): void {
@@ -114,12 +114,12 @@ export class HabitDetailComponent implements OnInit {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
   private createImpl(): void {
-    // this._storageService.createRecurEvent(this.detailObject).subscribe((x) => {
-    //   // Navigate to display
-    //   let gevnt: RecurEvent = new RecurEvent();
-    //   gevnt.onSetData(x);
-    //   this._router.navigate(['/event/recur/display/' + gevnt.ID.toString()]);
-    // });
+    this._storageService.createHabitEvent(this.detailObject).subscribe((x) => {
+      // Navigate to display
+      let gevnt: EventHabit = new EventHabit();
+      gevnt.onSetData(x);
+      this._router.navigate(['/event/habit/display/' + gevnt.ID.toString()]);
+    });
   }
   private updateImpl(): void {
     // TBD.
