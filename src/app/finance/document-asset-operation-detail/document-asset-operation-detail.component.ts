@@ -277,6 +277,8 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       sobj.AccountVM = acntobj.writeJSONObject();
 
       this._storageService.createAssetDocument(sobj, this.detailObject.isBuyin);
+    } else if (this.uiMode === UIMode.Change) {
+      // Change current document
     }
   }
 
