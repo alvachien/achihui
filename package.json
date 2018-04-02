@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "private": true,
   "description": "UI layer for HIH, built with Angular 5/6",
   "keywords": [
@@ -16,8 +16,7 @@
     "test": "karma start ./karma.conf.js"
   },
   "engines": {
-    "node": ">4.4 < 7",
-    "npm": ">3"
+    "node": ">= 5.4.1"
   },
   "repository": {
     "type": "git",
