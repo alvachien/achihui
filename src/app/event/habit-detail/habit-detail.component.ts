@@ -15,7 +15,7 @@ import { switchMap } from 'rxjs/operators/switchMap';
 @Component({
   selector: 'hih-event-habit-detail',
   templateUrl: './habit-detail.component.html',
-  styleUrls: ['./habit-detail.component.scss',]
+  styleUrls: ['./habit-detail.component.scss', ],
 })
 export class HabitDetailComponent implements OnInit {
   private uiMode: UIMode;
@@ -73,7 +73,7 @@ export class HabitDetailComponent implements OnInit {
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this.isLoadingData = true;
 
-            this._storageService.readHabitEvent(this.routerID).subscribe((y) => {
+            this._storageService.readHabitEvent(this.routerID).subscribe((y: any) => {
               this.detailObject = y;
               this.isLoadingData = false;
             });
@@ -93,10 +93,10 @@ export class HabitDetailComponent implements OnInit {
   }
 
   public onGenerateDetail(): void {
-    // this._storageService.calcRecurEvents(this.detailObject).subscribe((x: any) => {
-    //   // Show the result.
-    //   this.dataSourceSimulateResult.data = x;
-    // });
+    this._storageService.generateHabitEvent(this.detailObject).subscribe((x: any) => {
+      // Show the result.
+      this.dataSourceSimulateResult.data = x;
+    });
   }
 
   public onSubmit(): void {
@@ -113,7 +113,7 @@ export class HabitDetailComponent implements OnInit {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
   private createImpl(): void {
-    this._storageService.createHabitEvent(this.detailObject).subscribe((x) => {
+    this._storageService.createHabitEvent(this.detailObject).subscribe((x: any) => {
       // Navigate to display
       let gevnt: EventHabit = new EventHabit();
       gevnt.onSetData(x);

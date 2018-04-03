@@ -289,6 +289,27 @@ export class EventStorageService {
   }
 
   /**
+   * Generate detail habit item
+   * @param hevnt Event to  create
+   */
+  public generateHabitEvent(hevnt: EventHabit): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/eventhabit?geneMode=true';
+    let jdata: string = hevnt.writeJSONString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.post(apiurl, jdata, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      });
+  }
+
+  /**
    * Create habit event
    * @param hevnt Event to  create
    */
