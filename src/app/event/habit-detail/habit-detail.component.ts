@@ -26,7 +26,6 @@ export class HabitDetailComponent implements OnInit {
   arFrequencies: any = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   displayedColumns: string[] = ['name', 'startdate', 'enddate'];
   dataSourceSimulateResult: MatTableDataSource<EventHabitDetail> = new MatTableDataSource<EventHabitDetail>([]);
-  // arSimulateResults: GeneralEvent[] = [];
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
