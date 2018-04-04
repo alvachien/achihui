@@ -50,13 +50,13 @@
           <!-- Start  Column -->
           <ng-container matColumnDef="start">
             <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.StartDate' | translate}} </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.StartTimeFormatString}} </mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.StartDateFormatString}} </mat-cell>
           </ng-container>
 
           <!-- End Column -->
           <ng-container matColumnDef="end">
             <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.EndDate' | translate}} </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.EndTimeFormatString}} </mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.EndDateFormatString}} </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -64,7 +64,7 @@
           </mat-row>
         </mat-table>
 
-        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        <mat-paginator [pageSizeOptions]="[10, 20, 50, 100]"></mat-paginator>
       </div>
     </div>
   </mat-card-content>

@@ -69,7 +69,7 @@ export class AccountListComponent implements OnInit {
     this.dataSource = new AccountDataSource(this._storageService, this.paginator);
 
     Observable.forkJoin([
-      this._storageService.fetchAllAccounts(),
+      this._storageService.fetchAllAccounts(true, this.selectedStatus),
       this._storageService.fetchAllAccountCategories(),
     ]).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
@@ -97,7 +97,7 @@ export class AccountListComponent implements OnInit {
   }
 
   public onStatusChange(): void {
-    this._storageService.fetchAllAccounts(true, this.selectedStatus).subscribe((x) => {
+    this._storageService.fetchAllAccounts(true, this.selectedStatus).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
     });
   }

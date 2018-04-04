@@ -76,6 +76,7 @@ export class HabitDetailComponent implements OnInit {
 
             this._storageService.readHabitEvent(this.routerID).subscribe((y: any) => {
               this.detailObject = y;
+              this.dataSourceSimulateResult.data = this.detailObject.details;
               this.isLoadingData = false;
             });
           }

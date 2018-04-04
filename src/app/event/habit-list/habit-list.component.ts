@@ -15,7 +15,7 @@ import { switchMap } from 'rxjs/operators/switchMap';
 @Component({
   selector: 'hih-event-habit-list',
   templateUrl: './habit-list.component.html',
-  styleUrls: ['./habit-list.component.scss',]
+  styleUrls: ['./habit-list.component.scss', ],
 })
 export class HabitListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'assignee'];
@@ -53,8 +53,8 @@ export class HabitListComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this._homeDefService.curHomeMembers.subscribe((x) => {
-      this.fetchRecurEvents();
+    this._homeDefService.curHomeMembers.subscribe((x: any) => {
+      this.fetchHabitEvents();
     });
   }
 
@@ -64,14 +64,14 @@ export class HabitListComponent implements OnInit, AfterViewInit {
 
   public onRefresh(): void {
     // Refresh the whole list
-    this.fetchRecurEvents();
+    this.fetchHabitEvents();
   }
 
   public onHabitEventRowSelect(row: EventHabit): void {
     this._router.navigate(['/event/habit/display/' + row.ID.toString()]);
   }
 
-  public fetchRecurEvents(): void {
+  public fetchHabitEvents(): void {
     this.paginator.page
       .pipe(
       startWith({}),

@@ -358,7 +358,7 @@ export class EventHabit extends hih.BaseModel {
   get StartDate(): moment.Moment {
     return this._startDate;
   }
-  get StartDateDisplayString(): string {
+  get StartDateFormatString(): string {
     return this._startDate.format(hih.MomentDateFormat);
   }
   set StartDate(sd: moment.Moment) {
@@ -367,7 +367,7 @@ export class EventHabit extends hih.BaseModel {
   get EndDate(): moment.Moment {
     return this._endDate;
   }
-  get EndDateDisplayString(): string {
+  get EndDateFormatString(): string {
     return this._endDate.format(hih.MomentDateFormat);
   }
   set EndDate(ed: moment.Moment) {
@@ -417,7 +417,7 @@ export class EventHabit extends hih.BaseModel {
       this.repeatType = hih.RepeatFrequencyEnum.Month;
     }
 
-    if (data && data.details) {
+    if (data && data.details && data.details instanceof Array && data.details.length > 0) {
       this.details = [];
       for (let dtl of data.details) {
         let detail: EventHabitDetail = new EventHabitDetail();
@@ -436,8 +436,8 @@ export class EventHabit extends hih.BaseModel {
       robj.assignee = this.assignee;
     }
     robj.content = this.content;
-    robj.startDate = this.StartDateDisplayString;
-    robj.endDate = this.EndDateDisplayString;
+    robj.startDate = this.StartDateFormatString;
+    robj.endDate = this.EndDateFormatString;
     robj.isPublic = this.isPublic;
     robj.rptType = this.repeatType;
     robj.count = this.count;
@@ -446,18 +446,9 @@ export class EventHabit extends hih.BaseModel {
   }
 }
 
-export class EventHabitSimulateResult {
-  public name: string;
-  public startDate: moment.Moment;
-  public endDate: moment.Moment;
-  get StartDateDisplayString(): string {
-    return this.startDate.format(hih.MomentDateFormat);
-  }
-  get EndDateDisplayString(): string {
-    return this.endDate.format(hih.MomentDateFormat);
-  }
-}
-
+/**
+ * Event detail
+ */
 export class EventHabitDetail {
   private _id: number;
   private _habitID: number;
@@ -508,6 +499,9 @@ export class EventHabitDetail {
     }
     if (data && data.habitID) {
       this._habitID = +data.habitID;
+    }
+    if (data && data.name) {
+      this._name = data.name;
     }
     if (data && data.startDate) {
       this._startDate = moment(data.startDate, hih.MomentDateFormat);
