@@ -29,7 +29,7 @@
 
       <mat-form-field>
         <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}" [disabled]="!isFieldChangable" 
-          [ngModel]="detailObject!.RepeatType" (ngModelChange)="detailObject.RepeatType=$event" name="rpttype">
+          [ngModel]="detailObject!.repeatType" (ngModelChange)="detailObject.repeatType=$event" name="rpttype">
           <mat-option *ngFor="let rt of arFrequencies" [value]="rt.value">
             {{rt.i18nterm | translate}}
           </mat-option>
@@ -38,16 +38,16 @@
 
       <mat-form-field>
         <input matInput type="number" placeholder="{{'Common.Count' | translate}}" [readonly]="!isFieldChangable" 
-          [(ngModel)]="detailObject.Count" name="cnt" #eventcnt>
+          [(ngModel)]="detailObject.count" name="cnt" #eventcnt>
       </mat-form-field>
           
       <mat-form-field>
         <textarea matInput type="text" placeholder="{{'Common.Content' | translate}}" [readonly]="!isFieldChangable" 
-          [(ngModel)]="detailObject.Content" name="content" #eventcontent></textarea>
+          [(ngModel)]="detailObject.content" name="content" #eventcontent></textarea>
       </mat-form-field>
 
       <mat-form-field>
-        <mat-select placeholder="{{'Common.Assignee' | translate}}" [(ngModel)]="detailObject.Assignee" name="assgnee">
+        <mat-select placeholder="{{'Common.Assignee' | translate}}" [(ngModel)]="detailObject.assignee" name="assgnee">
           <mat-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
             {{mem.DisplayAs}} - {{ mem.User }} 
           </mat-option>

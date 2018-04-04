@@ -374,6 +374,13 @@ export class EventHabit extends hih.BaseModel {
     this._endDate = ed;
   }
 
+  constructor() {
+    super();
+
+    this._startDate = moment();
+    this._endDate = moment();
+  }
+
   onSetData(data: any): void {
     super.onSetData(data);
 
@@ -439,11 +446,24 @@ export class EventHabit extends hih.BaseModel {
   }
 }
 
+export class EventHabitSimulateResult {
+  public name: string;
+  public startDate: moment.Moment;
+  public endDate: moment.Moment;
+  get StartDateDisplayString(): string {
+    return this.startDate.format(hih.MomentDateFormat);
+  }
+  get EndDateDisplayString(): string {
+    return this.endDate.format(hih.MomentDateFormat);
+  }
+}
+
 export class EventHabitDetail {
   private _id: number;
   private _habitID: number;
   private _startDate: moment.Moment;
   private _endDate: moment.Moment;
+  private _name: string;
 
   get ID(): number {
     return this._id;
@@ -460,7 +480,7 @@ export class EventHabitDetail {
   get StartDate(): moment.Moment {
     return this._startDate;
   }
-  get StartDateDisplayString(): string {
+  get StartDateFormatString(): string {
     return this._startDate.format(hih.MomentDateFormat);
   }
   set StartDate(sd: moment.Moment) {
@@ -469,11 +489,17 @@ export class EventHabitDetail {
   get EndDate(): moment.Moment {
     return this._endDate;
   }
-  get EndDateDisplayString(): string {
+  get EndDateFormatString(): string {
     return this._endDate.format(hih.MomentDateFormat);
   }
   set EndDate(ed: moment.Moment) {
     this._endDate = ed;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
   }
 
   onSetData(data: any): void {

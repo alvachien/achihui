@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil } from '../../model';
+import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil, MomentDateFormat } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
 import { Observable } from 'rxjs/Observable';
 import { merge } from 'rxjs/observable/merge';
@@ -11,6 +11,7 @@ import { catchError } from 'rxjs/operators/catchError';
 import { map } from 'rxjs/operators/map';
 import { startWith } from 'rxjs/operators/startWith';
 import { switchMap } from 'rxjs/operators/switchMap';
+import * as moment from 'moment';
 
 @Component({
   selector: 'hih-event-habit-detail',
@@ -92,10 +93,22 @@ export class HabitDetailComponent implements OnInit {
     this._router.navigate(['/event/habit']);
   }
 
-  public onGenerateDetail(): void {
+  public onGenerateDetails(): void {
     this._storageService.generateHabitEvent(this.detailObject).subscribe((x: any) => {
       // Show the result.
-      this.dataSourceSimulateResult.data = x;
+      if (x instanceof Array && x.length > 0) {
+        this.detailObject.details = [];
+        for (let dtl of x) {
+          let ndtl: EventHabitDetail = new EventHabitDetail();
+          ndtl.StartDate = moment(dtl.startTimePoint, MomentDateFormat);
+          ndtl.EndDate = moment(dtl.endTimePoint, MomentDateFormat);
+          ndtl.Name = dtl.name;
+          this.detailObject.details.push(ndtl);
+        }
+      } else {
+        this.detailObject.details = [];
+      }
+      this.dataSourceSimulateResult.data = this.detailObject.details;
     });
   }
 
