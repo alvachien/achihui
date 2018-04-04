@@ -188,6 +188,7 @@ export class ReportComponent implements OnInit, OnDestroy {
       });
 
     this.changeGraphSize();
+    let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedMOMScope);
 
     Observable.forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -197,7 +198,7 @@ export class ReportComponent implements OnInit, OnDestroy {
       this._storageService.getReportBS(),
       this._storageService.getReportCC(),
       this._storageService.getReportOrder(),
-      this._storageService.getReportMonthOnMonth()
+      this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end),
     ]).subscribe((x: any) => {
       this.ReportBS = [];
       this.dataBSAccountDebit = [];
@@ -250,7 +251,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   public onMOMScopeChanged(): void {
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedMOMScope);
 
-    this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end).subscribe(x => {
+    this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end).subscribe((x: any) => {
       if (x instanceof Array && x.length > 0) {
         this.refreshMoMData(x);
       }

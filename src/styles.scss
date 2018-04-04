@@ -25,8 +25,16 @@ $ac-app-accent:  mat-palette($mat-light-blue, 200, 400, A100);
 $ac-app-warn:    mat-palette($mat-deep-orange);
 $ac-app-theme:   mat-light-theme($ac-app-primary, $ac-app-accent, $ac-app-warn);
 
+// Try some colors else
+//$ac-app-primary: mat-palette($mat-yellow);
+//$ac-app-accent:  mat-palette($mat-blue-grey);
+$ac-hih-primary: mat-palette($mat-blue-grey);
+$ac-hih-accent:  mat-palette($mat-amber, A200, A100, A400);
+$ac-hih-warn:    mat-palette($mat-deep-orange);
+$ac-hih-theme:   mat-light-theme($ac-hih-primary, $ac-hih-accent, $ac-hih-warn);
+
 // Include the default theme styles.
-@include angular-material-theme($ac-app-theme);
+@include angular-material-theme($ac-hih-theme);
 
 // Define an alternate dark theme.
 $dark-primary: mat-palette($mat-blue-grey);
@@ -42,4 +50,3 @@ $dark-theme:   mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
 }
 
 @import '../node_modules/bootstrap/scss/bootstrap';
-
