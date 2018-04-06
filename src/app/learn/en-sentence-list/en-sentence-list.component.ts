@@ -50,25 +50,32 @@ export class EnSentenceListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'sent' ];
   dataSource: EnSentenceDataSource | undefined = undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: LearnStorageService,
-    private _router: Router) { }
+    private _router: Router) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngOnInit...');
     }
 
+    this.isLoadingResults = true;
     this.dataSource = new EnSentenceDataSource(this._storageService, this.paginator);
 
-    Observable.forkJoin([
-      this._storageService.fetchAllEnSentences(),
-    ]).subscribe((x: any) => {
-      // Just ensure the REQUEST has been sent
-      if (x) {
+    this._storageService.fetchAllEnSentences()
+      .subscribe((x: any) => {
+        // Just ensure the REQUEST has been sent
+        if (x) {
+          // Do nothing
+        }
+      }, (error: any) => {
         // Do nothing
-      }
-    });
+      }, () => {
+        this.isLoadingResults = false;
+      });
   }
 
   public onCreateEnSentence(): void {
@@ -88,6 +95,13 @@ export class EnSentenceListComponent implements OnInit {
   }
 
   public onRefresh(): void {
-    this._storageService.fetchAllEnSentences(true);
+    this.isLoadingResults = true;
+    this._storageService.fetchAllEnSentences(true).subscribe((x: any) => {
+      // Do nothing
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
+    });
   }
 }

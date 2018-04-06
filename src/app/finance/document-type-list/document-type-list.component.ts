@@ -48,15 +48,23 @@ export class DocumentTypeListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'comment'];
   dataSource: DocumentTypeDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,
-    private _router: Router) { }
+    private _router: Router) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit(): void {
+    this.isLoadingResults = true;
     this.dataSource = new DocumentTypeDataSource(this._storageService, this.paginator);
 
     this._storageService.fetchAllDocTypes().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 }

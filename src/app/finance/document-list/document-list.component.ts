@@ -53,13 +53,14 @@ export class DocumentListComponent implements OnInit {
   dataSource: DocumentDataSource | undefined;
   selectedDocScope: OverviewScopeEnum;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     private _router: Router,
     private _dialog: MatDialog) {
-      // Empty
-    }
+    this.isLoadingResults = false;
+  }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -77,6 +78,8 @@ export class DocumentListComponent implements OnInit {
 
   public onDocScopeChanged(): void {
     let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
+
+    this.isLoadingResults = true;
     this._storageService.fetchAllDocuments(bgn, end).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
     }, (error: any) => {
@@ -91,6 +94,8 @@ export class DocumentListComponent implements OnInit {
         width: '500px',
         data: dlginfo,
       });
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 

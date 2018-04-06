@@ -14,14 +14,31 @@
           <mat-icon color="primary">add</mat-icon>
         </button>
         <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent">refresh</mat-icon></button>        
+        <button mat-icon-button (click)="onCheckin()" matTooltip="{{'Common.Checkin' | translate}}"><mat-icon color="accent">plus_one</mat-icon></button>        
       </mat-toolbar>
 
       <div class="example-container mat-elevation-z8">
-        <mat-table [dataSource]="dataSource" matSort>
+        <mat-table [dataSource]="dataSource">
+
+          <!-- Selection -->
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+              <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+              </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </mat-cell>
+          </ng-container>
 
           <!-- ID Column -->
           <ng-container matColumnDef="id">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
             <mat-cell *matCellDef="let row"> 
               {{row.ID}}
             </mat-cell>
@@ -29,16 +46,16 @@
 
           <!-- Name Column -->
           <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.Name' | translate}} </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> {{'Common.Name' | translate}} </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.Name}} </mat-cell>
           </ng-container>
 
           <!-- Assignee Column -->
           <ng-container matColumnDef="assignee">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.Assignee' | translate}} </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> {{'Common.Assignee' | translate}} </mat-header-cell>
             <mat-cell *matCellDef="let row"> 
               <mat-form-field>
-                <mat-select [(ngModel)]="row.Assignee" name="assgnee">
+                <mat-select [(ngModel)]="row.assignee" name="assgnee">
                   <mat-option *ngFor="let mem of _homeDefService.MembersInChosedHome" [value]="mem.User">
                     {{mem.DisplayAs}} - {{ mem.User }} 
                   </mat-option>
@@ -49,13 +66,13 @@
 
           <!-- Start  Column -->
           <ng-container matColumnDef="start">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.StartDate' | translate}} </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> {{'Common.StartDate' | translate}} </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.StartDateFormatString}} </mat-cell>
           </ng-container>
 
           <!-- End Column -->
           <ng-container matColumnDef="end">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> {{'Common.EndDate' | translate}} </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> {{'Common.EndDate' | translate}} </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{row.EndDateFormatString}} </mat-cell>
           </ng-container>
 

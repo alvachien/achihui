@@ -49,15 +49,23 @@ export class AccountCategoryListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'assetflag', 'comment'];
   dataSource: AccountCategoryDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,
-    private _router: Router) { }
+    private _router: Router) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit(): void {
+    this.isLoadingResults = true;
     this.dataSource = new AccountCategoryDataSource(this._storageService, this.paginator);
 
     this._storageService.fetchAllAccountCategories().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 }

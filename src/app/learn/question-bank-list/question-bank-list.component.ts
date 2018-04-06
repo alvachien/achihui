@@ -50,15 +50,18 @@ export class QuestionBankListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   allTags: string[] = [];
   isSlideMode: boolean = false;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: LearnStorageService,
     public _uiService: UIStatusService,
     public _tagService: TagsService,
     private _router: Router) {
     this.isSlideMode = false;
+    this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
+    this.isLoadingResults = true;
     this.dataSource = new QuestionBankDataSource(this._storageService, this.paginator);
 
     Observable.forkJoin([
@@ -66,6 +69,10 @@ export class QuestionBankListComponent implements OnInit {
       this._storageService.fetchAllQuestionBankItem(),
     ]).subscribe((x: any) => {
       // DO nothing
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 

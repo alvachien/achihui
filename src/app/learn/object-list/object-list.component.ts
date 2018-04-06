@@ -50,10 +50,12 @@ export class ObjectListComponent implements OnInit {
   dataSource: LearnObjectDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isSlideMode: boolean = false;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: LearnStorageService,
     private _router: Router) {
     this.isSlideMode = false;
+    this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
@@ -61,6 +63,7 @@ export class ObjectListComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnInit...');
     }
 
+    this.isLoadingResults = true;
     this.dataSource = new LearnObjectDataSource(this._storageService, this.paginator);
 
     Observable.forkJoin([
@@ -71,6 +74,10 @@ export class ObjectListComponent implements OnInit {
       if (x) {
         // Do NOTHING
       }
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 
@@ -91,7 +98,9 @@ export class ObjectListComponent implements OnInit {
   }
 
   public onRefresh(): void {
+    this.isLoadingResults = true;
     this._storageService.fetchAllObjects(true);
+    this.isLoadingResults = false;
   }
 
   public onToggleSlide(): void {

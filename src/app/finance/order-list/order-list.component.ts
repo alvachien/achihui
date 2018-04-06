@@ -50,21 +50,29 @@ export class OrderListComponent implements OnInit {
   dataSource: OrderDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   includeInvalid: boolean = false;
+  isLoadingResults: boolean;
 
   constructor(private _dialog: MatDialog,
     public _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
-    private _router: Router) { }
+    private _router: Router) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...');
     }
 
+    this.isLoadingResults = true;
     this.dataSource = new OrderDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllOrders().subscribe((x) => {
+    this._storageService.fetchAllOrders().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 
@@ -105,10 +113,15 @@ export class OrderListComponent implements OnInit {
   }
 
   public onRefresh(): void {
+    this.isLoadingResults = true;
     this.includeInvalid = !this.includeInvalid;
 
-    this._storageService.fetchAllOrders(true, this.includeInvalid).subscribe((x) => {
+    this._storageService.fetchAllOrders(true, this.includeInvalid).subscribe((x: any) => {
       // Ensure the HTTP get is fired
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 }

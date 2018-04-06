@@ -51,20 +51,28 @@ export class ControlCenterListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'comment'];
   dataSource: ControlCenterDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router,
     private _uiStatusService: UIStatusService,
-    private _dialog: MatDialog) { }
+    private _dialog: MatDialog) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...');
     }
 
+    this.isLoadingResults = true;
     this.dataSource = new ControlCenterDataSource(this._storageService, this.paginator);
-    this._storageService.fetchAllControlCenters().subscribe((x) => {
+    this._storageService.fetchAllControlCenters().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 
@@ -105,8 +113,13 @@ export class ControlCenterListComponent implements OnInit {
   }
 
   public onRefresh(): void {
-    this._storageService.fetchAllControlCenters(true).subscribe((x) => {
+    this.isLoadingResults = true;
+    this._storageService.fetchAllControlCenters(true).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 }

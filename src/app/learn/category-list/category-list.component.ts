@@ -47,14 +47,23 @@ export class CategoryListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   dataSource: LearnCategoryDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: LearnStorageService,
-    private _router: Router) { }
+    private _router: Router) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit(): void {
+    this.isLoadingResults = true;
+
     this.dataSource = new LearnCategoryDataSource(this._storageService, this.paginator);
     this._storageService.fetchAllCategories().subscribe((x: any) => {
       // Just ensure the request has been fired
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 }

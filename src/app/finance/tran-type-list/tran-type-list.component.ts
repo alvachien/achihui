@@ -86,11 +86,13 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     private _router: Router) {
 
+    this.isLoadingResults = false;
     this.dataSource.sortingDataAccessor = (data: TranType, property: string) => {
       switch (property) {
         case 'id': return +data.Id;
@@ -116,8 +118,13 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
     // });
     // !!! First option !!!
 
+    this.isLoadingResults = true;
     this._storageService.fetchAllTranTypes().subscribe((x: any) => {
       this.dataSource.data = x;
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 

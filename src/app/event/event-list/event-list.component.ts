@@ -54,7 +54,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this._homeDefService.curHomeMembers.subscribe((x) => {
+    this._homeDefService.curHomeMembers.subscribe((x: any) => {
       this.fetchEvents();
     });
   }
@@ -105,7 +105,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
   }
 
   public onMarkAsDone(row: GeneralEvent): void {
-    this._storageService.completeGeneralEvent(row).subscribe((x) => {
+    this._storageService.completeGeneralEvent(row).subscribe((x: any) => {
       // Jump to display mode
       this._router.navigate(['/event/general/display/' + row.ID.toString()]);
     }, (error: any) => {

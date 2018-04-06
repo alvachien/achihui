@@ -50,24 +50,30 @@ export class EnWordListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'word' ];
   dataSource: EnWordDataSource | undefined = undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: LearnStorageService,
-    private _router: Router) { }
+    private _router: Router) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering EnWordListComponent ngOnInit...');
     }
 
+    this.isLoadingResults = true;
     this.dataSource = new EnWordDataSource(this._storageService, this.paginator);
 
-    Observable.forkJoin([
-      this._storageService.fetchAllEnWords(),
-    ]).subscribe((x: any) => {
+    this._storageService.fetchAllEnWords().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (x) {
         // Empty
       }
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 
@@ -88,6 +94,13 @@ export class EnWordListComponent implements OnInit {
   }
 
   public onRefresh(): void {
-    this._storageService.fetchAllEnWords(true);
+    this.isLoadingResults = true;
+    this._storageService.fetchAllEnWords(true).subscribe((x: any) => {
+      // Do nothing
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
+    });
   }
 }

@@ -49,15 +49,19 @@ export class HistoryListComponent implements OnInit {
   displayedColumns: string[] = ['objid', 'objname', 'usrname', 'learndate'];
   dataSource: LearnHistoryDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: LearnStorageService,
-    private _router: Router) { }
+    private _router: Router) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HistoryListComponent ngOnInit...');
     }
 
+    this.isLoadingResults = true;
     this.dataSource = new LearnHistoryDataSource(this._storageService, this.paginator);
 
     Observable.forkJoin([
@@ -69,6 +73,10 @@ export class HistoryListComponent implements OnInit {
       if (x) {
         // Empty
       }
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 
@@ -89,6 +97,13 @@ export class HistoryListComponent implements OnInit {
   }
 
   public onRefresh(): void {
-    this._storageService.fetchAllHistories(true);
+    this.isLoadingResults = true;
+    this._storageService.fetchAllHistories(true).subscribe((x: any) => {
+      // Do nothing
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
+    });
   }
 }

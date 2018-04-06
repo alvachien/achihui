@@ -55,10 +55,12 @@ export class AccountListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   arrayStatus: UIDisplayString[] = [];
   selectedStatus: AccountStatusEnum | undefined = AccountStatusEnum.Normal;
+  isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router) {
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
+    this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
@@ -66,6 +68,7 @@ export class AccountListComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...');
     }
 
+    this.isLoadingResults = true;
     this.dataSource = new AccountDataSource(this._storageService, this.paginator);
 
     Observable.forkJoin([
@@ -73,6 +76,10 @@ export class AccountListComponent implements OnInit {
       this._storageService.fetchAllAccountCategories(),
     ]).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 
@@ -97,8 +104,13 @@ export class AccountListComponent implements OnInit {
   }
 
   public onStatusChange(): void {
+    this.isLoadingResults = true;
     this._storageService.fetchAllAccounts(true, this.selectedStatus).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 }

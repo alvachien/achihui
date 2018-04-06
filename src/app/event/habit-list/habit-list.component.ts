@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { SelectionModel } from '@angular/cdk/collections';
 import { environment } from '../../../environments/environment';
 import { LogLevel, EventHabit, EventHabitDetail } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
@@ -18,8 +19,9 @@ import { switchMap } from 'rxjs/operators/switchMap';
   styleUrls: ['./habit-list.component.scss', ],
 })
 export class HabitListComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['id', 'name', 'start', 'end', 'assignee'];
+  displayedColumns: string[] = ['select', 'id', 'name', 'start', 'end', 'assignee'];
   dataSource: MatTableDataSource<EventHabit>;
+  selection: SelectionModel<EventHabit>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -37,6 +39,7 @@ export class HabitListComponent implements OnInit, AfterViewInit {
     }
 
     this.dataSource = new MatTableDataSource([]);
+    this.selection = new SelectionModel<EventHabit>(false, []);
   }
 
   ngOnInit(): void {
@@ -65,6 +68,12 @@ export class HabitListComponent implements OnInit, AfterViewInit {
   public onRefresh(): void {
     // Refresh the whole list
     this.fetchHabitEvents();
+  }
+
+  public onCheckin(): void {
+    // Do the checkin!
+    // Popup a dialog
+    // TBD!!!
   }
 
   public onHabitEventRowSelect(row: EventHabit): void {
@@ -101,5 +110,19 @@ export class HabitListComponent implements OnInit, AfterViewInit {
         return observableOf([]);
       }),
       ).subscribe((data: any) => this.dataSource.data = data);
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected(): boolean {
+    const numSelected: number = this.selection.selected.length;
+    const numRows: number = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle(): void {
+    this.isAllSelected() ?
+        this.selection.clear() :
+        this.dataSource.data.forEach((row: any) => this.selection.select(row));
   }
 }
