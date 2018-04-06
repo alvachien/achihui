@@ -9,12 +9,13 @@ import { HomeDefListComponent } from './home-def-list';
 import { HomeDefDetailComponent } from './home-def-detail';
 import { HomeMessageComponent } from './home-message';
 import { PageNotFoundComponent } from './page-not-found';
+import { PageLackAuthorityComponent } from './page-lack-authority';
 import { TagsListComponent } from './tags-list';
 import { AboutComponent } from './about';
 import { CreditsComponent } from './credits';
 import { VersionComponent } from './version';
 
-export const AppRoutes: Routes = [
+export const appRoutes: Routes = [
     {
         path: '',
         redirectTo: '/initial',
@@ -71,5 +72,6 @@ export const AppRoutes: Routes = [
     { path: 'about', component: AboutComponent },
     { path: 'credits', component: CreditsComponent },
     { path: 'version', component: VersionComponent },
+    { path: 'lackauthority', component: PageLackAuthorityComponent },
     { path: '**', component: PageNotFoundComponent },
 ];

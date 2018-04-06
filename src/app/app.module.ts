@@ -16,7 +16,7 @@ import { AuthService, AuthGuardService,
   HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService,
   EventStorageService,
 } from './services';
-import { AppRoutes } from './app.routes';
+import { appRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
 import { LearnModule } from './learn';
 import { FinanceModule } from './finance';
@@ -28,6 +28,7 @@ import { HomeDefComponent } from './home-def';
 import { HomeDefListComponent } from './home-def-list';
 import { HomeDefDetailComponent } from './home-def-detail';
 import { PageNotFoundComponent } from './page-not-found';
+import { PageLackAuthorityComponent } from './page-lack-authority';
 import { SideNavComponent } from './side-nav';
 import { SideNavItemComponent } from './side-nav-item';
 import { TagsListComponent } from './tags-list';
@@ -46,7 +47,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
-    RouterModule.forRoot(AppRoutes),
+    RouterModule.forRoot(appRoutes),
     ReactiveFormsModule,
     HttpClientModule,
     TranslateModule.forRoot({
@@ -77,6 +78,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     VersionComponent,
     HomeMessageComponent,
     HomeMessageDialogComponent,
+    PageLackAuthorityComponent,
   ],
   entryComponents: [
     MessageDialogComponent,

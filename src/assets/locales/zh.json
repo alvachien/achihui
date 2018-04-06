@@ -106,6 +106,8 @@
     "RepeatFrequency": "重复频率",
     "PageNotFoundHeader":"页面未找到",
     "PageNotFoundContent": "你想要访问的页面并不存在",
+    "PageLackAuthorityHeader":"缺乏权限",
+    "PageLackAuthorityContent": "你没有权限访问该页面",
     "EnglishName": "英文名字",
     "NativeName": "本地名称",
     "LanguageSupportedInApp": "程序支持",
