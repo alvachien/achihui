@@ -336,6 +336,7 @@ export class EventHabit extends hih.BaseModel {
   public isPublic: boolean;
   public assignee: string;
   public details: EventHabitDetail[] = [];
+  public checkInLogs: EventHabitCheckin[] = [];
 
   get ID(): number {
     return this._id;
@@ -423,6 +424,14 @@ export class EventHabit extends hih.BaseModel {
         let detail: EventHabitDetail = new EventHabitDetail();
         detail.onSetData(dtl);
         this.details.push(detail);
+      }
+    }
+    if (data && data.checkInLogs && data.checkInLogs instanceof Array && data.checkInLogs.length > 0) {
+      this.checkInLogs = [];
+      for (let ckinlog of data.checkInLogs) {
+        let chkinlog: EventHabitCheckin = new EventHabitCheckin();
+        chkinlog.onSetData(ckinlog);
+        this.checkInLogs.push(chkinlog);
       }
     }
   }
@@ -523,6 +532,27 @@ export class EventHabitCheckin {
   public score: number;
   public comment: string;
 
+  onSetData(data: any): void {
+    if (data && data.id) {
+      this.id = data.id;
+    }
+    if (data && data.tranDate) {
+      this.tranDate = moment(data.tranDate, hih.MomentDateFormat);
+    }
+    if (data && data.hid) {
+      this.hid = data.hid;
+    }
+    if (data && data.habitID) {
+      this.habitID = data.habitID;
+    }
+    if (data && data.score) {
+      this.score = data.score;
+    }
+    if (data && data.comment) {
+      this.comment = data.comment;
+    }
+  }
+  
   writeJSONObject(): any {
     let robj: any = {};
     if (this.id) {

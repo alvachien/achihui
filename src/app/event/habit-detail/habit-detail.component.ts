@@ -25,11 +25,14 @@ export class HabitDetailComponent implements OnInit {
   public detailObject: EventHabit;
   public isLoadingData: boolean;
   arFrequencies: any = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
-  displayedColumns: string[] = ['name', 'startdate', 'enddate'];
+  displayedColumns: string[] = ['name', 'startdate', 'enddate', 'checkin'];
   dataSourceSimulateResult: MatTableDataSource<EventHabitDetail> = new MatTableDataSource<EventHabitDetail>([]);
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
+  get isCreateMode(): boolean {
+    return this.uiMode === UIMode.Create;
   }
 
   constructor(private _storageService: EventStorageService,

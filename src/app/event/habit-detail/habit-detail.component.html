@@ -59,7 +59,7 @@
         <mat-table #table [dataSource]="dataSourceSimulateResult">
       
           <!-- Name Column -->
-          <ng-container matColumnDef="name">
+          <ng-container matColumnDef="name" *ngIf="isCreateMode">
             <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.Name}} </mat-cell>
           </ng-container>
@@ -74,6 +74,12 @@
           <ng-container matColumnDef="enddate">
             <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.EndDateFormatString}} </mat-cell>
+          </ng-container>
+
+          <!-- Checkin Column -->
+          <ng-container matColumnDef="checkin" *ngIf="!isCreateMode">
+            <mat-header-cell *matHeaderCellDef> Check in</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.checkInLogs.length}} </mat-cell>
           </ng-container>
       
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
