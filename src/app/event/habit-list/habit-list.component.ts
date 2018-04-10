@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { environment } from '../../../environments/environment';
-import { LogLevel, EventHabit, EventHabitDetail } from '../../model';
+import { LogLevel, EventHabit, EventHabitDetail, EventHabitCheckin } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
 import { Observable } from 'rxjs/Observable';
 import { merge } from 'rxjs/observable/merge';
@@ -12,6 +12,7 @@ import { catchError } from 'rxjs/operators/catchError';
 import { map } from 'rxjs/operators/map';
 import { startWith } from 'rxjs/operators/startWith';
 import { switchMap } from 'rxjs/operators/switchMap';
+import * as moment from 'moment';
 
 @Component({
   selector: 'hih-event-habit-list',
@@ -74,6 +75,22 @@ export class HabitListComponent implements OnInit, AfterViewInit {
     // Do the checkin!
     // Popup a dialog
     // TBD!!!
+    for (let selhabit of this.selection.selected) {
+      let hcheckin: EventHabitCheckin = new EventHabitCheckin();
+      // Get current selected items
+      hcheckin.habitID = selhabit.ID;
+      hcheckin.hid = selhabit.HID;
+      hcheckin.tranDate = moment();
+      hcheckin.score = 90; // For testing purpose
+      hcheckin.comment = 'Test';
+
+      // hcheckin.hid = this.
+      this._storageService.checkInHabitEvent(hcheckin).subscribe((x: any) => {
+        // Do nothing
+      }, (error: any) => {
+        // Do nothing
+      });
+    }
   }
 
   public onHabitEventRowSelect(row: EventHabit): void {

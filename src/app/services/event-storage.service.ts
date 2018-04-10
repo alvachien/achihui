@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
-import { LogLevel, MomentDateFormat, GeneralEvent, RecurEvent, EventHabit } from '../model';
+import { LogLevel, MomentDateFormat, GeneralEvent, RecurEvent, EventHabit, EventHabitCheckin } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import 'rxjs/add/operator/startWith';
@@ -345,6 +345,27 @@ export class EventStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.put(apiurl, jdata, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      });
+  }
+
+  /**
+   * Checkin habit event
+   * @param hevnt Event to  create
+   */
+  public checkInHabitEvent(hevnt: EventHabitCheckin): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/eventhabitcheckin';
+    let jdata: string = JSON && JSON.stringify(hevnt.writeJSONObject());
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.post(apiurl, jdata, {
         headers: headers,
         params: params,
         withCredentials: true,

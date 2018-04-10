@@ -512,6 +512,30 @@ export class EventHabitDetail {
   }
 }
 
+/**
+ * Check in for event habit
+ */
 export class EventHabitCheckin {
+  public id: number;
+  public hid: number;
+  public tranDate: moment.Moment;
+  public habitID: number;
+  public score: number;
+  public comment: string;
 
+  writeJSONObject(): any {
+    let robj: any = {};
+    if (this.id) {
+      robj.id = this.id;
+    }
+    robj.hid = this.hid;
+    robj.habitID = this.habitID;
+    robj.tranDate = this.tranDate.format(hih.MomentDateFormat);
+    if (this.comment) {
+      robj.comment = this.comment;
+    }
+    robj.score = this.score;
+
+    return robj;
+  }
 }
