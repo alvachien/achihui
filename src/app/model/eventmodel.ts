@@ -374,6 +374,9 @@ export class EventHabit extends hih.BaseModel {
   set EndDate(ed: moment.Moment) {
     this._endDate = ed;
   }
+  get CheckInLogsCount(): number {
+    return this.checkInLogs.length;
+  }
 
   constructor() {
     super();
@@ -423,6 +426,9 @@ export class EventHabit extends hih.BaseModel {
       for (let dtl of data.details) {
         let detail: EventHabitDetail = new EventHabitDetail();
         detail.onSetData(dtl);
+        if (!detail.Name) {
+          detail.Name = this.Name;
+        }
         this.details.push(detail);
       }
     }
@@ -531,6 +537,9 @@ export class EventHabitCheckin {
   public habitID: number;
   public score: number;
   public comment: string;
+  get tranDateFormatString(): string {
+    return this.tranDate.format(hih.MomentDateFormat);
+  }
 
   onSetData(data: any): void {
     if (data && data.id) {
@@ -552,7 +561,7 @@ export class EventHabitCheckin {
       this.comment = data.comment;
     }
   }
-  
+
   writeJSONObject(): any {
     let robj: any = {};
     if (this.id) {

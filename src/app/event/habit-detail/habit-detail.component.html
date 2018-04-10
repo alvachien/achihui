@@ -54,38 +54,64 @@
         </mat-select>
       </mat-form-field>
 
-      <!-- Simulate results -->
-      <div class="example-container mat-elevation-z8">
-        <mat-table #table [dataSource]="dataSourceSimulateResult">
-      
-          <!-- Name Column -->
-          <ng-container matColumnDef="name" *ngIf="isCreateMode">
-            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.Name}} </mat-cell>
-          </ng-container>
-      
-          <!-- Start date Column -->
-          <ng-container matColumnDef="startdate">
-            <mat-header-cell *matHeaderCellDef> Start </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.StartDateFormatString}} </mat-cell>
-          </ng-container>
-      
-          <!-- End date Column -->
-          <ng-container matColumnDef="enddate">
-            <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.EndDateFormatString}} </mat-cell>
-          </ng-container>
+      <mat-tab-group>
+        <!-- Details -->
+        <mat-tab label="Details">
+          <div class="example-container mat-elevation-z8">
+            <mat-table #tableDetail [dataSource]="dataSourceSimulateResult">
+          
+              <!-- Name Column -->
+              <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.Name}} </mat-cell>
+              </ng-container>
+          
+              <!-- Start date Column -->
+              <ng-container matColumnDef="startdate">
+                <mat-header-cell *matHeaderCellDef> Start </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.StartDateFormatString}} </mat-cell>
+              </ng-container>
+          
+              <!-- End date Column -->
+              <ng-container matColumnDef="enddate">
+                <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.EndDateFormatString}} </mat-cell>
+              </ng-container>
 
-          <!-- Checkin Column -->
-          <ng-container matColumnDef="checkin" *ngIf="!isCreateMode">
-            <mat-header-cell *matHeaderCellDef> Check in</mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.checkInLogs.length}} </mat-cell>
-          </ng-container>
-      
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-        </mat-table>
-      </div>      
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+          </div>
+        </mat-tab>
+        <!-- Check in -->
+        <mat-tab label="Check in" [disabled]="isCreateMode">
+          <div class="example-container mat-elevation-z8">
+            <mat-table #tableCheckIn [dataSource]="dataSourceCheckIn">
+          
+              <!-- Name Column -->
+              <ng-container matColumnDef="trandate">
+                <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.tranDateFormatString}} </mat-cell>
+              </ng-container>
+          
+              <!-- Start date Column -->
+              <ng-container matColumnDef="score">
+                <mat-header-cell *matHeaderCellDef> Score </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.score}} </mat-cell>
+              </ng-container>
+          
+              <!-- End date Column -->
+              <ng-container matColumnDef="comment">
+                <mat-header-cell *matHeaderCellDef> Comment </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.comment}} </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedCheckInColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedCheckInColumns;"></mat-row>
+            </mat-table>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
     </div>
   </mat-card-content>
   <mat-card-actions>

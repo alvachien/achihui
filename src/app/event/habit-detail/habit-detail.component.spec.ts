@@ -8,7 +8,7 @@ describe('HabitDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HabitDetailComponent ]
+      declarations: [ HabitDetailComponent ],
     })
     .compileComponents();
   }));

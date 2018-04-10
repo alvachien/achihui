@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil, MomentDateFormat } from '../../model';
+import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil, MomentDateFormat, EventHabitCheckin } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
 import { Observable } from 'rxjs/Observable';
 import { merge } from 'rxjs/observable/merge';
@@ -25,8 +25,10 @@ export class HabitDetailComponent implements OnInit {
   public detailObject: EventHabit;
   public isLoadingData: boolean;
   arFrequencies: any = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
-  displayedColumns: string[] = ['name', 'startdate', 'enddate', 'checkin'];
+  displayedColumns: string[] = ['name', 'startdate', 'enddate'];
+  displayedCheckInColumns: string[] = ['trandate', 'score', 'comment'];
   dataSourceSimulateResult: MatTableDataSource<EventHabitDetail> = new MatTableDataSource<EventHabitDetail>([]);
+  dataSourceCheckIn: MatTableDataSource<EventHabitCheckin> = new MatTableDataSource<EventHabitCheckin>([]);
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -80,6 +82,7 @@ export class HabitDetailComponent implements OnInit {
             this._storageService.readHabitEvent(this.routerID).subscribe((y: any) => {
               this.detailObject = y;
               this.dataSourceSimulateResult.data = this.detailObject.details;
+              this.dataSourceCheckIn.data = this.detailObject.checkInLogs;
               this.isLoadingData = false;
             });
           }
