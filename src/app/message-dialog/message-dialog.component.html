@@ -6,7 +6,7 @@
     <div *ngFor="let cont of dlgInfo.ContentTable">
       <div class="alert" [ngClass]="{'alter-danger': cont.IsError, 'alter-warning': cont.IsWarning, 'alert-info': cont.IsInfo}" role="alert">
         <h4 class="alert-heading">{{cont.MsgTitle | translate}}</h4>
-        <hr>
+        <mat-divider></mat-divider>
         <p class="mb-0">{{cont.MsgContent | translate}}</p>
       </div>
     </div>

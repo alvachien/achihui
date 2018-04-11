@@ -1,10 +1,13 @@
 <mat-card>
   <mat-card-header>
-    <div></div>
     <mat-card-title>{{'Nav.HomeDetail' | translate}}</mat-card-title>
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
+    <div class="example-loading-shade" *ngIf="isLoadingResults">
+      <mat-spinner></mat-spinner>
+    </div>
+
     <mat-form-field class="demo-full-width">
       <input matInput type="text" placeholder="{{'Common.Name' | translate}}" [(ngModel)]="detailObject.Name">
     </mat-form-field>
@@ -29,7 +32,7 @@
       <input matInput type="text" placeholder="{{'Common.Detail' | translate}}" [(ngModel)]="detailObject.Details">
     </mat-form-field>
 
-    <hr />
+    <mat-divider></mat-divider>
     <mat-list *ngIf="!IsCreateMode">
       <mat-list-item *ngFor="let member of detailObject.Members">
         <h3 matLine> {{member.DisplayAs}} </h3>

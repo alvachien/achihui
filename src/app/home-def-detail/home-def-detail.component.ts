@@ -15,6 +15,7 @@ export class HomeDefDetailComponent implements OnInit {
   public detailObject: HomeDef | undefined;
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
+  isLoadingResults: boolean;
 
   get IsCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
@@ -30,6 +31,7 @@ export class HomeDefDetailComponent implements OnInit {
     private _router: Router,
     private _activateRoute: ActivatedRoute) {
 
+    this.isLoadingResults = false;
     this.detailObject = new HomeDef();
     this._fincurrService.fetchAllCurrencies().subscribe((x: any) => {
       // Ensure the GET is fired
@@ -64,9 +66,11 @@ export class HomeDefDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._homedefService.readHomeDefEvent.subscribe((x: any) => {
-            if (x !== undefined) {
-              this.detailObject = x;
+          this.isLoadingResults = true;
+          this._homedefService.readHomeDefEvent.subscribe((dtl: any) => {
+            this.isLoadingResults = false;
+            if (dtl !== undefined) {
+              this.detailObject = dtl;
             } else {
               // Show error dialog!
             }

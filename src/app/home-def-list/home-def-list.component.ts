@@ -51,13 +51,16 @@ export class HomeDefListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'host', 'currency', 'details'];
   dataSource: HomeDefDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoadingResults: boolean;
 
   get IsCurrentHomeChosed(): boolean {
     return this._homedefService.ChosedHome !== undefined;
   }
 
   constructor(public _homedefService: HomeDefDetailService,
-    private _router: Router) { }
+    private _router: Router) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit(): void {
     this.dataSource = new HomeDefDataSource(this._homedefService, this.paginator);
