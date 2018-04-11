@@ -26,7 +26,8 @@ export class AppComponent implements OnInit {
   public titleLogin: string;
   public userDisplayAs: string;
   public curChosenHome: HomeDef;
-  public SelectedLanguage: string;
+  public selectedLanguage: string;
+  public currVersion: string;
 
   constructor(private _element: ElementRef,
     private _translate: TranslateService,
@@ -39,12 +40,13 @@ export class AppComponent implements OnInit {
     private _iconRegistry: MatIconRegistry,
     private _http: HttpClient,
     private _sanitizer: DomSanitizer) {
+    this.currVersion = environment.CurrentVersion;
     // Setup the translate
     this.userDisplayAs = '';
     this.curChosenHome = undefined;
 
     // Wakeup the API
-    this._http.get(environment.ApiUrl + '/api/wakeup').subscribe((y) => {
+    this._http.get(environment.ApiUrl + '/api/wakeup').subscribe((y: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC HIH UI [Debug]: Wakeup API in AppComponent' + y.toString());
       }
@@ -52,11 +54,11 @@ export class AppComponent implements OnInit {
 
     // Register the Auth service
     if (environment.LoginRequired) {
-      this._homeDefService.curHomeSelected.subscribe((x) => {
+      this._homeDefService.curHomeSelected.subscribe((x: any) => {
         this.curChosenHome = x;
       });
 
-      this._authService.authContent.subscribe((x) => {
+      this._authService.authContent.subscribe((x: any) => {
         this._zone.run(() => {
           this.isLoggedIn = x.isAuthorized;
           if (this.isLoggedIn) {
@@ -84,9 +86,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this._translate.setDefaultLang(Language_Zh);
-    this._translate.use(Language_Zh).subscribe((x) => {
-      this.SelectedLanguage = Language_Zh;
-      this._uistatusService.CurrentLanguage = this.SelectedLanguage;
+    this._translate.use(Language_Zh).subscribe((x: any) => {
+      this.selectedLanguage = Language_Zh;
+      this._uistatusService.CurrentLanguage = this.selectedLanguage;
       this._dateAdapter.setLocale(Language_ZhCN);
       this.updateDocumentTitle();
     });
@@ -132,21 +134,21 @@ export class AppComponent implements OnInit {
   }
 
   public onLanguageChanged(sellang: string): void {
-    this.SelectedLanguage = sellang;
+    this.selectedLanguage = sellang;
 
-    if (this._translate.currentLang !== this.SelectedLanguage &&
-      this.SelectedLanguage !== undefined) {
-      this._translate.use(this.SelectedLanguage);
+    if (this._translate.currentLang !== this.selectedLanguage &&
+      this.selectedLanguage !== undefined) {
+      this._translate.use(this.selectedLanguage);
 
-      if (this.SelectedLanguage === Language_Zh) {
+      if (this.selectedLanguage === Language_Zh) {
         moment.locale(Language_ZhCN);
         this._dateAdapter.setLocale(Language_ZhCN);
-      } else if (this.SelectedLanguage === Language_En) {
+      } else if (this.selectedLanguage === Language_En) {
         moment.locale(Language_En);
         this._dateAdapter.setLocale(Language_En);
       }
 
-      this._uistatusService.CurrentLanguage = this.SelectedLanguage;
+      this._uistatusService.CurrentLanguage = this.selectedLanguage;
 
       this.updateDocumentTitle();
     }

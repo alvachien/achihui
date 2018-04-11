@@ -44,7 +44,7 @@
           <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuLanguage"><mat-icon color="accent">language</mat-icon></button>
           <mat-menu #matMenuLanguage="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item *ngFor="let lang of availableLanguages" (click)="onLanguageChanged(lang.value)">
-              <mat-icon *ngIf="SelectedLanguage === lang.value">check</mat-icon>
+              <mat-icon *ngIf="selectedLanguage === lang.value">check</mat-icon>
               {{lang.displayas | translate}}
             </button>
           </mat-menu>
@@ -71,8 +71,17 @@
       <router-outlet></router-outlet>
     </div>
 
-    <footer class="text-center font-weight-ligh" style="border-top:1px solid #009688; padding:10px 0 30px 0; width:100%">
-      © 2016 - 2018 Alva Chien. All rights reserved.
+    <footer class="hih-footer">
+      <div class="hih-footer-list">
+        <div class="hih-footer-version">
+          <span class="version">{{'Nav.Version' | translate}}: {{currVersion}}</span>
+        </div>
+    
+        <div class="hih-footer-copyright">
+          <span>Writen by Alva Chien ©2016-2018.</span>
+          <span>Code licensed under an MIT-style License.</span>
+        </div>
+      </div>
     </footer>
   </div>
 </mat-sidenav-container>
