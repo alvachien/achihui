@@ -43,7 +43,17 @@ mat-sidenav-container {
       font-size: 20px;
     }
   }
-  
+
+.flex-spacer {
+  flex-grow: 1;
+}
+
+.achih-github-logo {
+  height: 21px;
+  margin: 0 7px 2px 0;
+  vertical-align: middle;
+}
+
 // stretch to screen size in fullscreen mode
 .hih-content {
   width: 100%;
@@ -80,6 +90,18 @@ mat-sidenav-container {
 }
 
 @media screen and (max-width: 884px){
+  .achih-navbar-hide-small {
+    display: none;
+  }
+
+  .achih-navbar-show-small {
+    display: block;
+  }
+
+  .achih-navbar-github-logo {
+    margin: 0;
+  }
+
   .hih-footer-list {
     flex-direction: column;
   }

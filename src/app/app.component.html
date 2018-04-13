@@ -41,6 +41,8 @@
             </button>
           </mat-menu>
 
+          <theme-picker></theme-picker>
+
           <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuLanguage"><mat-icon color="accent">language</mat-icon></button>
           <mat-menu #matMenuLanguage="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item *ngFor="let lang of availableLanguages" (click)="onLanguageChanged(lang.value)">
@@ -53,9 +55,12 @@
             <mat-icon color="accent" class="mat-24">fullscreen</mat-icon>
           </button>
 
-          <button mat-icon-button (click)="onOpenGithubRepo()">
-            <mat-icon svgIcon="github"></mat-icon>
-          </button>
+          <a mat-icon-button class="achih-button achih-navbar-show-small"
+            href="https://github.com/alvachien/achihui" aria-label="GitHub Repository">
+            <img class="achih-angular-logo"
+              src="../../assets/images/github-circle-white-transparent.svg"
+              alt="angular">
+          </a>
           
           <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuApps"><mat-icon color="accent">apps</mat-icon></button>
           <mat-menu #matMenuApps="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">

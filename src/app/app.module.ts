@@ -37,6 +37,7 @@ import { CreditsComponent } from './credits';
 import { VersionComponent } from './version';
 import { HomeMessageComponent, HomeMessageDialogComponent } from './home-message';
 // import { MatPaginatorIntlCN  } from './utility';
+import { ThemePickerModule, ThemeStorage } from './theme-picker';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -59,6 +60,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     UIDependModule,
     TagCloudModule,
+    ThemePickerModule,
   ],
   declarations: [
     AppComponent,
@@ -103,6 +105,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SideNavService,
     TagsService,
     EventStorageService,
+    ThemeStorage,
   ],
   bootstrap: [AppComponent],
 })
