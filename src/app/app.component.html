@@ -11,9 +11,9 @@
       <div class="hih-toolbar">
         <h1>H.I.H.</h1>
         <div>
-          <button mat-icon-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon" matTooltip="{{'Login.Login' | translate }}"><mat-icon color="accent">account_box</mat-icon></button>
+          <button mat-icon-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon" matTooltip="{{'Login.Login' | translate }}"><mat-icon>account_box</mat-icon></button>
           <button mat-icon-button *ngIf="isLoggedIn" [matMenuTriggerFor]="matMenuUser">
-            <mat-icon color="accent">account_box</mat-icon>
+            <mat-icon>account_box</mat-icon>
             <span *ngIf="curChosenHome" class="badge badge-light">{{_homeDefService.keyFigure?.TotalUnreadMessage}}</span>
           </button>
           <mat-menu #matMenuUser="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
@@ -32,7 +32,7 @@
             </button>
           </mat-menu>
                 
-          <button mat-icon-button mat-button *ngIf="curChosenHome" [matMenuTriggerFor]="matMenuHome"><mat-icon color="accent">domain</mat-icon></button>
+          <button mat-icon-button mat-button *ngIf="curChosenHome" [matMenuTriggerFor]="matMenuHome"><mat-icon>domain</mat-icon></button>
           <mat-menu #matMenuHome="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item disabled>{{curChosenHome?.Name}}</button>
             <button mat-menu-item (click)="onChosenHomeDetail()">
@@ -43,7 +43,7 @@
 
           <theme-picker></theme-picker>
 
-          <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuLanguage"><mat-icon color="accent">language</mat-icon></button>
+          <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuLanguage"><mat-icon>language</mat-icon></button>
           <mat-menu #matMenuLanguage="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item *ngFor="let lang of availableLanguages" (click)="onLanguageChanged(lang.value)">
               <mat-icon *ngIf="selectedLanguage === lang.value">check</mat-icon>
@@ -52,7 +52,7 @@
           </mat-menu>
 
           <button mat-icon-button (click)="toggleFullscreen()" title="Toggle fullscreen">
-            <mat-icon color="accent" class="mat-24">fullscreen</mat-icon>
+            <mat-icon class="mat-24">fullscreen</mat-icon>
           </button>
 
           <a mat-icon-button class="achih-button achih-navbar-show-small"
@@ -62,7 +62,7 @@
               alt="angular">
           </a>
           
-          <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuApps"><mat-icon color="accent">apps</mat-icon></button>
+          <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuApps"><mat-icon>apps</mat-icon></button>
           <mat-menu #matMenuApps="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item disabled>H.I.H.</button>
             <button mat-menu-item (click)="onOpenMathExcises()">Math Exercise</button>
@@ -76,13 +76,13 @@
       <router-outlet></router-outlet>
     </div>
 
-    <footer class="hih-footer">
-      <div class="hih-footer-list">
-        <div class="hih-footer-version">
+    <footer class="achih-footer">
+      <div class="achih-footer-list">
+        <div class="achih-footer-version">
           <span class="version">{{'Nav.Version' | translate}}: {{currVersion}}</span>
         </div>
     
-        <div class="hih-footer-copyright">
+        <div class="achih-footer-copyright">
           <span>Writen by Alva Chien ©2016-2018.</span>
           <span>Code licensed under an MIT-style License.</span>
         </div>

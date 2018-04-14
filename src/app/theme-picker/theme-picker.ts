@@ -3,7 +3,7 @@ import { StyleManager } from '../style-manager/style-manager';
 import { ThemeStorage, DocsSiteTheme } from './theme-storage/theme-storage';
 import {
   MatButtonModule, MatGridListModule, MatIconModule, MatMenuModule,
-  MatTooltipModule
+  MatTooltipModule,
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 
@@ -50,7 +50,7 @@ export class ThemePicker {
     public styleManager: StyleManager,
     private _themeStorage: ThemeStorage,
   ) {
-    const currentTheme = this._themeStorage.getStoredTheme();
+    const currentTheme: any = this._themeStorage.getStoredTheme();
     if (currentTheme) {
       this.installTheme(currentTheme);
     }
@@ -62,7 +62,7 @@ export class ThemePicker {
     if (theme.isDefault) {
       this.styleManager.removeStyle('theme');
     } else {
-      this.styleManager.setStyle('theme', `assets/${theme.href}`);
+      this.styleManager.setStyle('theme', `assets/css/${theme.href}`);
     }
 
     if (this.currentTheme) {
@@ -82,7 +82,7 @@ export class ThemePicker {
     MatMenuModule,
     MatGridListModule,
     MatTooltipModule,
-    CommonModule
+    CommonModule,
   ],
   exports: [ThemePicker],
   declarations: [ThemePicker],
