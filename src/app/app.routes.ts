@@ -15,63 +15,62 @@ import { AboutComponent } from './about';
 import { CreditsComponent } from './credits';
 import { VersionComponent } from './version';
 
-export const appRoutes: Routes = [
+export const appRoutes: Routes = [{
+  path: '',
+  redirectTo: '/initial',
+  pathMatch: 'full',
+},
+{ path: 'initial', component: PageInitialComponent },
+{ path: 'language', component: LanguageComponent },
+{
+  path: 'homedef',
+  component: HomeDefComponent,
+  canActivate: [AuthGuardService],
+  children: [
     {
-        path: '',
-        redirectTo: '/initial',
-        pathMatch: 'full',
-    },
-    { path: 'initial', component: PageInitialComponent },
-    { path: 'language', component: LanguageComponent },
-    {
-        path: 'homedef',
-        component: HomeDefComponent,
-        canActivate: [AuthGuardService],
-        children: [
-            {
-                path: '',
-                component: HomeDefListComponent,
-            },
-            {
-                path: 'create',
-                component: HomeDefDetailComponent,
-              },
-              {
-                path: 'display/:id',
-                component: HomeDefDetailComponent,
-              },
-              {
-                path: 'edit/:id',
-                component: HomeDefDetailComponent,
-              },
-        ],
-    },
-    { path: 'currency', component: FinanceCurrencyComponent, canActivate: [AuthGuardService], },
-    { path: 'homemsg', component: HomeMessageComponent, canActivate: [HomeChoseGuardService], },
-    { path: 'tag', component: TagsListComponent, canActivate: [AuthGuardService], },
-    {
-        path: 'learn',
-        canActivate: [HomeChoseGuardService],
-        loadChildren: 'app/learn/learn.module#LearnModule',
+      path: '',
+      component: HomeDefListComponent,
     },
     {
-        path: 'finance',
-        canActivate: [HomeChoseGuardService],
-        loadChildren: 'app/finance/finance.module#FinanceModule',
+      path: 'create',
+      component: HomeDefDetailComponent,
     },
     {
-        path: 'event',
-        canActivate: [HomeChoseGuardService],
-        loadChildren: 'app/event/event.module#EventModule',
+      path: 'display/:id',
+      component: HomeDefDetailComponent,
     },
     {
-        path: 'library',
-        canActivate: [HomeChoseGuardService],
-        loadChildren: 'app/library/library.module#LibraryModule',
+      path: 'edit/:id',
+      component: HomeDefDetailComponent,
     },
-    { path: 'about', component: AboutComponent },
-    { path: 'credits', component: CreditsComponent },
-    { path: 'version', component: VersionComponent },
-    { path: 'lackauthority', component: PageLackAuthorityComponent },
-    { path: '**', component: PageNotFoundComponent },
+  ],
+},
+{ path: 'currency', component: FinanceCurrencyComponent, canActivate: [AuthGuardService], },
+{ path: 'homemsg', component: HomeMessageComponent, canActivate: [HomeChoseGuardService], },
+{ path: 'tag', component: TagsListComponent, canActivate: [AuthGuardService], },
+{
+  path: 'learn',
+  canActivate: [HomeChoseGuardService],
+  loadChildren: 'app/learn/learn.module#LearnModule',
+},
+{
+  path: 'finance',
+  canActivate: [HomeChoseGuardService],
+  loadChildren: 'app/finance/finance.module#FinanceModule',
+},
+{
+  path: 'event',
+  canActivate: [HomeChoseGuardService],
+  loadChildren: 'app/event/event.module#EventModule',
+},
+{
+  path: 'library',
+  canActivate: [HomeChoseGuardService],
+  loadChildren: 'app/library/library.module#LibraryModule',
+},
+{ path: 'about', component: AboutComponent },
+{ path: 'credits', component: CreditsComponent },
+{ path: 'version', component: VersionComponent },
+{ path: 'lackauthority', component: PageLackAuthorityComponent },
+{ path: '**', component: PageNotFoundComponent },
 ];

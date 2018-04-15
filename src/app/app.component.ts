@@ -27,7 +27,6 @@ export class AppComponent implements OnInit {
   public userDisplayAs: string;
   public curChosenHome: HomeDef;
   public selectedLanguage: string;
-  public currVersion: string;
 
   constructor(private _element: ElementRef,
     private _translate: TranslateService,
@@ -40,7 +39,6 @@ export class AppComponent implements OnInit {
     private _iconRegistry: MatIconRegistry,
     private _http: HttpClient,
     private _sanitizer: DomSanitizer) {
-    this.currVersion = environment.CurrentVersion;
     // Setup the translate
     this.userDisplayAs = '';
     this.curChosenHome = undefined;

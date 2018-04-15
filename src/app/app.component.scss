@@ -61,33 +61,6 @@ mat-sidenav-container {
   box-sizing: border-box;
 }  
 
-.achih-footer {
-  padding: 6px;
-  font-size: 12px;
-  margin-top: 10px;
-}
-
-.achih-footer-list {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  padding: 8px;
-}
-
-.achih-footer-version {
-  flex: 1;
-  text-align: center;
-}
-
-.achih-footer-copyright {
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-  flex-direction: column;
-  min-width: 225px;
-  text-align: center;
-}
-
 @media screen and (max-width: 884px){
   .achih-navbar-hide-small {
     display: none;

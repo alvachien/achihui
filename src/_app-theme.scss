@@ -11,7 +11,7 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  .achih-app-background {
+  hih-app {
     background: mat-color($background, background);
   }
 
@@ -22,12 +22,12 @@
       color: mat-color($primary, default-contrast);
     }
   }
-
+  
   .achih-footer {
     background: mat-color($primary);
     color: mat-color($primary, default-contrast);
   }
-  
+
   @include svg-theme($theme);
   @include footer-theme($theme);
 }

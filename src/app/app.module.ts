@@ -38,8 +38,9 @@ import { VersionComponent } from './version';
 import { HomeMessageComponent, HomeMessageDialogComponent } from './home-message';
 // import { MatPaginatorIntlCN  } from './utility';
 import { ThemePickerModule, ThemeStorage } from './theme-picker';
+import { FooterComponent } from './footer';
 
-export function HttpLoaderFactory(http: HttpClient) {
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
 }
 
@@ -81,6 +82,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     HomeMessageComponent,
     HomeMessageDialogComponent,
     PageLackAuthorityComponent,
+    FooterComponent,
   ],
   entryComponents: [
     MessageDialogComponent,
