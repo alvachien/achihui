@@ -23,7 +23,7 @@ export enum RepaymentMethodEnum {
 /**
  * Currency definition in HIH
  */
-export interface CurrencyJson {
+export interface ICurrencyJson {
   curr: string;
   name: string;
   symbol: string;
@@ -98,7 +98,7 @@ export class Currency extends hih.BaseModel {
 /**
  * Account category in JSON format
  */
-export interface AccountCategoryJson {
+export interface IAccountCategoryJson {
   id: number;
   hid?: number;
   name: string;
@@ -1299,8 +1299,8 @@ export class Document extends hih.BaseModel {
         msg.MsgTitle = 'Finance.DespIsTooLong';
         msg.MsgContent = 'Finance.DespIsTooLong';
         this.VerifiedMsgs.push(msg);
-        chkrst = false;          
-      }      
+        chkrst = false;
+      }
     }
 
     // Currency check
@@ -1661,7 +1661,7 @@ export class DocumentItem {
         msg.MsgTitle = 'Finance.DespIsTooLong';
         msg.MsgContent = 'Finance.DespIsTooLong';
         this.VerifiedMsgs.push(msg);
-        chkrst = false;          
+        chkrst = false;
       }
     }
     // Either control center or order must be exist
