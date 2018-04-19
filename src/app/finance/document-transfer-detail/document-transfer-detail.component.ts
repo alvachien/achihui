@@ -2,12 +2,11 @@ import {
   Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
-//import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import { Observable, merge, forkJoin, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, FinanceDocType_Transfer, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum } from '../../model';
@@ -74,7 +73,7 @@ export class DocumentTransferDetailComponent implements OnInit {
     //   //tgtaccountCtrl: ['', Validators.required]
     // });
 
-    Observable.forkJoin([
+    forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),
@@ -92,7 +91,7 @@ export class DocumentTransferDetailComponent implements OnInit {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
 
-      this._activateRoute.url.subscribe((x) => {
+      this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createtransfer') {
             this.onInitCreateMode();
@@ -212,7 +211,7 @@ export class DocumentTransferDetailComponent implements OnInit {
         // Navigate back to list view
         if (x instanceof Document) {
           // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });

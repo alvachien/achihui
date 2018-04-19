@@ -2,9 +2,8 @@ import { Component, OnInit, ViewChild, HostBinding } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable, Subject, BehaviorSubject, forkJoin, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject, LearnHistory } from '../../model';
 import { LearnStorageService } from '../../services';
@@ -25,13 +24,13 @@ export class LearnHistoryDataSource extends DataSource<any> {
       this._paginator.page,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       const data: any = this._storageService.Histories.slice();
 
       // Grab the page's slice of data.
       const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
-    });
+    }));
   }
 
   disconnect(): void {
@@ -64,7 +63,7 @@ export class HistoryListComponent implements OnInit {
     this.isLoadingResults = true;
     this.dataSource = new LearnHistoryDataSource(this._storageService, this.paginator);
 
-    Observable.forkJoin([
+    forkJoin([
       this._storageService.fetchAllCategories(),
       this._storageService.fetchAllObjects(),
       this._storageService.fetchAllHistories(),

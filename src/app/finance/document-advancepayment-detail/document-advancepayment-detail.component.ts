@@ -5,8 +5,8 @@ import {
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import { Observable, forkJoin, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_AdvancePayment,
@@ -33,9 +33,9 @@ export class TemplateDocADPDataSource extends DataSource<any> {
       this._parentComponent.tmpDocOperEvent,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       return this._parentComponent.detailObject.TmpDocs;
-    });
+    }));
   }
 
   disconnect(): void {
@@ -89,7 +89,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit...');
     }
 
-    Observable.forkJoin([
+    forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),

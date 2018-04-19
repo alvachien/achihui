@@ -4,7 +4,8 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Rx';
+import { Observable, forkJoin, merge } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Loan, COMMA, TemplateDocLoan, UIFinLoanDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
@@ -27,9 +28,9 @@ export class TemplateDocLoanDataSource extends DataSource<any> {
       this._parentComponent.tmpDocOperEvent,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       return this._parentComponent.detailObject.TmpDocs;
-    });
+    }));
   }
 
   disconnect(): void {
@@ -87,7 +88,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngOnInit...');
     }
 
-    Observable.forkJoin([
+    forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),
@@ -201,7 +202,7 @@ export class DocumentLoanDetailComponent implements OnInit {
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
           tmpdoc.TranType = this.detailObject.SourceTranType;
-          tmpdoc.Desp = this.detailObject.LoanAccount.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString() 
+          tmpdoc.Desp = this.detailObject.LoanAccount.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString()
             + ' / ' + x.length.toString();
           this.detailObject.TmpDocs.push(tmpdoc);
         }
@@ -319,7 +320,7 @@ export class DocumentLoanDetailComponent implements OnInit {
           });
 
           // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });

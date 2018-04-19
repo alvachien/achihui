@@ -5,8 +5,8 @@ import {
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import { Observable, forkJoin, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal, UICommonLabelEnum, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection } from '../../model';
@@ -28,9 +28,9 @@ export class DocumentItemDataSource extends DataSource<any> {
       this._parentComponent.itemOperEvent,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       return this._parentComponent.detailObject.Items;
-    });
+    }));
   }
 
   disconnect(): void {
@@ -86,7 +86,7 @@ export class DocumentDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...');
     }
 
-    Observable.forkJoin([
+    forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),
@@ -238,14 +238,14 @@ export class DocumentDetailComponent implements OnInit {
         return;
       }
 
-      this._storageService.createDocumentEvent.subscribe((x) => {
+      this._storageService.createDocumentEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentDetailComponent with : ${x}`);
         }
 
         // Navigate back to list view
         if (x instanceof Document) {
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });

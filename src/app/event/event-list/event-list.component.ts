@@ -4,14 +4,8 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT
 import { environment } from '../../../environments/environment';
 import { LogLevel, GeneralEvent } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
-import { Observable } from 'rxjs/Observable';
-import { merge } from 'rxjs/observable/merge';
-import { of as observableOf } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators/catchError';
-import { map } from 'rxjs/operators/map';
-import { startWith } from 'rxjs/operators/startWith';
-import { switchMap } from 'rxjs/operators/switchMap';
-// import * as moment from 'moment';
+import { Observable, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-event-list',
@@ -99,7 +93,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
       catchError(() => {
         this.isLoadingResults = false;
 
-        return observableOf([]);
+        return of([]);
       }),
       ).subscribe((data: any) => this.dataSource.data = data);
   }

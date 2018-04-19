@@ -1,14 +1,10 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, Currency } from '../model';
 import { AuthService } from './auth.service';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
 
 @Injectable()
 export class FinCurrencyService {
@@ -41,7 +37,7 @@ export class FinCurrencyService {
           headers: headers,
           withCredentials: true,
         })
-        .map((response: HttpResponse<any>) => {
+        .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinCurrencyService: ${response}`);
           }
@@ -60,7 +56,7 @@ export class FinCurrencyService {
           this._islistLoaded = true;
           this.listDataChange.next(listRst);
           return listRst;
-        });
+        }));
         // .catch(err => {
         //   if (environment.LoggingLevel >= LogLevel.Error) {
         //     console.error(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinCurrencyService: ${err}`);
@@ -72,7 +68,7 @@ export class FinCurrencyService {
         //   return Observable.throw(err.json());
         // });
     } else {
-      return Observable.of(this.listDataChange.value);
+      return of(this.listDataChange.value);
     }
   }
 }

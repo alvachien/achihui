@@ -6,7 +6,8 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, QuestionBankItem, UIMode, getUIModeString, TagTypeEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService, TagsService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { Observable } from 'rxjs/Observable';
+import { Observable, forkJoin, merge } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 /**
  * Data source of Question bank
@@ -24,13 +25,13 @@ export class QuestionBankDataSource extends DataSource<any> {
       this._paginator.page,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       const data: any = this._storageService.QuestionBanks.slice();
 
       // Grab the page's slice of data.
       const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
-    });
+    }));
   }
 
   disconnect(): void {
@@ -64,7 +65,7 @@ export class QuestionBankListComponent implements OnInit {
     this.isLoadingResults = true;
     this.dataSource = new QuestionBankDataSource(this._storageService, this.paginator);
 
-    Observable.forkJoin([
+    forkJoin([
       // this._tagService.fetchAllTags(TagTypeEnum.LearnQuestionBank),
       this._storageService.fetchAllQuestionBankItem(),
     ]).subscribe((x: any) => {

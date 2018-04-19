@@ -1,14 +1,10 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, AppLanguage } from '../model';
 import { AuthService } from './auth.service';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
 
 @Injectable()
 export class LanguageService {
@@ -39,7 +35,7 @@ export class LanguageService {
       this._http.get(apiurl, {
           headers: headers,
         })
-        .map((response: HttpResponse<any>) => {
+        .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllLanguages in LanguageService: ${response}`);
           }
@@ -61,7 +57,7 @@ export class LanguageService {
           }
 
           return _listRst;
-        }).subscribe((x: any) => {
+        })).subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllLanguages in LanguageService: ${x}`);
           }

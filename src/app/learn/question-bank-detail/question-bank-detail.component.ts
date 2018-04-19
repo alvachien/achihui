@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 import { COMMA, LogLevel, QuestionBankItem, UIMode, getUIModeString, QuestionBankTypeEnum, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ENTER } from '@angular/cdk/keycodes';
 
 @Component({

@@ -1,15 +1,11 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, MomentDateFormat, GeneralEvent, RecurEvent, EventHabit, EventHabitCheckin } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
 import * as moment from 'moment';
 
 @Injectable()
@@ -56,7 +52,7 @@ export class EventStorageService {
         params: params,
         withCredentials: true,
       })
-      .map((response: HttpResponse<any>) => {
+      .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering readObject in EventStorageService: ${response}`);
         }
@@ -64,7 +60,7 @@ export class EventStorageService {
         let hd: GeneralEvent = new GeneralEvent();
         hd.onSetData(response);
         return hd;
-      });
+      }));
   }
 
   /**
@@ -156,7 +152,7 @@ export class EventStorageService {
         params: params,
         withCredentials: true,
       })
-      .map((response: HttpResponse<any>) => {
+      .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering readRecurEvent in EventStorageService: ${response}`);
         }
@@ -164,7 +160,7 @@ export class EventStorageService {
         let hd: RecurEvent = new RecurEvent();
         hd.onSetData(response);
         return hd;
-      });
+      }));
   }
 
   /**
@@ -186,7 +182,7 @@ export class EventStorageService {
         params: params,
         withCredentials: true,
       })
-      .map((response: HttpResponse<any>) => {
+      .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering createRecurEvent in EventStorageService: ${response}`);
         }
@@ -194,7 +190,7 @@ export class EventStorageService {
         let hd: RecurEvent = new RecurEvent();
         hd.onSetData(response);
         return hd;
-      });
+      }));
   }
 
   /**
@@ -221,7 +217,7 @@ export class EventStorageService {
         // params: params,
         withCredentials: true,
       })
-      .map((response: HttpResponse<any>) => {
+      .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering calcRecurEvents in EventStorageService: ${response}`);
         }
@@ -237,7 +233,7 @@ export class EventStorageService {
         }
 
         return arRst;
-      });
+      }));
   }
 
   /**
@@ -277,7 +273,7 @@ export class EventStorageService {
         params: params,
         withCredentials: true,
       })
-      .map((response: HttpResponse<any>) => {
+      .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering readHabitEvent in EventStorageService: ${response}`);
         }
@@ -285,7 +281,7 @@ export class EventStorageService {
         let hd: EventHabit = new EventHabit();
         hd.onSetData(response);
         return hd;
-      });
+      }));
   }
 
   /**

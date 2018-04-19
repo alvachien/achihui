@@ -5,8 +5,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import { Observable, Subject, BehaviorSubject, forkJoin, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
@@ -80,7 +80,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
     //   srcAmountCtrl: ['', Validators.required],
     // });
 
-    Observable.forkJoin([
+    forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),
@@ -98,7 +98,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
 
-      this._activateRoute.url.subscribe((x) => {
+      this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createexg') {
             this.onInitCreateMode();
@@ -160,7 +160,8 @@ export class DocumentExchangeDetailComponent implements OnInit {
   public onFetchPreviousDoc(): void {
     this.detailObject.prvdocs = [];
     if (this.isForeignSourceCurrency) {
-      this._storageService.fetchPreviousDocWithPlanExgRate(this.detailObject.SourceTranCurr).subscribe((x) => {
+      this._storageService.fetchPreviousDocWithPlanExgRate(this.detailObject.SourceTranCurr)
+      .subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           for (let it of x) {
             let pvdoc: DocumentWithPlanExgRate = new DocumentWithPlanExgRate();
@@ -172,7 +173,8 @@ export class DocumentExchangeDetailComponent implements OnInit {
     }
 
     if (this.isForeignTargetCurrency) {
-      this._storageService.fetchPreviousDocWithPlanExgRate(this.detailObject.TargetTranCurr).subscribe((x) => {
+      this._storageService.fetchPreviousDocWithPlanExgRate(this.detailObject.TargetTranCurr)
+        .subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           for (let it of x) {
             let pvdoc: DocumentWithPlanExgRate = new DocumentWithPlanExgRate();

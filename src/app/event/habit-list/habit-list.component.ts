@@ -5,13 +5,8 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { environment } from '../../../environments/environment';
 import { LogLevel, EventHabit, EventHabitDetail, EventHabitCheckin } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
-import { Observable } from 'rxjs/Observable';
-import { merge } from 'rxjs/observable/merge';
-import { of as observableOf } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators/catchError';
-import { map } from 'rxjs/operators/map';
-import { startWith } from 'rxjs/operators/startWith';
-import { switchMap } from 'rxjs/operators/switchMap';
+import { Observable, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import * as moment from 'moment';
 
 @Component({
@@ -124,7 +119,7 @@ export class HabitListComponent implements OnInit, AfterViewInit {
       catchError(() => {
         this.isLoadingResults = false;
 
-        return observableOf([]);
+        return of([]);
       }),
       ).subscribe((data: any) => this.dataSource.data = data);
   }

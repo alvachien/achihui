@@ -1,7 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import 'rxjs/add/operator/map';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { LogLevel, UserAuthInfo } from '../model';
 import { UserManager, Log, MetadataService, User } from 'oidc-client';
@@ -195,7 +193,7 @@ export class AuthService {
       setTimeout(5000, () => {
         console.log('AC_HIH_UI [Debug]: testing to see if fired...');
       });
-    }).catch((err) => {
+    }).catch((err: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(err);
       }
@@ -203,11 +201,11 @@ export class AuthService {
   }
 
   endSignoutMainWindow(): void {
-    this.mgr.signoutRedirectCallback().then((resp) => {
+    this.mgr.signoutRedirectCallback().then((resp: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: signed out', resp);
       }
-    }).catch((err) => {
+    }).catch((err: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(err);
       }

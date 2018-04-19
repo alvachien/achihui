@@ -1,15 +1,11 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, BookCategory, Book, Location, MovieGenre, Movie, MomentDateFormat } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
 import * as moment from 'moment';
 
 @Injectable()
@@ -73,7 +69,7 @@ export class LibraryStorageService {
           params: params,
           withCredentials: true,
         })
-        .map((response: HttpResponse<any>) => {
+        .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllBookCategories in LibraryStorageService: ${response}`);
           }
@@ -99,8 +95,8 @@ export class LibraryStorageService {
           this._isBookCtgyListLoaded = true;
           this.listBookCategoryChange.next(listRst);
           return listRst;
-        })
-        .catch((error: HttpErrorResponse) => {
+        }),
+        catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllBookCategories in LibraryStorageService: ${error}`);
           }
@@ -109,9 +105,9 @@ export class LibraryStorageService {
           this.listBookCategoryChange.next([]);
 
           return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
-        });
+        }));
     } else {
-      return Observable.of(this.listBookCategoryChange.value);
+      return of(this.listBookCategoryChange.value);
     }
   }
 
@@ -132,7 +128,7 @@ export class LibraryStorageService {
           params: params,
           withCredentials: true,
         })
-        .map((response: HttpResponse<any>) => {
+        .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllLocations in LibraryStorageService: ${response}`);
           }
@@ -151,8 +147,8 @@ export class LibraryStorageService {
           this._isLocationListLoaded = true;
           this.listLocationChange.next(listRst);
           return listRst;
-        })
-        .catch((error: HttpErrorResponse) => {
+        }),
+        catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllLocations in LibraryStorageService: ${error}`);
           }
@@ -161,9 +157,9 @@ export class LibraryStorageService {
           this.listLocationChange.next([]);
 
           return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
-        });
+        }));
     } else {
-      return Observable.of(this.listLocationChange.value);
+      return of(this.listLocationChange.value);
     }
   }
 
@@ -184,7 +180,7 @@ export class LibraryStorageService {
           params: params,
           withCredentials: true,
         })
-        .map((response: HttpResponse<any>) => {
+        .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllBooks in LibraryStorageService: ${response}`);
           }
@@ -203,8 +199,8 @@ export class LibraryStorageService {
           this._isBookListLoaded = true;
           this.listBookChange.next(listRst);
           return listRst;
-        })
-        .catch((error: HttpErrorResponse) => {
+        }),
+        catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllBooks in LibraryStorageService: ${error}`);
           }
@@ -213,9 +209,9 @@ export class LibraryStorageService {
           this.listBookChange.next([]);
 
           return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
-        });
+        }));
     } else {
-      return Observable.of(this.listLocationChange.value);
+      return of(this.listLocationChange.value);
     }
   }
 

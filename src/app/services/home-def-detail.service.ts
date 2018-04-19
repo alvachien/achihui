@@ -1,14 +1,10 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, HomeMsg, HomeKeyFigure } from '../model';
 import { AuthService } from './auth.service';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
 import { HttpHeaderResponse } from '@angular/common/http/src/response';
 
 @Injectable()
@@ -88,7 +84,7 @@ export class HomeDefDetailService {
           headers: headers,
           withCredentials: true,
         })
-        .map((response: HttpResponse<any>) => {
+        .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHomeDef in HomeDefDetailService: ${response}`);
           }
@@ -105,7 +101,7 @@ export class HomeDefDetailService {
           }
 
           return listResult;
-        }).subscribe((x: any) => {
+        })).subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllHomeDef in HomeDefDetailService: ${x}`);
           }
@@ -137,7 +133,7 @@ export class HomeDefDetailService {
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     this._http.get(apiurl, { headers: headers, withCredentials: true })
-      .map((response: HttpResponse<any>) => {
+      .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering map in ReadHomeDef in HomeDefDetailService: ${response}`);
         }
@@ -149,7 +145,7 @@ export class HomeDefDetailService {
         hd.parseJSONData(rjs);
         listResult.push(hd);
         return hd;
-      }).subscribe((x: any) => {
+      })).subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Succeed in ReadHomeDef in HomeDefDetailService: ${x}`);
         }
@@ -183,7 +179,7 @@ export class HomeDefDetailService {
         headers: headers,
         withCredentials: true,
       })
-      .map((response: HttpResponse<any>) => {
+      .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log('AC_HIH_UI [Debug]:' + response);
         }
@@ -191,7 +187,7 @@ export class HomeDefDetailService {
         let hd: HomeDef = new HomeDef();
         hd.parseJSONData(<any>response);
         return hd;
-      })
+      }))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createHomeDef in HomeDefDetailService: ${x}`);
@@ -234,7 +230,7 @@ export class HomeDefDetailService {
           params: params,
           withCredentials: true,
         })
-        .map((response: HttpResponse<any>) => {
+        .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefDetailService: ${response}`);
           }
@@ -251,7 +247,7 @@ export class HomeDefDetailService {
           }
 
           return listResult;
-        }).subscribe((x: any) => {
+        })).subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllMembersInChosedHome in HomeDefDetailService: ${x}`);
           }
@@ -286,7 +282,7 @@ export class HomeDefDetailService {
           params: params,
           withCredentials: true,
         })
-        .map((response: HttpResponse<any>) => {
+        .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchHomeMembers in HomeDefDetailService: ${response}`);
           }
@@ -303,7 +299,7 @@ export class HomeDefDetailService {
           }
 
           return listResult;
-        }).subscribe((x: any) => {
+        })).subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchHomeMembers in HomeDefDetailService: ${x}`);
           }
@@ -354,7 +350,7 @@ export class HomeDefDetailService {
         headers: headers,
         withCredentials: true,
       })
-      .map((response: HttpResponse<any>) => {
+      .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log('AC_HIH_UI [Debug]:' + response);
         }
@@ -362,7 +358,7 @@ export class HomeDefDetailService {
         let hd: HomeMsg = new HomeMsg();
         hd.onSetData(<any>response);
         return hd;
-      });
+      }));
   }
 
   /**
@@ -388,7 +384,7 @@ export class HomeDefDetailService {
         params: params,
         withCredentials: true,
       })
-      .map((response: HttpResponse<any>) => {
+      .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log('AC_HIH_UI [Debug]:' + response);
         }
@@ -396,7 +392,7 @@ export class HomeDefDetailService {
         let hd: HomeMsg = new HomeMsg();
         hd.onSetData(<any>response);
         return hd;
-      });
+      }));
   }
 
   /**
@@ -422,7 +418,7 @@ export class HomeDefDetailService {
         params: params,
         withCredentials: true,
       })
-      .map((response: HttpResponse<any>) => {
+      .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log('AC_HIH_UI [Debug]:' + response);
         }
@@ -430,7 +426,7 @@ export class HomeDefDetailService {
         let hd: HomeMsg = new HomeMsg();
         hd.onSetData(<any>response);
         return hd;
-      });
+      }));
   }
 
   /**
@@ -447,10 +443,10 @@ export class HomeDefDetailService {
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true})
-      .map((x: any) => {
+      .pipe(map((x: any) => {
         this.keyFigure = new HomeKeyFigure();
         this.keyFigure.onSetData(x);
         return this.keyFigure;
-      });
+      }));
   }
 }

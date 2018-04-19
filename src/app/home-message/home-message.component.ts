@@ -3,13 +3,8 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT
 import { environment } from '../../environments/environment';
 import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, HomeMsg, HomeMember } from '../model';
 import { AuthService, HomeDefDetailService, UIStatusService } from '../services';
-import { Observable } from 'rxjs/Observable';
-import { merge } from 'rxjs/observable/merge';
-import { of as observableOf } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators/catchError';
-import { map } from 'rxjs/operators/map';
-import { startWith } from 'rxjs/operators/startWith';
-import { switchMap } from 'rxjs/operators/switchMap';
+import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-home-msg',
@@ -144,7 +139,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
       catchError(() => {
         this.isLoadingResults = false;
 
-        return observableOf([]);
+        return of([]);
       }),
       ).subscribe((data: any) => this.dataSource.data = data);
   }

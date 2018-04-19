@@ -1,0 +1,231 @@
+{
+  "$schema": "./node_modules/@angular-devkit/core/src/workspace/workspace-schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "achihui": {
+      "root": "",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "polyfills": "src/polyfills.ts",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
+              },
+              {
+                "glob": "logincallback.html",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "silentrenewcallback.html",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "favicon.ico",
+                "input": "src",
+                "output": "/"
+              }
+            ],
+            "styles": [
+              "src/assets/fonts/material-icons.css",
+              "src/styles.scss"
+            ],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.slim.min.js",
+              "node_modules/popper.js/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "node_modules/tinymce/tinymce.js",
+              "node_modules/tinymce/themes/modern/theme.js",
+              "node_modules/tinymce/plugins/link/plugin.js",
+              "node_modules/tinymce/plugins/paste/plugin.js",
+              "node_modules/tinymce/plugins/table/plugin.js",
+              "node_modules/tinymce/plugins/advlist/plugin.js",
+              "node_modules/tinymce/plugins/autolink/plugin.js",
+              "node_modules/tinymce/plugins/image/plugin.js",
+              "node_modules/tinymce/plugins/lists/plugin.js",
+              "node_modules/tinymce/plugins/charmap/plugin.js",
+              "node_modules/tinymce/plugins/print/plugin.js",
+              "node_modules/tinymce/plugins/preview/plugin.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "github": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.github.ts"
+                }
+              ]
+            },
+            "azure": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.azureprod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "achihui:build",
+            "port": 29521,
+            "host": "localhost"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "achihui:build:production"
+            },
+            "github": {
+              "browserTarget": "achihui:build:github"
+            },
+            "azure": {
+              "browserTarget": "achihui:build:azure"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "achihui:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.spec.json",
+            "scripts": [
+              "node_modules/jquery/dist/jquery.slim.min.js",
+              "node_modules/popper.js/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "node_modules/tinymce/tinymce.js",
+              "node_modules/tinymce/themes/modern/theme.js",
+              "node_modules/tinymce/plugins/link/plugin.js",
+              "node_modules/tinymce/plugins/paste/plugin.js",
+              "node_modules/tinymce/plugins/table/plugin.js",
+              "node_modules/tinymce/plugins/advlist/plugin.js",
+              "node_modules/tinymce/plugins/autolink/plugin.js",
+              "node_modules/tinymce/plugins/image/plugin.js",
+              "node_modules/tinymce/plugins/lists/plugin.js",
+              "node_modules/tinymce/plugins/charmap/plugin.js",
+              "node_modules/tinymce/plugins/print/plugin.js",
+              "node_modules/tinymce/plugins/preview/plugin.js"
+            ],
+            "styles": [
+              "src/assets/fonts/material-icons.css",
+              "src/styles.scss"
+            ],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
+              },
+              {
+                "glob": "logincallback.html",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "silentrenewcallback.html",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "favicon.ico",
+                "input": "src",
+                "output": "/"
+              }
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": []
+          }
+        }
+      }
+    },
+    "achihui-e2e": {
+      "root": "",
+      "projectType": "application",
+      "cli": {},
+      "schematics": {},
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "./protractor.conf.js",
+            "devServerTarget": "achihui:serve"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "e2e/tsconfig.e2e.json"
+            ],
+            "exclude": []
+          }
+        }
+      }
+    }
+  },
+  "cli": {},
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app",
+      "styleext": "scss"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  }
+}

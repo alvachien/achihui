@@ -1,14 +1,11 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Subject } from 'rxjs/Subject';
-import { Observable, BehaviorSubject } from 'rxjs/Rx';
+import { Observable, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, Tag, TagCount, TagTypeEnum } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
 
 @Injectable()
 export class TagsService {
@@ -58,7 +55,7 @@ export class TagsService {
           params: params,
           withCredentials: true,
         })
-        .map((response: HttpResponse<any>) => {
+        .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService: ${response}`);
           }
@@ -92,8 +89,8 @@ export class TagsService {
           // this.listDataChange.next(listRst);
 
           return reqamt ? listCountRst : listRst;
-        })
-        .catch((err: any) => {
+        }),
+        catchError((err: any) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllTags in TagsService: ${err}`);
           }
@@ -102,7 +99,7 @@ export class TagsService {
           // this.listDataChange.next([]);
 
           return Observable.throw(err.json());
-        });
+        }));
     // } else {
     //   return Observable.of(this.listDataChange.value);
     // }

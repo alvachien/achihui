@@ -5,8 +5,8 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, LearnHistory, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-learn-history-detail',

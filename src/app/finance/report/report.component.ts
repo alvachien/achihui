@@ -2,22 +2,14 @@ import { Component, OnInit, EventEmitter, ViewChild, ElementRef, OnDestroy } fro
 import { DataSource } from '@angular/cdk/collections';
 import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs/Rx';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
   getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
-import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { merge } from 'rxjs/observable/merge';
-import { of as observableOf } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators/catchError';
-import { map } from 'rxjs/operators/map';
-import { startWith } from 'rxjs/operators/startWith';
-import { switchMap } from 'rxjs/operators/switchMap';
-import { takeUntil } from 'rxjs/operators/takeUntil';
+import { Observable, Subject, ReplaySubject, BehaviorSubject, merge, of, forkJoin } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 /**
  * Data source of BS
@@ -35,13 +27,13 @@ export class ReportBSDataSource extends DataSource<any> {
       this._paginator.page,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       const data: any = this._parentComponent.ReportBS.slice();
 
       // Grab the page's slice of data.
       const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
-    });
+    }));
   }
 
   disconnect(): void {
@@ -65,13 +57,13 @@ export class ReportCCDataSource extends DataSource<any> {
       this._paginator.page,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       const data: any = this._parentComponent.ReportCC.slice();
 
       // Grab the page's slice of data.
       const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
-    });
+    }));
   }
 
   disconnect(): void {
@@ -95,13 +87,13 @@ export class ReportOrderDataSource extends DataSource<any> {
       this._paginator.page,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       const data: any = this._parentComponent.ReportOrder.slice();
 
       // Grab the page's slice of data.
       const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
-    });
+    }));
   }
 
   disconnect(): void {
@@ -190,7 +182,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     this.changeGraphSize();
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedMOMScope);
 
-    Observable.forkJoin([
+    forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllControlCenters(),

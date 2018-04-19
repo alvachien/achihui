@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
+import { Observable, forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, UIMode, getUIModeString, FinanceAccountCategory_Asset, 
+import { LogLevel, Account, UIMode, getUIModeString, FinanceAccountCategory_Asset,
   FinanceAccountCategory_AdvancePayment, FinanceAccountCategory_Loan, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -37,7 +37,7 @@ export class AccountDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering ngOnInit of AccountDetailComponent ...');
     }
 
-    Observable.forkJoin([
+    forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAssetCategories(),
     ]).subscribe((rst: any) => {

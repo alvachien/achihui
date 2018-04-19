@@ -4,8 +4,8 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatChipInputEvent } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import { Observable, forkJoin, merge } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum } from '../../model';
@@ -27,9 +27,9 @@ export class NormalDocumentItemDataSource extends DataSource<any> {
       this._parentComponent.itemOperEvent,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       return this._parentComponent.detailObject.Items;
-    });
+    }));
   }
 
   disconnect(): void {
@@ -86,7 +86,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent ngOnInit...');
     }
 
-    Observable.forkJoin([
+    forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),

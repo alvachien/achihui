@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EnSentence, EnSentenceExplain, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';

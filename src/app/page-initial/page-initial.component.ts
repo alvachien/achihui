@@ -9,15 +9,8 @@ import {
   TranType, FinanceTranType_TransferIn, FinanceTranType_TransferOut, HomeKeyFigure,
 } from '../model';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
-import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { merge } from 'rxjs/observable/merge';
-import { of as observableOf } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators/catchError';
-import { map } from 'rxjs/operators/map';
-import { startWith } from 'rxjs/operators/startWith';
-import { switchMap } from 'rxjs/operators/switchMap';
-import { takeUntil } from 'rxjs/operators/takeUntil';
+import { Observable, Subject, BehaviorSubject, forkJoin, ReplaySubject, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-page-initial',
@@ -129,7 +122,7 @@ export class PageInitialComponent implements OnInit, OnDestroy {
     // Destructing an object syntax!
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedLearnScope);
 
-    Observable.forkJoin([
+    forkJoin([
       this._lrnstorageService.getHistoryReportByCategory(bgn, end),
       this._lrnstorageService.getHistoryReportByUser(bgn, end),
     ]).subscribe((x: any) => {

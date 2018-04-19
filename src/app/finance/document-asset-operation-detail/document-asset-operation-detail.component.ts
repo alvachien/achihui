@@ -4,8 +4,8 @@ import {
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
+import { Observable, forkJoin, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_Asset,
@@ -58,7 +58,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent ngOnInit...');
     }
 
-    Observable.forkJoin([
+    forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAssetCategories(),
       this._storageService.fetchAllDocTypes(),

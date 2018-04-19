@@ -2,9 +2,8 @@ import { Component, OnInit, ViewChild, HostBinding, ViewEncapsulation } from '@a
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/Rx';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, EnSentence, EnSentenceExplain } from '../../model';
 import { LearnStorageService } from '../../services';
@@ -25,13 +24,13 @@ export class EnSentenceDataSource extends DataSource<any> {
       this._paginator.page,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       const data: any = this._storageService.EnSentences.slice();
 
       // Grab the page's slice of data.
       const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
-    });
+    }));
   }
 
   disconnect(): void {
