@@ -12,6 +12,7 @@ Bugs fixing and Feature list
 - Finance Report: Monthly income trend
 - Event: Create the event and assign to one home member;
 - Recur event: Create the recur event;
+- Habit event: Create the habit-like event;
 
 ## Version 0.2
 Released at 2017.11.13
