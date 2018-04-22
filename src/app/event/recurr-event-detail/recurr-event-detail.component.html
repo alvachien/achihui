@@ -55,19 +55,19 @@
       
           <!-- Name Column -->
           <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> {{'Common.Name' | translate}} </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.Name}} </mat-cell>
           </ng-container>
       
           <!-- Start date Column -->
           <ng-container matColumnDef="startdate">
-            <mat-header-cell *matHeaderCellDef> Start </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> {{'Common.StartDate' | translate}} </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.StartTimeFormatString}} </mat-cell>
           </ng-container>
       
           <!-- End date Column -->
           <ng-container matColumnDef="enddate">
-            <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> {{'Common.EndDate' | translate}} </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.EndTimeFormatString}} </mat-cell>
           </ng-container>
       

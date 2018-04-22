@@ -18,6 +18,7 @@ import { DocumentTypeListComponent } from './document-type-list';
 import { DocumentTypeDetailComponent } from './document-type-detail';
 import { TranTypeComponent } from './tran-type';
 import { TranTypeListComponent } from './tran-type-list';
+import { TranTypeTreeComponent } from './tran-type-tree';
 import { TranTypeDetailComponent } from './tran-type-detail';
 import { AccountComponent } from './account';
 import { AccountListComponent } from './account-list';
@@ -66,6 +67,7 @@ import { AccountExtLoanComponent } from './account-ext-loan';
     DocumentTypeDetailComponent,
     TranTypeComponent,
     TranTypeListComponent,
+    TranTypeTreeComponent,
     TranTypeDetailComponent,
     AccountComponent,
     AccountListComponent,

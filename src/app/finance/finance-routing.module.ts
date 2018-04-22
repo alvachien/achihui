@@ -9,6 +9,7 @@ import { DocumentTypeListComponent } from './document-type-list';
 import { DocumentTypeDetailComponent } from './document-type-detail';
 import { TranTypeComponent } from './tran-type';
 import { TranTypeListComponent } from './tran-type-list';
+import { TranTypeTreeComponent } from './tran-type-tree';
 import { TranTypeDetailComponent } from './tran-type-detail';
 import { AssetCategoryComponent } from './asset-category';
 import { AssetCategoryListComponent } from './asset-category-list';
@@ -93,6 +94,10 @@ const routes: Routes = [
         children: [
           {
             path: '',
+            component: TranTypeTreeComponent,
+          },
+          {
+            path: 'list',
             component: TranTypeListComponent,
           },
           {
