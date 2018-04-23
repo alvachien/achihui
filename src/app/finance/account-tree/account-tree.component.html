@@ -1,0 +1,11 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Finance.Accounts' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'Common.HierarchyView' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="example-loading-shade" *ngIf="isLoadingResults">
+      <mat-spinner></mat-spinner>
+    </div>
+  </mat-card-content>
+</mat-card>

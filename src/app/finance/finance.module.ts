@@ -46,6 +46,7 @@ import { AssetCategoryDetailComponent } from './asset-category-detail';
 import { AccountExtAssetComponent } from './account-ext-asset';
 import { AccountExtADPComponent } from './account-ext-adp';
 import { AccountExtLoanComponent } from './account-ext-loan';
+import { AccountTreeComponent } from './account-tree';
 
 @NgModule({
   imports: [
@@ -95,6 +96,7 @@ import { AccountExtLoanComponent } from './account-ext-loan';
     AccountExtAssetComponent,
     AccountExtADPComponent,
     AccountExtLoanComponent,
+    AccountTreeComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

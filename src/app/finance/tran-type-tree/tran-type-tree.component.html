@@ -4,5 +4,24 @@
     <mat-card-subtitle>{{'Common.HierarchyView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
+    <div class="example-loading-shade" *ngIf="isLoadingResults">
+      <mat-spinner></mat-spinner>
+    </div>
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+        <button mat-icon-button disabled></button>
+        {{node.displayname}} ({{node.id}})
+      </mat-tree-node>
+        
+      <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+        <button mat-icon-button matTreeNodeToggle
+          [attr.aria-label]="'toggle ' + node.filename">
+          <mat-icon>
+            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        {{node.displayname}} ({{node.id}})
+      </mat-tree-node>
+    </mat-tree>          
   </mat-card-content> 
 </mat-card>
