@@ -7,6 +7,7 @@
     <div class="example-loading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>
+
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
         <button mat-icon-button disabled></button>
@@ -22,6 +23,6 @@
         </button>
         {{node.displayname}} ({{node.id}})
       </mat-tree-node>
-    </mat-tree>          
+    </mat-tree>
   </mat-card-content> 
 </mat-card>

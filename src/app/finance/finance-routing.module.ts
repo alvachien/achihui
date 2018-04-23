@@ -16,6 +16,7 @@ import { AssetCategoryListComponent } from './asset-category-list';
 import { AssetCategoryDetailComponent } from './asset-category-detail';
 import { AccountComponent } from './account';
 import { AccountListComponent } from './account-list';
+import { AccountTreeComponent } from './account-tree';
 import { AccountDetailComponent } from './account-detail';
 import { ControlCenterComponent } from './control-center';
 import { ControlCenterListComponent } from './control-center-list';
@@ -143,6 +144,10 @@ const routes: Routes = [
           {
             path: '',
             component: AccountListComponent,
+          },
+          {
+            path: 'tree',
+            component: AccountTreeComponent,
           },
           {
             path: 'create',

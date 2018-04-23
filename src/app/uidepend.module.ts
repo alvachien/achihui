@@ -9,14 +9,18 @@ import {
   MatListModule, MatMenuModule, MatProgressBarModule, MatProgressSpinnerModule,
   MatRadioModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSortModule,
   MatSlideToggleModule, MatSnackBarModule, MatTableModule, MatTabsModule, MatToolbarModule,
-  MatTooltipModule, MatFormFieldModule, MatExpansionModule, MatStepperModule, MatTreeModule, 
+  MatTooltipModule, MatFormFieldModule, MatExpansionModule, MatStepperModule, MatTreeModule,
 } from '@angular/material';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { TinyMceDirective } from './directives/tinymce.directive';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { SplitterPaneComponent } from './splitter-pane';
+import { SplitAreaDirective } from './directives/split-area.directive';
+import { SplitGutterDirective } from './directives/split-gutter.directive';
 
 @NgModule({
   imports: [
+    CommonModule,
     CdkTableModule,
     CdkTreeModule,
     MatAutocompleteModule,
@@ -54,8 +58,12 @@ import { FlexLayoutModule } from '@angular/flex-layout';
   ],
   declarations: [
     TinyMceDirective,
+    SplitAreaDirective,
+    SplitGutterDirective,
+    SplitterPaneComponent,
   ],
   exports: [
+    CommonModule,
     CdkTableModule,
     CdkTreeModule,
     MatAutocompleteModule,
@@ -93,6 +101,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     NgxChartsModule,
     TinyMceDirective,
     FlexLayoutModule,
+    SplitAreaDirective,
+    SplitGutterDirective,
+    SplitterPaneComponent,
   ],
 })
 export class UIDependModule {

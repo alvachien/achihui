@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
@@ -49,10 +49,9 @@ export class TranTypeTreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Do nothing
     this.isLoadingResults = true;
     this._storageService.fetchAllTranTypes().subscribe((x: any) => {
-      let nodes: TranTypeTreeNode[] = this.buildTypeTree(x, 1);
+      let nodes: TranTypeTreeNode[] = this._buildTypeTree(x, 1);
       this.dataSource.data = nodes;
     }, (error: any) => {
       // Do nothing
@@ -81,7 +80,7 @@ export class TranTypeTreeComponent implements OnInit {
     return observableOf(node.children);
   }
 
-  private buildTypeTree(value: TranType[], level: number, id?: number): TranTypeTreeNode[] {
+  private _buildTypeTree(value: TranType[], level: number, id?: number): TranTypeTreeNode[] {
     let data: TranTypeTreeNode[] = [];
 
     if (id === undefined) {
@@ -91,7 +90,7 @@ export class TranTypeTreeComponent implements OnInit {
           let node: TranTypeTreeNode = new TranTypeTreeNode();
           node.displayname = val.FullDisplayText;
           node.id = val.Id;
-          node.children = this.buildTypeTree(value, level + 1, val.Id);
+          node.children = this._buildTypeTree(value, level + 1, val.Id);
 
           data.push(node);
         }
@@ -103,7 +102,7 @@ export class TranTypeTreeComponent implements OnInit {
           let node: TranTypeTreeNode = new TranTypeTreeNode();
           node.displayname = val.FullDisplayText;
           node.id = val.Id;
-          node.children = this.buildTypeTree(value, level + 1, val.Id);
+          node.children = this._buildTypeTree(value, level + 1, val.Id);
 
           data.push(node);
         }
