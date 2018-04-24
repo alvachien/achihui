@@ -7,14 +7,14 @@
     <div class="example-loading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>
-    <div style="clear: both;">
-      <div #accounttree style="flex: block;">
+    <div fxLayout="row" fxLayout.xs="column" style="height:500px" ngxSplit="row">
+      <div fxFlex="30%" ngxSplitArea>
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
           <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
             <button mat-icon-button disabled></button>
             {{node.displayname | translate}} ({{node.id}})
           </mat-tree-node>
-            
+              
           <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
             <button mat-icon-button matTreeNodeToggle
               [attr.aria-label]="'toggle ' + node.filename">
@@ -26,8 +26,11 @@
           </mat-tree-node>
         </mat-tree>
       </div>
-      <div #detailcontent style="float: left;">
-        <p>ToDo</p>
+      <div class="handle handle-row" ngxSplitHandle>
+        <i class="material-icons">&#xE25D;</i>
+      </div>
+      <div fxFlex.xs="70%" fxFlex.gt-md="50%" fxFlex.lg="60%" ngxSplitArea>
+        ToDO.
       </div>
     </div>
   </mat-card-content>

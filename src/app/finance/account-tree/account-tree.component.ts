@@ -6,7 +6,6 @@ import { BehaviorSubject, Observable, forkJoin, of as observableOf } from 'rxjs'
 import { map } from 'rxjs/operators';
 import { LogLevel, Account, AccountCategory, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
-import * as Split from 'split.js';
 
 /**
  * Node type for Account tree
@@ -42,7 +41,7 @@ export class AccountTreeFlatNode {
   templateUrl: './account-tree.component.html',
   styleUrls: ['./account-tree.component.scss'],
 })
-export class AccountTreeComponent implements OnInit, AfterViewInit {
+export class AccountTreeComponent implements OnInit {
   @ViewChild('accounttree') ctrltree: ElementRef;
   @ViewChild('detailcontent') ctrlcontent: ElementRef;
 
@@ -64,13 +63,6 @@ export class AccountTreeComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.isLoadingResults = true;
-  }
-
-  ngAfterViewInit(): void {
-    Split([this.ctrltree.nativeElement, this.ctrlcontent.nativeElement], {
-      sizes: [25, 75],
-    });
-
     forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts())
       .subscribe((value: any) => {
         // Parse the data

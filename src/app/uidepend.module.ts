@@ -14,7 +14,7 @@ import {
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { TinyMceDirective } from './directives/tinymce.directive';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { SplitPaneDirective } from './directives/split-pane.directive';
+import { SplitAreaDirective, SplitHandleDirective, SplitDirective } from './directives';
 
 @NgModule({
   imports: [
@@ -56,7 +56,9 @@ import { SplitPaneDirective } from './directives/split-pane.directive';
   ],
   declarations: [
     TinyMceDirective,
-    SplitPaneDirective,
+    SplitAreaDirective,
+    SplitHandleDirective,
+    SplitDirective,
   ],
   exports: [
     CommonModule,
@@ -97,6 +99,9 @@ import { SplitPaneDirective } from './directives/split-pane.directive';
     NgxChartsModule,
     TinyMceDirective,
     FlexLayoutModule,
+    SplitAreaDirective,
+    SplitHandleDirective,
+    SplitDirective,
   ],
 })
 export class UIDependModule {
