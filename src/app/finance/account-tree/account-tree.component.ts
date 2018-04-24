@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { OnInit, AfterViewInit, Component, Directive, ViewChild, Input, ElementRef, } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, forkJoin, of as observableOf } from 'rxjs'
 import { map } from 'rxjs/operators';
 import { LogLevel, Account, AccountCategory, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
+import * as Split from 'split.js';
 
 /**
  * Node type for Account tree
@@ -41,7 +42,10 @@ export class AccountTreeFlatNode {
   templateUrl: './account-tree.component.html',
   styleUrls: ['./account-tree.component.scss'],
 })
-export class AccountTreeComponent implements OnInit {
+export class AccountTreeComponent implements OnInit, AfterViewInit {
+  @ViewChild('accounttree') ctrltree: ElementRef;
+  @ViewChild('detailcontent') ctrlcontent: ElementRef;
+
   isLoadingResults: boolean;
   treeControl: FlatTreeControl<AccountTreeFlatNode>;
   treeFlattener: MatTreeFlattener<AccountTreeNode, AccountTreeFlatNode>;
@@ -60,8 +64,13 @@ export class AccountTreeComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoadingResults = true;
-    let arobs: any[] = [];
-    arobs.push();
+  }
+
+  ngAfterViewInit(): void {
+    Split([this.ctrltree.nativeElement, this.ctrlcontent.nativeElement], {
+      sizes: [25, 75],
+    });
+
     forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts())
       .subscribe((value: any) => {
         // Parse the data
