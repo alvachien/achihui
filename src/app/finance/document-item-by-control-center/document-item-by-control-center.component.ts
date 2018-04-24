@@ -1,29 +1,30 @@
 import { Component, ViewChild, OnInit, AfterViewInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
-import { LogLevel, Account, DocumentItemWithBalance, } from '../../model';
+import { LogLevel, ControlCenter, DocumentItemWithBalance, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
-  selector: 'hih-fin-docitem-by-acnt',
-  templateUrl: './document-item-by-account.component.html',
-  styleUrls: ['./document-item-by-account.component.scss'],
+  selector: 'hih-fin-docitem-by-cc',
+  templateUrl: './document-item-by-control-center.component.html',
+  styleUrls: ['./document-item-by-control-center.component.scss'],
 })
-export class DocumentItemByAccountComponent implements OnInit, AfterViewInit {
-  private _seledAccount: number;
+export class DocumentItemByControlCenterComponent implements OnInit, AfterViewInit {
+
+  private _seledCC: number;
 
   displayedColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
 
   @Input()
-  set selectedAccount(selacnt: number) {
-    if (selacnt !== this._seledAccount && selacnt) {
-      this._seledAccount = selacnt;
+  set selectedControlCenter(selcc: number) {
+    if (selcc !== this._seledCC && selcc) {
+      this._seledCC = selcc;
 
       this.dataSource.data = [];
 
-      this._storageService.getDocumentItemByAccount(this.selectedAccount).subscribe((x: any) => {
+      this._storageService.getDocumentItemByControlCenter(this.selectedControlCenter).subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           let ardocitems: any[] = [];
           for (let di of x) {
@@ -38,7 +39,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit {
     }
   }
 
-  get selectedAccount(): number { return this._seledAccount; }
+  get selectedControlCenter(): number { return this._seledCC; }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 

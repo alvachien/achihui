@@ -38,7 +38,7 @@ export class AccountDataSource extends DataSource<any> {
   }
 }
 
-export interface AccountStatusUI {
+export interface IAccountStatusUI {
   name: string;
   value?: AccountStatusEnum;
 }
@@ -54,12 +54,14 @@ export class AccountListComponent implements OnInit {
   dataSource: AccountDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   arrayStatus: UIDisplayString[] = [];
-  selectedStatus: AccountStatusEnum | undefined = AccountStatusEnum.Normal;
+  selectedStatus: AccountStatusEnum = AccountStatusEnum.Normal;
   isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router) {
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
+    this.selectedStatus = AccountStatusEnum.Normal;
+
     this.isLoadingResults = false;
   }
 

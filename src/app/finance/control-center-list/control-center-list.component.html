@@ -11,6 +11,7 @@
     <mat-toolbar>
       <button mat-icon-button (click)="onCreateCC()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></button>
       <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent">refresh</mat-icon></button>
+      <a mat-button routerLink="/finance/controlcenter/tree" routerLinkActive="active" matTooltip="{{'Common.HierarchyView' | translate}}">{{'Common.HierarchyView' | translate}}</a>
     </mat-toolbar>
     <div class="table-container mat-elevation-z8">
       <mat-table #table [dataSource]="dataSource">

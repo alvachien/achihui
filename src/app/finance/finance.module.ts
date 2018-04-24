@@ -50,6 +50,7 @@ import { AccountTreeComponent } from './account-tree';
 import { DocumentItemByAccountComponent } from './document-item-by-account';
 import { DocumentItemByAccountCategoryComponent } from './document-item-by-account-category';
 import { ControlCenterTreeComponent } from './control-center-tree';
+import { DocumentItemByControlCenterComponent } from './document-item-by-control-center';
 
 @NgModule({
   imports: [
@@ -103,6 +104,7 @@ import { ControlCenterTreeComponent } from './control-center-tree';
     DocumentItemByAccountComponent,
     DocumentItemByAccountCategoryComponent,
     ControlCenterTreeComponent,
+    DocumentItemByControlCenterComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

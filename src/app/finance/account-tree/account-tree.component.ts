@@ -4,7 +4,7 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, forkJoin, of as observableOf } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LogLevel, Account, AccountCategory, UIDisplayStringUtil } from '../../model';
+import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 
 /**
@@ -51,11 +51,23 @@ export class AccountTreeComponent implements OnInit {
   treeFlattener: MatTreeFlattener<AccountTreeNode, AccountTreeFlatNode>;
   dataSource: MatTreeFlatDataSource<AccountTreeNode, AccountTreeFlatNode>;
   curNode: AccountTreeFlatNode;
+  arrayStatus: UIDisplayString[];
+  selectedStatus: AccountStatusEnum;
+  selectedAccounts: number[];
+  availableCategories: AccountCategory[];
+  availableAccounts: Account[];
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService) {
 
     this.isLoadingResults = false;
+
+    this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
+    this.selectedStatus = AccountStatusEnum.Normal;
+    this.selectedAccounts = [];
+    this.availableCategories = [];
+    this.availableAccounts = [];
+
     this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
       this._isExpandable, this._getChildren);
     this.treeControl = new FlatTreeControl<AccountTreeFlatNode>(this._getLevel, this._isExpandable);
@@ -64,13 +76,13 @@ export class AccountTreeComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoadingResults = true;
-    forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts())
+    forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts(true, this.selectedStatus))
       .subscribe((value: any) => {
         // Parse the data
-        let arctgy: AccountCategory[] = value[0];
-        let aracnt: Account[] = value[1];
+        this.availableCategories = value[0];
+        this.availableAccounts = value[1];
 
-        let nodes: AccountTreeNode[] = this._buildAccountTree(arctgy, aracnt, 1);
+        let nodes: AccountTreeNode[] = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
         this.dataSource.data = nodes;
       }, (error: any) => {
         // Do nothing
@@ -86,12 +98,40 @@ export class AccountTreeComponent implements OnInit {
       case AccountTreeNodeTypeEnum.account:
       break;
 
-      case AccountTreeNodeTypeEnum.category:
+      case AccountTreeNodeTypeEnum.category: {
+        this.selectedAccounts = [];
+
+        if (node.childamount > 0) {
+          // Do something
+          this.availableAccounts.forEach((value: Account) => {
+            if (+value.CategoryId === +node.id) {
+              this.selectedAccounts.push(+value.Id);
+            }
+          });
+        }
+      }
       break;
 
       default:
       break;
     }
+  }
+
+  public onAccountStatusChange(): void {
+    this.isLoadingResults = true;
+    this.dataSource.data = [];
+
+    this._storageService.fetchAllAccounts(true, this.selectedStatus).subscribe((x: any) => {
+      this.availableCategories = this._storageService.AccountCategories;
+      this.availableAccounts = x;
+
+      let nodes: AccountTreeNode[] = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
+      this.dataSource.data = nodes;
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      this.isLoadingResults = false;
+    });
   }
 
   transformer = (node: AccountTreeNode, level: number) => {
