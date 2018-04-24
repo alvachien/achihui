@@ -4,7 +4,6 @@ import {
 } from '@angular/core';
 import { Subject, Observable, of as observableOf, from } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { SplitAreaDirective } from '../Directives/split-area.directive';
 
 @Component({
   selector: 'ac-splitter-pane',
@@ -71,7 +70,6 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
   private _useTransition: boolean = false;
 
   @Input() set useTransition(v: boolean) {
-    v = (typeof (v) === 'boolean') ? v : (v === 'false' ? false : true);
     this._useTransition = v;
   }
 
@@ -83,7 +81,6 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
   private _disabled: boolean = false;
 
   @Input() set disabled(v: boolean) {
-    v = (typeof (v) === 'boolean') ? v : (v === 'false' ? false : true);
     this._disabled = v;
 
     // Force repaint if modified from TS class (instead of the template)
@@ -95,30 +92,28 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
   }
 
   ////
-  private _width: number | undefined = undefined;
+  private _width: number;
 
-  @Input() set width(v: number | undefined) {
-    v = Number(v);
-    this._width = (!isNaN(v) && v > 0) ? v : undefined;
+  @Input() set width(v: number) {
+    this._width = v;
 
     this.build(false, false);
   }
 
-  get width(): number | undefined {
+  get width(): number {
     return this._width;
   }
 
   ////
-  private _height: number | undefined = undefined;
+  private _height: number;
 
-  @Input() set height(v: number | undefined) {
-    v = Number(v);
-    this._height = (!isNaN(v) && v > 0) ? v : undefined;
+  @Input() set height(v: number) {
+    this._height = v;
 
     this.build(false, false);
   }
 
-  get height(): number | undefined {
+  get height(): number {
     return this._height;
   }
 
@@ -126,8 +121,7 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
   private _gutterSize: number = 11;
 
   @Input() set gutterSize(v: number) {
-    v = Number(v);
-    this._gutterSize = (!isNaN(v) && v > 0) ? v : 11;
+    this._gutterSize = v;
 
     this.build(false, false);
   }
@@ -140,7 +134,7 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
   private _gutterColor: string = '';
 
   @Input() set gutterColor(v: string) {
-    this._gutterColor = (typeof v === 'string' && v !== '') ? v : '';
+    this._gutterColor = v;
 
     // Force repaint if modified from TS class (instead of the template)
     this.cdRef.markForCheck();
@@ -154,7 +148,7 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
   private _gutterImageH: string = '';
 
   @Input() set gutterImageH(v: string) {
-    this._gutterImageH = (typeof v === 'string' && v !== '') ? v : '';
+    this._gutterImageH = v;
 
     // Force repaint if modified from TS class (instead of the template)
     this.cdRef.markForCheck();
@@ -168,7 +162,7 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
   private _gutterImageV: string = '';
 
   @Input() set gutterImageV(v: string) {
-    this._gutterImageV = (typeof v === 'string' && v !== '') ? v : '';
+    this._gutterImageV = v;
 
     // Force repaint if modified from TS class (instead of the template)
     this.cdRef.markForCheck();
@@ -182,22 +176,35 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
   private _dir: 'ltr' | 'rtl' = 'ltr';
 
   @Input() set dir(v: 'ltr' | 'rtl') {
-    v = (v === 'rtl') ? 'rtl' : 'ltr';
     this._dir = v;
   }
 
   get dir(): 'ltr' | 'rtl' {
     return this._dir;
   }
+  private transitionEndInternal: any = new Subject<number[]>();
+  private isDragging: boolean = false;
+  private draggingWithoutMove: boolean = false;
+  private currentGutterNum: number = 0;
+
+  private readonly hidedAreas: any[] = [];
+
+  private readonly dragListeners: Function[] = [];
+  private readonly dragStartValues: any = {
+    sizePixelContainer: 0,
+    sizePixelA: 0,
+    sizePixelB: 0,
+    sizePercentA: 0,
+    sizePercentB: 0,
+  };
 
   ////
-  @Output() dragStart = new EventEmitter<{ gutterNum: number, sizes: number[] }>(false);
-  @Output() dragProgress = new EventEmitter<{ gutterNum: number, sizes: number[] }>(false);
-  @Output() dragEnd = new EventEmitter<{ gutterNum: number, sizes: number[] }>(false);
-  @Output() gutterClick = new EventEmitter<{ gutterNum: number, sizes: number[] }>(false);
+  @Output() dragStart: any = new EventEmitter<{ gutterNum: number, sizes: number[] }>(false);
+  @Output() dragProgress: any = new EventEmitter<{ gutterNum: number, sizes: number[] }>(false);
+  @Output() dragEnd: any = new EventEmitter<{ gutterNum: number, sizes: number[] }>(false);
+  @Output() gutterClick: any = new EventEmitter<{ gutterNum: number, sizes: number[] }>(false);
 
-  private transitionEndInternal = new Subject<number[]>();
-  @Output() transitionEnd = (<Observable<number[]>>from(this.transitionEndInternal).pipe(debounceTime(20)));
+  @Output() transitionEnd: any = (<Observable<number[]>>from(this.transitionEndInternal).pipe(debounceTime(20)));
 
   @HostBinding('style.flex-direction') get cssFlexdirection(): string {
     return (this.direction === 'horizontal') ? 'row' : 'column';
@@ -219,35 +226,23 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
     return (this.direction === 'vertical') ? `${this.getNbGutters() * this.gutterSize}px` : undefined;
   }
 
-  private isDragging: boolean = false;
-  private draggingWithoutMove: boolean = false;
-  private currentGutterNum: number = 0;
-
-  private readonly hidedAreas: any[] = [];
-
-  private readonly dragListeners: Function[] = [];
-  private readonly dragStartValues = {
-    sizePixelContainer: 0,
-    sizePixelA: 0,
-    sizePixelB: 0,
-    sizePercentA: 0,
-    sizePercentB: 0,
-  };
-
-  public isViewInitialized: boolean = false;
+  public isViewInitialized: boolean;
   public readonly displayedAreas: any[] = [];
 
   constructor(private ngZone: NgZone,
     private elRef: ElementRef,
     private cdRef: ChangeDetectorRef,
-    private renderer: Renderer2) { }
+    private renderer: Renderer2) {
+    this.isViewInitialized = false;
+  }
 
   public ngAfterViewInit(): void {
     this.isViewInitialized = true;
   }
 
-  public addArea(comp: SplitAreaDirective): void {
+  public addArea(id: string, comp: any): void {
     const newArea: any = {
+      id,
       comp,
       order: 0,
       size: 0,
@@ -264,7 +259,7 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
     this.build(true, true);
   }
 
-  public removeArea(comp: SplitAreaDirective): void {
+  public removeArea(comp: any): void {
     if (this.displayedAreas.some(a => a.comp === comp)) {
       const area: any = this.displayedAreas.find(a => a.comp === comp);
       this.displayedAreas.splice(this.displayedAreas.indexOf(area), 1);
@@ -417,9 +412,7 @@ export class SplitterPaneComponent implements AfterViewInit, OnDestroy {
     }
 
     // ¤ AREAS SIZE PERCENT
-
     if (resetSizes === true) {
-
       const totalUserSize = <number>this.displayedAreas.reduce((total: number, s: any) => s.comp.size ? total + s.comp.size : total, 0);
 
       // If user provided 'size' for each area and total == 1, use it.

@@ -6,30 +6,28 @@ import { SplitterPaneComponent } from '../splitter-pane/splitter-pane.component'
 })
 export class SplitAreaDirective implements OnInit, OnDestroy {
 
-  private _self: SplitAreaDirective;
-  private _order: number | undefined = undefined;
+  private _order: number = undefined;
 
-  @Input() set order(v: number | undefined) {
-    this._order = !isNaN(+v) ? v : undefined;
+  @Input() set order(v: number) {
+    this._order = +v;
 
     this.split.updateArea(this._self, true, false);
   }
 
-  get order(): number | undefined {
+  get order(): number {
     return this._order;
   }
 
   ////
-  private _size: number | undefined = undefined;
+  private _size: number = undefined;
 
-  @Input() set size(v: number | undefined) {
-    v = Number(v);
+  @Input() set size(v: number) {
     this._size = (!isNaN(v) && v >= 0 && v <= 100) ? (v / 100) : undefined;
 
     this.split.updateArea(this._self, false, true);
   }
 
-  get size(): number | undefined {
+  get size(): number {
     return this._size;
   }
 
@@ -37,7 +35,6 @@ export class SplitAreaDirective implements OnInit, OnDestroy {
   private _minSize: number = 0;
 
   @Input() set minSize(v: number) {
-    v = Number(v);
     this._minSize = (!isNaN(v) && v > 0 && v < 100) ? v / 100 : 0;
 
     this.split.updateArea(this._self, false, true);
@@ -51,13 +48,12 @@ export class SplitAreaDirective implements OnInit, OnDestroy {
   private _visible: boolean = true;
 
   @Input() set visible(v: boolean) {
-    v = (typeof (v) === 'boolean') ? v : (v === 'false' ? false : true);
     this._visible = v;
 
     if (this.visible) {
-      this.split.showArea(this);
+      this.split.showArea(this._self);
     } else {
-      this.split.hideArea(this);
+      this.split.hideArea(this._self);
     }
   }
 
@@ -73,11 +69,10 @@ export class SplitAreaDirective implements OnInit, OnDestroy {
     private elRef: ElementRef,
     private renderer: Renderer2,
     private split: SplitterPaneComponent) {
-    this._self = this;
   }
 
   public ngOnInit(): void {
-    this.split.addArea(this);
+    this.split.addArea(this.elRef.nativeElement);
 
     this.renderer.setStyle(this.elRef.nativeElement, 'flex-grow', '0');
     this.renderer.setStyle(this.elRef.nativeElement, 'flex-shrink', '0');
