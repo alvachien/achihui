@@ -31,6 +31,7 @@ export class AccountTreeFlatNode {
   displayname: string;
   id: number;
   nodetype: AccountTreeNodeTypeEnum;
+  childamount: number;
 
   level: number;
   expandable: boolean;
@@ -49,12 +50,12 @@ export class AccountTreeComponent implements OnInit {
   treeControl: FlatTreeControl<AccountTreeFlatNode>;
   treeFlattener: MatTreeFlattener<AccountTreeNode, AccountTreeFlatNode>;
   dataSource: MatTreeFlatDataSource<AccountTreeNode, AccountTreeFlatNode>;
+  curNode: AccountTreeFlatNode;
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService) {
 
     this.isLoadingResults = false;
-
     this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
       this._isExpandable, this._getChildren);
     this.treeControl = new FlatTreeControl<AccountTreeFlatNode>(this._getLevel, this._isExpandable);
@@ -78,11 +79,27 @@ export class AccountTreeComponent implements OnInit {
       });
   }
 
+  onTreeNodeClicked(node: AccountTreeFlatNode): void {
+    this.curNode = node;
+
+    switch (node.nodetype) {
+      case AccountTreeNodeTypeEnum.account:
+      break;
+
+      case AccountTreeNodeTypeEnum.category:
+      break;
+
+      default:
+      break;
+    }
+  }
+
   transformer = (node: AccountTreeNode, level: number) => {
     let flatNode: AccountTreeFlatNode = new AccountTreeFlatNode();
     flatNode.displayname = node.displayname;
     flatNode.id = node.id;
     flatNode.nodetype = node.nodetype;
+    flatNode.childamount = node.children ? node.children.length : 0;
 
     flatNode.level = level;
     flatNode.expandable = !!node.children;

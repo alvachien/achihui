@@ -12,7 +12,7 @@
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
           <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
             <button mat-icon-button disabled></button>
-            {{node.displayname | translate}} ({{node.id}})
+            <a mat-button (click)="onTreeNodeClicked(node)">[{{node.id}}]{{node.displayname | translate}}</a>
           </mat-tree-node>
               
           <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
@@ -22,7 +22,7 @@
                 {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
               </mat-icon>
             </button>
-            {{node.displayname | translate}} ({{node.id}})
+            <a mat-button (click)="onTreeNodeClicked(node)">[{{node.id}}]{{node.displayname | translate}} ({{node.childamount}})</a>
           </mat-tree-node>
         </mat-tree>
       </div>
@@ -30,7 +30,15 @@
         <i class="material-icons">&#xE25D;</i>
       </div>
       <div fxFlex.xs="70%" fxFlex.gt-md="50%" fxFlex.lg="60%" ngxSplitArea>
-        ToDO.
+        <div *ngIf="curNode?.nodetype === 1">
+          Category view
+        </div>
+        <div *ngIf="curNode?.nodetype === 2">
+          Account view
+        </div>
+        <div *ngIf="curNode?.nodetype !== 1 && curNode?.nodetype !== 2">
+          Nothing to display
+        </div>
       </div>
     </div>
   </mat-card-content>
