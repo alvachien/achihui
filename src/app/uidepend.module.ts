@@ -4,7 +4,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import {
   MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatPaginatorModule,
-  MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule,
+  MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatBadgeModule,
   MatDialogModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
   MatListModule, MatMenuModule, MatProgressBarModule, MatProgressSpinnerModule,
   MatRadioModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSortModule,
@@ -22,6 +22,7 @@ import { SplitAreaDirective, SplitHandleDirective, SplitDirective } from './dire
     CdkTableModule,
     CdkTreeModule,
     MatAutocompleteModule,
+    MatBadgeModule,
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
@@ -65,6 +66,7 @@ import { SplitAreaDirective, SplitHandleDirective, SplitDirective } from './dire
     CdkTableModule,
     CdkTreeModule,
     MatAutocompleteModule,
+    MatBadgeModule,
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,

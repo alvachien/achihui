@@ -31,10 +31,16 @@
       </div>
       <div fxFlex.xs="70%" fxFlex.gt-md="50%" fxFlex.lg="60%" ngxSplitArea>
         <div *ngIf="curNode?.nodetype === 1">
-          Category view
+          <h3>
+            {{'Finance.AccountCategory' | translate}} - {{curNode.displayname | translate}}
+          </h3>
+          <hih-fin-docitem-by-acntctgy></hih-fin-docitem-by-acntctgy>
         </div>
         <div *ngIf="curNode?.nodetype === 2">
-          Account view
+          <h3>
+            {{'Finance.Account' | translate}} - {{curNode.displayname | translate}}
+          </h3>
+          <hih-fin-docitem-by-acnt></hih-fin-docitem-by-acnt>
         </div>
         <div *ngIf="curNode?.nodetype !== 1 && curNode?.nodetype !== 2">
           Nothing to display
