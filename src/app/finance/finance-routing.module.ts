@@ -20,6 +20,7 @@ import { AccountTreeComponent } from './account-tree';
 import { AccountDetailComponent } from './account-detail';
 import { ControlCenterComponent } from './control-center';
 import { ControlCenterListComponent } from './control-center-list';
+import { ControlCenterTreeComponent } from './control-center-tree';
 import { ControlCenterDetailComponent } from './control-center-detail';
 import { OrderComponent } from './order';
 import { OrderListComponent } from './order-list';
@@ -170,6 +171,10 @@ const routes: Routes = [
           {
             path: '',
             component: ControlCenterListComponent,
+          },
+          {
+            path: 'tree',
+            component: ControlCenterTreeComponent,
           },
           {
             path: 'create',

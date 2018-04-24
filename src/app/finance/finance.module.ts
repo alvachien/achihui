@@ -49,6 +49,7 @@ import { AccountExtLoanComponent } from './account-ext-loan';
 import { AccountTreeComponent } from './account-tree';
 import { DocumentItemByAccountComponent } from './document-item-by-account';
 import { DocumentItemByAccountCategoryComponent } from './document-item-by-account-category';
+import { ControlCenterTreeComponent } from './control-center-tree';
 
 @NgModule({
   imports: [
@@ -101,6 +102,7 @@ import { DocumentItemByAccountCategoryComponent } from './document-item-by-accou
     AccountTreeComponent,
     DocumentItemByAccountComponent,
     DocumentItemByAccountCategoryComponent,
+    ControlCenterTreeComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

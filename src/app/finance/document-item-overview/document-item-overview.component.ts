@@ -13,36 +13,6 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 import * as moment from 'moment';
 
 /**
- * Data source of Document Item by Account
- */
-export class DocItemByAccountDataSource extends DataSource<any> {
-  constructor(private _parentComponent: DocumentItemOverviewComponent,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<DocumentItemWithBalance[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.DocItemByAccountEvent,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._parentComponent.DocItemsByAccount.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
-/**
  * Data source of Document Item by Control center
  */
 export class DocItemByControlCenterDataSource extends DataSource<any> {
@@ -139,20 +109,15 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
 })
 export class DocumentItemOverviewComponent implements OnInit {
 
-  displayedByAccountColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   displayedByControlCenterColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   displayedByOrderColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   displayedTmpDocColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
-  dataSourceByAccount: DocItemByAccountDataSource | undefined;
   dataSourceByControlCenter: DocItemByControlCenterDataSource | undefined;
   dataSourceByOrder: DocItemByOrderDataSource | undefined;
   dataSourceTmpDoc: TmpDocStillOpenDataSource | undefined;
-  DocItemByAccountEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   DocItemByControlCenterEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   DocItemByOrderEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   TmpDocEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
-  DocItemsByAccount: DocumentItemWithBalance[] = [];
-  DocItemsByAccount_Org: DocumentItemWithBalance[] = [];
   DocItemsByControlCenter: DocumentItemWithBalance[] = [];
   DocItemsByControlCenter_Org: DocumentItemWithBalance[] = [];
   DocItemsByOrder: DocumentItemWithBalance[] = [];
@@ -188,7 +153,6 @@ export class DocumentItemOverviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataSourceByAccount = new DocItemByAccountDataSource(this, this.paginatorByAccount);
     this.dataSourceByControlCenter = new DocItemByControlCenterDataSource(this, this.paginatorByControlCenter);
     this.dataSourceByOrder = new DocItemByOrderDataSource(this, this.paginatorByOrder);
     this.dataSourceTmpDoc = new TmpDocStillOpenDataSource(this, this.paginatorTmpDoc);
@@ -241,43 +205,6 @@ export class DocumentItemOverviewComponent implements OnInit {
 
       this.TmpDocEvent.emit();
     });
-  }
-
-  public onAccountSelectChange(): void {
-    if (this.selectedAccount) {
-      this._storageService.getDocumentItemByAccount(this.selectedAccount).subscribe((x: any) => {
-        this.DocItemsByAccount_Org = [];
-        this.DocItemsByAccount = [];
-
-        if (x instanceof Array && x.length > 0) {
-          for (let di of x) {
-            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-            docitem.onSetData(di);
-            this.DocItemsByAccount_Org.push(docitem);
-
-            if (isOverviewDateInScope(docitem.TranDate, this.selectedAccountScope)) {
-              this.DocItemsByAccount.push(docitem);
-            }
-          }
-        }
-
-        this.DocItemByAccountEvent.emit();
-      });
-    }
-  }
-
-  public onAccountScopeChanged(): void {
-    if (this.DocItemsByAccount_Org.length > 0) {
-      this.DocItemsByAccount = [];
-
-      for (let docitem of this.DocItemsByAccount_Org) {
-        if (isOverviewDateInScope(docitem.TranDate, this.selectedAccountScope)) {
-          this.DocItemsByAccount.push(docitem);
-        }
-      }
-
-      this.DocItemByAccountEvent.emit();
-    }
   }
 
   public onControlCenterSelectChange(): void {

@@ -4,10 +4,16 @@
     <mat-card-subtitle>{{'Common.HierarchyView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
+    <mat-toolbar class="mt-2">
+      <a mat-icon-button routerLink="/finance/account/create" routerLinkActive="active" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></a>
+      <span class="example-spacer"></span>
+      <a mat-button routerLink="/finance/account" routerLinkActive="active" matTooltip="{{'Common.ListView' | translate}}">{{'Common.ListView' | translate}}</a>
+    </mat-toolbar>
+
     <div class="example-loading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>
-    <div fxLayout="row" fxLayout.xs="column" style="height:500px" ngxSplit="row">
+    <div fxLayout="row" fxLayout.xs="column" style="height:800px" ngxSplit="row">
       <div fxFlex="30%" ngxSplitArea>
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
           <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
@@ -22,7 +28,10 @@
                 {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
               </mat-icon>
             </button>
-            <a mat-button (click)="onTreeNodeClicked(node)">[{{node.id}}]{{node.displayname | translate}} ({{node.childamount}})</a>
+            <a mat-button (click)="onTreeNodeClicked(node)">[{{node.id}}]{{node.displayname | translate}}
+              <span [matBadge]="node.childamount" matBadgeOverlap="false" matBadgeColor="accent" [matBadgeHidden]="node.childamount <= 0">
+              </span>                    
+            </a>
           </mat-tree-node>
         </mat-tree>
       </div>
@@ -34,13 +43,13 @@
           <h3>
             {{'Finance.AccountCategory' | translate}} - {{curNode.displayname | translate}}
           </h3>
-          <hih-fin-docitem-by-acntctgy></hih-fin-docitem-by-acntctgy>
+          <hih-fin-docitem-by-acntctgy [selectedCategory]="curNode.id"></hih-fin-docitem-by-acntctgy>
         </div>
         <div *ngIf="curNode?.nodetype === 2">
           <h3>
             {{'Finance.Account' | translate}} - {{curNode.displayname | translate}}
           </h3>
-          <hih-fin-docitem-by-acnt></hih-fin-docitem-by-acnt>
+          <hih-fin-docitem-by-acnt [selectedAccount]="curNode.id"></hih-fin-docitem-by-acnt>
         </div>
         <div *ngIf="curNode?.nodetype !== 1 && curNode?.nodetype !== 2">
           Nothing to display

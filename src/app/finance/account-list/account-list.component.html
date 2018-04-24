@@ -10,6 +10,7 @@
 
     <mat-toolbar>
       <button mat-icon-button (click)="onCreateAccount()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary" class="example-icon">add</mat-icon></button>
+      <a mat-button routerLink="/finance/account/tree" routerLinkActive="active" matTooltip="{{'Common.HierarchyView' | translate}}">{{'Common.HierarchyView' | translate}}</a>
       <span class="example-spacer"></span>
       <mat-form-field>        
         <mat-select [(ngModel)]="selectedStatus" (change)="onStatusChange()" #select="matSelect">

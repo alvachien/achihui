@@ -4,6 +4,10 @@
     <mat-card-subtitle>{{'Common.HierarchyView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
+    <mat-toolbar class="mt-2">
+      <a mat-button routerLink="/finance/trantype/list" routerLinkActive="active" matTooltip="{{'Common.ListView' | translate}}">{{'Common.ListView' | translate}}</a>
+    </mat-toolbar>
+
     <div class="example-loading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>
@@ -11,7 +15,7 @@
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
         <button mat-icon-button disabled></button>
-        {{node.displayname}} ({{node.id}})
+        [{{node.id}}]{{node.displayname}}
       </mat-tree-node>
         
       <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
@@ -21,7 +25,9 @@
             {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
-        {{node.displayname}} ({{node.id}})
+        [{{node.id}}]{{node.displayname}}
+        <span [matBadge]="node.childamount" matBadgeOverlap="false" matBadgeColor="accent" [matBadgeHidden]="node.childamount <= 0">
+        </span>
       </mat-tree-node>
     </mat-tree>
   </mat-card-content> 

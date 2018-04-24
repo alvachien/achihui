@@ -4,6 +4,10 @@
     <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
+    <mat-toolbar class="mt-2">
+      <a mat-button routerLink="/finance/trantype" routerLinkActive="active" matTooltip="{{'Common.HierarchyView' | translate}}">{{'Common.HierarchyView' | translate}}</a>
+    </mat-toolbar>
+
     <div class="example-loading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>

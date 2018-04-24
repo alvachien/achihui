@@ -21,6 +21,7 @@ export class TranTypeTreeNode {
 export class TranTypeTreeFlatNode {
   displayname: string;
   id: number;
+  childamount: number;
 
   level: number;
   expandable: boolean;
@@ -64,6 +65,8 @@ export class TranTypeTreeComponent implements OnInit {
     let flatNode: TranTypeTreeFlatNode = new TranTypeTreeFlatNode();
     flatNode.displayname = node.displayname;
     flatNode.id = node.id;
+    flatNode.childamount = node.children ? node.children.length : 0;
+
     flatNode.level = level;
     flatNode.expandable = !!node.children;
 
