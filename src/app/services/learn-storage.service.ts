@@ -140,7 +140,7 @@ export class LearnStorageService {
   }
 
   // Object
-  public fetchAllObjects(forceReload?: boolean): Observable<any> {
+  public fetchAllObjects(forceReload?: boolean, ctgyID?: number): Observable<any> {
     if (!this._isObjListLoaded || forceReload) {
       const apiurl: string = environment.ApiUrl + '/api/learnobject';
 
@@ -151,6 +151,10 @@ export class LearnStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      if (ctgyID) {
+        params = params.append('ctgyid', ctgyID.toString());
+      }
+
       return this._http.get(apiurl, {
           headers: headers,
           params: params,

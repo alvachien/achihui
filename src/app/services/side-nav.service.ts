@@ -50,11 +50,12 @@ export class SideNavService {
     this.addSubItem(library, 'Library.Movies', '/library/movie', 6, 'movie');
 
     const event: any = this.addItem('Nav.EventTrace', 'event', undefined, 5);
-    this.addSubItem(event, 'Common.Categories', '/event/category', 1, 'toc');
-    this.addSubItem(event, 'Common.Events', '/event/general', 2, 'schedule');
-    this.addSubItem(event, 'Common.RecurEvents', '/event/recur', 3, 'repeat');
-    this.addSubItem(event, 'Common.HabitEvents', '/event/habit', 4, 'restore_page');
-    this.addSubItem(event, 'Common.EventsByTimeline', '/event/timeline', 5, 'timeline');
+    this.addSubItem(event, 'Common.Overview', '/event/overview', 1, 'today');
+    this.addSubItem(event, 'Common.Categories', '/event/category', 2, 'toc');
+    this.addSubItem(event, 'Common.Events', '/event/general', 3, 'schedule');
+    this.addSubItem(event, 'Common.RecurEvents', '/event/recur', 4, 'repeat');
+    this.addSubItem(event, 'Common.HabitEvents', '/event/habit', 5, 'restore_page');
+    this.addSubItem(event, 'Common.EventsByTimeline', '/event/timeline', 6, 'timeline');
 
     const about: any = this.addItem('Nav.About', 'help', undefined, 6);
     this.addSubItem(about, 'Nav.About', '/about', 1, 'help');

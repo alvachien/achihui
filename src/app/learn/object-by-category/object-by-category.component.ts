@@ -23,18 +23,16 @@ export class ObjectByCategoryComponent implements OnInit, AfterViewInit {
 
       this.dataSource.data = [];
 
-      // this._storageService.fetchAllObjects(this._seledCategory).subscribe((x: any) => {
-      //   if (x instanceof Array && x.length > 0) {
-      //     // let ardocitems: any[] = [];
-      //     // for (let di of x) {
-      //     //   let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-      //     //   docitem.onSetData(di);
-      //     //   ardocitems.push(docitem);
-      //     // }
+      this._storageService.fetchAllObjects(true, this._seledCategory).subscribe((x: any) => {
+        if (x instanceof Array && x.length > 0) {
+          let arobjs: any[] = [];
+          for (let di of x) {
+            arobjs.push(di);
+          }
 
-      //     // this.dataSource.data = ardocitems;
-      //   }
-      // });
+          this.dataSource.data = arobjs;
+        }
+      });
     }
   }
 

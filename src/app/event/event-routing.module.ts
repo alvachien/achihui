@@ -13,12 +13,17 @@ import { RecurrEventDetailComponent } from './recurr-event-detail';
 import { HabitListComponent } from './habit-list';
 import { HabitDetailComponent } from './habit-detail';
 import { HabitComponent } from './habit';
+import { OverviewComponent } from './overview';
 
 const routes: Routes = [
   {
     path: '',
     component: EventComponent,
     children: [
+      {
+        path: 'overview',
+        component: OverviewComponent,
+      },
       {
         path: 'general',
         component: GeneralEventComponent,
