@@ -16,16 +16,16 @@ Ideally, HIH runs on a NAS or Family Server with ASP.NET Core supporting as well
 
 ### Snapshots
 ![Image of Index page](https://github.com/alvachien/achihui/blob/master/docs/images/index.JPG)
-
+Welcome page
 
 ![Image of Finance report](https://github.com/alvachien/achihui/blob/master/docs/images/finance_report.JPG)
-
+Finance reports
 
 ![Image of Tag Cloud](https://github.com/alvachien/achihui/blob/master/docs/images/tag_cloud.JPG)
-
+Cloud of Tag
 
 ![Image of Create Document](https://github.com/alvachien/achihui/blob/master/docs/images/create_doc.JPG)
-
+Create a document
 
 ### Relevant API/App used
 The live demo used the following API/App:
@@ -40,7 +40,7 @@ Since version 0.1, it supports the Finance Traces and Learning Traces. The detai
 ## Histories
 This project is the UI layer of new HIH, and it continues the HIH development since the previous HIH [Github Project](https://github.com/alvachien/hih);
 
-This project used tons of new UI technologies, including: Angular 5/6, TypeScript 2+, Material 2, BootStrap 4, Ngx-charts etc;
+This project used tons of new UI technologies, including: Angular 6, TypeScript 2+, Material 6, BootStrap 4, Ngx-charts etc;
 
 
 ## Credits
