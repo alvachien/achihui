@@ -30,7 +30,7 @@ export class LearnCategoryTreeFlatNode {
 @Component({
   selector: 'hih-learn-category-tree',
   templateUrl: './category-tree.component.html',
-  styleUrls: ['./category-tree.component.scss']
+  styleUrls: ['./category-tree.component.scss'],
 })
 export class CategoryTreeComponent implements OnInit {
   isLoadingResults: boolean;
