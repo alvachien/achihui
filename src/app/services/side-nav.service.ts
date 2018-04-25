@@ -21,7 +21,7 @@ export class SideNavService {
     this.addSubItem(overall, 'Common.Tags', '/tag', 5, 'filter_vintage');
 
     const learn: any = this.addItem('Nav.LearningTrace', 'event_note', undefined, 2);
-    this.addSubItem(learn, 'Learning.LearningCategory', '/learn/category', 1, 'settings_input_composite');
+    this.addSubItem(learn, 'Learning.LearningCategory', '/learn/category/tree', 1, 'settings_input_composite');
     this.addSubItem(learn, 'Learning.LearningObjects', '/learn/object', 2, 'lightbulb_outline');
     this.addSubItem(learn, 'Learning.LearningHistories', '/learn/history', 3, 'history');
     this.addSubItem(learn, 'Learning.QuestionBank', '/learn/questionbank', 4, 'collections');

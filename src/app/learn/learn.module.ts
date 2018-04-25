@@ -28,6 +28,8 @@ import { EnWordDetailComponent } from './en-word-detail';
 import { EnSentenceComponent } from './en-sentence';
 import { EnSentenceListComponent } from './en-sentence-list';
 import { EnSentenceDetailComponent } from './en-sentence-detail';
+import { CategoryTreeComponent } from './category-tree';
+import { ObjectTreeComponent } from './object-tree';
 
 @NgModule({
   imports: [
@@ -59,6 +61,8 @@ import { EnSentenceDetailComponent } from './en-sentence-detail';
     EnSentenceComponent,
     EnSentenceListComponent,
     EnSentenceDetailComponent,
+    CategoryTreeComponent,
+    ObjectTreeComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

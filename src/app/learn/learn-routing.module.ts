@@ -19,6 +19,8 @@ import { EnWordDetailComponent } from './en-word-detail';
 import { EnSentenceComponent } from './en-sentence';
 import { EnSentenceListComponent } from './en-sentence-list';
 import { EnSentenceDetailComponent } from './en-sentence-detail';
+import { CategoryTreeComponent } from './category-tree';
+import { ObjectTreeComponent } from './object-tree';
 
 const routes: Routes = [
   {
@@ -32,6 +34,10 @@ const routes: Routes = [
           {
             path: '',
             component: CategoryListComponent,
+          },
+          {
+            path: 'tree',
+            component: CategoryTreeComponent,
           },
           {
             path: 'create',
@@ -54,6 +60,10 @@ const routes: Routes = [
           {
             path: '',
             component: ObjectListComponent,
+          },
+          {
+            path: 'tree',
+            component: ObjectTreeComponent,
           },
           {
             path: 'create',
