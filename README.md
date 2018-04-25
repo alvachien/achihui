@@ -48,8 +48,8 @@ This project was generated with [angular-cli](https://github.com/angular/angular
 
 This project also require the following components:
 * [Typescript](http://www.typescriptlang.org)
-* [Angular 5](https://github.com/angular/angular)
-* [Material 2](https://github.com/angular/material2)
+* [Angular 6](https://github.com/angular/angular)
+* [Material 6](https://github.com/angular/material2)
 * [Ngx-translate](https://github.com/ngx-translate/core)
 * [Oidc-Client](https://github.com/IdentityModel/oidc-client-js)
 * [TinyMce](https://www.tinymce.com/)
@@ -64,8 +64,7 @@ A programmer, a Photographer, and a father.
 Contact me:
 
 1. Via mail: alvachien@163.com. Or,
-2. [Check my flickr](http://www.flickr.com/photos/alvachien). Or,
-3. [Visit my website](http://www.alvachien.com)
+2. [Check my flickr](http://www.flickr.com/photos/alvachien). 
  
 ## License
 MIT
