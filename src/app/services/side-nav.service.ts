@@ -25,8 +25,8 @@ export class SideNavService {
     this.addSubItem(learn, 'Learning.LearningObjects', '/learn/object', 2, 'lightbulb_outline');
     this.addSubItem(learn, 'Learning.LearningHistories', '/learn/history', 3, 'history');
     this.addSubItem(learn, 'Learning.QuestionBank', '/learn/questionbank', 4, 'collections');
-    this.addSubItem(learn, 'Learning.EnglishWord', '/learn/enword', 5, 'text_fields');
-    this.addSubItem(learn, 'Learning.EnglishSentence', '/learn/ensent', 6, 'short_text');
+    // this.addSubItem(learn, 'Learning.EnglishWord', '/learn/enword', 5, 'text_fields');
+    // this.addSubItem(learn, 'Learning.EnglishSentence', '/learn/ensent', 6, 'short_text');
 
     const finance: any = this.addItem('Nav.FinanceTrace', 'art_track', undefined, 3);
     this.addSubItem(finance, 'Common.Overview', '/finance/overview', 1, 'today');

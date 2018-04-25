@@ -54,7 +54,6 @@
     "popper.js": "^1.11.1",
     "rxjs": "^6.0.0-uncanny-rc.7",
     "tinymce": "^4.5.6",
-    "typescript": "^2.7.2",
     "zone.js": "^0.8.9"
   },
   "devDependencies": {
@@ -81,6 +80,7 @@
     "phantomjs-prebuilt": "2.1.14",
     "protractor": "^5.3.0",
     "ts-node": "^4.1.0",
+    "typescript": "^2.7.2",
     "tslint": "^5.9.1"
   }
 }

@@ -1,6 +1,6 @@
 # Change logs
-## Version 0.3
-Released at ......
+## Version 0.5.5
+Released at 2018.05.01
 
 Bugs fixing and Feature list
 - Add English Learning
@@ -13,6 +13,18 @@ Bugs fixing and Feature list
 - Event: Create the event and assign to one home member;
 - Recur event: Create the recur event;
 - Habit event: Create the habit-like event;
+- Learn Category Hierarchy View;
+- Learn Object grouped by Category Hierarchy View;
+- Finance: Transaction Type hierarchy view;
+- Finance: Account group by Category hierarchy view;
+- Finance Document Item group by account/category hierarchy view;
+- Finance control center hierarchy view;
+- Finance Document Item group by control center hierarchy view;
+- Dynamic theme support;
+- Version page;
+- Splitter support in the hierarchy views;
+- About page;
+- Credits page;
 
 ## Version 0.2
 Released at 2017.11.13

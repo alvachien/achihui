@@ -77,6 +77,10 @@ The recur event will generate events according to the repeat type.
 * When creating a recur event, the simulator will give a list of the events will be created based on the repeat type;
 * The recur event won't be impacted on the generated events;
 
+### Event: Habit
+The habit event is an event which without speicifed date but a range of date.
+For instance, a habit can be set: take 5 exerices per week. So a hahbit can be set as a range (a week) with the repeat times.
+
 ### Library Document
 #### Book Category
 Biographies & Memoirs
