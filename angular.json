@@ -38,6 +38,8 @@
               }
             ],
             "styles": [
+              "node_modules/fullcalendar/dist/fullcalendar.css",
+              "node_modules/fullcalendar/dist/fullcalendar.print.css",
               "src/assets/fonts/material-icons.css",
               "src/styles.scss"
             ],
@@ -154,6 +156,8 @@
               "node_modules/tinymce/plugins/preview/plugin.js"
             ],
             "styles": [
+              "node_modules/fullcalendar/dist/fullcalendar.css",
+              "node_modules/fullcalendar/dist/fullcalendar.print.css",
               "src/assets/fonts/material-icons.css",
               "src/styles.scss"
             ],

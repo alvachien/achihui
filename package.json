@@ -46,6 +46,7 @@
     "bootstrap": "^4.0.0",
     "core-js": "^2.4.1",
     "d3": "^4.10.0",
+    "fullcalendar": "^4.0.0-alpha",
     "hammerjs": "^2.0.8",
     "howler": "^2.0.5",
     "jquery": "^3.2.1",
