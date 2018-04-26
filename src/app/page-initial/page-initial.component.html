@@ -40,7 +40,7 @@
   <div class="row mt-2">
     <mat-toolbar>
       <mat-form-field>
-        <mat-select [(ngModel)]="selectedLearnScope" (change)="onLearnScopeChanged()">
+        <mat-select [(ngModel)]="selectedLearnScope" (selectionChange)="onLearnScopeChanged()">
           <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -82,12 +82,12 @@
   <div class="row mt-2">
     <mat-toolbar>
       <mat-form-field>
-        <mat-select [(ngModel)]="selectedFinanceScope" (change)="onFinanceScopeChanged()">
+        <mat-select [(ngModel)]="selectedFinanceScope" (selectionChange)="onFinanceScopeChanged()">
           <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field>
-        <mat-select [(ngModel)]="selectedTranTypeLevel" (change)="onFinanceTranTypeChartRedraw()">
+        <mat-select [(ngModel)]="selectedTranTypeLevel" (selectionChange)="onFinanceTranTypeChartRedraw()">
           <mat-option *ngFor="let ttl of _uistatusService.TranTypeLevelStrings" [value]='ttl.value'>{{ttl.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>

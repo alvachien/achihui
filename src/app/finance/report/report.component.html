@@ -17,7 +17,7 @@
             <mat-card-content>
               <mat-toolbar>
                 <mat-form-field>
-                  <mat-select [(ngModel)]="selectedMOMScope" (change)="onMOMScopeChanged()">
+                  <mat-select [(ngModel)]="selectedMOMScope" (selectionChange)="onMOMScopeChanged()">
                     <mat-option *ngFor="let scp of momScopes" [value]='scp.value'>
                       {{scp.i18nterm | translate}}
                     </mat-option>

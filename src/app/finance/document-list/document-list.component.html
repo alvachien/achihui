@@ -10,7 +10,7 @@
     
     <mat-toolbar>
       <mat-form-field>
-        <mat-select color="accent" class="mt-1" [(ngModel)]="selectedDocScope" (change)="onDocScopeChanged()">
+        <mat-select color="accent" class="mt-1" [(ngModel)]="selectedDocScope" (selectionChange)="onDocScopeChanged()">
           <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>

@@ -11,7 +11,7 @@
 
         <mat-toolbar class="mt-2">
           <mat-form-field>
-            <mat-select color="accent" class="mt-1" [(ngModel)]="selectedTmpScope" (change)="onTmpDocsRefresh()">
+            <mat-select color="accent" class="mt-1" [(ngModel)]="selectedTmpScope" (selectionChange)="onTmpDocsRefresh()">
               <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -82,14 +82,14 @@
         </ng-template>
         <mat-toolbar>
           <mat-form-field>
-            <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="selectedControlCenter" name="rptctrlctr" (change)="onControlCenterSelectChange()">
+            <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="selectedControlCenter" name="rptctrlctr" (selectionChange)="onControlCenterSelectChange()">
               <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
                 {{cc.Name}}
               </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field>
-            <mat-select [(ngModel)]="selectedControlCenterScope" (change)="onControlCenterScopeChanged()">
+            <mat-select [(ngModel)]="selectedControlCenterScope" (selectionChange)="onControlCenterScopeChanged()">
               <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>
                 {{scp.i18nterm | translate}}
               </mat-option>
@@ -168,14 +168,14 @@
         </ng-template>
         <mat-toolbar>
           <mat-form-field>
-            <mat-select placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="selectedOrder" name="rptorder" (change)="onOrderSelectChange()">
+            <mat-select placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="selectedOrder" name="rptorder" (selectionChange)="onOrderSelectChange()">
               <mat-option *ngFor="let tt of arUIOrder" [value]="tt.Id">
                 {{tt.Name}}
               </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field>
-            <mat-select [(ngModel)]="selectedOrderScope" (change)="onOrderScopeChanged()">
+            <mat-select [(ngModel)]="selectedOrderScope" (selectionChange)="onOrderScopeChanged()">
               <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>
                 {{scp.i18nterm | translate}}
               </mat-option>
