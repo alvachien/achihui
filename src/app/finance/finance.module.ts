@@ -51,6 +51,7 @@ import { DocumentItemByAccountComponent } from './document-item-by-account';
 import { DocumentItemByAccountCategoryComponent } from './document-item-by-account-category';
 import { ControlCenterTreeComponent } from './control-center-tree';
 import { DocumentItemByControlCenterComponent } from './document-item-by-control-center';
+import { DocumentItemSearchListComponent } from './document-item-search-list';
 
 @NgModule({
   imports: [
@@ -105,6 +106,7 @@ import { DocumentItemByControlCenterComponent } from './document-item-by-control
     DocumentItemByAccountCategoryComponent,
     ControlCenterTreeComponent,
     DocumentItemByControlCenterComponent,
+    DocumentItemSearchListComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
