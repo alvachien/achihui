@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil } from '../../model';
+import { Observable, forkJoin, merge, of } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'hih-fin-document-item-search-list',
@@ -11,15 +16,26 @@ export class DocumentItemSearchListComponent implements OnInit {
   allOperators: UIDisplayString[] = [];
   allFields: any[] = [];
   filterEditable: boolean = true;
+  displayedColumns = ['position', 'name', 'weight', 'symbol'];
 
-  constructor() {
+  constructor(private _http: HttpClient,
+    private _authService: AuthService) {
     this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
     this.allFields = [{
-      displayas: '',
-      value: '',
+      displayas: 'Finance.TransactionType',
+      value: 'tranType',
     }, {
-      displayas: '',
-      value: '',
+      displayas: 'Finance.Currency',
+      value: 'currency',
+    }, {
+      displayas: 'Finance.Account',
+      value: 'account',
+    }, {
+      displayas: 'Finance.ControlCenter',
+      value: 'controlCenter',
+    }, {
+      displayas: 'Finance.Order',
+      value: 'order',
     },
     ];
   }
