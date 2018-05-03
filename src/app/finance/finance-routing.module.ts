@@ -35,6 +35,7 @@ import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
 import { DocumentAssetOperationDetailComponent } from './document-asset-operation-detail';
+import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { ReportComponent } from './report';
 
 const routes: Routes = [
@@ -317,6 +318,10 @@ const routes: Routes = [
             component: DocumentAssetOperationDetailComponent,
           },
         ],
+      },
+      {
+        path: 'search',
+        component: DocumentItemSearchListComponent,
       },
       {
         path: 'report',

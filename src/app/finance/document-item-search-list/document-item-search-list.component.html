@@ -4,5 +4,36 @@
     <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
+    <div>
+      <div *ngFor="let filter of filters; let idxfilter = index" class="demo-full-width">
+        <mat-form-field>
+          <input matInput placeholder="Field" name="fname" [(ngModel)]="filter.fieldName" [disabled]="!filterEditable">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="Operators">
+            <mat-option *ngFor="let opr of allOperators" [(ngModel)]="filter.operator">
+              {{ opr.i18nterm | translate }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Low" name="lvalue" [(ngModel)]="filter.lowValue">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="High" name="hvalue" [(ngModel)]="filter.highValue">
+        </mat-form-field>
+        <button mat-button mat-icon-button aria-label="Add" (click)="onAddFilter()">
+          <mat-icon>add</mat-icon>
+        </button>
+        <button mat-button mat-icon-button aria-label="Clear" (click)="onRemoveFilter(idxfilter)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="demo-full-width">
+        <button mat-button mat-icon-button aria-label="Search" (click)="onSearch()">
+          <mat-icon>search</mat-icon>
+        </button>            
+      </div>
+    </div>
   </mat-card-content>
 </mat-card>

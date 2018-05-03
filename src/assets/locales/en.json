@@ -231,6 +231,15 @@
       "interj": "interjection",
       "vt": "transitive verb",
       "vi": "intransitive verb"
+    },
+    "Operator": {
+      "Between": "Between",
+      "Equal": "Equal",
+      "LargerEqual": "Larger or Equal",
+      "LargerThan": "Larger than",
+      "LessEqual": "Less or Equal",
+      "LessThan": "Less than",
+      "NotEqual": "Not Equal"
     }
   },
   "RepeatFrequency": {

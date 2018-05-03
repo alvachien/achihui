@@ -12,6 +12,17 @@ export enum UIStatusEnum {
   LoggedinAndHomeChosen = 2,
 }
 
+// Filter operator
+export enum GeneralFilterOperatorEnum {
+  Equal       = 1,
+  NotEqual    = 2,
+  Between     = 3,
+  LargerThan  = 4,
+  LargerEqual = 5,
+  LessThan    = 6,
+  LessEqual   = 7,
+}
+
 /**
  * Navigation item
  */
@@ -71,7 +82,7 @@ export class UINameValuePair<T> {
  * UI Display string Enum
  */
 export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum | AccountStatusEnum
-  | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum | TranTypeLevelEnum;
+  | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum | TranTypeLevelEnum | GeneralFilterOperatorEnum;
 
 /**
  * UI Display string
@@ -239,6 +250,24 @@ export class UIDisplayStringUtil {
         arrst.push({
           value: +rfe,
           i18nterm: UIDisplayStringUtil.getTranTypeLevelDisplayString(<TranTypeLevelEnum>+rfe),
+          displaystring: '',
+        });
+      }
+    }
+
+    return arrst;
+  }
+
+  public static getGeneralFilterOperatorDisplayStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
+
+    for (let rfe in GeneralFilterOperatorEnum) {
+      if (Number.isNaN(+rfe)) {
+        // Do nothing
+      } else {
+        arrst.push({
+          value: +rfe,
+          i18nterm: UIDisplayStringUtil.getGeneralFilterOperatorDisplayString(<GeneralFilterOperatorEnum>+rfe),
           displaystring: '',
         });
       }
@@ -415,4 +444,24 @@ export class UIDisplayStringUtil {
       default: return '';
     }
   }
+
+  public static getGeneralFilterOperatorDisplayString(opte: GeneralFilterOperatorEnum): string {
+    switch (opte) {
+      case GeneralFilterOperatorEnum.Between: return 'Sys.Operator.Between';
+      case GeneralFilterOperatorEnum.Equal: return 'Sys.Operator.Equal';
+      case GeneralFilterOperatorEnum.LargerEqual: return 'Sys.Operator.LargerEqual';
+      case GeneralFilterOperatorEnum.LargerThan: return 'Sys.Operator.LargerThan';
+      case GeneralFilterOperatorEnum.LessEqual: return 'Sys.Operator.LessEqual';
+      case GeneralFilterOperatorEnum.LessThan: return 'Sys.Operator.LessThan';
+      case GeneralFilterOperatorEnum.NotEqual: return 'Sys.Operator.NotEqual';
+      default: return '';
+    }
+  }
+}
+
+export class GeneralFilterItem {
+  fieldName: string;
+  operator: GeneralFilterOperatorEnum;
+  lowValue: string;
+  highValue: string;
 }

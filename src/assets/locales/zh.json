@@ -231,6 +231,15 @@
       "interj": "感叹词",
       "vt": "及物动词",
       "vi": "不及物动词"
+    },
+    "Operator": {
+      "Between": "介于",
+      "Equal": "等于",
+      "LargerEqual": "大于或等于",
+      "LargerThan": "大于",
+      "LessEqual": "小于或等于",
+      "LessThan": "小于",
+      "NotEqual": "不等于"
     }
   },
   "RepeatFrequency": {
