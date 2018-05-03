@@ -42,10 +42,7 @@
     <mat-divider></mat-divider>
     <div class="example-container mat-elevation-z8">
       <mat-table #table [dataSource]="dataSource">
-    
-        <!--- Note that these columns can be defined in any order.
-              The actual rendered columns are set as a property on the row definition" -->
-    
+
         <!-- Position Column -->
         <ng-container matColumnDef="position">
           <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
@@ -73,6 +70,12 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
+    
+      <mat-paginator #paginator
+                     [pageSize]="10"
+                     [pageSizeOptions]="[5, 10, 20]"
+                     [showFirstLastButtons]="true">
+      </mat-paginator>
     </div>
   </mat-card-content>
 </mat-card>
