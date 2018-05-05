@@ -1,10 +1,11 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil, DocumentItem } from '../../model';
+import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil,
+  DocumentItem, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection } from '../../model';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, FinanceStorageService } from '../../services';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 
 @Component({
@@ -17,35 +18,58 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
   allOperators: UIDisplayString[] = [];
   allFields: any[] = [];
   filterEditable: boolean = true;
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource: any = new MatTableDataSource<DocumentItem>();
+  displayedColumns: string[] = ['AccountId', 'DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
+  dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
+  arUIAccount: UIAccountForSelection[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private _http: HttpClient,
-    private _authService: AuthService) {
+    private _authService: AuthService,
+    private _storageService: FinanceStorageService) {
     this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
     this.allFields = [{
       displayas: 'Finance.TransactionType',
-      value: 'tranType',
+      value: 'TRANTYPE',
+      valueType: 1,
+    }, {
+      displayas: 'Finance.IsExpense',
+      value: 'TRANTYPE_EXP',
+      valueType: 4,
     }, {
       displayas: 'Finance.Currency',
-      value: 'currency',
+      value: 'TRANCURR',
+      valueType: 2,
     }, {
       displayas: 'Finance.Account',
-      value: 'account',
+      value: 'ACCOUNTID',
+      valueType: 1,
     }, {
       displayas: 'Finance.ControlCenter',
-      value: 'controlCenter',
+      value: 'CONTROLCENTERID',
+      valueType: 1,
     }, {
       displayas: 'Finance.Order',
-      value: 'order',
+      value: 'ORDERID',
+      valueType: 1,
+    }, {
+      displayas: 'Finance.TransactionDate',
+      value: 'TRANDATE',
+      valueType: 3,
     },
     ];
   }
 
   ngOnInit(): void {
-    this.onAddFilter();
+    forkJoin([
+      this._storageService.fetchAllAccounts(),
+      this._storageService.fetchAllTranTypes(),
+    ]).subscribe((x: any) => {
+      // Accounts
+      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+
+      this.onAddFilter();
+    });
   }
 
   /**
@@ -62,7 +86,22 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
   public onRemoveFilter(idx: number): void {
     this.filters.splice(idx, 1);
   }
+  public onFieldSelectionChanged(filter: GeneralFilterItem): void {
+    this.allFields.forEach((value: any) => {
+      if (value.value === filter.fieldName) {
+        filter.valueType = value.valueType;
+      }
+    });
+  }
   public onSearch(): void {
     // Do the real search
+    this._storageService.searchDocItem(this.filters).subscribe((x: any) => {
+      // Do nothing
+      this.dataSource.data = x;
+    }, (error: any) => {
+      // Do nothing
+    }, () => {
+      // Do nothing
+    });
   }
 }

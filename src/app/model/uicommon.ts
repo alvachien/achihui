@@ -459,9 +459,17 @@ export class UIDisplayStringUtil {
   }
 }
 
+export enum GeneralFilterValueType {
+  number = 1,
+  string = 2,
+  date = 3,
+  boolean = 4,
+}
+
 export class GeneralFilterItem {
   fieldName: string;
   operator: GeneralFilterOperatorEnum;
   lowValue: string;
   highValue: string;
+  valueType: GeneralFilterValueType;
 }
