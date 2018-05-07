@@ -471,7 +471,7 @@ export enum GeneralFilterValueType {
 export class GeneralFilterItem {
   fieldName: string;
   operator: GeneralFilterOperatorEnum;
-  lowValue: string;
-  highValue: string;
+  lowValue: any;
+  highValue: any;
   valueType: GeneralFilterValueType;
 }

@@ -1931,7 +1931,7 @@ export class FinanceStorageService {
     /**
      * search document item
      */
-    public searchDocItem(filters: GeneralFilterItem[]): Observable<any> {
+    public searchDocItem(filters: any[]): Observable<any> {
         let headers: HttpHeaders = new HttpHeaders();
         headers = headers.append('Content-Type', 'application/json')
             .append('Accept', 'application/json')

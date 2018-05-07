@@ -434,6 +434,10 @@ export class PageInitialComponent implements OnInit, OnDestroy {
     this._authService.doLogin();
   }
 
+  public onChartIncomeClick($event: any): void {
+    // Do nothing but navigation
+  }
+
   private changeGraphSize(): void {
     let graphSize: number = 0;
 

@@ -103,7 +103,7 @@
             <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
           </mat-card-header>
           <mat-card-content style="height: 350px;">
-            <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTIn">
+            <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTIn" (select)="onChartIncomeClick($event)">
             </ngx-charts-advanced-pie-chart>
           </mat-card-content>
         </mat-card>
@@ -115,7 +115,7 @@
             <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
           </mat-card-header>
           <mat-card-content style="height: 350px;">
-            <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTOut">
+            <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTOut" (select)="onChartIncomeClick($event)">
             </ngx-charts-advanced-pie-chart>
           </mat-card-content>
         </mat-card>

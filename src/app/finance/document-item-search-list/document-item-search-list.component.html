@@ -20,12 +20,32 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="{{'Common.Value' | translate}}" name="lvalue" [(ngModel)]="filter.lowValue">
+        <mat-form-field *ngIf="filter.valueType === 1">
+          <input matInput type="number" placeholder="{{'Common.Value' | translate}}" name="lvalue_1" [(ngModel)]="filter.lowValue">
         </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="{{'Common.Value' | translate}}" name="hvalue" [(ngModel)]="filter.highValue">
+        <mat-form-field *ngIf="filter.valueType === 1">
+          <input matInput type="number" placeholder="{{'Common.Value' | translate}}" name="hvalue_1" [(ngModel)]="filter.highValue">
         </mat-form-field>
+        <mat-form-field *ngIf="filter.valueType === 2">
+          <input matInput type="number" placeholder="{{'Common.Value' | translate}}" name="lvalue_2" [(ngModel)]="filter.lowValue">
+        </mat-form-field>
+        <mat-form-field *ngIf="filter.valueType === 2">
+          <input matInput type="number" placeholder="{{'Common.Value' | translate}}" name="hvalue_2" [(ngModel)]="filter.highValue">
+        </mat-form-field>
+        <mat-form-field *ngIf="filter.valueType === 3">
+          <input matInput [(ngModel)]="filter.lowValue" [matDatepicker]="lvpicker" placeholder="{{'Common.Value' | translate}}">
+          <mat-datepicker-toggle matSuffix [for]="lvpicker"></mat-datepicker-toggle>
+          <mat-datepicker #lvpicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field *ngIf="filter.valueType === 3">
+          <input matInput [(ngModel)]="filter.highValue" [matDatepicker]="hvpicker" placeholder="{{'Common.Value' | translate}}">
+          <mat-datepicker-toggle matSuffix [for]="hvpicker"></mat-datepicker-toggle>
+          <mat-datepicker #hvpicker></mat-datepicker>
+        </mat-form-field>
+        <div class="typechkbox" *ngIf="filter.valueType === 4">
+          <mat-checkbox [(ngModel)]="filter.lowValue">
+          </mat-checkbox>
+        </div>
         <button mat-button mat-icon-button aria-label="Add" (click)="onAddFilter()">
           <mat-icon>add</mat-icon>
         </button>
