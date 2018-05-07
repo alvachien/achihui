@@ -57,7 +57,7 @@
         <mat-form-field class="demo-full-width">
           <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
             name="srcacnt">
-            <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
+            <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountFilter" [value]="acnt.Id">
               <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
             </mat-option>
           </mat-select>
@@ -93,7 +93,7 @@
         <mat-form-field class="demo-full-width">
           <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TargetAccountId"
             name="tgtacnt">
-            <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
+            <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountFilter" [value]="acnt.Id">
               <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
             </mat-option>
           </mat-select>

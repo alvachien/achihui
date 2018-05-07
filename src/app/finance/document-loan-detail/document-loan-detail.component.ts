@@ -50,6 +50,7 @@ export class DocumentLoanDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
+  public uiAccountFilter: string | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
@@ -103,6 +104,7 @@ export class DocumentLoanDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+      this.uiAccountFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
 
@@ -314,11 +316,6 @@ export class DocumentLoanDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof Document) {
-          // Ensure refresh the accounts
-          this._storageService.fetchAllAccounts(true).subscribe((act: any) => {
-            // Do nothing just reload accounts
-          });
-
           // Show the snackbar
           let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
@@ -396,6 +393,7 @@ export class DocumentLoanDetailComponent implements OnInit {
   private onInitCreateMode(): void {
     this.detailObject = new UIFinLoanDocument();
     this.uiMode = UIMode.Create;
+    this.uiAccountFilter = 'Normal';
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }

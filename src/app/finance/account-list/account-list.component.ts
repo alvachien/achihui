@@ -1,42 +1,11 @@
-import { Component, OnInit, ViewChild, HostBinding } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator } from '@angular/material';
+import { Component, OnInit, AfterViewInit, ViewChild, HostBinding } from '@angular/core';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService } from '../../services';
-
-/**
- * Data source of Account
- */
-export class AccountDataSource extends DataSource<any> {
-  constructor(private _storageService: FinanceStorageService,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<Account[]> {
-    const displayDataChanges: any[] = [
-      this._storageService.listAccountChange,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._storageService.Accounts.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
 
 export interface IAccountStatusUI {
   name: string;
@@ -48,10 +17,10 @@ export interface IAccountStatusUI {
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.scss'],
 })
-export class AccountListComponent implements OnInit {
+export class AccountListComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['id', 'name', 'ctgy', 'comment'];
-  dataSource: AccountDataSource | undefined;
+  dataSource: MatTableDataSource<Account> = new MatTableDataSource<Account>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   arrayStatus: UIDisplayString[] = [];
   selectedStatus: AccountStatusEnum = AccountStatusEnum.Normal;
@@ -71,18 +40,21 @@ export class AccountListComponent implements OnInit {
     }
 
     this.isLoadingResults = true;
-    this.dataSource = new AccountDataSource(this._storageService, this.paginator);
 
     forkJoin([
-      this._storageService.fetchAllAccounts(true, this.selectedStatus),
+      this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllAccountCategories(),
     ]).subscribe((x: any) => {
-      // Just ensure the REQUEST has been sent
+      this.onRebuildDataSource();
     }, (error: any) => {
       // Do nothing
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   public onCreateAccount(): void {
@@ -107,12 +79,17 @@ export class AccountListComponent implements OnInit {
 
   public onStatusChange(): void {
     this.isLoadingResults = true;
-    this._storageService.fetchAllAccounts(true, this.selectedStatus).subscribe((x: any) => {
-      // Just ensure the REQUEST has been sent
-    }, (error: any) => {
-      // Do nothing
-    }, () => {
-      this.isLoadingResults = false;
+    this.onRebuildDataSource();
+    this.isLoadingResults = false;
+  }
+
+  private onRebuildDataSource(): void {
+    this.dataSource.data = this._storageService.Accounts.filter((value: Account) => {
+      if (this.selectedStatus !== undefined && value.Status !== this.selectedStatus) {
+        return false;
+      }
+
+      return true;
     });
   }
 }

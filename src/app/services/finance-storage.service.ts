@@ -329,7 +329,7 @@ export class FinanceStorageService {
     }
 
     // Account
-    public fetchAllAccounts(forceReload?: boolean, status?: AccountStatusEnum): Observable<Account[]> {
+    public fetchAllAccounts(forceReload?: boolean): Observable<Account[]> {
         if (!this._isAccountListLoaded || forceReload) {
             const apiurl: string = environment.ApiUrl + '/api/FinanceAccount';
 
@@ -340,10 +340,6 @@ export class FinanceStorageService {
 
             let params: HttpParams = new HttpParams();
             params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-            if (status !== undefined && status !== undefined) {
-                params = params.append('status', status.toString());
-            }
-
             return this._http.get(apiurl, {
                 headers: headers,
                 params: params,

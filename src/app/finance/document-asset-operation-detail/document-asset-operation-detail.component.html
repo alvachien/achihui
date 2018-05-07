@@ -1,6 +1,6 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{PageTitle | translate}}</mat-card-title>
+    <mat-card-title>{{pageTitle | translate}}</mat-card-title>
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
@@ -44,7 +44,7 @@
         <!-- Account -->
         <mat-form-field class="demo-full-width">
           <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.AccountId" name="srcacnt">
-            <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
+            <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountFilter" [value]="acnt.Id">
               <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
             </mat-option>
           </mat-select>

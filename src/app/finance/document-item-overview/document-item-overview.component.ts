@@ -13,66 +13,6 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 import * as moment from 'moment';
 
 /**
- * Data source of Document Item by Control center
- */
-export class DocItemByControlCenterDataSource extends DataSource<any> {
-  constructor(private _parentComponent: DocumentItemOverviewComponent,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<DocumentItemWithBalance[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.DocItemByControlCenterEvent,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._parentComponent.DocItemsByControlCenter.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
-/**
- * Data source of Document Item by Order
- */
-export class DocItemByOrderDataSource extends DataSource<any> {
-  constructor(private _parentComponent: DocumentItemOverviewComponent,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<DocumentItemWithBalance[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.DocItemByOrderEvent,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._parentComponent.DocItemsByOrder.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
-/**
  * Data source of ADP & Loan docs
  */
 export class TmpDocStillOpenDataSource extends DataSource<any> {
@@ -84,12 +24,12 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<TemplateDocBase[]> {
     const displayDataChanges: any[] = [
-      this._parentComponent.TmpDocEvent,
+      this._parentComponent.tmpDocEvent,
       this._paginator.page,
     ];
 
     return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._parentComponent.TmpDocs.slice();
+      const data: any = this._parentComponent.tmpDocs.slice();
 
       // Grab the page's slice of data.
       const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
@@ -112,17 +52,9 @@ export class DocumentItemOverviewComponent implements OnInit {
   displayedByControlCenterColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   displayedByOrderColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   displayedTmpDocColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
-  dataSourceByControlCenter: DocItemByControlCenterDataSource | undefined;
-  dataSourceByOrder: DocItemByOrderDataSource | undefined;
   dataSourceTmpDoc: TmpDocStillOpenDataSource | undefined;
-  DocItemByControlCenterEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
-  DocItemByOrderEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
-  TmpDocEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
-  DocItemsByControlCenter: DocumentItemWithBalance[] = [];
-  DocItemsByControlCenter_Org: DocumentItemWithBalance[] = [];
-  DocItemsByOrder: DocumentItemWithBalance[] = [];
-  DocItemsByOrder_Org: DocumentItemWithBalance[] = [];
-  TmpDocs: TemplateDocBase[] = [];
+  tmpDocEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  tmpDocs: TemplateDocBase[] = [];
   public arUIAccount: UIAccountForSelection[] = [];
   public arUIOrder: UIOrderForSelection[] = [];
   @ViewChild('paginatorByAccount') paginatorByAccount: MatPaginator;
@@ -153,16 +85,12 @@ export class DocumentItemOverviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataSourceByControlCenter = new DocItemByControlCenterDataSource(this, this.paginatorByControlCenter);
-    this.dataSourceByOrder = new DocItemByOrderDataSource(this, this.paginatorByOrder);
     this.dataSourceTmpDoc = new TmpDocStillOpenDataSource(this, this.paginatorTmpDoc);
 
     forkJoin([
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),
-      this._storageService.fetchAllControlCenters(),
-      this._storageService.fetchAllOrders(),
     ]).subscribe((x: any) => {
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
@@ -180,105 +108,31 @@ export class DocumentItemOverviewComponent implements OnInit {
       this._storageService.getADPTmpDocs(bgn, end),
       this._storageService.getLoanTmpDocs(bgn, end),
     ]).subscribe((x: any) => {
-      this.TmpDocs = [];
+      this.tmpDocs = [];
 
       if (x[0] instanceof Array && x[0].length > 0) {
         for (let dta of x[0]) {
           let adpdoc: TemplateDocADP = new TemplateDocADP();
           adpdoc.onSetData(dta);
-          this.TmpDocs.push(adpdoc);
+          this.tmpDocs.push(adpdoc);
         }
       }
       if (x[1] instanceof Array && x[1].length > 0) {
         for (let dta of x[1]) {
           let loandoc: TemplateDocLoan = new TemplateDocLoan();
           loandoc.onSetData(dta);
-          this.TmpDocs.push(loandoc);
+          this.tmpDocs.push(loandoc);
         }
       }
 
       // Sort it by date
-      this.TmpDocs.sort((a: any, b: any) => {
+      this.tmpDocs.sort((a: any, b: any) => {
         if (a.TranDate.isSame(b.TranDate)) { return 0; }
         if (a.TranDate.isBefore(b.TranDate)) { return -1; } else { return 1; }
       });
 
-      this.TmpDocEvent.emit();
+      this.tmpDocEvent.emit();
     });
-  }
-
-  public onControlCenterSelectChange(): void {
-    if (this.selectedControlCenter) {
-      this._storageService.getDocumentItemByControlCenter(this.selectedControlCenter).subscribe((x: any) => {
-        this.DocItemsByControlCenter_Org = [];
-        this.DocItemsByControlCenter = [];
-
-        if (x instanceof Array && x.length > 0) {
-          for (let di of x) {
-            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-            docitem.onSetData(di);
-            this.DocItemsByControlCenter_Org.push(docitem);
-
-            if (isOverviewDateInScope(docitem.TranDate, this.selectedControlCenterScope)) {
-              this.DocItemsByControlCenter.push(docitem);
-            }
-          }
-        }
-
-        this.DocItemByControlCenterEvent.emit();
-      });
-    }
-  }
-
-  public onControlCenterScopeChanged(): void {
-    if (this.DocItemsByControlCenter_Org.length > 0) {
-      this.DocItemsByControlCenter = [];
-
-      for (let docitem of this.DocItemsByControlCenter_Org) {
-        if (isOverviewDateInScope(docitem.TranDate, this.selectedControlCenterScope)) {
-          this.DocItemsByControlCenter.push(docitem);
-        }
-      }
-
-      this.DocItemByControlCenterEvent.emit();
-    }
-  }
-
-  public onOrderSelectChange(): void {
-    if (this.selectedOrder) {
-      this._storageService.getDocumentItemByOrder(this.selectedOrder).subscribe((x: any) => {
-        this.DocItemsByOrder_Org = [];
-        this.DocItemsByOrder = [];
-
-        if (x instanceof Array && x.length > 0) {
-          for (let di of x) {
-            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-            docitem.onSetData(di);
-            this.DocItemsByOrder_Org.push(docitem);
-
-            if (isOverviewDateInScope(docitem.TranDate, this.selectedOrderScope)) {
-              this.DocItemsByOrder.push(docitem);
-            }
-          }
-        }
-
-        this.DocItemByOrderEvent.emit();
-      });
-    }
-  }
-
-  public onOrderScopeChanged(): void {
-    if (this.DocItemsByOrder_Org.length > 0) {
-      this.DocItemsByOrder = [];
-
-      for (let docitem of this.DocItemsByOrder_Org) {
-        if (isOverviewDateInScope(docitem.TranDate, this.selectedOrderScope)) {
-          this.DocItemsByOrder.push(docitem);
-        }
-      }
-
-      this.DocItemByOrderEvent.emit();
-    }
   }
 
   public onPostTmpDocument(doc: any): void {

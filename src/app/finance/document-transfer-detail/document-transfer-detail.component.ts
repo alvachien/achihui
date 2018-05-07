@@ -29,6 +29,7 @@ export class DocumentTransferDetailComponent implements OnInit {
   // public sourceFormGroup: FormGroup;
   // public targetFormGroup: FormGroup;
   public arUIAccount: UIAccountForSelection[] = [];
+  public uiAccountFilter: string | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
@@ -88,6 +89,7 @@ export class DocumentTransferDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+      this.uiAccountFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
 
@@ -262,6 +264,7 @@ export class DocumentTransferDetailComponent implements OnInit {
   private onInitCreateMode(): void {
     this.detailObject = new UIFinTransferDocument();
     this.uiMode = UIMode.Create;
+    this.uiAccountFilter = 'Normal';
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }

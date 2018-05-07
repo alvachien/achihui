@@ -28,8 +28,9 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   public detailObject: UIFinAssetOperationDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
-  public PageTitle: string;
+  public pageTitle: string;
   public arUIAccount: UIAccountForSelection[] = [];
+  public uiAccountFilter: string | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
@@ -74,6 +75,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.uiAccountFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
 
@@ -105,7 +107,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
             this.uiMode = UIMode.Display;
           }
           this.currentMode = getUIModeString(this.uiMode);
-          this.PageTitle = this.detailObject.isBuyin ? 'Sys.DocTy.AssetBuyIn' : 'Sys.DocTy.AssetSoldOut';
+          this.pageTitle = this.detailObject.isBuyin ? 'Sys.DocTy.AssetBuyIn' : 'Sys.DocTy.AssetSoldOut';
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this._storageService.readAssetDocument(this.routerID, this.detailObject.isBuyin).subscribe((x2: any) => {
@@ -216,11 +218,6 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
 
         // Navigate back to list view
         if (x instanceof Document) {
-          // Ensure refresh the accounts
-          this._storageService.fetchAllAccounts(true).subscribe((act: any) => {
-            // Do nothing just reload accounts
-          });
-
           // Show the snackbar
           let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
@@ -289,6 +286,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   private onInitCreateMode(isbuyin: boolean): void {
     this.detailObject = new UIFinAssetOperationDocument();
     this.detailObject.isBuyin = isbuyin;
+    this.uiAccountFilter = 'Normal';
 
     this.uiMode = UIMode.Create;
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;

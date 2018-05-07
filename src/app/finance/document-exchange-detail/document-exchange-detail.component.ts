@@ -28,6 +28,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
+  public uiAccountFilter: string | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
@@ -95,6 +96,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+      this.uiAccountFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
 
@@ -341,6 +343,7 @@ export class DocumentExchangeDetailComponent implements OnInit {
   private onInitCreateMode(): void {
     this.detailObject = new UIFinCurrencyExchangeDocument();
     this.uiMode = UIMode.Create;
+    this.uiAccountFilter = 'Normal';
 
     this.detailObject.SourceTranCurr = this._homedefService.ChosedHome.BaseCurrency;
     this.detailObject.TargetTranCurr = this._homedefService.ChosedHome.BaseCurrency;

@@ -7,7 +7,7 @@ import { UIDisplayString, GeneralFilterOperatorEnum, GeneralFilterValueType } fr
 export class OperatorFilterPipe implements PipeTransform {
 
   transform(allOperators: UIDisplayString[], args?: GeneralFilterValueType): any {
-    const newops: UIDisplayString[] = allOperators.filter((value: UIDisplayString) => {
+    return allOperators.filter((value: UIDisplayString) => {
       if (args) {
         switch (args) {
           case GeneralFilterValueType.string: {
@@ -46,7 +46,5 @@ export class OperatorFilterPipe implements PipeTransform {
 
       return true;
     });
-
-    return newops;
   }
 }

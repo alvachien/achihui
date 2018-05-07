@@ -76,11 +76,11 @@ export class AccountTreeComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoadingResults = true;
-    forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts(true, this.selectedStatus))
+    forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts())
       .subscribe((value: any) => {
         // Parse the data
         this.availableCategories = value[0];
-        this.availableAccounts = value[1];
+        this.availableAccounts = this._filterAccountsByStatus(<Account[]>value[1]);
 
         let nodes: AccountTreeNode[] = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
         this.dataSource.data = nodes;
@@ -121,9 +121,9 @@ export class AccountTreeComponent implements OnInit {
     this.isLoadingResults = true;
     this.dataSource.data = [];
 
-    this._storageService.fetchAllAccounts(true, this.selectedStatus).subscribe((x: any) => {
+    this._storageService.fetchAllAccounts().subscribe((x: any) => {
       this.availableCategories = this._storageService.AccountCategories;
-      this.availableAccounts = x;
+      this.availableAccounts = this._filterAccountsByStatus(<Account[]>x);
 
       let nodes: AccountTreeNode[] = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
       this.dataSource.data = nodes;
@@ -185,5 +185,14 @@ export class AccountTreeComponent implements OnInit {
     }
 
     return data;
+  }
+  private _filterAccountsByStatus(allAccounts: Account[]): Account[] {
+    return allAccounts.filter((value: Account) => {
+      if (this.selectedStatus !== undefined && value.Status !== this.selectedStatus) {
+        return false;
+      }
+
+      return true;
+    });
   }
 }

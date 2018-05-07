@@ -11,7 +11,8 @@ import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_AdvancePayment,
   UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum, COMMA,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum, UIDisplayStringUtil
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
+  UIDisplayStringUtil,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -56,6 +57,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
+  public uiAccountFilter: string | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
@@ -104,10 +106,11 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.uiAccountFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
 
-      this._activateRoute.url.subscribe((x) => {
+      this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createadp') {
             this.onInitCreateMode();
@@ -332,6 +335,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   }
 
   private onInitCreateMode(): void {
+    this.uiAccountFilter = 'Normal';
     this.detailObject = new UIFinAdvPayDocument();
     this.uiMode = UIMode.Create;
 
@@ -374,11 +378,6 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
       // Navigate back to list view
       if (x instanceof Document) {
-        // Ensure refresh the accounts
-        this._storageService.fetchAllAccounts(true).subscribe((act: any) => {
-          // Do nothing just reload accounts
-        });
-
         // Show the snackbar
         let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {

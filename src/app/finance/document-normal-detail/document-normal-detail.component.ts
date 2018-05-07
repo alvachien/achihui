@@ -49,6 +49,7 @@ export class DocumentNormalDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
+  public uiAccountFilter: string | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
@@ -101,6 +102,7 @@ export class DocumentNormalDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+      this.uiAccountFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
 
@@ -268,6 +270,7 @@ export class DocumentNormalDetailComponent implements OnInit {
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this.detailObject.DocType = FinanceDocType_Normal;
+    this.uiAccountFilter = 'Normal';
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
