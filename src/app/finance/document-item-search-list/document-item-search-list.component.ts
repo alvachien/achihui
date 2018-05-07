@@ -62,6 +62,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     forkJoin([
+      this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllTranTypes(),
     ]).subscribe((x: any) => {

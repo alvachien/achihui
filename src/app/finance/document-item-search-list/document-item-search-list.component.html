@@ -1,30 +1,30 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>{{'Finance.Documents' | translate}}</mat-card-title>
-    <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
+    <mat-card-subtitle>{{'Common.Search' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <div>
       <div *ngFor="let filter of filters; let idxfilter = index" class="demo-full-width">
         <mat-form-field>
-          <mat-select placeholder="Field" [(ngModel)]="filter.fieldName" (selectionChange)="onFieldSelectionChanged(filter)">
+          <mat-select placeholder="{{'Common.Field' | translate}}" [(ngModel)]="filter.fieldName" (selectionChange)="onFieldSelectionChanged(filter)">
             <mat-option *ngFor="let field of allFields" [value]="field.value">
               {{ field.displayas | translate }}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <mat-select placeholder="Operators" [(ngModel)]="filter.operator">
-            <mat-option *ngFor="let opr of allOperators" [value]="opr.value">
+          <mat-select placeholder="{{'Common.Operator' | translate}}" [(ngModel)]="filter.operator">
+            <mat-option *ngFor="let opr of allOperators | operatorFilter: filter.valueType" [value]="opr.value">
               {{ opr.i18nterm | translate }}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Low" name="lvalue" [(ngModel)]="filter.lowValue">
+          <input matInput placeholder="{{'Common.Value' | translate}}" name="lvalue" [(ngModel)]="filter.lowValue">
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="High" name="hvalue" [(ngModel)]="filter.highValue">
+          <input matInput placeholder="{{'Common.Value' | translate}}" name="hvalue" [(ngModel)]="filter.highValue">
         </mat-form-field>
         <button mat-button mat-icon-button aria-label="Add" (click)="onAddFilter()">
           <mat-icon>add</mat-icon>
@@ -36,7 +36,7 @@
       <div class="demo-full-width">
         <button mat-button mat-icon-button aria-label="Search" (click)="onSearch()">
           <mat-icon>search</mat-icon>
-        </button>            
+        </button>
       </div>
     </div>
     <mat-divider></mat-divider>

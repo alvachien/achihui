@@ -1,4 +1,16 @@
 # Change logs
+## Version 0.6.x
+Released at 2018.07.01
+
+Bugs fixing and Feature list
+- Using echart's wordCloud replace current tag Cloud;
+- Using echart's bar/pie chart replace current ngx-charts;
+- Event: Overview page;
+- Learn: Question bank refactor. 
+- Authority control: account level;
+- Finance: Report click navigation support;
+
+
 ## Version 0.5.5
 Released at 2018.05.01
 

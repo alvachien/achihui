@@ -12,6 +12,8 @@
     "Precent": "Precentage",
     "Close": "Close",
     "Save": "Save",
+    "Field": "Field",
+    "Operator": "Operator",
 
     "ListView": "List View",
     "HierarchyView": "Hierarchy View",
@@ -239,7 +241,8 @@
       "LargerThan": "Larger than",
       "LessEqual": "Less or Equal",
       "LessThan": "Less than",
-      "NotEqual": "Not Equal"
+      "NotEqual": "Not Equal",
+      "Like": "Like"
     }
   },
   "RepeatFrequency": {

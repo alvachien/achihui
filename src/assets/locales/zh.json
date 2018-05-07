@@ -12,6 +12,8 @@
     "Precent": "百分比",
     "Close": "关闭",
     "Save": "保存",
+    "Field": "字段",
+    "Operator": "运算符",
 
     "ListView": "列表视图",
     "HierarchyView": "树形视图",
@@ -239,7 +241,8 @@
       "LargerThan": "大于",
       "LessEqual": "小于或等于",
       "LessThan": "小于",
-      "NotEqual": "不等于"
+      "NotEqual": "不等于",
+      "Like": "LIKE (SQL)"
     }
   },
   "RepeatFrequency": {

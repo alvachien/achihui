@@ -21,6 +21,7 @@ export enum GeneralFilterOperatorEnum {
   LargerEqual = 5,
   LessThan    = 6,
   LessEqual   = 7,
+  Like        = 8, // Like
 }
 
 /**
@@ -454,6 +455,7 @@ export class UIDisplayStringUtil {
       case GeneralFilterOperatorEnum.LessEqual: return 'Sys.Operator.LessEqual';
       case GeneralFilterOperatorEnum.LessThan: return 'Sys.Operator.LessThan';
       case GeneralFilterOperatorEnum.NotEqual: return 'Sys.Operator.NotEqual';
+      case GeneralFilterOperatorEnum.Like: return 'Sys.Operator.Like';
       default: return '';
     }
   }
