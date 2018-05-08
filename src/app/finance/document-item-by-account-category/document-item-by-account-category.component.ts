@@ -68,7 +68,7 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
       this._storageService.fetchAllTranTypes(),
     ]).subscribe((x: any) => {
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
     });
   }
 

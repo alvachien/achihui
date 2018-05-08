@@ -52,7 +52,7 @@ import { DocumentItemByAccountCategoryComponent } from './document-item-by-accou
 import { ControlCenterTreeComponent } from './control-center-tree';
 import { DocumentItemByControlCenterComponent } from './document-item-by-control-center';
 import { DocumentItemSearchListComponent } from './document-item-search-list';
-import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe,
+import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, } from './pipes';
 
 @NgModule({
@@ -112,6 +112,7 @@ import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPip
     AccountStatusFilterPipe,
     OrderValidFilterPipe,
     UIAccountStatusFilterPipe,
+    UIAccountCtgyFilterPipe,
     UIOrderValidFilterPipe,
   ],
   providers: [

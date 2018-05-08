@@ -11,6 +11,7 @@ import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_Asset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
+  IAccountCategoryFilter,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -30,7 +31,8 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   public step: number = 0;
   public pageTitle: string;
   public arUIAccount: UIAccountForSelection[] = [];
-  public uiAccountFilter: string | undefined;
+  public uiAccountStatusFilter: string | undefined;
+  public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   // Enter, comma
@@ -76,7 +78,8 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
-      this.uiAccountFilter = undefined;
+      this.uiAccountStatusFilter = undefined;
+      this.uiAccountCtgyFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
@@ -288,7 +291,12 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   private onInitCreateMode(isbuyin: boolean): void {
     this.detailObject = new UIFinAssetOperationDocument();
     this.detailObject.isBuyin = isbuyin;
-    this.uiAccountFilter = 'Normal';
+    this.uiAccountStatusFilter = 'Normal';
+    this.uiAccountCtgyFilter = {
+      skipADP: true,
+      skipLoan: true,
+      skipAsset: true,
+    };
     this.uiOrderFilter = true;
 
     this.uiMode = UIMode.Create;

@@ -512,7 +512,7 @@ export class UIAccountForSelection {
  * @param skipasset Skip Asset accounts
  */
 export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg: HIHFinance.AccountCategory[],
-  skipadp?: boolean, skiploan?: boolean, skipasset?: boolean): UIAccountForSelection[] {
+  ctgyFilter?: HIHFinance.IAccountCategoryFilter): UIAccountForSelection[] {
   let arrst: UIAccountForSelection[] = [];
 
   for (let acnt of acnts) {
@@ -523,20 +523,20 @@ export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg:
     rst.Status = acnt.Status;
 
     // Skip some categories
-    if (skipadp) {
-      if (acnt.CategoryId === hih.FinanceAccountCategory_AdvancePayment) {
-        continue;
-      }
+    if (ctgyFilter !== undefined
+      && ctgyFilter.skipADP === true
+      && acnt.CategoryId === hih.FinanceAccountCategory_AdvancePayment) {
+      continue;
     }
-    if (skiploan) {
-      if (acnt.CategoryId === hih.FinanceAccountCategory_Loan) {
-        continue;
-      }
+    if (ctgyFilter !== undefined
+      && ctgyFilter.skipLoan === true
+      && acnt.CategoryId === hih.FinanceAccountCategory_Loan) {
+      continue;
     }
-    if (skipasset) {
-      if (acnt.CategoryId === hih.FinanceAccountCategory_Asset) {
-        continue;
-      }
+    if (ctgyFilter !== undefined
+      && ctgyFilter.skipAsset === true
+      && acnt.CategoryId === hih.FinanceAccountCategory_Asset) {
+      continue;
     }
 
     for (let ctgy of acntctg) {

@@ -9,7 +9,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Loan, COMMA, TemplateDocLoan, UIFinLoanDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  FinanceAccountCategory_Loan, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput } from '../../model';
+  FinanceAccountCategory_Loan, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, IAccountCategoryFilter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ENTER } from '@angular/cdk/keycodes';
@@ -50,7 +50,8 @@ export class DocumentLoanDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
-  public uiAccountFilter: string | undefined;
+  public uiAccountStatusFilter: string | undefined;
+  public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   // Enter, comma
@@ -104,8 +105,9 @@ export class DocumentLoanDetailComponent implements OnInit {
       }
 
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
-      this.uiAccountFilter = undefined;
+      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.uiAccountStatusFilter = undefined;
+      this.uiAccountCtgyFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
@@ -395,7 +397,12 @@ export class DocumentLoanDetailComponent implements OnInit {
   private onInitCreateMode(): void {
     this.detailObject = new UIFinLoanDocument();
     this.uiMode = UIMode.Create;
-    this.uiAccountFilter = 'Normal';
+    this.uiAccountStatusFilter = 'Normal';
+    this.uiAccountCtgyFilter = {
+      skipADP: true,
+      skipLoan: true,
+      skipAsset: true,
+    };
     this.uiOrderFilter = true;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;

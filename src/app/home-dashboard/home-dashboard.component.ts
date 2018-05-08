@@ -164,11 +164,11 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
         if (this.media.isActive('xs')) {
             graphSize = 150;
         } else if (this.media.isActive('sm')) {
-            graphSize = 300;
+            graphSize = 250;
         } else if (this.media.isActive('md')) {
-            graphSize = 450;
+            graphSize = 300;
         } else {
-            graphSize = 500;
+            graphSize = 400;
         }
 
         this.view = [graphSize, graphSize / 1.33];

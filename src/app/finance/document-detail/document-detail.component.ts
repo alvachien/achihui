@@ -9,7 +9,8 @@ import { Observable, forkJoin, Subject, BehaviorSubject, merge, of } from 'rxjs'
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal, UICommonLabelEnum, COMMA,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection } from '../../model';
+  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
+  IAccountCategoryFilter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ENTER } from '@angular/cdk/keycodes';
@@ -50,7 +51,8 @@ export class DocumentDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
-  public uiAccountFilter: string | undefined;
+  public uiAccountStatusFilter: string | undefined;
+  public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   // Enter, comma
@@ -102,8 +104,9 @@ export class DocumentDetailComponent implements OnInit {
       }
 
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true);
-      this.uiAccountFilter = undefined;
+      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.uiAccountStatusFilter = undefined;
+      this.uiAccountCtgyFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
@@ -318,7 +321,12 @@ export class DocumentDetailComponent implements OnInit {
   private onInitCreateMode(): void {
     this.detailObject = new Document();
     this.uiMode = UIMode.Create;
-    this.uiAccountFilter = 'Normal';
+    this.uiAccountStatusFilter = 'Normal';
+    this.uiAccountCtgyFilter = {
+      skipADP: true,
+      skipLoan: true,
+      skipAsset: true,
+    };
     this.uiOrderFilter = true;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;

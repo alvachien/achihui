@@ -471,6 +471,15 @@ export class Account extends hih.BaseModel {
 }
 
 /**
+ * Category filter for Account
+ */
+export interface IAccountCategoryFilter {
+  skipADP: boolean;
+  skipLoan: boolean;
+  skipAsset: boolean;
+}
+
+/**
  * Extra info: Advance payment
  */
 export class AccountExtraAdvancePayment extends AccountExtra {

@@ -12,7 +12,7 @@ import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_AdvancePayment,
   UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  UIDisplayStringUtil,
+  UIDisplayStringUtil, IAccountCategoryFilter,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -57,7 +57,8 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   public arUIAccount: UIAccountForSelection[] = [];
-  public uiAccountFilter: string | undefined;
+  public uiAccountStatusFilter: string | undefined;
+  public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   // Enter, comma
@@ -107,7 +108,8 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
-      this.uiAccountFilter = undefined;
+      this.uiAccountStatusFilter = undefined;
+      this.uiAccountCtgyFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
@@ -339,7 +341,12 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   private onInitCreateMode(): void {
     this.detailObject = new UIFinAdvPayDocument();
     this.uiMode = UIMode.Create;
-    this.uiAccountFilter = 'Normal';
+    this.uiAccountStatusFilter = 'Normal';
+    this.uiAccountCtgyFilter = {
+      skipADP: true,
+      skipLoan: true,
+      skipAsset: true,
+    };
     this.uiOrderFilter = true;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
