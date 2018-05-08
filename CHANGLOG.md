@@ -3,12 +3,14 @@
 Released at 2018.07.01
 
 Bugs fixing and Feature list
+- Dashboard introduced;
 - Using echart's wordCloud replace current tag Cloud;
 - Using echart's bar/pie chart replace current ngx-charts;
 - Event: Overview page;
 - Learn: Question bank refactor. 
 - Authority control: account level;
 - Finance: Report click navigation support;
+- Finance: search for document item dynamically;
 
 
 ## Version 0.5.5

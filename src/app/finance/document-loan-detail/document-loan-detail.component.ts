@@ -52,6 +52,7 @@ export class DocumentLoanDetailComponent implements OnInit {
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountFilter: string | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
+  public uiOrderFilter: boolean | undefined;
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
   tmpDocOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
@@ -107,6 +108,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       this.uiAccountFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.uiOrderFilter = undefined;
 
       this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
@@ -394,6 +396,7 @@ export class DocumentLoanDetailComponent implements OnInit {
     this.detailObject = new UIFinLoanDocument();
     this.uiMode = UIMode.Create;
     this.uiAccountFilter = 'Normal';
+    this.uiOrderFilter = true;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }

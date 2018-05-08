@@ -45,7 +45,7 @@ export class AccountListComponent implements OnInit, AfterViewInit {
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllAccountCategories(),
     ]).subscribe((x: any) => {
-      this.onRebuildDataSource();
+      this._buildDataSource();
     }, (error: any) => {
       // Do nothing
     }, () => {
@@ -74,16 +74,18 @@ export class AccountListComponent implements OnInit, AfterViewInit {
   }
 
   public onRefresh(): void {
-    this.onStatusChange();
+    this._storageService.fetchAllAccounts(true).subscribe((x: any) => {
+      this._buildDataSource();
+    });
   }
 
   public onStatusChange(): void {
     this.isLoadingResults = true;
-    this.onRebuildDataSource();
+    this._buildDataSource();
     this.isLoadingResults = false;
   }
 
-  private onRebuildDataSource(): void {
+  private _buildDataSource(): void {
     this.dataSource.data = this._storageService.Accounts.filter((value: Account) => {
       if (this.selectedStatus !== undefined && value.Status !== this.selectedStatus) {
         return false;

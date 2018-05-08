@@ -70,7 +70,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
             this._storageService.fetchAllTranTypes(),
         ]).subscribe((x: any) => {
             // Accounts
-            this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
+            this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
 
             this.onAddFilter();
         });

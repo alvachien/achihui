@@ -51,6 +51,7 @@ export class DocumentNormalDetailComponent implements OnInit {
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountFilter: string | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
+  public uiOrderFilter: boolean | undefined;
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
@@ -105,6 +106,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       this.uiAccountFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.uiOrderFilter = undefined;
 
       this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
@@ -271,6 +273,7 @@ export class DocumentNormalDetailComponent implements OnInit {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this.detailObject.DocType = FinanceDocType_Normal;
     this.uiAccountFilter = 'Normal';
+    this.uiOrderFilter = true;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }

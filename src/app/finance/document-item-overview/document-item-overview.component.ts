@@ -49,25 +49,11 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
 })
 export class DocumentItemOverviewComponent implements OnInit {
 
-  displayedByControlCenterColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
-  displayedByOrderColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   displayedTmpDocColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSourceTmpDoc: TmpDocStillOpenDataSource | undefined;
   tmpDocEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   tmpDocs: TemplateDocBase[] = [];
-  public arUIAccount: UIAccountForSelection[] = [];
-  public arUIOrder: UIOrderForSelection[] = [];
-  @ViewChild('paginatorByAccount') paginatorByAccount: MatPaginator;
-  @ViewChild('paginatorByControlCenter') paginatorByControlCenter: MatPaginator;
-  @ViewChild('paginatorByOrder') paginatorByOrder: MatPaginator;
   @ViewChild('paginatorTmpDoc') paginatorTmpDoc: MatPaginator;
-
-  selectedAccount: number;
-  selectedControlCenter: number;
-  selectedOrder: number;
-  selectedAccountScope: OverviewScopeEnum;
-  selectedControlCenterScope: OverviewScopeEnum;
-  selectedOrderScope: OverviewScopeEnum;
   selectedTmpScope: OverviewScopeEnum;
 
   constructor(private _dialog: MatDialog,
@@ -78,9 +64,6 @@ export class DocumentItemOverviewComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
-    this.selectedAccountScope = OverviewScopeEnum.All;
-    this.selectedControlCenterScope = OverviewScopeEnum.All;
-    this.selectedOrderScope = OverviewScopeEnum.All;
     this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
   }
 
@@ -92,11 +75,6 @@ export class DocumentItemOverviewComponent implements OnInit {
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),
     ]).subscribe((x: any) => {
-      // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories, true, true, true);
-      // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
-
       // Refresh the template documents
       this.onTmpDocsRefresh();
     });

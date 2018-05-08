@@ -52,7 +52,8 @@ import { DocumentItemByAccountCategoryComponent } from './document-item-by-accou
 import { ControlCenterTreeComponent } from './control-center-tree';
 import { DocumentItemByControlCenterComponent } from './document-item-by-control-center';
 import { DocumentItemSearchListComponent } from './document-item-search-list';
-import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe } from './pipes';
+import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe,
+  UIOrderValidFilterPipe, } from './pipes';
 
 @NgModule({
   imports: [
@@ -111,6 +112,7 @@ import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPip
     AccountStatusFilterPipe,
     OrderValidFilterPipe,
     UIAccountStatusFilterPipe,
+    UIOrderValidFilterPipe,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

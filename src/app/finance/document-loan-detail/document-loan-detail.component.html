@@ -71,7 +71,7 @@
         <mat-form-field class="demo-full-width">
           <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId" name="hdrord">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-            <mat-option *ngFor="let tt of arUIOrder" [value]="tt.Id">
+            <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
               {{tt.Name}}
             </mat-option>
           </mat-select>

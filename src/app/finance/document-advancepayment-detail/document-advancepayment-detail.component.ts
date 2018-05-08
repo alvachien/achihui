@@ -59,6 +59,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountFilter: string | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
+  public uiOrderFilter: boolean | undefined;
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
@@ -109,6 +110,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       this.uiAccountFilter = undefined;
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.uiOrderFilter = undefined;
 
       this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
@@ -335,9 +337,10 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   }
 
   private onInitCreateMode(): void {
-    this.uiAccountFilter = 'Normal';
     this.detailObject = new UIFinAdvPayDocument();
     this.uiMode = UIMode.Create;
+    this.uiAccountFilter = 'Normal';
+    this.uiOrderFilter = true;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }

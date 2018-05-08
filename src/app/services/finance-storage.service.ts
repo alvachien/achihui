@@ -763,7 +763,7 @@ export class FinanceStorageService {
     /**
      * Read all orders out
      */
-    public fetchAllOrders(forceReload?: boolean, invalidone?: boolean): Observable<Order[]> {
+    public fetchAllOrders(forceReload?: boolean): Observable<Order[]> {
         if (!this._isOrderListLoaded || forceReload) {
             const apiurl: string = environment.ApiUrl + '/api/FinanceOrder';
 
@@ -774,9 +774,6 @@ export class FinanceStorageService {
 
             let params: HttpParams = new HttpParams();
             params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-            if (invalidone) {
-                params = params.append('incInv', invalidone.valueOf().toString());
-            }
 
             return this._http.get(apiurl, {
                 headers: headers,
