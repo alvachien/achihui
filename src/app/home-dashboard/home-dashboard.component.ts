@@ -23,7 +23,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
     selectedFinanceScope: OverviewScopeEnum;
     selectedLearnScope: OverviewScopeEnum;
-    view: number[] = [];
+    view: number[] = [400, 300]; // Default value
     colorScheme: any = {
         domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
     };
@@ -39,6 +39,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     listTranType: TranType[] = [];
     mapFinTTIn: Map<number, UINameValuePair<number>> = undefined;
     mapFinTTOut: Map<number, UINameValuePair<number>> = undefined;
+    baseCurr: string;
 
     constructor(private _authService: AuthService,
         public _homeDefService: HomeDefDetailService,
@@ -55,13 +56,14 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.baseCurr = this._homeDefService.ChosedHome.BaseCurrency;
+        this._getHomeKeyFigure();
         this.onLearnScopeChanged();
 
         this._finstorageService.fetchAllTranTypes().subscribe((x: any) => {
             this.listTranType = x;
             this.onFinanceScopeChanged();
         });
-        this._getHomeKeyFigure();
 
         this.media.asObservable()
             .pipe(takeUntil(this.ngUnsubscribe$))
@@ -106,7 +108,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     public onFinanceScopeChanged(): void {
         let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedFinanceScope);
 
-        this._finstorageService.getReportTranType(bgn, end).subscribe(([val1, val2]) => {
+        this._finstorageService.getReportTranType(bgn, end).subscribe(([val1, val2]: any[]) => {
             this.mapFinTTIn = <Map<number, UINameValuePair<number>>>val1;
             this.mapFinTTOut = <Map<number, UINameValuePair<number>>>val2;
 
@@ -126,249 +128,16 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
             this.dataFinTTOut = [];
 
             switch (this.selectedTranTypeLevel) {
-                case TranTypeLevelEnum.TopLevel: {
-                    this.mapFinTTIn.forEach((value: any, key: any) => {
-                        if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
-                            return;
-                        }
-
-                        let idx: number = this.listTranType.findIndex((value2: any) => {
-                            return value2.Id === key;
-                        });
-
-                        if (idx !== -1) {
-                            if (this.listTranType[idx].HierLevel === 0) {
-                                this.dataFinTTIn.push({
-                                    name: value.name,
-                                    value: +value.value,
-                                    key: key,
-                                });
-                            } else {
-                                let idxroot: number = -1;
-                                let parlevel: any = this.listTranType[idx].HierLevel;
-                                let parid: any = this.listTranType[idx].ParId;
-
-                                while (parlevel > 0) {
-                                    idxroot = this.listTranType.findIndex((value3: any) => {
-                                        return value3.Id === parid;
-                                    });
-
-                                    parlevel = this.listTranType[idxroot].HierLevel;
-                                    if (parlevel > 0) {
-                                        parid = this.listTranType[idxroot].ParId;
-                                    }
-                                }
-
-                                // Now check the root item exist or not
-                                if (idxroot !== -1) {
-                                    let idxrst: number = this.dataFinTTIn.findIndex((valuerst: any) => {
-                                        return valuerst.key === this.listTranType[idxroot].Id;
-                                    });
-                                    if (idxrst === -1) {
-                                        this.dataFinTTIn.push({
-                                            name: value.name,
-                                            value: +value.value,
-                                            key: key,
-                                        });
-                                    } else {
-                                        this.dataFinTTIn[idxrst].value += +value.value;
-                                    }
-                                }
-                            }
-                        } else {
-                            // Shall never happen!
-                        }
-                    });
-
-                    this.mapFinTTOut.forEach((value: any, key: any) => {
-                        if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
-                            return;
-                        }
-
-                        let idx: number = this.listTranType.findIndex((value2: any) => {
-                            return value2.Id === key;
-                        });
-
-                        if (idx !== -1) {
-                            if (this.listTranType[idx].HierLevel === 0) {
-                                this.dataFinTTOut.push({
-                                    name: value.name,
-                                    value: +value.value,
-                                    key: key,
-                                });
-                            } else {
-                                let idxroot: number = -1;
-                                let parlevel: any = this.listTranType[idx].HierLevel;
-                                let parid: any = this.listTranType[idx].ParId;
-
-                                while (parlevel > 0) {
-                                    idxroot = this.listTranType.findIndex((value3: any) => {
-                                        return value3.Id === parid;
-                                    });
-
-                                    parlevel = this.listTranType[idxroot].HierLevel;
-                                    if (parlevel > 0) {
-                                        parid = this.listTranType[idxroot].ParId;
-                                    }
-                                }
-
-                                // Now check the root item exist or not
-                                if (idxroot !== -1) {
-                                    let idxrst: number = this.dataFinTTOut.findIndex((valuerst: any) => {
-                                        return valuerst.key === this.listTranType[idxroot].Id;
-                                    });
-                                    if (idxrst === -1) {
-                                        this.dataFinTTOut.push({
-                                            name: value.name,
-                                            value: +value.value,
-                                            key: key,
-                                        });
-                                    } else {
-                                        this.dataFinTTOut[idxrst].value += +value.value;
-                                    }
-                                }
-                            }
-                        } else {
-                            // Shall never happen!
-                        }
-                    });
-                }
+                case TranTypeLevelEnum.TopLevel:
+                    this._parseFinDataWithTopLevel();
                     break;
 
-                case TranTypeLevelEnum.FirstLevel: {
-                    this.mapFinTTIn.forEach((value: any, key: any) => {
-                        if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
-                            return;
-                        }
-
-                        let idx: number = this.listTranType.findIndex((value2: any) => {
-                            return value2.Id === key;
-                        });
-
-                        if (idx !== -1) {
-                            if (this.listTranType[idx].HierLevel <= 1) {
-                                this.dataFinTTIn.push({
-                                    name: value.name,
-                                    value: +value.value,
-                                    key: key,
-                                });
-                            } else {
-                                let idxroot: number = -1;
-                                let parlevel: any = this.listTranType[idx].HierLevel;
-                                let parid: any = this.listTranType[idx].ParId;
-
-                                while (parlevel > 1) {
-                                    idxroot = this.listTranType.findIndex((value3: any) => {
-                                        return value3.Id === parid;
-                                    });
-
-                                    parlevel = this.listTranType[idxroot].HierLevel;
-                                    if (parlevel > 1) {
-                                        parid = this.listTranType[idxroot].ParId;
-                                    }
-                                }
-
-                                // Now check the root item exist or not
-                                if (idxroot !== -1) {
-                                    let idxrst: number = this.dataFinTTIn.findIndex((valuerst: any) => {
-                                        return valuerst.key === this.listTranType[idxroot].Id;
-                                    });
-                                    if (idxrst === -1) {
-                                        this.dataFinTTIn.push({
-                                            name: value.name,
-                                            value: +value.value,
-                                            key: key,
-                                        });
-                                    } else {
-                                        this.dataFinTTIn[idxrst].value += +value.value;
-                                    }
-                                }
-                            }
-                        } else {
-                            // Shall never happen!
-                        }
-                    });
-
-                    this.mapFinTTOut.forEach((value: any, key: any) => {
-                        if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
-                            return;
-                        }
-
-                        let idx: number = this.listTranType.findIndex((value2: any) => {
-                            return value2.Id === key;
-                        });
-
-                        if (idx !== -1) {
-                            if (this.listTranType[idx].HierLevel <= 1) {
-                                this.dataFinTTOut.push({
-                                    name: value.name,
-                                    value: +value.value,
-                                    key: key,
-                                });
-                            } else {
-                                let idxroot: number = -1;
-                                let parlevel: any = this.listTranType[idx].HierLevel;
-                                let parid: any = this.listTranType[idx].ParId;
-
-                                while (parlevel > 1) {
-                                    idxroot = this.listTranType.findIndex((value3: any) => {
-                                        return value3.Id === parid;
-                                    });
-
-                                    parlevel = this.listTranType[idxroot].HierLevel;
-                                    if (parlevel > 1) {
-                                        parid = this.listTranType[idxroot].ParId;
-                                    }
-                                }
-
-                                // Now check the root item exist or not
-                                if (idxroot !== -1) {
-                                    let idxrst: number = this.dataFinTTOut.findIndex((valuerst: any) => {
-                                        return valuerst.key === this.listTranType[idxroot].Id;
-                                    });
-                                    if (idxrst === -1) {
-                                        this.dataFinTTOut.push({
-                                            name: value.name,
-                                            value: +value.value,
-                                            key: key,
-                                        });
-                                    } else {
-                                        this.dataFinTTOut[idxrst].value += +value.value;
-                                    }
-                                }
-                            }
-                        } else {
-                            // Shall never happen!
-                        }
-                    });
-                }
+                case TranTypeLevelEnum.FirstLevel:
+                    this._parseFinDataWithFirstLevel();
                     break;
 
-                case TranTypeLevelEnum.SecondLevel: {
-                    this.mapFinTTIn.forEach((value: any, key: any) => {
-                        if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
-                            return;
-                        }
-
-                        this.dataFinTTIn.push({
-                            name: value.name,
-                            value: value.value,
-                            key: key,
-                        });
-                    });
-
-                    this.mapFinTTOut.forEach((value: any, key: any) => {
-                        if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
-                            return;
-                        }
-
-                        this.dataFinTTOut.push({
-                            name: value.name,
-                            value: value.value,
-                            key: key,
-                        });
-                    });
-                }
+                case TranTypeLevelEnum.SecondLevel:
+                    this._parseFinDataWithSecondLevel();
                     break;
 
                 default:
@@ -378,6 +147,9 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     }
 
     public onChartIncomeClick($event: any): void {
+        // Do nothing but navigation
+    }
+    public onChartOutgoingClick($event: any): void {
         // Do nothing but navigation
     }
 
@@ -400,5 +172,245 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
         }
 
         this.view = [graphSize, graphSize / 1.33];
+    }
+
+    private _parseFinDataWithTopLevel(): void {
+        this.mapFinTTIn.forEach((value: any, key: any) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
+                return;
+            }
+
+            let idx: number = this.listTranType.findIndex((valtt: any) => {
+                return +valtt.Id === +key;
+            });
+
+            if (idx !== -1) {
+                if (this.listTranType[idx].HierLevel === 0) {
+                    this.dataFinTTIn.push({
+                        name: value.name,
+                        value: +value.value,
+                        key: key,
+                    });
+                } else {
+                    let idxroot: number = -1;
+                    let parlevel: any = this.listTranType[idx].HierLevel;
+                    let parid: any = this.listTranType[idx].ParId;
+
+                    while (parlevel > 0) {
+                        idxroot = this.listTranType.findIndex((value3: any) => {
+                            return value3.Id === parid;
+                        });
+
+                        parlevel = this.listTranType[idxroot].HierLevel;
+                        if (parlevel > 0) {
+                            parid = this.listTranType[idxroot].ParId;
+                        }
+                    }
+
+                    // Now check the root item exist or not
+                    if (idxroot !== -1) {
+                        let idxrst: number = this.dataFinTTIn.findIndex((valuerst: any) => {
+                            return valuerst.key === this.listTranType[idxroot].Id;
+                        });
+                        if (idxrst === -1) {
+                            this.dataFinTTIn.push({
+                                name: value.name,
+                                value: +value.value,
+                                key: key,
+                            });
+                        } else {
+                            this.dataFinTTIn[idxrst].value += +value.value;
+                        }
+                    }
+                }
+            } else {
+                // Shall never happen!
+            }
+        });
+
+        this.mapFinTTOut.forEach((value: any, key: any) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
+                return;
+            }
+
+            let idx: number = this.listTranType.findIndex((value2: any) => {
+                return value2.Id === key;
+            });
+
+            if (idx !== -1) {
+                if (this.listTranType[idx].HierLevel === 0) {
+                    this.dataFinTTOut.push({
+                        name: value.name,
+                        value: +value.value,
+                        key: key,
+                    });
+                } else {
+                    let idxroot: number = -1;
+                    let parlevel: any = this.listTranType[idx].HierLevel;
+                    let parid: any = this.listTranType[idx].ParId;
+
+                    while (parlevel > 0) {
+                        idxroot = this.listTranType.findIndex((value3: any) => {
+                            return value3.Id === parid;
+                        });
+
+                        parlevel = this.listTranType[idxroot].HierLevel;
+                        if (parlevel > 0) {
+                            parid = this.listTranType[idxroot].ParId;
+                        }
+                    }
+
+                    // Now check the root item exist or not
+                    if (idxroot !== -1) {
+                        let idxrst: number = this.dataFinTTOut.findIndex((valuerst: any) => {
+                            return valuerst.key === this.listTranType[idxroot].Id;
+                        });
+                        if (idxrst === -1) {
+                            this.dataFinTTOut.push({
+                                name: value.name,
+                                value: +value.value,
+                                key: key,
+                            });
+                        } else {
+                            this.dataFinTTOut[idxrst].value += +value.value;
+                        }
+                    }
+                }
+            } else {
+                // Shall never happen!
+            }
+        });
+    }
+    private _parseFinDataWithFirstLevel(): void {
+        this.mapFinTTIn.forEach((value: any, key: any) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
+                return;
+            }
+
+            let idx: number = this.listTranType.findIndex((value2: any) => {
+                return value2.Id === key;
+            });
+
+            if (idx !== -1) {
+                if (this.listTranType[idx].HierLevel <= 1) {
+                    this.dataFinTTIn.push({
+                        name: value.name,
+                        value: +value.value,
+                        key: key,
+                    });
+                } else {
+                    let idxroot: number = -1;
+                    let parlevel: any = this.listTranType[idx].HierLevel;
+                    let parid: any = this.listTranType[idx].ParId;
+
+                    while (parlevel > 1) {
+                        idxroot = this.listTranType.findIndex((value3: any) => {
+                            return value3.Id === parid;
+                        });
+
+                        parlevel = this.listTranType[idxroot].HierLevel;
+                        if (parlevel > 1) {
+                            parid = this.listTranType[idxroot].ParId;
+                        }
+                    }
+
+                    // Now check the root item exist or not
+                    if (idxroot !== -1) {
+                        let idxrst: number = this.dataFinTTIn.findIndex((valuerst: any) => {
+                            return valuerst.key === this.listTranType[idxroot].Id;
+                        });
+                        if (idxrst === -1) {
+                            this.dataFinTTIn.push({
+                                name: value.name,
+                                value: +value.value,
+                                key: key,
+                            });
+                        } else {
+                            this.dataFinTTIn[idxrst].value += +value.value;
+                        }
+                    }
+                }
+            } else {
+                // Shall never happen!
+            }
+        });
+
+        this.mapFinTTOut.forEach((value: any, key: any) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
+                return;
+            }
+
+            let idx: number = this.listTranType.findIndex((value2: any) => {
+                return value2.Id === key;
+            });
+
+            if (idx !== -1) {
+                if (this.listTranType[idx].HierLevel <= 1) {
+                    this.dataFinTTOut.push({
+                        name: value.name,
+                        value: +value.value,
+                        key: key,
+                    });
+                } else {
+                    let idxroot: number = -1;
+                    let parlevel: any = this.listTranType[idx].HierLevel;
+                    let parid: any = this.listTranType[idx].ParId;
+
+                    while (parlevel > 1) {
+                        idxroot = this.listTranType.findIndex((value3: any) => {
+                            return value3.Id === parid;
+                        });
+
+                        parlevel = this.listTranType[idxroot].HierLevel;
+                        if (parlevel > 1) {
+                            parid = this.listTranType[idxroot].ParId;
+                        }
+                    }
+
+                    // Now check the root item exist or not
+                    if (idxroot !== -1) {
+                        let idxrst: number = this.dataFinTTOut.findIndex((valuerst: any) => {
+                            return valuerst.key === this.listTranType[idxroot].Id;
+                        });
+                        if (idxrst === -1) {
+                            this.dataFinTTOut.push({
+                                name: value.name,
+                                value: +value.value,
+                                key: key,
+                            });
+                        } else {
+                            this.dataFinTTOut[idxrst].value += +value.value;
+                        }
+                    }
+                }
+            } else {
+                // Shall never happen!
+            }
+        });
+    }
+    private _parseFinDataWithSecondLevel(): void {
+        this.mapFinTTIn.forEach((value: any, key: any) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
+                return;
+            }
+
+            this.dataFinTTIn.push({
+                name: value.name,
+                value: value.value,
+                key: key,
+            });
+        });
+
+        this.mapFinTTOut.forEach((value: any, key: any) => {
+            if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
+                return;
+            }
+
+            this.dataFinTTOut.push({
+                name: value.name,
+                value: value.value,
+                key: key,
+            });
+        });
     }
 }

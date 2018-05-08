@@ -19,9 +19,6 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 })
 export class PageInitialComponent implements OnInit {
 
-  // keyFigure: HomeKeyFigure;
-  baseCurr: string;
-
   get IsUserLoggedIn(): boolean {
     return this._authService.authSubject.value.isAuthorized;
   }
@@ -31,18 +28,12 @@ export class PageInitialComponent implements OnInit {
 
   constructor(private _authService: AuthService,
     public _homeDefService: HomeDefDetailService,
-    private _lrnstorageService: LearnStorageService,
-    private _finstorageService: FinanceStorageService,
-    private _currService: FinCurrencyService,
     public _uistatusService: UIStatusService,
-    private media: ObservableMedia,
     private _router: Router) {
   }
 
   ngOnInit(): void {
-    if (this.IsUserLoggedIn && this.IsHomeChosed) {
-      this.baseCurr = this._homeDefService.ChosedHome.BaseCurrency;
-    }
+    // Do nothing
   }
 
   public onGoHomeList(): void {

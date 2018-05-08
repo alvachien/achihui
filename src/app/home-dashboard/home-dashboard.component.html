@@ -1,6 +1,7 @@
 <div class="grid-container">
     <h1 class="mat-h1">Dashboard</h1>
     <mat-grid-list cols="2" rowHeight="350px">
+
         <!-- Dashboard 1: Key figure -->
         <mat-grid-tile colspan="1" rowspan="1">
             <mat-card class="dashboard-card">
@@ -77,7 +78,7 @@
                         </ngx-charts-advanced-pie-chart>
                     </div>
                     <div style="height: 350px;">
-                        <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTOut" (select)="onChartIncomeClick($event)">
+                        <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTOut" (select)="onChartOutgoingClick($event)">
                         </ngx-charts-advanced-pie-chart>
                     </div>
                 </mat-card-content>
