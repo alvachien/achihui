@@ -16,6 +16,7 @@ import { TinyMceDirective } from './directives/tinymce.directive';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SplitAreaDirective, SplitHandleDirective, SplitDirective } from './directives';
 import { OperatorFilterPipe, } from './pipes';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @NgModule({
   imports: [
@@ -55,6 +56,7 @@ import { OperatorFilterPipe, } from './pipes';
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
+    NgxEchartsModule,
   ],
   declarations: [
     TinyMceDirective,
@@ -101,8 +103,10 @@ import { OperatorFilterPipe, } from './pipes';
     MatTooltipModule,
     MatTreeModule,
     NgxChartsModule,
+    NgxEchartsModule,
     TinyMceDirective,
     FlexLayoutModule,
+
     SplitAreaDirective,
     SplitHandleDirective,
     SplitDirective,

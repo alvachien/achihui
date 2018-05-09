@@ -58,7 +58,8 @@
               "node_modules/tinymce/plugins/lists/plugin.js",
               "node_modules/tinymce/plugins/charmap/plugin.js",
               "node_modules/tinymce/plugins/print/plugin.js",
-              "node_modules/tinymce/plugins/preview/plugin.js"
+              "node_modules/tinymce/plugins/preview/plugin.js",
+              "node_modules/echarts/dist/echarts.min.js"
             ]
           },
           "configurations": {
@@ -153,7 +154,8 @@
               "node_modules/tinymce/plugins/lists/plugin.js",
               "node_modules/tinymce/plugins/charmap/plugin.js",
               "node_modules/tinymce/plugins/print/plugin.js",
-              "node_modules/tinymce/plugins/preview/plugin.js"
+              "node_modules/tinymce/plugins/preview/plugin.js",
+              "node_modules/echarts/dist/echarts.min.js"
             ],
             "styles": [
               "node_modules/fullcalendar/dist/fullcalendar.css",
@@ -225,11 +227,11 @@
   "cli": {},
   "schematics": {
     "@schematics/angular:component": {
-      "prefix": "app",
+      "prefix": "hih",
       "styleext": "scss"
     },
     "@schematics/angular:directive": {
-      "prefix": "app"
+      "prefix": "hih"
     }
   }
 }
