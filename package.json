@@ -26,14 +26,14 @@
   "author": "Alva Chien",
   "dependencies": {
     "@angular/animations": "^6.0.0",
-    "@angular/cdk": "6.0.1",
+    "@angular/cdk": "^6.0.2",
     "@angular/common": "^6.0.0",
     "@angular/compiler": "^6.0.0",
     "@angular/core": "^6.0.0",
     "@angular/flex-layout": "^6.0.0-beta.15",
     "@angular/forms": "^6.0.0",
-    "@angular/material": "6.0.1",
-    "@angular/material-moment-adapter": "6.0.1",
+    "@angular/material": "^6.0.2",
+    "@angular/material-moment-adapter": "^6.0.2",
     "@angular/platform-browser": "^6.0.0",
     "@angular/platform-browser-dynamic": "^6.0.0",
     "@angular/router": "^6.0.0",
@@ -57,6 +57,7 @@
     "popper.js": "^1.11.1",
     "rxjs": "^6.1.0",
     "tinymce": "^4.5.6",
+    "wordcloud": "^1.1.0",
     "zone.js": "^0.8.9"
   },
   "devDependencies": {
@@ -69,6 +70,7 @@
     "@types/node": "^9.6.5",
     "@types/selenium-webdriver": "2.53.40",
     "@types/tinymce": "^4.5.3",
+    "@types/wordcloud": "^1.1.0",
     "codelyzer": "^4.1.0",
     "jasmine-core": "^2.99.1",
     "jasmine-spec-reporter": "^4.2.1",
