@@ -54,6 +54,7 @@ import { DocumentItemByControlCenterComponent } from './document-item-by-control
 import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, } from './pipes';
+import { AccountExtCreditCardComponent } from './account-ext-credit-card';
 
 @NgModule({
   imports: [
@@ -114,6 +115,7 @@ import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPip
     UIAccountStatusFilterPipe,
     UIAccountCtgyFilterPipe,
     UIOrderValidFilterPipe,
+    AccountExtCreditCardComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
