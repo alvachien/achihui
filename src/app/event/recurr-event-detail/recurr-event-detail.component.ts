@@ -10,7 +10,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 @Component({
   selector: 'hih-event-recurrevent-detail',
   templateUrl: './recurr-event-detail.component.html',
-  styleUrls: ['./recurr-event-detail.component.scss']
+  styleUrls: ['./recurr-event-detail.component.scss'],
 })
 export class RecurrEventDetailComponent implements OnInit {
   private uiMode: UIMode;
@@ -19,9 +19,8 @@ export class RecurrEventDetailComponent implements OnInit {
   public detailObject: RecurEvent;
   public isLoadingData: boolean;
   arFrequencies: any = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
-  displayedColumns: string[] = ['name', 'startdate', 'enddate'];
+  displayedColumns: string[] = ['id', 'name', 'startdate', 'enddate'];
   dataSourceSimulateResult: MatTableDataSource<GeneralEvent> = new MatTableDataSource<GeneralEvent>([]);
-  // arSimulateResults: GeneralEvent[] = [];
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -69,8 +68,10 @@ export class RecurrEventDetailComponent implements OnInit {
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this.isLoadingData = true;
 
-            this._storageService.readRecurEvent(this.routerID).subscribe((y) => {
-              this.detailObject = y;
+            this._storageService.readRecurEvent(this.routerID).subscribe((y: any) => {
+              this.detailObject = <RecurEvent>y.Header;
+              this.dataSourceSimulateResult.data = y.Events;
+
               this.isLoadingData = false;
             });
           }
@@ -88,7 +89,7 @@ export class RecurrEventDetailComponent implements OnInit {
     this._router.navigate(['/event/recur']);
   }
 
-  public onGenerateRecurEvents(): void {
+  public onSimulateRecurEvents(): void {
     this._storageService.calcRecurEvents(this.detailObject).subscribe((x: any) => {
       // Show the result.
       this.dataSourceSimulateResult.data = x;
@@ -109,7 +110,7 @@ export class RecurrEventDetailComponent implements OnInit {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
   private createImpl(): void {
-    this._storageService.createRecurEvent(this.detailObject).subscribe((x) => {
+    this._storageService.createRecurEvent(this.detailObject).subscribe((x: any) => {
       // Navigate to display
       let gevnt: RecurEvent = new RecurEvent();
       gevnt.onSetData(x);

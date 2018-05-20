@@ -20,18 +20,33 @@ export class EventStorageService {
    * @param top Amount of records to fetch
    * @param skip Skip the records
    */
-  public fetchAllEvents(top: number, skip: number): Observable<any> {
+  public fetchAllEvents(top: number, skip: number, skipfinished?: boolean,
+    dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
     // Fetch all events
     const apiurl: string = environment.ApiUrl + '/api/event';
     const curhid: number = this._homeService.ChosedHome.ID;
-    const requestUrl: any = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
+    // const requestUrl: any = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
 
     let headers: HttpHeaders = new HttpHeaders();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('top', top.toString());
+    params = params.append('skip', skip.toString());
+    if (skipfinished !== undefined) {
+      params = params.append('skipfinished', skipfinished.toString());
+    }
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(MomentDateFormat));
+    }
+
     headers = headers.append('Content-Type', 'application/json')
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
+    return this._http.get<any>(apiurl, {headers: headers, params: params, withCredentials: true});
   }
 
   /**
@@ -137,7 +152,7 @@ export class EventStorageService {
    * Read recur event
    * @param eid Event ID
    */
-  public readRecurEvent(eid: number): Observable<RecurEvent> {
+  public readRecurEvent(eid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -157,9 +172,23 @@ export class EventStorageService {
           console.log(`AC_HIH_UI [Debug]: Entering readRecurEvent in EventStorageService: ${response}`);
         }
 
+        let repdata: any = <any>response;
         let hd: RecurEvent = new RecurEvent();
-        hd.onSetData(response);
-        return hd;
+        hd.onSetData(repdata);
+
+        let listEvent: GeneralEvent[] = [];
+        if (repdata.eventList instanceof Array && repdata.eventList.length > 0) {
+          for (let evnt of repdata.eventList) {
+            let gevnt: GeneralEvent = new GeneralEvent();
+            gevnt.onSetData(evnt);
+            listEvent.push(gevnt);
+          }
+        }
+
+        return {
+          Header: hd,
+          Events: listEvent,
+        };
       }));
   }
 
@@ -208,7 +237,7 @@ export class EventStorageService {
     let jdata: any = {
       startTimePoint: reobj.StartTimeFormatString,
       endTimePoint: reobj.EndTimeFormatString,
-      rptType: <number>reobj.RepeatType,
+      rptType: <number>reobj.repeatType,
       name: reobj.Name,
     };
 
@@ -226,7 +255,7 @@ export class EventStorageService {
         if (response instanceof Array && response.length > 0) {
           for (let rdata of response) {
             let hd: GeneralEvent = new GeneralEvent();
-            hd.onSetData(response);
+            hd.onSetData(rdata);
 
             arRst.push(hd);
           }
@@ -235,6 +264,34 @@ export class EventStorageService {
         return arRst;
       }));
   }
+
+  /**
+   * Delete an recur event
+   * @param rid ID of recur event
+   */
+  public deleteRecurEvent(rid: number): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/recurevent/' + rid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+
+    return this._http.delete(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering createRecurEvent in EventStorageService: ${response}`);
+        }
+
+        return response.ok;
+      }));
+    }
 
   /**
    * Get All habit events

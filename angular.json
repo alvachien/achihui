@@ -59,7 +59,8 @@
               "node_modules/tinymce/plugins/charmap/plugin.js",
               "node_modules/tinymce/plugins/print/plugin.js",
               "node_modules/tinymce/plugins/preview/plugin.js",
-              "node_modules/echarts/dist/echarts.min.js"
+              "node_modules/echarts/dist/echarts.min.js",
+              "node_modules/fullcalendar/dist/fullcalendar.min.js"
             ]
           },
           "configurations": {
@@ -98,6 +99,15 @@
               ]
             },
             "azure": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -155,7 +165,8 @@
               "node_modules/tinymce/plugins/charmap/plugin.js",
               "node_modules/tinymce/plugins/print/plugin.js",
               "node_modules/tinymce/plugins/preview/plugin.js",
-              "node_modules/echarts/dist/echarts.min.js"
+              "node_modules/echarts/dist/echarts.min.js",
+              "node_modules/fullcalendar/dist/fullcalendar.min.js"
             ],
             "styles": [
               "node_modules/fullcalendar/dist/fullcalendar.css",

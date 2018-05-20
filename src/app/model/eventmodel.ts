@@ -100,7 +100,7 @@ export class GeneralEvent extends hih.BaseModel {
     return '';
   }
   get IsComplete(): boolean {
-    return !this._completeTime;
+    return this._completeTime !== undefined;
   }
   get IsPublic(): boolean {
     return this._ispublic;
@@ -196,7 +196,7 @@ export class RecurEvent extends hih.BaseModel {
   private _endTime: moment.Moment;
   private _ispublic: boolean;
 
-  public RepeatType: hih.RepeatFrequencyEnum;
+  public repeatType: hih.RepeatFrequencyEnum;
   get ID(): number {
     return this._id;
   }
@@ -296,9 +296,9 @@ export class RecurEvent extends hih.BaseModel {
       this._ispublic = data.isPublic;
     }
     if (data && data.rptType) {
-      this.RepeatType = data.rptType;
+      this.repeatType = data.rptType;
     } else {
-      this.RepeatType = hih.RepeatFrequencyEnum.Month;
+      this.repeatType = hih.RepeatFrequencyEnum.Month;
     }
   }
 
@@ -316,7 +316,7 @@ export class RecurEvent extends hih.BaseModel {
       robj.endTimePoint = this.EndTimeFormatString;
     }
     robj.isPublic = this._ispublic;
-    robj.rptType = this.RepeatType;
+    robj.rptType = this.repeatType;
     return robj;
   }
 }

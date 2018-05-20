@@ -1,10 +1,10 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, PageEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, GeneralEvent } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -14,11 +14,10 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 })
 export class EventListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'complete', 'assignee'];
-  dataSource: MatTableDataSource<GeneralEvent>;
-
+  dataSource: any = new MatTableDataSource();
+  totalCountOfEvent: number;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
   isLoadingResults: boolean;
 
   constructor(public _homeDefService: HomeDefDetailService,
@@ -31,7 +30,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
       console.log(`AC_HIH_UI [Debug]: Enter constructor of EventListComponent`);
     }
 
-    this.dataSource = new MatTableDataSource([]);
+    this.totalCountOfEvent = 0;
   }
 
   ngOnInit(): void {
@@ -45,42 +44,32 @@ export class EventListComponent implements OnInit, AfterViewInit {
       console.log(`AC_HIH_UI [Debug]: Enter ngAfterViewInit of EventListComponent`);
     }
 
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    // If the user changes the sort order, reset back to the first page.
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
-    this._homeDefService.curHomeMembers.subscribe((x: any) => {
-      this.fetchEvents();
-    });
-  }
-
-  public onCreateEvent(): void {
-    this._router.navigate(['/event/general/create']);
-  }
-
-  public onRefresh(): void {
-    // Refresh the whole list
-    this.fetchEvents();
-  }
-
-  public onEventRowSelect(row: GeneralEvent): void {
-    this._router.navigate(['/event/general/display/' + row.ID.toString()]);
-  }
-
-  public fetchEvents(): void {
-    this.paginator.page
+    merge(this.sort.sortChange, this.paginator.page)
       .pipe(
-      startWith({}),
-      switchMap(() => {
-        this.isLoadingResults = true;
-        return this._storageService!.fetchAllEvents(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize );
-      }),
-      map((data: any) => {
-        // Flip flag to show that loading has finished.
-        this.isLoadingResults = false;
+        startWith({}),
+        switchMap(() => {
+          this.isLoadingResults = true;
+          return this._storageService!.fetchAllEvents(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize);
+        }),
+        map((revdata: any) => {
+          // Flip flag to show that loading has finished.
+          this.isLoadingResults = false;
+          this.totalCountOfEvent = +revdata.totalCount;
 
+          return revdata.contentList;
+        }),
+        catchError(() => {
+          this.isLoadingResults = false;
+
+          return of([]);
+        }),
+      ).subscribe((data: any) => {
         let rslts: GeneralEvent[] = [];
-        if (data && data.contentList && data.contentList instanceof Array) {
-          for (let ci of data.contentList) {
+        if (data && data instanceof Array) {
+          for (let ci of data) {
             let rst: GeneralEvent = new GeneralEvent();
             rst.onSetData(ci);
 
@@ -88,14 +77,16 @@ export class EventListComponent implements OnInit, AfterViewInit {
           }
         }
 
-        return rslts;
-      }),
-      catchError(() => {
-        this.isLoadingResults = false;
+        this.dataSource.data = rslts;
+      });
+  }
 
-        return of([]);
-      }),
-      ).subscribe((data: any) => this.dataSource.data = data);
+  public onCreateEvent(): void {
+    this._router.navigate(['/event/general/create']);
+  }
+
+  public onEventRowSelect(row: GeneralEvent): void {
+    this._router.navigate(['/event/general/display/' + row.ID.toString()]);
   }
 
   public onMarkAsDone(row: GeneralEvent): void {

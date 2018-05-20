@@ -1,18 +1,21 @@
-<div class="card">
-  <div class="card-header">
-    {{'Nav.Credits' | translate}}
-  </div>
-  <div class="card-body">
-    <div class="list-group">
-      <a href="https://angular.io" target="_blank" class="list-group-item list-group-item-action active">Angular 6</a>
-      <a href="http://www.typescriptlang.org/" target="_blank" class="list-group-item list-group-item-action">TypeScript</a>
-      <a href="https://material.angular.io" target="_blank" class="list-group-item list-group-item-action">Angular Material 6</a>
-      <a href="https://getbootstrap.com/" target="_blank" class="list-group-item list-group-item-action">Bootstrap 4</a>
-      <a href="https://github.com/ngx-translate/core" target="_blank" class="list-group-item list-group-item-action">Ngx-translate</a>
-      <a href="https://github.com/swimlane/ngx-charts" target="_blank" class="list-group-item list-group-item-action">Ngx-Chart</a>
-      <a href="https://www.tinymce.com/" target="_blank" class="list-group-item list-group-item-action">TinyMCE</a>
-      <a href="https://momentjs.com/" target="_blank" class="list-group-item list-group-item-action">Moment.js</a>
-      <a href="https://dot.net/" target="_blank" class="list-group-item list-group-item-action">.NET Core 2+</a>
-    </div>
-  </div>
-</div>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Nav.Credits' | translate}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <table class="mat-table">
+      <thead>
+        <tr class="mat-header-row">
+          <th class="mat-header-cell"> Name </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="mat-row" *ngFor="let element of creditApp">
+          <td class="mat-cell">
+            <a href="{{element.url}}" target="_blank">{{element.name}}</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </mat-card-content>
+</mat-card>

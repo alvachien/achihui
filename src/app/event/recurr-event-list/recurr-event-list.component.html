@@ -26,6 +26,9 @@
               <button *ngIf="!row.CompleteTimeFormatString" mat-icon-button (click)="onMarkAsDone(row)" matTooltip="{{'Common.MarkasDone' | translate}}">
                 <mat-icon color="accent">done</mat-icon>
               </button>
+              <button mat-icon-button (click)="onDeleteRecurEvent(row.ID)" matTooltip="{{'Common.Delete' | translate}}">
+                <mat-icon color="accent">clear</mat-icon>
+              </button>
               {{row.ID}}
             </mat-cell>
           </ng-container>
@@ -63,7 +66,7 @@
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRecurEventRowSelect(row)">
+          <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRecurEventRowSelect(row)" [style.text-decoration]="row.CompleteTimeFormatString ? 'line-through' : 'none'">
           </mat-row>
         </mat-table>
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, GeneralEvent, RecurEvent } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
@@ -24,6 +24,7 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit {
   constructor(public _homeDefService: HomeDefDetailService,
     private _authService: AuthService,
     private _storageService: EventStorageService,
+    private _snackbar: MatSnackBar,
     private _router: Router) {
     this.isLoadingResults = true;
 
@@ -48,13 +49,25 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this._homeDefService.curHomeMembers.subscribe((x) => {
+    this._homeDefService.curHomeMembers.subscribe((x: any) => {
       this.fetchRecurEvents();
     });
   }
 
   public onCreateRecurEvent(): void {
     this._router.navigate(['/event/recur/create']);
+  }
+  public onDeleteRecurEvent(rid: number): void {
+    this._storageService.deleteRecurEvent(rid).subscribe((rst: boolean) => {
+      if (rst) {
+        // Show snackbar
+        this._snackbar.open('Event Deleted', undefined, {
+          duration: 2000,
+        });
+      } else {
+        // Do nothing
+      }
+    });
   }
 
   public onRefresh(): void {
@@ -99,7 +112,7 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit {
   }
 
   public onMarkAsDone(row: GeneralEvent): void {
-    this._storageService.completeGeneralEvent(row).subscribe((x) => {
+    this._storageService.completeGeneralEvent(row).subscribe((x: any) => {
       // Jump to display mode
       this._router.navigate(['/event/recur/display/' + row.ID.toString()]);
     }, (error: any) => {
