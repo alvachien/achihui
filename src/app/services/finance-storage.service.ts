@@ -1641,7 +1641,7 @@ export class FinanceStorageService {
      * Get document items by account
      * @param acntid Account ID
      */
-    public getDocumentItemByAccount(acntid: number): Observable<any> {
+    public getDocumentItemByAccount(acntid: number, top?: number, skip?: number): Observable<any> {
         let headers: HttpHeaders = new HttpHeaders();
         headers = headers.append('Content-Type', 'application/json')
             .append('Accept', 'application/json')
@@ -1651,6 +1651,12 @@ export class FinanceStorageService {
         let params: HttpParams = new HttpParams();
         params = params.append('hid', this._homeService.ChosedHome.ID.toString());
         params = params.append('acntid', acntid.toString());
+        if (top) {
+            params = params.append('top', top.toString());
+        }
+        if (skip) {
+            params = params.append('skip', skip.toString());
+        }
 
         return this._http.get(apiurl, {
             headers: headers,
@@ -1670,7 +1676,7 @@ export class FinanceStorageService {
      * Get document items by control center
      * @param ccid Control center ID
      */
-    public getDocumentItemByControlCenter(ccid: number): Observable<any> {
+    public getDocumentItemByControlCenter(ccid: number, top?: number, skip?: number): Observable<any> {
         let headers: HttpHeaders = new HttpHeaders();
         headers = headers.append('Content-Type', 'application/json')
             .append('Accept', 'application/json')
@@ -1680,6 +1686,12 @@ export class FinanceStorageService {
         let params: HttpParams = new HttpParams();
         params = params.append('hid', this._homeService.ChosedHome.ID.toString());
         params = params.append('ccid', ccid.toString());
+        if (top) {
+            params = params.append('top', top.toString());
+        }
+        if (skip) {
+            params = params.append('skip', skip.toString());
+        }
 
         return this._http.get(apiurl, {
             headers: headers,
@@ -1924,7 +1936,7 @@ export class FinanceStorageService {
     /**
      * search document item
      */
-    public searchDocItem(filters: any[]): Observable<any> {
+    public searchDocItem(filters: any[], top?: number, skip?: number): Observable<any> {
         let headers: HttpHeaders = new HttpHeaders();
         headers = headers.append('Content-Type', 'application/json')
             .append('Accept', 'application/json')
@@ -1933,6 +1945,12 @@ export class FinanceStorageService {
         let apiurl: string = environment.ApiUrl + '/api/FinanceDocItemSearch';
         let params: HttpParams = new HttpParams();
         params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+        if (top) {
+            params = params.append('top', top.toString());
+        }
+        if (skip) {
+            params = params.append('skip', skip.toString());
+        }
         const apidata: any = { fieldList: filters };
         const jdata: string = JSON && JSON.stringify(apidata);
 
@@ -1942,15 +1960,18 @@ export class FinanceStorageService {
             withCredentials: true,
         }).pipe(map((x: any) => {
             let arrst: DocumentItemWithBalance[] = [];
-            if (x instanceof Array && x.length > 0) {
-                x.forEach((value: any) => {
+            if (x && x.contentList instanceof Array && x.contentList.length > 0) {
+                x.contentList.forEach((value: any) => {
                     const rst: DocumentItemWithBalance = new DocumentItemWithBalance();
                     rst.onSetData(value);
                     arrst.push(rst);
                 });
             }
 
-            return arrst;
+            return {
+                totalCount: x.totalCount,
+                items: arrst,
+            };
         }));
     }
 

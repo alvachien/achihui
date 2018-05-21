@@ -4,7 +4,8 @@ import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angul
 import { LogLevel, Account, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { forkJoin } from 'rxjs';
+import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-fin-docitem-by-acntctgy',
@@ -15,6 +16,9 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
   displayedColumns: string[] = ['AccountId', 'DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
   arUIAccount: UIAccountForSelection[] = [];
+  isLoadingResults: boolean;
+  resultsLength: number;
+  public subjAccountIDS: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
 
   @Input() selectedCategory: number;
 
@@ -24,29 +28,7 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
       return; // Just return
     }
 
-    let arobs: any[] = [];
-    ids.forEach((id: number) => {
-      arobs.push(this._storageService.getDocumentItemByAccount(id));
-    });
-
-    forkJoin(...arobs).subscribe((x: any) => {
-      this.dataSource.data = [];
-
-      if (x && x instanceof Array && x.length > 0) {
-        let ardi: any[] = [];
-        for (let val of x) {
-          if (val && val instanceof Array && val.length > 0) {
-            for (let val2 of val) {
-              let di: DocumentItemWithBalance = new DocumentItemWithBalance();
-              di.onSetData(val2);
-              ardi.push(di);
-            }
-          }
-        }
-
-        this.dataSource.data = ardi;
-      }
-    });
+    this.subjAccountIDS.next(ids);
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -77,6 +59,51 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
    * be able to query its view for the initialized paginator.
    */
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    this.subjAccountIDS.subscribe(() => this.paginator.pageIndex = 0);
+
+    merge(this.subjAccountIDS, this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          if (this.subjAccountIDS.value === undefined || this.subjAccountIDS.value.length) {
+            return observableOf([]);
+          }
+
+          this.isLoadingResults = true;
+          let arobs: any[] = [];
+          this.subjAccountIDS.value.forEach((id: number) => {
+            arobs.push(this._storageService.getDocumentItemByAccount(id, this.paginator.pageSize,
+              this.paginator.pageIndex * this.paginator.pageSize));
+          });
+
+          return forkJoin(arobs);
+        }),
+        map((data: any) => {
+          // Flip flag to show that loading has finished.
+          this.isLoadingResults = false;
+          this.resultsLength = 0;
+
+          let ardi: any[] = [];
+          if (data && data instanceof Array && data.length > 0) {
+            for (let val of data) {
+              this.resultsLength += val.totalCount;
+              if (val && val.contentList instanceof Array && val.contentList.length > 0) {
+                for (let val2 of val.contentList) {
+                  let di: DocumentItemWithBalance = new DocumentItemWithBalance();
+                  di.onSetData(val2);
+                  ardi.push(di);
+                }
+              }
+            }
+          }
+
+          // return ardi.splice(0, this.paginator.pageSize);
+          return ardi;
+        }),
+        catchError(() => {
+          this.isLoadingResults = false;
+          return observableOf([]);
+        }),
+    ).subscribe((data: any) => this.dataSource.data = data);
   }
 }

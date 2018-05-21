@@ -27,10 +27,10 @@
           <input matInput type="number" placeholder="{{'Common.Value' | translate}}" name="hvalue_1" [(ngModel)]="filter.highValue">
         </mat-form-field>
         <mat-form-field *ngIf="filter.valueType === 2">
-          <input matInput type="number" placeholder="{{'Common.Value' | translate}}" name="lvalue_2" [(ngModel)]="filter.lowValue">
+          <input matInput type="text" placeholder="{{'Common.Value' | translate}}" name="lvalue_2" [(ngModel)]="filter.lowValue">
         </mat-form-field>
         <mat-form-field *ngIf="filter.valueType === 2">
-          <input matInput type="number" placeholder="{{'Common.Value' | translate}}" name="hvalue_2" [(ngModel)]="filter.highValue">
+          <input matInput type="text" placeholder="{{'Common.Value' | translate}}" name="hvalue_2" [(ngModel)]="filter.highValue">
         </mat-form-field>
         <mat-form-field *ngIf="filter.valueType === 3">
           <input matInput [(ngModel)]="filter.lowValue" [matDatepicker]="lvpicker" placeholder="{{'Common.Value' | translate}}">
@@ -59,7 +59,9 @@
         </button>
       </div>
     </div>
+
     <mat-divider></mat-divider>
+
     <div class="example-container mat-elevation-z8">
       <mat-table #tableByAccount [dataSource]="dataSource">
         <!-- DocID column -->
@@ -126,10 +128,10 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
         
-      <mat-paginator #paginator
-                     [pageSize]="10"
-                     [pageSizeOptions]="[5, 10, 20]"
-                     [showFirstLastButtons]="true">
+      <mat-paginator #paginator [length]="resultsLength"
+        [pageSize]="10"
+        [pageSizeOptions]="[10, 25, 50, 100]"
+        [showFirstLastButtons]="true">
       </mat-paginator>
     </div>
   </mat-card-content>

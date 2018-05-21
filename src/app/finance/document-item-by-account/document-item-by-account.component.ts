@@ -1,6 +1,8 @@
 import { Component, ViewChild, OnInit, AfterViewInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
+import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { LogLevel, Account, DocumentItemWithBalance, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -15,26 +17,16 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
+  isLoadingResults: boolean;
+  resultsLength: number;
+  public subjAccountID: BehaviorSubject<number> = new BehaviorSubject<number>(undefined);
 
   @Input()
   set selectedAccount(selacnt: number) {
     if (selacnt !== this._seledAccount && selacnt) {
       this._seledAccount = selacnt;
 
-      this.dataSource.data = [];
-
-      this._storageService.getDocumentItemByAccount(this.selectedAccount).subscribe((x: any) => {
-        if (x instanceof Array && x.length > 0) {
-          let ardocitems: any[] = [];
-          for (let di of x) {
-            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-            docitem.onSetData(di);
-            ardocitems.push(docitem);
-          }
-
-          this.dataSource.data = ardocitems;
-        }
-      });
+      this.subjAccountID.next(this._seledAccount);
     }
   }
 
@@ -50,19 +42,54 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit {
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
-   }
+  }
 
-   ngOnInit(): void {
-     this._storageService.fetchAllTranTypes().subscribe((x: any) => {
+  ngOnInit(): void {
+    this._storageService.fetchAllTranTypes().subscribe((x: any) => {
       // Just ensure the HTTP GET fired.
-     });
-   }
+    });
+  }
 
   /**
    * Set the paginator after the view init since this component will
    * be able to query its view for the initialized paginator.
    */
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    // this.dataSource.paginator = this.paginator;
+    this.subjAccountID.subscribe(() => this.paginator.pageIndex = 0);
+
+    merge(this.subjAccountID, this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          if (this.subjAccountID.value === undefined) {
+            return observableOf([]);
+          }
+
+          this.isLoadingResults = true;
+
+          return this._storageService.getDocumentItemByAccount(this.subjAccountID.value, this.paginator.pageSize,
+            this.paginator.pageIndex * this.paginator.pageSize);
+        }),
+        map((data: any) => {
+          // Flip flag to show that loading has finished.
+          this.isLoadingResults = false;
+          this.resultsLength = data.totalCount;
+
+          let ardi: any[] = [];
+          if (data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
+            for (let di of data.contentList) {
+              let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
+              docitem.onSetData(di);
+              ardi.push(docitem);
+            }
+          }
+          return ardi;
+        }),
+        catchError(() => {
+          this.isLoadingResults = false;
+          return observableOf([]);
+        }),
+    ).subscribe((data: any) => this.dataSource.data = data);
   }
 }

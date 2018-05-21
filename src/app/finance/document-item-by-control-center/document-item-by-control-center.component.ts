@@ -4,6 +4,8 @@ import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angul
 import { LogLevel, ControlCenter, DocumentItemWithBalance, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-fin-docitem-by-cc',
@@ -16,6 +18,9 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
 
   displayedColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
   dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
+  isLoadingResults: boolean;
+  resultsLength: number;
+  public subjCCID: BehaviorSubject<number> = new BehaviorSubject<number>(undefined);
 
   @Input()
   set selectedControlCenter(selcc: number) {
@@ -64,6 +69,41 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
    * be able to query its view for the initialized paginator.
    */
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    // this.dataSource.paginator = this.paginator;
+    this.subjCCID.subscribe(() => this.paginator.pageIndex = 0);
+
+    merge(this.subjCCID, this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          if (this.subjCCID.value === undefined) {
+            return observableOf([]);
+          }
+
+          this.isLoadingResults = true;
+
+          return this._storageService.getDocumentItemByControlCenter(this.subjCCID.value, this.paginator.pageSize,
+            this.paginator.pageIndex * this.paginator.pageSize);
+        }),
+        map((data: any) => {
+          // Flip flag to show that loading has finished.
+          this.isLoadingResults = false;
+          this.resultsLength = data.totalCount;
+
+          let ardi: any[] = [];
+          if (data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
+            for (let di of data.contentList) {
+              let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
+              docitem.onSetData(di);
+              ardi.push(docitem);
+            }
+          }
+          return ardi;
+        }),
+        catchError(() => {
+          this.isLoadingResults = false;
+          return observableOf([]);
+        }),
+    ).subscribe((data: any) => this.dataSource.data = data);
   }
 }

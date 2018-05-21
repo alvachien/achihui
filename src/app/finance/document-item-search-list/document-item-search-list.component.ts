@@ -1,9 +1,10 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter } from '@angular/core';
 import {
     GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil,
-    DocumentItem, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection, GeneralFilterValueType,
+    DocumentItem, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection,
+    GeneralFilterValueType,
 } from '../../model';
-import { Observable, forkJoin, merge, of } from 'rxjs';
+import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
@@ -26,10 +27,14 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
     arUIAccount: UIAccountForSelection[] = [];
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
+    isLoadingResults: boolean = false;
+    resultsLength: number;
+    public subjFilters: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
     constructor(private _http: HttpClient,
         private _authService: AuthService,
         private _storageService: FinanceStorageService) {
+        this.resultsLength = 0;
         this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
         this.allFields = [{
             displayas: 'Finance.TransactionType',
@@ -81,7 +86,35 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
      * be able to query its view for the initialized paginator.
      */
     ngAfterViewInit(): void {
-        this.dataSource.paginator = this.paginator;
+        // this.dataSource.paginator = this.paginator;
+        this.subjFilters.subscribe(() => this.paginator.pageIndex = 0);
+
+        merge(this.subjFilters, this.paginator.page)
+            .pipe(
+                startWith({}),
+                switchMap(() => {
+                    if (this.subjFilters.value.length <= 0) {
+                        return observableOf([]);
+                    }
+
+                    this.isLoadingResults = true;
+
+                    return this._storageService.searchDocItem(this.subjFilters.value,
+                        this.paginator.pageSize,
+                        this.paginator.pageIndex * this.paginator.pageSize);
+                }),
+                map((data: any) => {
+                    // Flip flag to show that loading has finished.
+                    this.isLoadingResults = false;
+                    this.resultsLength = data.totalCount;
+
+                    return data.items;
+                }),
+                catchError(() => {
+                    this.isLoadingResults = false;
+                    return observableOf([]);
+                }),
+        ).subscribe((data: any) => this.dataSource.data = data);
     }
 
     public onAddFilter(): void {
@@ -89,6 +122,9 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
     }
     public onRemoveFilter(idx: number): void {
         this.filters.splice(idx, 1);
+        if (this.filters.length === 0) {
+            this.onAddFilter();
+        }
     }
     public onFieldSelectionChanged(filter: GeneralFilterItem): void {
         this.allFields.forEach((value: any) => {
@@ -99,7 +135,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
     }
     public onSearch(): void {
         // Do the translate first
-        let arfilters: any[] = [];
+        let arRealFilter: any[] = [];
         this.filters.forEach((value: GeneralFilterItem) => {
             let val: any = {};
             val.valueType = +value.valueType;
@@ -113,8 +149,8 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
                         val.lowValue = 'false';
                     }
                     val.highValue = '';
-                }
                     break;
+                }
 
                 case GeneralFilterValueType.date: {
                     val.fieldName = value.fieldName;
@@ -125,8 +161,8 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
                     } else {
                         val.highValue = '';
                     }
-                }
                     break;
+                }
 
                 case GeneralFilterValueType.number: {
                     val.fieldName = value.fieldName;
@@ -137,8 +173,8 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
                     } else {
                         val.highValue = '';
                     }
-                }
                     break;
+                }
 
                 case GeneralFilterValueType.string: {
                     val.fieldName = value.fieldName;
@@ -149,23 +185,16 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
                     } else {
                         val.highValue = '';
                     }
-                }
                     break;
+                }
 
                 default:
                     break;
             }
-            arfilters.push(val);
+            arRealFilter.push(val);
         });
 
         // Do the real search
-        this._storageService.searchDocItem(arfilters).subscribe((x: any) => {
-            // Do nothing
-            this.dataSource.data = x;
-        }, (error: any) => {
-            // Do nothing
-        }, () => {
-            // Do nothing
-        });
+        this.subjFilters.next(arRealFilter);
     }
 }
