@@ -37,7 +37,7 @@
               </mat-icon>
             </button>
             <a mat-button (click)="onTreeNodeClicked(node)">[{{node.id}}]{{node.displayname | translate}}
-              <span [matBadge]="node.childamount" matBadgeOverlap="false" matBadgeColor="accent" [matBadgeHidden]="node.childamount <= 0">
+              <span [matBadge]="node.childamount" matBadgeOverlap="false" matBadgePosition="after" matBadgeColor="accent" [matBadgeHidden]="node.childamount <= 0">
               </span>
             </a>
           </mat-tree-node>

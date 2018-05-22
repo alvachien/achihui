@@ -110,11 +110,9 @@ export class RecurrEventDetailComponent implements OnInit {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
   private createImpl(): void {
-    this._storageService.createRecurEvent(this.detailObject).subscribe((x: any) => {
+    this._storageService.createRecurEvent(this.detailObject).subscribe((x: RecurEvent) => {
       // Navigate to display
-      let gevnt: RecurEvent = new RecurEvent();
-      gevnt.onSetData(x);
-      this._router.navigate(['/event/recur/display/' + gevnt.ID.toString()]);
+      this._router.navigate(['/event/recur/display/' + x.ID.toString()]);
     });
   }
   private updateImpl(): void {

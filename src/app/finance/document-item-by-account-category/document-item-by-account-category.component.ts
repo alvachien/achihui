@@ -65,7 +65,7 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
       .pipe(
         startWith({}),
         switchMap(() => {
-          if (this.subjAccountIDS.value === undefined || this.subjAccountIDS.value.length) {
+          if (this.subjAccountIDS.value === undefined || this.subjAccountIDS.value.length <= 0) {
             return observableOf([]);
           }
 

@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { UIStatusService, EventStorageService } from '../../services';
 import { LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN,
   GeneralEvent } from '../../model';
-import * as FullCalendar from 'fullcalendar';
+import * as $ from 'jquery';
+import 'fullcalendar';
 import * as moment from 'moment';
 
 @Component({
@@ -12,7 +13,7 @@ import * as moment from 'moment';
 })
 export class OverviewComponent implements OnInit, AfterViewInit {
   @ViewChild('fcal') elemcalendar: ElementRef;
-  ctrlCalendar: FullCalendar.Calendar;
+  // ctrlCalendar: FullCalendar.Calendar;
   initialLocaleCode: string = 'en';
   listEvent: GeneralEvent[];
 
@@ -56,21 +57,21 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       }
 
       // Do nothing
-      this.ctrlCalendar = new FullCalendar.Calendar(this.elemcalendar.nativeElement, {
+      let containerEl: any = $(this.elemcalendar.nativeElement);
+      // this.elemcalendar.nativeElement.
+      containerEl.fullCalendar({
+        // options here
         header: {
           left: 'prev,next today',
           center: 'title',
-          right: 'month,basicWeek,basicDay',
+          right: 'month,agendaWeek,agendaDay,listWeek',
         },
-        defaultView: 'month',
-        editable: true,
-        weekNumbers: true,
+        defaultDate: '2018-05-22',
         navLinks: true, // can click day/week names to navigate views
-        eventLimit: true,
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
         events: events,
       });
-
-      this.ctrlCalendar.render();
-      });
+    });
   }
 }
