@@ -22,6 +22,9 @@ export class EventDetailComponent implements OnInit {
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
+  get isCreateMode(): boolean {
+    return this.uiMode === UIMode.Create;
+  }
 
   constructor(private _storageService: EventStorageService,
     private _router: Router,

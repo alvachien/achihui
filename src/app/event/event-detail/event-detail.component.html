@@ -27,12 +27,16 @@
         <mat-datepicker #enddpicker></mat-datepicker>
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field *ngIf="isCreateMode">
         <input matInput [(ngModel)]="detailObject!.CompleteTime" [matDatepicker]="cmpdpicker" placeholder="{{'Common.CompleteDate' | translate}}">
         <mat-datepicker-toggle matSuffix [for]="cmpdpicker"></mat-datepicker-toggle>
         <mat-datepicker #cmpdpicker></mat-datepicker>
       </mat-form-field>
-      
+
+      <mat-form-field *ngIf="!isCreateMode && detailObject.RefRecurID">
+        <input matInput [(ngModel)]="detailObject!.RefRecurID" placeholder="Ref. ID">
+      </mat-form-field>
+
       <mat-form-field>
         <textarea matInput type="text" placeholder="{{'Common.Content' | translate}}" [readonly]="!isFieldChangable" 
           [(ngModel)]="detailObject.Content" name="content" #eventcontent></textarea>
