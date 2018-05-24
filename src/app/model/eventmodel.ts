@@ -565,3 +565,64 @@ export class EventHabitCheckin {
     return robj;
   }
 }
+
+export class HabitEventDetailWithCheckInStatistics {
+  public HID: number;
+  public habitID: number;
+  public expectAmount: number;
+  public checkInAmount: number;
+  public averageScore: number;
+  public startDate: moment.Moment;
+  public endDate: moment.Moment;
+  public name: string;
+  public assignee: string;
+  public isPublic: boolean;
+
+  get StartDateFormatString(): string {
+    if (this.startDate) {
+      return this.startDate.format(hih.MomentDateFormat);
+    }
+
+    return '';
+  }
+  get EndDateFormatString(): string {
+    if (this.endDate) {
+      return this.endDate.format(hih.MomentDateFormat);
+    }
+
+    return '';
+  }
+
+  public onSetData(data: any): void {
+    if (data && data.HID) {
+      this.HID = +data.HID;
+    }
+    if (data && data.habitID) {
+      this.habitID = +data.habitID;
+    }
+    if (data && data.expectAmount) {
+      this.expectAmount = data.expectAmount;
+    }
+    if (data && data.checkInAmount) {
+      this.checkInAmount = data.checkInAmount;
+    }
+    if (data && data.averageScore) {
+      this.averageScore = data.averageScore;
+    }
+    if (data && data.startDate) {
+      this.startDate = moment(data.startDate, hih.MomentDateFormat);
+    }
+    if (data && data.endDate) {
+      this.endDate = moment(data.endDate, hih.MomentDateFormat);
+    }
+    if (data && data.name) {
+      this.name = data.name;
+    }
+    if (data && data.assignee) {
+      this.assignee = data.assignee;
+    }
+    if (data && data.isPublic) {
+      this.isPublic = data.isPublic;
+    }
+  }
+}

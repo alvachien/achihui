@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { UIStatusService, EventStorageService } from '../../services';
 import { LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN,
-  GeneralEvent } from '../../model';
+  GeneralEvent, MomentDateFormat, HabitEventDetailWithCheckInStatistics } from '../../model';
 import * as $ from 'jquery';
 import 'fullcalendar';
 import * as moment from 'moment';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'hih-event-overview',
@@ -15,7 +16,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   @ViewChild('fcal') elemcalendar: ElementRef;
   // ctrlCalendar: FullCalendar.Calendar;
   initialLocaleCode: string = 'en';
-  listEvent: GeneralEvent[];
+  listEvent: any[];
 
   constructor(private _uistatus: UIStatusService,
     private _storageService: EventStorageService) {
@@ -36,24 +37,46 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     let dtbgn: moment.Moment = moment();
     let dtend: moment.Moment = moment().add(1, 'months');
+
     // title: 'Long Event',
     // start: '2018-03-07',
     // end: '2018-03-10'
-    this._storageService.fetchAllEvents(100, 0, true, dtbgn, dtend).subscribe((x: any) => {
+    forkJoin(
+      this._storageService.fetchAllEvents(100, 0, true, dtbgn, dtend),
+      this._storageService.fetchHabitDetailWithCheckIn(dtbgn, dtend),
+    ).subscribe((x: any) => {
       let events: any[] = [];
       this.listEvent = [];
-      for (let ci of x.contentList) {
-        let gevnt: GeneralEvent = new GeneralEvent();
-        gevnt.onSetData(ci);
-        this.listEvent.push(gevnt);
 
-        let evnt: any = {
-          title: gevnt.Name,
-          start: gevnt.StartTimeFormatString,
-          end: gevnt.EndTimeFormatString,
-        };
+      if (x[0]) {
+        for (let ci of x[0].contentList) {
+          let gevnt: GeneralEvent = new GeneralEvent();
+          gevnt.onSetData(ci);
+          this.listEvent.push(gevnt);
 
-        events.push(evnt);
+          let evnt: any = {
+            title: gevnt.Name,
+            start: gevnt.StartTimeFormatString,
+            end: gevnt.EndTimeFormatString,
+          };
+
+          events.push(evnt);
+        }
+      }
+      if (x[1]) {
+        for (let ci2 of x[1]) {
+          let hevnt: HabitEventDetailWithCheckInStatistics = new HabitEventDetailWithCheckInStatistics();
+          hevnt.onSetData(ci2);
+          this.listEvent.push(hevnt);
+
+          let evnt: any = {
+            title: hevnt.name,
+            start: hevnt.StartDateFormatString,
+            end: hevnt.EndDateFormatString,
+          };
+
+          events.push(evnt);
+        }
       }
 
       // Do nothing
@@ -66,7 +89,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
           center: 'title',
           right: 'month,agendaWeek,agendaDay,listWeek',
         },
-        defaultDate: '2018-05-22',
+        defaultDate: moment().format(MomentDateFormat),
         navLinks: true, // can click day/week names to navigate views
         editable: true,
         eventLimit: true, // allow "more" link when too many events

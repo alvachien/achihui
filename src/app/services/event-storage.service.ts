@@ -312,6 +312,21 @@ export class EventStorageService {
     return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
   }
 
+  public fetchHabitDetailWithCheckIn(bgn: moment.Moment, end: moment.Moment): Observable<any> {
+    const apiurl: string = environment.ApiUrl + '/api/HabitEventDetailWithCheckIn';
+    const curhid: number = this._homeService.ChosedHome.ID;
+    let bgnstr: string = bgn.format(MomentDateFormat);
+    let endstr: string = end.format(MomentDateFormat);
+    const requestUrl: any = `${apiurl}?hid=${curhid}&dtbgn=${bgnstr}&dtend=${endstr}`;
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+                      .append('Accept', 'application/json')
+                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
+  }
+
   /**
    * Read habit event
    * @param eid Event ID
