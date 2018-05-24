@@ -6,13 +6,13 @@ export const environment: any = {
 
   DebugLogging: false,
   LoggingLevel: 2,
-  IDServerUrl: 'http://acidserver.azurewebsites.net',
-  AppLoginCallbackUrl: 'http://achihui.azurewebsites.net/logincallback.html',
-  AppLogoutCallbackUrl: 'http://achihui.azurewebsites.net',
-  AppLoginSlientRevewCallbackUrl: 'http://achihui.azurewebsites.net/silentrenewcallback.html',
-  AppHost: 'http://achihui.azurewebsites.net',
-  ApiUrl: 'http://achihapi.azurewebsites.net',
+  IDServerUrl: 'https://acidserver.azurewebsites.net',
+  AppLoginCallbackUrl: 'https://achihui.azurewebsites.net/logincallback.html',
+  AppLogoutCallbackUrl: 'https://achihui.azurewebsites.net',
+  AppLoginSlientRevewCallbackUrl: 'https://achihui.azurewebsites.net/silentrenewcallback.html',
+  AppHost: 'https://achihui.azurewebsites.net',
+  ApiUrl: 'https://achihapi.azurewebsites.net',
 
-  AppMathExercise: 'http://acmath.azurewebsites.net',
-  AppGallery: 'http://acgallery.azurewebsites.net',
+  AppMathExercise: 'https://acmath.azurewebsites.net',
+  AppGallery: 'https://acgallery.azurewebsites.net',
 };

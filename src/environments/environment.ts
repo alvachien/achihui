@@ -6,13 +6,14 @@ export const environment: any = {
 
   DebugLogging: true,
   LoggingLevel: 4,
-  IDServerUrl: 'http://localhost:41016',
-  AppLoginCallbackUrl: 'http://localhost:29521/logincallback.html',
-  AppLogoutCallbackUrl: 'http://localhost:29521',
-  AppLoginSlientRevewCallbackUrl: 'http://localhost:29521/silentrenewcallback.html',
-  AppHost: 'http://localhost:29521',
-  ApiUrl: 'http://localhost:25688',
+  IDServerUrl: 'https://localhost:41016',
+  AppLoginCallbackUrl: 'https://localhost:29521/logincallback.html',
+  AppLogoutCallbackUrl: 'https://localhost:29521',
+  AppLoginSlientRevewCallbackUrl: 'https://localhost:29521/silentrenewcallback.html',
+  AppHost: 'https://localhost:29521',
+  // ApiUrl: 'https://localhost:25688',
+  ApiUrl: 'https://localhost:44366',
 
-  AppMathExercise: 'http://localhost:20000',
-  AppGallery: 'http://localhost:2601',
+  AppMathExercise: 'https://localhost:20000',
+  AppGallery: 'https://localhost:2601',
 };
