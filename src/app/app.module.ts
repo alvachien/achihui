@@ -93,8 +93,11 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
+
+    { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
+
     // { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCN },
     AuthService,
     AuthGuardService,

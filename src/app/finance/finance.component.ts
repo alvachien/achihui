@@ -20,7 +20,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     private _storageService: FinanceStorageService,
     private _currService: FinCurrencyService,
     private _uistatusService: UIStatusService,
-    private _dateAdapter: DateAdapter<MomentDateAdapter>) {
+    private _dateAdapter: DateAdapter<any>) {
   }
 
   ngOnInit(): void {
@@ -57,7 +57,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
       this._dateAdapter.setLocale('zh-cn');
     } else if (x === 'en') {
       moment.locale(x);
-      this._dateAdapter.setLocale(x);
+      this._dateAdapter.setLocale('en-us');
     }
   }
 }
