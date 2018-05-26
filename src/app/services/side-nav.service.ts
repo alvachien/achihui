@@ -43,16 +43,16 @@ export class SideNavService {
     this.addSubItem(finance, 'Common.Search', '/finance/search', 12, 'search');
 
     const library: any = this.addItem('Nav.Libraries', 'subject', undefined, 4);
-    this.addSubItem(library, 'Nav.Person', '/library/person', 1, 'face');
-    this.addSubItem(library, 'Nav.Location', '/library/location', 2, 'storage');
+    // this.addSubItem(library, 'Nav.Person', '/library/person', 1, 'face');
+    // this.addSubItem(library, 'Nav.Location', '/library/location', 2, 'storage');
     this.addSubItem(library, 'Library.BookCategories', '/library/bookcategory', 3, 'settings');
-    this.addSubItem(library, 'Library.Books', '/library/book', 4, 'book');
-    this.addSubItem(library, 'Library.MovieGenres', '/library/moviegenre', 5, 'video_library');
-    this.addSubItem(library, 'Library.Movies', '/library/movie', 6, 'movie');
+    // this.addSubItem(library, 'Library.Books', '/library/book', 4, 'book');
+    // this.addSubItem(library, 'Library.MovieGenres', '/library/moviegenre', 5, 'video_library');
+    // this.addSubItem(library, 'Library.Movies', '/library/movie', 6, 'movie');
 
     const event: any = this.addItem('Nav.EventTrace', 'event', undefined, 5);
     this.addSubItem(event, 'Common.Overview', '/event/overview', 1, 'timeline');
-    this.addSubItem(event, 'Common.Categories', '/event/category', 2, 'toc');
+    // this.addSubItem(event, 'Common.Categories', '/event/category', 2, 'toc');
     this.addSubItem(event, 'Common.Events', '/event/general', 3, 'schedule');
     this.addSubItem(event, 'Common.RecurEvents', '/event/recur', 4, 'repeat');
     this.addSubItem(event, 'Common.HabitEvents', '/event/habit', 5, 'restore_page');

@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { UIStatusService, EventStorageService } from '../../services';
-import { LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN,
-  GeneralEvent, MomentDateFormat, HabitEventDetailWithCheckInStatistics } from '../../model';
+import {
+  LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN,
+  GeneralEvent, MomentDateFormat, HabitEventDetailWithCheckInStatistics
+} from '../../model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import * as $ from 'jquery';
@@ -44,87 +46,94 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     // title: 'Long Event',
     // start: '2018-03-07',
     // end: '2018-03-10'
-    forkJoin(
-      this._storageService.fetchAllEvents(100, 0, true, dtbgn, dtend),
-      this._storageService.fetchHabitDetailWithCheckIn(dtbgn, dtend),
-    ).subscribe((x: any) => {
-      let events: any[] = [];
-      this.listEvent = [];
+    let containerEl: any = $(this.elemcalendar.nativeElement);
+    let that = this;
+    // this.elemcalendar.nativeElement.
+    containerEl.fullCalendar({
+      // options here
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay,listWeek',
+      },
+      defaultDate: moment().format(MomentDateFormat),
+      locale: this.initialLocaleCode,
+      navLinks: true, // can click day/week names to navigate views
+      editable: true,
+      eventLimit: true, // allow "more" link when too many events
+      eventSources: [
+        // General events
+        {
+          events: (start, end, timezone, callback) => {
+            that._storageService.fetchAllEvents(100, 0, true, start, end).subscribe((data: any) => {
+              let arevents: any[] = [];
+              for (let ci of data.contentList) {
+                let gevnt: GeneralEvent = new GeneralEvent();
+                gevnt.onSetData(ci);
 
-      if (x[0]) {
-        for (let ci of x[0].contentList) {
-          let gevnt: GeneralEvent = new GeneralEvent();
-          gevnt.onSetData(ci);
-          this.listEvent.push(gevnt);
+                let evnt: any = {
+                  title: gevnt.Name,
+                  start: gevnt.StartTimeFormatString,
+                  end: gevnt.EndTimeFormatString,
+                  id: 'G' + gevnt.ID.toString(),
+                };
 
-          let evnt: any = {
-            title: gevnt.Name,
-            start: gevnt.StartTimeFormatString,
-            end: gevnt.EndTimeFormatString,
-            event_id: gevnt.ID,
-            event_type: 'general',
-          };
-
-          events.push(evnt);
-        }
-      }
-      if (x[1]) {
-        for (let ci2 of x[1]) {
-          let hevnt: HabitEventDetailWithCheckInStatistics = new HabitEventDetailWithCheckInStatistics();
-          hevnt.onSetData(ci2);
-          this.listEvent.push(hevnt);
-
-          let evnt: any = {
-            title: hevnt.name,
-            start: hevnt.StartDateFormatString,
-            end: hevnt.EndDateFormatString,
-            event_id: hevnt.habitID,
-            event_type: 'habit',
-          };
-
-          events.push(evnt);
-        }
-      }
-
-      // Do nothing
-      let containerEl: any = $(this.elemcalendar.nativeElement);
-      // this.elemcalendar.nativeElement.
-      containerEl.fullCalendar({
-        // options here
-        header: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'month,agendaWeek,agendaDay,listWeek',
+                arevents.push(evnt);
+              }
+              callback(arevents);
+            });
+          },
+          color: 'yellow',   // an option!
+          textColor: 'black' // an option!
         },
-        defaultDate: moment().format(MomentDateFormat),
-        locale: this.initialLocaleCode,
-        navLinks: true, // can click day/week names to navigate views
-        editable: true,
-        eventLimit: true, // allow "more" link when too many events
-        events: events,
-        eventClick: function(calEvent, jsEvent, view) {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Enter OverviewComponent's eventClick ${view.name} - ${calEvent.title}, ${jsEvent.pageX} - ${jsEvent.pageY}`);
-          }
 
-          if (calEvent.event_type === 'general') {
-            // General event
-            this._router.navigate(['/event/general/display/' + calEvent.event_id.toString()]);
+        // Habit events
+        {
+          events: (start, end, timezone, callback) => {
+            that._storageService.fetchHabitDetailWithCheckIn(start, end).subscribe((data: any) => {
+              let arevents: any[] = [];
+              for (let ci2 of data) {
+                let hevnt: HabitEventDetailWithCheckInStatistics = new HabitEventDetailWithCheckInStatistics();
+                hevnt.onSetData(ci2);
 
-          } else if (calEvent.event_type === 'habit') {
-            // Habit
-            this._router.navigate(['/event/habit/display/' + calEvent.event_id.toString()]);
-          }
-      
-          // alert('Event: ' + calEvent.title);
-          // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-          // alert('View: ' + view.name);
-      
-          // // change the border color just for fun
-          // $(this).css('border-color', 'red');
-      
+                let evnt: any = {
+                  title: hevnt.name,
+                  start: hevnt.StartDateFormatString,
+                  end: hevnt.EndDateFormatString,
+                  id: 'H' + hevnt.habitID.toString(),
+                };
+                arevents.push(evnt);
+              }
+
+              callback(arevents);
+            });
+          },
+          color: 'grey',   // an option!
+          textColor: 'black' // an option!
+        },
+      ],
+      eventClick: function (calEvent, jsEvent, view) {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Enter OverviewComponent's eventClick ${view.name} - ${calEvent.title}, ${jsEvent.pageX} - ${jsEvent.pageY}`);
         }
-      });
+
+        if (calEvent.event_type === 'general') {
+          // General event
+          that._router.navigate(['/event/general/display/' + calEvent.event_id.toString()]);
+
+        } else if (calEvent.event_type === 'habit') {
+          // Habit
+          that._router.navigate(['/event/habit/display/' + calEvent.event_id.toString()]);
+        }
+
+        
+        // alert('Event: ' + calEvent.title);
+        // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+        // alert('View: ' + view.name);
+
+        // // change the border color just for fun
+        // $(this).css('border-color', 'red');
+      }
     });
   }
 }
