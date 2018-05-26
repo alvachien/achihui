@@ -9,7 +9,6 @@ import { environment } from '../environments/environment';
 import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN } from './model';
 import { AuthService, HomeDefDetailService, UIStatusService } from './services';
 import * as moment from 'moment';
-import 'moment/locale/zh-cn';
 import { LanguageComponent } from './language';
 
 @Component({

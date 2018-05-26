@@ -5,7 +5,6 @@ import { HomeDefDetailService, AuthService, UIStatusService,
 import { environment } from '../../environments/environment';
 import { LogLevel } from '../model';
 import * as moment from 'moment';
-import 'moment/locale/zh-cn';
 import { DateAdapter } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 

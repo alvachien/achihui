@@ -44,8 +44,6 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/moment/min/moment.min.js",
-              "node_modules/moment/min/locales.min.js",
               "node_modules/moment/min/moment-with-locales.min.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
@@ -62,7 +60,8 @@
               "node_modules/tinymce/plugins/print/plugin.js",
               "node_modules/tinymce/plugins/preview/plugin.js",
               "node_modules/echarts/dist/echarts.min.js",
-              "node_modules/fullcalendar/dist/fullcalendar.min.js"
+              "node_modules/fullcalendar/dist/fullcalendar.min.js",
+              "node_modules/fullcalendar/dist/locale-all.js"
             ]
           },
           "configurations": {
@@ -153,8 +152,6 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/moment/min/moment.min.js",
-              "node_modules/moment/min/locales.min.js",
               "node_modules/moment/min/moment-with-locales.min.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
@@ -171,7 +168,8 @@
               "node_modules/tinymce/plugins/print/plugin.js",
               "node_modules/tinymce/plugins/preview/plugin.js",
               "node_modules/echarts/dist/echarts.min.js",
-              "node_modules/fullcalendar/dist/fullcalendar.min.js"
+              "node_modules/fullcalendar/dist/fullcalendar.min.js",
+              "node_modules/fullcalendar/dist/locale-all.js"
             ],
             "styles": [
               "node_modules/fullcalendar/dist/fullcalendar.css",

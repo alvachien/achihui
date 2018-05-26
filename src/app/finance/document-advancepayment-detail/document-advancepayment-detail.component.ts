@@ -17,7 +17,6 @@ import {
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
-// import 'moment/locale/zh-cn';
 import { ENTER } from '@angular/cdk/keycodes';
 
 /**

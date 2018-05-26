@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { UIStatusService, EventStorageService } from '../../services';
 import { LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN,
   GeneralEvent, MomentDateFormat, HabitEventDetailWithCheckInStatistics } from '../../model';
+import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
 import * as $ from 'jquery';
 import 'fullcalendar';
 import * as moment from 'moment';
@@ -19,12 +21,13 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   listEvent: any[];
 
   constructor(private _uistatus: UIStatusService,
+    private _router: Router,
     private _storageService: EventStorageService) {
     // Do nothing
     if (_uistatus.CurrentLanguage === Language_Zh) {
-      this.initialLocaleCode = Language_ZhCN;
+      this.initialLocaleCode = 'zh-cn';
     } else {
-      this.initialLocaleCode = Language_En;
+      this.initialLocaleCode = 'en';
     }
 
     this.listEvent = [];
@@ -58,6 +61,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             title: gevnt.Name,
             start: gevnt.StartTimeFormatString,
             end: gevnt.EndTimeFormatString,
+            event_id: gevnt.ID,
+            event_type: 'general',
           };
 
           events.push(evnt);
@@ -73,6 +78,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             title: hevnt.name,
             start: hevnt.StartDateFormatString,
             end: hevnt.EndDateFormatString,
+            event_id: hevnt.habitID,
+            event_type: 'habit',
           };
 
           events.push(evnt);
@@ -90,10 +97,33 @@ export class OverviewComponent implements OnInit, AfterViewInit {
           right: 'month,agendaWeek,agendaDay,listWeek',
         },
         defaultDate: moment().format(MomentDateFormat),
+        locale: this.initialLocaleCode,
         navLinks: true, // can click day/week names to navigate views
         editable: true,
         eventLimit: true, // allow "more" link when too many events
         events: events,
+        eventClick: function(calEvent, jsEvent, view) {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Enter OverviewComponent's eventClick ${view.name} - ${calEvent.title}, ${jsEvent.pageX} - ${jsEvent.pageY}`);
+          }
+
+          if (calEvent.event_type === 'general') {
+            // General event
+            this._router.navigate(['/event/general/display/' + calEvent.event_id.toString()]);
+
+          } else if (calEvent.event_type === 'habit') {
+            // Habit
+            this._router.navigate(['/event/habit/display/' + calEvent.event_id.toString()]);
+          }
+      
+          // alert('Event: ' + calEvent.title);
+          // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+          // alert('View: ' + view.name);
+      
+          // // change the border color just for fun
+          // $(this).css('border-color', 'red');
+      
+        }
       });
     });
   }
