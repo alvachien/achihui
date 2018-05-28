@@ -9,7 +9,6 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 import { UIDependModule } from './uidepend.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { TagCloudModule } from 'angular-tag-cloud-module';
 
 import { AppComponent } from './app.component';
 import { AuthService, AuthGuardService,
@@ -62,7 +61,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       },
     }),
     UIDependModule,
-    TagCloudModule,
     ThemePickerModule,
   ],
   declarations: [

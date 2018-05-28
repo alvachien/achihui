@@ -43,9 +43,6 @@ export class AccountTreeFlatNode {
   styleUrls: ['./account-tree.component.scss'],
 })
 export class AccountTreeComponent implements OnInit {
-  @ViewChild('accounttree') ctrltree: ElementRef;
-  @ViewChild('detailcontent') ctrlcontent: ElementRef;
-
   isLoadingResults: boolean;
   treeControl: FlatTreeControl<AccountTreeFlatNode>;
   treeFlattener: MatTreeFlattener<AccountTreeNode, AccountTreeFlatNode>;
@@ -109,8 +106,8 @@ export class AccountTreeComponent implements OnInit {
             }
           });
         }
+        break;
       }
-      break;
 
       default:
       break;

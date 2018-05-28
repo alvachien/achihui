@@ -33,9 +33,6 @@ export class ControlCenterTreeFlatNode {
   styleUrls: ['./control-center-tree.component.scss'],
 })
 export class ControlCenterTreeComponent implements OnInit {
-  @ViewChild('accounttree') ctrltree: ElementRef;
-  @ViewChild('detailcontent') ctrlcontent: ElementRef;
-
   isLoadingResults: boolean;
   treeControl: FlatTreeControl<ControlCenterTreeFlatNode>;
   treeFlattener: MatTreeFlattener<ControlCenterTreeNode, ControlCenterTreeFlatNode>;

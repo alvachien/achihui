@@ -1,51 +1,86 @@
-<div class="card">
-  <div class="card-header">
-    {{'Nav.Version' | translate}}
-  </div>
-  <div class="card-body">
-    <section class="timeline">
-      <ul>
-        <li>
-          <div>
-            <time>Version 0.2</time>
-            <div class="markdown-body">
-              <p>Bugs fixing and Feature list: 
-              Add Routing to Library;
-              Add Routing to Event;
-              Add Question Bank in Learn part;
-              Tags support to Question Bank;
-              Tags support to Finance Document Item;
-              Refine the Exchange Rate definition;
-              Create/Delete Finance Document - Loan;
-              Finance Report for Order: Status control;
-              </p>
-            </div>
-          </div>
-        </li>
-
-        <li>
-          <div>
-            <time>Version 0.1</time>
-            <div class="markdown-body">
-              <p>Including the functionality of Learn part and Finance part.
-                Concept of 'Home' now available;
-                Create/Display/Change Learn object;
-                Create/Display/Delete Learn History;
-                Create/Display Finance Account;
-                Create/Delete Finance Document - Normal;
-                Create/Delete Finance Document - Transfer;
-                Create/Delete Finance Document - Advanced payment;
-                Create/Delete Finance Document - Asset;
-                Create/Delete Finance Document - Currency exchange;
-                Report of Finance: Balance, Account, Control Center and Order;
-                Finance Overview page;
-                Overview page: Learn trace and Finance part;
-                Redefined the whole structure - Sidenav, routing, etc;
-              </p> 
-            </div>
-          </div>
-        </li>
-      </ul>
-    </section>
-  </div>
-</div>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Nav.Version' | translate}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+  </mat-card-content>
+</mat-card>
+<mat-vertical-stepper>
+  <mat-step>
+    <ng-template matStepLabel>Version 0.5.5</ng-template>
+    <div>
+      <section class="mat-typography">
+        <h2>Released at: 2018.5.7</h2>
+        <h1>Bugs fixing and Feature list</h1>
+        <ul>
+          <li>Add English Learning;</li>
+          <li>Finance Report for Account: Status;</li>
+          <li>Multiple items support for Asset buy-in;</li>
+          <li>Multiple items support for Asset sold-out;</li>
+          <li>Manually exchange rate adjustment for posted documents;</li>
+          <li>Finance Report: Monthly expense trend;</li>
+          <li>Finance Report: Monthly income trend;</li>
+          <li>Event: Create the event and assign to one home member;</li>
+          <li>Recur event: Create the recur event;</li>
+          <li>Habit event: Create the habit-like event;</li>
+          <li>Learn Category Hierarchy View;</li>
+          <li>Learn Object grouped by Category Hierarchy View;</li>
+          <li>Finance: Transaction Type hierarchy view;</li>
+          <li>>Finance: Account group by Category hierarchy view;</li>
+          <li>Finance Document Item group by account/category hierarchy view;</li>
+          <li>Finance control center hierarchy view;</li>
+          <li>Finance Document Item group by control center hierarchy view;</li>
+          <li>Dynamic theme support;</li>
+          <li>Version page;</li>
+          <li>Splitter support in the hierarchy views;</li>
+          <li>About page;</li>
+          <li>Credits page;</li>
+        </ul>
+      </section>
+    </div>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Version 0.2</ng-template>
+    <div>
+      <section class="mat-typography">
+        <h2>Released at: 2017.11.3</h2>
+        <h1>Bugs fixing and Feature list</h1>
+        <ul>
+          <li>Add Routing to Library;</li>
+          <li>Add Routing to Event;</li>
+          <li>Add Question Bank in Learn part;</li>
+          <li>Tags support to Question Bank;</li>
+          <li>Tags support to Finance Document Item;</li>
+          <li>Refine the Exchange Rate definition;</li>
+          <li>Create/Delete Finance Document - Loan;</li>
+          <li>Finance Report for Order: Status control;</li>
+        </ul>
+      </section>
+    </div>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Version 0.1</ng-template>
+    <div>
+      <section class="mat-typography">
+        <h2>Released at: 2017.10.10</h2>
+        <h1>Bugs fixing and Feature list</h1>
+        <ul>
+          <li>Including the functionality of Learn part and Finance part;</li>
+          <li>Concept of 'Home' now available;</li>
+          <li>Create/Display/Change Learn object;</li>
+          <li>Create/Display/Delete Learn History;</li>
+          <li>Create/Display Finance Account</li>
+          <li>Create/Delete Finance Document - Normal</li>
+          <li>Create/Delete Finance Document - Transfer</li>
+          <li>Create/Delete Finance Document - Advanced payment</li>
+          <li>Create/Delete Finance Document - Asset</li>
+          <li>Create/Delete Finance Document - Currency exchange;</li>
+          <li>Report of Finance: Balance, Account, Control Center and Order;</li>
+          <li>Finance Overview page;</li>
+          <li>Overview page: Learn trace and Finance part;</li>
+          <li>Redefined the whole structure - Sidenav, routing, etc;</li>
+        </ul>
+      </section>
+    </div>
+  </mat-step>
+</mat-vertical-stepper>

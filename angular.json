@@ -61,7 +61,8 @@
               "node_modules/tinymce/plugins/preview/plugin.js",
               "node_modules/echarts/dist/echarts.min.js",
               "node_modules/fullcalendar/dist/fullcalendar.min.js",
-              "node_modules/fullcalendar/dist/locale-all.js"
+              "node_modules/fullcalendar/dist/locale-all.js",
+              "node_modules/echarts-wordcloud/dist/echarts-wordcloud.min.js"
             ]
           },
           "configurations": {
@@ -169,7 +170,8 @@
               "node_modules/tinymce/plugins/preview/plugin.js",
               "node_modules/echarts/dist/echarts.min.js",
               "node_modules/fullcalendar/dist/fullcalendar.min.js",
-              "node_modules/fullcalendar/dist/locale-all.js"
+              "node_modules/fullcalendar/dist/locale-all.js",
+              "node_modules/echarts-wordcloud/dist/echarts-wordcloud.min.js"
             ],
             "styles": [
               "node_modules/fullcalendar/dist/fullcalendar.css",

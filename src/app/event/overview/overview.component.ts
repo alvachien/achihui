@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { UIStatusService, EventStorageService } from '../../services';
 import {
   LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN,
-  GeneralEvent, MomentDateFormat, HabitEventDetailWithCheckInStatistics
+  GeneralEvent, MomentDateFormat, HabitEventDetailWithCheckInStatistics,
 } from '../../model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
@@ -47,7 +47,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     // start: '2018-03-07',
     // end: '2018-03-10'
     let containerEl: any = $(this.elemcalendar.nativeElement);
-    let that = this;
+    let that: any = this;
     // this.elemcalendar.nativeElement.
     containerEl.fullCalendar({
       // options here
@@ -64,7 +64,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       eventSources: [
         // General events
         {
-          events: (start, end, timezone, callback) => {
+          events: (start: any, end: any, timezone: any, callback: any) => {
             that._storageService.fetchAllEvents(100, 0, true, start, end).subscribe((data: any) => {
               let arevents: any[] = [];
               for (let ci of data.contentList) {
@@ -84,12 +84,12 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             });
           },
           color: 'yellow',   // an option!
-          textColor: 'black' // an option!
+          textColor: 'black', // an option!
         },
 
         // Habit events
         {
-          events: (start, end, timezone, callback) => {
+          events: (start: any, end: any, timezone: any, callback: any) => {
             that._storageService.fetchHabitDetailWithCheckIn(start, end).subscribe((data: any) => {
               let arevents: any[] = [];
               for (let ci2 of data) {
@@ -109,12 +109,13 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             });
           },
           color: 'grey',   // an option!
-          textColor: 'black' // an option!
+          textColor: 'black', // an option!
         },
       ],
-      eventClick: function (calEvent, jsEvent, view) {
+      eventClick: (calEvent: any, jsEvent: any, view: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Enter OverviewComponent's eventClick ${view.name} - ${calEvent.title}, ${jsEvent.pageX} - ${jsEvent.pageY}`);
+          console.log(`AC_HIH_UI [Debug]: Enter OverviewComponent's eventClick
+            ${view.name} - ${calEvent.title}, ${jsEvent.pageX} - ${jsEvent.pageY}`);
         }
 
         if (calEvent.event_type === 'general') {
@@ -126,14 +127,13 @@ export class OverviewComponent implements OnInit, AfterViewInit {
           that._router.navigate(['/event/habit/display/' + calEvent.event_id.toString()]);
         }
 
-        
         // alert('Event: ' + calEvent.title);
         // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
         // alert('View: ' + view.name);
 
         // // change the border color just for fun
         // $(this).css('border-color', 'red');
-      }
+      },
     });
   }
 }

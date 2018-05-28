@@ -65,8 +65,8 @@ export enum QuestionBankTypeEnum {
  */
 export enum TagTypeEnum {
   LearnQuestionBank   = 1,
-  EnglishWord         = 2,
-  EnglishSentence     = 3,
+  // EnglishWord         = 2,
+  // EnglishSentence     = 3,
 
   FinanceDocumentItem = 10,
 }
@@ -314,11 +314,11 @@ export class Tag {
       case TagTypeEnum.LearnQuestionBank:
         return '/learn/questionbank/display/' + this.TagID.toString();
 
-      case TagTypeEnum.EnglishWord:
-        return '/learn/enword/display/' + this.TagID.toString();
+      // case TagTypeEnum.EnglishWord:
+      //   return '/learn/enword/display/' + this.TagID.toString();
 
-      case TagTypeEnum.EnglishSentence:
-        return '/learn/ensent/display/' + this.TagID.toString();
+      // case TagTypeEnum.EnglishSentence:
+      //   return '/learn/ensent/display/' + this.TagID.toString();
 
       case TagTypeEnum.FinanceDocumentItem:
         return '/finance/document/display/' + this.TagID.toString();

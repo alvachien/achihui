@@ -1,9 +1,7 @@
 <mat-tab-group class="demo-tab-group">
   <mat-tab label="{{'Common.TagsCloud' | translate}}">
     <div class="demo-tab-content">
-      <angular-tag-cloud [data]="dataCloud" [width]="optionsCloud.width" [height]="optionsCloud.height" [overflow]="optionsCloud.overflow"
-        (clicked)="tagClicked($event)">
-      </angular-tag-cloud>
+      <div #tagcloud style="width: 600px; height: 480px;"></div>
     </div>
   </mat-tab>
   <mat-tab label="{{'Common.Tag' | translate}}">
