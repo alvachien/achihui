@@ -407,7 +407,9 @@
     "ExchangeRateHint": "100外币所能换到的本币金额",
     "PreviousDocWithPlannedExgRate": "预测汇率的凭证",
     "MonthOnMonth": "月度环比",
-    
+    "Terminate": "终止",
+    "CloseAccount": "关闭账户",
+
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",
     "SettlementRulePrecentSumNotCorrect": "结算规则的百分比之和不正确",

@@ -181,7 +181,7 @@
   
   <mat-card-actions>
     <button mat-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
-    <button mat-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button mat-button color="primary" *ngIf="isChangeMode" (click)="onTerminate()">{{'Common.Terminate' | translate}}</button>
     <button mat-button color="primary" (click)="onBackToPreviousPage()">{{'Common.BackToList' | translate}}</button>
   </mat-card-actions>
 </mat-card>

@@ -48,15 +48,19 @@
       </div>
       <div fxFlex.xs="50%" fxFlex.gt-md="80%" fxFlex.lg="80%" ngxSplitArea>
         <div *ngIf="curNode && curNode.nodetype === 1">
-          <h3>
-            {{'Finance.AccountCategory' | translate}} - {{curNode?.displayname | translate}}
-          </h3>
+          <mat-toolbar color="primary">
+            <span>{{'Finance.AccountCategory' | translate}} - {{curNode?.displayname | translate}}</span>
+            <span class="example-spacer"></span>
+          </mat-toolbar>
           <hih-fin-docitem-by-acntctgy [selectedCategory]="curNode?.id" [selectedAccounts]="selectedAccounts"></hih-fin-docitem-by-acntctgy>
         </div>
         <div *ngIf="curNode && curNode.nodetype === 2">
-          <h3>
-            {{'Finance.Account' | translate}} - {{curNode?.displayname | translate}}
-          </h3>
+          <mat-toolbar color="primary">
+            <span>{{'Finance.Account' | translate}} - {{curNode?.displayname | translate}}</span>
+            <span class="example-spacer"></span>
+            <button mat-icon-button (click)="onDisplayAccount(curNode?.id)" matTooltip="{{'Common.Display' | translate}}"><mat-icon color="warn" class="example-icon">airplay</mat-icon></button>
+            <button mat-icon-button (click)="onChangeAccount(curNode?.id)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
+          </mat-toolbar>
           <hih-fin-docitem-by-acnt [selectedAccount]="curNode?.id"></hih-fin-docitem-by-acnt>
         </div>
         <div *ngIf="curNode?.nodetype !== 1 && curNode?.nodetype !== 2">

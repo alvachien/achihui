@@ -74,6 +74,9 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
+  get isChangeMode(): boolean {
+    return this.uiMode === UIMode.Change;
+  }
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -335,6 +338,10 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
   public onBackToPreviousPage(): void {
     this._router.navigate(['/finance/document/']);
+  }
+
+  public onTerminate(): void {
+    // Terminate current advance payment account
   }
 
   private onInitCreateMode(): void {

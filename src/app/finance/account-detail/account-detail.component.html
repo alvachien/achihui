@@ -22,16 +22,16 @@
           <mat-hint align="end">{{accountname.value.length}} / 30</mat-hint>
         </mat-form-field>
 
-        <mat-form-field>
-          <mat-select class="demo-full-width" placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId" name="ctgy">
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId" name="ctgy">
             <mat-option *ngFor="let ctgy of _storageService.AccountCategories" [value]="ctgy.ID">
               {{ctgy.Name | translate}} 
             </mat-option>
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
-          <mat-select class="demo-full-width" placeholder="{{'Finance.Owner' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.OwnerId" name="owner">
+        <mat-form-field class="demo-full-width">
+          <mat-select placeholder="{{'Finance.Owner' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.OwnerId" name="owner">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
             <mat-option *ngFor="let usr of _homedefService.MembersInChosedHome" [value]="usr.User">
               {{usr.DisplayAs}} 
@@ -76,17 +76,27 @@
       <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{'Common.ReviewForSubmit' | translate}}
+            {{'Common.Status' | translate}}
           </mat-panel-title>
           <mat-panel-description>
-            {{'Common.ReviewForSubmit' | translate}}
+            {{'Common.Status' | translate}}
             <mat-icon>playlist_add_check</mat-icon>
           </mat-panel-description>
         </mat-expansion-panel-header>
 
+        <mat-form-field class="demo-full-width">        
+          <mat-select placeholder="{{'Common.Status' | translate}}" [(ngModel)]="detailObject.Status" #selectStatus="matSelect" disabled>
+            <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+            <mat-option *ngFor="let sts of arrayStatus" [value]="sts.value">
+              {{sts.i18nterm | translate}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+    
         <mat-action-row>
           <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-          <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+          <button mat-button color="primary" *ngIf="isChangeMode" [disabled]="!canCloseAccount()" (click)="onCloseAccount()">{{'Finance.CloseAccount' | translate}}</button>
+          <button mat-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
         </mat-action-row>
       </mat-expansion-panel>
     </mat-accordion>

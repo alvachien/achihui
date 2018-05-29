@@ -1,4 +1,5 @@
 import { OnInit, AfterViewInit, Component, Directive, ViewChild, Input, ElementRef, } from '@angular/core';
+import { Router } from '@angular/router';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
@@ -55,7 +56,8 @@ export class AccountTreeComponent implements OnInit {
   availableAccounts: Account[];
 
   constructor(public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService) {
+    public _uiStatusService: UIStatusService,
+    private _router: Router) {
 
     this.isLoadingResults = false;
 
@@ -129,6 +131,22 @@ export class AccountTreeComponent implements OnInit {
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+
+  public onCreateAccount(): void {
+    this._router.navigate(['/finance/account/create']);
+  }
+
+  public onDisplayAccount(acntid: number): void {
+    this._router.navigate(['/finance/account/display', acntid]);
+  }
+
+  public onChangeAccount(acntid: number): void {
+    this._router.navigate(['/finance/account/edit', acntid]);
+  }
+
+  public onDeleteAccount(acntid: number): void {
+    // Do nothing
   }
 
   transformer = (node: AccountTreeNode, level: number) => {

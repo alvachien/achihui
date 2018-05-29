@@ -407,6 +407,8 @@
     "ExchangeRateHint": "The amount of the base currency which 100 foreign currency can buy",
     "PreviousDocWithPlannedExgRate": "Previous documents whose planned exchange rate",
     "MonthOnMonth": "Month on Month",
+    "Terminate": "Terminate",
+    "CloseAccount": "Close Account",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

@@ -5,7 +5,8 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, UIMode, getUIModeString, FinanceAccountCategory_Asset,
-  FinanceAccountCategory_AdvancePayment, FinanceAccountCategory_Loan, UICommonLabelEnum } from '../../model';
+  FinanceAccountCategory_AdvancePayment, FinanceAccountCategory_Loan, UICommonLabelEnum,
+  UIDisplayString, UIDisplayStringUtil, AccountStatusEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -21,6 +22,7 @@ export class AccountDetailComponent implements OnInit {
   public detailObject: Account = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
+  arrayStatus: UIDisplayString[] = [];
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -30,6 +32,8 @@ export class AccountDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
     this.detailObject = new Account();
+
+    this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
   }
 
   ngOnInit(): void {
@@ -100,6 +104,9 @@ export class AccountDetailComponent implements OnInit {
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
+  get isChangeMode(): boolean {
+    return this.uiMode === UIMode.Change;
+  }
   get isAssetAccount(): boolean {
     if (this.detailObject !== undefined && (this.detailObject.CategoryId === FinanceAccountCategory_Asset)) {
       return true;
@@ -138,6 +145,19 @@ export class AccountDetailComponent implements OnInit {
     return true;
   }
 
+  public canCloseAccount(): boolean {
+    if (!this.isChangeMode) {
+      return false;
+    }
+    if (this.detailObject === undefined
+    || this.detailObject.Status !== AccountStatusEnum.Normal) {
+      return false;
+    }
+    return true;
+  }
+  public onCloseAccount(): void {
+    // Close the account
+  }
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.onCreateImpl();
