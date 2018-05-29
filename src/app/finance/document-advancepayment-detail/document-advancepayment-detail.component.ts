@@ -333,7 +333,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     }
   }
 
-  public onBackToList(): void {
+  public onBackToPreviousPage(): void {
     this._router.navigate(['/finance/document/']);
   }
 
