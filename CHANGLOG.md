@@ -1,6 +1,6 @@
 # Change logs
 ## Version 0.6.x
-Released at 2018.07.01
+Released at 2018.09.01
 
 Bugs fixing and Feature list
 - Dashboard introduced;
