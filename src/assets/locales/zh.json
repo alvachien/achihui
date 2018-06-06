@@ -219,7 +219,30 @@
       "History": "历史",
       "Law": "法律",
       "Novel": "小说",
-      "Travel": "旅游"
+      "Travel": "旅游",
+      "Bio": "记录与自传",
+      "Bussiness": "Business & Money"
+    },
+    "MovGenre": {
+      "ActAdv": "动作",
+      "Animation": "动画",
+      "Anime": "动漫",
+      "Classics": "经典",
+      "Comedy": "喜剧",
+      "Documentary": "记录",
+      "Drama": "戏剧",
+      "ExerFit": "健身",
+      "FaithSpirit": "信仰与精神",
+      "ForeignLang": "外文与国际化",
+      "GayLesbian": "同性",
+      "Horror": "恐怖",
+      "IndianMv": "印度和宝莱坞",
+      "IndieArt": "文艺",
+      "KidsFamily": "儿童与家庭",
+      "MVConcert": "音乐录影和演唱会",
+      "Romance": "浪漫",
+      "SciFiction": "科幻片",
+      "Western": "西部片"
     },
     "EnPOS": {
       "n": "名词",

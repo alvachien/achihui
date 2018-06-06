@@ -83,8 +83,6 @@ For instance, a habit can be set: take 5 exerices per week. So a hahbit can be s
 
 ### Library Document
 #### Book Category
-Biographies & Memoirs
-Business & Money
 Calendars
 Christian Books & Bibles
 Comics & Graphic Novels
@@ -110,28 +108,6 @@ Self-Help
 Sports & Outdoors
 Teen & Young Adult
 Test Preparation
-
-#### Movie Genre
-Action & Adventure
-Animation
-Anime
-Classics
-Comedy
-Documentary
-Drama
-Exercise & Fitness
-Faith & Spirituality
-Foreign Language & International
-Gay & Lesbian
-Horror
-Indian Cinema & Bollywood
-Indie & Art House
-Kids & Family
-Music Videos & Concerts
-Romance
-Science Fiction
-Western
-
 
 ## UI part
 

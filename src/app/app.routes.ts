@@ -14,6 +14,7 @@ import { TagsListComponent } from './tags-list';
 import { AboutComponent } from './about';
 import { CreditsComponent } from './credits';
 import { VersionComponent } from './version';
+import { UserDetailComponent } from './user-detail';
 
 export const appRoutes: Routes = [{
   path: '',
@@ -70,6 +71,7 @@ export const appRoutes: Routes = [{
 },
 { path: 'about', component: AboutComponent },
 { path: 'credits', component: CreditsComponent },
+{ path: 'userdetail', component: UserDetailComponent, canActivate: [AuthGuardService], },
 { path: 'version', component: VersionComponent },
 { path: 'lackauthority', component: PageLackAuthorityComponent },
 { path: '**', component: PageNotFoundComponent },

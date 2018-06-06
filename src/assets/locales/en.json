@@ -219,7 +219,30 @@
       "History": "History",
       "Law": "Law",
       "Novel": "Novel",
-      "Travel": "Travel"
+      "Travel": "Travel",
+      "Bio": "Biographies & Memoirs",
+      "Bussiness": "Business & Money"
+    },
+    "MovGenre": {
+      "ActAdv": "Action & Adventure",
+      "Animation": "Animation",
+      "Anime": "Anime",
+      "Classics": "Classics",
+      "Comedy": "Comedy",
+      "Documentary": "Documentary",
+      "Drama": "Drama",
+      "ExerFit": "Exercise & Fitness",
+      "FaithSpirit": "Faith & Spirituality",
+      "ForeignLang": "Foreign Language & International",
+      "GayLesbian": "Gay & Lesbian",
+      "Horror": "Horror",
+      "IndianMv": "Indian Cinema & Bollywood",
+      "IndieArt": "Indie & Art House",
+      "KidsFamily": "Kids & Family",
+      "MVConcert": "Music Videos & Concerts",
+      "Romance": "Romance",
+      "SciFiction": "Science Fiction",
+      "Western": "Western"
     },
     "EnPOS": {
       "n": "noun",

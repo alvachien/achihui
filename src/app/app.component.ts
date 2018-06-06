@@ -92,7 +92,7 @@ export class AppComponent implements OnInit {
   }
 
   public onUserDetail(): void {
-    this._router.navigate(['/user-detail']);
+    this._router.navigate(['/userdetail']);
   }
 
   public onCheckMessages(): void {

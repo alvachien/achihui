@@ -40,6 +40,7 @@ import { HomeMessageComponent, HomeMessageDialogComponent } from './home-message
 import { ThemePickerModule, ThemeStorage } from './theme-picker';
 import { FooterComponent } from './footer';
 import { HomeDashboardComponent } from './home-dashboard';
+import { UserDetailComponent } from './user-detail';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -84,6 +85,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     PageLackAuthorityComponent,
     FooterComponent,
     HomeDashboardComponent,
+    UserDetailComponent,
   ],
   entryComponents: [
     MessageDialogComponent,
