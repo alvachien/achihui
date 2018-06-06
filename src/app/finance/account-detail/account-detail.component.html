@@ -95,7 +95,7 @@
     
         <mat-action-row>
           <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-          <button mat-button color="primary" *ngIf="isChangeMode" [disabled]="!canCloseAccount()" (click)="onCloseAccount()">{{'Finance.CloseAccount' | translate}}</button>
+          <button mat-button color="primary" *ngIf="!isCreateMode" [disabled]="!canCloseAccount()" (click)="onCloseAccount()">{{'Finance.CloseAccount' | translate}}</button>
           <button mat-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
         </mat-action-row>
       </mat-expansion-panel>

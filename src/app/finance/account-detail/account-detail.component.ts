@@ -107,6 +107,9 @@ export class AccountDetailComponent implements OnInit {
   get isChangeMode(): boolean {
     return this.uiMode === UIMode.Change;
   }
+  get isCreateMode(): boolean {
+    return this.uiMode === UIMode.Create;
+  }
   get isAssetAccount(): boolean {
     if (this.detailObject !== undefined && (this.detailObject.CategoryId === FinanceAccountCategory_Asset)) {
       return true;
@@ -146,18 +149,28 @@ export class AccountDetailComponent implements OnInit {
   }
 
   public canCloseAccount(): boolean {
-    if (!this.isChangeMode) {
-      return false;
-    }
     if (this.detailObject === undefined
     || this.detailObject.Status !== AccountStatusEnum.Normal) {
       return false;
     }
     return true;
   }
+
   public onCloseAccount(): void {
     // Close the account
+    this._storageService.updateAccountStatus(this.detailObject.Id, AccountStatusEnum.Closed).subscribe((x: any) => {
+      // It has been updated successfully
+      this._storageService.fetchAllAccounts(true).subscribe(() => {
+        // Navigate to current account again
+        this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+      });
+    }, (error: any) => {
+      // Show the snabckbar
+    }, () => {
+      // Do nothing
+    });
   }
+
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.onCreateImpl();

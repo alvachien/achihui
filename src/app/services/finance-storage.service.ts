@@ -487,6 +487,31 @@ export class FinanceStorageService {
   }
 
   /**
+   * Update an account's status
+   */
+  public updateAccountStatus(acntid: number, nstatus: AccountStatusEnum): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAccount/' + acntid.toString();
+    let jdata: any[] = [{
+        'op': 'replace',
+        'path': '/status',
+        'value': (<number>nstatus).toString(),
+      },
+    ];
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.patch(apiurl, jdata, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      });
+  }
+
+  /**
    * Read an account
    * @param acntid ID of the account to read
    */
