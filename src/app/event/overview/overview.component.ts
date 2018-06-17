@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { UIStatusService, EventStorageService } from '../../services';
-import {
-  LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN,
+import { LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN,
   GeneralEvent, MomentDateFormat, HabitEventDetailWithCheckInStatistics,
 } from '../../model';
 import { environment } from '../../../environments/environment';
@@ -36,10 +35,16 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // Do nothing
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ngOnInit of OverviewComponent...');
+    }
   }
 
   ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of OverviewComponent...');
+    }
+
     let dtbgn: moment.Moment = moment();
     let dtend: moment.Moment = moment().add(1, 'months');
 
@@ -76,6 +81,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                   start: gevnt.StartTimeFormatString,
                   end: gevnt.EndTimeFormatString,
                   id: 'G' + gevnt.ID.toString(),
+                  event_type: 'general',
+                  event_id: gevnt.ID,
                 };
 
                 arevents.push(evnt);
@@ -101,6 +108,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                   start: hevnt.StartDateFormatString,
                   end: hevnt.EndDateFormatString,
                   id: 'H' + hevnt.habitID.toString(),
+                  event_type: 'habit',
+                  event_id: hevnt.habitID,
                 };
                 arevents.push(evnt);
               }
@@ -120,20 +129,25 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
         if (calEvent.event_type === 'general') {
           // General event
-          that._router.navigate(['/event/general/display/' + calEvent.event_id.toString()]);
-
+          that.onNavigateToGeneralEvent(+calEvent.event_id);
         } else if (calEvent.event_type === 'habit') {
           // Habit
-          that._router.navigate(['/event/habit/display/' + calEvent.event_id.toString()]);
+          this.onNavigateToHabitEvent(calEvent.event_id);
         }
-
-        // alert('Event: ' + calEvent.title);
-        // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-        // alert('View: ' + view.name);
-
-        // // change the border color just for fun
-        // $(this).css('border-color', 'red');
       },
     });
+  }
+
+  public onNavigateToGeneralEvent(id: number) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering onNavigateToGeneralEvent of OverviewComponent...');
+    }
+    this._router.navigate(['/event/general/display/' + id.toString()])
+  }
+  public onNavigateToHabitEvent(id: number) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering onNavigateToHabitEvent of OverviewComponent...');
+    }
+    this._router.navigate(['/event/habit/display/' + id.toString()]);
   }
 }

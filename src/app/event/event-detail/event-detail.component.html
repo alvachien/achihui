@@ -43,7 +43,8 @@
       </mat-form-field>
 
       <mat-form-field>
-        <mat-select placeholder="{{'Common.Assignee' | translate}}" [(ngModel)]="detailObject.Assignee" name="assgnee">
+        <mat-select placeholder="{{'Common.Assignee' | translate}}"
+          [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Assignee" name="assgnee">
           <mat-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
             {{mem.DisplayAs}} - {{ mem.User }} 
           </mat-option>

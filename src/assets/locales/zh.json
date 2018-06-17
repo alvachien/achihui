@@ -164,7 +164,8 @@
     "TotalLiabilitiesOfMyAccounts": "本人账户下总负债",
     "MyUnreadMessages": "本人未读信息",
     "MyCompletedEvents": "我完成的事务",
-    "MyUncompletedEvents": "我未完成的事务"
+    "MyUncompletedEvents": "我未完成的事务",
+    "Relationship": "关系"
   },
   "Sys":{
     "Currency": {

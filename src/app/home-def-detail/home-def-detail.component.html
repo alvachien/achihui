@@ -9,15 +9,18 @@
     </div>
 
     <mat-form-field class="demo-full-width">
-      <input matInput type="text" placeholder="{{'Common.Name' | translate}}" [(ngModel)]="detailObject.Name">
+      <input matInput type="text" placeholder="{{'Common.Name' | translate}}" 
+        [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name">
     </mat-form-field>
 
     <mat-form-field class="demo-full-width" *ngIf="IsCreateMode">
-      <input matInput type="text" placeholder="{{'Login.DisplayAs' | translate}}" [(ngModel)]="detailObject.CreatorDisplayAs">
+      <input matInput type="text" placeholder="{{'Login.DisplayAs' | translate}}"
+        [readonly]="!isFieldChangable" [(ngModel)]="detailObject.CreatorDisplayAs">
     </mat-form-field>
 
     <mat-form-field class="demo-full-width">
-      <mat-select placeholder="{{'Finance.Currency' | translate}}" [(ngModel)]="detailObject.BaseCurrency" name="basecurr">
+      <mat-select placeholder="{{'Finance.Currency' | translate}}" [(ngModel)]="detailObject.BaseCurrency" 
+        [disabled]="!isFieldChangable" name="basecurr">
         <mat-option *ngFor="let curr of _fincurrService.Currencies" [value]="curr.Currency">
           {{curr.Symbol}} - {{ curr.Name | translate }} 
         </mat-option>
@@ -25,22 +28,35 @@
     </mat-form-field>
 
     <mat-form-field class="demo-full-width" *ngIf="!IsCreateMode">
-      <input matInput type="text" placeholder="{{'Common.Host' | translate}}" readonly [(ngModel)]="detailObject.Host">
+      <input matInput type="text" placeholder="{{'Common.Host' | translate}}" 
+        [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Host">
     </mat-form-field>
     
     <mat-form-field class="demo-full-width">
-      <input matInput type="text" placeholder="{{'Common.Detail' | translate}}" [(ngModel)]="detailObject.Details">
+      <input matInput type="text" placeholder="{{'Common.Detail' | translate}}" 
+        [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Details">
     </mat-form-field>
 
     <mat-divider></mat-divider>
     <mat-list *ngIf="!IsCreateMode">
-      <mat-list-item *ngFor="let member of detailObject.Members">
-        <h3 matLine> {{member.DisplayAs}} </h3>
-        <p matLine>
-          <span> {{member.User}} </span>
-          <span> -- {{member.RelationString | translate}} </span>
-        </p>
-      </mat-list-item>
+      <table class="mat-table" style="width:80%;">
+        <thead>
+          <tr class="mat-header-row">
+            <th class="mat-header-cell" style="width: 40%;"> {{'Login.DisplayAs' | translate}} </th>
+            <th class="mat-header-cell" style="width: 40%;"> {{'Common.Relationship' | translate}} </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="mat-row" *ngFor="let member of detailObject.Members">
+            <td class="mat-cell">
+              {{member.DisplayAs}}
+            </td>
+            <td class="mat-cell">
+              {{member.RelationString | translate}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </mat-list>
   </mat-card-content>
   

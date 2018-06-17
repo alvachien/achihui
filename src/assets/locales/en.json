@@ -93,7 +93,7 @@
     "CurrentYear": "Current Year",
     "All": "All",
     "ChooseThisHome": "Choose this home",
-    "WelcomeToHIH": "Welcome to H.I.H.",
+    "WelcomeToHIH": "Welcome to H.I.H.",    
     "ShortIntroduceHIH": "H.I.H. helps to build a digitial life for each home",
     "RequireLogin": "Please login to enpower the features provided by H.I.H.",
     "RequireChooseHome": "Please choose a Home which you already assigned to, or create your new home to continue",
@@ -164,7 +164,8 @@
     "TotalLiabilitiesOfMyAccounts": "Total Liabilities of My Accounts",
     "MyUnreadMessages": "My Unread Messages",
     "MyCompletedEvents": "My Completed Events",
-    "MyUncompletedEvents": "My Uncompleted Events"
+    "MyUncompletedEvents": "My Uncompleted Events",
+    "Relationship": "Relationship"
   },
   "Sys":{
     "Currency": {
