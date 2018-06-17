@@ -16,13 +16,15 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="detailObject.StartTime" [matDatepicker]="startdpicker" placeholder="{{'Common.StartDate' | translate}}">
+        <input matInput [(ngModel)]="detailObject.StartTime" [matDatepicker]="startdpicker" 
+          placeholder="{{'Common.StartDate' | translate}}" [disabled]="!isFieldChangable">
         <mat-datepicker-toggle matSuffix [for]="startdpicker"></mat-datepicker-toggle>
         <mat-datepicker #startdpicker></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="detailObject!.EndTime" [matDatepicker]="enddpicker" placeholder="{{'Common.EndDate' | translate}}">
+        <input matInput [(ngModel)]="detailObject!.EndTime" [matDatepicker]="enddpicker" 
+          placeholder="{{'Common.EndDate' | translate}}" [disabled]="!isFieldChangable">
         <mat-datepicker-toggle matSuffix [for]="enddpicker"></mat-datepicker-toggle>
         <mat-datepicker #enddpicker></mat-datepicker>
       </mat-form-field>

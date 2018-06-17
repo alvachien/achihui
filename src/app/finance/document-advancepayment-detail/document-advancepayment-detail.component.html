@@ -28,7 +28,8 @@
 
         <!-- Tran date -->
         <mat-form-field class="demo-full-width">
-          <input matInput [(ngModel)]="detailObject.TranDate" [readonly]="!isFieldChangable" [matDatepicker]="srcdpicker" placeholder="{{'Common.Date' | translate}}">
+          <input matInput [(ngModel)]="detailObject.TranDate" [disabled]="!isFieldChangable" [matDatepicker]="srcdpicker" 
+            placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable">
           <mat-datepicker-toggle matSuffix [for]="srcdpicker"></mat-datepicker-toggle>
           <mat-datepicker #srcdpicker></mat-datepicker>
         </mat-form-field>
@@ -134,7 +135,8 @@
               <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionDate' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
-                  <input matInput [(ngModel)]="row.TranDate" [matDatepicker]="tmpdpicker" placeholder="{{'Common.Date' | translate}}">
+                  <input matInput [(ngModel)]="row.TranDate" [matDatepicker]="tmpdpicker" 
+                    placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable">
                   <mat-datepicker-toggle matSuffix [for]="tmpdpicker"></mat-datepicker-toggle>
                   <mat-datepicker #tmpdpicker></mat-datepicker>
                 </mat-form-field>

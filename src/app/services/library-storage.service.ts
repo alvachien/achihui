@@ -59,16 +59,16 @@ export class LibraryStorageService {
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
       return this._http.get(apiurl, {
-          headers: headers,
-          params: params,
-          withCredentials: true,
-        })
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllBookCategories in LibraryStorageService: ${response}`);
@@ -86,7 +86,7 @@ export class LibraryStorageService {
           }
 
           // Prepare for the hierarchy
-          this.buildBookCategoryHierarchy(listRst);
+          this._buildBookCategoryHierarchy(listRst);
           // Sort it
           listRst.sort((a: any, b: any) => {
             return a.FullDisplayText.localeCompare(b.FullDisplayText);
@@ -96,18 +96,77 @@ export class LibraryStorageService {
           this.listBookCategoryChange.next(listRst);
           return listRst;
         }),
-        catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllBookCategories in LibraryStorageService: ${error}`);
-          }
+          catchError((error: HttpErrorResponse) => {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Error]: Failed in fetchAllBookCategories in LibraryStorageService: ${error}`);
+            }
 
-          this._isBookCtgyListLoaded = false;
-          this.listBookCategoryChange.next([]);
+            this._isBookCtgyListLoaded = false;
+            this.listBookCategoryChange.next([]);
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));
+            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
     } else {
       return of(this.listBookCategoryChange.value);
+    }
+  }
+
+  // Movie Genres
+  public fetchAllMovieGenres(forceReload?: boolean): Observable<any> {
+    if (!this._isMovieGenreListLoaded || forceReload) {
+      const apiurl: string = environment.ApiUrl + '/api/LibMovieGenre';
+
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+      let params: HttpParams = new HttpParams();
+      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+      return this._http.get(apiurl, {
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
+        .pipe(map((response: HttpResponse<any>) => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMovieGenres in LibraryStorageService: ${response}`);
+          }
+
+          const rjs: any = <any>response;
+          let listRst: MovieGenre[] = [];
+
+          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+            for (const si of rjs.contentList) {
+              const rst: MovieGenre = new MovieGenre();
+              rst.onSetData(si);
+              listRst.push(rst);
+            }
+          }
+
+          // Prepare for the hierarchy
+          this._buildMovieGenreHierarchy(listRst);
+          // Sort it
+          listRst.sort((a: any, b: any) => {
+            return a.FullDisplayText.localeCompare(b.FullDisplayText);
+          });
+
+          this._isMovieGenreListLoaded = true;
+          this.listMovieGenreChange.next(listRst);
+          return listRst;
+        }),
+          catchError((error: HttpErrorResponse) => {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Error]: Failed in fetchAllMovieGenres in LibraryStorageService: ${error}`);
+            }
+
+            this._isMovieGenreListLoaded = false;
+            this.listMovieGenreChange.next([]);
+
+            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
+    } else {
+      return of(this.listMovieGenreChange.value);
     }
   }
 
@@ -118,16 +177,16 @@ export class LibraryStorageService {
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
       return this._http.get(apiurl, {
-          headers: headers,
-          params: params,
-          withCredentials: true,
-        })
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllLocations in LibraryStorageService: ${response}`);
@@ -148,16 +207,16 @@ export class LibraryStorageService {
           this.listLocationChange.next(listRst);
           return listRst;
         }),
-        catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllLocations in LibraryStorageService: ${error}`);
-          }
+          catchError((error: HttpErrorResponse) => {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Error]: Failed in fetchAllLocations in LibraryStorageService: ${error}`);
+            }
 
-          this._isLocationListLoaded = false;
-          this.listLocationChange.next([]);
+            this._isLocationListLoaded = false;
+            this.listLocationChange.next([]);
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));
+            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
     } else {
       return of(this.listLocationChange.value);
     }
@@ -170,16 +229,16 @@ export class LibraryStorageService {
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
       return this._http.get(apiurl, {
-          headers: headers,
-          params: params,
-          withCredentials: true,
-        })
+        headers: headers,
+        params: params,
+        withCredentials: true,
+      })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllBooks in LibraryStorageService: ${response}`);
@@ -200,38 +259,58 @@ export class LibraryStorageService {
           this.listBookChange.next(listRst);
           return listRst;
         }),
-        catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllBooks in LibraryStorageService: ${error}`);
-          }
+          catchError((error: HttpErrorResponse) => {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Error]: Failed in fetchAllBooks in LibraryStorageService: ${error}`);
+            }
 
-          this._isBookListLoaded = false;
-          this.listBookChange.next([]);
+            this._isBookListLoaded = false;
+            this.listBookChange.next([]);
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));
+            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
     } else {
       return of(this.listLocationChange.value);
     }
   }
 
-  private buildBookCategoryHierarchy(listCtgy: BookCategory[]): void {
+  private _buildBookCategoryHierarchy(listCtgy: BookCategory[]): void {
     listCtgy.forEach((value: any, index: number) => {
       if (!value.ParentID) {
         value.HierLevel = 0;
         value.FullDisplayText = value.Name;
 
-        this.buildBookCategoryHiercharyImpl(value, listCtgy, 1);
+        this._buildBookCategoryHiercharyImpl(value, listCtgy, 1);
       }
     });
   }
-  private buildBookCategoryHiercharyImpl(par: BookCategory, listCtgy: BookCategory[], curLevel: number): void {
+  private _buildBookCategoryHiercharyImpl(par: BookCategory, listCtgy: BookCategory[], curLevel: number): void {
     listCtgy.forEach((value: any, index: number) => {
       if (value.ParentID === par.ID) {
         value.HierLevel = curLevel;
         value.FullDisplayText = par.FullDisplayText + '.' + value.Name;
 
-        this.buildBookCategoryHiercharyImpl(value, listCtgy, value.HierLevel + 1);
+        this._buildBookCategoryHiercharyImpl(value, listCtgy, value.HierLevel + 1);
+      }
+    });
+  }
+  private _buildMovieGenreHierarchy(listCtgy: MovieGenre[]): void {
+    listCtgy.forEach((value: any, index: number) => {
+      if (!value.ParentID) {
+        value.HierLevel = 0;
+        value.FullDisplayText = value.Name;
+
+        this._buildMovieGenreHiercharyImpl(value, listCtgy, 1);
+      }
+    });
+  }
+  private _buildMovieGenreHiercharyImpl(par: MovieGenre, listCtgy: MovieGenre[], curLevel: number): void {
+    listCtgy.forEach((value: any, index: number) => {
+      if (value.ParentID === par.ID) {
+        value.HierLevel = curLevel;
+        value.FullDisplayText = par.FullDisplayText + '.' + value.Name;
+
+        this._buildMovieGenreHiercharyImpl(value, listCtgy, value.HierLevel + 1);
       }
     });
   }

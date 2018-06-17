@@ -1,7 +1,7 @@
 <div class="demo-full-width">
   <mat-form-field class="demo-full-width">
     <input matInput [ngModel]="extObject?.StartDate" (ngModelChange)="extObject.StartDate=$event" [matDatepicker]="startdpicker" 
-      placeholder="{{'Common.StartDate' | translate}}">
+      placeholder="{{'Common.StartDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="startdpicker"></mat-datepicker-toggle>
     <mat-datepicker #startdpicker></mat-datepicker>
   </mat-form-field>

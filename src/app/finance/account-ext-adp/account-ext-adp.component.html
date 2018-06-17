@@ -1,12 +1,14 @@
 <div class="demo-full-width">
   <mat-form-field class="demo-full-width">
-    <input matInput [ngModel]="extObject.StartDate" (ngModelChange)="extObject.StartDate=$event" [matDatepicker]="advstartdpicker" placeholder="{{'Common.StartDate' | translate}}">
+    <input matInput [ngModel]="extObject.StartDate" (ngModelChange)="extObject.StartDate=$event" 
+      [matDatepicker]="advstartdpicker" placeholder="{{'Common.StartDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="advstartdpicker"></mat-datepicker-toggle>
     <mat-datepicker #advstartdpicker></mat-datepicker>
   </mat-form-field>
 
   <mat-form-field class="demo-full-width">
-    <input matInput [ngModel]="extObject.EndDate" (ngModelChange)="extObject.EndDate=$event" [matDatepicker]="advenddpicker" placeholder="{{'Common.EndDate' | translate}}">
+    <input matInput [ngModel]="extObject.EndDate" (ngModelChange)="extObject.EndDate=$event" 
+      [matDatepicker]="advenddpicker" placeholder="{{'Common.EndDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="advenddpicker"></mat-datepicker-toggle>
     <mat-datepicker #advenddpicker></mat-datepicker>
   </mat-form-field>

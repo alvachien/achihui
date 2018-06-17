@@ -23,7 +23,8 @@
     </mat-form-field>
   
     <mat-form-field class="demo-full-width">
-      <input matInput [(ngModel)]="detailObject.LearnDate" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}" />
+      <input matInput [(ngModel)]="detailObject.LearnDate" [matDatepicker]="tdpicker" 
+        placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable" />
       <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
       <mat-datepicker #tdpicker></mat-datepicker>
     </mat-form-field>

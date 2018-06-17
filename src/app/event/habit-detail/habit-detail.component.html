@@ -16,13 +16,15 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="detailObject.StartDate" [matDatepicker]="startdpicker" placeholder="{{'Common.StartDate' | translate}}">
+        <input matInput [(ngModel)]="detailObject.StartDate" [matDatepicker]="startdpicker" 
+          [disabled]="!isFieldChangable" placeholder="{{'Common.StartDate' | translate}}">
         <mat-datepicker-toggle matSuffix [for]="startdpicker"></mat-datepicker-toggle>
         <mat-datepicker #startdpicker></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="detailObject!.EndDate" [matDatepicker]="enddpicker" placeholder="{{'Common.EndDate' | translate}}">
+        <input matInput [(ngModel)]="detailObject!.EndDate" [matDatepicker]="enddpicker" 
+          [disabled]="!isFieldChangable" placeholder="{{'Common.EndDate' | translate}}">
         <mat-datepicker-toggle matSuffix [for]="enddpicker"></mat-datepicker-toggle>
         <mat-datepicker #enddpicker></mat-datepicker>
       </mat-form-field>
@@ -47,7 +49,8 @@
       </mat-form-field>
 
       <mat-form-field>
-        <mat-select placeholder="{{'Common.Assignee' | translate}}" [(ngModel)]="detailObject.assignee" name="assgnee">
+        <mat-select placeholder="{{'Common.Assignee' | translate}}" [(ngModel)]="detailObject.assignee" 
+          [disabled]="!isFieldChangable" name="assgnee">
           <mat-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
             {{mem.DisplayAs}} - {{ mem.User }} 
           </mat-option>

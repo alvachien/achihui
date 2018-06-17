@@ -27,7 +27,8 @@
 
         <!-- Tran date -->
         <mat-form-field class="demo-full-width">
-          <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="srcdpicker" placeholder="{{'Common.Date' | translate}}">
+          <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="srcdpicker" 
+            placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable">
           <mat-datepicker-toggle matSuffix [for]="srcdpicker"></mat-datepicker-toggle>
           <mat-datepicker #srcdpicker></mat-datepicker>
         </mat-form-field>

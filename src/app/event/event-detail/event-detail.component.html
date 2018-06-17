@@ -16,25 +16,28 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="detailObject.StartTime" [matDatepicker]="startdpicker" placeholder="{{'Common.StartDate' | translate}}">
+        <input matInput [(ngModel)]="detailObject.StartTime" [matDatepicker]="startdpicker" 
+          [disabled]="!isFieldChangable" placeholder="{{'Common.StartDate' | translate}}">
         <mat-datepicker-toggle matSuffix [for]="startdpicker"></mat-datepicker-toggle>
         <mat-datepicker #startdpicker></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="detailObject!.EndTime" [matDatepicker]="enddpicker" placeholder="{{'Common.EndDate' | translate}}">
+        <input matInput [(ngModel)]="detailObject!.EndTime" [matDatepicker]="enddpicker" 
+          [disabled]="!isFieldChangable" placeholder="{{'Common.EndDate' | translate}}">
         <mat-datepicker-toggle matSuffix [for]="enddpicker"></mat-datepicker-toggle>
         <mat-datepicker #enddpicker></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field *ngIf="isCreateMode">
-        <input matInput [(ngModel)]="detailObject!.CompleteTime" [matDatepicker]="cmpdpicker" placeholder="{{'Common.CompleteDate' | translate}}">
+        <input matInput [(ngModel)]="detailObject!.CompleteTime" [matDatepicker]="cmpdpicker" 
+          placeholder="{{'Common.CompleteDate' | translate}}">
         <mat-datepicker-toggle matSuffix [for]="cmpdpicker"></mat-datepicker-toggle>
         <mat-datepicker #cmpdpicker></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field *ngIf="!isCreateMode && detailObject.RefRecurID">
-        <input matInput [(ngModel)]="detailObject!.RefRecurID" placeholder="Ref. ID">
+        <input matInput [(ngModel)]="detailObject!.RefRecurID" readonly placeholder="Ref. ID">
       </mat-form-field>
 
       <mat-form-field>

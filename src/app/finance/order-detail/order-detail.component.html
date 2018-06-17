@@ -24,12 +24,12 @@
 
         <div class="demo-full-width">
           <mat-form-field>
-            <input matInput [(ngModel)]="detailObject.ValidFrom" [readonly]="!isFieldChangable" [matDatepicker]="vfmpicker" placeholder="{{'Common.ValidFrom' | translate}}">
+            <input matInput [(ngModel)]="detailObject.ValidFrom" [disabled]="!isFieldChangable" [matDatepicker]="vfmpicker" placeholder="{{'Common.ValidFrom' | translate}}">
             <mat-datepicker-toggle matSuffix [for]="vfmpicker"></mat-datepicker-toggle>
             <mat-datepicker #vfmpicker></mat-datepicker>
           </mat-form-field>
           <mat-form-field>
-            <input matInput [(ngModel)]="detailObject.ValidTo" [readonly]="!isFieldChangable" [matDatepicker]="vtopicker" placeholder="{{'Common.ValidTo' | translate}}">
+            <input matInput [(ngModel)]="detailObject.ValidTo" [disabled]="!isFieldChangable" [matDatepicker]="vtopicker" placeholder="{{'Common.ValidTo' | translate}}">
             <mat-datepicker-toggle matSuffix [for]="vtopicker"></mat-datepicker-toggle>
             <mat-datepicker #vtopicker></mat-datepicker>
           </mat-form-field>
