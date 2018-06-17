@@ -5,8 +5,6 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil, 
   MomentDateFormat, EventHabitCheckin } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import * as moment from 'moment';
 
 @Component({
