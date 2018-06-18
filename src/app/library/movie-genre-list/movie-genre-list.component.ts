@@ -20,6 +20,10 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
   isLoadingResults: boolean;
 
+  get movieGenreCount(): number {
+    return this._storageService!.MovieGenres.length;
+  }
+
   constructor(public _homeDefService: HomeDefDetailService,
     private _authService: AuthService,
     private _storageService: LibraryStorageService,
