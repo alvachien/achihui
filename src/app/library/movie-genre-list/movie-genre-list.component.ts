@@ -35,46 +35,26 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter ngOnInit of HabitListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Enter ngOnInit of MovieGenreListComponent`);
     }
   }
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter ngAfterViewInit of HabitListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Enter ngAfterViewInit of MovieGenreListComponent`);
     }
 
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-
-    this.paginator.page
-      .pipe(
-      startWith({}),
-      switchMap(() => {
-        this.isLoadingResults = true;
-        return this._storageService!.fetchAllMovieGenres( );
-      }),
-      map((data: any) => {
-        // Flip flag to show that loading has finished.
-        this.isLoadingResults = false;
-
-        let rslts: MovieGenre[] = [];
-        if (data && data.contentList && data.contentList instanceof Array) {
-          for (let ci of data.contentList) {
-            let rst: MovieGenre = new MovieGenre();
-            rst.onSetData(ci);
-
-            rslts.push(rst);
-          }
-        }
-
-        return rslts;
-      }),
-      catchError(() => {
-        this.isLoadingResults = false;
-
-        return of([]);
-      }),
-      ).subscribe((data: any) => this.dataSource.data = data);
+    this.isLoadingResults = true;
+    this._storageService!.fetchAllMovieGenres( ).subscribe((x: any) => {
+      this.dataSource.data = x;
+    }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Failed to get Movie Genere in MovieGenreListComponent: ${error}`);
+      }
+    }, () => {
+      this.isLoadingResults = false;
+    });
   }
 }

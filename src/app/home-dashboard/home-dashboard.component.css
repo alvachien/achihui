@@ -17,5 +17,10 @@
 }
 
 .dashboard-card-content {
-  text-align: center;
+  /*text-align: center;*/
+  justify-content:space-between;
+}
+
+.flex-spacer {
+  flex-grow: 1;
 }
