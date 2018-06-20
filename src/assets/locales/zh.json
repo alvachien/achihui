@@ -40,6 +40,8 @@
     "ResetCurrentSelection": "清除当前选择",
     "Simulate": "模拟",
     "Checkin": "登记",
+    "Weekly": "每周",
+    "Daily": "每天",
     
     "ID": "ID",
     "Category": "类别",
@@ -165,7 +167,8 @@
     "MyUnreadMessages": "本人未读信息",
     "MyCompletedEvents": "我完成的事务",
     "MyUncompletedEvents": "我未完成的事务",
-    "Relationship": "关系"
+    "Relationship": "关系",
+    "TendencyChart": "趋势图"
   },
   "Sys":{
     "Currency": {
@@ -434,6 +437,9 @@
     "MonthOnMonth": "月度环比",
     "Terminate": "终止",
     "CloseAccount": "关闭账户",
+    "IncomeAndExpenses": "收支",
+    "IncomeTendencyChart": "收入趋势图",
+    "ExpenseTendencyChart": "支出趋势图",
 
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",

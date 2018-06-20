@@ -40,6 +40,8 @@
     "ResetCurrentSelection": "Reset Current Selection",
     "Simulate": "Simulate",
     "Checkin": "Check in",
+    "Weekly": "Weekly",
+    "Daily": "Daily",
     
     "ID": "ID",
     "Category": "Category",
@@ -165,7 +167,8 @@
     "MyUnreadMessages": "My Unread Messages",
     "MyCompletedEvents": "My Completed Events",
     "MyUncompletedEvents": "My Uncompleted Events",
-    "Relationship": "Relationship"
+    "Relationship": "Relationship",
+    "TendencyChart": "Tendency Chart"
   },
   "Sys":{
     "Currency": {
@@ -434,6 +437,9 @@
     "MonthOnMonth": "Month on Month",
     "Terminate": "Terminate",
     "CloseAccount": "Close Account",
+    "IncomeAndExpenses": "Income and expenses",
+    "IncomeTendencyChart": "Tendency Chart of Income",
+    "ExpenseTendencyChart": "Tendency Chart of Expense",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",
