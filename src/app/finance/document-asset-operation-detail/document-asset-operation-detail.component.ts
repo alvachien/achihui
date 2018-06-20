@@ -1,5 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -7,8 +6,7 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_Asset,
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_Asset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum, COMMA,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilter,
@@ -174,12 +172,29 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       return false;
     }
 
+    // Check description
     if (!this.detailObject.Desp) {
       return false;
+    } else {
+      this.detailObject.Desp = this.detailObject.Desp.trim();
+      if (this.detailObject.Desp.length <= 0) {
+        return false;
+      }  
     }
 
-    this.detailObject.Desp = this.detailObject.Desp.trim();
-    if (this.detailObject.Desp.length <= 0) {
+    // Check the extract part
+    if (!this.detailObject.AssetAccount) {
+      return false;
+    }
+    if (!this.detailObject.AssetAccount.Name) {
+      return false;
+    } else {
+      this.detailObject.AssetAccount.Name = this.detailObject.AssetAccount.Name;
+      if (this.detailObject.AssetAccount.Name.length <= 0) {
+        return false;
+      }
+    }
+    if (!this.detailObject.AssetAccount.CategoryID) {
       return false;
     }
 
