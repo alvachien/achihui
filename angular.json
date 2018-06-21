@@ -83,23 +83,6 @@
                 }
               ]
             },
-            "github": {
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.github.ts"
-                }
-              ]
-            },
             "azure": {
               "optimization": true,
               "outputHashing": "all",
@@ -129,9 +112,6 @@
           "configurations": {
             "production": {
               "browserTarget": "achihui:build:production"
-            },
-            "github": {
-              "browserTarget": "achihui:build:github"
             },
             "azure": {
               "browserTarget": "achihui:build:azure"
