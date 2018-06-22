@@ -27,6 +27,34 @@
         [disabled]="!isFieldChangable" [(ngModel)]="detailObject.BriefAnswer"></textarea>
       <mat-hint align="end">{{brfawr.value.length}} / 200</mat-hint>
     </mat-form-field>
+
+    <!-- Selection -->
+    <div class="table-container mat-elevation-z8" *ngIf="detailObject!.QBType === QuestionBankTypeEnum.MultipleChoice">
+      <mat-table #table [dataSource]="dataSourceSub">
+        <!-- Sub Column -->
+        <ng-container matColumnDef="subitem">
+          <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            {{ row.ID }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Details Column -->
+        <ng-container matColumnDef="details">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Detail' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.FullDisplayText | translate}} </mat-cell>
+        </ng-container>
+        
+        <!-- Others Column -->
+        <ng-container matColumnDef="others">
+          <mat-header-cell *matHeaderCellDef> {{'Common.Others' | translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.Others}} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedSubColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedSubColumns;"></mat-row>
+      </mat-table>
+    </div>
   
     <mat-form-field class="demo-full-width">
       <mat-chip-list #tagList>

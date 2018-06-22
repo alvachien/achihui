@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "0.5.5.1",
+  "version": "0.5.7.2",
   "private": true,
   "description": "UI layer for HIH, built with Angular 6, Material 6, and so on.",
   "keywords": [
@@ -61,8 +61,8 @@
     "zone.js": "^0.8.9"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.6.3",
-    "@angular/cli": "^6.0.5",
+    "@angular-devkit/build-angular": "0.6.3",
+    "@angular/cli": "6.0.5",
     "@angular/compiler-cli": "6.0.2",
     "@types/hammerjs": "^2.0.34",
     "@types/jasmine": "^2.8.6",

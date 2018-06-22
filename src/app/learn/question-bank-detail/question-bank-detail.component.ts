@@ -1,17 +1,18 @@
 import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatChipInputEvent } from '@angular/material';
+import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { COMMA, LogLevel, QuestionBankItem, UIMode, getUIModeString, QuestionBankTypeEnum, UICommonLabelEnum } from '../../model';
+import { LogLevel, QuestionBankItem, QuestionBankSubItem, UIMode, getUIModeString,
+  QuestionBankTypeEnum, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { Observable } from 'rxjs';
-import { ENTER } from '@angular/cdk/keycodes';
+import { ENTER, COMMA, SPACE } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'hih-learn-question-bank-detail',
   templateUrl: './question-bank-detail.component.html',
-  styleUrls: ['./question-bank-detail.component.scss']
+  styleUrls: ['./question-bank-detail.component.scss'],
 })
 export class QuestionBankDetailComponent implements OnInit {
 
@@ -20,6 +21,8 @@ export class QuestionBankDetailComponent implements OnInit {
   public detailObject: QuestionBankItem | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   addOnBlur: boolean = true;
+  displayedSubColumns: string[] = ['subitem', 'details', 'others'];
+  public dataSourceSub: MatTableDataSource<QuestionBankSubItem> = new MatTableDataSource<QuestionBankSubItem>();
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
@@ -60,15 +63,15 @@ export class QuestionBankDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readQuestionEvent.subscribe((x: any) => {
-            if (x instanceof QuestionBankItem) {
+          this._storageService.readQuestionEvent.subscribe((y: any) => {
+            if (y instanceof QuestionBankItem) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in QuestionBankDetailComponent, succeed to readQuestionEvent : ${x}`);
+                console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in QuestionBankDetailComponent, succeed to readQuestionEvent : ${y}`);
               }
-              this.detailObject = x;
+              this.detailObject = y;
             } else {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.log(`AC_HIH_UI [Error]: Entering ngOnInit in QuestionBankDetailComponent, failed to readQuestionEvent : ${x}`);
+                console.error(`AC_HIH_UI [Error]: Entering ngOnInit in QuestionBankDetailComponent, failed to readQuestionEvent : ${y}`);
               }
               this.detailObject = new QuestionBankItem();
             }
@@ -116,10 +119,15 @@ export class QuestionBankDetailComponent implements OnInit {
       return false;
     }
 
-    // Only support one type by now
-    if (this.detailObject.QBType !== QuestionBankTypeEnum.EssayQuestion) {
-      return false;
+    if (this.detailObject.QBType === QuestionBankTypeEnum.MultipleChoice) {
+      if (this.dataSourceSub.data.length <= 1) {
+        return false;
+      }
     }
+    // // Only support one type by now
+    // if (this.detailObject.QBType !== QuestionBankTypeEnum.EssayQuestion) {
+    //   return false;
+    // }
 
     return true;
   }
@@ -175,7 +183,7 @@ export class QuestionBankDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof QuestionBankItem) {
         // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess),
           this._uiService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });

@@ -30,7 +30,6 @@ export const MomentDateFormat: string = 'YYYY-MM-DD';
 
 export enum AuthorizeScope { All = 1, OnlyOwner = 2 }
 export enum MessageType { Info = 1, Warning = 2, Error = 3 }
-export const COMMA = 188;
 
 /**
  * Enum for Common Label
@@ -64,7 +63,7 @@ export enum QuestionBankTypeEnum {
  * Enum for Tag type
  */
 export enum TagTypeEnum {
-  LearnQuestionBank   = 1,
+  LearnQuestionBank     = 1,
   // EnglishWord         = 2,
   // EnglishSentence     = 3,
 
@@ -75,27 +74,27 @@ export enum TagTypeEnum {
  * Overview Scope
  */
 export enum OverviewScopeEnum {
-  CurrentMonth = 1,
-  CurrentYear = 2,
-  PreviousMonth = 3,
-  PreviousYear = 4,
-  CurrentQuarter = 5,
+  CurrentMonth    = 1,
+  CurrentYear     = 2,
+  PreviousMonth   = 3,
+  PreviousYear    = 4,
+  CurrentQuarter  = 5,
   PreviousQuarter = 6,
-  CurrentWeek = 7,
-  PreviousWeek = 8,
+  CurrentWeek     = 7,
+  PreviousWeek    = 8,
 
-  All = 9,
+  All             = 9,
 }
 
 /**
  * UI Mode on detail page
  */
 export enum UIMode {
-  Create = 1,
-  Change = 2,
-  Display = 3,
+  Create    = 1,
+  Change    = 2,
+  Display   = 3,
 
-  Invalid = 9,
+  Invalid   = 9,
 }
 
 export function isUIEditable(mode: UIMode): boolean {
@@ -131,14 +130,14 @@ export interface IUIDetailPage {
  * Repeat frequency
  */
 export enum RepeatFrequencyEnum {
-  Month = 0,
-  Fortnight = 1,
-  Week = 2,
-  Day = 3,
-  Quarter = 4,
-  HalfYear = 5,
-  Year = 6,
-  Manual = 7,
+  Month       = 0,
+  Fortnight   = 1,
+  Week        = 2,
+  Day         = 3,
+  Quarter     = 4,
+  HalfYear    = 5,
+  Year        = 6,
+  Manual      = 7,
 }
 
 /**

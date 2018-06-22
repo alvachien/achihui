@@ -8,13 +8,13 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, Subject, BehaviorSubject, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument, COMMA,
+import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   UIMode, getUIModeString, FinanceDocType_CurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate,
   IAccountCategoryFilter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { ENTER } from '@angular/cdk/keycodes';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'hih-finance-document-exchange-detail',

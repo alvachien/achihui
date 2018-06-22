@@ -7,12 +7,12 @@ import { MatDialog, MatSnackBar, MatChipInputEvent } from '@angular/material';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal, COMMA,
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Normal,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   UICommonLabelEnum, IAccountCategoryFilter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { ENTER } from '@angular/cdk/keycodes';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 /**
  * Data source of Normal Document Items
