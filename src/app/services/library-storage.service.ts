@@ -67,7 +67,6 @@ export class LibraryStorageService {
       return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -126,7 +125,6 @@ export class LibraryStorageService {
       return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -185,7 +183,6 @@ export class LibraryStorageService {
       return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -237,7 +234,6 @@ export class LibraryStorageService {
       return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {

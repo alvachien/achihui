@@ -46,7 +46,7 @@ export class EventStorageService {
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(apiurl, {headers: headers, params: params, withCredentials: true});
+    return this._http.get<any>(apiurl, {headers: headers, params: params });
   }
 
   /**
@@ -65,7 +65,6 @@ export class EventStorageService {
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -95,7 +94,6 @@ export class EventStorageService {
     return this._http.post(apiurl, jdata, {
         headers: headers,
         params: params,
-        withCredentials: true,
       });
   }
 
@@ -125,7 +123,6 @@ export class EventStorageService {
     return this._http.patch(apiurl, jdata, {
         headers: headers,
         params: params,
-        withCredentials: true,
       });
   }
 
@@ -145,7 +142,7 @@ export class EventStorageService {
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
+    return this._http.get<any>(requestUrl, {headers: headers, });
   }
 
   /**
@@ -165,7 +162,6 @@ export class EventStorageService {
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -209,7 +205,6 @@ export class EventStorageService {
     return this._http.post(apiurl, jdata, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -244,7 +239,6 @@ export class EventStorageService {
     return this._http.post(apiurl, jdata, {
         headers: headers,
         // params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -282,7 +276,6 @@ export class EventStorageService {
     return this._http.delete(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -309,7 +302,7 @@ export class EventStorageService {
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
+    return this._http.get<any>(requestUrl, {headers: headers, });
   }
 
   public fetchHabitDetailWithCheckIn(bgn: moment.Moment, end: moment.Moment): Observable<any> {
@@ -324,7 +317,7 @@ export class EventStorageService {
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
+    return this._http.get<any>(requestUrl, {headers: headers, });
   }
 
   /**
@@ -343,7 +336,6 @@ export class EventStorageService {
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -373,7 +365,6 @@ export class EventStorageService {
     return this._http.post(apiurl, jdata, {
         headers: headers,
         params: params,
-        withCredentials: true,
       });
   }
 
@@ -394,7 +385,6 @@ export class EventStorageService {
     return this._http.post(apiurl, jdata, {
         headers: headers,
         params: params,
-        withCredentials: true,
       });
   }
 
@@ -415,7 +405,6 @@ export class EventStorageService {
     return this._http.put(apiurl, jdata, {
         headers: headers,
         params: params,
-        withCredentials: true,
       });
   }
 
@@ -436,7 +425,6 @@ export class EventStorageService {
     return this._http.post(apiurl, jdata, {
         headers: headers,
         params: params,
-        withCredentials: true,
       });
   }
 }

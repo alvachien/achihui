@@ -82,7 +82,6 @@ export class HomeDefDetailService {
 
       this._http.get(apiurl, {
           headers: headers,
-          withCredentials: true,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -132,7 +131,7 @@ export class HomeDefDetailService {
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    this._http.get(apiurl, { headers: headers, withCredentials: true })
+    this._http.get(apiurl, { headers: headers, })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering map in ReadHomeDef in HomeDefDetailService: ${response}`);
@@ -177,7 +176,6 @@ export class HomeDefDetailService {
     const jdata: any = JSON && JSON.stringify(data);
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -228,7 +226,6 @@ export class HomeDefDetailService {
       this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -280,7 +277,6 @@ export class HomeDefDetailService {
       this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -331,7 +327,7 @@ export class HomeDefDetailService {
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true});
+    return this._http.get<any>(requestUrl, {headers: headers, });
   }
 
   /**
@@ -348,7 +344,6 @@ export class HomeDefDetailService {
     const jdata: any = JSON && JSON.stringify(data.writeJSONObject());
     return this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -382,7 +377,6 @@ export class HomeDefDetailService {
     return this._http.patch(apiurl, jdata, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -416,7 +410,6 @@ export class HomeDefDetailService {
     return this._http.patch(apiurl, jdata, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -442,7 +435,7 @@ export class HomeDefDetailService {
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, {headers: headers, withCredentials: true})
+    return this._http.get<any>(requestUrl, {headers: headers, })
       .pipe(map((x: any) => {
         this.keyFigure = new HomeKeyFigure();
         this.keyFigure.onSetData(x);

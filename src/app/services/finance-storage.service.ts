@@ -111,7 +111,6 @@ export class FinanceStorageService {
       return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -164,7 +163,6 @@ export class FinanceStorageService {
       return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -216,7 +214,6 @@ export class FinanceStorageService {
       return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -290,7 +287,6 @@ export class FinanceStorageService {
       return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -343,7 +339,6 @@ export class FinanceStorageService {
       return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -395,7 +390,6 @@ export class FinanceStorageService {
     const jdata: string = objAcnt.writeJSONString();
     this._http.post(apiurl, jdata, {
       headers: headers,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -447,7 +441,6 @@ export class FinanceStorageService {
     this._http.put(apiurl, jdata, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -507,7 +500,6 @@ export class FinanceStorageService {
     return this._http.patch(apiurl, jdata, {
         headers: headers,
         params: params,
-        withCredentials: true,
       });
   }
 
@@ -527,7 +519,6 @@ export class FinanceStorageService {
     this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -585,7 +576,6 @@ export class FinanceStorageService {
       return this._http.get<any>(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         // .retry(3)
         .pipe(map((response: HttpResponse<any>) => {
@@ -638,7 +628,6 @@ export class FinanceStorageService {
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
       headers: headers,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -690,7 +679,6 @@ export class FinanceStorageService {
     this._http.put(apiurl, jdata, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -745,7 +733,6 @@ export class FinanceStorageService {
     this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -803,7 +790,6 @@ export class FinanceStorageService {
       return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -855,7 +841,6 @@ export class FinanceStorageService {
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
       headers: headers,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -907,7 +892,6 @@ export class FinanceStorageService {
     this._http.put(apiurl, jdata, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -963,7 +947,6 @@ export class FinanceStorageService {
     this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1026,7 +1009,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1072,7 +1054,6 @@ export class FinanceStorageService {
     const jdata: string = objDetail.writeJSONString();
     this._http.post(apiurl, jdata, {
       headers: headers,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1121,7 +1102,6 @@ export class FinanceStorageService {
     const jdata: string = objDetail.writeJSONString();
     this._http.put(apiurl, jdata, {
       headers: headers,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1169,7 +1149,6 @@ export class FinanceStorageService {
 
     this._http.post(apiurl, jdata, {
       headers: headers,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1217,7 +1196,6 @@ export class FinanceStorageService {
 
     this._http.post(apiurl, jdata, {
       headers: headers,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1273,7 +1251,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1302,7 +1279,6 @@ export class FinanceStorageService {
     return this._http.post(apiurl, undefined, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1328,7 +1304,6 @@ export class FinanceStorageService {
 
     this._http.post(apiurl, jdata, {
       headers: headers,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1378,7 +1353,6 @@ export class FinanceStorageService {
     this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1430,7 +1404,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1459,7 +1432,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1488,7 +1460,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1517,7 +1488,6 @@ export class FinanceStorageService {
     this._http.delete(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1567,7 +1537,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1596,7 +1565,6 @@ export class FinanceStorageService {
     return this._http.post(apiurl, undefined, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1625,7 +1593,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1651,7 +1618,6 @@ export class FinanceStorageService {
 
     return this._http.post(apiurl, jdata, {
       headers: headers,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1686,7 +1652,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1721,7 +1686,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
     .pipe(map((response: HttpResponse<any>) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1750,7 +1714,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1777,7 +1740,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1804,7 +1766,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1831,7 +1792,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1864,7 +1824,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1936,7 +1895,6 @@ export class FinanceStorageService {
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1982,7 +1940,6 @@ export class FinanceStorageService {
     return this._http.post(apiurl, jdata, {
       headers: headers,
       params: params,
-      withCredentials: true,
     }).pipe(map((x: any) => {
       let arrst: DocumentItemWithBalance[] = [];
       if (x && x.contentList instanceof Array && x.contentList.length > 0) {
@@ -2022,7 +1979,6 @@ export class FinanceStorageService {
 
     return this._http.post(apiurl, jdata, {
       headers: headers,
-      withCredentials: true,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {

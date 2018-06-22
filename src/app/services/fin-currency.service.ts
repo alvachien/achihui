@@ -35,7 +35,6 @@ export class FinCurrencyService {
 
       return this._http.get(apiurl, {
           headers: headers,
-          withCredentials: true,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {

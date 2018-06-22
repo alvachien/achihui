@@ -95,7 +95,6 @@ export class LearnStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -158,7 +157,6 @@ export class LearnStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -210,7 +208,6 @@ export class LearnStorageService {
     const jdata: string = obj.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -259,7 +256,6 @@ export class LearnStorageService {
     const jdata: string = obj.writeJSONString();
     this._http.put(apiurl, jdata, {
         headers: headers,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -316,7 +312,6 @@ export class LearnStorageService {
     this._http.delete(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -369,7 +364,6 @@ export class LearnStorageService {
     this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -428,7 +422,6 @@ export class LearnStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -480,7 +473,6 @@ export class LearnStorageService {
     const jdata: string = hist.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -527,7 +519,6 @@ export class LearnStorageService {
     let apiurl: string = environment.ApiUrl + '/api/LearnHistory/' + histid;
     this._http.get(apiurl, {
         headers: headers,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -590,7 +581,6 @@ export class LearnStorageService {
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -623,7 +613,6 @@ export class LearnStorageService {
     return this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -652,7 +641,6 @@ export class LearnStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -704,7 +692,6 @@ export class LearnStorageService {
     const jdata: string = item.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -753,7 +740,6 @@ export class LearnStorageService {
     const jdata: string = item.writeJSONString();
     this._http.put(apiurl, jdata, {
         headers: headers,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -809,7 +795,6 @@ export class LearnStorageService {
     this._http.delete(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -861,7 +846,6 @@ export class LearnStorageService {
     this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -920,7 +904,6 @@ export class LearnStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -972,7 +955,6 @@ export class LearnStorageService {
     const jdata: string = item.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1022,7 +1004,6 @@ export class LearnStorageService {
     this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1070,7 +1051,6 @@ export class LearnStorageService {
       return this._http.get(apiurl, {
           headers: headers,
           params: params,
-          withCredentials: true,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1122,7 +1102,6 @@ export class LearnStorageService {
     const jdata: string = item.writeJSONString();
     this._http.post(apiurl, jdata, {
         headers: headers,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -1172,7 +1151,6 @@ export class LearnStorageService {
     this._http.get(apiurl, {
         headers: headers,
         params: params,
-        withCredentials: true,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
