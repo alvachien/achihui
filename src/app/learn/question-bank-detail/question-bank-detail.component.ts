@@ -155,6 +155,12 @@ export class QuestionBankDetailComponent implements OnInit {
     }
   }
 
+  public onCreateSubItem() {
+    let sitems = this.dataSourceSub.data.slice();
+    sitems.push(new QuestionBankSubItem());
+    this.dataSourceSub.data = sitems;
+  }
+
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.onQtnBankCreate();
