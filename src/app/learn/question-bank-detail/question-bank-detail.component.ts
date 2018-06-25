@@ -124,10 +124,6 @@ export class QuestionBankDetailComponent implements OnInit {
         return false;
       }
     }
-    // // Only support one type by now
-    // if (this.detailObject.QBType !== QuestionBankTypeEnum.EssayQuestion) {
-    //   return false;
-    // }
 
     return true;
   }
@@ -155,8 +151,8 @@ export class QuestionBankDetailComponent implements OnInit {
     }
   }
 
-  public onCreateSubItem() {
-    let sitems = this.dataSourceSub.data.slice();
+  public onCreateSubItem(): void {
+    let sitems: any[] = this.dataSourceSub.data.slice();
     sitems.push(new QuestionBankSubItem());
     this.dataSourceSub.data = sitems;
   }
@@ -229,6 +225,7 @@ export class QuestionBankDetailComponent implements OnInit {
     });
 
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
+    this.detailObject.SubItems = this.dataSourceSub.data;
     this._storageService.createQuestionBankItem(this.detailObject);
   }
 

@@ -38,7 +38,6 @@
         <ng-container matColumnDef="subitem">
           <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
           <mat-cell *matCellDef="let row">
-            {{ row.SubItem }}
             <mat-form-field class="demo-full-width">
               <input matInput type="text" [readonly]="!isFieldChangable" [(ngModel)]="row.SubItem"
                 maxlength="20">
@@ -49,7 +48,7 @@
         <!-- Details Column -->
         <ng-container matColumnDef="details">
           <mat-header-cell *matHeaderCellDef>{{'Common.Detail' | translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.Detail | translate}} 
+          <mat-cell *matCellDef="let row">
             <mat-form-field class="demo-full-width">
               <textarea matInput maxlength="200" rows="5"
                 [disabled]="!isFieldChangable" [(ngModel)]="row.Detail"></textarea>
@@ -60,7 +59,7 @@
         <!-- Others Column -->
         <ng-container matColumnDef="others">
           <mat-header-cell *matHeaderCellDef> {{'Common.Others' | translate}} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.Others}} 
+          <mat-cell *matCellDef="let row">
             <mat-form-field class="demo-full-width">
               <textarea matInput maxlength="50" rows="5"
                 [disabled]="!isFieldChangable" [(ngModel)]="row.Others"></textarea>
