@@ -33,7 +33,6 @@ export class QuestionBankDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _uiService: UIStatusService,
     public _storageService: LearnStorageService) {
-
     this.detailObject = new QuestionBankItem();
   }
 
@@ -69,6 +68,7 @@ export class QuestionBankDetailComponent implements OnInit {
                 console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in QuestionBankDetailComponent, succeed to readQuestionEvent : ${y}`);
               }
               this.detailObject = y;
+              this.dataSourceSub.data = this.detailObject.SubItems;
             } else {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngOnInit in QuestionBankDetailComponent, failed to readQuestionEvent : ${y}`);
@@ -267,6 +267,8 @@ export class QuestionBankDetailComponent implements OnInit {
       }
     });
 
+    this.detailObject.SubItems = [];
+    this.detailObject.SubItems = this.dataSourceSub.data;
     this._storageService.updateQuestionBankItem(this.detailObject);
   }
 }

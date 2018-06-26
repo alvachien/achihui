@@ -631,7 +631,15 @@ export class QuestionBankSubItem {
   public Others: string;
 
   public onSetData(data?: any): void {
-    // if (data && data.)
+    if (data && data.subItem) {
+      this.SubItem = data.subItem;
+    }
+    if (data && data.detail) {
+      this.Detail = data.detail;
+    }
+    if (data && data.others) {
+      this.Others = data.others;
+    }
   }
 
   public writeJSONObject(): any {
