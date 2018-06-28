@@ -404,6 +404,8 @@
     "Transactions": "Transactions",
     "Incoming": "Incoming",
     "Outgoing": "Outgoing",
+    "Borrow": "Borrow",
+    "Lend": "Lend",
     "Assets": "Assets",
     "Liabilities": "Liabilities",
     "ExchangeRate": "Exchange rate",

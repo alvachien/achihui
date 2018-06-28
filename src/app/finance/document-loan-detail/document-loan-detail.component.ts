@@ -13,6 +13,7 @@ import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, Fin
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * Data source of ADP Template Document
@@ -145,14 +146,14 @@ export class DocumentLoanDetailComponent implements OnInit {
           this.uiMode = UIMode.Invalid;
         }
       });
-    }, (error: any) => {
+    }, (error: HttpErrorResponse) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
       }
 
       const dlginfo: MessageDialogInfo = {
         Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error ? error.message : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
         Button: MessageDialogButtonEnum.onlyok,
       };
 
@@ -214,14 +215,14 @@ export class DocumentLoanDetailComponent implements OnInit {
         }
 
         this.tmpDocOperEvent.emit();
-      }, (error: any) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering onSync, failed to calculate the template docs : ${error}`);
         }
 
         const dlginfo: MessageDialogInfo = {
           Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: error ? error.message : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           Button: MessageDialogButtonEnum.onlyok,
         };
 

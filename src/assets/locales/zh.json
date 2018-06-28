@@ -404,6 +404,8 @@
     "Transactions": "交易",
     "Incoming": "收入",
     "Outgoing": "支出",
+    "Borrow": "借入",
+    "Lend": "借出",
     "Assets": "资产",
     "Liabilities": "负债",
     "ExchangeRate": "汇率",
