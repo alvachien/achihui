@@ -5,7 +5,8 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, UIMode, getUIModeString, FinanceAccountCategory_Asset,
-  FinanceAccountCategory_AdvancePayment, FinanceAccountCategory_Loan, UICommonLabelEnum,
+  FinanceAccountCategory_AdvancePayment, FinanceAccountCategory_BorrowFrom,
+  FinanceAccountCategory_LendTo, UICommonLabelEnum,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -76,7 +77,8 @@ export class AccountDetailComponent implements OnInit {
                 if (this.uiMode === UIMode.Change) {
                   if (this.detailObject.CategoryId === FinanceAccountCategory_Asset
                   || this.detailObject.CategoryId === FinanceAccountCategory_AdvancePayment
-                  || this.detailObject.CategoryId === FinanceAccountCategory_Loan) {
+                  || this.detailObject.CategoryId === FinanceAccountCategory_BorrowFrom
+                  || this.detailObject.CategoryId === FinanceAccountCategory_LendTo) {
                     this.uiMode = UIMode.Display; // Not support for those accounts yet
                   }
                 }
@@ -125,7 +127,8 @@ export class AccountDetailComponent implements OnInit {
     return false;
   }
   get isLoanAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === FinanceAccountCategory_Loan)) {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === FinanceAccountCategory_BorrowFrom
+    || this.detailObject.CategoryId === FinanceAccountCategory_LendTo)) {
       return true;
     }
 

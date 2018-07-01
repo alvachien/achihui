@@ -242,7 +242,11 @@ const routes: Routes = [
             component: DocumentExchangeDetailComponent,
           },
           {
-            path: 'createloan',
+            path: 'createbrwfrm',
+            component: DocumentLoanDetailComponent,
+          },
+          {
+            path: 'createlendto',
             component: DocumentLoanDetailComponent,
           },
           {
@@ -274,7 +278,11 @@ const routes: Routes = [
             component: DocumentExchangeDetailComponent,
           },
           {
-            path: 'displayloan/:id',
+            path: 'displaybrwfrm/:id',
+            component: DocumentLoanDetailComponent,
+          },
+          {
+            path: 'displaylendto/:id',
             component: DocumentLoanDetailComponent,
           },
           {
@@ -306,7 +314,11 @@ const routes: Routes = [
             component: DocumentExchangeDetailComponent,
           },
           {
-            path: 'editloan/:id',
+            path: 'editbrwfrm/:id',
+            component: DocumentLoanDetailComponent,
+          },
+          {
+            path: 'editlendto/:id',
             component: DocumentLoanDetailComponent,
           },
           {

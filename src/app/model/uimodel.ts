@@ -354,6 +354,7 @@ export class UIFinLoanDocument {
   public TranDate: moment.Moment;
   public Desp: string;
   public TranCurr: string;
+  public isLendTo: boolean;
 
   public SourceAccountId: number;
   public SourceControlCenterId: number;
@@ -366,10 +367,15 @@ export class UIFinLoanDocument {
   constructor() {
     this.LoanAccount = new HIHFinance.AccountExtraLoan();
     this.TranDate = moment();
+    this.isLendTo = false;
   }
   public generateDocument(): HIHFinance.Document {
     let doc: HIHFinance.Document = new HIHFinance.Document();
-    doc.DocType = hih.FinanceDocType_Loan;
+    if (this.isLendTo) {
+      doc.DocType = hih.FinanceDocType_LendTo;
+    } else {
+      doc.DocType = hih.FinanceDocType_BorrowFrom;
+    }
     doc.Desp = this.Desp;
     doc.TranCurr = this.TranCurr;
     doc.TranDate = this.TranDate.clone();
@@ -530,7 +536,8 @@ export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg:
     }
     if (ctgyFilter !== undefined
       && ctgyFilter.skipLoan === true
-      && acnt.CategoryId === hih.FinanceAccountCategory_Loan) {
+      && (acnt.CategoryId === hih.FinanceAccountCategory_BorrowFrom 
+      || acnt.CategoryId === hih.FinanceAccountCategory_LendTo)) {
       continue;
     }
     if (ctgyFilter !== undefined

@@ -415,7 +415,9 @@ export class Account extends hih.BaseModel {
       rstObj.extraInfo_ADP = this.ExtraInfo.writeJSONObject();
     } else if (this.CategoryId === hih.FinanceAccountCategory_Asset && this.ExtraInfo) {
       rstObj.extraInfo_AS = this.ExtraInfo.writeJSONObject();
-    } else if (this.CategoryId === hih.FinanceAccountCategory_Loan && this.ExtraInfo) {
+    } else if (this.CategoryId === hih.FinanceAccountCategory_BorrowFrom && this.ExtraInfo) {
+      rstObj.extraInfo_Loan = this.ExtraInfo.writeJSONObject();
+    } else if (this.CategoryId === hih.FinanceAccountCategory_LendTo && this.ExtraInfo) {
       rstObj.extraInfo_Loan = this.ExtraInfo.writeJSONObject();
     }
 
@@ -463,7 +465,10 @@ export class Account extends hih.BaseModel {
       ei.onSetData(data.extraInfo_AS);
 
       this.ExtraInfo = ei;
-    } else if (data && data.CategoryId === hih.FinanceAccountCategory_Loan && data.extraInfo_LO) {
+    } else if (data && data.CategoryId === hih.FinanceAccountCategory_BorrowFrom && data.extraInfo_LO) {
+      let ei: any = new AccountExtraLoan();
+      ei.onSetData(data.extraINfo_Loan);
+    } else if (data && data.CategoryId === hih.FinanceAccountCategory_LendTo && data.extraInfo_LO) {
       let ei: any = new AccountExtraLoan();
       ei.onSetData(data.extraINfo_Loan);
     }

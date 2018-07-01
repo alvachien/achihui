@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, FinanceDocType_Normal, FinanceDocType_CurrencyExchange,
   FinanceDocType_Transfer, FinanceDocType_AdvancePayment, OverviewScopeEnum, getOverviewScopeRange,
   FinanceDocType_CreditcardRepay, FinanceDocType_AssetBuyIn, FinanceDocType_AssetSoldOut,
-  FinanceDocType_Loan, UICommonLabelEnum, } from '../../model';
+  FinanceDocType_BorrowFrom, UICommonLabelEnum, FinanceDocType_LendTo, } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -120,8 +120,11 @@ export class DocumentListComponent implements OnInit {
   public onCreateAssetSoldOutDocument(): void {
     this._router.navigate(['/finance/document/createassetsold']);
   }
-  public onCreateLoanDocument(): void {
-    this._router.navigate(['/finance/document/createloan']);
+  public onCreateBorrowFromDocument(): void {
+    this._router.navigate(['/finance/document/createbrwfrm']);
+  }
+  public onCreateLendToDocument(): void {
+    this._router.navigate(['/finance/document/createlendto']);
   }
 
   public onDisplayDocument(doc: Document): void {
@@ -137,8 +140,10 @@ export class DocumentListComponent implements OnInit {
       this.onDisplayAssetBuyInDocument(doc);
     } else if (doc.DocType === FinanceDocType_AssetSoldOut) {
       this.onDisplayAssetSoldOutDocument(doc);
-    } else if (doc.DocType === FinanceDocType_Loan) {
-      this.onDisplayLoanDocument(doc);
+    } else if (doc.DocType === FinanceDocType_BorrowFrom) {
+      this.onDisplayBorrowFromDocument(doc);
+    } else if(doc.DocType === FinanceDocType_LendTo) {
+      this.onDisplayLendToDocument(doc);
     }
   }
   public onDisplayNormalDocument(doc: Document): void {
@@ -159,8 +164,11 @@ export class DocumentListComponent implements OnInit {
   public onDisplayAssetSoldOutDocument(doc: Document): void {
     this._router.navigate(['/finance/document/displayassetsold', doc.Id]);
   }
-  public onDisplayLoanDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/displayloan', doc.Id]);
+  public onDisplayBorrowFromDocument(doc: Document): void {
+    this._router.navigate(['/finance/document/displaybrwfrm', doc.Id]);
+  }
+  public onDisplayLendToDocument(doc: Document): void {
+    this._router.navigate(['/finance/document/displaylendto', doc.Id]);
   }
 
   public onChangeDocument(doc: Document): void {
@@ -176,8 +184,10 @@ export class DocumentListComponent implements OnInit {
       this.onChangeAssetBuyInDocument(doc);
     } else if (doc.DocType === FinanceDocType_AssetSoldOut) {
       this.onChangeAssetSoldOutDocument(doc);
-    } else if (doc.DocType === FinanceDocType_Loan) {
-      this.onChangeLoanDocument(doc);
+    } else if (doc.DocType === FinanceDocType_BorrowFrom) {
+      this.onChangeeBorrowFromDocument(doc);
+    } else if (doc.DocType === FinanceDocType_LendTo) {
+      this.onChangeLendToDocument(doc);
     }
   }
   public onChangeNormalDocument(doc: Document): void {
@@ -198,8 +208,11 @@ export class DocumentListComponent implements OnInit {
   public onChangeAssetSoldOutDocument(doc: Document): void {
     this._router.navigate(['/finance/document/editassetsold', doc.Id]);
   }
-  public onChangeLoanDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/editloan', doc.Id]);
+  public onChangeeBorrowFromDocument(doc: Document): void {
+    this._router.navigate(['/finance/document/editbrwfrm', doc.Id]);
+  }
+  public onChangeLendToDocument(doc: Document): void {
+    this._router.navigate(['/finance/document/editlendto', doc.Id]);
   }
 
   public onDeleteDocument(doc: Document): void {

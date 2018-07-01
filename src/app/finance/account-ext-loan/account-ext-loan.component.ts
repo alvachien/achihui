@@ -14,6 +14,7 @@ export class AccountExtLoanComponent implements OnInit {
 
   @Input() extObject: AccountExtraLoan;
   @Input() uiMode: UIMode;
+  @Input() isLendTo: boolean;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -24,7 +25,6 @@ export class AccountExtLoanComponent implements OnInit {
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService) {
-    // this._uiStatusService.
   }
 
   ngOnInit(): void {

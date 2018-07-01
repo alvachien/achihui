@@ -7,9 +7,10 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_Loan, TemplateDocLoan, UIFinLoanDocument,
+import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_BorrowFrom, 
+  FinanceAccountCategory_BorrowFrom, FinanceAccountCategory_LendTo, FinanceDocType_LendTo, TemplateDocLoan, UIFinLoanDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  FinanceAccountCategory_Loan, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, IAccountCategoryFilter } from '../../model';
+  FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, IAccountCategoryFilter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -46,7 +47,10 @@ export class TemplateDocLoanDataSource extends DataSource<any> {
 })
 export class DocumentLoanDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
+  private loanType: number;
+  public isLendTo: boolean;
   public documentTitle: string;
+  
   public currentMode: string;
   public detailObject: UIFinLoanDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
@@ -116,18 +120,45 @@ export class DocumentLoanDetailComponent implements OnInit {
 
       this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'createloan') {
+          if (x[0].path === 'createbrwfrm') {
             this.onInitCreateMode();
-          } else if (x[0].path === 'editloan') {
+            this.loanType = FinanceDocType_BorrowFrom;
+            this.isLendTo = false;
+          } else if (x[0].path === 'createlendto') {
+            this.onInitCreateMode();
+            this.loanType = FinanceDocType_LendTo;
+            this.isLendTo = true;
+          } else if (x[0].path === 'editbrwfrm') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'displayloan') {
+            this.loanType = FinanceDocType_BorrowFrom;
+            this.isLendTo = false;
+          } else if (x[0].path === 'editlendto') {
+            this.routerID = +x[1].path;
+
+            this.uiMode = UIMode.Change;
+            this.loanType = FinanceDocType_LendTo;
+            this.isLendTo = true;
+          } else if (x[0].path === 'displaybrwfrm') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
+            this.loanType = FinanceDocType_BorrowFrom;
+            this.isLendTo = false;
+          } else if (x[0].path === 'displaylendto') {
+            this.routerID = +x[1].path;
+
+            this.uiMode = UIMode.Display;
+            this.loanType = FinanceDocType_LendTo;
+            this.isLendTo = true;
           }
           this.currentMode = getUIModeString(this.uiMode);
+          if (this.loanType === FinanceDocType_BorrowFrom) {
+            this.documentTitle = 'Sys.DocTy.BorrowFrom';
+          } else if(this.loanType === FinanceDocType_LendTo) {
+            this.documentTitle = 'Sys.DocTy.LendTo';
+          }
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this._storageService.readLoanDocument(this.routerID).subscribe((x2: any) => {
@@ -373,7 +404,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       let sobj: any = docObj.writeJSONObject(); // Document first
       let acntobj: Account = new Account();
       acntobj.HID = this._homedefService.ChosedHome.ID;
-      acntobj.CategoryId = FinanceAccountCategory_Loan;
+      acntobj.CategoryId = this.loanType;
       acntobj.Name = docObj.Desp;
       acntobj.Comment = docObj.Desp;
       acntobj.ExtraInfo = this.detailObject.LoanAccount;

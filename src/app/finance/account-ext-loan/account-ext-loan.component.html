@@ -1,6 +1,5 @@
 <div class="control-full-width">
-  <mat-checkbox [ngModel]="extObject!.isLendOut" (ngModelChange)="extObject.isLendOut=$event" 
-    [disabled]="!isFieldChangable">{{'System.DocType.LendOut' | translate}}</mat-checkbox>
+  <mat-checkbox [checked]="isLendTo" disabled="true">{{'Sys.DocTy.LendTo' | translate}}</mat-checkbox>
 
   <mat-form-field class="control-full-width">
     <input matInput [ngModel]="extObject?.startDate" (ngModelChange)="extObject.startDate=$event" [matDatepicker]="startdpicker" 

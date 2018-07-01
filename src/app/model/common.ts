@@ -7,7 +7,8 @@ export const IDSplitChar: string = ',';
 export const DateSplitChar: string = '-';
 export const FinanceAccountCategory_Asset: number = 7;
 export const FinanceAccountCategory_AdvancePayment: number = 8; // Advance payment
-export const FinanceAccountCategory_Loan: number = 9;
+export const FinanceAccountCategory_BorrowFrom: number = 9;
+export const FinanceAccountCategory_LendTo: number = 10;
 
 export const FinanceDocType_Normal: number = 1;
 export const FinanceDocType_Transfer: number = 2; // Transfer doc
@@ -16,7 +17,8 @@ export const FinanceDocType_AdvancePayment: number = 5;
 export const FinanceDocType_CreditcardRepay: number = 6;
 export const FinanceDocType_AssetBuyIn: number = 7;
 export const FinanceDocType_AssetSoldOut: number = 8;
-export const FinanceDocType_Loan: number = 9;
+export const FinanceDocType_BorrowFrom: number = 9;
+export const FinanceDocType_LendTo: number = 10;
 
 export const FinanceTranType_TransferIn: number = 37;
 export const FinanceTranType_TransferOut: number = 60;
