@@ -46,6 +46,7 @@ export class TemplateDocLoanDataSource extends DataSource<any> {
 })
 export class DocumentLoanDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
+  public documentTitle: string;
   public currentMode: string;
   public detailObject: UIFinLoanDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
@@ -196,11 +197,14 @@ export class DocumentLoanDetailComponent implements OnInit {
       let di: FinanceLoanCalAPIInput = {
         TotalAmount: this.detailObject.TranAmount,
         TotalMonths: this.detailObject.LoanAccount.TotalMonths,
-        InterestRate: this.detailObject.LoanAccount.AnnualRate / 100,
-        StartDate: this.detailObject.LoanAccount.StartDate.clone(),
+        InterestRate: this.detailObject.LoanAccount.annualRate / 100,
+        StartDate: this.detailObject.LoanAccount.startDate.clone(),
         InterestFreeLoan: this.detailObject.LoanAccount.InterestFree ? true : false,
         RepaymentMethod: this.detailObject.LoanAccount.RepayMethod,
       };
+      if (this.detailObject.LoanAccount.endDate) {
+        di.EndDate = this.detailObject.LoanAccount.endDate.clone();
+      }
 
       this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
         for (let rst of x) {

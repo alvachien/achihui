@@ -676,27 +676,51 @@ export class AccountExtraAsset extends AccountExtra {
  */
 export class AccountExtraLoan extends AccountExtra {
   private _startDate: moment.Moment;
-  public AnnualRate : number;
+  private _endDate: moment.Moment;
+  private _isLendOut: boolean;
+  private _annualRate: number;
   public InterestFree: boolean;
   public TotalMonths: number;
   public RepayMethod: RepaymentMethodEnum;
   public RefDocId: number;
   public Comment: string;
 
-  get StartDate(): moment.Moment {
+  get startDate(): moment.Moment {
     return this._startDate;
   }
-  set StartDate(sd: moment.Moment) {
+  set startDate(sd: moment.Moment) {
     this._startDate = sd;
   }
   get StartDateFormatString(): string {
     return this._startDate.format(hih.MomentDateFormat);
+  }
+  get endDate(): moment.Moment {
+    return this._endDate;
+  }
+  set endDate(ed: moment.Moment) {
+    this._endDate = ed;
+  }
+  get EndDateFormatString(): string {
+    return this._startDate.format(hih.MomentDateFormat);
+  }
+  get isLendOut(): boolean {
+    return this._isLendOut;
+  }
+  set isLendOut(lo: boolean) {
+    this._isLendOut = lo;
+  }
+  get annualRate(): number {
+    return this._annualRate;
+  }
+  set annualRate(ar: number) {
+    this._annualRate = ar;
   }
 
   constructor() {
     super();
 
     this._startDate = moment();
+    // this._endDate = moment();
   }
 
   public onInit(): void {
@@ -707,8 +731,10 @@ export class AccountExtraLoan extends AccountExtra {
 
   public clone(): AccountExtraLoan {
     let aobj: AccountExtraLoan = new AccountExtraLoan();
-    aobj.StartDate = this.StartDate;
-    aobj.AnnualRate = this.AnnualRate;
+    aobj.startDate = this.startDate;
+    aobj.endDate = this.endDate;
+    aobj.isLendOut = this.isLendOut;
+    aobj.annualRate = this.annualRate;
     aobj.InterestFree = this.InterestFree;
     aobj.TotalMonths = this.TotalMonths;
     aobj.RepayMethod = this.RepayMethod;
@@ -721,7 +747,11 @@ export class AccountExtraLoan extends AccountExtra {
   public writeJSONObject(): any {
     let rstobj: any = super.writeJSONObject();
     rstobj.startDate = this._startDate.format(hih.MomentDateFormat);
-    rstobj.annualRate = this.AnnualRate;
+    if (this._endDate) {
+      rstobj.endDate = this._endDate.format(hih.MomentDateFormat);
+    }
+    rstobj.isLendOut = this.isLendOut;
+    rstobj.annualRate = this.annualRate;
     rstobj.interestFree = this.InterestFree;
     rstobj.totalMonths = this.TotalMonths;
     rstobj.repaymentMethod = <number>this.RepayMethod;
@@ -737,8 +767,11 @@ export class AccountExtraLoan extends AccountExtra {
     if (data && data.startDate) {
       this._startDate = moment(data.startDate, hih.MomentDateFormat);
     }
+    if (data && data.endDate) {
+      this._endDate = moment(data.endDate, hih.MomentDateFormat);
+    }
     if (data && data.annualRate) {
-      this.AnnualRate = +data.annualRate;
+      this.annualRate = +data.annualRate;
     }
     if (data && data.interestFree) {
       this.InterestFree = data.interestFree;
@@ -2288,6 +2321,7 @@ export interface FinanceLoanCalAPIInput {
   TotalMonths: number;
   InterestRate: number;
   StartDate: moment.Moment;
+  EndDate?: moment.Moment;
   InterestFreeLoan: boolean;
   RepaymentMethod: number;
 }

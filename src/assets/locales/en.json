@@ -202,7 +202,8 @@
       "CreditCardRepay": "Creditcard Repayment",
       "AssetBuyIn": "Buy in Asset",
       "AssetSoldOut": "Sold out Asset",
-      "Loan": "Loan"
+      "BorrowFrom": "Borrow from",
+      "LendTo": "Lend to"
     },
     "AssCtgy": {
       "Apartment": "Apartment",
