@@ -1975,6 +1975,9 @@ export class FinanceStorageService {
       totalAmount: datainput.TotalAmount,
       totalMonths: datainput.TotalMonths,
     };
+    if (datainput.EndDate) {
+      jobject.endDate = datainput.EndDate.format(MomentDateFormat);
+    }
     const jdata: string = JSON && JSON.stringify(jobject);
 
     return this._http.post(apiurl, jdata, {
