@@ -185,6 +185,8 @@
       "CreditCard": "信用卡",
       "DepositAccount": "存款账户",
       "Loan": "贷款",
+      "BorrowFrom": "借入款账户",
+      "LendTo": "借出款账户",
       "AdvancedPayment": "预付款",
       "AccountPayable": "应付账款",
       "AccountReceviable": "应收账款",
@@ -200,7 +202,8 @@
       "CreditCardRepay": "信用卡还款",
       "AssetBuyIn": "购入资产或大件家用器具",
       "AssetSoldOut": "出售资产或大件家用器具",
-      "Loan": "贷款"
+      "BorrowFrom": "借入",
+      "LendTo": "借出"
     },
     "AssCtgy": {
       "Apartment": "公寓",

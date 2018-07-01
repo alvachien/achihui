@@ -185,6 +185,8 @@
       "CreditCard": "CreditCard",
       "DepositAccount": "Deposit Account",
       "Loan": "Loan",
+      "BorrowFrom": "Borrow from",
+      "LendTo": "Lend to",
       "AdvancedPayment": "Advanced Payment",
       "AccountPayable": "Account Payable",
       "AccountReceviable": "Account Receviable",

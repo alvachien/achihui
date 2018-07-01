@@ -10,7 +10,7 @@
     
     <mat-toolbar>
       <mat-form-field>
-        <mat-select color="accent" class="mt-1" [(ngModel)]="selectedDocScope" (selectionChange)="onDocScopeChanged()">
+        <mat-select color="accent" [(ngModel)]="selectedDocScope" (selectionChange)="onDocScopeChanged()">
           <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -27,7 +27,8 @@
         <button mat-menu-item (click)="onCreateADPDocument()">{{'Finance.AdvancePayment' | translate}}</button>
         <button mat-menu-item (click)="onCreateAssetBuyInDocument()">{{'Sys.DocTy.AssetBuyIn' | translate}}</button>
         <button mat-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | translate}}</button>
-        <button mat-menu-item (click)="onCreateLoanDocument()">{{'Sys.DocTy.Loan' | translate}}</button>
+        <button mat-menu-item (click)="onCreateLoanDocument()">{{'Sys.AcntCty.BorrowFrom' | translate}}</button>
+        <button mat-menu-item (click)="onCreateLoanDocument()">{{'Sys.AcntCty.LendTo' | translate}}</button>
       </mat-menu>
     </mat-toolbar>
 
