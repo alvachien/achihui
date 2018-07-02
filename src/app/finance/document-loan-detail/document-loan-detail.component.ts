@@ -7,7 +7,7 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_BorrowFrom, 
+import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_BorrowFrom,
   FinanceAccountCategory_BorrowFrom, FinanceAccountCategory_LendTo, FinanceDocType_LendTo, TemplateDocLoan, UIFinLoanDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, IAccountCategoryFilter } from '../../model';
@@ -50,7 +50,7 @@ export class DocumentLoanDetailComponent implements OnInit {
   private loanType: number;
   public isLendTo: boolean;
   public documentTitle: string;
-  
+
   public currentMode: string;
   public detailObject: UIFinLoanDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
@@ -156,7 +156,7 @@ export class DocumentLoanDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
           if (this.loanType === FinanceDocType_BorrowFrom) {
             this.documentTitle = 'Sys.DocTy.BorrowFrom';
-          } else if(this.loanType === FinanceDocType_LendTo) {
+          } else if (this.loanType === FinanceDocType_LendTo) {
             this.documentTitle = 'Sys.DocTy.LendTo';
           }
 
@@ -374,7 +374,11 @@ export class DocumentLoanDetailComponent implements OnInit {
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             if (!recreate) {
-              this._router.navigate(['/finance/document/displayloan/' + x.Id.toString()]);
+              if (this.loanType === FinanceDocType_BorrowFrom) {
+                this._router.navigate(['/finance/document/displaybrwfrm/' + x.Id.toString()]);
+              } else if (this.loanType === FinanceDocType_LendTo) {
+                this._router.navigate(['/finance/document/displaylendto/' + x.Id.toString()]);
+              }
             }
           });
         } else {
