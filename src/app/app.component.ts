@@ -36,41 +36,55 @@ export class AppComponent implements OnInit {
     private _uistatusService: UIStatusService,
     private _dateAdapter: DateAdapter<any>,
     private _iconRegistry: MatIconRegistry,
+    private _http: HttpClient,
     private _sanitizer: DomSanitizer) {
     // Setup the translate
     this.userDisplayAs = '';
     this.curChosenHome = undefined;
 
-    // Register the Auth service
-    if (environment.LoginRequired) {
-      this._homeDefService.curHomeSelected.subscribe((x: any) => {
-        this.curChosenHome = x;
-      });
+    // Let's check the DB version
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json');
 
-      this._authService.authContent.subscribe((x: any) => {
-        this._zone.run(() => {
-          this.isLoggedIn = x.isAuthorized;
-          if (this.isLoggedIn) {
-            this.titleLogin = x.getUserName();
-
-            this._homeDefService.fetchAllHomeDef();
-          }
-        });
+    this._http.post(environment.ApiUrl + '/api/DBVersionCheck', '', {
+        headers: headers,
+      }).subscribe((x: any) => {
+        // Do nothing
       }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error('AC HIH UI [Error]: Failed in subscribe to User', error);
-        }
+        throw new Error('Cannot handle');
       }, () => {
-        // Completed
-      });
-    } else {
-      this.isLoggedIn = false;
-    }
+        // Register the Auth service
+        if (environment.LoginRequired) {
+          this._homeDefService.curHomeSelected.subscribe((x: any) => {
+            this.curChosenHome = x;
+          });
 
-    // ICON
-    this._iconRegistry.addSvgIcon(
-      'github',
-      this._sanitizer.bypassSecurityTrustResourceUrl('../../assets/images/github-circle-white-transparent.svg'));
+          this._authService.authContent.subscribe((x: any) => {
+            this._zone.run(() => {
+              this.isLoggedIn = x.isAuthorized;
+              if (this.isLoggedIn) {
+                this.titleLogin = x.getUserName();
+
+                this._homeDefService.fetchAllHomeDef();
+              }
+            });
+          }, (error: any) => {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error('AC HIH UI [Error]: Failed in subscribe to User', error);
+            }
+          }, () => {
+            // Completed
+          });
+        } else {
+          this.isLoggedIn = false;
+        }
+
+        // ICON
+        this._iconRegistry.addSvgIcon(
+          'github',
+          this._sanitizer.bypassSecurityTrustResourceUrl('../../assets/images/github-circle-white-transparent.svg'));
+    });
   }
 
   ngOnInit(): void {
