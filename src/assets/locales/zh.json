@@ -111,6 +111,8 @@
     "RepeatFrequency": "重复频率",
     "PageNotFoundHeader":"页面未找到",
     "PageNotFoundContent": "你想要访问的页面并不存在",
+    "PageFatalErrorHeader": "检测到关键性错误",
+    "PageFatalErrorContent": "检测到在API层和数据库层出现了关键性错误。请联系系统管理员。",
     "PageLackAuthorityHeader":"缺乏权限",
     "PageLackAuthorityContent": "你没有权限访问该页面",
     "EnglishName": "英文名字",

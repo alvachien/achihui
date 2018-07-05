@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
     { displayas: 'Nav.SimplifiedChinese', value: 'zh' },
   ];
   public isLoggedIn: boolean;
+  public isFatalError: boolean;
   public titleLogin: string;
   public userDisplayAs: string;
   public curChosenHome: HomeDef;
@@ -41,6 +42,11 @@ export class AppComponent implements OnInit {
     // Setup the translate
     this.userDisplayAs = '';
     this.curChosenHome = undefined;
+    this.isFatalError = false;
+    // ICON
+    this._iconRegistry.addSvgIcon(
+      'github',
+      this._sanitizer.bypassSecurityTrustResourceUrl('../../assets/images/github-circle-white-transparent.svg'));
 
     // Let's check the DB version
     let headers: HttpHeaders = new HttpHeaders();
@@ -49,11 +55,7 @@ export class AppComponent implements OnInit {
 
     this._http.post(environment.ApiUrl + '/api/DBVersionCheck', '', {
         headers: headers,
-      }).subscribe((x: any) => {
-        // Do nothing
-      }, (error: any) => {
-        throw new Error('Cannot handle');
-      }, () => {
+      }).subscribe((y: any) => {
         // Register the Auth service
         if (environment.LoginRequired) {
           this._homeDefService.curHomeSelected.subscribe((x: any) => {
@@ -79,12 +81,12 @@ export class AppComponent implements OnInit {
         } else {
           this.isLoggedIn = false;
         }
-
-        // ICON
-        this._iconRegistry.addSvgIcon(
-          'github',
-          this._sanitizer.bypassSecurityTrustResourceUrl('../../assets/images/github-circle-white-transparent.svg'));
-    });
+      }, (error: any) => {
+        this.isFatalError = true;
+        this._router.navigate(['/fatalerror']);
+      }, () => {
+        // Do nothing
+      });
   }
 
   ngOnInit(): void {
@@ -95,6 +97,10 @@ export class AppComponent implements OnInit {
       this._dateAdapter.setLocale(Language_ZhCN);
       this.updateDocumentTitle();
     });
+
+    if (this.isFatalError) {
+      this._router.navigate(['/fatalerror']);
+    }
   }
 
   public onLogon(): void {

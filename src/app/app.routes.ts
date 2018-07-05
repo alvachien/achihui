@@ -15,6 +15,7 @@ import { AboutComponent } from './about';
 import { CreditsComponent } from './credits';
 import { VersionComponent } from './version';
 import { UserDetailComponent } from './user-detail';
+import { PageFatalErrorComponent } from './page-fatal-error';
 
 export const appRoutes: Routes = [{
   path: '',
@@ -74,5 +75,6 @@ export const appRoutes: Routes = [{
 { path: 'userdetail', component: UserDetailComponent, canActivate: [AuthGuardService], },
 { path: 'version', component: VersionComponent },
 { path: 'lackauthority', component: PageLackAuthorityComponent },
+{ path: 'fatalerror', component: PageFatalErrorComponent },
 { path: '**', component: PageNotFoundComponent },
 ];

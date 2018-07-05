@@ -41,6 +41,7 @@ import { ThemePickerModule, ThemeStorage } from './theme-picker';
 import { FooterComponent } from './footer';
 import { HomeDashboardComponent } from './home-dashboard';
 import { UserDetailComponent } from './user-detail';
+import { PageFatalErrorComponent } from './page-fatal-error';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -86,6 +87,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     FooterComponent,
     HomeDashboardComponent,
     UserDetailComponent,
+    PageFatalErrorComponent,
   ],
   entryComponents: [
     MessageDialogComponent,
