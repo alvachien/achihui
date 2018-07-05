@@ -64,10 +64,23 @@ Advanced payment shall be splitted into pieces to make the expense more reality.
 * The unposted template documents will appear in the 'Todo' page of Finance;
 
 #### Loan support
-The Loan involves the interest calculation.
+There are two kinds of Loan document:
+1. Borrow from
+2. Lend to
+
+All loan documents involves the interest calculation.
 * Post a loan document will create an account with category Loan automatically.
 * Just like advanced payment, repayment method need be maintained, the template documents will be created automatically;
-* Others
+
+For borrow from document with amount 100 with will be paid back with 10 periods:
+1. A borrow from document will be posted,  account with initial liability of 100;
+2. Within that borrow from document, the item has amount x;
+3. For template items, a normal document will post to the borrow from account with a smaller amount;
+
+For lend to document with amount x:
+1. Create a lend to account with initial asset of x;
+2. Within that lend to account, the item has amount x;
+3. For template items, a normal document will post to the lend to account with a smaller amount;
 
 #### Others
 Others
