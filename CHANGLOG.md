@@ -3,6 +3,8 @@
 Released at 2018.09.01
 
 Bugs fixing and Feature list
+- Database version automatically update mechanism;
+- Detect API version and databse version;
 - Dashboard introduced;
 - Using echart's wordCloud replace current tag Cloud;
 - Using echart's bar/pie chart replace current ngx-charts;
@@ -11,6 +13,8 @@ Bugs fixing and Feature list
 - Authority control: account level;
 - Finance: Report click navigation support;
 - Finance: search for document item dynamically;
+- Finance: split the loan document to borrow from (liability) and lend to (asset);
+- Finance: Introduced the initial liability and initial asset concept;
 
 
 ## Version 0.5.5

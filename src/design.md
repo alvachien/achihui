@@ -73,14 +73,22 @@ All loan documents involves the interest calculation.
 * Just like advanced payment, repayment method need be maintained, the template documents will be created automatically;
 
 For borrow from document with amount 100 with will be paid back with 10 periods:
-1. A borrow from document will be posted,  account with initial liability of 100;
-2. Within that borrow from document, the item has amount x;
-3. For template items, a normal document will post to the borrow from account with a smaller amount;
+1. A borrow from document will be posted with following steps:
+    a. First document line: An account which receving the amount 100;
+    b. A new borrow-from account has been created, 
+    c. Second document line: the new created account with initial liability 100;
+2. For template items, a repay document will post to the borrow from account with a smaller amount;
+    a. The new posted document with doc type - repayment.
+    b. It contains several line items: the original amount, the interest amount;
 
-For lend to document with amount x:
-1. Create a lend to account with initial asset of x;
-2. Within that lend to account, the item has amount x;
-3. For template items, a normal document will post to the lend to account with a smaller amount;
+For lend to document with amount 100 which will be returned with 10 periods:
+1. A lend to document will be posted with following steps:
+    a. First document line: An account which sending the amount 100;
+    b. A new lend-to account has been created, 
+    c. Second document line: the new created account with initial asset 100;
+2. For template items, a repay document will post to the borrow from account with a smaller amount;
+    a. The new posted document with doc type - repayment.
+    b. It contains several line items: the original amount, the interest amount;
 
 #### Others
 Others
@@ -189,6 +197,3 @@ Powershell:
 xcopy /I /E node_modules\tinymce\skins src\assets\tinymceskins
 
 ## Others
-
-
-
