@@ -205,7 +205,8 @@
       "AssetBuyIn": "Buy in Asset",
       "AssetSoldOut": "Sold out Asset",
       "BorrowFrom": "Borrow from",
-      "LendTo": "Lend to"
+      "LendTo": "Lend to",
+      "Repayment": "Repayment"
     },
     "AssCtgy": {
       "Apartment": "Apartment",
