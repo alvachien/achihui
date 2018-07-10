@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UIStatusService } from '../services';
 
 @Component({
   selector: 'hih-page-fatal-error',
@@ -6,9 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./page-fatal-error.component.scss'],
 })
 export class PageFatalErrorComponent implements OnInit {
+  errorContext: string;
 
-  constructor() {
-    // Do nothing
+  constructor(private _uiStatus: UIStatusService) {
+    this.errorContext = this._uiStatus.latestError;
   }
 
   ngOnInit(): void {

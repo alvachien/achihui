@@ -81,8 +81,9 @@ export class AppComponent implements OnInit {
         } else {
           this.isLoggedIn = false;
         }
-      }, (error: any) => {
+      }, (error: HttpErrorResponse) => {
         this.isFatalError = true;
+        this._uistatusService.latestError = error.message;
         this._router.navigate(['/fatalerror']);
       }, () => {
         // Do nothing

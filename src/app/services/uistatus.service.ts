@@ -47,6 +47,14 @@ export class UIStatusService {
     return  this._arrTranTypeLevel;
   }
 
+  private _latestError: string;
+  get latestError(): string {
+    return this._latestError;
+  }
+  set latestError(le: string) {
+    this._latestError = le;
+  }
+
   public arrLabels: UIDisplayString[] = [];
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 

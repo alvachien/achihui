@@ -20,7 +20,7 @@
 
   <mat-form-field class="control-full-width">
     <input matInput type="number" [disabled]="!isFieldChangable || extObject.InterestFree" placeholder="{{'Finance.AnnualRate' | translate}}" 
-      [ngModel]="extObject?.annualRate" (ngModelChange)="extObject.AnnualRate=$event"
+      [ngModel]="extObject?.annualRate" (ngModelChange)="extObject.annualRate=$event"
       name="anrate">
   </mat-form-field>
 
