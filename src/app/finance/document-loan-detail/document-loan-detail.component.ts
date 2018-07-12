@@ -7,8 +7,8 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, FinanceDocType_BorrowFrom,
-  FinanceAccountCategory_BorrowFrom, FinanceAccountCategory_LendTo, FinanceDocType_LendTo, TemplateDocLoan, UIFinLoanDocument,
+import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeBorrowFrom,
+  financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo, financeDocTypeLendTo, TemplateDocLoan, UIFinLoanDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, IAccountCategoryFilter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
@@ -122,41 +122,41 @@ export class DocumentLoanDetailComponent implements OnInit {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createbrwfrm') {
             this.onInitCreateMode();
-            this.loanType = FinanceDocType_BorrowFrom;
+            this.loanType = financeDocTypeBorrowFrom;
             this.isLendTo = false;
           } else if (x[0].path === 'createlendto') {
             this.onInitCreateMode();
-            this.loanType = FinanceDocType_LendTo;
+            this.loanType = financeDocTypeLendTo;
             this.isLendTo = true;
           } else if (x[0].path === 'editbrwfrm') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
-            this.loanType = FinanceDocType_BorrowFrom;
+            this.loanType = financeDocTypeBorrowFrom;
             this.isLendTo = false;
           } else if (x[0].path === 'editlendto') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
-            this.loanType = FinanceDocType_LendTo;
+            this.loanType = financeDocTypeLendTo;
             this.isLendTo = true;
           } else if (x[0].path === 'displaybrwfrm') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
-            this.loanType = FinanceDocType_BorrowFrom;
+            this.loanType = financeDocTypeBorrowFrom;
             this.isLendTo = false;
           } else if (x[0].path === 'displaylendto') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
-            this.loanType = FinanceDocType_LendTo;
+            this.loanType = financeDocTypeLendTo;
             this.isLendTo = true;
           }
           this.currentMode = getUIModeString(this.uiMode);
-          if (this.loanType === FinanceDocType_BorrowFrom) {
+          if (this.loanType === financeDocTypeBorrowFrom) {
             this.documentTitle = 'Sys.DocTy.BorrowFrom';
-          } else if (this.loanType === FinanceDocType_LendTo) {
+          } else if (this.loanType === financeDocTypeLendTo) {
             this.documentTitle = 'Sys.DocTy.LendTo';
           }
 
@@ -374,9 +374,9 @@ export class DocumentLoanDetailComponent implements OnInit {
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             if (!recreate) {
-              if (this.loanType === FinanceDocType_BorrowFrom) {
+              if (this.loanType === financeDocTypeBorrowFrom) {
                 this._router.navigate(['/finance/document/displaybrwfrm/' + x.Id.toString()]);
-              } else if (this.loanType === FinanceDocType_LendTo) {
+              } else if (this.loanType === financeDocTypeLendTo) {
                 this._router.navigate(['/finance/document/displaylendto/' + x.Id.toString()]);
               }
             }

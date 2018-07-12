@@ -55,6 +55,7 @@ import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, } from './pipes';
 import { AccountExtCreditCardComponent } from './account-ext-credit-card';
+import { DocumentRepaymentDetailComponent } from './document-repayment-detail';
 
 @NgModule({
   imports: [
@@ -116,6 +117,7 @@ import { AccountExtCreditCardComponent } from './account-ext-credit-card';
     UIAccountCtgyFilterPipe,
     UIOrderValidFilterPipe,
     AccountExtCreditCardComponent,
+    DocumentRepaymentDetailComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

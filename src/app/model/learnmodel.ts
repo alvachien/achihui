@@ -385,7 +385,7 @@ export class LearnHistory extends hih.BaseModel {
   }
 
   public generateKey(): string {
-    return this.HID.toString() + '_' + this.UserId + '_' + this.ObjectId.toString() + '_' + this._learnDate.format(hih.MomentDateFormat);
+    return this.HID.toString() + '_' + this.UserId + '_' + this.ObjectId.toString() + '_' + this._learnDate.format(hih.momentDateFormat);
   }
 
   get LearnDate(): moment.Moment {
@@ -395,7 +395,7 @@ export class LearnHistory extends hih.BaseModel {
     this._learnDate = ld;
   }
   get LearnDateDisplayString(): string {
-    return this._learnDate.format(hih.MomentDateFormat);
+    return this._learnDate.format(hih.momentDateFormat);
   }
 
   public onInit(): void {
@@ -482,7 +482,7 @@ export class LearnHistory extends hih.BaseModel {
     rstObj.hid = this.HID;
     rstObj.userID = this.UserId;
     rstObj.objectID = this.ObjectId;
-    rstObj.learnDate = this._learnDate.format(hih.MomentDateFormat);
+    rstObj.learnDate = this._learnDate.format(hih.momentDateFormat);
     rstObj.comment = this.Comment;
     return rstObj;
   }
@@ -500,7 +500,7 @@ export class LearnHistory extends hih.BaseModel {
       this.ObjectId = +data.objectID;
     }
     if (data && data.learnDate) {
-      this.LearnDate = moment(data.learnDate, hih.MomentDateFormat);
+      this.LearnDate = moment(data.learnDate, hih.momentDateFormat);
     }
     if (data && data.comment && data.comment.length > 0) {
       this.Comment = data.comment;

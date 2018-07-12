@@ -27,7 +27,7 @@ export class UIFinTransferDocument {
 
   public generateDocument(): HIHFinance.Document {
     let doc: HIHFinance.Document = new HIHFinance.Document();
-    doc.DocType = hih.FinanceDocType_Transfer;
+    doc.DocType = hih.financeDocTypeTransfer;
     doc.TranDate = this.TranDate.clone();
     doc.Desp = this.Desp;
     doc.TranCurr = this.TranCurr;
@@ -43,7 +43,7 @@ export class UIFinTransferDocument {
     docitem.AccountId = this.SourceAccountId;
     docitem.ControlCenterId = this.SourceControlCenterId;
     docitem.OrderId = this.SourceOrderId;
-    docitem.TranType = hih.FinanceTranType_TransferOut;
+    docitem.TranType = hih.financeTranTypeTransferOut;
     docitem.TranAmount = this.TranAmount;
     docitem.Desp = this.Desp;
     doc.Items.push(docitem);
@@ -51,7 +51,7 @@ export class UIFinTransferDocument {
     docitem = new HIHFinance.DocumentItem();
     docitem.ItemId = 2;
     docitem.AccountId = this.TargetAccountId;
-    docitem.TranType = hih.FinanceTranType_TransferIn;
+    docitem.TranType = hih.financeTranTypeTransferIn;
     docitem.ControlCenterId = this.TargetControlCenterId;
     docitem.OrderId = this.TargetOrderId;
     docitem.TranAmount = this.TranAmount;
@@ -73,12 +73,12 @@ export class UIFinTransferDocument {
     }
 
     for (let di of doc.Items) {
-      if (di.TranType === hih.FinanceTranType_TransferOut) {
+      if (di.TranType === hih.financeTranTypeTransferOut) {
         this.SourceAccountId = di.AccountId;
         this.SourceControlCenterId = di.ControlCenterId;
         this.SourceOrderId = di.OrderId;
         this.TranAmount = di.TranAmount;
-      } else if (di.TranType === hih.FinanceTranType_TransferIn) {
+      } else if (di.TranType === hih.financeTranTypeTransferIn) {
         this.TargetAccountId = di.AccountId;
         this.TargetControlCenterId = di.ControlCenterId;
         this.TargetOrderId = di.OrderId;
@@ -110,7 +110,7 @@ export class UIFinAdvPayDocument {
   }
   public generateDocument(): HIHFinance.Document {
     let doc: HIHFinance.Document = new HIHFinance.Document();
-    doc.DocType = hih.FinanceDocType_AdvancePayment;
+    doc.DocType = hih.financeDocTypeAdvancePayment;
     doc.Desp = this.Desp;
     doc.TranCurr = this.TranCurr;
     doc.TranDate = this.TranDate.clone();
@@ -205,7 +205,7 @@ export class UIFinCurrencyExchangeDocument {
 
   public generateDocument(): HIHFinance.Document {
     let doc: HIHFinance.Document = new HIHFinance.Document();
-    doc.DocType = hih.FinanceDocType_CurrencyExchange;
+    doc.DocType = hih.financeDocTypeCurrencyExchange;
     doc.Desp = this.Desp;
     doc.TranCurr = this.SourceTranCurr;
     doc.TranCurr2 = this.TargetTranCurr;
@@ -217,7 +217,7 @@ export class UIFinCurrencyExchangeDocument {
     docitem.AccountId = this.SourceAccountId;
     docitem.ControlCenterId = this.SourceControlCenterId;
     docitem.OrderId = this.SourceOrderId;
-    docitem.TranType = hih.FinanceTranType_TransferOut;
+    docitem.TranType = hih.financeTranTypeTransferOut;
     docitem.TranAmount = this.SourceTranAmount;
     docitem.Desp = this.Desp;
     doc.Items.push(docitem);
@@ -225,7 +225,7 @@ export class UIFinCurrencyExchangeDocument {
     docitem = new HIHFinance.DocumentItem();
     docitem.ItemId = 2;
     docitem.AccountId = this.TargetAccountId;
-    docitem.TranType = hih.FinanceTranType_TransferIn;
+    docitem.TranType = hih.financeTranTypeTransferIn;
     docitem.ControlCenterId = this.TargetControlCenterId;
     docitem.OrderId = this.TargetOrderId;
     docitem.TranAmount = this.TargetTranAmount;
@@ -241,14 +241,14 @@ export class UIFinCurrencyExchangeDocument {
     this.Desp = doc.Desp;
 
     for (let di of doc.Items) {
-      if (di.TranType === hih.FinanceTranType_TransferOut) {
+      if (di.TranType === hih.financeTranTypeTransferOut) {
         this.SourceAccountId = di.AccountId;
         this.SourceControlCenterId = di.ControlCenterId;
         this.SourceOrderId = di.OrderId;
         this.SourceTranAmount = di.TranAmount;
         this.SourceTranCurr = doc.TranCurr;
         this.SourceExchangeRate = doc.ExgRate;
-      } else if (di.TranType === hih.FinanceTranType_TransferIn) {
+      } else if (di.TranType === hih.financeTranTypeTransferIn) {
         this.TargetAccountId = di.AccountId;
         this.TargetControlCenterId = di.ControlCenterId;
         this.TargetOrderId = di.OrderId;
@@ -287,9 +287,9 @@ export class UIFinAssetOperationDocument {
   public generateDocument(): HIHFinance.Document {
     let doc: HIHFinance.Document = new HIHFinance.Document();
     if (this.isBuyin) {
-      doc.DocType = hih.FinanceDocType_AssetBuyIn;
+      doc.DocType = hih.financeDocTypeAssetBuyIn;
     } else {
-      doc.DocType = hih.FinanceDocType_AssetSoldOut;
+      doc.DocType = hih.financeDocTypeAssetSoldOut;
     }
 
     doc.Desp = this.Desp;
@@ -372,9 +372,9 @@ export class UIFinLoanDocument {
   public generateDocument(): HIHFinance.Document {
     let doc: HIHFinance.Document = new HIHFinance.Document();
     if (this.isLendTo) {
-      doc.DocType = hih.FinanceDocType_LendTo;
+      doc.DocType = hih.financeDocTypeLendTo;
     } else {
-      doc.DocType = hih.FinanceDocType_BorrowFrom;
+      doc.DocType = hih.financeDocTypeBorrowFrom;
     }
     doc.Desp = this.Desp;
     doc.TranCurr = this.TranCurr;
@@ -385,7 +385,7 @@ export class UIFinLoanDocument {
     fitem.AccountId = this.SourceAccountId;
     fitem.ControlCenterId = this.SourceControlCenterId;
     fitem.OrderId = this.SourceOrderId;
-    fitem.TranType = hih.FinanceTranType_LoanIn; // Loan in
+    fitem.TranType = hih.financeTranTypeLoanIn; // Loan in
     fitem.TranAmount = this.TranAmount;
     fitem.Desp = this.Desp;
     doc.Items.push(fitem);
@@ -531,18 +531,18 @@ export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg:
     // Skip some categories
     if (ctgyFilter !== undefined
       && ctgyFilter.skipADP === true
-      && acnt.CategoryId === hih.FinanceAccountCategory_AdvancePayment) {
+      && acnt.CategoryId === hih.financeAccountCategoryAdvancePayment) {
       continue;
     }
     if (ctgyFilter !== undefined
       && ctgyFilter.skipLoan === true
-      && (acnt.CategoryId === hih.FinanceAccountCategory_BorrowFrom 
-      || acnt.CategoryId === hih.FinanceAccountCategory_LendTo)) {
+      && (acnt.CategoryId === hih.financeAccountCategoryBorrowFrom 
+      || acnt.CategoryId === hih.financeAccountCategoryLendTo)) {
       continue;
     }
     if (ctgyFilter !== undefined
       && ctgyFilter.skipAsset === true
-      && acnt.CategoryId === hih.FinanceAccountCategory_Asset) {
+      && acnt.CategoryId === hih.financeAccountCategoryAsset) {
       continue;
     }
 

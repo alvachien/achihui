@@ -2,8 +2,8 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil, 
-  MomentDateFormat, EventHabitCheckin } from '../../model';
+import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil,
+  momentDateFormat, EventHabitCheckin } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
 import * as moment from 'moment';
 
@@ -101,8 +101,8 @@ export class HabitDetailComponent implements OnInit {
         this.detailObject.details = [];
         for (let dtl of x) {
           let ndtl: EventHabitDetail = new EventHabitDetail();
-          ndtl.StartDate = moment(dtl.startTimePoint, MomentDateFormat);
-          ndtl.EndDate = moment(dtl.endTimePoint, MomentDateFormat);
+          ndtl.StartDate = moment(dtl.startTimePoint, momentDateFormat);
+          ndtl.EndDate = moment(dtl.endTimePoint, momentDateFormat);
           ndtl.Name = dtl.name;
           this.detailObject.details.push(ndtl);
         }

@@ -9,7 +9,7 @@ import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
-  LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_AdvancePayment,
+  LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
   UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   UIDisplayStringUtil, IAccountCategoryFilter,
@@ -443,7 +443,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     let sobj: any = docObj.writeJSONObject(); // Document first
     let acntobj: Account = new Account();
     acntobj.HID = this._homedefService.ChosedHome.ID;
-    acntobj.CategoryId = FinanceAccountCategory_AdvancePayment;
+    acntobj.CategoryId = financeAccountCategoryAdvancePayment;
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
     acntobj.ExtraInfo = this.detailObject.AdvPayAccount;

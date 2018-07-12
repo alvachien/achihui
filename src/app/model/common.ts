@@ -1,34 +1,35 @@
 import { environment } from '../../environments/environment';
 import * as moment from 'moment';
 
-export const TypeParentSplitter: string = ' > ';
-export const IDSplitChar: string = ',';
+export const typeParentSplitter: string = ' > ';
+export const idSplitChar: string = ',';
 
-export const DateSplitChar: string = '-';
-export const FinanceAccountCategory_Asset: number = 7;
-export const FinanceAccountCategory_AdvancePayment: number = 8; // Advance payment
-export const FinanceAccountCategory_BorrowFrom: number = 9;
-export const FinanceAccountCategory_LendTo: number = 10;
+export const dateSplitChar: string = '-';
+export const financeAccountCategoryAsset: number = 7;
+export const financeAccountCategoryAdvancePayment: number = 8; // Advance payment
+export const financeAccountCategoryBorrowFrom: number = 9;
+export const financeAccountCategoryLendTo: number = 10;
 
-export const FinanceDocType_Normal: number = 1;
-export const FinanceDocType_Transfer: number = 2; // Transfer doc
-export const FinanceDocType_CurrencyExchange: number = 3; // Currency exchange
-export const FinanceDocType_AdvancePayment: number = 5;
+export const financeDocTypeNormal: number = 1;
+export const financeDocTypeTransfer: number = 2; // Transfer doc
+export const financeDocTypeCurrencyExchange: number = 3; // Currency exchange
+export const financeDocTypeAdvancePayment: number = 5;
 export const FinanceDocType_CreditcardRepay: number = 6;
-export const FinanceDocType_AssetBuyIn: number = 7;
-export const FinanceDocType_AssetSoldOut: number = 8;
-export const FinanceDocType_BorrowFrom: number = 9;
-export const FinanceDocType_LendTo: number = 10;
+export const financeDocTypeAssetBuyIn: number = 7;
+export const financeDocTypeAssetSoldOut: number = 8;
+export const financeDocTypeBorrowFrom: number = 9;
+export const financeDocTypeLendTo: number = 10;
+export const financeDocTypeRepay: number = 11;
 
-export const FinanceTranType_TransferIn: number = 37;
-export const FinanceTranType_TransferOut: number = 60;
-export const FinanceTranType_LoanIn: number = 80;
+export const financeTranTypeTransferIn: number = 37;
+export const financeTranTypeTransferOut: number = 60;
+export const financeTranTypeLoanIn: number = 80;
 
-export const Language_En: string = 'en';
-export const Language_Zh: string = 'zh';
-export const Language_ZhCN: string = 'zh-cn';
+export const languageEn: string = 'en';
+export const languageZh: string = 'zh';
+export const languageZhCN: string = 'zh-cn';
 
-export const MomentDateFormat: string = 'YYYY-MM-DD';
+export const momentDateFormat: string = 'YYYY-MM-DD';
 
 export enum AuthorizeScope { All = 1, OnlyOwner = 2 }
 export enum MessageType { Info = 1, Warning = 2, Error = 3 }
@@ -153,7 +154,14 @@ export enum LogLevel {
   Debug = 4,
 }
 
+/**
+ * Info message class
+ */
 export class InfoMessage {
+  private _msgType: MessageType;
+  private _msgTime: moment.Moment;
+  private _msgTitle: string;
+  private _msgContent: string;
   constructor(msgtype?: MessageType, msgtitle?: string, msgcontent?: string) {
     this.MsgTime = moment();
     if (msgtype) {
@@ -167,10 +175,30 @@ export class InfoMessage {
     }
   }
 
-  public MsgType: MessageType;
-  public MsgTime: moment.Moment;
-  public MsgTitle: string;
-  public MsgContent: string;
+  get MsgType(): MessageType {
+    return this._msgType;
+  }
+  set MsgType(mt: MessageType) {
+    this._msgType = mt;
+  }
+  get MsgTime(): moment.Moment {
+    return this._msgTime;
+  }
+  set MsgTime(mt: moment.Moment) {
+    this._msgTime = mt;
+  }
+  get MsgTitle(): string {
+    return this._msgTitle;
+  }
+  set MsgTitle(mt: string) {
+    this._msgTitle = mt;
+  }
+  get MsgContent(): string {
+    return this._msgContent;
+  }
+  set MsgContent(mc: string) {
+    this._msgContent = mc;
+  }
 
   get IsError(): boolean {
     return this.MsgType === MessageType.Error;
@@ -183,7 +211,10 @@ export class InfoMessage {
   }
 }
 
-export interface BaseModelJson {
+/**
+ * Interface of Base Model Json
+ */
+export interface IBaseModelJson {
   createdAt: string;
   createdBy: string;
   updatedAt: string;
@@ -196,11 +227,28 @@ export interface BaseModelJson {
 export class BaseModel {
   protected _createdAt: moment.Moment;
   protected _updatedAt: moment.Moment;
-  public CreatedBy: string;
-  public UpdatedBy: string;
+  protected _createdBy: string;
+  protected _updatedBy: string;
+  protected _verifiedMsgs: InfoMessage[];
+  get CreatedBy(): string {
+    return this._createdBy;
+  }
+  set CreatedBy(cb: string) {
+    this._createdBy = cb;
+  }
+  get UpdatedBy(): string {
+    return this._updatedBy;
+  }
+  set UpdatedBy(ub: string) {
+    this._updatedBy = ub;
+  }
 
-  // For checking
-  public VerifiedMsgs: InfoMessage[] = [];
+  get VerifiedMsgs(): InfoMessage[] {
+    return this._verifiedMsgs;
+  }
+  set VerifiedMsgs(msgs: InfoMessage[]) {
+    this._verifiedMsgs = msgs;
+  }
 
   get CreatedAt(): moment.Moment {
     return this._createdAt;
@@ -216,8 +264,9 @@ export class BaseModel {
   }
 
   constructor() {
-    this.CreatedAt = moment();
-    this.UpdatedAt = moment();
+    this._createdAt = moment();
+    this._updatedAt = moment();
+    this._verifiedMsgs = [];
   }
 
   public onInit(): void {
@@ -239,13 +288,13 @@ export class BaseModel {
     };
 
     if (this._createdAt) {
-      rstobj.createdAt = this._createdAt.format(MomentDateFormat);
+      rstobj.createdAt = this._createdAt.format(momentDateFormat);
     }
     if (this.CreatedBy && this.CreatedBy.length > 0) {
       rstobj.createdBy = this.CreatedBy;
     }
     if (this._updatedAt) {
-      rstobj.updatedAt = this._updatedAt.format(MomentDateFormat);
+      rstobj.updatedAt = this._updatedAt.format(momentDateFormat);
     }
     if (this.UpdatedBy && this.UpdatedBy.length > 0) {
       rstobj.updatedBy = this.UpdatedBy;
@@ -267,13 +316,13 @@ export class BaseModel {
       this.CreatedBy = data.createdBy;
     }
     if (data && data.createdAt) {
-      this.CreatedAt = moment(data.createdAt, MomentDateFormat);
+      this.CreatedAt = moment(data.createdAt, momentDateFormat);
     }
     if (data && data.updatedBy) {
       this.UpdatedBy = data.updatedBy;
     }
     if (data && data.updatedAt) {
-      this.UpdatedAt = moment(data.updatedAt, MomentDateFormat);
+      this.UpdatedAt = moment(data.updatedAt, momentDateFormat);
     }
   }
 }
@@ -420,9 +469,28 @@ export class AppLanguage {
  * Multiple name object
  */
 export class MultipleNamesObject extends BaseModel {
-  public NativeName: string;
-  public EnglishName: string;
-  public EnglishIsNative: boolean;
+  private _nativeName: string;
+  private _englishName: string;
+  private _englishIsNative: boolean;
+
+  get NativeName(): string {
+    return this._nativeName;
+  }
+  set NativeName(nn: string) {
+    this._nativeName = nn;
+  }
+  get EnglishName(): string {
+    return this._englishName;
+  }
+  set EnglishName(en: string) {
+    this._englishName = en;
+  }
+  get EnglishIsNative(): boolean {
+    return this._englishIsNative;
+  }
+  set EnglishIsNative(ein: boolean) {
+    this._englishIsNative = ein;
+  }
 
   constructor() {
     super();
@@ -468,12 +536,12 @@ export class MultipleNamesObject extends BaseModel {
 /**
  * Scope range
  */
-export interface OverviewScopeRange {
+export interface IOverviewScopeRange {
   BeginDate: moment.Moment;
   EndDate: moment.Moment;
 }
 
-export function getOverviewScopeRange(scope: OverviewScopeEnum): OverviewScopeRange {
+export function getOverviewScopeRange(scope: OverviewScopeEnum): IOverviewScopeRange {
   let bgn: any = moment();
   let end: any = moment();
 

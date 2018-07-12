@@ -4,9 +4,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, UIMode, getUIModeString, FinanceAccountCategory_Asset,
-  FinanceAccountCategory_AdvancePayment, FinanceAccountCategory_BorrowFrom,
-  FinanceAccountCategory_LendTo, UICommonLabelEnum,
+import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset,
+  financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
+  financeAccountCategoryLendTo, UICommonLabelEnum,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -75,10 +75,10 @@ export class AccountDetailComponent implements OnInit {
                 this.detailObject = x3;
 
                 if (this.uiMode === UIMode.Change) {
-                  if (this.detailObject.CategoryId === FinanceAccountCategory_Asset
-                  || this.detailObject.CategoryId === FinanceAccountCategory_AdvancePayment
-                  || this.detailObject.CategoryId === FinanceAccountCategory_BorrowFrom
-                  || this.detailObject.CategoryId === FinanceAccountCategory_LendTo) {
+                  if (this.detailObject.CategoryId === financeAccountCategoryAsset
+                  || this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
+                  || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom
+                  || this.detailObject.CategoryId === financeAccountCategoryLendTo) {
                     this.uiMode = UIMode.Display; // Not support for those accounts yet
                   }
                 }
@@ -113,22 +113,22 @@ export class AccountDetailComponent implements OnInit {
     return this.uiMode === UIMode.Create;
   }
   get isAssetAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === FinanceAccountCategory_Asset)) {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryAsset)) {
       return true;
     }
 
     return false;
   }
   get isADPAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === FinanceAccountCategory_AdvancePayment)) {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment)) {
       return true;
     }
 
     return false;
   }
   get isLoanAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === FinanceAccountCategory_BorrowFrom
-    || this.detailObject.CategoryId === FinanceAccountCategory_LendTo)) {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryBorrowFrom
+    || this.detailObject.CategoryId === financeAccountCategoryLendTo)) {
       return true;
     }
 

@@ -8,7 +8,7 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, merge, forkJoin, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, FinanceDocType_Transfer,
+import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, financeDocTypeTransfer,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   IAccountCategoryFilter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';

@@ -10,7 +10,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  UIMode, getUIModeString, FinanceDocType_CurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate,
+  UIMode, getUIModeString, financeDocTypeCurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate,
   IAccountCategoryFilter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';

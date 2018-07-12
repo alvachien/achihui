@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { UIAccountForSelection, FinanceAccountCategory_AdvancePayment, FinanceAccountCategory_BorrowFrom,
-    FinanceAccountCategory_LendTo, FinanceAccountCategory_Asset, IAccountCategoryFilter } from '../../model';
+import { UIAccountForSelection, financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
+    financeAccountCategoryLendTo, financeAccountCategoryAsset, IAccountCategoryFilter } from '../../model';
 
 @Pipe({
     name: 'uiAccountCtgyFilter',
@@ -10,14 +10,14 @@ export class UIAccountCtgyFilterPipe implements PipeTransform {
     transform(allAccounts: UIAccountForSelection[], args?: IAccountCategoryFilter): UIAccountForSelection[] {
         return allAccounts.filter((value: UIAccountForSelection) => {
             if (args !== undefined) {
-                if (args.skipADP === true && value.CategoryId === FinanceAccountCategory_AdvancePayment) {
+                if (args.skipADP === true && value.CategoryId === financeAccountCategoryAdvancePayment) {
                     return false;
                 }
-                if (args.skipLoan === true && (value.CategoryId === FinanceAccountCategory_BorrowFrom
-                    || value.CategoryId === FinanceAccountCategory_LendTo)) {
+                if (args.skipLoan === true && (value.CategoryId === financeAccountCategoryBorrowFrom
+                    || value.CategoryId === financeAccountCategoryLendTo)) {
                     return false;
                 }
-                if (args.skipAsset === true && value.CategoryId === FinanceAccountCategory_Asset) {
+                if (args.skipAsset === true && value.CategoryId === financeAccountCategoryAsset) {
                     return false;
                 }
             }

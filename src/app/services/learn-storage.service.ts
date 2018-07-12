@@ -3,7 +3,7 @@ import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErr
 import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { LogLevel, LearnCategory, LearnObject, LearnHistory, QuestionBankItem, MomentDateFormat,
+import { LogLevel, LearnCategory, LearnObject, LearnHistory, QuestionBankItem, momentDateFormat,
   EnSentence, EnWord, EnWordExplain, EnSentenceExplain } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -572,10 +572,10 @@ export class LearnStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
     if (dtend) {
-      params = params.append('dtend', dtend.format(MomentDateFormat));
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     return this._http.get(apiurl, {
@@ -604,10 +604,10 @@ export class LearnStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
     if (dtend) {
-      params = params.append('dtend', dtend.format(MomentDateFormat));
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     return this._http.get(apiurl, {

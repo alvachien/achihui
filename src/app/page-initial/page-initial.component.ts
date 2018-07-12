@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 import {
   LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
-  TranType, FinanceTranType_TransferIn, FinanceTranType_TransferOut, HomeKeyFigure,
+  TranType, financeTranTypeTransferIn, financeTranTypeTransferOut, HomeKeyFigure,
 } from '../model';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Observable, Subject, BehaviorSubject, forkJoin, ReplaySubject, merge, of } from 'rxjs';

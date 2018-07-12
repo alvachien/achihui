@@ -18,7 +18,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
  * Data source of Normal Document Items
  */
 export class NormalDocumentItemDataSource extends DataSource<any> {
-  constructor(private _parentComponent: DocumentNormalDetailComponent) {
+  constructor(private _parentComponent: DocumentRepaymentDetailComponent) {
     super();
   }
 
@@ -37,13 +37,13 @@ export class NormalDocumentItemDataSource extends DataSource<any> {
     // Empty
   }
 }
-
 @Component({
-  selector: 'hih-finance-document-normal-detail',
-  templateUrl: './document-normal-detail.component.html',
-  styleUrls: ['./document-normal-detail.component.scss'],
+  selector: 'hih-document-repayment-detail',
+  templateUrl: './document-repayment-detail.component.html',
+  styleUrls: ['./document-repayment-detail.component.scss'],
 })
-export class DocumentNormalDetailComponent implements OnInit {
+export class DocumentRepaymentDetailComponent implements OnInit {
+
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
   public detailObject: Document | undefined = undefined;
@@ -87,7 +87,7 @@ export class DocumentNormalDetailComponent implements OnInit {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent ngOnInit...');
     }
 
     forkJoin([
@@ -100,7 +100,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -315,7 +315,7 @@ export class DocumentNormalDetailComponent implements OnInit {
 
     this._storageService.createDocumentEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentNormalDetailComponent with : ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentRepaymentDetailComponent with : ${x}`);
       }
 
       // Navigate back to list view
@@ -329,7 +329,7 @@ export class DocumentNormalDetailComponent implements OnInit {
         let isrecreate: boolean = false;
         snackbarRef.onAction().subscribe(() => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Snackbar onAction()`);
+            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Snackbar onAction()`);
           }
 
           isrecreate = true;
@@ -342,7 +342,7 @@ export class DocumentNormalDetailComponent implements OnInit {
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Snackbar afterDismissed with ${isrecreate}`);
+            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Snackbar afterDismissed with ${isrecreate}`);
           }
 
           if (!isrecreate) {
@@ -364,7 +364,7 @@ export class DocumentNormalDetailComponent implements OnInit {
         }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);
+            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Message dialog result ${x2}`);
           }
         });
       }
@@ -404,7 +404,7 @@ export class DocumentNormalDetailComponent implements OnInit {
 
     this._storageService.changeDocumentEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving changeDocumentEvent in DocumentNormalDetailComponent with : ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Receiving changeDocumentEvent in DocumentRepaymentDetailComponent with : ${x}`);
       }
 
       // Navigate back to list view
@@ -418,7 +418,7 @@ export class DocumentNormalDetailComponent implements OnInit {
         let isrecreate: boolean = false;
         snackbarRef.onAction().subscribe(() => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Snackbar onAction()`);
+            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Snackbar onAction()`);
           }
 
           isrecreate = true;
@@ -431,11 +431,11 @@ export class DocumentNormalDetailComponent implements OnInit {
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Snackbar afterDismissed with ${isrecreate}`);
+            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Snackbar afterDismissed with ${isrecreate}`);
           }
 
           if (!isrecreate) {
-            this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
+            this._router.navigate(['/finance/document/displayrepay/' + x.Id.toString()]);
           }
         });
       } else {
@@ -453,7 +453,7 @@ export class DocumentNormalDetailComponent implements OnInit {
         }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);
+            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Message dialog result ${x2}`);
           }
         });
       }

@@ -3,7 +3,7 @@ import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErr
 import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { LogLevel, MomentDateFormat, GeneralEvent, RecurEvent, EventHabit, EventHabitCheckin } from '../model';
+import { LogLevel, momentDateFormat, GeneralEvent, RecurEvent, EventHabit, EventHabitCheckin } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import * as moment from 'moment';
@@ -36,10 +36,10 @@ export class EventStorageService {
       params = params.append('skipfinished', skipfinished.toString());
     }
     if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
     if (dtend) {
-      params = params.append('dtend', dtend.format(MomentDateFormat));
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     headers = headers.append('Content-Type', 'application/json')
@@ -308,8 +308,8 @@ export class EventStorageService {
   public fetchHabitDetailWithCheckIn(bgn: moment.Moment, end: moment.Moment): Observable<any> {
     const apiurl: string = environment.ApiUrl + '/api/HabitEventDetailWithCheckIn';
     const curhid: number = this._homeService.ChosedHome.ID;
-    let bgnstr: string = bgn.format(MomentDateFormat);
-    let endstr: string = end.format(MomentDateFormat);
+    let bgnstr: string = bgn.format(momentDateFormat);
+    let endstr: string = end.format(momentDateFormat);
     const requestUrl: any = `${apiurl}?hid=${curhid}&dtbgn=${bgnstr}&dtend=${endstr}`;
 
     let headers: HttpHeaders = new HttpHeaders();

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { UIStatusService, EventStorageService } from '../../services';
-import { LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN,
-  GeneralEvent, MomentDateFormat, HabitEventDetailWithCheckInStatistics,
+import { LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN,
+  GeneralEvent, momentDateFormat, HabitEventDetailWithCheckInStatistics,
 } from '../../model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
@@ -25,7 +25,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     private _router: Router,
     private _storageService: EventStorageService) {
     // Do nothing
-    if (_uistatus.CurrentLanguage === Language_Zh) {
+    if (_uistatus.CurrentLanguage === languageZh) {
       this.initialLocaleCode = 'zh-cn';
     } else {
       this.initialLocaleCode = 'en';
@@ -61,7 +61,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         center: 'title',
         right: 'month,agendaWeek,agendaDay,listWeek',
       },
-      defaultDate: moment().format(MomentDateFormat),
+      defaultDate: moment().format(momentDateFormat),
       locale: this.initialLocaleCode,
       navLinks: true, // can click day/week names to navigate views
       editable: true,
@@ -138,13 +138,13 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     });
   }
 
-  public onNavigateToGeneralEvent(id: number) {
+  public onNavigateToGeneralEvent(id: number): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering onNavigateToGeneralEvent of OverviewComponent...');
     }
-    this._router.navigate(['/event/general/display/' + id.toString()])
+    this._router.navigate(['/event/general/display/' + id.toString()]);
   }
-  public onNavigateToHabitEvent(id: number) {
+  public onNavigateToHabitEvent(id: number): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering onNavigateToHabitEvent of OverviewComponent...');
     }

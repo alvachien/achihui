@@ -3,7 +3,7 @@ import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErr
 import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { LogLevel, BookCategory, Book, Location, MovieGenre, Movie, MomentDateFormat } from '../model';
+import { LogLevel, BookCategory, Book, Location, MovieGenre, Movie, momentDateFormat } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import * as moment from 'moment';

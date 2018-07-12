@@ -55,7 +55,7 @@ export class GeneralEvent extends hih.BaseModel {
   }
   get StartTimeFormatString(): string {
     if (this._startTime) {
-      return this._startTime.format(hih.MomentDateFormat);
+      return this._startTime.format(hih.momentDateFormat);
     }
 
     return '';
@@ -68,7 +68,7 @@ export class GeneralEvent extends hih.BaseModel {
   }
   get EndTimeFormatString(): string {
     if (this._endTime) {
-      return this._endTime.format(hih.MomentDateFormat);
+      return this._endTime.format(hih.momentDateFormat);
     }
 
     return '';
@@ -81,7 +81,7 @@ export class GeneralEvent extends hih.BaseModel {
   }
   get CompleteTimeFormatString(): string {
     if (this._completeTime) {
-      return this._completeTime.format(hih.MomentDateFormat);
+      return this._completeTime.format(hih.momentDateFormat);
     }
 
     return '';
@@ -130,13 +130,13 @@ export class GeneralEvent extends hih.BaseModel {
       this._content = data.content;
     }
     if (data && data.startTimePoint) {
-      this._startTime = moment(data.startTimePoint, hih.MomentDateFormat);
+      this._startTime = moment(data.startTimePoint, hih.momentDateFormat);
     }
     if (data && data.endTimePoint) {
-      this._endTime = moment(data.endTimePoint, hih.MomentDateFormat);
+      this._endTime = moment(data.endTimePoint, hih.momentDateFormat);
     }
     if (data && data.completeTimePoint) {
-      this._completeTime = moment(data.completeTimePoint, hih.MomentDateFormat);
+      this._completeTime = moment(data.completeTimePoint, hih.momentDateFormat);
     }
     if (data && data.isPublic) {
       this._ispublic = data.isPublic;
@@ -222,7 +222,7 @@ export class RecurEvent extends hih.BaseModel {
   }
   get StartTimeFormatString(): string {
     if (this._startTime) {
-      return this._startTime.format(hih.MomentDateFormat);
+      return this._startTime.format(hih.momentDateFormat);
     }
 
     return '';
@@ -235,7 +235,7 @@ export class RecurEvent extends hih.BaseModel {
   }
   get EndTimeFormatString(): string {
     if (this._endTime) {
-      return this._endTime.format(hih.MomentDateFormat);
+      return this._endTime.format(hih.momentDateFormat);
     }
 
     return '';
@@ -274,10 +274,10 @@ export class RecurEvent extends hih.BaseModel {
       this._content = data.content;
     }
     if (data && data.startTimePoint) {
-      this._startTime = moment(data.startTimePoint, hih.MomentDateFormat);
+      this._startTime = moment(data.startTimePoint, hih.momentDateFormat);
     }
     if (data && data.endTimePoint) {
-      this._endTime = moment(data.endTimePoint, hih.MomentDateFormat);
+      this._endTime = moment(data.endTimePoint, hih.momentDateFormat);
     }
     if (data && data.isPublic) {
       this._ispublic = data.isPublic;
@@ -347,7 +347,7 @@ export class EventHabit extends hih.BaseModel {
     return this._startDate;
   }
   get StartDateFormatString(): string {
-    return this._startDate.format(hih.MomentDateFormat);
+    return this._startDate.format(hih.momentDateFormat);
   }
   set StartDate(sd: moment.Moment) {
     this._startDate = sd;
@@ -356,7 +356,7 @@ export class EventHabit extends hih.BaseModel {
     return this._endDate;
   }
   get EndDateFormatString(): string {
-    return this._endDate.format(hih.MomentDateFormat);
+    return this._endDate.format(hih.momentDateFormat);
   }
   set EndDate(ed: moment.Moment) {
     this._endDate = ed;
@@ -394,10 +394,10 @@ export class EventHabit extends hih.BaseModel {
       this.count = data.count;
     }
     if (data && data.startDate) {
-      this._startDate = moment(data.startDate, hih.MomentDateFormat);
+      this._startDate = moment(data.startDate, hih.momentDateFormat);
     }
     if (data && data.endDate) {
-      this._endDate = moment(data.endDate, hih.MomentDateFormat);
+      this._endDate = moment(data.endDate, hih.momentDateFormat);
     }
     if (data && data.isPublic) {
       this.isPublic = data.isPublic;
@@ -474,7 +474,7 @@ export class EventHabitDetail {
     return this._startDate;
   }
   get StartDateFormatString(): string {
-    return this._startDate.format(hih.MomentDateFormat);
+    return this._startDate.format(hih.momentDateFormat);
   }
   set StartDate(sd: moment.Moment) {
     this._startDate = sd;
@@ -483,7 +483,7 @@ export class EventHabitDetail {
     return this._endDate;
   }
   get EndDateFormatString(): string {
-    return this._endDate.format(hih.MomentDateFormat);
+    return this._endDate.format(hih.momentDateFormat);
   }
   set EndDate(ed: moment.Moment) {
     this._endDate = ed;
@@ -506,10 +506,10 @@ export class EventHabitDetail {
       this._name = data.name;
     }
     if (data && data.startDate) {
-      this._startDate = moment(data.startDate, hih.MomentDateFormat);
+      this._startDate = moment(data.startDate, hih.momentDateFormat);
     }
     if (data && data.endDate) {
-      this._endDate = moment(data.endDate, hih.MomentDateFormat);
+      this._endDate = moment(data.endDate, hih.momentDateFormat);
     }
   }
 }
@@ -525,7 +525,7 @@ export class EventHabitCheckin {
   public score: number;
   public comment: string;
   get tranDateFormatString(): string {
-    return this.tranDate.format(hih.MomentDateFormat);
+    return this.tranDate.format(hih.momentDateFormat);
   }
 
   onSetData(data: any): void {
@@ -533,7 +533,7 @@ export class EventHabitCheckin {
       this.id = data.id;
     }
     if (data && data.tranDate) {
-      this.tranDate = moment(data.tranDate, hih.MomentDateFormat);
+      this.tranDate = moment(data.tranDate, hih.momentDateFormat);
     }
     if (data && data.hid) {
       this.hid = data.hid;
@@ -556,7 +556,7 @@ export class EventHabitCheckin {
     }
     robj.hid = this.hid;
     robj.habitID = this.habitID;
-    robj.tranDate = this.tranDate.format(hih.MomentDateFormat);
+    robj.tranDate = this.tranDate.format(hih.momentDateFormat);
     if (this.comment) {
       robj.comment = this.comment;
     }
@@ -580,14 +580,14 @@ export class HabitEventDetailWithCheckInStatistics {
 
   get StartDateFormatString(): string {
     if (this.startDate) {
-      return this.startDate.format(hih.MomentDateFormat);
+      return this.startDate.format(hih.momentDateFormat);
     }
 
     return '';
   }
   get EndDateFormatString(): string {
     if (this.endDate) {
-      return this.endDate.format(hih.MomentDateFormat);
+      return this.endDate.format(hih.momentDateFormat);
     }
 
     return '';
@@ -610,10 +610,10 @@ export class HabitEventDetailWithCheckInStatistics {
       this.averageScore = data.averageScore;
     }
     if (data && data.startDate) {
-      this.startDate = moment(data.startDate, hih.MomentDateFormat);
+      this.startDate = moment(data.startDate, hih.momentDateFormat);
     }
     if (data && data.endDate) {
-      this.endDate = moment(data.endDate, hih.MomentDateFormat);
+      this.endDate = moment(data.endDate, hih.momentDateFormat);
     }
     if (data && data.name) {
       this.name = data.name;

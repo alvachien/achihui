@@ -6,7 +6,7 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, Language_En, Language_Zh, Language_ZhCN } from './model';
+import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN } from './model';
 import { AuthService, HomeDefDetailService, UIStatusService } from './services';
 import * as moment from 'moment';
 import { LanguageComponent } from './language';
@@ -91,11 +91,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._translate.setDefaultLang(Language_Zh);
-    this._translate.use(Language_Zh).subscribe((x: any) => {
-      this.selectedLanguage = Language_Zh;
+    this._translate.setDefaultLang(languageZh);
+    this._translate.use(languageZh).subscribe((x: any) => {
+      this.selectedLanguage = languageZh;
       this._uistatusService.CurrentLanguage = this.selectedLanguage;
-      this._dateAdapter.setLocale(Language_ZhCN);
+      this._dateAdapter.setLocale(languageZhCN);
       this.updateDocumentTitle();
     });
 
@@ -150,12 +150,12 @@ export class AppComponent implements OnInit {
       this.selectedLanguage !== undefined) {
       this._translate.use(this.selectedLanguage);
 
-      if (this.selectedLanguage === Language_Zh) {
-        moment.locale(Language_ZhCN);
-        this._dateAdapter.setLocale(Language_ZhCN);
-      } else if (this.selectedLanguage === Language_En) {
-        moment.locale(Language_En);
-        this._dateAdapter.setLocale(Language_En);
+      if (this.selectedLanguage === languageZh) {
+        moment.locale(languageZhCN);
+        this._dateAdapter.setLocale(languageZhCN);
+      } else if (this.selectedLanguage === languageEn) {
+        moment.locale(languageEn);
+        this._dateAdapter.setLocale(languageEn);
       }
 
       this._uistatusService.CurrentLanguage = this.selectedLanguage;

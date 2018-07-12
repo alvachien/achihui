@@ -270,7 +270,7 @@ export class HomeMsg {
     this._senddate = sd;
   }
   get SendDateFormatString(): string {
-    return this._senddate.format(hih.MomentDateFormat);
+    return this._senddate.format(hih.momentDateFormat);
   }
   get Title(): string {
     return this._title;
@@ -311,7 +311,7 @@ export class HomeMsg {
       this._usrfromDisplayAs = data.userFrom_DisplayAs;
     }
     if (data && data.sendDate) {
-      this._senddate = moment(data.sendDate, hih.MomentDateFormat);
+      this._senddate = moment(data.sendDate, hih.momentDateFormat);
     }
     if (data && data.title) {
       this._title = data.title;
@@ -329,7 +329,7 @@ export class HomeMsg {
       hid: this._hid,
       userFrom: this._usrfrom,
       userTo: this._usrto,
-      sendDate: this._senddate.format(hih.MomentDateFormat),
+      sendDate: this._senddate.format(hih.momentDateFormat),
       title: this._title,
       content: this._content,
       readFlag: this._readflag,

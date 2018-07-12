@@ -34,30 +34,34 @@ export interface ICurrencyJson {
  */
 export class Currency extends hih.BaseModel {
   private _curr: string;
+  private _name: string;
+  private _symbol: string;
+  private _displayName: string;
+
   get Currency(): string {
     return this._curr;
   }
   set Currency(curr: string) {
     this._curr = curr;
   }
-  private _name: string;
   get Name(): string {
     return this._name;
   }
   set Name(nm: string) {
     this._name = nm;
   }
-
-  private _symbol: string;
   get Symbol(): string {
     return this._symbol;
   }
   set Symbol(sy: string) {
     this._symbol = sy;
   }
-
-  // Display purpose
-  public DisplayName: string;
+  get DisplayName(): string {
+    return this._displayName;
+  }
+  set DisplayName(dn: string) {
+    this._displayName = dn;
+  }
 
   constructor() {
     super();
@@ -192,10 +196,34 @@ export class AccountCategory extends hih.BaseModel {
  * Document type
  */
 export class DocumentType extends hih.BaseModel {
-  public HID: number;
-  public Id: number;
-  public Name: string;
-  public Comment: string;
+  private _hid: number;
+  private _id: number;
+  private _name: string;
+  private _comment: string;
+  get HID(): number {
+    return this._hid;
+  }
+  set HID(homeid: number) {
+    this._hid = homeid;
+  }
+  get Id(): number {
+    return this._id;
+  }
+  set Id(tid: number) {
+    this._id = tid;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(tname: string) {
+    this._name = tname;
+  }
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(cmt: string) {
+    this._comment = cmt;
+  }
 
   constructor() {
     super();
@@ -310,7 +338,7 @@ export class AssetCategory extends hih.BaseModel {
 /**
  * Account verify context
  */
-export interface AccountVerifyContext {
+export interface IAccountVerifyContext {
   Categories: AccountCategory[];
 }
 
@@ -336,8 +364,22 @@ export abstract class AccountExtra {
  * Account
  */
 export class Account extends hih.BaseModel {
-  public Id: number;
-  public HID: number;
+  private _id: number;
+  get Id(): number {
+    return this._id;
+  }
+  set Id(id: number) {
+    this._id = id;
+  }
+
+  private _hid: number;
+  get HID(): number {
+    return this._hid;
+  }
+  set HID(hid: number) {
+    this._hid = hid;
+  }
+
   public CategoryId: number;
   public Name: string;
   public Comment: string;
@@ -411,13 +453,13 @@ export class Account extends hih.BaseModel {
     rstObj.comment = this.Comment;
     rstObj.owner = this.OwnerId;
 
-    if (this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && this.ExtraInfo) {
+    if (this.CategoryId === hih.financeAccountCategoryAdvancePayment && this.ExtraInfo) {
       rstObj.extraInfo_ADP = this.ExtraInfo.writeJSONObject();
-    } else if (this.CategoryId === hih.FinanceAccountCategory_Asset && this.ExtraInfo) {
+    } else if (this.CategoryId === hih.financeAccountCategoryAsset && this.ExtraInfo) {
       rstObj.extraInfo_AS = this.ExtraInfo.writeJSONObject();
-    } else if (this.CategoryId === hih.FinanceAccountCategory_BorrowFrom && this.ExtraInfo) {
+    } else if (this.CategoryId === hih.financeAccountCategoryBorrowFrom && this.ExtraInfo) {
       rstObj.extraInfo_Loan = this.ExtraInfo.writeJSONObject();
-    } else if (this.CategoryId === hih.FinanceAccountCategory_LendTo && this.ExtraInfo) {
+    } else if (this.CategoryId === hih.financeAccountCategoryLendTo && this.ExtraInfo) {
       rstObj.extraInfo_Loan = this.ExtraInfo.writeJSONObject();
     }
 
@@ -455,20 +497,20 @@ export class Account extends hih.BaseModel {
       this.OwnerDisplayAs = data.ownerDisplayAs;
     }
 
-    if (data && this.CategoryId === hih.FinanceAccountCategory_AdvancePayment && data.extraInfo_ADP) {
+    if (data && this.CategoryId === hih.financeAccountCategoryAdvancePayment && data.extraInfo_ADP) {
       let ei: any = new AccountExtraAdvancePayment();
       ei.onSetData(data.extraInfo_ADP);
 
       this.ExtraInfo = ei;
-    } else if (data && this.CategoryId === hih.FinanceAccountCategory_Asset && data.extraInfo_AS) {
+    } else if (data && this.CategoryId === hih.financeAccountCategoryAsset && data.extraInfo_AS) {
       let ei: any = new AccountExtraAsset();
       ei.onSetData(data.extraInfo_AS);
 
       this.ExtraInfo = ei;
-    } else if (data && data.CategoryId === hih.FinanceAccountCategory_BorrowFrom && data.extraInfo_LO) {
+    } else if (data && data.CategoryId === hih.financeAccountCategoryBorrowFrom && data.extraInfo_LO) {
       let ei: any = new AccountExtraLoan();
       ei.onSetData(data.extraINfo_Loan);
-    } else if (data && data.CategoryId === hih.FinanceAccountCategory_LendTo && data.extraInfo_LO) {
+    } else if (data && data.CategoryId === hih.financeAccountCategoryLendTo && data.extraInfo_LO) {
       let ei: any = new AccountExtraLoan();
       ei.onSetData(data.extraINfo_Loan);
     }
@@ -503,7 +545,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     this._startDate = sd;
   }
   get StartDateFormatString(): string {
-    return this._startDate.format(hih.MomentDateFormat);
+    return this._startDate.format(hih.momentDateFormat);
   }
 
   get EndDate(): moment.Moment {
@@ -513,7 +555,7 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     this._endDate = ed;
   }
   get EndDateFormatString(): string {
-    return this._endDate.format(hih.MomentDateFormat);
+    return this._endDate.format(hih.momentDateFormat);
   }
 
   constructor() {
@@ -572,8 +614,8 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   public writeJSONObject(): any {
     let rstobj: any = super.writeJSONObject();
     rstobj.direct = this.Direct;
-    rstobj.startDate = this._startDate.format(hih.MomentDateFormat);
-    rstobj.endDate = this._endDate.format(hih.MomentDateFormat);
+    rstobj.startDate = this._startDate.format(hih.momentDateFormat);
+    rstobj.endDate = this._endDate.format(hih.momentDateFormat);
     rstobj.rptType = this.RepeatType;
     rstobj.refDocID = this.RefDocId;
     rstobj.defrrDays = this.DeferredDays;
@@ -591,10 +633,10 @@ export class AccountExtraAdvancePayment extends AccountExtra {
       this.Direct = false;
     }
     if (data && data.startDate) {
-      this._startDate = moment(data.startDate, hih.MomentDateFormat);
+      this._startDate = moment(data.startDate, hih.momentDateFormat);
     }
     if (data && data.endDate) {
-      this._endDate = moment(data.endDate, hih.MomentDateFormat);
+      this._endDate = moment(data.endDate, hih.momentDateFormat);
     }
     if (data && data.rptType) {
       this.RepeatType = data.rptType;
@@ -697,7 +739,7 @@ export class AccountExtraLoan extends AccountExtra {
     this._startDate = sd;
   }
   get StartDateFormatString(): string {
-    return this._startDate.format(hih.MomentDateFormat);
+    return this._startDate.format(hih.momentDateFormat);
   }
   get endDate(): moment.Moment {
     return this._endDate;
@@ -706,7 +748,7 @@ export class AccountExtraLoan extends AccountExtra {
     this._endDate = ed;
   }
   get EndDateFormatString(): string {
-    return this._startDate.format(hih.MomentDateFormat);
+    return this._startDate.format(hih.momentDateFormat);
   }
   get isLendOut(): boolean {
     return this._isLendOut;
@@ -751,9 +793,9 @@ export class AccountExtraLoan extends AccountExtra {
 
   public writeJSONObject(): any {
     let rstobj: any = super.writeJSONObject();
-    rstobj.startDate = this._startDate.format(hih.MomentDateFormat);
+    rstobj.startDate = this._startDate.format(hih.momentDateFormat);
     if (this._endDate) {
-      rstobj.endDate = this._endDate.format(hih.MomentDateFormat);
+      rstobj.endDate = this._endDate.format(hih.momentDateFormat);
     }
     rstobj.isLendOut = this.isLendOut;
     rstobj.annualRate = this.annualRate;
@@ -770,10 +812,10 @@ export class AccountExtraLoan extends AccountExtra {
     super.onSetData(data);
 
     if (data && data.startDate) {
-      this._startDate = moment(data.startDate, hih.MomentDateFormat);
+      this._startDate = moment(data.startDate, hih.momentDateFormat);
     }
     if (data && data.endDate) {
-      this._endDate = moment(data.endDate, hih.MomentDateFormat);
+      this._endDate = moment(data.endDate, hih.momentDateFormat);
     }
     if (data && data.annualRate) {
       this.annualRate = +data.annualRate;
@@ -800,8 +842,21 @@ export class AccountExtraLoan extends AccountExtra {
  * Control center
  */
 export class ControlCenter extends hih.BaseModel {
-  public HID: number;
-  public Id: number;
+  private _id: number;
+  get Id(): number {
+    return this._id;
+  }
+  set Id(id: number) {
+    this._id = id;
+  }
+
+  private _hid: number;
+  get HID(): number {
+    return this._hid;
+  }
+  set HID(hid: number) {
+    this._hid = hid;
+  }
   public Name: string;
   public ParentId: number;
   public Comment: string;
@@ -879,7 +934,7 @@ export class ControlCenter extends hih.BaseModel {
 /**
  * Context of verify
  */
-export interface OrderVerifyContext {
+export interface IOrderVerifyContext {
   ControlCenters: ControlCenter[];
 }
 
@@ -887,8 +942,21 @@ export interface OrderVerifyContext {
  * Order
  */
 export class Order extends hih.BaseModel {
-  public HID: number;
-  public Id: number;
+  private _id: number;
+  get Id(): number {
+    return this._id;
+  }
+  set Id(id: number) {
+    this._id = id;
+  }
+
+  private _hid: number;
+  get HID(): number {
+    return this._hid;
+  }
+  set HID(hid: number) {
+    this._hid = hid;
+  }
   public Name: string;
   public _validFrom: moment.Moment;
   public _validTo: moment.Moment;
@@ -903,7 +971,7 @@ export class Order extends hih.BaseModel {
     this._validFrom = vf;
   }
   get ValidFromFormatString(): string {
-    return this._validFrom.format(hih.MomentDateFormat);
+    return this._validFrom.format(hih.momentDateFormat);
   }
   get ValidTo(): moment.Moment {
     return this._validTo;
@@ -912,7 +980,7 @@ export class Order extends hih.BaseModel {
     this._validTo = vt;
   }
   get ValidToFormatString(): string {
-    return this._validTo.format(hih.MomentDateFormat);
+    return this._validTo.format(hih.momentDateFormat);
   }
 
   constructor() {
@@ -929,7 +997,7 @@ export class Order extends hih.BaseModel {
     this._validTo = this._validFrom.clone().add(1, 'months');
   }
 
-  public onVerify(context?: OrderVerifyContext): boolean {
+  public onVerify(context?: IOrderVerifyContext): boolean {
     if (!super.onVerify(context)) {
       return false;
     }
@@ -1026,8 +1094,8 @@ export class Order extends hih.BaseModel {
     rstObj.id = this.Id;
     rstObj.hid = this.HID;
     rstObj.name = this.Name;
-    rstObj.validFrom = this._validFrom.format(hih.MomentDateFormat);
-    rstObj.validTo = this._validTo.format(hih.MomentDateFormat);
+    rstObj.validFrom = this._validFrom.format(hih.momentDateFormat);
+    rstObj.validTo = this._validTo.format(hih.momentDateFormat);
     rstObj.comment = this.Comment;
     rstObj.sRuleList = [];
 
@@ -1056,10 +1124,10 @@ export class Order extends hih.BaseModel {
       this.Comment = data.comment;
     }
     if (data && data.validFrom) {
-      this.ValidFrom = moment(data.validFrom, hih.MomentDateFormat);
+      this.ValidFrom = moment(data.validFrom, hih.momentDateFormat);
     }
     if (data && data.validTo) {
-      this.ValidTo = moment(data.validTo, hih.MomentDateFormat);
+      this.ValidTo = moment(data.validTo, hih.momentDateFormat);
     }
 
     this.SRules = [];
@@ -1090,7 +1158,7 @@ export class SettlementRule {
     this.RuleId = -1;
   }
 
-  public onVerify(context?: OrderVerifyContext): boolean {
+  public onVerify(context?: IOrderVerifyContext): boolean {
     let brst: boolean = true;
 
     // ID
@@ -1175,8 +1243,22 @@ export enum TranTypeLevelEnum {
  * Tran type
  */
 export class TranType extends hih.BaseModel {
-  public HID: number;
-  public Id: number;
+  private _id: number;
+  get Id(): number {
+    return this._id;
+  }
+  set Id(id: number) {
+    this._id = id;
+  }
+
+  private _hid: number;
+  get HID(): number {
+    return this._hid;
+  }
+  set HID(hid: number) {
+    this._hid = hid;
+  }
+
   public Name: string;
   public Expense: boolean;
   public ParId: number;
@@ -1248,8 +1330,22 @@ export interface DocumentVerifyContext {
  * Document
  */
 export class Document extends hih.BaseModel {
-  public HID: number;
-  public Id: number;
+  private _id: number;
+  get Id(): number {
+    return this._id;
+  }
+  set Id(id: number) {
+    this._id = id;
+  }
+
+  private _hid: number;
+  get HID(): number {
+    return this._hid;
+  }
+  set HID(hid: number) {
+    this._hid = hid;
+  }
+
   public DocType: number;
   public _tranDate: moment.Moment;
   public TranCurr: string;
@@ -1272,7 +1368,7 @@ export class Document extends hih.BaseModel {
     this._tranDate = td;
   }
   get TranDateFormatString(): string {
-    return this._tranDate.format(hih.MomentDateFormat);
+    return this._tranDate.format(hih.momentDateFormat);
   }
 
   constructor() {
@@ -1473,7 +1569,7 @@ export class Document extends hih.BaseModel {
       chkrst = false;
     }
 
-    if (this.DocType === hih.FinanceDocType_Transfer || this.DocType === hih.FinanceDocType_CurrencyExchange) {
+    if (this.DocType === hih.financeDocTypeTransfer || this.DocType === hih.financeDocTypeCurrencyExchange) {
       if (amtTotal !== 0) {
         let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.AmountIsNotCorrect', 'Finance.AmountIsZeroInTransferDocument');
         this.VerifiedMsgs.push(msg);
@@ -1489,7 +1585,7 @@ export class Document extends hih.BaseModel {
     rstObj.id = this.Id;
     rstObj.hid = this.HID;
     rstObj.docType = this.DocType;
-    rstObj.tranDate = this._tranDate.format(hih.MomentDateFormat);
+    rstObj.tranDate = this._tranDate.format(hih.momentDateFormat);
     rstObj.tranCurr = this.TranCurr;
     if (this.TranCurr2) {
       rstObj.tranCurr2 = this.TranCurr2;
@@ -1533,7 +1629,7 @@ export class Document extends hih.BaseModel {
       this.DocTypeName = data.docTypeName;
     }
     if (data && data.tranDate) {
-      this.TranDate = moment(data.tranDate, hih.MomentDateFormat);
+      this.TranDate = moment(data.tranDate, hih.momentDateFormat);
     }
     if (data && data.tranCurr) {
       this.TranCurr = data.tranCurr;
@@ -1898,7 +1994,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     this._tranDate = td;
   }
   get TranDateFormatString(): string {
-    return this._tranDate.format(hih.MomentDateFormat);
+    return this._tranDate.format(hih.momentDateFormat);
   }
   public AccountName: string;
   public ControlCenterName: string;
@@ -1930,7 +2026,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     rstObj.hid = this.HID;
     rstObj.refDocID = this.RefDocId;
     rstObj.accountID = this.AccountId;
-    rstObj.tranDate = this._tranDate.format(hih.MomentDateFormat);
+    rstObj.tranDate = this._tranDate.format(hih.momentDateFormat);
     rstObj.tranType = this.TranType;
     rstObj.tranAmount = this.TranAmount;
     rstObj.controlCenterID = this.ControlCenterId;
@@ -1956,7 +2052,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
       this.AccountId = +data.accountID;
     }
     if (data && data.tranDate) {
-      this.TranDate = moment(data.tranDate, hih.MomentDateFormat);
+      this.TranDate = moment(data.tranDate, hih.momentDateFormat);
     }
     if (data && data.tranType) {
       this.TranType = +data.tranType;
@@ -2119,7 +2215,7 @@ export class TranTypeReport {
       this.ExpenseFlag = data.expenseFlag;
     }
     if (data && data.tranDate) {
-      this.TranDate = moment(data.tranDate, hih.MomentDateFormat);
+      this.TranDate = moment(data.tranDate, hih.momentDateFormat);
     }
     if (data && data.tranAmount) {
       this.TranAmount = +data.tranAmount;
@@ -2184,7 +2280,7 @@ export class DocumentItemWithBalance {
     this._tranDate = td;
   }
   get TranDateFormatString(): string {
-    return this._tranDate.format(hih.MomentDateFormat);
+    return this._tranDate.format(hih.momentDateFormat);
   }
 
   public onSetData(data: any): void {
@@ -2220,7 +2316,7 @@ export class DocumentItemWithBalance {
       this.OrderName = data.orderName;
     }
     if (data && data.tranDate) {
-      this.TranDate = moment(data.tranDate, hih.MomentDateFormat);
+      this.TranDate = moment(data.tranDate, hih.momentDateFormat);
     }
     if (data && data.docDesp) {
       this.DocDesp = data.docDesp;
@@ -2263,7 +2359,7 @@ export class DocumentWithPlanExgRate {
   public DocType: number;
   public TranDate: moment.Moment;
   get TranDateDisplayString(): string {
-    return this.TranDate.format(hih.MomentDateFormat);
+    return this.TranDate.format(hih.momentDateFormat);
   }
   public Desp: string;
   public TranCurr: string;
@@ -2285,7 +2381,7 @@ export class DocumentWithPlanExgRate {
       this.DocType = +jdata.docType;
     }
     if (jdata && jdata.tranDate) {
-      this.TranDate = moment(jdata.tranDate, hih.MomentDateFormat);
+      this.TranDate = moment(jdata.tranDate, hih.momentDateFormat);
     }
     if (jdata && jdata.desp) {
       this.Desp = jdata.desp;

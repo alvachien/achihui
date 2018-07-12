@@ -6,7 +6,7 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, FinanceAccountCategory_Asset,
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilter,
@@ -179,7 +179,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       this.detailObject.Desp = this.detailObject.Desp.trim();
       if (this.detailObject.Desp.length <= 0) {
         return false;
-      }  
+      }
     }
 
     // Check the extract part
@@ -287,7 +287,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       let sobj: any = docObj.writeJSONObject(); // Document first
       let acntobj: Account = new Account();
       acntobj.HID = this._homedefService.ChosedHome.ID;
-      acntobj.CategoryId = FinanceAccountCategory_Asset;
+      acntobj.CategoryId = financeAccountCategoryAsset;
       acntobj.Name = docObj.Desp;
       acntobj.Comment = docObj.Desp;
       acntobj.ExtraInfo = this.detailObject.AssetAccount;

@@ -8,7 +8,7 @@ import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import * as moment from 'moment';
 import {
   LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
-  TranType, FinanceTranType_TransferIn, FinanceTranType_TransferOut, HomeKeyFigure,
+  TranType, financeTranTypeTransferIn, financeTranTypeTransferOut, HomeKeyFigure,
 } from '../model';
 import { Observable, Subject, BehaviorSubject, forkJoin, ReplaySubject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -176,7 +176,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
   private _parseFinDataWithTopLevel(): void {
     this.mapFinTTIn.forEach((value: any, key: any) => {
-      if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
+      if (this.excludeTransfer && key === financeTranTypeTransferIn) {
         return;
       }
 
@@ -229,7 +229,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     });
 
     this.mapFinTTOut.forEach((value: any, key: any) => {
-      if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
+      if (this.excludeTransfer && key === financeTranTypeTransferOut) {
         return;
       }
 
@@ -283,7 +283,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   }
   private _parseFinDataWithFirstLevel(): void {
     this.mapFinTTIn.forEach((value: any, key: any) => {
-      if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
+      if (this.excludeTransfer && key === financeTranTypeTransferIn) {
         return;
       }
 
@@ -336,7 +336,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     });
 
     this.mapFinTTOut.forEach((value: any, key: any) => {
-      if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
+      if (this.excludeTransfer && key === financeTranTypeTransferOut) {
         return;
       }
 
@@ -390,7 +390,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   }
   private _parseFinDataWithSecondLevel(): void {
     this.mapFinTTIn.forEach((value: any, key: any) => {
-      if (this.excludeTransfer && key === FinanceTranType_TransferIn) {
+      if (this.excludeTransfer && key === financeTranTypeTransferIn) {
         return;
       }
 
@@ -402,7 +402,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     });
 
     this.mapFinTTOut.forEach((value: any, key: any) => {
-      if (this.excludeTransfer && key === FinanceTranType_TransferOut) {
+      if (this.excludeTransfer && key === financeTranTypeTransferOut) {
         return;
       }
 

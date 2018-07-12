@@ -1,4 +1,4 @@
-import { DateSplitChar } from './common';
+import { dateSplitChar } from './common';
 
 export class Utility {
   public static Date2String(dt: Date): string {
@@ -11,7 +11,7 @@ export class Utility {
     let y: number = dt.getFullYear();
     let m: number = dt.getMonth() + 1;
     let d: number = dt.getDate();
-    return y.toString() + DateSplitChar + (m < 10 ? ('0' + m) : m).toString() + DateSplitChar + (d < 10 ? ('0' + d) : d).toString();
+    return y.toString() + dateSplitChar + (m < 10 ? ('0' + m) : m).toString() + dateSplitChar + (d < 10 ? ('0' + d) : d).toString();
   }
 
   public static String2Date(s: string): Date {
@@ -19,7 +19,7 @@ export class Utility {
       return new Date();
     }
 
-    let ss: any = (s.split(DateSplitChar));
+    let ss: any = (s.split(dateSplitChar));
     let y: number = parseInt(ss[0], 10);
     let m: number = parseInt(ss[1], 10);
     let d: number = parseInt(ss[2], 10);

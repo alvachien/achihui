@@ -5,7 +5,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import {
   LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Account, ControlCenter, Order,
-  Document, DocumentWithPlanExgRateForUpdate, MomentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
+  Document, DocumentWithPlanExgRateForUpdate, momentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
   UINameValuePair, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, TemplateDocLoan, MonthOnMonthReport,
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem,
 } from '../model';
@@ -1000,10 +1000,10 @@ export class FinanceStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
     if (dtend) {
-      params = params.append('dtend', dtend.format(MomentDateFormat));
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     return this._http.get(apiurl, {
@@ -1242,10 +1242,10 @@ export class FinanceStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
     if (dtend) {
-      params = params.append('dtend', dtend.format(MomentDateFormat));
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     return this._http.get(apiurl, {
@@ -1528,10 +1528,10 @@ export class FinanceStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
     if (dtend) {
-      params = params.append('dtend', dtend.format(MomentDateFormat));
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     return this._http.get(apiurl, {
@@ -1815,10 +1815,10 @@ export class FinanceStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
     if (dtend) {
-      params = params.append('dtend', dtend.format(MomentDateFormat));
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     return this._http.get(apiurl, {
@@ -1886,10 +1886,10 @@ export class FinanceStorageService {
       params = params.append('exctran', exctran.toString());
     }
     if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(MomentDateFormat));
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
     }
     if (dtend) {
-      params = params.append('dtend', dtend.format(MomentDateFormat));
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     return this._http.get(apiurl, {
@@ -1971,12 +1971,12 @@ export class FinanceStorageService {
       interestFreeLoan: datainput.InterestFreeLoan ? true : false,
       interestRate: datainput.InterestRate ? datainput.InterestRate : 0,
       repaymentMethod: datainput.RepaymentMethod,
-      startDate: datainput.StartDate.format(MomentDateFormat),
+      startDate: datainput.StartDate.format(momentDateFormat),
       totalAmount: datainput.TotalAmount,
       totalMonths: datainput.TotalMonths,
     };
     if (datainput.EndDate) {
-      jobject.endDate = datainput.EndDate.format(MomentDateFormat);
+      jobject.endDate = datainput.EndDate.format(momentDateFormat);
     }
     const jdata: string = JSON && JSON.stringify(jobject);
 
@@ -1994,7 +1994,7 @@ export class FinanceStorageService {
         if (y instanceof Array && y.length > 0) {
           for (let tt of y) {
             let rst: FinanceLoanCalAPIOutput = {
-              TranDate: moment(tt.tranDate, MomentDateFormat),
+              TranDate: moment(tt.tranDate, momentDateFormat),
               TranAmount: tt.tranAmount,
               InterestAmount: tt.interestAmount,
             };
