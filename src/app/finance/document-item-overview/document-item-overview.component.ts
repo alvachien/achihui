@@ -129,17 +129,20 @@ export class DocumentItemOverviewComponent implements OnInit {
       });
     } else if (doc instanceof TemplateDocLoan) {
       // Do the Loan posting!
-      this._storageService.doPostLoanTmpDoc(doc).subscribe((x: any) => {
-        // Show the posted document - after the snackbar!
-        this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
-          duration: 3000,
-        }).afterDismissed().subscribe(() => {
-          // Navigate to display
-          this._router.navigate(['/finance/document/displaynormal/' + x.id]);
-        });
-      }, (error: any) => {
-        // Show error dialog!
-      });
+      // TBD.
+      // It shall navigate to the Normal document creation page instead of a normal document posting
+
+      // this._storageService.doPostLoanTmpDoc(doc).subscribe((x: any) => {
+      //   // Show the posted document - after the snackbar!
+      //   this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
+      //     duration: 3000,
+      //   }).afterDismissed().subscribe(() => {
+      //     // Navigate to display
+      //     this._router.navigate(['/finance/document/displaynormal/' + x.id]);
+      //   });
+      // }, (error: any) => {
+      //   // Show error dialog!
+      // });
     }
   }
 }

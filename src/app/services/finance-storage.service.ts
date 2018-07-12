@@ -1261,33 +1261,33 @@ export class FinanceStorageService {
       }));
   }
 
-  /**
-   * Post the template doc
-   * @param doc Tmplate doc
-   */
-  public doPostLoanTmpDoc(doc: TemplateDocLoan): Observable<any> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+  // /**
+  //  * Post the template doc
+  //  * @param doc Tmplate doc
+  //  */
+  // public doPostLoanTmpDoc(doc: TemplateDocLoan): Observable<any> {
+  //   let headers: HttpHeaders = new HttpHeaders();
+  //   headers = headers.append('Content-Type', 'application/json')
+  //     .append('Accept', 'application/json')
+  //     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanTmpDoc';
-    let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    params = params.append('docid', doc.DocId.toString());
+  //   let apiurl: string = environment.ApiUrl + '/api/FinanceLoanTmpDoc';
+  //   let params: HttpParams = new HttpParams();
+  //   params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+  //   params = params.append('docid', doc.DocId.toString());
 
-    return this._http.post(apiurl, undefined, {
-      headers: headers,
-      params: params,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering doPostLoanTmpDoc in FinanceStorageService: ${response}`);
-        }
+  //   return this._http.post(apiurl, undefined, {
+  //     headers: headers,
+  //     params: params,
+  //   })
+  //     .pipe(map((response: HttpResponse<any>) => {
+  //       if (environment.LoggingLevel >= LogLevel.Debug) {
+  //         console.log(`AC_HIH_UI [Debug]: Entering doPostLoanTmpDoc in FinanceStorageService: ${response}`);
+  //       }
 
-        return <any>response;
-      }));
-  }
+  //       return <any>response;
+  //     }));
+  // }
 
   /**
    * Create asset document
