@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, of, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson } from '../model';
+import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson } from '../model';
 import { HomeDefDetailService } from '../services';
 
 /**

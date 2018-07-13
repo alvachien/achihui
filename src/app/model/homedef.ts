@@ -24,7 +24,7 @@ export function getHomeMemberRelationString(re: HomeMemberRelationEnum): string 
 /**
  * Home members
  */
-export interface HomeMemberJson {
+export interface IHomeMemberJson {
   homeID: number;
   user: string;
   displayAs: string;
@@ -72,14 +72,14 @@ export class HomeMember {
     // Empty
   }
 
-  public parseJSONData(data: HomeMemberJson): void {
+  public parseJSONData(data: IHomeMemberJson): void {
     this._hid = data.homeID;
     this._user = data.user;
     this._displayas = data.displayAs;
     this._relation = +data.relation;
   }
-  public generateJSONData(): HomeMemberJson {
-    let jdata: HomeMemberJson = {
+  public generateJSONData(): IHomeMemberJson {
+    let jdata: IHomeMemberJson = {
       homeID: this._hid,
       user: this._user,
       displayAs: this._displayas,
@@ -100,7 +100,7 @@ export interface HomeDefJson {
   baseCurrency: string;
   creatorDisplayAs?: string; // For creation
 
-  members?: HomeMemberJson[];
+  members?: IHomeMemberJson[];
 }
 
 /**
@@ -197,7 +197,7 @@ export class HomeDef {
 /**
  * Home message JSON
  */
-export interface HomeMsgJson {
+export interface IHomeMsgJson {
   id: number;
   hid: number;
   userFrom: string;
@@ -323,8 +323,8 @@ export class HomeMsg {
       this._readflag = data.readFlag;
     }
   }
-  public writeJSONObject(): HomeMsgJson {
-    let hmj: HomeMsgJson = {
+  public writeJSONObject(): IHomeMsgJson {
+    let hmj: IHomeMsgJson = {
       id: this._id,
       hid: this._hid,
       userFrom: this._usrfrom,
@@ -343,35 +343,56 @@ export class HomeMsg {
  * Key Figure
  */
 export class HomeKeyFigure {
-  public TotalAssets: number;
-  public TotalLiabilities: number;
-  public TotalAssetsUnderMyName: number;
-  public TotalLiabilitiesUnderMyName: number;
-  public TotalUnreadMessage: number;
-  public MyUnCompletedEvents: number;
-  public MyCompletedEvents: number;
+  private _totalAssets: number;
+  private _totalLiabilities: number;
+  private _totalAssetsUnderMyName: number;
+  private _totalLiabilitiesUnderMyName: number;
+  private _totalUnreadMessage: number;
+  private _myUnCompletedEvents: number;
+  private _myCompletedEvents: number;
+  get TotalAssets(): number {
+    return this._totalAssets;
+  }
+  get TotalLiabilities(): number {
+    return this._totalLiabilities;
+  }
+  get TotalAssetsUnderMyName(): number {
+    return this._totalAssetsUnderMyName;
+  }
+  get TotalLiabilitiesUnderMyName(): number {
+    return this._totalLiabilitiesUnderMyName;
+  }
+  get TotalUnreadMessage(): number {
+    return this._totalUnreadMessage;
+  }
+  get MyUnCompletedEvents(): number {
+    return this._myUnCompletedEvents;
+  }
+  get MyCompletedEvents(): number {
+    return this._myCompletedEvents;
+  }
 
   public onSetData(data: any): void {
     if (data && data.totalAsset) {
-      this.TotalAssets = +data.totalAsset;
+      this._totalAssets = +data.totalAsset;
     }
     if (data && data.totalLiability) {
-      this.TotalLiabilities = +data.totalLiability;
+      this._totalLiabilities = +data.totalLiability;
     }
     if (data && data.totalAssetUnderMyName) {
-      this.TotalAssetsUnderMyName = +data.totalAssetUnderMyName;
+      this._totalAssetsUnderMyName = +data.totalAssetUnderMyName;
     }
     if (data && data.totalLiabilityUnderMyName) {
-      this.TotalLiabilitiesUnderMyName = +data.totalLiabilityUnderMyName;
+      this._totalLiabilitiesUnderMyName = +data.totalLiabilityUnderMyName;
     }
     if (data && data.totalUnreadMessage) {
-      this.TotalUnreadMessage = +data.totalUnreadMessage;
+      this._totalUnreadMessage = +data.totalUnreadMessage;
     }
     if (data && data.myUnCompletedEvents) {
-      this.MyUnCompletedEvents = +data.myUnCompletedEvents;
+      this._myUnCompletedEvents = +data.myUnCompletedEvents;
     }
     if (data && data.myCompletedEvents) {
-      this.MyCompletedEvents = +data.myCompletedEvents;
+      this._myCompletedEvents = +data.myCompletedEvents;
     }
   }
 }
