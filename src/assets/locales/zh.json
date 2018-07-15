@@ -206,7 +206,7 @@
       "AssetSoldOut": "出售资产或大件家用器具",
       "BorrowFrom": "借入",
       "LendTo": "借出",
-      "Repayment": "还款"
+      "Repay": "还款"
     },
     "AssCtgy": {
       "Apartment": "公寓",
