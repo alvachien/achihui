@@ -3,7 +3,7 @@ import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '
 import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, HomeMsg, HomeKeyFigure } from '../model';
+import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, HomeMsg, HomeKeyFigure } from '../model';
 import { AuthService } from './auth.service';
 import { HttpHeaderResponse } from '@angular/common/http/src/response';
 

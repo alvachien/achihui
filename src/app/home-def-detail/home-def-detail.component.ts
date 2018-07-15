@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { environment } from '../../environments/environment';
-import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, UIMode, getUIModeString } from '../model';
+import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, UIMode, getUIModeString } from '../model';
 import { AuthService, HomeDefDetailService, FinCurrencyService } from '../services';
 
 @Component({

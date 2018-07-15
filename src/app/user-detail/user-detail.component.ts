@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { LogLevel, HomeDef, HomeMember, HomeDefJson, HomeMemberJson, UIMode, getUIModeString, UserAuthInfo } from '../model';
+import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, UIMode, getUIModeString, UserAuthInfo } from '../model';
 import { AuthService, HomeDefDetailService } from '../services';
 
 @Component({
