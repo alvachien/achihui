@@ -34,7 +34,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
 
   displayedColumns: string[] = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
   dataSource: MatTableDataSource<DocumentItem>;
-  itemOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  // itemOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -109,14 +109,15 @@ export class DocumentRepaymentDetailComponent implements OnInit {
                 }
 
                 this.detailObject = x2;
-                this.itemOperEvent.emit(); // Show the items
+                // TBD.
+                // this.itemOperEvent.emit(); // Show the items
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
                 }
 
                 this.detailObject = new Document();
-                this.detailObject.DocType = financeDocTypeNormal;
+                this.detailObject.DocType = financeDocTypeRepay;
               }
             });
 
@@ -176,30 +177,38 @@ export class DocumentRepaymentDetailComponent implements OnInit {
   public onCreateDocItem(): void {
     let di: DocumentItem = new DocumentItem();
     di.ItemId = this.getNextItemID();
-    this.detailObject.Items.push(di);
-    this.itemOperEvent.emit();
+
+    let aritems: any[] = this.dataSource.data.slice();
+    aritems.push(di);
+    this.dataSource.data = aritems;
   }
 
   public onDeleteDocItem(di: any): void {
     let idx: number = -1;
-    for (let i: number = 0; i < this.detailObject.Items.length; i ++) {
-      if (this.detailObject.Items[i].ItemId === di.ItemId) {
+    let aritems: any[] = this.dataSource.data.slice();
+    for (let i: number = 0; i < aritems.length; i ++) {
+      if (aritems[i].ItemId === di.ItemId) {
         idx = i;
         break;
       }
     }
 
     if (idx !== -1) {
-      this.detailObject.Items.splice(idx);
-      this.itemOperEvent.emit();
+      aritems.splice(idx);
+
+      this.dataSource.data = aritems;
     }
   }
 
   public onSubmit(): void {
-    if (this.uiMode === UIMode.Create) {
-      this.onCreationImpl();
-    } else if (this.uiMode === UIMode.Change) {
-      this.onUpdateImpl();
+    if (this.uiMode === UIMode.Create || this.uiMode === UIMode.Change) {
+      this.detailObject.Items = this.dataSource.data;
+
+      if (this.uiMode === UIMode.Create) {
+        this.onCreationImpl();
+      } else if (this.uiMode === UIMode.Change) {
+        this.onUpdateImpl();
+      }
     }
   }
 
@@ -231,12 +240,12 @@ export class DocumentRepaymentDetailComponent implements OnInit {
   }
 
   private getNextItemID(): number {
-    if (this.detailObject.Items.length <= 0) {
+    if (this.dataSource.data.length <= 0) {
       return 1;
     }
 
     let nMax: number = 0;
-    for (let item of this.detailObject.Items) {
+    for (let item of this.dataSource.data) {
       if (item.ItemId > nMax) {
         nMax = item.ItemId;
       }
@@ -259,8 +268,28 @@ export class DocumentRepaymentDetailComponent implements OnInit {
     this.uiOrderFilter = true;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
+
     // Load current loan doc
-    // this._uiStatusService.currentTemplateLoanDoc
+    this.detailObject.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
+
+    // Add two items
+    let di: DocumentItem = new DocumentItem();
+    di.ItemId = this.getNextItemID();
+    di.AccountId = this._uiStatusService.currentTemplateLoanDoc.AccountId;
+    di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.TranAmount;
+    di.TranType = this._uiStatusService.currentTemplateLoanDoc.TranType;
+    di.ControlCenterId = this._uiStatusService.currentTemplateLoanDoc.ControlCenterId;
+    di.OrderId = this._uiStatusService.currentTemplateLoanDoc.OrderId;
+
+    let aritems: any[] = this.dataSource.data.slice();
+    aritems.push(di);
+
+    if (this._uiStatusService.currentTemplateLoanDoc.InterestAmount > 0) {
+      di.ItemId = this.getNextItemID();
+      di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.InterestAmount;
+      aritems.push(di);
+    }
+    this.dataSource.data = aritems;
   }
 
   private onCreationImpl(): void {
@@ -313,7 +342,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
           // Re-initial the page for another create
           this.onInitCreateMode();
           this.setStep(0);
-          this.itemOperEvent.emit();
+          // this.itemOperEvent.emit();
         });
 
         snackbarRef.afterDismissed().subscribe(() => {
@@ -402,7 +431,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
           // Re-initial the page for another create
           this.onInitCreateMode();
           this.setStep(0);
-          this.itemOperEvent.emit();
+          // this.itemOperEvent.emit();
         });
 
         snackbarRef.afterDismissed().subscribe(() => {

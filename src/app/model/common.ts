@@ -23,7 +23,13 @@ export const financeDocTypeRepay: number = 11;
 
 export const financeTranTypeTransferIn: number = 37;
 export const financeTranTypeTransferOut: number = 60;
-export const financeTranTypeLoanIn: number = 80;
+export const financeTranTypeBorrowFrom: number = 80;
+export const financeTranTypeLendTo: number = 81;
+export const financeTranTypeRepaymentOut: number = 86;
+export const financeTranTypeRepaymentIn: number = 87;
+export const financeTranTypeDownpaymentOut: number = 88;
+export const financeTranTypeInterestOut: number = 55;
+export const financeTranTypeInterestIn: number = 8;
 
 export const languageEn: string = 'en';
 export const languageZh: string = 'zh';

@@ -1261,6 +1261,33 @@ export class FinanceStorageService {
       }));
   }
 
+  public createLoanRepayDoc(doc: Document): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanRepayDoc';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+
+    return this._http.post(apiurl, undefined, {
+      headers: headers,
+      params: params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering doPostLoanTmpDoc in FinanceStorageService: ${response}`);
+        }
+
+        return <any>response;
+      }));
+  }
+
+  //
+  // Comment it out because the logic behind is not working any more after the remodeling of the loan document
+  // Use createLoanRepayDoc instead
+  //
   // /**
   //  * Post the template doc
   //  * @param doc Tmplate doc
