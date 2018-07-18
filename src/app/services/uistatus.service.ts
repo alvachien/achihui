@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { OverviewScopeEnum, QuestionBankTypeEnum, TagTypeEnum, UICommonLabelEnum,
-  UIDisplayString, UIDisplayStringUtil } from '../model';
+  UIDisplayString, UIDisplayStringUtil, TemplateDocLoan } from '../model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
@@ -53,6 +53,14 @@ export class UIStatusService {
   }
   set latestError(le: string) {
     this._latestError = le;
+  }
+
+  private _docTempLoan: TemplateDocLoan;
+  get currentTemplateLoanDoc(): TemplateDocLoan {
+    return this._docTempLoan;
+  }
+  set currentTemplateLoanDoc(doc: TemplateDocLoan) {
+    this._docTempLoan = doc;
   }
 
   public arrLabels: UIDisplayString[] = [];

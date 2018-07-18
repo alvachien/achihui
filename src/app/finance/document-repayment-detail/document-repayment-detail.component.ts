@@ -1,42 +1,17 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef,
-} from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
+  Input, Output, ViewContainerRef, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatChipInputEvent } from '@angular/material';
+import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource } from '@angular/material';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  UICommonLabelEnum, IAccountCategoryFilter } from '../../model';
+  UICommonLabelEnum, IAccountCategoryFilter, financeDocTypeRepay } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
-/**
- * Data source of Normal Document Items
- */
-export class NormalDocumentItemDataSource extends DataSource<any> {
-  constructor(private _parentComponent: DocumentRepaymentDetailComponent) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<DocumentItem[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.itemOperEvent,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      return this._parentComponent.detailObject.Items;
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
 @Component({
   selector: 'hih-document-repayment-detail',
   templateUrl: './document-repayment-detail.component.html',
@@ -58,7 +33,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
   displayedColumns: string[] = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
-  dataSource: NormalDocumentItemDataSource | undefined;
+  dataSource: MatTableDataSource<DocumentItem>;
   itemOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
 
   get isFieldChangable(): boolean {
@@ -82,7 +57,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
     public _currService: FinCurrencyService) {
     this.detailObject = new Document();
     this.detailObject.DocType = financeDocTypeNormal;
-    this.dataSource = new NormalDocumentItemDataSource(this);
+    this.dataSource = new MatTableDataSource([]);
   }
 
   ngOnInit(): void {
@@ -113,13 +88,13 @@ export class DocumentRepaymentDetailComponent implements OnInit {
 
       this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'createnormal') {
+          if (x[0].path === 'createrepay') {
             this.onInitCreateMode();
-          } else if (x[0].path === 'editnormal') {
+          } else if (x[0].path === 'editrepay') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'displaynormal') {
+          } else if (x[0].path === 'displayrepay') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
@@ -274,7 +249,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
     this.detailObject = new Document();
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
-    this.detailObject.DocType = financeDocTypeNormal;
+    this.detailObject.DocType = financeDocTypeRepay;
     this.uiAccountStatusFilter = 'Normal';
     this.uiAccountCtgyFilter = {
       skipADP: true,
@@ -284,6 +259,8 @@ export class DocumentRepaymentDetailComponent implements OnInit {
     this.uiOrderFilter = true;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
+    // Load current loan doc
+    // this._uiStatusService.currentTemplateLoanDoc
   }
 
   private onCreationImpl(): void {
