@@ -72,23 +72,23 @@ All loan documents involves the interest calculation.
 * Post a loan document will create an account with category Loan automatically.
 * Just like advanced payment, repayment method need be maintained, the template documents will be created automatically;
 
-For borrow from document with amount 100 with will be paid back with 10 periods:
-1. A borrow from document will be posted with following steps:
-    a. First document line: An account which receving the amount 100;
-    b. A new borrow-from account has been created, 
-    c. Second document line: the new created account with initial liability 100;
-2. For template items, a repay document will post to the borrow from account with a smaller amount;
+For borrow from transaction:
+1. First of all, create a borrow from document with: Document type (Borrow From, 9) whch contains two items: 
+    a. First document line posted to the New created BorrowFromAccount, tran. type 82 (opening liability));
+    b. Second document line posted to the account which receiving the amount, tran. type 80 (borrow from);
+2. In addition, there are several template document will be created with the relevant.
+3. A repay document will be post periodly or manually;
     a. The new posted document with doc type - repayment.
-    b. It contains several line items: the original amount, the interest amount;
+    b. It contains several line items: the original amount (repayment in 87 to the borrow from account, repayment out 86 to the account which paid the amount), the interest amount;
 
-For lend to document with amount 100 which will be returned with 10 periods:
-1. A lend to document will be posted with following steps:
-    a. First document line: An account which sending the amount 100;
-    b. A new lend-to account has been created, 
-    c. Second document line: the new created account with initial asset 100;
-2. For template items, a repay document will post to the borrow from account with a smaller amount;
+For lend to transaction:
+1. First of all, create a lend to document with: Document type (Borrow To, 10) whch contains two items: 
+    a. First document line posted to the New created LendToAccount, tran. type 1 (opening asset));
+    b. Second document line posted to the account which paid the amount, tran. type 81 (lent to);
+2. In addition, there are several template document will be created with the relevant.
+3. A repay document will be post periodly or manually;
     a. The new posted document with doc type - repayment.
-    b. It contains several line items: the original amount, the interest amount;
+    b. It contains several line items: the original amount (repayment out 86 to the lend to account, repayment out 87 to the account which received the amount), the interest amount;
 
 #### Others
 Others

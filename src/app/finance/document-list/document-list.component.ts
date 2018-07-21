@@ -7,7 +7,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange,
   financeDocTypeTransfer, financeDocTypeAdvancePayment, OverviewScopeEnum, getOverviewScopeRange,
-  FinanceDocType_CreditcardRepay, financeDocTypeAssetBuyIn, financeDocTypeAssetSoldOut,
+  financeDocTypeAssetBuyIn, financeDocTypeAssetSoldOut,
   financeDocTypeBorrowFrom, UICommonLabelEnum, financeDocTypeLendTo, } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';

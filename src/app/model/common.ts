@@ -14,12 +14,15 @@ export const financeDocTypeNormal: number = 1;
 export const financeDocTypeTransfer: number = 2; // Transfer doc
 export const financeDocTypeCurrencyExchange: number = 3; // Currency exchange
 export const financeDocTypeAdvancePayment: number = 5;
-export const FinanceDocType_CreditcardRepay: number = 6;
+// export const FinanceDocType_CreditcardRepay: number = 6;
 export const financeDocTypeAssetBuyIn: number = 7;
 export const financeDocTypeAssetSoldOut: number = 8;
 export const financeDocTypeBorrowFrom: number = 9;
 export const financeDocTypeLendTo: number = 10;
 export const financeDocTypeRepay: number = 11;
+
+export const financeTranTypeOpeningAsset: number = 1;
+export const financeTranTypeOpeningLiability: number = 82;
 
 export const financeTranTypeTransferIn: number = 37;
 export const financeTranTypeTransferOut: number = 60;
@@ -153,11 +156,11 @@ export enum RepeatFrequencyEnum {
  * Log Level enum
  */
 export enum LogLevel {
-  Crash = 0,
-  Error = 1,
-  Warning = 2,
-  Info = 3,
-  Debug = 4,
+  Crash     = 0,
+  Error     = 1,
+  Warning   = 2,
+  Info      = 3,
+  Debug     = 4,
 }
 
 /**
