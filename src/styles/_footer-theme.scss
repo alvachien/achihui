@@ -3,5 +3,11 @@
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
   $background: map-get($theme, background);
-  $foreground: map-get($theme, foreground);  
+  $foreground: map-get($theme, foreground);
+  
+  achih-footer {
+    .achih-footer-list {
+      color: mat-color($primary, default-contrast);
+    }
+  }  
 }
