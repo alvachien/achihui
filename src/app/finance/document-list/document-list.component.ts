@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator, MatDialog } from '@angular/material';
+import { MatPaginator, MatDialog, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, merge, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
@@ -12,36 +12,6 @@ import { LogLevel, Document, DocumentItem, financeDocTypeNormal, financeDocTypeC
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
-/**
- * Data source of Document
- */
-export class DocumentDataSource extends DataSource<any> {
-  constructor(private _storageService: FinanceStorageService,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<Document[]> {
-    const displayDataChanges: any[] = [
-      this._storageService.listDocumentChange,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._storageService.Documents.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
 @Component({
   selector: 'hih-finance-document-list',
   templateUrl: './document-list.component.html',
@@ -50,7 +20,8 @@ export class DocumentDataSource extends DataSource<any> {
 export class DocumentListComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
-  dataSource: DocumentDataSource | undefined;
+  dataSource: MatTableDataSource<Document> = new MatTableDataSource<Document>();
+
   selectedDocScope: OverviewScopeEnum;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isLoadingResults: boolean;
@@ -67,7 +38,7 @@ export class DocumentListComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit...');
     }
 
-    this.dataSource = new DocumentDataSource(this._storageService, this.paginator);
+    // this.dataSource = new DocumentDataSource(this._storageService, this.paginator);
     this.selectedDocScope = OverviewScopeEnum.CurrentMonth;
     this.onDocScopeChanged();
   }

@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
 } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -15,30 +15,6 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStat
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { HttpErrorResponse } from '@angular/common/http';
-
-/**
- * Data source of ADP Template Document
- */
-export class TemplateDocLoanDataSource extends DataSource<any> {
-  constructor(private _parentComponent: DocumentLoanDetailComponent) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<TemplateDocLoan[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.tmpDocOperEvent,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      return this._parentComponent.detailObject.TmpDocs;
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
 
 @Component({
   selector: 'hih-finance-document-loan-detail',
@@ -62,9 +38,9 @@ export class DocumentLoanDetailComponent implements OnInit {
   public uiOrderFilter: boolean | undefined;
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
-  tmpDocOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  // tmpDocOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'InterestAmount', 'Desp'];
-  dataSource: TemplateDocLoanDataSource | undefined;
+  dataSource: MatTableDataSource<TemplateDocLoan> = new MatTableDataSource<TemplateDocLoan>();
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -89,7 +65,7 @@ export class DocumentLoanDetailComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     this.detailObject = new UIFinLoanDocument();
-    this.dataSource = new TemplateDocLoanDataSource(this);
+    // this.dataSource = new TemplateDocLoanDataSource(this);
   }
 
   ngOnInit(): void {
@@ -167,7 +143,7 @@ export class DocumentLoanDetailComponent implements OnInit {
               }
 
               this.detailObject.parseDocument(x2);
-              this.tmpDocOperEvent.emit();
+              // this.tmpDocOperEvent.emit();
             }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readLoanDocument : ${error2}`);
@@ -249,7 +225,7 @@ export class DocumentLoanDetailComponent implements OnInit {
           this.detailObject.TmpDocs.push(tmpdoc);
         }
 
-        this.tmpDocOperEvent.emit();
+        // this.tmpDocOperEvent.emit();
       }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering onSync, failed to calculate the template docs : ${error}`);
@@ -368,7 +344,7 @@ export class DocumentLoanDetailComponent implements OnInit {
 
             this.onInitCreateMode();
             this.setStep(0);
-            this.tmpDocOperEvent.emit();
+            // this.tmpDocOperEvent.emit();
           });
 
           snackbarRef.afterDismissed().subscribe(() => {

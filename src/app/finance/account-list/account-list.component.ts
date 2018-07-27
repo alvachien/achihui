@@ -7,7 +7,8 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService } from '../../services';
 
-export interface IAccountStatusUI {
+// Account status UI, don't need expose.
+interface IAccountStatusUI {
   name: string;
   value?: AccountStatusEnum;
 }
