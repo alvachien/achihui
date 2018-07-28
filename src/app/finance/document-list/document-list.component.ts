@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatPaginator, MatDialog, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, merge, forkJoin } from 'rxjs';
@@ -17,7 +16,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   templateUrl: './document-list.component.html',
   styleUrls: ['./document-list.component.scss'],
 })
-export class DocumentListComponent implements OnInit {
+export class DocumentListComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
   dataSource: MatTableDataSource<Document> = new MatTableDataSource<Document>();
@@ -38,9 +37,12 @@ export class DocumentListComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit...');
     }
 
-    // this.dataSource = new DocumentDataSource(this._storageService, this.paginator);
     this.selectedDocScope = OverviewScopeEnum.CurrentMonth;
     this.onDocScopeChanged();
+  }
+
+  ngAfterViewInit(): void {
+    
   }
 
   public onRefreshList(): void {

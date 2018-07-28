@@ -989,7 +989,7 @@ export class FinanceStorageService {
   /**
    * Read all documents out
    */
-  public fetchAllDocuments(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<Document[]> {
+  public fetchAllDocuments(dtbgn?: moment.Moment, dtend?: moment.Moment, top?: number, skip?: number): Observable<Document[]> {
     const apiurl: string = environment.ApiUrl + '/api/FinanceDocument';
 
     let headers: HttpHeaders = new HttpHeaders();
@@ -1004,6 +1004,12 @@ export class FinanceStorageService {
     }
     if (dtend) {
       params = params.append('dtend', dtend.format(momentDateFormat));
+    }
+    if (top) {
+      params = params.append('top', top.toString());
+    }
+    if (skip !== undefined) {
+      params = params.append('skip', skip.toString());
     }
 
     return this._http.get(apiurl, {
@@ -1025,7 +1031,7 @@ export class FinanceStorageService {
           }
         }
 
-        this.listDocumentChange.next(listRst);
+        // this.listDocumentChange.next(listRst);
         return listRst;
       }),
         catchError((error: HttpErrorResponse) => {
@@ -1033,7 +1039,7 @@ export class FinanceStorageService {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocuments in FinanceStorageService: ${error}`);
           }
 
-          this.listDocumentChange.next([]);
+          // this.listDocumentChange.next([]);
 
           return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
