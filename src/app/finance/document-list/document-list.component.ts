@@ -42,7 +42,6 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    
   }
 
   public onRefreshList(): void {
