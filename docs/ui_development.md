@@ -23,3 +23,15 @@ There are also some utilities parts:
 - Confirmation Dialog;
 - Others?
 
+## Utilities
+Besides the pages listed above, there are several utility points need be highlighted:
+- Events
+```typescript
+import { EventEmitter } from '@angular/core';
+// Define a variable
+public operEvent = new EventEmitter<any>();
+// Trigger an event
+operEvent.emit(val);
+```
+- Dialog
+To show a dialog

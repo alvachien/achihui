@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, EventEmitter } from '@angular/core';
 import { MatPaginator, MatDialog, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, merge, forkJoin } from 'rxjs';
+import { Observable, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange,
@@ -17,6 +17,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   styleUrls: ['./document-list.component.scss'],
 })
 export class DocumentListComponent implements OnInit, AfterViewInit {
+  private _docScopeEvent: EventEmitter<any> = new EventEmitter<any>();
 
   displayedColumns: string[] = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
   dataSource: MatTableDataSource<Document> = new MatTableDataSource<Document>();
@@ -24,12 +25,14 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   selectedDocScope: OverviewScopeEnum;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isLoadingResults: boolean;
+  totalDocumentCount: number;
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     private _router: Router,
     private _dialog: MatDialog) {
     this.isLoadingResults = false;
+    this.totalDocumentCount = 0;
   }
 
   ngOnInit(): void {
@@ -38,38 +41,51 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
     }
 
     this.selectedDocScope = OverviewScopeEnum.CurrentMonth;
-    this.onDocScopeChanged();
   }
 
   ngAfterViewInit(): void {
-    // Setup the events
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngAfterViewInit...');
+    }
+
+    merge(this.paginator.page, this._docScopeEvent)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.isLoadingResults = true;
+          let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
+          return this._storageService!.fetchAllDocuments(bgn, end, this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize);
+        }),
+        map((revdata: any) => {
+          this.totalDocumentCount = +revdata.totalCount;
+
+          return revdata.contentList;
+        }),
+        catchError((error: any) => {
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          });
+          return of([]);
+        }),
+      ).subscribe((data: any) => {
+        this.dataSource.data = data;
+        this.isLoadingResults = false;
+      });
+
+    // Load the data
+    this._docScopeEvent.emit();
   }
 
   public onRefreshList(): void {
-    this.onDocScopeChanged();
-  }
-
-  public onDocScopeChanged(): void {
-    let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
-
-    this.isLoadingResults = true;
-    this._storageService.fetchAllDocuments(bgn, end).subscribe((x: any) => {
-      // Just ensure the REQUEST has been sent
-    }, (error: any) => {
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
-    }, () => {
-      this.isLoadingResults = false;
-    });
+    this._docScopeEvent.emit();
   }
 
   public onCreateDocument(): void {

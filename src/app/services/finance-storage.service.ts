@@ -1031,15 +1031,12 @@ export class FinanceStorageService {
           }
         }
 
-        // this.listDocumentChange.next(listRst);
         return listRst;
       }),
         catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocuments in FinanceStorageService: ${error}`);
           }
-
-          // this.listDocumentChange.next([]);
 
           return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
