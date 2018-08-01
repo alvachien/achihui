@@ -12,6 +12,14 @@ The two parts:
 - *contentList*: the array of the returned objects (it may just part of the whole result if applying the paging concept);
 - *totalCount*: the count of whole results.
 
+There is a Typescript class defined for it:
+```typescript
+export class BaseListModel<T> {
+  totalCount: number;
+  contentList: T[];
+}
+```
+
 ## Using Material Table Component;
 By default, the list page shall use the Material Table component;
 

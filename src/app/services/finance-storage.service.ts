@@ -7,7 +7,7 @@ import {
   LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Account, ControlCenter, Order,
   Document, DocumentWithPlanExgRateForUpdate, momentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
   UINameValuePair, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, TemplateDocLoan, MonthOnMonthReport,
-  GeneralFilterItem, DocumentItemWithBalance, DocumentItem,
+  GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -989,7 +989,7 @@ export class FinanceStorageService {
   /**
    * Read all documents out
    */
-  public fetchAllDocuments(dtbgn?: moment.Moment, dtend?: moment.Moment, top?: number, skip?: number): Observable<Document[]> {
+  public fetchAllDocuments(dtbgn?: moment.Moment, dtend?: moment.Moment, top?: number, skip?: number): Observable<BaseListModel<Document>> {
     const apiurl: string = environment.ApiUrl + '/api/FinanceDocument';
 
     let headers: HttpHeaders = new HttpHeaders();
@@ -1030,16 +1030,19 @@ export class FinanceStorageService {
             listRst.push(rst);
           }
         }
+        let rstObj: BaseListModel<Document> = new BaseListModel<Document>();
+        rstObj.totalCount = +rjs.totalCount;
+        rstObj.contentList = listRst;
 
-        return listRst;
+        return rstObj;
       }),
-        catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocuments in FinanceStorageService: ${error}`);
-          }
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocuments in FinanceStorageService: ${error}`);
+        }
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));
+        return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**

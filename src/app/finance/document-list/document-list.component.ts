@@ -41,6 +41,7 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
     }
 
     this.selectedDocScope = OverviewScopeEnum.CurrentMonth;
+    this.isLoadingResults = true;
   }
 
   ngAfterViewInit(): void {
@@ -52,7 +53,6 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
       .pipe(
         startWith({}),
         switchMap(() => {
-          this.isLoadingResults = true;
           let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
           return this._storageService!.fetchAllDocuments(bgn, end, this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize);
         }),
@@ -85,6 +85,10 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   }
 
   public onRefreshList(): void {
+    this._docScopeEvent.emit();
+  }
+
+  public onDocScopeChanged(): void {
     this._docScopeEvent.emit();
   }
 

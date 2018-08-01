@@ -2083,7 +2083,13 @@ export class TemplateDocADP extends TemplateDocBase {
  * Tempalte doc for Loan
  */
 export class TemplateDocLoan extends TemplateDocBase {
-  public InterestAmount: number;
+  private _amtInterest: number;
+  get InterestAmount(): number {
+    return this._amtInterest;
+  }
+  set InterestAmount(amt: number) {
+    this._amtInterest = amt;
+  }
 
   public writeJSONObject(): any {
     let rstObj: any = super.writeJSONObject();

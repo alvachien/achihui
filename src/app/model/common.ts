@@ -336,6 +336,12 @@ export class BaseModel {
   }
 }
 
+// List model
+export class BaseListModel<T> {
+  totalCount: number;
+  contentList: T[];
+}
+
 // Tag
 export class Tag {
   private _tagtype: TagTypeEnum;

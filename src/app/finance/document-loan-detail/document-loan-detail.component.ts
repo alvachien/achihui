@@ -38,7 +38,6 @@ export class DocumentLoanDetailComponent implements OnInit {
   public uiOrderFilter: boolean | undefined;
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
-  // tmpDocOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'InterestAmount', 'Desp'];
   dataSource: MatTableDataSource<TemplateDocLoan> = new MatTableDataSource<TemplateDocLoan>();
 
@@ -65,7 +64,6 @@ export class DocumentLoanDetailComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     this.detailObject = new UIFinLoanDocument();
-    // this.dataSource = new TemplateDocLoanDataSource(this);
   }
 
   ngOnInit(): void {
@@ -143,7 +141,8 @@ export class DocumentLoanDetailComponent implements OnInit {
               }
 
               this.detailObject.parseDocument(x2);
-              // this.tmpDocOperEvent.emit();
+
+              this.dataSource.data = this.detailObject.TmpDocs;
             }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readLoanDocument : ${error2}`);
@@ -214,6 +213,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       }
 
       this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
+        let tmpdocs: TemplateDocLoan[] = [];
         for (let rst of x) {
           let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
           tmpdoc.InterestAmount = rst.InterestAmount;
@@ -222,10 +222,10 @@ export class DocumentLoanDetailComponent implements OnInit {
           tmpdoc.TranType = this.detailObject.SourceTranType;
           tmpdoc.Desp = this.detailObject.LoanAccount.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString()
             + ' / ' + x.length.toString();
-          this.detailObject.TmpDocs.push(tmpdoc);
+          tmpdocs.push(tmpdoc);
         }
 
-        // this.tmpDocOperEvent.emit();
+        this.dataSource.data = tmpdocs;
       }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering onSync, failed to calculate the template docs : ${error}`);
@@ -265,7 +265,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       return false;
     }
 
-    if (this.detailObject.TmpDocs.length <= 0) {
+    if (this.dataSource.data.length <= 0) {
       return false;
     }
 
@@ -274,6 +274,7 @@ export class DocumentLoanDetailComponent implements OnInit {
 
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
+      this.detailObject.TmpDocs = this.dataSource.data;
       let docObj: any = this.detailObject.generateDocument();
 
       if (this.detailObject.TmpDocs.length <= 0) {
@@ -289,7 +290,7 @@ export class DocumentLoanDetailComponent implements OnInit {
 
       for (let tdoc of this.detailObject.TmpDocs) {
         if (!tdoc.TranAmount) {
-          this.showErrorDialog('NO tran. amount');
+          this.showErrorDialog('No tran. amount');
           return;
         }
 
@@ -344,7 +345,6 @@ export class DocumentLoanDetailComponent implements OnInit {
 
             this.onInitCreateMode();
             this.setStep(0);
-            // this.tmpDocOperEvent.emit();
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
@@ -420,6 +420,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       skipAsset: true,
     };
     this.uiOrderFilter = true;
+    this.dataSource.data = []; // Empty the items
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }

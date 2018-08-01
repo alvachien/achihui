@@ -34,4 +34,30 @@ public operEvent = new EventEmitter<any>();
 operEvent.emit(val);
 ```
 - Dialog
-To show a dialog
+To show a dialog, do the following:
+```typescript
+import { MatDialog } from '@angular/material';
+
+const dlginfo: MessageDialogInfo = {
+    Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+    Content: x.toString(),
+    Button: MessageDialogButtonEnum.onlyok,
+};
+
+this._dialog.open(MessageDialogComponent, {
+    disableClose: false,
+    width: '500px',
+    data: dlginfo,
+}).afterClosed().subscribe((x2: any) => {
+    // Do nothing!
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+    }
+});
+```
+
+- Snackbar
+To show a snackbar, do the following:
+```typescript
+import { MatSnackBar } from '@angular/material';
+```
