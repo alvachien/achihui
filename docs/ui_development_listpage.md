@@ -227,12 +227,12 @@ To supporting paging, the API shall provides the following parameters:
 Add HTML codes to bring the paginator (normally the codeblock continues after the mat-table):
 
 ```html
-      <mat-paginator #paginator 
-        [length]="_storageService.Documents.length" 
-        [pageIndex]="0" 
-        [pageSize]="10" 
-        [pageSizeOptions]="[5, 10, 25, 100]">
-      </mat-paginator>
+  <mat-paginator #paginator 
+    [length]="_storageService.Documents.length" 
+    [pageIndex]="0" 
+    [pageSize]="10" 
+    [pageSizeOptions]="[5, 10, 25, 100]">
+  </mat-paginator>
 ```
 
 ### MaterialPaginator component
@@ -259,7 +259,7 @@ There are three ways to sync the events:
 
 2. If using the MatDataSource, it can be easily achieved by assign the paginator instance to MatTable.
 ```typescript
-    this.dataSource.paginator = this.paginator;
+  this.dataSource.paginator = this.paginator;
 ```
 
 3. If using the MatDataSource, you can define an own *merge()* and define it in *ngAfterViewInit()*:

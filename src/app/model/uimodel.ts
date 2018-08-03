@@ -359,7 +359,7 @@ export class UIFinLoanDocument {
   public SourceAccountId: number;
   public SourceControlCenterId: number;
   public SourceOrderId: number;
-  public SourceTranType: number; // For each template doc, it shall use tran. type
+  // public SourceTranType: number; // For each template doc, it shall use tran. type
 
   public LoanAccount: HIHFinance.AccountExtraLoan;
   public TmpDocs: HIHFinance.TemplateDocLoan[] = [];
@@ -369,7 +369,7 @@ export class UIFinLoanDocument {
     this.TranDate = moment();
     this.isLendTo = false;
   }
-  public generateDocument(): HIHFinance.Document {
+  public generateDocument(isLendTo?: boolean): HIHFinance.Document {
     let doc: HIHFinance.Document = new HIHFinance.Document();
     if (this.isLendTo) {
       doc.DocType = hih.financeDocTypeLendTo;
@@ -385,8 +385,11 @@ export class UIFinLoanDocument {
     fitem.AccountId = this.SourceAccountId;
     fitem.ControlCenterId = this.SourceControlCenterId;
     fitem.OrderId = this.SourceOrderId;
-    // TBD
-    // fitem.TranType = hih.financeTranTypeRepaymentIn; // Repayment in
+    if (isLendTo) {
+      fitem.TranType = hih.financeTranTypeLendTo;
+    } else {
+      fitem.TranType = hih.financeTranTypeBorrowFrom;
+    }
     fitem.TranAmount = this.TranAmount;
     fitem.Desp = this.Desp;
     doc.Items.push(fitem);
@@ -394,13 +397,13 @@ export class UIFinLoanDocument {
     return doc;
   }
 
-  public parseDocument(doc: HIHFinance.Document | any): void {
+  public parseDocument(doc: HIHFinance.Document | any, isLendTo?: boolean): void {
     if (doc instanceof HIHFinance.Document) {
       this.TranDate = doc.TranDate.clone();
       this.TranCurr = doc.TranCurr;
       this.Desp = doc.Desp;
 
-      if (doc.Items.length !== 1) {
+      if (doc.Items.length < 0) {
         throw Error('Failed to parse document');
       }
 
@@ -419,10 +422,24 @@ export class UIFinLoanDocument {
       this.TranCurr = docobj.TranCurr;
       this.Desp = docobj.Desp;
 
-      if (docobj.Items.length !== 1) {
+      if (docobj.Items.length < 1) {
         throw new Error('Failed to parse document');
       }
-      let fitem: any = docobj.Items[0];
+
+      let itemidx: number = -1;
+      if (isLendTo) {
+        itemidx = docobj.Items.findIndex((val: HIHFinance.DocumentItem) => {
+          return val.TranType === hih.financeTranTypeLendTo;
+        });
+      } else {
+        itemidx = docobj.Items.findIndex((val: HIHFinance.DocumentItem) => {
+          return val.TranType === hih.financeTranTypeBorrowFrom;
+        });
+      }
+      if (itemidx === -1) {
+        throw new Error('No suitable document');
+      }
+      let fitem: any = docobj.Items[itemidx];
       this.SourceAccountId = +fitem.AccountId;
       this.SourceControlCenterId = +fitem.ControlCenterId;
       this.SourceOrderId = +fitem.OrderId;
@@ -433,9 +450,9 @@ export class UIFinLoanDocument {
         let tdoc: HIHFinance.TemplateDocLoan = new HIHFinance.TemplateDocLoan();
         tdoc.onSetData(it);
 
-        if (tdoc.TranType !== this.SourceTranType) {
-          this.SourceTranType = tdoc.TranType;
-        }
+        // if (tdoc.TranType !== this.SourceTranType) {
+        //   this.SourceTranType = tdoc.TranType;
+        // }
 
         this.TmpDocs.push(tdoc);
       }

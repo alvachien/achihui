@@ -77,15 +77,6 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field class="demo-full-width">
-          <mat-select placeholder="{{'Finance.TransactionType' | translate}}" 
-            [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranType" name="ittt">
-            <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-              <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
         <mat-action-row>
           <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
         </mat-action-row>
@@ -183,8 +174,9 @@
                 </mat-form-field>
               </mat-cell>
             </ng-container>
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            
+            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnsToDisplay;"></mat-row>
           </mat-table>
         </div>
       </mat-expansion-panel>

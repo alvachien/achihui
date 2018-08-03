@@ -34,7 +34,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
 
   displayedColumns: string[] = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
   dataSource: MatTableDataSource<DocumentItem>;
-  // itemOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  loanAccountID: number;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -56,8 +56,8 @@ export class DocumentRepaymentDetailComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     this.detailObject = new Document();
-    this.detailObject.DocType = financeDocTypeNormal;
-    this.dataSource = new MatTableDataSource([]);
+    this.detailObject.DocType = financeDocTypeRepay;
+    this.dataSource = new MatTableDataSource();
   }
 
   ngOnInit(): void {
@@ -378,7 +378,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
 
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this.detailObject.DocType = financeDocTypeNormal;
-    this._storageService.createDocument(this.detailObject);
+    this._storageService.createLoanRepayDoc(this.detailObject, this.loanAccountID);
   }
 
   private onUpdateImpl(): void {

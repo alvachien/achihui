@@ -39,6 +39,7 @@ export class DocumentLoanDetailComponent implements OnInit {
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
   displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'InterestAmount', 'Desp'];
+  columnsToDisplay: string[] = this.displayedColumns.slice();
   dataSource: MatTableDataSource<TemplateDocLoan> = new MatTableDataSource<TemplateDocLoan>();
 
   get isFieldChangable(): boolean {
@@ -219,7 +220,7 @@ export class DocumentLoanDetailComponent implements OnInit {
           tmpdoc.InterestAmount = rst.InterestAmount;
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
-          tmpdoc.TranType = this.detailObject.SourceTranType;
+          // tmpdoc.TranType = this.detailObject.SourceTranType;
           tmpdoc.Desp = this.detailObject.LoanAccount.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString()
             + ' / ' + x.length.toString();
           tmpdocs.push(tmpdoc);
@@ -294,10 +295,10 @@ export class DocumentLoanDetailComponent implements OnInit {
           return;
         }
 
-        if (!tdoc.TranType) {
-          this.showErrorDialog('No tran. type');
-          return;
-        }
+        // if (!tdoc.TranType) {
+        //   this.showErrorDialog('No tran. type');
+        //   return;
+        // }
       }
 
       // Check!

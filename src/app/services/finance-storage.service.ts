@@ -1255,9 +1255,9 @@ export class FinanceStorageService {
     }
 
     return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-    })
+        headers: headers,
+        params: params,
+      })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering getLoanTmpDocs in FinanceStorageService: ${response}`);
@@ -1267,23 +1267,30 @@ export class FinanceStorageService {
       }));
   }
 
-  public createLoanRepayDoc(doc: Document): Observable<any> {
+  // Create a repayment document on a loan
+  public createLoanRepayDoc(doc: Document, loanAccountID: number, tmpdocid?: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanRepayDoc';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceLoanRepayDocument';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('loanAccountID', loanAccountID.toString());
+    if (tmpdocid) {
+      params = params.append('tmpdocid', tmpdocid.toString());
+    }
 
-    return this._http.post(apiurl, undefined, {
+    let jdata: string = doc.writeJSONString();
+
+    return this._http.post(apiurl, jdata, {
       headers: headers,
       params: params,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering doPostLoanTmpDoc in FinanceStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering createLoanRepayDoc in FinanceStorageService: ${response}`);
         }
 
         return <any>response;
