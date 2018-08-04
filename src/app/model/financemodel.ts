@@ -724,7 +724,7 @@ export class AccountExtraAsset extends AccountExtra {
 export class AccountExtraLoan extends AccountExtra {
   private _startDate: moment.Moment;
   private _endDate: moment.Moment;
-  private _isLendOut: boolean;
+  private _isLendTo: boolean;
   private _annualRate: number;
   public InterestFree: boolean;
   public TotalMonths: number;
@@ -750,11 +750,11 @@ export class AccountExtraLoan extends AccountExtra {
   get EndDateFormatString(): string {
     return this._startDate.format(hih.momentDateFormat);
   }
-  get isLendOut(): boolean {
-    return this._isLendOut;
+  get isLendTo(): boolean {
+    return this._isLendTo;
   }
-  set isLendOut(lo: boolean) {
-    this._isLendOut = lo;
+  set isLendTo(lo: boolean) {
+    this._isLendTo = lo;
   }
   get annualRate(): number {
     return this._annualRate;
@@ -780,7 +780,7 @@ export class AccountExtraLoan extends AccountExtra {
     let aobj: AccountExtraLoan = new AccountExtraLoan();
     aobj.startDate = this.startDate;
     aobj.endDate = this.endDate;
-    aobj.isLendOut = this.isLendOut;
+    aobj.isLendTo = this.isLendTo;
     aobj.annualRate = this.annualRate;
     aobj.InterestFree = this.InterestFree;
     aobj.TotalMonths = this.TotalMonths;
@@ -797,7 +797,7 @@ export class AccountExtraLoan extends AccountExtra {
     if (this._endDate) {
       rstobj.endDate = this._endDate.format(hih.momentDateFormat);
     }
-    rstobj.isLendOut = this.isLendOut;
+    rstobj.isLendTo = this.isLendTo;
     rstobj.annualRate = this.annualRate;
     rstobj.interestFree = this.InterestFree;
     rstobj.totalMonths = this.TotalMonths;

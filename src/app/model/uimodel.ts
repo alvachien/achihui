@@ -350,11 +350,37 @@ export class UIFinAssetOperationDocument {
  * UI Loan document
  */
 export class UIFinLoanDocument {
-  public TranAmount: number;
+  private _tranAmount: number;
+  private _desp: string;
+  private _tranCurr: string;
+  private _isLendTo: boolean;
+
+  get TranAmount(): number {
+    return this._tranAmount;
+  }
+  set TranAmount(tamt: number) {
+    this._tranAmount = tamt;
+  }
+  get Desp(): string {
+    return this._desp;
+  }
+  set Desp(dsp: string) {
+    this._desp = dsp;
+  }
+  get TranCurr(): string {
+    return this._tranCurr;
+  }
+  set TranCurr(tcur: string) {
+    this._tranCurr = tcur;
+  }
+  get isLendTo(): boolean {
+    return this._isLendTo;
+  }
+  set isLendTo(ilt: boolean) {
+    this._isLendTo = ilt;
+    this.LoanAccount.isLendTo = ilt;
+  }
   public TranDate: moment.Moment;
-  public Desp: string;
-  public TranCurr: string;
-  public isLendTo: boolean;
 
   public SourceAccountId: number;
   public SourceControlCenterId: number;

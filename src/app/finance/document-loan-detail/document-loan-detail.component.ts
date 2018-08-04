@@ -24,7 +24,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class DocumentLoanDetailComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
   private loanType: number;
-  public isLendTo: boolean;
   public documentTitle: string;
 
   public currentMode: string;
@@ -96,37 +95,35 @@ export class DocumentLoanDetailComponent implements OnInit {
       this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'createbrwfrm') {
-            this.onInitCreateMode();
+            this._initCreateMode(false);
             this.loanType = financeDocTypeBorrowFrom;
-            this.isLendTo = false;
           } else if (x[0].path === 'createlendto') {
-            this.onInitCreateMode();
+            this._initCreateMode(true);
             this.loanType = financeDocTypeLendTo;
-            this.isLendTo = true;
           } else if (x[0].path === 'editbrwfrm') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
             this.loanType = financeDocTypeBorrowFrom;
-            this.isLendTo = false;
+            this.detailObject.isLendTo = false;
           } else if (x[0].path === 'editlendto') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
             this.loanType = financeDocTypeLendTo;
-            this.isLendTo = true;
+            this.detailObject.isLendTo = true;
           } else if (x[0].path === 'displaybrwfrm') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
             this.loanType = financeDocTypeBorrowFrom;
-            this.isLendTo = false;
+            this.detailObject.isLendTo = false;
           } else if (x[0].path === 'displaylendto') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
             this.loanType = financeDocTypeLendTo;
-            this.isLendTo = true;
+            this.detailObject.isLendTo = true;
           }
           this.currentMode = getUIModeString(this.uiMode);
           if (this.loanType === financeDocTypeBorrowFrom) {
@@ -141,7 +138,7 @@ export class DocumentLoanDetailComponent implements OnInit {
                 console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngOnInit for activateRoute URL: ${x2}`);
               }
 
-              this.detailObject.parseDocument(x2);
+              this.detailObject.parseDocument(x2, this.detailObject.isLendTo);
 
               this.dataSource.data = this.detailObject.TmpDocs;
             }, (error2: any) => {
@@ -344,7 +341,7 @@ export class DocumentLoanDetailComponent implements OnInit {
           snackbarRef.onAction().subscribe(() => {
             recreate = true;
 
-            this.onInitCreateMode();
+            this._initCreateMode(this.detailObject.isLendTo);
             this.setStep(0);
           });
 
@@ -411,8 +408,13 @@ export class DocumentLoanDetailComponent implements OnInit {
     this._router.navigate(['/finance/document/']);
   }
 
-  private onInitCreateMode(): void {
+  private _initCreateMode(isLendTo?: boolean): void {
     this.detailObject = new UIFinLoanDocument();
+    if (isLendTo) {
+      this.detailObject.isLendTo = true;
+    } else {
+      this.detailObject.isLendTo = false;
+    }
     this.uiMode = UIMode.Create;
     this.uiAccountStatusFilter = 'Normal';
     this.uiAccountCtgyFilter = {

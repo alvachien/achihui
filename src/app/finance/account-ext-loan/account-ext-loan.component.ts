@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraLoan } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
@@ -6,15 +6,15 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStat
 @Component({
   selector: 'hih-finance-account-ext-loan',
   templateUrl: './account-ext-loan.component.html',
-  styleUrls: ['./account-ext-loan.component.scss']
+  styleUrls: ['./account-ext-loan.component.scss'],
 })
-export class AccountExtLoanComponent implements OnInit {
+export class AccountExtLoanComponent implements OnInit, AfterViewInit {
 
   public currentMode: string;
 
   @Input() extObject: AccountExtraLoan;
   @Input() uiMode: UIMode;
-  @Input() isLendTo: boolean;
+  // @Input() isLendTo: boolean;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -25,9 +25,22 @@ export class AccountExtLoanComponent implements OnInit {
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService) {
-  }
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent constructor`);
+      }
+    }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent ngOnInit`);
+    }
+
     // Empty
+  }
+
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent ngAfterViewInit`);
+    }
   }
 }

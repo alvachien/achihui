@@ -64,7 +64,7 @@
         <div class="demo-full-width">
           <hih-finance-account-ext-adp *ngIf="isADPAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-adp>
           <hih-finance-account-ext-asset *ngIf="isAssetAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-asset>
-          <hih-finance-account-ext-loan *ngIf="isLoanAccount" [isLendTo]="isLendTo" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-loan>
+          <hih-finance-account-ext-loan *ngIf="isLoanAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-loan>
           <div *ngIf="!isAssetAccount && !isADPAccount && !isLoanAccount">{{'Finance.NoExtraInfo' | translate}}</div>
         </div>
     
