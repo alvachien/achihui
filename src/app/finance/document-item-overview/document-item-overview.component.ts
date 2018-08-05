@@ -64,10 +64,18 @@ export class DocumentItemOverviewComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
-    this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent constructor...');
+      }
+
+      this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnInit...');
+    }
+
     this.dataSourceTmpDoc = new TmpDocStillOpenDataSource(this, this.paginatorTmpDoc);
 
     forkJoin([

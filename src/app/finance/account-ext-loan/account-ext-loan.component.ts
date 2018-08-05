@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraLoan } from '../../model';
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraLoan, UIAccountForSelection,
+  IAccountCategoryFilter, BuildupAccountForSelection } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 
 @Component({
@@ -11,6 +12,9 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStat
 export class AccountExtLoanComponent implements OnInit, AfterViewInit {
 
   public currentMode: string;
+  public arUIAccount: UIAccountForSelection[] = [];
+  public uiAccountStatusFilter: string | undefined;
+  public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
 
   @Input() extObject: AccountExtraLoan;
   @Input() uiMode: UIMode;
@@ -35,7 +39,15 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent ngOnInit`);
     }
 
-    // Empty
+    this.uiAccountStatusFilter = undefined;
+    this.uiAccountCtgyFilter = {
+      skipADP: true,
+      skipLoan: true,
+      skipAsset: true,
+    };
+    this._storageService.fetchAllAccounts().subscribe((x: any) => {
+      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+    });
   }
 
   ngAfterViewInit(): void {

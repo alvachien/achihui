@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
+import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable, forkJoin, of as observableOf } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil } from '../../model';
@@ -58,6 +59,9 @@ export class AccountTreeComponent implements OnInit {
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     private _router: Router) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent constructor...');
+    }
 
     this.isLoadingResults = false;
 
@@ -74,6 +78,10 @@ export class AccountTreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnInit...');
+    }
+
     this.isLoadingResults = true;
     forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts())
       .subscribe((value: any) => {
@@ -91,6 +99,10 @@ export class AccountTreeComponent implements OnInit {
   }
 
   onTreeNodeClicked(node: AccountTreeFlatNode): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent onTreeNodeClicked...');
+    }
+
     this.curNode = node;
 
     switch (node.nodetype) {
@@ -117,6 +129,10 @@ export class AccountTreeComponent implements OnInit {
   }
 
   public onAccountStatusChange(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent onAccountStatusChange...');
+    }
+
     this.isLoadingResults = true;
     this.dataSource.data = [];
 

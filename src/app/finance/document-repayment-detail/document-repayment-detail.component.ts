@@ -5,12 +5,14 @@ import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource } from '@
 import { Observable, forkJoin, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
+import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  UICommonLabelEnum, IAccountCategoryFilter, financeDocTypeRepay } from '../../model';
+  UICommonLabelEnum, IAccountCategoryFilter, financeDocTypeRepay, financeTranTypeRepaymentOut, financeTranTypeInterestOut,
+  financeAccountCategoryBorrowFrom, financeTranTypeRepaymentIn, financeTranTypeInterestIn, AccountExtraLoan } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'hih-document-repayment-detail',
@@ -34,7 +36,8 @@ export class DocumentRepaymentDetailComponent implements OnInit {
 
   displayedColumns: string[] = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
   dataSource: MatTableDataSource<DocumentItem>;
-  loanAccountID: number;
+  loanAccount: Account;
+  // loanAccountID: number;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -259,37 +262,76 @@ export class DocumentRepaymentDetailComponent implements OnInit {
     this.uiMode = UIMode.Create;
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this.detailObject.DocType = financeDocTypeRepay;
-    this.uiAccountStatusFilter = 'Normal';
-    this.uiAccountCtgyFilter = {
-      skipADP: true,
-      skipLoan: true,
-      skipAsset: true,
-    };
+    this.uiAccountStatusFilter = undefined;
+    this.uiAccountCtgyFilter = undefined;
     this.uiOrderFilter = true;
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
 
     // Load current loan doc
-    this.detailObject.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
+    if (this._uiStatusService.currentTemplateLoanDoc) {
+      this.detailObject.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
 
-    // Add two items
-    let di: DocumentItem = new DocumentItem();
-    di.ItemId = this.getNextItemID();
-    di.AccountId = this._uiStatusService.currentTemplateLoanDoc.AccountId;
-    di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.TranAmount;
-    di.TranType = this._uiStatusService.currentTemplateLoanDoc.TranType;
-    di.ControlCenterId = this._uiStatusService.currentTemplateLoanDoc.ControlCenterId;
-    di.OrderId = this._uiStatusService.currentTemplateLoanDoc.OrderId;
+      let acntidx: number = this._storageService.Accounts.findIndex((value: Account) => {
+        return value.Id === this._uiStatusService.currentTemplateLoanDoc.AccountId;
+      });
+      this.loanAccount = this._storageService.Accounts[acntidx];
+      let loanacntext: AccountExtraLoan = <AccountExtraLoan>this.loanAccount.ExtraInfo;
 
-    let aritems: any[] = this.dataSource.data.slice();
-    aritems.push(di);
+      // Add two items: repay-in and repay-out
+      let di: DocumentItem = new DocumentItem();
+      di.ItemId = 1;
+      di.AccountId = this._uiStatusService.currentTemplateLoanDoc.AccountId;
+      di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.TranAmount;
+      if (this.loanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
+        di.TranType = financeTranTypeRepaymentIn;
+      } else {
+        di.TranType = financeTranTypeRepaymentOut;
+      }
+      di.ControlCenterId = this._uiStatusService.currentTemplateLoanDoc.ControlCenterId;
+      di.OrderId = this._uiStatusService.currentTemplateLoanDoc.OrderId;
+      di.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
 
-    if (this._uiStatusService.currentTemplateLoanDoc.InterestAmount > 0) {
-      di.ItemId = this.getNextItemID();
-      di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.InterestAmount;
+      let aritems: any[] = this.dataSource.data.slice();
       aritems.push(di);
+
+      di = new DocumentItem();
+      di.ItemId = 2;
+      di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.TranAmount;
+      if (this.loanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
+        di.TranType = financeTranTypeRepaymentOut;
+      } else {
+        di.TranType = financeTranTypeRepaymentIn;
+      }
+      if (loanacntext.PayingAccount) {
+        di.AccountId = loanacntext.PayingAccount;
+      }
+      di.ControlCenterId = this._uiStatusService.currentTemplateLoanDoc.ControlCenterId;
+      di.OrderId = this._uiStatusService.currentTemplateLoanDoc.OrderId;
+      di.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
+      aritems.push(di);
+
+      if (this._uiStatusService.currentTemplateLoanDoc.InterestAmount > 0) {
+        di = new DocumentItem();
+        di.ItemId = 3;
+        di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.InterestAmount;
+        if (this.loanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
+          di.TranType = financeTranTypeInterestOut;
+        } else {
+          di.TranType = financeTranTypeInterestIn;
+        }
+        if (loanacntext.PayingAccount) {
+          di.AccountId = loanacntext.PayingAccount;
+        }
+        di.ControlCenterId = this._uiStatusService.currentTemplateLoanDoc.ControlCenterId;
+        di.OrderId = this._uiStatusService.currentTemplateLoanDoc.OrderId;
+        di.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
+        aritems.push(di);
+      }
+      this.dataSource.data = aritems;
+    } else {
+      // Show error?
     }
-    this.dataSource.data = aritems;
   }
 
   private onCreationImpl(): void {
@@ -319,66 +361,58 @@ export class DocumentRepaymentDetailComponent implements OnInit {
       return;
     }
 
-    this._storageService.createDocumentEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentRepaymentDetailComponent with : ${x}`);
-      }
-
-      // Navigate back to list view
-      if (x instanceof Document) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
-        });
-
-        let isrecreate: boolean = false;
-        snackbarRef.onAction().subscribe(() => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Snackbar onAction()`);
-          }
-
-          isrecreate = true;
-          // Re-initial the page for another create
-          this.onInitCreateMode();
-          this.setStep(0);
-          // this.itemOperEvent.emit();
-        });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Snackbar afterDismissed with ${isrecreate}`);
-          }
-
-          if (!isrecreate) {
-            this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
-          }
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Message dialog result ${x2}`);
-          }
-        });
-      }
-    });
-
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
-    this.detailObject.DocType = financeDocTypeNormal;
-    this._storageService.createLoanRepayDoc(this.detailObject, this.loanAccountID);
+    this.detailObject.DocType = financeDocTypeRepay;
+    this._storageService.createLoanRepayDoc(this.detailObject, this.loanAccount.Id, this._uiStatusService.currentTemplateLoanDoc.DocId)
+      .subscribe((x: Document) => {
+          // Show the snackbar
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
+          });
+
+          let isrecreate: boolean = false;
+          snackbarRef.onAction().subscribe(() => {
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Snackbar onAction()`);
+            }
+
+            isrecreate = true;
+            // Re-initial the page for another create
+            this.onInitCreateMode();
+            this.setStep(0);
+            // this.itemOperEvent.emit();
+          });
+
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Snackbar afterDismissed with ${isrecreate}`);
+            }
+
+            if (!isrecreate) {
+              this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
+            }
+          });
+        }, (error: HttpErrorResponse) => {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: error.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent, Message dialog result ${x2}`);
+            }
+          });
+        });
   }
 
   private onUpdateImpl(): void {

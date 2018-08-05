@@ -378,7 +378,6 @@ export class UIFinLoanDocument {
   }
   set isLendTo(ilt: boolean) {
     this._isLendTo = ilt;
-    this.LoanAccount.isLendTo = ilt;
   }
   public TranDate: moment.Moment;
 

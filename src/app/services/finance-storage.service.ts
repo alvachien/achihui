@@ -1268,7 +1268,7 @@ export class FinanceStorageService {
   }
 
   // Create a repayment document on a loan
-  public createLoanRepayDoc(doc: Document, loanAccountID: number, tmpdocid?: number): Observable<any> {
+  public createLoanRepayDoc(doc: Document, loanAccountID: number, tmpdocid?: number): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1285,15 +1285,20 @@ export class FinanceStorageService {
     let jdata: string = doc.writeJSONString();
 
     return this._http.post(apiurl, jdata, {
-      headers: headers,
-      params: params,
-    })
+        headers: headers,
+        params: params,
+      })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering createLoanRepayDoc in FinanceStorageService: ${response}`);
         }
 
-        return <any>response;
+        // Broadcast event
+        let hd: Document = new Document();
+        hd.onSetData(response);
+        // this.createDocumentEvent.emit(hd);
+
+        return hd;
       }));
   }
 

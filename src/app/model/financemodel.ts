@@ -507,12 +507,13 @@ export class Account extends hih.BaseModel {
       ei.onSetData(data.extraInfo_AS);
 
       this.ExtraInfo = ei;
-    } else if (data && data.CategoryId === hih.financeAccountCategoryBorrowFrom && data.extraInfo_LO) {
+    } else if (data
+      && (this.CategoryId === hih.financeAccountCategoryBorrowFrom || this.CategoryId === hih.financeAccountCategoryLendTo)
+      && data.extraInfo_Loan) {
       let ei: any = new AccountExtraLoan();
-      ei.onSetData(data.extraINfo_Loan);
-    } else if (data && data.CategoryId === hih.financeAccountCategoryLendTo && data.extraInfo_LO) {
-      let ei: any = new AccountExtraLoan();
-      ei.onSetData(data.extraINfo_Loan);
+      ei.onSetData(data.extraInfo_Loan);
+
+      this.ExtraInfo = ei;
     }
   }
 }
@@ -724,13 +725,14 @@ export class AccountExtraAsset extends AccountExtra {
 export class AccountExtraLoan extends AccountExtra {
   private _startDate: moment.Moment;
   private _endDate: moment.Moment;
-  private _isLendTo: boolean;
   private _annualRate: number;
-  public InterestFree: boolean;
-  public TotalMonths: number;
+  private _payingAccount: number;
+  private _partner: string;
+  private _interestFree: boolean;
+  private _totalMonths: number;
+  private _comment: string;
   public RepayMethod: RepaymentMethodEnum;
   public RefDocId: number;
-  public Comment: string;
 
   get startDate(): moment.Moment {
     return this._startDate;
@@ -750,17 +752,41 @@ export class AccountExtraLoan extends AccountExtra {
   get EndDateFormatString(): string {
     return this._startDate.format(hih.momentDateFormat);
   }
-  get isLendTo(): boolean {
-    return this._isLendTo;
-  }
-  set isLendTo(lo: boolean) {
-    this._isLendTo = lo;
-  }
   get annualRate(): number {
     return this._annualRate;
   }
   set annualRate(ar: number) {
     this._annualRate = ar;
+  }
+  get PayingAccount(): number {
+    return this._payingAccount;
+  }
+  set PayingAccount(paid: number) {
+    this._payingAccount = paid;
+  }
+  get Partner(): string {
+    return this._partner;
+  }
+  set Partner(ptner: string) {
+    this._partner = ptner;
+  }
+  get InterestFree(): boolean {
+    return this._interestFree;
+  }
+  set InterestFree(ifree: boolean) {
+    this._interestFree = ifree;
+  }
+  get TotalMonths(): number {
+    return this._totalMonths;
+  }
+  set TotalMonths(tmon: number) {
+    this._totalMonths = tmon;
+  }
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(cmt: string) {
+    this._comment = cmt;
   }
 
   constructor() {
@@ -780,13 +806,14 @@ export class AccountExtraLoan extends AccountExtra {
     let aobj: AccountExtraLoan = new AccountExtraLoan();
     aobj.startDate = this.startDate;
     aobj.endDate = this.endDate;
-    aobj.isLendTo = this.isLendTo;
     aobj.annualRate = this.annualRate;
     aobj.InterestFree = this.InterestFree;
     aobj.TotalMonths = this.TotalMonths;
     aobj.RepayMethod = this.RepayMethod;
     aobj.RefDocId = this.RefDocId;
     aobj.Comment = this.Comment;
+    aobj.PayingAccount = this.PayingAccount;
+    aobj.Partner = this.Partner;
 
     return aobj;
   }
@@ -797,13 +824,14 @@ export class AccountExtraLoan extends AccountExtra {
     if (this._endDate) {
       rstobj.endDate = this._endDate.format(hih.momentDateFormat);
     }
-    rstobj.isLendTo = this.isLendTo;
     rstobj.annualRate = this.annualRate;
     rstobj.interestFree = this.InterestFree;
     rstobj.totalMonths = this.TotalMonths;
     rstobj.repaymentMethod = <number>this.RepayMethod;
     rstobj.refDocID = this.RefDocId;
     rstobj.comment = this.Comment;
+    rstobj.payingAccount = this._payingAccount;
+    rstobj.partner = this._partner;
 
     return rstobj;
   }
@@ -834,6 +862,12 @@ export class AccountExtraLoan extends AccountExtra {
     }
     if (data && data.comment) {
       this.Comment = data.comment;
+    }
+    if (data && data.payingAccount) {
+      this.PayingAccount = data.payingAccount;
+    }
+    if (data && data.partner) {
+      this.Partner = data.partner;
     }
   }
 }
