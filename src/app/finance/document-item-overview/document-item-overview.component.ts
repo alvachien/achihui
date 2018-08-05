@@ -7,7 +7,8 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
   TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, isOverviewDateInScope,
-  UIOrderForSelection, UIAccountForSelection, BuildupAccountForSelection, BuildupOrderForSelection } from '../../model';
+  UIOrderForSelection, UIAccountForSelection, BuildupAccountForSelection, BuildupOrderForSelection, financeAccountCategoryBorrowFrom,
+  financeTranTypeRepaymentOut, financeTranTypeRepaymentIn } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
@@ -107,6 +108,16 @@ export class DocumentItemOverviewComponent implements OnInit {
         for (let dta of x[1]) {
           let loandoc: TemplateDocLoan = new TemplateDocLoan();
           loandoc.onSetData(dta);
+          let loanacntidx: number = this._storageService.Accounts.findIndex((val: Account) => {
+            return val.Id === loandoc.AccountId;
+          });
+          if (loanacntidx !== -1) {
+            if (this._storageService.Accounts[loanacntidx].CategoryId === financeAccountCategoryBorrowFrom) {
+              loandoc.TranType = financeTranTypeRepaymentOut;
+            } else {
+              loandoc.TranType = financeTranTypeRepaymentIn;
+            }
+          }
           this.tmpDocs.push(loandoc);
         }
       }

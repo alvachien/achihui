@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange,
   financeDocTypeTransfer, financeDocTypeAdvancePayment, OverviewScopeEnum, getOverviewScopeRange,
   financeDocTypeAssetBuyIn, financeDocTypeAssetSoldOut,
-  financeDocTypeBorrowFrom, UICommonLabelEnum, financeDocTypeLendTo, } from '../../model';
+  financeDocTypeBorrowFrom, UICommonLabelEnum, financeDocTypeLendTo, financeDocTypeRepay, } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -121,7 +121,7 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   }
 
   public onDisplayDocument(doc: Document): void {
-    if (doc.DocType === financeDocTypeNormal) {
+    if (doc.DocType === financeDocTypeNormal || doc.DocType === financeDocTypeRepay) {
       this.onDisplayNormalDocument(doc);
     } else if (doc.DocType === financeDocTypeTransfer) {
       this.onDisplayTransferDocument(doc);
@@ -165,7 +165,7 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   }
 
   public onChangeDocument(doc: Document): void {
-    if (doc.DocType === financeDocTypeNormal) {
+    if (doc.DocType === financeDocTypeNormal || doc.DocType === financeDocTypeRepay) {
       this.onChangeNormalDocument(doc);
     } else if (doc.DocType === financeDocTypeTransfer) {
       this.onChangeTransferDocument(doc);
