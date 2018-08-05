@@ -448,6 +448,8 @@
     "IncomeAndExpenses": "Income and expenses",
     "IncomeTendencyChart": "Tendency Chart of Income",
     "ExpenseTendencyChart": "Tendency Chart of Expense",
+    "PayingAccount": "Paying Account",
+    "TradingPartner": "Trading Partner",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

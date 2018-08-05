@@ -40,7 +40,7 @@
 
   <!-- Account -->
   <mat-form-field class="control-full-width">
-    <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="extObject.PayingAccount"
+    <mat-select placeholder="{{'Finance.PayingAccount' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="extObject.PayingAccount"
       name="payacnt">
       <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter" [value]="acnt.Id">
         <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
@@ -49,7 +49,7 @@
   </mat-form-field>
 
   <mat-form-field class="control-full-width">
-    <input matInput type="text" [disabled]="!isFieldChangable" placeholder="Partner" 
+    <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Finance.TradingPartner' | translate}}" 
       [ngModel]="extObject?.Partner" (ngModelChange)="extObject.Partner=$event"
       name="ptner">
   </mat-form-field>

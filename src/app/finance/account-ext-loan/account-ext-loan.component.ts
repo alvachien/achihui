@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraLoan, UIAccountForSelection,
   IAccountCategoryFilter, BuildupAccountForSelection } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'hih-finance-account-ext-loan',
@@ -45,7 +46,11 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
       skipLoan: true,
       skipAsset: true,
     };
-    this._storageService.fetchAllAccounts().subscribe((x: any) => {
+
+    forkJoin(
+      this._storageService.fetchAllAccountCategories(),
+      this._storageService.fetchAllAccounts(),
+    ).subscribe((x: any) => {
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
     });
   }

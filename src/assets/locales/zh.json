@@ -448,6 +448,8 @@
     "IncomeAndExpenses": "收支",
     "IncomeTendencyChart": "收入趋势图",
     "ExpenseTendencyChart": "支出趋势图",
+    "PayingAccount": "付款账户",
+    "TradingPartner": "交易对手方",
 
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",
