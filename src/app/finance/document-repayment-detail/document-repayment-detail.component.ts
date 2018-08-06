@@ -37,7 +37,6 @@ export class DocumentRepaymentDetailComponent implements OnInit {
   displayedColumns: string[] = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
   dataSource: MatTableDataSource<DocumentItem>;
   loanAccount: Account;
-  // loanAccountID: number;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -58,6 +57,9 @@ export class DocumentRepaymentDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentDetailComponent constructor...');
+    }
     this.detailObject = new Document();
     this.detailObject.DocType = financeDocTypeRepay;
     this.dataSource = new MatTableDataSource();
@@ -500,7 +502,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
     });
 
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
-    this.detailObject.DocType = financeDocTypeNormal;
+    this.detailObject.DocType = financeDocTypeRepay;
     this._storageService.updateNormalDocument(this.detailObject);
   }
 }
