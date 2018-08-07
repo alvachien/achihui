@@ -52,17 +52,27 @@
           <mat-toolbar color="primary">
             <span>{{'Finance.AccountCategory' | translate}} - {{curNode?.displayname | translate}}</span>
             <span class="example-spacer"></span>
+            <mat-form-field>
+              <mat-select color="accent" class="mt-1" [(ngModel)]="selectedAccountCtgyScope">
+                <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </mat-toolbar>
-          <hih-fin-docitem-by-acntctgy [selectedCategory]="curNode?.id" [selectedAccounts]="selectedAccounts"></hih-fin-docitem-by-acntctgy>
+          <hih-fin-docitem-by-acntctgy [selectedCategory]="curNode?.id" [selectedAccounts]="selectedAccounts" [selectedScope]="selectedAccountCtgyScope"></hih-fin-docitem-by-acntctgy>
         </div>
         <div *ngIf="curNode && curNode.nodetype === 2">
           <mat-toolbar color="primary">
             <span>{{'Finance.Account' | translate}} - {{curNode?.displayname | translate}}</span>
             <span class="example-spacer"></span>
+            <mat-form-field>
+              <mat-select color="accent" class="mt-1" [(ngModel)]="selectedAccountScope">
+                <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+              </mat-select>
+            </mat-form-field>
             <button mat-icon-button (click)="onDisplayAccount(curNode?.id)" matTooltip="{{'Common.Display' | translate}}"><mat-icon color="warn" class="example-icon">airplay</mat-icon></button>
             <button mat-icon-button (click)="onChangeAccount(curNode?.id)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
           </mat-toolbar>
-          <hih-fin-docitem-by-acnt [selectedAccount]="curNode?.id"></hih-fin-docitem-by-acnt>
+          <hih-fin-docitem-by-acnt [selectedAccount]="curNode?.id" [selectedScope]="selectedAccountScope"></hih-fin-docitem-by-acnt>
         </div>
         <div *ngIf="curNode?.nodetype !== 1 && curNode?.nodetype !== 2">
         </div>

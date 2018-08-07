@@ -4,8 +4,9 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, forkJoin, of as observableOf } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LogLevel, ControlCenter, UIDisplayString, UIDisplayStringUtil } from '../../model';
+import { LogLevel, ControlCenter, UIDisplayString, UIDisplayStringUtil, OverviewScopeEnum } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
+import { environment } from '../../../environments/environment';
 
 /**
  * Control center data with nested structure.
@@ -38,11 +39,16 @@ export class ControlCenterTreeComponent implements OnInit {
   treeFlattener: MatTreeFlattener<ControlCenterTreeNode, ControlCenterTreeFlatNode>;
   dataSource: MatTreeFlatDataSource<ControlCenterTreeNode, ControlCenterTreeFlatNode>;
   curNode: ControlCenterTreeFlatNode;
+  selectedCCScope: OverviewScopeEnum;
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent constructor...');
+    }
 
     this.isLoadingResults = false;
+    this.selectedCCScope = OverviewScopeEnum.CurrentMonth;
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
       this._isExpandable, this._getChildren);
@@ -51,6 +57,10 @@ export class ControlCenterTreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent ngOnInit...');
+    }
+
     this.isLoadingResults = true;
     this._storageService.fetchAllControlCenters()
       .subscribe((value: any) => {

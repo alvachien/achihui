@@ -1,9 +1,11 @@
 import { Component, ViewChild, AfterViewInit, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
-import { LogLevel, Account, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection, } from '../../model';
+import { LogLevel, Account, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection,
+  OverviewScopeEnum, getOverviewScopeRange } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { environment } from '../../../environments/environment';
 import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
@@ -13,12 +15,26 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
   styleUrls: ['./document-item-by-account-category.component.scss'],
 })
 export class DocumentItemByAccountCategoryComponent implements OnInit, AfterViewInit {
+  private _seledScope: OverviewScopeEnum;
+
   displayedColumns: string[] = ['AccountId', 'DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
   arUIAccount: UIAccountForSelection[] = [];
   isLoadingResults: boolean;
   resultsLength: number;
   public subjAccountIDS: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
+  public subjScope: BehaviorSubject<OverviewScopeEnum> = new BehaviorSubject<OverviewScopeEnum>(undefined);
+
+  @Input()
+  get selectedScope(): OverviewScopeEnum {
+    return this._seledScope;
+  }
+  set selectedScope(scpe: OverviewScopeEnum) {
+    if (scpe !== this._seledScope && scpe) {
+      this._seledScope = scpe;
+      this.subjScope.next(this._seledScope);
+    }
+  }
 
   @Input() selectedCategory: number;
 
@@ -41,10 +57,16 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
-    // Do nothing
-   }
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountCategoryComponent constructor...');
+    }
+  }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountCategoryComponent ngOnInit...');
+    }
+
     forkJoin([
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllTranTypes(),
@@ -59,9 +81,13 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
    * be able to query its view for the initialized paginator.
    */
   ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountCategoryComponent ngAfterViewInit...');
+    }
+
     this.subjAccountIDS.subscribe(() => this.paginator.pageIndex = 0);
 
-    merge(this.subjAccountIDS, this.paginator.page)
+    merge(this.subjAccountIDS, this.subjScope, this.paginator.page)
       .pipe(
         startWith({}),
         switchMap(() => {
@@ -70,10 +96,12 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
           }
 
           this.isLoadingResults = true;
+          let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this._seledScope);
+
           let arobs: any[] = [];
           this.subjAccountIDS.value.forEach((id: number) => {
             arobs.push(this._storageService.getDocumentItemByAccount(id, this.paginator.pageSize,
-              this.paginator.pageIndex * this.paginator.pageSize));
+              this.paginator.pageIndex * this.paginator.pageSize, bgn, end));
           });
 
           return forkJoin(arobs);

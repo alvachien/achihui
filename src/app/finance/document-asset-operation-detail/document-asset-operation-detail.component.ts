@@ -51,6 +51,9 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent constructor...');
+    }
     this.detailObject = new UIFinAssetOperationDocument();
     this.detailObject.isBuyin = true;
   }

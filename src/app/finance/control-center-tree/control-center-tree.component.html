@@ -40,10 +40,17 @@
       </div>
       <div fxFlex.xs="50%" fxFlex.gt-md="80%" fxFlex.lg="80%" ngxSplitArea>
         <div *ngIf="curNode">
-          <h3>
-            {{'Finance.ControlCenter' | translate}} - {{curNode?.displayname}}
-          </h3>
-          <hih-fin-docitem-by-cc [selectedControlCenter]="curNode?.id"></hih-fin-docitem-by-cc>
+          <mat-toolbar color="primary">
+            <span>{{'Finance.ControlCenter' | translate}} - {{curNode?.displayname}}</span>
+            <span class="example-spacer"></span>
+            <mat-form-field>
+              <mat-select color="accent" class="mt-1" [(ngModel)]="selectedCCScope">
+                <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-toolbar>
+
+          <hih-fin-docitem-by-cc [selectedControlCenter]="curNode?.id" [selectedScope]="selectedCCScope"></hih-fin-docitem-by-cc>
         </div>
       </div>
     </div>

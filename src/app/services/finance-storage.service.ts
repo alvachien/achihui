@@ -1677,7 +1677,7 @@ export class FinanceStorageService {
    * Get document items by account
    * @param acntid Account ID
    */
-  public getDocumentItemByAccount(acntid: number, top?: number, skip?: number): Observable<any> {
+  public getDocumentItemByAccount(acntid: number, top?: number, skip?: number, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1692,6 +1692,12 @@ export class FinanceStorageService {
     }
     if (skip) {
       params = params.append('skip', skip.toString());
+    }
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     return this._http.get(apiurl, {
@@ -1711,7 +1717,7 @@ export class FinanceStorageService {
    * Get document items by control center
    * @param ccid Control center ID
    */
-  public getDocumentItemByControlCenter(ccid: number, top?: number, skip?: number): Observable<any> {
+  public getDocumentItemByControlCenter(ccid: number, top?: number, skip?: number, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1726,6 +1732,12 @@ export class FinanceStorageService {
     }
     if (skip) {
       params = params.append('skip', skip.toString());
+    }
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
     return this._http.get(apiurl, {
@@ -1745,7 +1757,7 @@ export class FinanceStorageService {
    * Get document items by order
    * @param ordid Order ID
    */
-  public getDocumentItemByOrder(ordid: number): Observable<any> {
+  public getDocumentItemByOrder(ordid: number, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1755,11 +1767,17 @@ export class FinanceStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('ordid', ordid.toString());
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(momentDateFormat));
+    }
 
     return this._http.get(apiurl, {
-      headers: headers,
-      params: params,
-    })
+        headers: headers,
+        params: params,
+      })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceStorageService: ${response}`);

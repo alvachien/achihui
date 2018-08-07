@@ -6,7 +6,8 @@ import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable, forkJoin, of as observableOf } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil } from '../../model';
+import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil, OverviewScopeEnum,
+  getOverviewScopeRange } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 
 /**
@@ -55,6 +56,8 @@ export class AccountTreeComponent implements OnInit {
   selectedAccounts: number[];
   availableCategories: AccountCategory[];
   availableAccounts: Account[];
+  selectedAccountCtgyScope: OverviewScopeEnum;
+  selectedAccountScope: OverviewScopeEnum;
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
@@ -70,6 +73,8 @@ export class AccountTreeComponent implements OnInit {
     this.selectedAccounts = [];
     this.availableCategories = [];
     this.availableAccounts = [];
+    this.selectedAccountScope = OverviewScopeEnum.CurrentMonth;
+    this.selectedAccountCtgyScope = OverviewScopeEnum.CurrentMonth;
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
       this._isExpandable, this._getChildren);
