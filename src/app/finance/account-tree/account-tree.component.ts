@@ -82,20 +82,7 @@ export class AccountTreeComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnInit...');
     }
 
-    this.isLoadingResults = true;
-    forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts())
-      .subscribe((value: any) => {
-        // Parse the data
-        this.availableCategories = value[0];
-        this.availableAccounts = this._filterAccountsByStatus(<Account[]>value[1]);
-
-        let nodes: AccountTreeNode[] = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
-        this.dataSource.data = nodes;
-      }, (error: any) => {
-        // Do nothing
-      }, () => {
-        this.isLoadingResults = false;
-      });
+    this._refreshTree();
   }
 
   onTreeNodeClicked(node: AccountTreeFlatNode): void {
@@ -149,6 +136,10 @@ export class AccountTreeComponent implements OnInit {
     });
   }
 
+  public onRefresh(): void {
+    this._refreshTree(true);
+  }
+
   public onCreateAccount(): void {
     this._router.navigate(['/finance/account/create']);
   }
@@ -186,6 +177,23 @@ export class AccountTreeComponent implements OnInit {
 
   private _getChildren = (node: AccountTreeNode): Observable<AccountTreeNode[]> => {
     return observableOf(node.children);
+  }
+  private _refreshTree(isReload?: boolean): void {
+    this.isLoadingResults = true;
+
+    forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts(isReload))
+      .subscribe((value: any) => {
+        // Parse the data
+        this.availableCategories = value[0];
+        this.availableAccounts = this._filterAccountsByStatus(<Account[]>value[1]);
+
+        let nodes: AccountTreeNode[] = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
+        this.dataSource.data = nodes;
+      }, (error: any) => {
+        // Do nothing
+      }, () => {
+        this.isLoadingResults = false;
+      });
   }
 
   private _buildAccountTree(arctgy: AccountCategory[], aracnt: Account[], level: number, ctgyid?: number): AccountTreeNode[] {

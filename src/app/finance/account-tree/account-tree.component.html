@@ -14,6 +14,7 @@
         </mat-select>
       </mat-form-field>
       <a mat-icon-button routerLink="/finance/account/create" routerLinkActive="active" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></a>
+      <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent" class="example-icon">refresh</mat-icon></button>
       <span class="example-spacer"></span>
       <a mat-button routerLink="/finance/account" routerLinkActive="active" matTooltip="{{'Common.ListView' | translate}}">{{'Common.ListView' | translate}}</a>
     </mat-toolbar>
