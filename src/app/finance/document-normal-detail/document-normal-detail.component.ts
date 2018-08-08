@@ -80,6 +80,10 @@ export class DocumentNormalDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent constructor...');
+    }
+
     this.detailObject = new Document();
     this.detailObject.DocType = financeDocTypeNormal;
     this.dataSource = new NormalDocumentItemDataSource(this);

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -35,6 +35,8 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   public uiOrderFilter: boolean | undefined;
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
+  dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
+  displayedColumns: string[] = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -165,6 +167,33 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     this.step--;
   }
 
+  public onCreateDocItem(): void {
+    let di: DocumentItem = new DocumentItem();
+    di.ItemId = this.getNextItemID();
+
+    let aritems: any[] = this.dataSource.data.slice();
+    aritems.push(di);
+    this.dataSource.data = aritems;
+  }
+
+  public onDeleteDocItem(di: any): void {
+    let aritems: DocumentItem[] = this.dataSource.data.slice();
+
+    let idx: number = -1;
+    for (let i: number = 0; i < aritems.length; i ++) {
+      if (aritems[i].ItemId === di.ItemId) {
+        idx = i;
+        break;
+      }
+    }
+
+    if (idx !== -1) {
+      aritems.splice(idx);
+    }
+
+    this.dataSource.data = aritems;
+  }
+
   public canSubmit(): boolean {
     if (!this.isFieldChangable) {
       return false;
@@ -201,11 +230,23 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       return false;
     }
 
+    // Check items
+    if (this.dataSource.data.length <= 0) {
+      return false;
+    }
+
     return true;
   }
 
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
+      if (this.detailObject.Items.length > 0) {
+        this.detailObject.Items.splice(0, this.detailObject.Items.length);
+      }
+
+      this.dataSource.data.forEach((val: DocumentItem) => {
+        this.detailObject.Items.push(val);
+      });
       let docObj: any = this.detailObject.generateDocument();
 
       // Check!
@@ -304,6 +345,44 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
 
   public onBackToList(): void {
     this._router.navigate(['/finance/document/']);
+  }
+
+  public addItemTag(row: DocumentItem, $event: MatChipInputEvent): void {
+    let input: any = $event.input;
+    let value: any = $event.value;
+
+    // Add new Tag
+    if ((value || '').trim()) {
+      row.Tags.push(value.trim());
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  public removeItemTag(row: DocumentItem, tag: any): void {
+    let index: number = row.Tags.indexOf(tag);
+
+    if (index >= 0) {
+      row.Tags.splice(index, 1);
+    }
+  }
+
+  private getNextItemID(): number {
+    if (this.detailObject.Items.length <= 0) {
+      return 1;
+    }
+
+    let nMax: number = 0;
+    for (let item of this.detailObject.Items) {
+      if (item.ItemId > nMax) {
+        nMax = item.ItemId;
+      }
+    }
+
+    return nMax + 1;
   }
 
   private onInitCreateMode(isbuyin: boolean): void {

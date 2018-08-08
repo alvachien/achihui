@@ -33,56 +33,10 @@
           <mat-datepicker #srcdpicker></mat-datepicker>
         </mat-form-field>
 
-        <!-- Tran type -->
-        <mat-form-field class="demo-full-width">
-          <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranType" name="srctt">
-            <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-              <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Account -->
-        <mat-form-field class="demo-full-width">
-          <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.AccountId" name="srcacnt">
-            <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter" [value]="acnt.Id">
-              <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Amount -->
-        <mat-form-field class="demo-full-width">
-          <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"
-            name="srcamt">
-        </mat-form-field>
-
         <!-- Desp -->
         <mat-form-field class="demo-full-width">
           <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
             name="desp">
-        </mat-form-field>
-
-        <!-- CC -->
-        <mat-form-field class="demo-full-width">
-          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ControlCenterId"
-            name="hdrcc">
-            <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-            <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
-              {{tt.Name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Order -->
-        <mat-form-field class="demo-full-width">
-          <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.OrderId"
-            name="hdrord">
-            <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-            <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
-              {{tt.Name}}
-            </mat-option>
-          </mat-select>
         </mat-form-field>
 
         <mat-action-row>

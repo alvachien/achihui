@@ -7,12 +7,43 @@ import * as moment from 'moment';
  * Transfer document in UI part
  */
 export class UIFinTransferDocument {
-  public TranAmount: number;
-  public TranCurr: string;
+  private _desp: string;
+  private _tranAmount: number;
+  private _tranCurr: string;
+  private _exgRate: number;
+  private _exgRatePlan: boolean;
+
   public TranDate: moment.Moment;
-  public Desp: string;
-  public ExgRate: number;
-  public ExgRate_Plan: boolean;
+  get TranAmount(): number {
+    return this._tranAmount;
+  }
+  set TranAmount(amt: number) {
+    this._tranAmount = amt;
+  }
+  get Desp(): string {
+    return this._desp;
+  }
+  set Desp(dsp: string) {
+    this._desp = dsp;
+  }
+  get TranCurr(): string {
+    return this._tranCurr;
+  }
+  set TranCurr(tcur: string) {
+    this._tranCurr = tcur;
+  }
+  get ExgRate(): number {
+    return this._exgRate;
+  }
+  set ExgRate(er: number) {
+    this._exgRate = er;
+  }
+  get ExgRate_Plan(): boolean {
+    return this._exgRatePlan;
+  }
+  set ExgRate_Plan(ep: boolean) {
+    this._exgRatePlan = ep;
+  }
 
   public SourceAccountId: number;
   public TargetAccountId: number;
@@ -91,10 +122,28 @@ export class UIFinTransferDocument {
  * Advance payment: UI part
  */
 export class UIFinAdvPayDocument {
-  public TranAmount: number;
+  private _desp: string;
+  private _tranAmount: number;
+  private _tranCurr: string;
   public TranDate: moment.Moment;
-  public Desp: string;
-  public TranCurr: string;
+  get TranAmount(): number {
+    return this._tranAmount;
+  }
+  set TranAmount(amt: number) {
+    this._tranAmount = amt;
+  }
+  get Desp(): string {
+    return this._desp;
+  }
+  set Desp(dsp: string) {
+    this._desp = dsp;
+  }
+  get TranCurr(): string {
+    return this._tranCurr;
+  }
+  set TranCurr(tcur: string) {
+    this._tranCurr = tcur;
+  }
 
   public SourceTranType: number;
   public SourceAccountId: number;
@@ -178,8 +227,14 @@ export class UIFinAdvPayDocument {
  * Currency exchange document in UI part
  */
 export class UIFinCurrencyExchangeDocument {
+  private _desp: string;
   public TranDate: moment.Moment;
-  public Desp: string;
+  get Desp(): string {
+    return this._desp;
+  }
+  set Desp(dsp: string) {
+    this._desp = dsp;
+  }
 
   public SourceTranCurr: string;
   public TargetTranCurr: string;
@@ -264,24 +319,51 @@ export class UIFinCurrencyExchangeDocument {
  * Asset Operation document in UI part
  */
 export class UIFinAssetOperationDocument {
+  private _items: HIHFinance.DocumentItem[];
+  private _desp: string;
+  private _tranCurr: string;
+  private _exgRate: number;
+  private _exgRatePlan: boolean;
+  private _accountAsset: HIHFinance.AccountExtraAsset;
   public isBuyin: boolean;
   public TranDate: moment.Moment;
-  public Desp: string;
+  get Desp(): string {
+    return this._desp;
+  }
+  set Desp(dsp: string) {
+    this._desp = dsp;
+  }
 
-  public TranCurr: string;
-  public ExgRate: number;
-  public ExgRate_Plan: boolean;
-  public TranAmount: number;
-  public AccountId: number;
-  public ControlCenterId: number;
-  public OrderId: number;
-  public TranType: number;
+  get TranCurr(): string {
+    return this._tranCurr;
+  }
+  set TranCurr(tcurr: string) {
+    this._tranCurr = tcurr;
+  }
+  get ExgRate(): number {
+    return this._exgRate;
+  }
+  set ExgRate(er: number) {
+    this._exgRate = er;
+  }
+  get ExgRate_Plan(): boolean {
+    return this._exgRatePlan;
+  }
+  set ExgRate_Plan(ep: boolean) {
+    this._exgRatePlan = ep;
+  }
 
-  public AssetAccount: HIHFinance.AccountExtraAsset;
+  get AssetAccount(): HIHFinance.AccountExtraAsset {
+    return this._accountAsset;
+  }
+  get Items(): HIHFinance.DocumentItem[] {
+    return this._items;
+  }
 
   constructor() {
     this.TranDate = moment();
-    this.AssetAccount = new HIHFinance.AccountExtraAsset();
+    this._accountAsset = new HIHFinance.AccountExtraAsset();
+    this._items = [];
   }
 
   public generateDocument(): HIHFinance.Document {
@@ -297,15 +379,10 @@ export class UIFinAssetOperationDocument {
     doc.ExgRate = this.ExgRate;
     doc.ExgRate_Plan = this.ExgRate_Plan;
 
-    let docitem: HIHFinance.DocumentItem = new HIHFinance.DocumentItem();
-    docitem.ItemId = 1;
-    docitem.AccountId = this.AccountId;
-    docitem.ControlCenterId = this.ControlCenterId;
-    docitem.OrderId = this.OrderId;
-    docitem.TranType = this.TranType;
-    docitem.TranAmount = this.TranAmount;
-    docitem.Desp = this.Desp;
-    doc.Items.push(docitem);
+    this._items.forEach((val: HIHFinance.DocumentItem) => {
+      doc.Items.push(val);
+
+    });
 
     return doc;
   }
@@ -318,11 +395,10 @@ export class UIFinAssetOperationDocument {
       this.ExgRate_Plan = doc.ExgRate_Plan;
       this.TranCurr = doc.TranCurr;
 
-      this.AccountId = doc.Items[0].AccountId;
-      this.ControlCenterId = doc.Items[0].ControlCenterId;
-      this.OrderId = doc.Items[0].OrderId;
-      this.TranAmount = doc.Items[0].TranAmount;
-      this.TranType = doc.Items[0].TranType;
+      this._items = [];
+      doc.Items.forEach((val: HIHFinance.DocumentItem) => {
+        this._items.push(val);
+      });
     } else {
       let docobj: HIHFinance.Document = new HIHFinance.Document();
       docobj.onSetData(doc);
@@ -334,12 +410,10 @@ export class UIFinAssetOperationDocument {
       this.ExgRate = docobj.ExgRate;
       this.ExgRate_Plan = docobj.ExgRate_Plan;
       this.TranCurr = docobj.TranCurr;
-
-      this.AccountId = docobj.Items[0].AccountId;
-      this.ControlCenterId = docobj.Items[0].ControlCenterId;
-      this.OrderId = docobj.Items[0].OrderId;
-      this.TranAmount = docobj.Items[0].TranAmount;
-      this.TranType = docobj.Items[0].TranType;
+      this._items = [];
+      docobj.Items.forEach((val: HIHFinance.DocumentItem) => {
+        this._items.push(val);
+      });
 
       this.AssetAccount.onSetData(doc.accountVM.extraInfo_AS);
     }
