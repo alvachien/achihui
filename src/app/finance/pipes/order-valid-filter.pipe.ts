@@ -9,12 +9,12 @@ export class OrderValidFilterPipe implements PipeTransform {
 
   transform(allOrders: Order[], args?: any): any {
     const mtday: any = moment();
-    return allOrders.filter((value: Order) => {
+    return allOrders ? allOrders.filter((value: Order) => {
       if (args) {
         return value._validFrom <= mtday && value._validTo >= mtday;
       }
 
       return true;
-    });
+    }) : [];
   }
 }

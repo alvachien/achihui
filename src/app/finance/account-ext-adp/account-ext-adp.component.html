@@ -1,19 +1,19 @@
-<div class="demo-full-width">
-  <mat-form-field class="demo-full-width">
+<div class="control-full-width">
+  <mat-form-field class="control-full-width">
     <input matInput [ngModel]="extObject.StartDate" (ngModelChange)="extObject.StartDate=$event" 
       [matDatepicker]="advstartdpicker" placeholder="{{'Common.StartDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="advstartdpicker"></mat-datepicker-toggle>
     <mat-datepicker #advstartdpicker></mat-datepicker>
   </mat-form-field>
 
-  <mat-form-field class="demo-full-width">
+  <mat-form-field class="control-full-width">
     <input matInput [ngModel]="extObject.EndDate" (ngModelChange)="extObject.EndDate=$event" 
       [matDatepicker]="advenddpicker" placeholder="{{'Common.EndDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="advenddpicker"></mat-datepicker-toggle>
     <mat-datepicker #advenddpicker></mat-datepicker>
   </mat-form-field>
 
-  <mat-form-field class="demo-full-width">
+  <mat-form-field class="control-full-width">
     <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}" [disabled]="!isFieldChangable" 
       [ngModel]="extObject.RepeatType" (ngModelChange)="extObject.RepeatType=$event"
       name="rpttype">
@@ -23,14 +23,14 @@
     </mat-select>
   </mat-form-field>
 
-  <!-- <mat-form-field class="demo-full-width">
+  <!-- <mat-form-field class="control-full-width">
     <input matInput type="number" [disabled]="!isFieldChangable" placeholder="Deferred days" [(ngModel)]="detailObject.AdvPayAccount.DeferredDays"
       name="dfrrdays" #dfrrdays="ngModel">
   </mat-form-field> -->
 
   <!-- Info. for ADP template doc -->
 
-  <mat-form-field class="demo-full-width">
+  <mat-form-field class="control-full-width">
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="extObject.Comment"
       name="advacntcmt" #advacntcmt="ngModel">
   </mat-form-field>

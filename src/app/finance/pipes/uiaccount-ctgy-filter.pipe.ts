@@ -9,7 +9,7 @@ import { UIAccountForSelection, financeAccountCategoryAdvancePayment, financeAcc
 export class UIAccountCtgyFilterPipe implements PipeTransform {
 
   transform(allAccounts: UIAccountForSelection[], args?: IAccountCategoryFilter): UIAccountForSelection[] {
-    return allAccounts.filter((value: UIAccountForSelection) => {
+    return allAccounts ? allAccounts.filter((value: UIAccountForSelection) => {
       if (args !== undefined) {
         if (args.skipADP === true && value.CategoryId === financeAccountCategoryAdvancePayment) {
           return false;
@@ -24,6 +24,6 @@ export class UIAccountCtgyFilterPipe implements PipeTransform {
       }
 
       return true;
-    });
+    }) : [];
   }
 }

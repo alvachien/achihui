@@ -61,8 +61,7 @@
   </mat-form-field>
 
   <mat-form-field class="control-full-width" *ngIf="!isCreateMode">
-    <input matInput type="number" disabled placeholder="{{'Finance.RefDoc' | translate}}" 
-      [ngModel]="extObject?.RefDocId"
-      name="refdoc">
+    <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
+    <a routerLink='/finance/document/displaynormal/{{extObject.RefDocId}}' routerLinkActive="active" *ngIf="extObject.RefDocId">{{extObject?.RefDocId}}</a>
   </mat-form-field>
 </div>

@@ -36,7 +36,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
-  displayedColumns: string[] = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
+  displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -124,6 +124,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
               }
 
               this.detailObject.parseDocument(x2);
+              this.dataSource.data = this.detailObject.Items;
             }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error2}`);
@@ -340,6 +341,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       this._storageService.createAssetDocument(sobj, this.detailObject.isBuyin);
     } else if (this.uiMode === UIMode.Change) {
       // Change current document
+      // TBD.
     }
   }
 
@@ -371,12 +373,12 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
   }
 
   private getNextItemID(): number {
-    if (this.detailObject.Items.length <= 0) {
+    if (this.dataSource.data.length <= 0) {
       return 1;
     }
 
     let nMax: number = 0;
-    for (let item of this.detailObject.Items) {
+    for (let item of this.dataSource.data) {
       if (item.ItemId > nMax) {
         nMax = item.ItemId;
       }
@@ -398,5 +400,6 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
 
     this.uiMode = UIMode.Create;
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
+    this.dataSource.data = [];
   }
 }

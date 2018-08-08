@@ -131,9 +131,9 @@
               <mat-header-cell *matHeaderCellDef> {{'Finance.ControlCenter' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
-                  <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
                   <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" 
                     [disabled]="!isFieldChangable" [(ngModel)]="row.ControlCenterId" name="itcc">
+                    <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
                     <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
                       {{tt.Name}}
                     </mat-option>
@@ -157,6 +157,27 @@
                 </mat-form-field>
               </mat-cell>
             </ng-container>
+
+            <!-- Tag Column -->
+            <ng-container matColumnDef="Tag">
+              <mat-header-cell *matHeaderCellDef> {{'Common.Tag' | translate}} </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <mat-chip-list #tagList>
+                    <mat-chip *ngFor="let term of row.Tags" selectable="true"
+                      [removable]="isFieldChangable" (remove)="removeItemTag(row, term)">
+                      {{term}}
+                      <mat-icon matChipRemove *ngIf="isFieldChangable">cancel</mat-icon>
+                    </mat-chip>
+                    <input [matChipInputFor]="tagList" [readonly]="!isFieldChangable"
+                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                          matChipInputAddOnBlur="true"
+                          (matChipInputTokenEnd)="addItemTag(row, $event)" />
+                  </mat-chip-list>
+                </mat-form-field>                
+              </mat-cell>
+            </ng-container>
+
             
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

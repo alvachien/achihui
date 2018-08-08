@@ -133,14 +133,6 @@
               </mat-cell>
             </ng-container>
 
-            <!-- RefDoc Column -->
-            <ng-container matColumnDef="RefDoc">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.RefDoc' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <a routerLink='/finance/document/displaynormal/{{row.RefDocId}}' routerLinkActive="active" *ngIf="row.RefDocId">{{row.RefDocId}}</a>
-              </mat-cell>
-            </ng-container>
-            
             <!-- Amount Column -->
             <ng-container matColumnDef="TranAmount">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
@@ -172,6 +164,14 @@
                     name="tmpdesp" #tmpdesp maxlength="44">
                   <mat-hint align="end">{{tmpdesp.value.length}} / 45</mat-hint>
                 </mat-form-field>
+              </mat-cell>
+            </ng-container>
+            
+            <!-- RefDoc Column -->
+            <ng-container matColumnDef="RefDoc">
+              <mat-header-cell *matHeaderCellDef>{{'Finance.RefDoc' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <a routerLink='/finance/document/displaynormal/{{row.RefDocId}}' routerLinkActive="active" *ngIf="row.RefDocId">{{row.RefDocId}}</a>
               </mat-cell>
             </ng-container>
             

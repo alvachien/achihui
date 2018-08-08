@@ -542,6 +542,7 @@ export class UIFinLoanDocument {
       this.SourceAccountId = +fitem.AccountId;
       this.SourceControlCenterId = +fitem.ControlCenterId;
       this.SourceOrderId = +fitem.OrderId;
+      this.TranAmount = +fitem.TranAmount;
 
       this.LoanAccount.onSetData(doc.accountVM.extraInfo_Loan);
 
