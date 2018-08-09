@@ -38,6 +38,7 @@ import { DocumentAssetOperationDetailComponent } from './document-asset-operatio
 import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { DocumentRepaymentDetailComponent } from './document-repayment-detail';
 import { ReportComponent } from './report';
+import { ConfigComponent } from './config';
 
 const routes: Routes = [
   {
@@ -47,6 +48,10 @@ const routes: Routes = [
       {
         path: 'overview',
         component: DocumentItemOverviewComponent,
+      },
+      {
+        path: 'config',
+        component: ConfigComponent,
       },
       {
         path: 'acntctgy',
