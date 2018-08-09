@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraAsset, 
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraAsset,
   RepeatFrequencyEnum, UIDisplayStringUtil,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
@@ -8,7 +8,7 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from 
 @Component({
   selector: 'hih-finance-account-ext-asset',
   templateUrl: './account-ext-asset.component.html',
-  styleUrls: ['./account-ext-asset.component.scss']
+  styleUrls: ['./account-ext-asset.component.scss'],
 })
 export class AccountExtAssetComponent implements OnInit {
   public currentMode: string;

@@ -135,6 +135,8 @@
     "SentByMe": "Sent by me",
     "Events": "Events",
     "Event": "Event",
+    "NormalEvents": "Normal Events",
+    "NormalEvent": "Normal Event",
     "RecurEvents": "Recur Events",
     "RecurEvent": "Recur Event",
     "HabitEvents": "Habit Events",
@@ -231,7 +233,17 @@
       "Novel": "Novel",
       "Travel": "Travel",
       "Bio": "Biographies & Memoirs",
-      "Bussiness": "Business & Money"
+      "Bussiness": "Business & Money",
+      "Calendars": "Calendars",
+      "Bible": "Christian Books & Bibles",
+      "Comics": "Comics & Graphic Novels",
+      "Computer": "Computers & Technology",
+      "Cookbook" :"Cookbooks, Food & Wine",
+      "CraftAndHobby": "Crafts, Hobbies & Home",
+      "Education": "Education & Teaching",
+      "Transportation": "Engineering & Transportation",
+      "GayLesbian": "Gay & Lesbian",
+      "Health": "Health, Fitness & Dieting"
     },
     "MovGenre": {
       "ActAdv": "Action & Adventure",

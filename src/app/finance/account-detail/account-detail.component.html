@@ -16,13 +16,13 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" 
             [(ngModel)]="detailObject.Name" name="name" #accountname maxlength="30">
           <mat-hint align="end">{{accountname.value.length}} / 30</mat-hint>
         </mat-form-field>
 
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId" name="ctgy">
             <mat-option *ngFor="let ctgy of _storageService.AccountCategories" [value]="ctgy.ID">
               {{ctgy.Name | translate}} 
@@ -30,7 +30,7 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <mat-select placeholder="{{'Finance.Owner' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.OwnerId" name="owner">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
             <mat-option *ngFor="let usr of _homedefService.MembersInChosedHome" [value]="usr.User">
@@ -39,7 +39,7 @@
           </mat-select>
         </mat-form-field>
         
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <input matInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" 
             [(ngModel)]="detailObject.Comment" name="comt" #accountcomment maxlength="45">
           <mat-hint align="end">{{accountcomment.value.length}} / 45</mat-hint>
@@ -61,7 +61,7 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <div class="demo-full-width">
+        <div class="control-full-width">
           <hih-finance-account-ext-adp *ngIf="isADPAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-adp>
           <hih-finance-account-ext-asset *ngIf="isAssetAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-asset>
           <hih-finance-account-ext-loan *ngIf="isLoanAccount" [uiMode]="uiMode" [extObject]="detailObject.ExtraInfo"></hih-finance-account-ext-loan>
@@ -85,7 +85,7 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <mat-form-field class="demo-full-width">        
+        <mat-form-field class="control-full-width">        
           <mat-select placeholder="{{'Common.Status' | translate}}" [(ngModel)]="detailObject.Status" #selectStatus="matSelect" disabled>
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
             <mat-option *ngFor="let sts of arrayStatus" [value]="sts.value">

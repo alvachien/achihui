@@ -53,7 +53,7 @@ export class SideNavService {
     const event: any = this.addItem('Nav.EventTrace', 'event', undefined, 5);
     this.addSubItem(event, 'Common.Overview', '/event/overview', 1, 'timeline');
     // this.addSubItem(event, 'Common.Categories', '/event/category', 2, 'toc');
-    this.addSubItem(event, 'Common.Events', '/event/general', 3, 'schedule');
+    this.addSubItem(event, 'Common.NormalEvents', '/event/general', 3, 'schedule');
     this.addSubItem(event, 'Common.RecurEvents', '/event/recur', 4, 'repeat');
     this.addSubItem(event, 'Common.HabitEvents', '/event/habit', 5, 'restore_page');
     // this.addSubItem(event, 'Common.EventsByTimeline', '/event/timeline', 6, 'timeline');

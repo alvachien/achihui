@@ -60,8 +60,8 @@
       name="cmt">
   </mat-form-field>
 
-  <mat-form-field class="control-full-width" *ngIf="!isCreateMode">
+  <div class="control-full-width" *ngIf="!isCreateMode">
     <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
     <a routerLink='/finance/document/displaynormal/{{extObject.RefDocId}}' routerLinkActive="active" *ngIf="extObject.RefDocId">{{extObject?.RefDocId}}</a>
-  </mat-form-field>
+  </div>
 </div>

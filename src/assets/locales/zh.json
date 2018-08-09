@@ -135,6 +135,8 @@
     "SentByMe": "已发送",
     "Events": "事务",
     "Event": "事务",
+    "NormalEvents": "一般事务",
+    "NormalEvent": "一般事务",
     "RecurEvents": "重复事务",
     "RecurEvent": "重复事务",
     "HabitEvents": "习惯性事务",
@@ -231,7 +233,17 @@
       "Novel": "小说",
       "Travel": "旅游",
       "Bio": "记录与自传",
-      "Bussiness": "Business & Money"
+      "Bussiness": "商务与财富",
+      "Calendars": "日历类",
+      "Bible": "宗教类",
+      "Comics": "漫画",
+      "Computer": "计算机技术等",
+      "Cookbook" :"食谱、菜谱等",
+      "CraftAndHobby": "手工艺及居家等",
+      "Education": "教育类",
+      "Transportation": "交通运输类",
+      "GayLesbian": "同性恋",
+      "Health": "健康、健身类"
     },
     "MovGenre": {
       "ActAdv": "动作",

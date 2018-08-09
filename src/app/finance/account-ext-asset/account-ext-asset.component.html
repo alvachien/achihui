@@ -1,5 +1,5 @@
-<div class="demo-full-width">
-  <mat-form-field class="demo-full-width">
+<div class="control-full-width">
+  <mat-form-field class="control-full-width">
     <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" 
       [ngModel]="extObject?.CategoryID" (ngModelChange)="extObject.CategoryID=$event"
       name="asstctgy" class="demo-full-width">
@@ -9,23 +9,22 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="demo-full-width">
+  <mat-form-field class="control-full-width">
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Name' | translate}}" 
       [ngModel]="extObject?.Name" (ngModelChange)="extObject.Name=$event"
       name="asstname" #assetname maxlength="50">
       <mat-hint align="end">{{assetname.value.length}} / 50</mat-hint>
   </mat-form-field>
 
-  <mat-form-field class="demo-full-width">
+  <mat-form-field class="control-full-width">
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" 
       [ngModel]="extObject?.Comment" (ngModelChange)="extObject.Comment=$event"
       name="asstcmt" #assetcomment maxlength="100">
       <mat-hint align="end">{{assetcomment.value.length}} / 100</mat-hint>
   </mat-form-field>
 
-  <mat-form-field class="demo-full-width" *ngIf="!isCreateMode">
-    <input matInput type="number" disable placeholder="{{'Finance.RefDoc' | translate}}" 
-      [ngModel]="extObject?.RefDocForBuy"
-      name="asstbuy">
-  </mat-form-field>
+  <div class="control-full-width" *ngIf="!isCreateMode">
+    <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
+    <a routerLink='/finance/document/displayassetbuy/{{extObject.RefDocForBuy}}' routerLinkActive="active" *ngIf="extObject.RefDocForBuy">{{extObject?.RefDocForBuy}}</a>
+  </div>
 </div>

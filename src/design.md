@@ -104,16 +104,6 @@ For instance, a habit can be set: take 5 exerices per week. So a hahbit can be s
 
 ### Library Document
 #### Book Category
-Calendars
-Christian Books & Bibles
-Comics & Graphic Novels
-Computers & Technology
-Cookbooks, Food & Wine
-Crafts, Hobbies & Home
-Education & Teaching
-Engineering & Transportation
-Gay & Lesbian
-Health, Fitness & Dieting
 Humor & Entertainment
 Literature & Fiction
 Medical Books
