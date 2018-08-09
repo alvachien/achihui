@@ -1,6 +1,6 @@
 # Change logs
 ## Version 0.6.x
-Released at 2018.09.01
+Released at 2018.10.01
 
 Bugs fixing and Feature list
 - Database version automatically update mechanism;
@@ -9,12 +9,15 @@ Bugs fixing and Feature list
 - Using echart's wordCloud replace current tag Cloud;
 - Using echart's bar/pie chart replace current ngx-charts;
 - Event: Overview page;
-- Learn: Question bank refactor. 
+- Learn: Question bank refactor;
 - Authority control: account level;
 - Finance: Report click navigation support;
 - Finance: search for document item dynamically;
 - Finance: split the loan document to borrow from (liability) and lend to (asset);
 - Finance: Introduced the initial liability and initial asset concept;
+- Finance: Multiple items in Asset document;
+- Finance: Support the repayment document;
+- Finance: Enable scope in Account view;
 
 
 ## Version 0.5.5
