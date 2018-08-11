@@ -243,7 +243,13 @@
       "Education": "教育类",
       "Transportation": "交通运输类",
       "GayLesbian": "同性恋",
-      "Health": "健康、健身类"
+      "Health": "健康、健身类",
+      "Romance": "浪漫、言情",
+      "SciFiction": "科幻",
+      "Fiction": "小说",
+      "Thriller": "悬疑",
+      "OutdoorSport": "户外运动",
+      "Reference": "参考书"
     },
     "MovGenre": {
       "ActAdv": "动作",

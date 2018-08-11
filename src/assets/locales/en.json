@@ -243,7 +243,13 @@
       "Education": "Education & Teaching",
       "Transportation": "Engineering & Transportation",
       "GayLesbian": "Gay & Lesbian",
-      "Health": "Health, Fitness & Dieting"
+      "Health": "Health, Fitness & Dieting",
+      "Romance": "Romance",
+      "SciFiction": "Science Fiction & Fantasy",
+      "Fiction": "Literature & Fiction",
+      "Thriller": "Mystery, Thriller & Suspense",
+      "OutdoorSport": "Sports & Outdoors",
+      "Reference": "Reference"
     },
     "MovGenre": {
       "ActAdv": "Action & Adventure",
