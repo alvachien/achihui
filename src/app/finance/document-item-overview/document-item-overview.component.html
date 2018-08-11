@@ -55,7 +55,7 @@
             <ng-container matColumnDef="TranAmount">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                {{ row.TranAmount?.toFixed(2) }}
+                {{ row.TotalAmount?.toFixed(2) }}
               </mat-cell>
             </ng-container>
 
@@ -84,7 +84,8 @@
           <mat-tab>
             <ng-template mat-tab-label>
               {{'Common.Weekly' | translate}}
-            </ng-template>    
+            </ng-template> 
+
             <div>
               {{'Common.Weekly' | translate}}
             </div>
@@ -92,7 +93,8 @@
           <mat-tab>
             <ng-template mat-tab-label>
               {{'Common.Daily' | translate}}
-            </ng-template>    
+            </ng-template>
+
             <div>
               {{'Common.Daily' | translate}}
             </div>

@@ -86,6 +86,9 @@ export class DocumentItemOverviewComponent implements OnInit {
     ]).subscribe((x: any) => {
       // Refresh the template documents
       this.onTmpDocsRefresh();
+
+      // Get the reports
+
     });
   }
 

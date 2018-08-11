@@ -2010,17 +2010,66 @@ export class DocumentItem {
  * Tempalte docs base class
  */
 export abstract class TemplateDocBase extends hih.BaseModel {
-  private _tranDate: moment.Moment;
-  public DocId: number;
-  public HID: number;
-  public RefDocId: number;
-  public AccountId: number;
-  public TranType: number;
-  public TranAmount: number;
-  public ControlCenterId: number;
-  public OrderId: number;
-  public Desp: string;
+  protected _tranDate: moment.Moment;
+  protected _totalAmount: number;
+  protected _tranAmount: number;
+  protected _tranType: number;
+  protected _accountId: number;
+  protected _controlCenterId: number;
+  protected _orderId: number;
+  protected _docId: number;
+  protected _desp: string;
+  protected _refDocId: number;
 
+  public HID: number;
+  get DocId(): number {
+    return this._docId;
+  }
+  set DocId(docid: number) {
+    this._docId = docid;
+  }
+  get RefDocId(): number {
+    return this._refDocId;
+  }
+  set RefDocId(refdocid: number) {
+    this._refDocId = refdocid;
+  }
+  get AccountId(): number {
+    return this._accountId;
+  }
+  set AccountId(acntid: number) {
+    this._accountId = acntid;
+  }
+  get TranType(): number {
+    return this._tranType;
+  }
+  set TranType(ttype: number) {
+    this._tranType = ttype;
+  }
+  get TranAmount(): number {
+    return this._tranAmount;
+  }
+  set TranAmount(tamt: number) {
+    this._tranAmount = tamt;
+  }
+  get ControlCenterId(): number {
+    return this._controlCenterId;
+  }
+  set ControlCenterId(ccid: number) {
+    this._controlCenterId = ccid;
+  }
+  get OrderId(): number {
+    return this._orderId;
+  }
+  set OrderId(ordid: number) {
+    this._orderId = ordid;
+  }
+  get Desp(): string {
+    return this._desp;
+  }
+  set Desp(dsp: string) {
+    this._desp = dsp;
+  }
   get TranDate(): moment.Moment {
     return this._tranDate;
   }
@@ -2030,9 +2079,12 @@ export abstract class TemplateDocBase extends hih.BaseModel {
   get TranDateFormatString(): string {
     return this._tranDate.format(hih.momentDateFormat);
   }
-  public AccountName: string;
-  public ControlCenterName: string;
-  public OrderName: string;
+  get TotalAmount(): number {
+    return this._totalAmount;
+  }
+  set TotalAmount(tamt: number) {
+    this._totalAmount = tamt;
+  }
 
   constructor() {
     super();
@@ -2103,6 +2155,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     if (data && data.desp) {
       this.Desp = data.desp;
     }
+    this._totalAmount = data.tranAmount;
   }
 }
 
@@ -2138,6 +2191,8 @@ export class TemplateDocLoan extends TemplateDocBase {
     if (data && data.interestAmount) {
       this.InterestAmount = +data.interestAmount;
     }
+
+    this._totalAmount = this._tranAmount + this._amtInterest;
   }
 }
 
