@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -8,15 +8,16 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
   TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, isOverviewDateInScope,
   UIOrderForSelection, UIAccountForSelection, BuildupAccountForSelection, BuildupOrderForSelection, financeAccountCategoryBorrowFrom,
-  financeTranTypeRepaymentOut, financeTranTypeRepaymentIn } from '../../model';
+  financeTranTypeRepaymentOut, financeTranTypeRepaymentIn, ReportTrendExTypeEnum, ReportTrendExData, momentDateFormat } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
+declare var echarts: any;
 
 /**
  * Data source of ADP & Loan docs
  */
-export class TmpDocStillOpenDataSource extends DataSource<any> {
+export class TmpDocStillOpenDataSource extends DataSource<any> {  
   constructor(private _parentComponent: DocumentItemOverviewComponent,
     private _paginator: MatPaginator) {
     super();
@@ -48,7 +49,7 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
   templateUrl: './document-item-overview.component.html',
   styleUrls: ['./document-item-overview.component.scss'],
 })
-export class DocumentItemOverviewComponent implements OnInit {
+export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
 
   displayedTmpDocColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSourceTmpDoc: TmpDocStillOpenDataSource | undefined;
@@ -56,6 +57,8 @@ export class DocumentItemOverviewComponent implements OnInit {
   tmpDocs: TemplateDocBase[] = [];
   @ViewChild('paginatorTmpDoc') paginatorTmpDoc: MatPaginator;
   selectedTmpScope: OverviewScopeEnum;
+  @ViewChild('trendWeekly') trendWeekly: ElementRef;
+  @ViewChild('trendDaily') trendDaily: ElementRef;
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -65,11 +68,11 @@ export class DocumentItemOverviewComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent constructor...');
-      }
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent constructor...');
+    }
 
-      this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
+    this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
   }
 
   ngOnInit(): void {
@@ -86,9 +89,229 @@ export class DocumentItemOverviewComponent implements OnInit {
     ]).subscribe((x: any) => {
       // Refresh the template documents
       this.onTmpDocsRefresh();
+    });
+  }
 
-      // Get the reports
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngAfterViewInit...');
+    }
 
+    // Weekly
+    let { BeginDate: bgn,  EndDate: end } = getOverviewScopeRange(this.selectedTmpScope);
+    let arweeks: any[] = [];
+    let bgnweek = bgn.format('w');
+    let bgnweekyear = bgn.format('gggg');
+    let endweek = end.format('w');
+    let endweekyear = end.format('gggg');
+    for(let iweekyear: number = +bgnweekyear; iweekyear <= +endweekyear; iweekyear++) {
+      for (let iweek: number = +bgnweek; iweek <= +endweek; iweek ++) {
+        arweeks.push({
+          year: +iweekyear,
+          week: +iweek
+        });
+      }  
+    }
+    let arweekdisplay: string[] = [];
+    arweeks.forEach((val: any) => {
+      arweekdisplay.push(val.year.toString() + '.' + val.week.toString());
+    });
+
+    this._storageService.fetchReportTrendData(ReportTrendExTypeEnum.Weekly, true, bgn, end)
+      .subscribe((x: ReportTrendExData[]) => {
+      let chart: any = echarts.init(this.trendWeekly.nativeElement);
+      let arWeekIncome: number[] = [];
+      let arWeekOutgo: number[] = [];
+      let arWeekProfit: number[] = [];
+
+      arweeks.forEach((val: any) => {
+        let idxIncome = x.findIndex((val2: ReportTrendExData) => {
+          return val2.tranYear === val.year && val2.tranWeek === val.week && !val2.expense;
+        });
+        let idxOutgo = x.findIndex((val2: ReportTrendExData) => {
+          return val2.tranYear === val.year && val2.tranWeek === val.week && val2.expense;
+        });
+        if (idxIncome === -1 && idxOutgo === -1) {
+          arWeekIncome.push(0);
+          arWeekOutgo.push(0);
+          arWeekProfit.push(0);
+        } else {
+          let valIncome = 0;
+          let valOutgo = 0;
+          if (idxIncome !== -1) {
+            valIncome = x[idxIncome].tranAmount;
+          }
+          if (idxOutgo !== -1) {
+            valOutgo = x[idxOutgo].tranAmount;
+          }
+          arWeekIncome.push(valIncome);
+          arWeekOutgo.push(valOutgo);
+          arWeekProfit.push(valIncome - valOutgo);
+         }
+      });
+
+      let option: any = {
+        tooltip : {
+          trigger: 'axis',
+          axisPointer : {
+            type : 'shadow'
+          }
+        },
+        legend: {
+          data:['利润', '支出', '收入']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+              saveAsImage: {}
+          }
+        },
+        xAxis : [
+          {
+            type : 'value'
+          }
+        ],
+        yAxis : [
+          {
+            type : 'category',
+            axisTick : {show: false},
+            data : arweekdisplay
+          }
+        ],
+        series : [
+          {
+            name:'利润',
+            type:'bar',
+            label: {
+              normal: {
+                show: true,
+                position: 'inside'
+              }
+            },
+            data: arWeekProfit
+          },
+          {
+            name:'收入',
+            type:'bar',
+            stack: '总量',
+            label: {
+              normal: {
+                  show: true
+              }
+            },
+            data: arWeekIncome
+          },
+          {
+            name:'支出',
+            type:'bar',
+            stack: '总量',
+            label: {
+              normal: {
+                  show: true,
+                  position: 'left'
+              }
+            },
+            data: arWeekOutgo
+          }
+        ]
+      };
+      chart.setOption(option);
+      });
+
+    // Daily
+    this._storageService.fetchReportTrendData(ReportTrendExTypeEnum.Daily, true, bgn, end)
+      .subscribe((x: ReportTrendExData[]) => {
+      let chart: any = echarts.init(this.trendDaily.nativeElement);
+      let ardates: moment.Moment[] = [];
+      x.forEach((val2: ReportTrendExData) => {
+        let idxdate = ardates.findIndex((valdate: moment.Moment) => {
+          return val2.tranDate.isSame(valdate);
+        });
+        if (idxdate === -1) {
+          ardates.push(val2.tranDate);
+        }
+      });
+      let ardates2 = ardates.sort((a: moment.Moment, b: moment.Moment) => {
+        if (a.isSame(b)) { return 0; }
+        if (a.isBefore(b)) { return -1; } else { return 1; }
+      });
+
+      let arCtgy: string[] = [];
+      let arIncome: number[] = [];
+      let arOutgo: number[] = [];
+      let arProfit: number[] = [];
+      ardates2.forEach((valdate: moment.Moment) => {
+        arCtgy.push(valdate.format(momentDateFormat));
+        let valincome = 0;
+        let valoutgo = 0;
+        
+        x.forEach((val3: ReportTrendExData) => {
+          if (val3.tranDate.isSame(valdate)) {
+            if (val3.expense) {
+              valoutgo += val3.tranAmount;
+            } else {
+              valincome += val3.tranAmount;
+            }
+          }
+        });
+
+        arIncome.push(valincome);
+        arOutgo.push(valoutgo);
+        arProfit.push(valincome + valoutgo);
+      });
+      let option: any = {
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data:['利润', '支出', '收入']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: arCtgy
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            name:'利润',
+            type:'line',
+            stack: '总量',
+            data: arProfit
+          },
+          {
+            name:'支出',
+            type:'line',
+            stack: '总量',
+            data: arOutgo
+          },
+          {
+            name:'收入',
+            type:'line',
+            stack: '总量',
+            data: arIncome
+          }
+        ]
+    };
+    chart.setOption(option);
     });
   }
 

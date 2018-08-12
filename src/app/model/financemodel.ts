@@ -2319,7 +2319,7 @@ export class TranTypeReport {
 }
 
 /**
- * Trend report
+ * Month on month report
  */
 export class MonthOnMonthReport {
   public year: number;
@@ -2333,6 +2333,42 @@ export class MonthOnMonthReport {
     }
     if (data && data.month) {
       this.month = data.month;
+    }
+    if (data && data.expense) {
+      this.expense = data.expense;
+    }
+    if (data && data.tranAmount) {
+      this.tranAmount = data.tranAmount;
+    }
+  }
+}
+
+export enum ReportTrendExTypeEnum {
+  Daily       = 1,
+  Weekly      = 2,
+  Monthly     = 3
+}
+
+export class ReportTrendExData {
+  tranDate?: moment.Moment;
+  tranWeek?: number;
+  tranMonth?: number;
+  tranYear?: number;
+  expense: boolean;
+  tranAmount: number;
+
+  public onSetData(data: any) {
+    if (data && data.tranDate) {
+      this.tranDate = moment(data.tranDate, hih.momentDateFormat);
+    }
+    if (data && data.tranWeek) {
+      this.tranWeek = data.tranWeek;
+    }
+    if (data && data.tranMonth) {
+      this.tranMonth = data.tranMonth;
+    }
+    if (data && data.tranYear) {
+      this.tranYear = data.tranYear;
     }
     if (data && data.expense) {
       this.expense = data.expense;

@@ -1,131 +1,141 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{'Common.Overview' | translate}}</mat-card-title>
+    <mat-card-title>{{'Common.Dashboard' | translate}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <mat-tab-group>
-      <mat-tab>
-        <ng-template mat-tab-label>
-          {{'Common.Todo' | translate}}
-        </ng-template>
+    <mat-toolbar color="primary">
+      <mat-form-field>
+        <mat-select color="accent" class="mt-1" [(ngModel)]="selectedTmpScope" (selectionChange)="onTmpDocsRefresh()">
+          <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-toolbar>
+    <div class="grid-container">
+      <mat-grid-list cols="2" rowHeight="400px">
+        <!-- Grid 1: Template docs. -->
+        <mat-grid-tile colspan="2" rowspan="1">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-card-title>
+                {{'Common.Todo' | translate}}
+                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu" xPosition="before">
+                  <button mat-icon-button (click)="onTmpDocsRefresh()" matTooltip="{{'Common.Refresh' | translate}}">
+                    <mat-icon color="accent" class="example-icon">refresh</mat-icon>
+                  </button>
+                </mat-menu>
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+              <div class="table-container mat-elevation-z8 mt-2">
+                <mat-table #tableTmpDoc [dataSource]="dataSourceTmpDoc">
+                  <!-- DocID column -->
+                  <ng-container matColumnDef="DocID">
+                    <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      <button mat-icon-button color="primary" (click)="onPostTmpDocument(row)">
+                        <mat-icon class="example-icon">save</mat-icon>
+                      </button>
+                      {{ row.DocId }}
+                    </mat-cell>
+                  </ng-container>
 
-        <mat-toolbar class="mt-2">
-          <mat-form-field>
-            <mat-select color="accent" class="mt-1" [(ngModel)]="selectedTmpScope" (selectionChange)="onTmpDocsRefresh()">
-              <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <button mat-icon-button (click)="onTmpDocsRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent" class="example-icon">refresh</mat-icon></button>
-        </mat-toolbar>
-    
-        <div class="table-container mat-elevation-z8 mt-2">
-          <mat-table #tableTmpDoc [dataSource]="dataSourceTmpDoc">
-            <!-- DocID column -->
-            <ng-container matColumnDef="DocID">
-              <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <button mat-icon-button color="primary" (click)="onPostTmpDocument(row)"><mat-icon class="example-icon">save</mat-icon></button>
-                {{ row.DocId }}
-              </mat-cell>
-            </ng-container>
+                  <!-- TranType -->
+                  <ng-container matColumnDef="TranType">
+                    <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionType' | translate}}</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      <mat-form-field>
+                        <mat-select disabled [(ngModel)]="row.TranType" name="ittt">
+                          <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
+                            <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </mat-cell>
+                  </ng-container>
 
-            <!-- TranType -->
-            <ng-container matColumnDef="TranType">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionType' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <mat-form-field>
-                  <mat-select disabled [(ngModel)]="row.TranType" name="ittt">
-                    <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-                      <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </mat-cell>
-            </ng-container>
+                  <!-- TranDate Column -->
+                  <ng-container matColumnDef="TranDate">
+                    <mat-header-cell *matHeaderCellDef>{{'Common.Date' | translate}}</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      {{ row.TranDateFormatString }}
+                    </mat-cell>
+                  </ng-container>
 
-            <!-- TranDate Column -->
-            <ng-container matColumnDef="TranDate">
-              <mat-header-cell *matHeaderCellDef>{{'Common.Date' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                {{ row.TranDateFormatString }}
-              </mat-cell>
-            </ng-container>
+                  <!-- Amount Column -->
+                  <ng-container matColumnDef="TranAmount">
+                    <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      {{ row.TotalAmount?.toFixed(2) }}
+                    </mat-cell>
+                  </ng-container>
 
-            <!-- Amount Column -->
-            <ng-container matColumnDef="TranAmount">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                {{ row.TotalAmount?.toFixed(2) }}
-              </mat-cell>
-            </ng-container>
+                  <!-- Desp Column -->
+                  <ng-container matColumnDef="Desp">
+                    <mat-header-cell *matHeaderCellDef>{{'Common.Description' | translate}}</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      {{ row.Desp }}
+                    </mat-cell>
+                  </ng-container>
 
-            <!-- Desp Column -->
-            <ng-container matColumnDef="Desp">
-              <mat-header-cell *matHeaderCellDef>{{'Common.Description' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                {{ row.Desp }}
-              </mat-cell>
-            </ng-container>
+                  <mat-header-row *matHeaderRowDef="displayedTmpDocColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedTmpDocColumns;"></mat-row>
+                </mat-table>
+                <mat-paginator #paginatorTmpDoc [length]="tmpDocs.length" [pageIndex]="0" [pageSize]="15" [pageSizeOptions]="[5, 10, 25, 100]">
+                </mat-paginator>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
 
-            <mat-header-row *matHeaderRowDef="displayedTmpDocColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedTmpDocColumns;"></mat-row>
-          </mat-table>
-          <mat-paginator #paginatorTmpDoc [length]="tmpDocs.length" [pageIndex]="0" [pageSize]="15" [pageSizeOptions]="[5, 10, 25, 100]">
-          </mat-paginator>
-        </div>        
-      </mat-tab>
+        <!-- Weekly trend -->
+        <mat-grid-tile colspan="1" rowspan="2">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-card-title>
+                {{'Common.Weekly' | translate}}
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+              <div #trendWeekly style="width: 100%; height: 700px;"></div>
 
-      <mat-tab>
-        <ng-template mat-tab-label>
-          {{'Finance.IncomeTendencyChart' | translate}}
-        </ng-template>
+              <!-- <div style="height: 350px;">
+                <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTIn" (select)="onChartIncomeClick($event)">
+                </ngx-charts-advanced-pie-chart>
+              </div>
+              <div style="height: 350px;">
+                <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTOut" (select)="onChartOutgoingClick($event)">
+                </ngx-charts-advanced-pie-chart>
+              </div>           -->
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
 
-        <mat-tab-group headerPosition="below">
-          <mat-tab>
-            <ng-template mat-tab-label>
-              {{'Common.Weekly' | translate}}
-            </ng-template> 
+        <!-- Daily trend -->
+        <mat-grid-tile colspan="1" rowspan="2">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-card-title>
+                {{'Common.Daily' | translate}}
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+                <div #trendDaily style="width: 100%; height: 700px;"></div>
+                <!-- <div style="height: 350px;">
+                <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTIn" (select)="onChartIncomeClick($event)">
+                </ngx-charts-advanced-pie-chart>
+              </div>
+              <div style="height: 350px;">
+                <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTOut" (select)="onChartOutgoingClick($event)">
+                </ngx-charts-advanced-pie-chart>
+              </div>           -->
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
 
-            <div>
-              {{'Common.Weekly' | translate}}
-            </div>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              {{'Common.Daily' | translate}}
-            </ng-template>
-
-            <div>
-              {{'Common.Daily' | translate}}
-            </div>
-          </mat-tab>
-        </mat-tab-group>
-      </mat-tab>
-
-      <mat-tab>
-        <ng-template mat-tab-label>
-          {{'Finance.ExpenseTendencyChart' | translate}}
-        </ng-template>
-
-        <mat-tab-group headerPosition="below">
-          <mat-tab>
-            <ng-template mat-tab-label>
-              {{'Common.Weekly' | translate}}
-            </ng-template>    
-            <div>
-              {{'Common.Weekly' | translate}}
-            </div>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              {{'Common.Daily' | translate}}
-            </ng-template>    
-            <div>
-              {{'Common.Daily' | translate}}
-            </div>
-          </mat-tab>
-        </mat-tab-group>
-      </mat-tab>
-    </mat-tab-group>
   </mat-card-content>
 </mat-card>

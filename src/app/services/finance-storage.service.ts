@@ -7,7 +7,8 @@ import {
   LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Account, ControlCenter, Order,
   Document, DocumentWithPlanExgRateForUpdate, momentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
   UINameValuePair, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, TemplateDocLoan, MonthOnMonthReport,
-  GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel,
+  GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
+  ReportTrendExData
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -1970,6 +1971,57 @@ export class FinanceStorageService {
         if (response instanceof Array && response.length > 0) {
           for (let tt of response) {
             let mmp: MonthOnMonthReport = new MonthOnMonthReport();
+            mmp.onSetData(tt);
+            rst.push(mmp);
+          }
+        }
+
+        return rst;
+      }));
+  }
+
+  /**
+   * Fetch trend data of Finance Report
+   * @param exctran Exclude the transfer
+   * @param dtbgn Begin date
+   * @param dtend End date
+   */
+  public fetchReportTrendData(trendtype: ReportTrendExTypeEnum, exctran?: boolean,
+    dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<ReportTrendExData[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTrendEx';
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('trendtype', (<number>trendtype).toString());
+    if (exctran) {
+      params = params.append('exctran', exctran.toString());
+    }
+    if (dtbgn) {
+      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
+    }
+    if (dtend) {
+      params = params.append('dtend', dtend.format(momentDateFormat));
+    }
+
+    return this._http.get(apiurl, {
+      headers: headers,
+      params: params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering fetchReportTrendData in FinanceStorageService: ${response}`);
+        }
+
+        // Do the grouping here.
+        let rst: ReportTrendExData[] = [];
+
+        if (response instanceof Array && response.length > 0) {
+          for (let tt of response) {
+            let mmp: ReportTrendExData = new ReportTrendExData();
             mmp.onSetData(tt);
             rst.push(mmp);
           }
