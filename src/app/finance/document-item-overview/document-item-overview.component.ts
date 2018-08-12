@@ -146,8 +146,8 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
           }
           arWeekIncome.push(valIncome);
           arWeekOutgo.push(valOutgo);
-          arWeekProfit.push(valIncome - valOutgo);
-         }
+          arWeekProfit.push(valIncome + valOutgo);
+        }
       });
 
       let option: any = {
@@ -201,7 +201,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
             stack: '总量',
             label: {
               normal: {
-                  show: true
+                show: true
               }
             },
             data: arWeekIncome
@@ -212,8 +212,8 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
             stack: '总量',
             label: {
               normal: {
-                  show: true,
-                  position: 'left'
+                show: true,
+                position: 'inside'
               }
             },
             data: arWeekOutgo
