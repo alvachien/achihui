@@ -17,7 +17,7 @@ declare var echarts: any;
 /**
  * Data source of ADP & Loan docs
  */
-export class TmpDocStillOpenDataSource extends DataSource<any> {  
+export class TmpDocStillOpenDataSource extends DataSource<any> {
   constructor(private _parentComponent: DocumentItemOverviewComponent,
     private _paginator: MatPaginator) {
     super();
@@ -100,17 +100,17 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
     // Weekly
     let { BeginDate: bgn,  EndDate: end } = getOverviewScopeRange(this.selectedTmpScope);
     let arweeks: any[] = [];
-    let bgnweek = bgn.format('w');
-    let bgnweekyear = bgn.format('gggg');
-    let endweek = end.format('w');
-    let endweekyear = end.format('gggg');
-    for(let iweekyear: number = +bgnweekyear; iweekyear <= +endweekyear; iweekyear++) {
+    let bgnweek: any = bgn.format('w');
+    let bgnweekyear: any = bgn.format('gggg');
+    let endweek: any = end.format('w');
+    let endweekyear: any = end.format('gggg');
+    for (let iweekyear: number = +bgnweekyear; iweekyear <= +endweekyear; iweekyear++) {
       for (let iweek: number = +bgnweek; iweek <= +endweek; iweek ++) {
         arweeks.push({
           year: +iweekyear,
-          week: +iweek
+          week: +iweek,
         });
-      }  
+      }
     }
     let arweekdisplay: string[] = [];
     arweeks.forEach((val: any) => {
@@ -125,10 +125,10 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       let arWeekProfit: number[] = [];
 
       arweeks.forEach((val: any) => {
-        let idxIncome = x.findIndex((val2: ReportTrendExData) => {
+        let idxIncome: number = x.findIndex((val2: ReportTrendExData) => {
           return val2.tranYear === val.year && val2.tranWeek === val.week && !val2.expense;
         });
-        let idxOutgo = x.findIndex((val2: ReportTrendExData) => {
+        let idxOutgo: number = x.findIndex((val2: ReportTrendExData) => {
           return val2.tranYear === val.year && val2.tranWeek === val.week && val2.expense;
         });
         if (idxIncome === -1 && idxOutgo === -1) {
@@ -136,8 +136,8 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
           arWeekOutgo.push(0);
           arWeekProfit.push(0);
         } else {
-          let valIncome = 0;
-          let valOutgo = 0;
+          let valIncome: number = 0;
+          let valOutgo: number = 0;
           if (idxIncome !== -1) {
             valIncome = x[idxIncome].tranAmount;
           }
@@ -154,71 +154,71 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
         tooltip : {
           trigger: 'axis',
           axisPointer : {
-            type : 'shadow'
-          }
+            type : 'shadow',
+          },
         },
         legend: {
-          data:['利润', '支出', '收入']
+          data: ['利润', '支出', '收入'],
         },
         grid: {
           left: '3%',
           right: '4%',
           bottom: '3%',
-          containLabel: true
+          containLabel: true,
         },
         toolbox: {
           feature: {
-              saveAsImage: {}
-          }
+              saveAsImage: {},
+          },
         },
         xAxis : [
           {
-            type : 'value'
-          }
+            type : 'value',
+          },
         ],
         yAxis : [
           {
             type : 'category',
             axisTick : {show: false},
-            data : arweekdisplay
-          }
+            data : arweekdisplay,
+          },
         ],
         series : [
           {
-            name:'利润',
-            type:'bar',
+            name: '利润',
+            type: 'bar',
             label: {
               normal: {
                 show: true,
-                position: 'inside'
-              }
+                position: 'inside',
+              },
             },
-            data: arWeekProfit
+            data: arWeekProfit,
           },
           {
-            name:'收入',
-            type:'bar',
-            stack: '总量',
-            label: {
-              normal: {
-                show: true
-              }
-            },
-            data: arWeekIncome
-          },
-          {
-            name:'支出',
-            type:'bar',
+            name: '收入',
+            type: 'bar',
             stack: '总量',
             label: {
               normal: {
                 show: true,
-                position: 'inside'
-              }
+              },
             },
-            data: arWeekOutgo
-          }
-        ]
+            data: arWeekIncome,
+          },
+          {
+            name: '支出',
+            type: 'bar',
+            stack: '总量',
+            label: {
+              normal: {
+                show: true,
+                position: 'inside',
+              },
+            },
+            data: arWeekOutgo,
+          },
+        ],
       };
       chart.setOption(option);
       });
@@ -229,14 +229,14 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       let chart: any = echarts.init(this.trendDaily.nativeElement);
       let ardates: moment.Moment[] = [];
       x.forEach((val2: ReportTrendExData) => {
-        let idxdate = ardates.findIndex((valdate: moment.Moment) => {
+        let idxdate: number = ardates.findIndex((valdate: moment.Moment) => {
           return val2.tranDate.isSame(valdate);
         });
         if (idxdate === -1) {
           ardates.push(val2.tranDate);
         }
       });
-      let ardates2 = ardates.sort((a: moment.Moment, b: moment.Moment) => {
+      let ardates2: moment.Moment[] = ardates.sort((a: moment.Moment, b: moment.Moment) => {
         if (a.isSame(b)) { return 0; }
         if (a.isBefore(b)) { return -1; } else { return 1; }
       });
@@ -247,9 +247,9 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       let arProfit: number[] = [];
       ardates2.forEach((valdate: moment.Moment) => {
         arCtgy.push(valdate.format(momentDateFormat));
-        let valincome = 0;
-        let valoutgo = 0;
-        
+        let valincome: number = 0;
+        let valoutgo: number = 0;
+
         x.forEach((val3: ReportTrendExData) => {
           if (val3.tranDate.isSame(valdate)) {
             if (val3.expense) {
@@ -266,52 +266,52 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       });
       let option: any = {
         tooltip: {
-          trigger: 'axis'
+          trigger: 'axis',
         },
         legend: {
-          data:['利润', '支出', '收入']
+          data: ['利润', '支出', '收入'],
         },
         grid: {
           left: '3%',
           right: '4%',
           bottom: '3%',
-          containLabel: true
+          containLabel: true,
         },
         toolbox: {
           feature: {
-            saveAsImage: {}
-          }
+            saveAsImage: {},
+          },
         },
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: arCtgy
+          data: arCtgy,
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
         },
         series: [
           {
-            name:'利润',
-            type:'line',
+            name: '利润',
+            type: 'line',
             stack: '总量',
-            data: arProfit
+            data: arProfit,
           },
           {
-            name:'支出',
-            type:'line',
+            name: '支出',
+            type: 'line',
             stack: '总量',
-            data: arOutgo
+            data: arOutgo,
           },
           {
-            name:'收入',
-            type:'line',
+            name: '收入',
+            type: 'line',
             stack: '总量',
-            data: arIncome
-          }
-        ]
+            data: arIncome,
+          },
+        ],
     };
-    chart.setOption(option);
+      chart.setOption(option);
     });
   }
 
