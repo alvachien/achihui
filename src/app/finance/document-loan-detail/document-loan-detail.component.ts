@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { Observable, forkJoin, merge } from 'rxjs';

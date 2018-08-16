@@ -50,6 +50,8 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
   styleUrls: ['./document-item-overview.component.scss'],
 })
 export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
+  private labelIncome: string;
+  private labelOutgo: string;
 
   displayedTmpDocColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSourceTmpDoc: TmpDocStillOpenDataSource | undefined;
@@ -73,6 +75,8 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
     }
 
     this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
+    this.labelIncome = this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming);
+    this.labelOutgo = this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing);
   }
 
   ngOnInit(): void {
@@ -158,7 +162,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
           },
         },
         legend: {
-          data: ['利润', '支出', '收入'],
+          data: ['利润', this.labelOutgo, this.labelIncome],
         },
         grid: {
           left: '3%',
@@ -196,7 +200,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
             data: arWeekProfit,
           },
           {
-            name: '收入',
+            name: this.labelIncome,
             type: 'bar',
             stack: '总量',
             label: {
@@ -207,7 +211,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
             data: arWeekIncome,
           },
           {
-            name: '支出',
+            name: this.labelOutgo,
             type: 'bar',
             stack: '总量',
             label: {
@@ -269,7 +273,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
           trigger: 'axis',
         },
         legend: {
-          data: ['利润', '支出', '收入'],
+          data: ['利润', this.labelOutgo, this.labelIncome],
         },
         grid: {
           left: '3%',
@@ -298,13 +302,13 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
             data: arProfit,
           },
           {
-            name: '支出',
+            name: this.labelOutgo,
             type: 'line',
             stack: '总量',
             data: arOutgo,
           },
           {
-            name: '收入',
+            name: this.labelIncome,
             type: 'line',
             stack: '总量',
             data: arIncome,
