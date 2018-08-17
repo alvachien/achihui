@@ -240,6 +240,8 @@ export class DocumentLoanDetailComponent implements OnInit {
           data: dlginfo,
         });
       });
+    } else if (this.uiMode === UIMode.Change) {
+      // Recalculate the items
     }
   }
 
