@@ -62,6 +62,9 @@ export class DocumentLoanDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent constructor...');
+    }
     this.detailObject = new UIFinLoanDocument();
   }
 
@@ -242,7 +245,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       });
     } else if (this.uiMode === UIMode.Change) {
       // Recalculate the items
-      this.detailObject.TmpDocs = [];
+      // this.detailObject.TmpDocs = [];
 
       // Do some basic check
       if (!this.detailObject.TranAmount) {
@@ -253,10 +256,21 @@ export class DocumentLoanDetailComponent implements OnInit {
         return;
       }
 
+      let amtPaid: number = 0;
+      let monthPaid: number = 0;
+      let arKeepItems: TemplateDocLoan[] = [];
+      this.detailObject.TmpDocs.forEach((val: TemplateDocLoan) => {
+        if (val.RefDocId) {
+          amtPaid += val.TranAmount;
+          monthPaid ++;
+          arKeepItems.push(val);
+        }
+      });
+
       // Call the API for Loan template docs.
       let di: FinanceLoanCalAPIInput = {
-        TotalAmount: this.detailObject.TranAmount,
-        TotalMonths: this.detailObject.LoanAccount.TotalMonths,
+        TotalAmount: this.detailObject.TranAmount - amtPaid,
+        TotalMonths: this.detailObject.LoanAccount.TotalMonths - monthPaid,
         InterestRate: this.detailObject.LoanAccount.annualRate / 100,
         StartDate: this.detailObject.LoanAccount.startDate.clone(),
         InterestFreeLoan: this.detailObject.LoanAccount.InterestFree ? true : false,
@@ -267,7 +281,6 @@ export class DocumentLoanDetailComponent implements OnInit {
       }
 
       this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
-        let tmpdocs: TemplateDocLoan[] = [];
         for (let rst of x) {
           let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
           tmpdoc.InterestAmount = rst.InterestAmount;
@@ -276,10 +289,10 @@ export class DocumentLoanDetailComponent implements OnInit {
           // tmpdoc.TranType = this.detailObject.SourceTranType;
           tmpdoc.Desp = this.detailObject.LoanAccount.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString()
             + ' / ' + x.length.toString();
-          tmpdocs.push(tmpdoc);
+          arKeepItems.push(tmpdoc);
         }
 
-        this.dataSource.data = tmpdocs;
+        this.dataSource.data = arKeepItems;
       }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering onSync, failed to calculate the template docs : ${error}`);
@@ -457,6 +470,131 @@ export class DocumentLoanDetailComponent implements OnInit {
       }
 
       this._storageService.createLoanDocument(sobj);
+    } else if (this.uiMode === UIMode.Change) {
+      this.detailObject.TmpDocs = this.dataSource.data;
+      let docObj: any = this.detailObject.generateDocument();
+
+      if (this.detailObject.TmpDocs.length <= 0) {
+        this.showErrorDialog('Finance.NoTmpDocGenerated');
+        return;
+      }
+
+      // Check on template docs
+      if (!this.detailObject.LoanAccount.RepayMethod) {
+        this.showErrorDialog('No repayment method!');
+        return;
+      }
+
+      for (let tdoc of this.detailObject.TmpDocs) {
+        if (!tdoc.TranAmount) {
+          this.showErrorDialog('No tran. amount');
+          return;
+        }
+      }
+
+      // Check!
+      if (!docObj.onVerify({
+        ControlCenters: this._storageService.ControlCenters,
+        Orders: this._storageService.Orders,
+        Accounts: this._storageService.Accounts,
+        DocumentTypes: this._storageService.DocumentTypes,
+        TransactionTypes: this._storageService.TranTypes,
+        Currencies: this._currService.Currencies,
+        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+      })) {
+        // Show a dialog for error details
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          ContentTable: docObj.VerifiedMsgs,
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        });
+
+        return;
+      }
+
+      // this._storageService.createDocumentEvent.subscribe((x: any) => {
+      //   if (environment.LoggingLevel >= LogLevel.Debug) {
+      //     console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAdvancepaymentDetailComponent with : ${x}`);
+      //   }
+
+      //   // Navigate back to list view
+      //   if (x instanceof Document) {
+      //     // Show the snackbar
+      //     let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+      //       this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+      //       duration: 3000,
+      //     });
+
+      //     let recreate: boolean = false;
+      //     snackbarRef.onAction().subscribe(() => {
+      //       recreate = true;
+
+      //       this._initCreateMode(this.detailObject.isLendTo);
+      //       this.setStep(0);
+      //     });
+
+      //     snackbarRef.afterDismissed().subscribe(() => {
+      //       // Navigate to display
+      //       if (!recreate) {
+      //         if (this.loanType === financeDocTypeBorrowFrom) {
+      //           this._router.navigate(['/finance/document/displaybrwfrm/' + x.Id.toString()]);
+      //         } else if (this.loanType === financeDocTypeLendTo) {
+      //           this._router.navigate(['/finance/document/displaylendto/' + x.Id.toString()]);
+      //         }
+      //       }
+      //     });
+      //   } else {
+      //     // Show error message
+      //     const dlginfo: MessageDialogInfo = {
+      //       Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+      //       Content: x.toString(),
+      //       Button: MessageDialogButtonEnum.onlyok,
+      //     };
+
+      //     this._dialog.open(MessageDialogComponent, {
+      //       disableClose: false,
+      //       width: '500px',
+      //       data: dlginfo,
+      //     }).afterClosed().subscribe((x2: any) => {
+      //       // Do nothing!
+      //       if (environment.LoggingLevel >= LogLevel.Debug) {
+      //         console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+      //       }
+      //     });
+      //   }
+      // });
+
+      docObj.HID = this._homedefService.ChosedHome.ID;
+
+      // Build the JSON file to API
+      let sobj: any = docObj.writeJSONObject(); // Document first
+      let acntobj: Account = new Account();
+      acntobj.HID = this._homedefService.ChosedHome.ID;
+      acntobj.CategoryId = this.loanType;
+      acntobj.Name = docObj.Desp;
+      acntobj.Comment = docObj.Desp;
+      acntobj.ExtraInfo = this.detailObject.LoanAccount;
+      sobj.accountVM = acntobj.writeJSONObject();
+
+      sobj.TmpDocs = [];
+      for (let td of this.detailObject.TmpDocs) {
+        td.HID = acntobj.HID;
+        td.ControlCenterId = this.detailObject.SourceControlCenterId;
+        td.OrderId = this.detailObject.SourceOrderId;
+        if (td.Desp.length > 45) {
+          td.Desp = td.Desp.substring(0, 44);
+        }
+
+        sobj.TmpDocs.push(td.writeJSONObject());
+      }
+
+      this._storageService.updateLoanDocument(sobj);
     }
   }
 

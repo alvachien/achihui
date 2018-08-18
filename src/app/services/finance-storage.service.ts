@@ -1237,6 +1237,52 @@ export class FinanceStorageService {
   }
 
   /**
+   * Update Loan document
+   */
+  public updateLoanDocument(jdata: any): void {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
+
+    this._http.put(apiurl, jdata, {
+      headers: headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of updateLoanDocument in FinanceStorageService: ' + response);
+        }
+
+        let hd: Document = new Document();
+        hd.onSetData(response);
+        return hd;
+      }))
+      .subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Fetch data success in updateLoanDocument in FinanceStorageService: ${x}`);
+        }
+
+        // const copiedData: any = this.Documents.slice();
+        // copiedData.push(x);
+        // this.listDocumentChange.next(copiedData);
+
+        // // Broadcast event
+        // this.createDocumentEvent.emit(x);
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Error occurred in updateLoanDocument in FinanceStorageService:  ${error}`);
+        }
+
+        // // Broadcast event: failed
+        // this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
+      }, () => {
+        // Empty
+      });
+  }
+
+  /**
    * Get Loan tmp docs: for document item overview page
    */
   public getLoanTmpDocs(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
