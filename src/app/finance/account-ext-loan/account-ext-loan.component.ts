@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraLoan, UIAccountForSelection,
-  IAccountCategoryFilter, BuildupAccountForSelection } from '../../model';
+  IAccountCategoryFilter, BuildupAccountForSelection, TemplateDocLoan } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { forkJoin } from 'rxjs';
+import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
 
 @Component({
   selector: 'hih-finance-account-ext-loan',
@@ -16,6 +17,9 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
+  dataSource: MatTableDataSource<TemplateDocLoan> = new MatTableDataSource<TemplateDocLoan>();
+  displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'InterestAmount', 'Desp'];
+  columnsToDisplay: string[] = this.displayedColumns.slice();
 
   @Input() extObject: AccountExtraLoan;
   @Input() uiMode: UIMode;

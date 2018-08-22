@@ -118,67 +118,6 @@
           <button mat-icon-button (click)="onGenerateTmpDocs()" [disabled]="!isFieldChangable" matTooltip="{{'Finance.GenerateTmpDocs' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
         </mat-toolbar>
 
-        <div class="table-container mat-elevation-z8">
-          <mat-table #table [dataSource]="dataSource">
-            <!-- TranDate Column -->
-            <ng-container matColumnDef="TranDate">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionDate' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <mat-form-field>
-                  <input matInput [(ngModel)]="row.TranDate" [matDatepicker]="tmpdpicker" 
-                    placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable">
-                  <mat-datepicker-toggle matSuffix [for]="tmpdpicker"></mat-datepicker-toggle>
-                  <mat-datepicker #tmpdpicker></mat-datepicker>
-                </mat-form-field>
-              </mat-cell>
-            </ng-container>
-
-            <!-- Amount Column -->
-            <ng-container matColumnDef="TranAmount">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <mat-form-field>
-                  <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.TranAmount"
-                    name="tmpamt">
-                </mat-form-field>
-              </mat-cell>
-            </ng-container>
-
-            <!-- Interest Column -->
-            <ng-container matColumnDef="InterestAmount">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.Interest' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <mat-form-field>
-                  <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.InterestAmount"
-                    name="tmpamt">
-                </mat-form-field>
-              </mat-cell>
-            </ng-container>
-            
-            <!-- Desp Column -->
-            <ng-container matColumnDef="Desp">
-              <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <mat-form-field>
-                  <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.Desp"
-                    name="tmpdesp" #tmpdesp maxlength="44">
-                  <mat-hint align="end">{{tmpdesp.value.length}} / 45</mat-hint>
-                </mat-form-field>
-              </mat-cell>
-            </ng-container>
-            
-            <!-- RefDoc Column -->
-            <ng-container matColumnDef="RefDoc">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.RefDoc' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                <a routerLink='/finance/document/displaynormal/{{row.RefDocId}}' routerLinkActive="active" *ngIf="row.RefDocId">{{row.RefDocId}}</a>
-              </mat-cell>
-            </ng-container>
-            
-            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: columnsToDisplay;"></mat-row>
-          </mat-table>
-        </div>
       </mat-expansion-panel>
     </mat-accordion>
   </mat-card-content>

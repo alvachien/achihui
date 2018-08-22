@@ -36,9 +36,6 @@ export class DocumentLoanDetailComponent implements OnInit {
   public uiOrderFilter: boolean | undefined;
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
-  displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'InterestAmount', 'Desp'];
-  columnsToDisplay: string[] = this.displayedColumns.slice();
-  dataSource: MatTableDataSource<TemplateDocLoan> = new MatTableDataSource<TemplateDocLoan>();
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -141,8 +138,6 @@ export class DocumentLoanDetailComponent implements OnInit {
               }
 
               this.detailObject.parseDocument(x2, this.detailObject.isLendTo);
-
-              this.dataSource.data = this.detailObject.TmpDocs;
             }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readLoanDocument : ${error2}`);
