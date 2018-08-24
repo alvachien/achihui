@@ -102,23 +102,6 @@
           <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
         </mat-action-row>
       </mat-expansion-panel>
-
-      <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{'Finance.TemplateDocument' | translate}}
-          </mat-panel-title>
-          <mat-panel-description>
-            {{'Finance.TemplateDocument' | translate}}
-            <mat-icon>details</mat-icon>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
-        <mat-toolbar>
-          <button mat-icon-button (click)="onGenerateTmpDocs()" [disabled]="!isFieldChangable" matTooltip="{{'Finance.GenerateTmpDocs' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
-        </mat-toolbar>
-
-      </mat-expansion-panel>
     </mat-accordion>
   </mat-card-content>
   

@@ -65,6 +65,9 @@
     <a routerLink='/finance/document/displaynormal/{{extObject.RefDocId}}' style="margin: 5px;" routerLinkActive="active">{{extObject?.RefDocId}}</a>
   </div>
 
+  <mat-toolbar>
+    <button mat-icon-button (click)="onGenerateTmpDocs()" [disabled]="!isFieldChangable" matTooltip="{{'Finance.GenerateTmpDocs' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
+  </mat-toolbar>
   <div class="table-container mat-elevation-z8">
     <mat-table #table [dataSource]="dataSource">
       <!-- TranDate Column -->

@@ -1,10 +1,12 @@
 import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { HttpErrorResponse } from '@angular/common/http';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraLoan, UIAccountForSelection,
-  IAccountCategoryFilter, BuildupAccountForSelection, TemplateDocLoan } from '../../model';
+  IAccountCategoryFilter, BuildupAccountForSelection, TemplateDocLoan, FinanceLoanCalAPIInput, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { forkJoin } from 'rxjs';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
   selector: 'hih-finance-account-ext-loan',
@@ -62,6 +64,133 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent ngAfterViewInit`);
+    }
+  }
+
+  public onGenerateTmpDocs(): void {
+    if (this.uiMode === UIMode.Create) {
+      // this.detailObject.TmpDocs = [];
+
+      // Do some basic check
+      if (!this.detailObject.TranAmount) {
+        return;
+      }
+
+      if (!this.extObject.RepayMethod) {
+        return;
+      }
+
+      // Call the API for Loan template docs.
+      let di: FinanceLoanCalAPIInput = {
+        TotalAmount: this.detailObject.TranAmount,
+        TotalMonths: this.extObject.TotalMonths,
+        InterestRate: this.extObject.annualRate / 100,
+        StartDate: this.extObject.startDate.clone(),
+        InterestFreeLoan: this.extObject.InterestFree ? true : false,
+        RepaymentMethod: this.extObject.RepayMethod,
+      };
+      if (this.extObject.endDate) {
+        di.EndDate = this.extObject.endDate.clone();
+      }
+
+      this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
+        let tmpdocs: TemplateDocLoan[] = [];
+        for (let rst of x) {
+          let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+          tmpdoc.InterestAmount = rst.InterestAmount;
+          tmpdoc.TranAmount = rst.TranAmount;
+          tmpdoc.TranDate = rst.TranDate;
+          // tmpdoc.TranType = this.detailObject.SourceTranType;
+          tmpdoc.Desp = this.extObject.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString()
+            + ' / ' + x.length.toString();
+          tmpdocs.push(tmpdoc);
+        }
+
+        this.dataSource.data = tmpdocs;
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering onSync, failed to calculate the template docs : ${error}`);
+        }
+
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: error ? error.message : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        });
+      });
+    } else if (this.uiMode === UIMode.Change) {
+      // Recalculate the items
+      // this.detailObject.TmpDocs = [];
+
+      // Do some basic check
+      if (!this.detailObject.TranAmount) {
+        return;
+      }
+
+      if (!this.extObject.RepayMethod) {
+        return;
+      }
+
+      let amtPaid: number = 0;
+      let monthPaid: number = 0;
+      let arKeepItems: TemplateDocLoan[] = [];
+      this.detailObject.TmpDocs.forEach((val: TemplateDocLoan) => {
+        if (val.RefDocId) {
+          amtPaid += val.TranAmount;
+          monthPaid ++;
+          arKeepItems.push(val);
+        }
+      });
+
+      // Call the API for Loan template docs.
+      let di: FinanceLoanCalAPIInput = {
+        TotalAmount: this.detailObject.TranAmount - amtPaid,
+        TotalMonths: this.extObject.TotalMonths - monthPaid,
+        InterestRate: this.extObject.annualRate / 100,
+        StartDate: this.extObject.startDate.clone(),
+        InterestFreeLoan: this.extObject.InterestFree ? true : false,
+        RepaymentMethod: this.extObject.RepayMethod,
+      };
+      if (this.extObject.endDate) {
+        di.EndDate = this.extObject.endDate.clone();
+      }
+
+      this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
+        for (let rst of x) {
+          let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+          tmpdoc.InterestAmount = rst.InterestAmount;
+          tmpdoc.TranAmount = rst.TranAmount;
+          tmpdoc.TranDate = rst.TranDate;
+          // tmpdoc.TranType = this.detailObject.SourceTranType;
+          tmpdoc.Desp = this.extObject.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString()
+            + ' / ' + x.length.toString();
+          arKeepItems.push(tmpdoc);
+        }
+
+        this.dataSource.data = arKeepItems;
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering onSync, failed to calculate the template docs : ${error}`);
+        }
+
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: error ? error.message : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        });
+      });
     }
   }
 }
