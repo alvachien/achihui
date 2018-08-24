@@ -25,6 +25,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
 
   @Input() extObject: AccountExtraLoan;
   @Input() uiMode: UIMode;
+  @Input() tranAmount: number;
   // @Input() isLendTo: boolean;
 
   get isFieldChangable(): boolean {
@@ -35,7 +36,8 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
   }
 
   constructor(public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService) {
+    public _uiStatusService: UIStatusService,
+    private _dialog: MatDialog) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent constructor`);
       }
@@ -69,10 +71,8 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
 
   public onGenerateTmpDocs(): void {
     if (this.uiMode === UIMode.Create) {
-      // this.detailObject.TmpDocs = [];
-
       // Do some basic check
-      if (!this.detailObject.TranAmount) {
+      if (!this.tranAmount) {
         return;
       }
 
@@ -82,7 +82,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
 
       // Call the API for Loan template docs.
       let di: FinanceLoanCalAPIInput = {
-        TotalAmount: this.detailObject.TranAmount,
+        TotalAmount: this.tranAmount,
         TotalMonths: this.extObject.TotalMonths,
         InterestRate: this.extObject.annualRate / 100,
         StartDate: this.extObject.startDate.clone(),
@@ -101,7 +101,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
           // tmpdoc.TranType = this.detailObject.SourceTranType;
-          tmpdoc.Desp = this.extObject.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString()
+          tmpdoc.Desp = this.extObject.Comment + ' | ' + (tmpdocs.length + 1).toString()
             + ' / ' + x.length.toString();
           tmpdocs.push(tmpdoc);
         }
@@ -129,7 +129,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
       // this.detailObject.TmpDocs = [];
 
       // Do some basic check
-      if (!this.detailObject.TranAmount) {
+      if (!this.tranAmount) {
         return;
       }
 
@@ -150,7 +150,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
 
       // Call the API for Loan template docs.
       let di: FinanceLoanCalAPIInput = {
-        TotalAmount: this.detailObject.TranAmount - amtPaid,
+        TotalAmount: this.tranAmount - amtPaid,
         TotalMonths: this.extObject.TotalMonths - monthPaid,
         InterestRate: this.extObject.annualRate / 100,
         StartDate: this.extObject.startDate.clone(),
