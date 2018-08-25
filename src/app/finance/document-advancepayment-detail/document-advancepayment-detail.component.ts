@@ -2,7 +2,6 @@ import {
   Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
@@ -18,30 +17,6 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStat
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
-
-/**
- * Data source of ADP Template Document
- */
-export class TemplateDocADPDataSource extends DataSource<any> {
-  constructor(private _parentComponent: DocumentAdvancepaymentDetailComponent) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<TemplateDocADP[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.tmpDocOperEvent,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      return this._parentComponent.detailObject.TmpDocs;
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
 
 @Component({
   selector: 'hih-fin-document-advancepayment-detail',
@@ -63,9 +38,6 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
-  displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
-  dataSource: TemplateDocADPDataSource | undefined;
-  tmpDocOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   arFrequencies: any = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
 
   get isFieldChangable(): boolean {
@@ -87,7 +59,6 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     this.detailObject = new UIFinAdvPayDocument();
-    this.dataSource = new TemplateDocADPDataSource(this);
   }
 
   ngOnInit(): void {
@@ -138,7 +109,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
               }
 
               this.detailObject.parseDocument(x2);
-              this.tmpDocOperEvent.emit();
+              // this.tmpDocOperEvent.emit();
             }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error2}`);
@@ -286,7 +257,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
           this.onInitCreateMode();
           this.setStep(0);
-          this.tmpDocOperEvent.emit();
+          // this.tmpDocOperEvent.emit();
           // this._router.navigate(['/finance/document/createadp/']);
         });
 

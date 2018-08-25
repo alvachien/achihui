@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account,
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account,
   AccountExtraAdvancePayment, RepeatFrequencyEnum, UIDisplayStringUtil, TemplateDocADP,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
@@ -15,6 +14,8 @@ import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
 export class AccountExtADPComponent implements OnInit {
   public currentMode: string;
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  dataSource: MatTableDataSource<TemplateDocADP> = new MatTableDataSource<TemplateDocADP>();
+  displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
 
   @Input() extObject: AccountExtraAdvancePayment;
   @Input() uiMode: UIMode;
@@ -36,7 +37,7 @@ export class AccountExtADPComponent implements OnInit {
 
   public onSync(): void {
     if (this.uiMode === UIMode.Create) {
-      this.detailObject.TmpDocs = [];
+      // this.detailObject.TmpDocs = [];
 
       let rtype: any = this.extObject.RepeatType;
       if (!this.extObject.EndDate.isValid || !this.extObject.StartDate.isValid) {
