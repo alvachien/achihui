@@ -200,16 +200,16 @@ export class DocumentLoanDetailComponent implements OnInit {
       return false;
     }
 
-    if (this.dataSource.data.length <= 0) {
-      return false;
-    }
+    // if (this.dataSource.data.length <= 0) {
+    //   return false;
+    // }
 
     return true;
   }
 
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
-      this.detailObject.TmpDocs = this.dataSource.data;
+      // this.detailObject.TmpDocs = this.dataSource.data;
       let docObj: any = this.detailObject.generateDocument();
 
       if (this.detailObject.TmpDocs.length <= 0) {
@@ -339,7 +339,7 @@ export class DocumentLoanDetailComponent implements OnInit {
 
       this._storageService.createLoanDocument(sobj);
     } else if (this.uiMode === UIMode.Change) {
-      this.detailObject.TmpDocs = this.dataSource.data;
+      // this.detailObject.TmpDocs = this.dataSource.data;
       let docObj: any = this.detailObject.generateDocument();
 
       if (this.detailObject.TmpDocs.length <= 0) {
@@ -485,7 +485,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       skipAsset: true,
     };
     this.uiOrderFilter = true;
-    this.dataSource.data = []; // Empty the items
+    // this.dataSource.data = []; // Empty the items
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }

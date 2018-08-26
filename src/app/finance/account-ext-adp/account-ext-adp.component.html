@@ -36,8 +36,9 @@
   </mat-form-field>
 
   <mat-toolbar>
-    <button mat-icon-button (click)="onSync()" [disabled]="!isCreateMode" matTooltip="{{'Finance.GenerateTmpDocs' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
+    <button mat-icon-button (click)="onGenerateTmpDocs()" [disabled]="!isFieldChangable" matTooltip="{{'Finance.GenerateTmpDocs' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
   </mat-toolbar>
+  
   <div class="table-container mat-elevation-z8">
     <mat-table #table [dataSource]="dataSource">
       <!-- TranDate Column -->

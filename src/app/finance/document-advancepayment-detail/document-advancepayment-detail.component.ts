@@ -17,6 +17,7 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStat
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { AccountExtLoanComponent } from '../account-ext-loan';
 
 @Component({
   selector: 'hih-fin-document-advancepayment-detail',
@@ -58,6 +59,9 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent constructor...');
+    }
     this.detailObject = new UIFinAdvPayDocument();
   }
 

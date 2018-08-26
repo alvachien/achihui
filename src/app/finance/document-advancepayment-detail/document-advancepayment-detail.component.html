@@ -17,7 +17,7 @@
         </mat-expansion-panel-header>
 
         <!-- Currency -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
             name="cur">
             <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
@@ -27,7 +27,7 @@
         </mat-form-field>
 
         <!-- Tran date -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <input matInput [(ngModel)]="detailObject.TranDate" [disabled]="!isFieldChangable" [matDatepicker]="srcdpicker" 
             placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable">
           <mat-datepicker-toggle matSuffix [for]="srcdpicker"></mat-datepicker-toggle>
@@ -35,7 +35,7 @@
         </mat-form-field>
 
         <!-- Tran type -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranType" name="srctt">
             <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
               <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
@@ -44,7 +44,7 @@
         </mat-form-field>
 
         <!-- Account -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
             name="srcacnt">
             <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter" [value]="acnt.Id">
@@ -54,20 +54,20 @@
         </mat-form-field>
 
         <!-- Amount -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"
             name="srcamt">
         </mat-form-field>
 
         <!-- Desp -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
             name="desp" #desp maxlength="44">
           <mat-hint align="end">{{desp.value.length}} / 45</mat-hint>
         </mat-form-field>
 
         <!-- CC -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
             name="hdrcc">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
@@ -78,7 +78,7 @@
         </mat-form-field>
 
         <!-- Order -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId" name="hdrord">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
             <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
@@ -103,8 +103,9 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <div class="demo-full-width">
-          <hih-finance-account-ext-adp [uiMode]="uiMode" [extObject]="detailObject.AdvPayAccount"></hih-finance-account-ext-adp>
+        <div class="control-full-width">
+          <hih-finance-account-ext-adp [uiMode]="uiMode" [extObject]="detailObject.AdvPayAccount" 
+            [tranType]="detailObject.SourceTranType" [tranAmount]="detailObject.TranAmount"></hih-finance-account-ext-adp>
         </div>
 
         <mat-action-row>

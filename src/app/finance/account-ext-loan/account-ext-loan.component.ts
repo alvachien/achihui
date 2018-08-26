@@ -70,16 +70,25 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
   }
 
   public onGenerateTmpDocs(): void {
+    // Do some basic check
+    if (!this.tranAmount) {
+      return;
+    }
+
+    if (!this.extObject.RepayMethod) {
+      return;
+    }
+
+    if (this.uiMode === UIMode.Create || this.uiMode === UIMode.Change) {
+      // It is valid
+    } else {
+      // Invalid
+      return;
+    }
+
+    let tmpdocs: TemplateDocLoan[] = [];
+
     if (this.uiMode === UIMode.Create) {
-      // Do some basic check
-      if (!this.tranAmount) {
-        return;
-      }
-
-      if (!this.extObject.RepayMethod) {
-        return;
-      }
-
       // Call the API for Loan template docs.
       let di: FinanceLoanCalAPIInput = {
         TotalAmount: this.tranAmount,
@@ -92,9 +101,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
       if (this.extObject.endDate) {
         di.EndDate = this.extObject.endDate.clone();
       }
-
       this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
-        let tmpdocs: TemplateDocLoan[] = [];
         for (let rst of x) {
           let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
           tmpdoc.InterestAmount = rst.InterestAmount;
@@ -125,22 +132,11 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
         });
       });
     } else if (this.uiMode === UIMode.Change) {
-      // Recalculate the items
-      // this.detailObject.TmpDocs = [];
-
-      // Do some basic check
-      if (!this.tranAmount) {
-        return;
-      }
-
-      if (!this.extObject.RepayMethod) {
-        return;
-      }
-
+      tmpdocs = this.dataSource.data;
       let amtPaid: number = 0;
       let monthPaid: number = 0;
       let arKeepItems: TemplateDocLoan[] = [];
-      this.detailObject.TmpDocs.forEach((val: TemplateDocLoan) => {
+      tmpdocs.forEach((val: TemplateDocLoan) => {
         if (val.RefDocId) {
           amtPaid += val.TranAmount;
           monthPaid ++;
@@ -160,7 +156,6 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
       if (this.extObject.endDate) {
         di.EndDate = this.extObject.endDate.clone();
       }
-
       this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
         for (let rst of x) {
           let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
@@ -168,7 +163,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
           // tmpdoc.TranType = this.detailObject.SourceTranType;
-          tmpdoc.Desp = this.extObject.Comment + ' | ' + (this.detailObject.TmpDocs.length + 1).toString()
+          tmpdoc.Desp = this.extObject.Comment + ' | ' + (tmpdocs.length + 1).toString()
             + ' / ' + x.length.toString();
           arKeepItems.push(tmpdoc);
         }
