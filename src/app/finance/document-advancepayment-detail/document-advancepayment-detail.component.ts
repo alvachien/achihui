@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef,
+  Input, Output, ViewContainerRef, ViewChild, ChangeDetectorRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
@@ -17,14 +17,14 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStat
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { AccountExtLoanComponent } from '../account-ext-loan';
+import { AccountExtADPComponent } from '../account-ext-adp';
 
 @Component({
   selector: 'hih-fin-document-advancepayment-detail',
   templateUrl: './document-advancepayment-detail.component.html',
   styleUrls: ['./document-advancepayment-detail.component.scss'],
 })
-export class DocumentAdvancepaymentDetailComponent implements OnInit {
+export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewInit {
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
@@ -41,6 +41,8 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
 
   arFrequencies: any = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
 
+  @ViewChild(AccountExtADPComponent) ctrlAccount: AccountExtADPComponent;
+
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -54,6 +56,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
+    private _cdr: ChangeDetectorRef,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
@@ -69,6 +72,12 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit...');
     }
+  }
+
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngAfterViewInit...');
+    }
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -80,7 +89,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngAfterViewInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -109,24 +118,27 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this._storageService.readADPDocument(this.routerID).subscribe((x2: any) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit for activateRoute URL: ${x2}`);
+                console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngAfterViewInit for activateRoute URL: ${x2}`);
               }
 
               this.detailObject.parseDocument(x2);
+              this.ctrlAccount.tmpDocs = this.detailObject.TmpDocs;
               // this.tmpDocOperEvent.emit();
             }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error2}`);
+                console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit, failed to readADPDocument : ${error2}`);
               }
             });
           }
+
+          this._cdr.detectChanges();
         } else {
           this.uiMode = UIMode.Invalid;
         }
       });
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit, failed to load depended objects : ${error}`);
       }
 
       const dlginfo: MessageDialogInfo = {
@@ -176,6 +188,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       return false;
     }
 
+    this.detailObject.TmpDocs = this.ctrlAccount.tmpDocs;
     if (this.detailObject.TmpDocs.length <= 0) {
       return false;
     }
@@ -209,6 +222,8 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
       skipAsset: true,
     };
     this.uiOrderFilter = true;
+    this.detailObject.TmpDocs = [];
+    this.ctrlAccount.tmpDocs = [];
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
@@ -305,6 +320,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit {
     sobj.accountVM = acntobj.writeJSONObject();
 
     sobj.TmpDocs = [];
+    this.detailObject.TmpDocs = this.ctrlAccount.tmpDocs;
     for (let td of this.detailObject.TmpDocs) {
       td.HID = acntobj.HID;
       td.ControlCenterId = this.detailObject.SourceControlCenterId;

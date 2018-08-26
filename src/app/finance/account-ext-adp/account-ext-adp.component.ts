@@ -21,6 +21,13 @@ export class AccountExtADPComponent implements OnInit {
   @Input() uiMode: UIMode;
   @Input() tranAmount: number;
   @Input() tranType: number;
+  
+  get tmpDocs(): TemplateDocADP[] {
+    return this.dataSource.data;
+  }
+  set tmpDocs(docs: TemplateDocADP[]) {
+    this.dataSource.data = docs;
+  }
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -29,7 +36,7 @@ export class AccountExtADPComponent implements OnInit {
     return this.uiMode === UIMode.Create;
   }
 
-  constructor(public _storageService: FinanceStorageService) {
+  constructor(public _storageService: FinanceStorageService) {    
   }
 
   ngOnInit(): void {

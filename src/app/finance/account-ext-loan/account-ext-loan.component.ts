@@ -27,6 +27,12 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
   @Input() uiMode: UIMode;
   @Input() tranAmount: number;
   // @Input() isLendTo: boolean;
+  get tmpDocs(): TemplateDocLoan[] {
+    return this.dataSource.data;
+  }
+  set tmpDocs(docs: TemplateDocLoan[]) {
+    this.dataSource.data = docs;
+  }
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;

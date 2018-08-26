@@ -183,11 +183,15 @@ export class UIFinAdvPayDocument {
       this.TranCurr = doc.TranCurr;
       this.Desp = doc.Desp;
 
-      if (doc.Items.length !== 1) {
+      if (doc.Items.length < 0) {
         throw Error('Failed to parse document');
       }
 
-      let fitem: HIHFinance.DocumentItem = doc.Items[0];
+      let idx = doc.Items.findIndex((item: HIHFinance.DocumentItem) => {
+        return item.TranType !== hih.financeTranTypeOpeningAsset
+          && item.TranType !== hih.financeTranTypeOpeningLiability;
+      });
+      let fitem: HIHFinance.DocumentItem = doc.Items[idx];
       this.SourceAccountId = fitem.AccountId;
       this.SourceControlCenterId = fitem.ControlCenterId;
       this.SourceOrderId = fitem.OrderId;
@@ -203,14 +207,19 @@ export class UIFinAdvPayDocument {
       this.TranCurr = docobj.TranCurr;
       this.Desp = docobj.Desp;
 
-      if (docobj.Items.length !== 1) {
+      if (docobj.Items.length < 0) {
         throw Error('Failed to parse document');
       }
-      let fitem: any = docobj.Items[0];
+      let idx = docobj.Items.findIndex((item: HIHFinance.DocumentItem) => {
+        return item.TranType !== hih.financeTranTypeOpeningAsset
+          && item.TranType !== hih.financeTranTypeOpeningLiability;
+      });
+      let fitem: any = docobj.Items[idx];
       this.SourceAccountId = +fitem.AccountId;
       this.SourceControlCenterId = +fitem.ControlCenterId;
       this.SourceOrderId = +fitem.OrderId;
       this.SourceTranType = +fitem.TranType;
+      this.TranAmount = +fitem.TranAmount;
 
       this.AdvPayAccount.onSetData(doc.accountVM.extraInfo_ADP);
 

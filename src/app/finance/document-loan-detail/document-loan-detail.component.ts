@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef,
+  Input, Output, ViewContainerRef, ViewChild,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
@@ -14,13 +14,14 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStat
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AccountExtLoanComponent } from '../account-ext-loan';
 
 @Component({
   selector: 'hih-finance-document-loan-detail',
   templateUrl: './document-loan-detail.component.html',
   styleUrls: ['./document-loan-detail.component.scss'],
 })
-export class DocumentLoanDetailComponent implements OnInit {
+export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
   private routerID: number = -1; // Current object ID in routing
   private loanType: number;
   public documentTitle: string;
@@ -36,6 +37,8 @@ export class DocumentLoanDetailComponent implements OnInit {
   public uiOrderFilter: boolean | undefined;
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
+
+  @ViewChild(AccountExtLoanComponent) ctrlAccount: AccountExtLoanComponent;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -69,7 +72,9 @@ export class DocumentLoanDetailComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngOnInit...');
     }
+  }
 
+  ngAfterViewInit(): void {
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllDocTypes(),
@@ -80,7 +85,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngAfterViewInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -134,13 +139,13 @@ export class DocumentLoanDetailComponent implements OnInit {
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this._storageService.readLoanDocument(this.routerID).subscribe((x2: any) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngOnInit for activateRoute URL: ${x2}`);
+                console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngAfterViewInit for activateRoute URL: ${x2}`);
               }
 
               this.detailObject.parseDocument(x2, this.detailObject.isLendTo);
             }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readLoanDocument : ${error2}`);
+                console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit, failed to readLoanDocument : ${error2}`);
               }
             });
           }
@@ -150,7 +155,7 @@ export class DocumentLoanDetailComponent implements OnInit {
       });
     }, (error: HttpErrorResponse) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit, failed to load depended objects : ${error}`);
       }
 
       const dlginfo: MessageDialogInfo = {
@@ -200,16 +205,17 @@ export class DocumentLoanDetailComponent implements OnInit {
       return false;
     }
 
-    // if (this.dataSource.data.length <= 0) {
-    //   return false;
-    // }
+    this.detailObject.TmpDocs = this.ctrlAccount.tmpDocs;
+    if (this.detailObject.TmpDocs.length <= 0) {
+      return false;
+    }
 
     return true;
   }
 
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
-      // this.detailObject.TmpDocs = this.dataSource.data;
+      this.detailObject.TmpDocs = this.ctrlAccount.tmpDocs;
       let docObj: any = this.detailObject.generateDocument();
 
       if (this.detailObject.TmpDocs.length <= 0) {
@@ -339,7 +345,7 @@ export class DocumentLoanDetailComponent implements OnInit {
 
       this._storageService.createLoanDocument(sobj);
     } else if (this.uiMode === UIMode.Change) {
-      // this.detailObject.TmpDocs = this.dataSource.data;
+      this.detailObject.TmpDocs = this.ctrlAccount.tmpDocs;
       let docObj: any = this.detailObject.generateDocument();
 
       if (this.detailObject.TmpDocs.length <= 0) {
@@ -485,7 +491,8 @@ export class DocumentLoanDetailComponent implements OnInit {
       skipAsset: true,
     };
     this.uiOrderFilter = true;
-    // this.dataSource.data = []; // Empty the items
+    this.detailObject.TmpDocs = [];
+    this.ctrlAccount.tmpDocs = [];
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
