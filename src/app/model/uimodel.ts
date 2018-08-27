@@ -187,10 +187,13 @@ export class UIFinAdvPayDocument {
         throw Error('Failed to parse document');
       }
 
-      let idx = doc.Items.findIndex((item: HIHFinance.DocumentItem) => {
+      let idx: number = doc.Items.findIndex((item: HIHFinance.DocumentItem) => {
         return item.TranType !== hih.financeTranTypeOpeningAsset
           && item.TranType !== hih.financeTranTypeOpeningLiability;
       });
+      if (idx === -1) {
+        throw Error('Failed to parse document');
+      }
       let fitem: HIHFinance.DocumentItem = doc.Items[idx];
       this.SourceAccountId = fitem.AccountId;
       this.SourceControlCenterId = fitem.ControlCenterId;
@@ -210,10 +213,13 @@ export class UIFinAdvPayDocument {
       if (docobj.Items.length < 0) {
         throw Error('Failed to parse document');
       }
-      let idx = docobj.Items.findIndex((item: HIHFinance.DocumentItem) => {
+      let idx: number = docobj.Items.findIndex((item: HIHFinance.DocumentItem) => {
         return item.TranType !== hih.financeTranTypeOpeningAsset
           && item.TranType !== hih.financeTranTypeOpeningLiability;
       });
+      if (idx === -1) {
+        throw Error('Failed to parse document');
+      }
       let fitem: any = docobj.Items[idx];
       this.SourceAccountId = +fitem.AccountId;
       this.SourceControlCenterId = +fitem.ControlCenterId;

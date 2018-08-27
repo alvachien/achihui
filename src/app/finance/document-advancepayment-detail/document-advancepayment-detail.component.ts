@@ -1,5 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef, ViewChild, ChangeDetectorRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -13,7 +12,7 @@ import {
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   UIDisplayStringUtil, IAccountCategoryFilter,
 } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
@@ -57,6 +56,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
+    private _authService: AuthService,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
@@ -316,6 +316,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
     acntobj.CategoryId = financeAccountCategoryAdvancePayment;
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
+    acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
     acntobj.ExtraInfo = this.detailObject.AdvPayAccount;
     sobj.accountVM = acntobj.writeJSONObject();
 

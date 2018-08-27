@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef, ViewChild,
+  Input, Output, ViewContainerRef, ViewChild, ChangeDetectorRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
@@ -10,7 +10,7 @@ import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, fin
   financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo, financeDocTypeLendTo, TemplateDocLoan, UIFinLoanDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, IAccountCategoryFilter } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -59,6 +59,8 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
     private _router: Router,
     private _uiStatusService: UIStatusService,
     private _activateRoute: ActivatedRoute,
+    private _authService: AuthService,
+    private _cdr: ChangeDetectorRef,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
@@ -152,6 +154,8 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
         } else {
           this.uiMode = UIMode.Invalid;
         }
+
+        this._cdr.detectChanges();
       });
     }, (error: HttpErrorResponse) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
@@ -328,6 +332,7 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
       acntobj.CategoryId = this.loanType;
       acntobj.Name = docObj.Desp;
       acntobj.Comment = docObj.Desp;
+      acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
       acntobj.ExtraInfo = this.detailObject.LoanAccount;
       sobj.accountVM = acntobj.writeJSONObject();
 
@@ -453,6 +458,7 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
       acntobj.CategoryId = this.loanType;
       acntobj.Name = docObj.Desp;
       acntobj.Comment = docObj.Desp;
+      acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
       acntobj.ExtraInfo = this.detailObject.LoanAccount;
       sobj.accountVM = acntobj.writeJSONObject();
 
