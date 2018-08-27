@@ -145,6 +145,7 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
               }
 
               this.detailObject.parseDocument(x2, this.detailObject.isLendTo);
+              this.ctrlAccount.tmpDocs = this.detailObject.TmpDocs;
             }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit, failed to readLoanDocument : ${error2}`);

@@ -44,10 +44,10 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     private _dialog: MatDialog) {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent constructor`);
-      }
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent constructor`);
     }
+  }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {

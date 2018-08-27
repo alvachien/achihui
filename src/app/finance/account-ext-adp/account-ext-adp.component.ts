@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, TranType,
   AccountExtraAdvancePayment, RepeatFrequencyEnum, UIDisplayStringUtil, TemplateDocADP,
@@ -11,7 +11,7 @@ import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
   templateUrl: './account-ext-adp.component.html',
   styleUrls: ['./account-ext-adp.component.scss'],
 })
-export class AccountExtADPComponent implements OnInit {
+export class AccountExtADPComponent implements OnInit, AfterViewInit {
   public currentMode: string;
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   dataSource: MatTableDataSource<TemplateDocADP> = new MatTableDataSource<TemplateDocADP>();
@@ -21,7 +21,7 @@ export class AccountExtADPComponent implements OnInit {
   @Input() uiMode: UIMode;
   @Input() tranAmount: number;
   @Input() tranType: number;
-  
+
   get tmpDocs(): TemplateDocADP[] {
     return this.dataSource.data;
   }
@@ -36,11 +36,22 @@ export class AccountExtADPComponent implements OnInit {
     return this.uiMode === UIMode.Create;
   }
 
-  constructor(public _storageService: FinanceStorageService) {    
+  constructor(public _storageService: FinanceStorageService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering constructor of AccountExtADPComponent ...');
+    }
   }
 
   ngOnInit(): void {
-    // Empty
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ngOnInit of AccountExtADPComponent ...');
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of AccountExtADPComponent ...');
+    }
   }
 
   public onGenerateTmpDocs(): void {
