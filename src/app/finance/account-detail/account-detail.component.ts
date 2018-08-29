@@ -74,14 +74,14 @@ export class AccountDetailComponent implements OnInit {
                 }
                 this.detailObject = x3;
 
-                if (this.uiMode === UIMode.Change) {
-                  if (this.detailObject.CategoryId === financeAccountCategoryAsset
-                  || this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
-                  || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom
-                  || this.detailObject.CategoryId === financeAccountCategoryLendTo) {
-                    this.uiMode = UIMode.Display; // Not support for those accounts yet
-                  }
-                }
+                // if (this.uiMode === UIMode.Change) {
+                //   if (this.detailObject.CategoryId === financeAccountCategoryAsset
+                //   || this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
+                //   || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom
+                //   || this.detailObject.CategoryId === financeAccountCategoryLendTo) {
+                //     this.uiMode = UIMode.Display; // Not support for those accounts yet
+                //   }
+                // }
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readAccount : ${x3}`);

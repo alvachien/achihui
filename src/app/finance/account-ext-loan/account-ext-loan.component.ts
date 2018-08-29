@@ -89,7 +89,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
   }
   public onGenerateTmpDocs(): void {
     // Do some basic check
-    if (!this.tranAmount) {
+    if (!this.tranAmount && this.dataSource.data.length <= 0) {
       return;
     }
 
@@ -151,10 +151,12 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
       });
     } else if (this.uiMode === UIMode.Change) {
       tmpdocs = this.dataSource.data;
+      let amtTotal: number = 0;
       let amtPaid: number = 0;
       let monthPaid: number = 0;
       let arKeepItems: TemplateDocLoan[] = [];
       tmpdocs.forEach((val: TemplateDocLoan) => {
+        amtTotal += val.TranAmount;
         if (val.RefDocId) {
           amtPaid += val.TranAmount;
           monthPaid ++;
@@ -164,7 +166,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
 
       // Call the API for Loan template docs.
       let di: FinanceLoanCalAPIInput = {
-        TotalAmount: this.tranAmount - amtPaid,
+        TotalAmount: amtTotal - amtPaid,
         TotalMonths: this.extObject.TotalMonths - monthPaid,
         InterestRate: this.extObject.annualRate / 100,
         StartDate: this.extObject.startDate.clone(),
@@ -175,13 +177,15 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
         di.EndDate = this.extObject.endDate.clone();
       }
       this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
+        let rstidx: number = arKeepItems.length;
         for (let rst of x) {
+          ++rstidx;
           let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
           tmpdoc.InterestAmount = rst.InterestAmount;
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
           // tmpdoc.TranType = this.detailObject.SourceTranType;
-          tmpdoc.Desp = this.extObject.Comment + ' | ' + (tmpdocs.length + 1).toString()
+          tmpdoc.Desp = this.extObject.Comment + ' | ' + (rstidx + 1).toString()
             + ' / ' + x.length.toString();
           arKeepItems.push(tmpdoc);
         }
