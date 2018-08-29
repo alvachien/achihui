@@ -121,8 +121,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
               }
 
               this.detailObject.parseDocument(x2);
-              this.ctrlAccount.tmpDocs = this.detailObject.TmpDocs;
-              // this.tmpDocOperEvent.emit();
+              this.ctrlAccount.displayTmpdocs();
             }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit, failed to readADPDocument : ${error2}`);
@@ -187,8 +186,8 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
       return false;
     }
 
-    this.detailObject.TmpDocs = this.ctrlAccount.tmpDocs;
-    if (this.detailObject.TmpDocs.length <= 0) {
+    this.ctrlAccount.generateAccountInfoForSave();
+    if (this.ctrlAccount.extObject.dpTmpDocs.length <= 0) {
       return false;
     }
 
@@ -221,14 +220,14 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
       skipAsset: true,
     };
     this.uiOrderFilter = true;
-    this.detailObject.TmpDocs = [];
-    this.ctrlAccount.tmpDocs = [];
+    this.ctrlAccount.initCreateMode();
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }
 
   private onCreateADPDoc(): void {
     let docObj: any = this.detailObject.generateDocument();
+    this.ctrlAccount.generateAccountInfoForSave();
 
     // Check!
     if (!docObj.onVerify({
@@ -318,19 +317,6 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
     acntobj.ExtraInfo = this.detailObject.AdvPayAccount;
     sobj.accountVM = acntobj.writeJSONObject();
-
-    sobj.TmpDocs = [];
-    this.detailObject.TmpDocs = this.ctrlAccount.tmpDocs;
-    for (let td of this.detailObject.TmpDocs) {
-      td.HID = acntobj.HID;
-      td.ControlCenterId = this.detailObject.SourceControlCenterId;
-      td.OrderId = this.detailObject.SourceOrderId;
-      if (td.Desp.length > 45) {
-        td.Desp = td.Desp.substring(0, 44);
-      }
-
-      sobj.TmpDocs.push(td.writeJSONObject());
-    }
 
     this._storageService.createADPDocument(sobj);
   }

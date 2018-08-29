@@ -28,8 +28,6 @@
       name="dfrrdays" #dfrrdays="ngModel">
   </mat-form-field> -->
 
-  <!-- Info. for ADP template doc -->
-
   <mat-form-field class="control-full-width">
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="extObject.Comment"
       name="advacntcmt" #advacntcmt="ngModel">
@@ -54,20 +52,12 @@
         </mat-cell>
       </ng-container>
 
-      <!-- RefDoc Column -->
-      <ng-container matColumnDef="RefDoc">
-        <mat-header-cell *matHeaderCellDef>{{'Finance.RefDoc' | translate}}</mat-header-cell>
-        <mat-cell *matCellDef="let row">
-          <a routerLink='/finance/document/displaynormal/{{row.RefDocId}}' routerLinkActive="active" *ngIf="row.RefDocId">{{row.RefDocId}}</a>
-        </mat-cell>
-      </ng-container>
-      
       <!-- Amount Column -->
       <ng-container matColumnDef="TranAmount">
         <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
         <mat-cell *matCellDef="let row">
           <mat-form-field>
-            <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.TranAmount"
+            <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.TranAmount"
               name="tmpamt">
           </mat-form-field>
         </mat-cell>
@@ -75,15 +65,24 @@
 
       <!-- Desp Column -->
       <ng-container matColumnDef="Desp">
-        <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>{{'Common.Comment' | translate}}</mat-header-cell>
         <mat-cell *matCellDef="let row">
           <mat-form-field>
-            <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.Desp"
+            <input matInput type="text" required placeholder="{{'Common.Description' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.Desp"
               name="tmpdesp" #tmpdesp maxlength="44">
             <mat-hint align="end">{{tmpdesp.value.length}} / 44</mat-hint>
           </mat-form-field>
         </mat-cell>
       </ng-container>
+      
+      <!-- RefDoc Column -->
+      <ng-container matColumnDef="RefDoc">
+        <mat-header-cell *matHeaderCellDef>{{'Finance.RefDoc' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a routerLink='/finance/document/displaynormal/{{row.RefDocId}}' routerLinkActive="active" *ngIf="row.RefDocId">{{row.RefDocId}}</a>
+        </mat-cell>
+      </ng-container>
+
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>

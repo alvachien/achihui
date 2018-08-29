@@ -14,25 +14,26 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   styleUrls: ['./account-ext-loan.component.scss'],
 })
 export class AccountExtLoanComponent implements OnInit, AfterViewInit {
-
+  private _insobj: AccountExtraLoan;
   public currentMode: string;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   dataSource: MatTableDataSource<TemplateDocLoan> = new MatTableDataSource<TemplateDocLoan>();
-  displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'InterestAmount', 'Desp'];
+  displayedColumns: string[] = ['TranDate', 'TranAmount', 'InterestAmount', 'Desp', 'RefDoc'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
 
-  @Input() extObject: AccountExtraLoan;
+  @Input() set extObject(ins: AccountExtraLoan) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent extObject's setter`);
+    }
+    this._insobj = ins;
+  }
+  get extObject(): AccountExtraLoan {
+    return this._insobj;
+  }
   @Input() uiMode: UIMode;
   @Input() tranAmount: number;
-  // @Input() isLendTo: boolean;
-  get tmpDocs(): TemplateDocLoan[] {
-    return this.dataSource.data;
-  }
-  set tmpDocs(docs: TemplateDocLoan[]) {
-    this.dataSource.data = docs;
-  }
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -47,6 +48,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent constructor`);
     }
+    this._insobj = new AccountExtraLoan();
   }
 
   ngOnInit(): void {
@@ -67,6 +69,10 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
     ).subscribe((x: any) => {
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
     });
+
+    if (this._insobj.loanTmpDocs.length > 0) {
+      this.dataSource.data = this._insobj.loanTmpDocs;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -75,6 +81,12 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public initCreateMode(): void {
+    this.dataSource.data = [];
+  }
+  public displayTmpdocs(): void {
+    this.dataSource.data = this._insobj.loanTmpDocs;
+  }
   public onGenerateTmpDocs(): void {
     // Do some basic check
     if (!this.tranAmount) {
@@ -193,5 +205,10 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
         });
       });
     }
+  }
+
+  public generateAccountInfoForSave(): void {
+    this._insobj.loanTmpDocs = [];
+    this._insobj.loanTmpDocs = this.dataSource.data;
   }
 }

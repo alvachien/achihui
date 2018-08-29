@@ -435,7 +435,7 @@
     "ExchangeRate": "汇率",
     "ProposedExchangeRate": "预测的汇率",
     "CurrencyExchange": "货币兑换",
-    "RefDoc": "关联",
+    "RefDoc": "关联凭证",
     "ReferenceDocument": "关联凭证",
     "IsExpense": "开销",
     "IsAsset": "资产",

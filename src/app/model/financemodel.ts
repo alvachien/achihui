@@ -533,11 +533,12 @@ export interface IAccountCategoryFilter {
 export class AccountExtraAdvancePayment extends AccountExtra {
   private _startDate: moment.Moment;
   private _endDate: moment.Moment;
+  private _refDocId: number;
+  private _comment: string;
   public Direct: boolean;
   public RepeatType: hih.RepeatFrequencyEnum;
-  public RefDocId: number;
   public DeferredDays: number;
-  public Comment: string;
+  public dpTmpDocs: TemplateDocADP[] = [];
 
   get StartDate(): moment.Moment {
     return this._startDate;
@@ -557,6 +558,18 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   }
   get EndDateFormatString(): string {
     return this._endDate.format(hih.momentDateFormat);
+  }
+  get RefDocId(): number {
+    return this._refDocId;
+  }
+  set RefDocId(rdocid: number) {
+    this._refDocId = rdocid;
+  }
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(cmt: string) {
+    this._comment = cmt;
   }
 
   constructor() {
@@ -621,6 +634,11 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     rstobj.refDocID = this.RefDocId;
     rstobj.defrrDays = this.DeferredDays;
     rstobj.comment = this.Comment;
+    rstobj.dpTmpDocs = [];
+    for (let tdoc of this.dpTmpDocs) {
+      let tdocjson: any = tdoc.writeJSONObject();
+      rstobj.dpTmpDocs.push(tdocjson);
+    }
 
     return rstobj;
   }
@@ -653,6 +671,14 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     if (data && data.comment) {
       this.Comment = data.comment;
     }
+    if (data && data.dpTmpDocs && data.dpTmpDocs instanceof Array) {
+      this.dpTmpDocs = [];
+      for (let val of data.dpTmpDocs) {
+        let tdoc: TemplateDocADP = new TemplateDocADP();
+        tdoc.onSetData(val);
+        this.dpTmpDocs.push(tdoc);
+      }
+    }
   }
 }
 
@@ -660,12 +686,24 @@ export class AccountExtraAdvancePayment extends AccountExtra {
  * Extra info: Asset
  */
 export class AccountExtraAsset extends AccountExtra {
+  private _name: string;
+  private _comment: string;
   public CategoryID: number;
-  public Name: string;
-  public Comment: string;
   public RefDocForBuy: number;
   public RefDocForSold?: number;
 
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(cmt: string) {
+    this._comment = cmt;
+  }
   constructor() {
     super();
   }
@@ -733,6 +771,7 @@ export class AccountExtraLoan extends AccountExtra {
   private _comment: string;
   public RepayMethod: RepaymentMethodEnum;
   public RefDocId: number;
+  public loanTmpDocs: TemplateDocLoan[] = [];
 
   get startDate(): moment.Moment {
     return this._startDate;
@@ -832,6 +871,11 @@ export class AccountExtraLoan extends AccountExtra {
     rstobj.comment = this.Comment;
     rstobj.payingAccount = this._payingAccount;
     rstobj.partner = this._partner;
+    rstobj.loanTmpDocs = [];
+    for (let tdoc of this.loanTmpDocs) {
+      let tdocjson: any = tdoc.writeJSONObject();
+      rstobj.loanTmpDocs.push(tdocjson);
+    }
 
     return rstobj;
   }
@@ -869,6 +913,14 @@ export class AccountExtraLoan extends AccountExtra {
     if (data && data.partner) {
       this.Partner = data.partner;
     }
+    if (data && data.loanTmpDocs && data.loanTmpDocs instanceof Array) {
+      this.loanTmpDocs = [];
+      for (let val of data.loanTmpDocs) {
+        let tdoc: TemplateDocLoan = new TemplateDocLoan();
+        tdoc.onSetData(val);
+        this.loanTmpDocs.push(tdoc);
+      }
+    }
   }
 }
 
@@ -891,10 +943,28 @@ export class ControlCenter extends hih.BaseModel {
   set HID(hid: number) {
     this._hid = hid;
   }
-  public Name: string;
+  private _name: string;
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  private _comment: string;
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(cmt: string) {
+    this._comment = cmt;
+  }
+  private _owner: string;
+  get Owner(): string {
+    return this._owner;
+  }
+  set Owner(owner: string) {
+    this._owner = owner;
+  }
   public ParentId: number;
-  public Comment: string;
-  public Owner: string;
 
   constructor() {
     super();

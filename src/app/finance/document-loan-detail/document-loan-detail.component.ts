@@ -145,7 +145,7 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
               }
 
               this.detailObject.parseDocument(x2, this.detailObject.isLendTo);
-              this.ctrlAccount.tmpDocs = this.detailObject.TmpDocs;
+              this.ctrlAccount.displayTmpdocs();
             }, (error2: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit, failed to readLoanDocument : ${error2}`);
@@ -209,9 +209,8 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
     if (this.detailObject.Desp.length <= 0) {
       return false;
     }
-
-    this.detailObject.TmpDocs = this.ctrlAccount.tmpDocs;
-    if (this.detailObject.TmpDocs.length <= 0) {
+    this.ctrlAccount.generateAccountInfoForSave();
+    if (this.ctrlAccount.extObject.loanTmpDocs.length <= 0) {
       return false;
     }
 
@@ -220,10 +219,10 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
 
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
-      this.detailObject.TmpDocs = this.ctrlAccount.tmpDocs;
       let docObj: any = this.detailObject.generateDocument();
+      this.ctrlAccount.generateAccountInfoForSave();
 
-      if (this.detailObject.TmpDocs.length <= 0) {
+      if (this.ctrlAccount.extObject.loanTmpDocs.length <= 0) {
         this.showErrorDialog('Finance.NoTmpDocGenerated');
         return;
       }
@@ -234,16 +233,11 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      for (let tdoc of this.detailObject.TmpDocs) {
+      for (let tdoc of this.ctrlAccount.extObject.loanTmpDocs) {
         if (!tdoc.TranAmount) {
           this.showErrorDialog('No tran. amount');
           return;
         }
-
-        // if (!tdoc.TranType) {
-        //   this.showErrorDialog('No tran. type');
-        //   return;
-        // }
       }
 
       // Check!
@@ -337,24 +331,12 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
       acntobj.ExtraInfo = this.detailObject.LoanAccount;
       sobj.accountVM = acntobj.writeJSONObject();
 
-      sobj.TmpDocs = [];
-      for (let td of this.detailObject.TmpDocs) {
-        td.HID = acntobj.HID;
-        td.ControlCenterId = this.detailObject.SourceControlCenterId;
-        td.OrderId = this.detailObject.SourceOrderId;
-        if (td.Desp.length > 45) {
-          td.Desp = td.Desp.substring(0, 44);
-        }
-
-        sobj.TmpDocs.push(td.writeJSONObject());
-      }
-
       this._storageService.createLoanDocument(sobj);
     } else if (this.uiMode === UIMode.Change) {
-      this.detailObject.TmpDocs = this.ctrlAccount.tmpDocs;
       let docObj: any = this.detailObject.generateDocument();
+      this.ctrlAccount.generateAccountInfoForSave();
 
-      if (this.detailObject.TmpDocs.length <= 0) {
+      if (this.ctrlAccount.extObject.loanTmpDocs.length <= 0) {
         this.showErrorDialog('Finance.NoTmpDocGenerated');
         return;
       }
@@ -365,7 +347,7 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      for (let tdoc of this.detailObject.TmpDocs) {
+      for (let tdoc of this.ctrlAccount.extObject.loanTmpDocs) {
         if (!tdoc.TranAmount) {
           this.showErrorDialog('No tran. amount');
           return;
@@ -463,18 +445,6 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
       acntobj.ExtraInfo = this.detailObject.LoanAccount;
       sobj.accountVM = acntobj.writeJSONObject();
 
-      sobj.TmpDocs = [];
-      for (let td of this.detailObject.TmpDocs) {
-        td.HID = acntobj.HID;
-        td.ControlCenterId = this.detailObject.SourceControlCenterId;
-        td.OrderId = this.detailObject.SourceOrderId;
-        if (td.Desp.length > 45) {
-          td.Desp = td.Desp.substring(0, 44);
-        }
-
-        sobj.TmpDocs.push(td.writeJSONObject());
-      }
-
       this._storageService.updateLoanDocument(sobj);
     }
   }
@@ -498,8 +468,7 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
       skipAsset: true,
     };
     this.uiOrderFilter = true;
-    this.detailObject.TmpDocs = [];
-    this.ctrlAccount.tmpDocs = [];
+    this.ctrlAccount.initCreateMode();
 
     this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
   }

@@ -12,22 +12,25 @@ import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
   styleUrls: ['./account-ext-adp.component.scss'],
 })
 export class AccountExtADPComponent implements OnInit, AfterViewInit {
+  private _insobj: AccountExtraAdvancePayment;
   public currentMode: string;
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   dataSource: MatTableDataSource<TemplateDocADP> = new MatTableDataSource<TemplateDocADP>();
-  displayedColumns: string[] = ['TranDate', 'RefDoc', 'TranAmount', 'Desp'];
+  displayedColumns: string[] = ['TranDate', 'TranAmount', 'Desp', 'RefDoc'];
 
-  @Input() extObject: AccountExtraAdvancePayment;
+  @Input()
+  set extObject(extdp: AccountExtraAdvancePayment) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtADPComponent extObject's setter`);
+    }
+    this._insobj = extdp;
+  }
+  get extObject(): AccountExtraAdvancePayment {
+    return this._insobj;
+  }
   @Input() uiMode: UIMode;
   @Input() tranAmount: number;
   @Input() tranType: number;
-
-  get tmpDocs(): TemplateDocADP[] {
-    return this.dataSource.data;
-  }
-  set tmpDocs(docs: TemplateDocADP[]) {
-    this.dataSource.data = docs;
-  }
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -40,11 +43,15 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering constructor of AccountExtADPComponent ...');
     }
+    // this._insobj = new AccountExtraAdvancePayment
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ngOnInit of AccountExtADPComponent ...');
+    }
+    if (this._insobj.dpTmpDocs.length > 0) {
+      this.dataSource.data = this._insobj.dpTmpDocs;
     }
   }
 
@@ -171,5 +178,16 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
     }
 
     this.dataSource.data = tmpDocs;
+  }
+
+  public initCreateMode(): void {
+    this.dataSource.data = [];
+  }
+  public displayTmpdocs(): void {
+    this.dataSource.data = this._insobj.dpTmpDocs;
+  }
+  public generateAccountInfoForSave(): void {
+    this._insobj.dpTmpDocs = [];
+    this._insobj.dpTmpDocs = this.dataSource.data;
   }
 }

@@ -151,7 +151,6 @@ export class UIFinAdvPayDocument {
   public SourceOrderId: number;
 
   public AdvPayAccount: HIHFinance.AccountExtraAdvancePayment;
-  public TmpDocs: HIHFinance.TemplateDocADP[] = [];
 
   constructor() {
     this.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
@@ -228,12 +227,6 @@ export class UIFinAdvPayDocument {
       this.TranAmount = +fitem.TranAmount;
 
       this.AdvPayAccount.onSetData(doc.accountVM.extraInfo_ADP);
-
-      for (let it of doc.tmpDocs) {
-        let tdoc: HIHFinance.TemplateDocADP = new HIHFinance.TemplateDocADP();
-        tdoc.onSetData(it);
-        this.TmpDocs.push(tdoc);
-      }
     }
   }
 }
@@ -473,10 +466,7 @@ export class UIFinLoanDocument {
   public SourceAccountId: number;
   public SourceControlCenterId: number;
   public SourceOrderId: number;
-  // public SourceTranType: number; // For each template doc, it shall use tran. type
-
   public LoanAccount: HIHFinance.AccountExtraLoan;
-  public TmpDocs: HIHFinance.TemplateDocLoan[] = [];
 
   constructor() {
     this.LoanAccount = new HIHFinance.AccountExtraLoan();
@@ -560,17 +550,6 @@ export class UIFinLoanDocument {
       this.TranAmount = +fitem.TranAmount;
 
       this.LoanAccount.onSetData(doc.accountVM.extraInfo_Loan);
-
-      for (let it of doc.tmpDocs) {
-        let tdoc: HIHFinance.TemplateDocLoan = new HIHFinance.TemplateDocLoan();
-        tdoc.onSetData(it);
-
-        // if (tdoc.TranType !== this.SourceTranType) {
-        //   this.SourceTranType = tdoc.TranType;
-        // }
-
-        this.TmpDocs.push(tdoc);
-      }
     }
   }
 }
@@ -669,7 +648,7 @@ export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg:
     }
     if (ctgyFilter !== undefined
       && ctgyFilter.skipLoan === true
-      && (acnt.CategoryId === hih.financeAccountCategoryBorrowFrom 
+      && (acnt.CategoryId === hih.financeAccountCategoryBorrowFrom
       || acnt.CategoryId === hih.financeAccountCategoryLendTo)) {
       continue;
     }
