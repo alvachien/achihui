@@ -185,7 +185,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
           // tmpdoc.TranType = this.detailObject.SourceTranType;
-          tmpdoc.Desp = this.extObject.Comment + ' | ' + (rstidx + 1).toString()
+          tmpdoc.Desp = this.extObject.Comment + ' | ' + rstidx.toString()
             + ' / ' + x.length.toString();
           arKeepItems.push(tmpdoc);
         }
