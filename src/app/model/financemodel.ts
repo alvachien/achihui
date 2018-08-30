@@ -868,7 +868,7 @@ export class AccountExtraLoan extends AccountExtra {
     rstobj.totalMonths = this.TotalMonths;
     rstobj.repaymentMethod = <number>this.RepayMethod;
     rstobj.refDocID = this.RefDocId;
-    rstobj.comment = this.Comment;
+    rstobj.others = this.Comment;
     rstobj.payingAccount = this._payingAccount;
     rstobj.partner = this._partner;
     rstobj.loanTmpDocs = [];
@@ -904,8 +904,8 @@ export class AccountExtraLoan extends AccountExtra {
     if (data && data.refDocID) {
       this.RefDocId = +data.refDocID;
     }
-    if (data && data.comment) {
-      this.Comment = data.comment;
+    if (data && data.others) {
+      this.Comment = data.others;
     }
     if (data && data.payingAccount) {
       this.PayingAccount = data.payingAccount;
