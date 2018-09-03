@@ -2416,7 +2416,7 @@ export class MonthOnMonthReport {
 export enum ReportTrendExTypeEnum {
   Daily       = 1,
   Weekly      = 2,
-  Monthly     = 3
+  Monthly     = 3,
 }
 
 export class ReportTrendExData {
@@ -2427,7 +2427,7 @@ export class ReportTrendExData {
   expense: boolean;
   tranAmount: number;
 
-  public onSetData(data: any) {
+  public onSetData(data: any): void {
     if (data && data.tranDate) {
       this.tranDate = moment(data.tranDate, hih.momentDateFormat);
     }
@@ -2626,6 +2626,8 @@ export interface FinanceLoanCalAPIInput {
   EndDate?: moment.Moment;
   InterestFreeLoan: boolean;
   RepaymentMethod: number;
+  FirstRepayDate?: moment.Moment;
+  RepayDayInMoth?: number;
 }
 
 /**
@@ -2635,4 +2637,5 @@ export interface FinanceLoanCalAPIOutput {
   TranDate: moment.Moment;
   TranAmount: number;
   InterestAmount: number;
+  TotalAmount: number;
 }
