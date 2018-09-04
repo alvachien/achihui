@@ -89,7 +89,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
   }
   public onGenerateTmpDocs(): void {
     // Do some basic check
-    if (!this.tranAmount && this.dataSource.data.length <= 0) {
+    if (this.dataSource.data.length <= 0) {
       return;
     }
 
@@ -107,6 +107,10 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
     let tmpdocs: TemplateDocLoan[] = [];
 
     if (this.uiMode === UIMode.Create) {
+      if (!this.tranAmount) {
+        return;
+      }
+
       // Call the API for Loan template docs.
       let di: FinanceLoanCalAPIInput = {
         TotalAmount: this.tranAmount,
@@ -115,6 +119,8 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
         StartDate: this.extObject.startDate.clone(),
         InterestFreeLoan: this.extObject.InterestFree ? true : false,
         RepaymentMethod: this.extObject.RepayMethod,
+        FirstRepayDate: this.extObject.FirstRepayDate,
+        RepayDayInMonth: this.extObject.RepayDayInMonth,
       };
       if (this.extObject.endDate) {
         di.EndDate = this.extObject.endDate.clone();
@@ -172,6 +178,8 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
         StartDate: this.extObject.startDate.clone(),
         InterestFreeLoan: this.extObject.InterestFree ? true : false,
         RepaymentMethod: this.extObject.RepayMethod,
+        FirstRepayDate: this.extObject.FirstRepayDate,
+        RepayDayInMonth: this.extObject.RepayDayInMonth,
       };
       if (this.extObject.endDate) {
         di.EndDate = this.extObject.endDate.clone();

@@ -468,6 +468,8 @@
     "ExpenseTendencyChart": "Tendency Chart of Expense",
     "PayingAccount": "Paying Account",
     "TradingPartner": "Trading Partner",
+    "FirstRepayDate": "First Repay Date",
+    "RepayDayInMonth": "Repay day",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

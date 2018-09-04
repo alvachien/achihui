@@ -769,6 +769,8 @@ export class AccountExtraLoan extends AccountExtra {
   private _interestFree: boolean;
   private _totalMonths: number;
   private _comment: string;
+  private _firstRepayDate?: moment.Moment;
+  private _repayDayInMonth?: number;
   public RepayMethod: RepaymentMethodEnum;
   public RefDocId: number;
   public loanTmpDocs: TemplateDocLoan[] = [];
@@ -827,12 +829,26 @@ export class AccountExtraLoan extends AccountExtra {
   set Comment(cmt: string) {
     this._comment = cmt;
   }
+  get FirstRepayDate(): moment.Moment {
+    return this._firstRepayDate;
+  }
+  set FirstRepayDate(firstdate: moment.Moment) {
+    this._firstRepayDate = firstdate;
+  }
+  get RepayDayInMonth(): number {
+    return this._repayDayInMonth;
+  }
+  set RepayDayInMonth(rdim: number) {
+    this._repayDayInMonth = rdim;
+  }
 
   constructor() {
     super();
 
     this._startDate = moment();
     // this._endDate = moment();
+    this._firstRepayDate = undefined;
+    this._repayDayInMonth = undefined;
   }
 
   public onInit(): void {
@@ -853,6 +869,8 @@ export class AccountExtraLoan extends AccountExtra {
     aobj.Comment = this.Comment;
     aobj.PayingAccount = this.PayingAccount;
     aobj.Partner = this.Partner;
+    aobj.FirstRepayDate = this.FirstRepayDate;
+    aobj.RepayDayInMonth = this.RepayDayInMonth;
 
     return aobj;
   }
@@ -875,6 +893,12 @@ export class AccountExtraLoan extends AccountExtra {
     for (let tdoc of this.loanTmpDocs) {
       let tdocjson: any = tdoc.writeJSONObject();
       rstobj.loanTmpDocs.push(tdocjson);
+    }
+    if (this._firstRepayDate) {
+      rstobj.firstRepayDate = this._firstRepayDate.format(hih.momentDateFormat);
+    }
+    if (this._repayDayInMonth) {
+      rstobj.repayDayInMonth = this._repayDayInMonth;
     }
 
     return rstobj;
@@ -920,6 +944,12 @@ export class AccountExtraLoan extends AccountExtra {
         tdoc.onSetData(val);
         this.loanTmpDocs.push(tdoc);
       }
+    }
+    if (data && data.firstRepayDate) {
+      this._firstRepayDate = moment(data.firstRepayDate, hih.momentDateFormat);
+    }
+    if (data && data.repayDayInMonth) {
+      this._repayDayInMonth = data.repayDayInMonth;
     }
   }
 }
@@ -2627,7 +2657,7 @@ export interface FinanceLoanCalAPIInput {
   InterestFreeLoan: boolean;
   RepaymentMethod: number;
   FirstRepayDate?: moment.Moment;
-  RepayDayInMoth?: number;
+  RepayDayInMonth?: number;
 }
 
 /**
@@ -2637,5 +2667,4 @@ export interface FinanceLoanCalAPIOutput {
   TranDate: moment.Moment;
   TranAmount: number;
   InterestAmount: number;
-  TotalAmount: number;
 }
