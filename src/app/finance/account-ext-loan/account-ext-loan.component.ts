@@ -119,11 +119,15 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
         StartDate: this.extObject.startDate.clone(),
         InterestFreeLoan: this.extObject.InterestFree ? true : false,
         RepaymentMethod: this.extObject.RepayMethod,
-        FirstRepayDate: this.extObject.FirstRepayDate,
-        RepayDayInMonth: this.extObject.RepayDayInMonth,
       };
       if (this.extObject.endDate) {
         di.EndDate = this.extObject.endDate.clone();
+      }
+      if (this.extObject.FirstRepayDate) {
+        di.FirstRepayDate = this.extObject.FirstRepayDate.clone();
+      }
+      if (this.extObject.RepayDayInMonth) {
+        di.RepayDayInMonth = this.extObject.RepayDayInMonth;
       }
       this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
         for (let rst of x) {
@@ -178,11 +182,15 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
         StartDate: this.extObject.startDate.clone(),
         InterestFreeLoan: this.extObject.InterestFree ? true : false,
         RepaymentMethod: this.extObject.RepayMethod,
-        FirstRepayDate: this.extObject.FirstRepayDate,
-        RepayDayInMonth: this.extObject.RepayDayInMonth,
       };
       if (this.extObject.endDate) {
         di.EndDate = this.extObject.endDate.clone();
+      }
+      if (this.extObject.FirstRepayDate) {
+        di.FirstRepayDate = this.extObject.FirstRepayDate.clone();
+      }
+      if (this.extObject.RepayDayInMonth) {
+        di.RepayDayInMonth = this.extObject.RepayDayInMonth;
       }
       this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
         let rstidx: number = arKeepItems.length;

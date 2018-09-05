@@ -41,6 +41,7 @@
   <mat-checkbox [ngModel]="extObject?.InterestFree" (ngModelChange)="extObject.InterestFree=$event" 
     [disabled]="!isFieldChangable">{{'Finance.InterestFreeLoan' | translate}}</mat-checkbox>
 
+  <!-- Annual Rate -->
   <mat-form-field class="control-full-width">
     <input matInput type="number" [disabled]="!isFieldChangable || extObject.InterestFree" placeholder="{{'Finance.AnnualRate' | translate}}" 
       [ngModel]="extObject?.annualRate" (ngModelChange)="extObject.annualRate=$event"
@@ -82,6 +83,7 @@
       name="cmt">
   </mat-form-field>
 
+  <!-- Ref doc. ID -->
   <div class="control-full-width" *ngIf="extObject.RefDocId">
     <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
     <a routerLink='/finance/document/displaynormal/{{extObject.RefDocId}}' style="margin: 5px;" routerLinkActive="active">{{extObject?.RefDocId}}</a>
