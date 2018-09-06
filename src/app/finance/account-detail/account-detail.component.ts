@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef, } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ViewChildren,
+  Input, Output, ViewContainerRef, QueryList, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, forkJoin } from 'rxjs';
@@ -10,20 +10,26 @@ import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { AccountExtLoanComponent } from '../account-ext-loan';
 
 @Component({
   selector: 'hih-finance-account-detail',
   templateUrl: './account-detail.component.html',
   styleUrls: ['./account-detail.component.scss'],
 })
-export class AccountDetailComponent implements OnInit {
+export class AccountDetailComponent implements OnInit, AfterViewInit {
 
   private routerID: number = -1; // Current object ID in routing
+  private _compLoan: AccountExtLoanComponent;
+  // private _compAsset:
   public currentMode: string;
   public detailObject: Account = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
   arrayStatus: UIDisplayString[] = [];
+
+  // Solution coming from: https://expertcodeblog.wordpress.com/2018/01/12/angular-resolve-error-viewchild-annotation-returns-undefined/
+  @ViewChildren(AccountExtLoanComponent) childrenLoan: QueryList<AccountExtLoanComponent>;
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -103,6 +109,16 @@ export class AccountDetailComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of AccountDetailComponent ...');
+    }
+
+    this.childrenLoan.changes.subscribe((comps: QueryList<AccountExtLoanComponent>) => {
+      // Now you can access to the child component
+      this._compLoan = comps.first;
+    });
+  }
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -283,6 +299,13 @@ export class AccountDetailComponent implements OnInit {
         });
       }
     });
+
+    if (this.detailObject.CategoryId === financeAccountCategoryLendTo
+      || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom) {
+      if (this._compLoan) {
+        this._compLoan.generateAccountInfoForSave();
+      }
+    }
 
     this._storageService.changeAccount(this.detailObject);
   }
