@@ -29,6 +29,7 @@
                 </mat-menu>
               </mat-card-title>
             </mat-card-header>
+
             <mat-card-content class="dashboard-card-content">
               <div class="table-container mat-elevation-z8 mt-2">
                 <mat-table #tableTmpDoc [dataSource]="dataSourceTmpDoc">
@@ -84,6 +85,7 @@
                   <mat-header-row *matHeaderRowDef="displayedTmpDocColumns"></mat-header-row>
                   <mat-row *matRowDef="let row; columns: displayedTmpDocColumns;"></mat-row>
                 </mat-table>
+                
                 <mat-paginator #paginatorTmpDoc [length]="tmpDocs.length" [pageIndex]="0" [pageSize]="3" [pageSizeOptions]="[3, 9, 15, 100]">
                 </mat-paginator>
               </div>

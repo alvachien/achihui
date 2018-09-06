@@ -44,6 +44,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
+    public _homedefService: HomeDefDetailService,
     private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent constructor`);
@@ -89,10 +90,6 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
   }
   public onGenerateTmpDocs(): void {
     // Do some basic check
-    if (this.dataSource.data.length <= 0) {
-      return;
-    }
-
     if (!this.extObject.RepayMethod) {
       return;
     }
@@ -132,6 +129,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
       this._storageService.calcLoanTmpDocs(di).subscribe((x: any) => {
         for (let rst of x) {
           let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+          tmpdoc.HID = this._homedefService.ChosedHome.ID;
           tmpdoc.InterestAmount = rst.InterestAmount;
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
@@ -197,6 +195,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
         for (let rst of x) {
           ++rstidx;
           let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+          tmpdoc.HID = this._homedefService.ChosedHome.ID;
           tmpdoc.InterestAmount = rst.InterestAmount;
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;

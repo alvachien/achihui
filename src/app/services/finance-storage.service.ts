@@ -2138,6 +2138,12 @@ export class FinanceStorageService {
     if (datainput.EndDate) {
       jobject.endDate = datainput.EndDate.format(momentDateFormat);
     }
+    if (datainput.FirstRepayDate) {
+      jobject.firstRepayDate = datainput.FirstRepayDate.format(momentDateFormat);
+    }
+    if (datainput.RepayDayInMonth) {
+      jobject.repayDayInMonth = +datainput.RepayDayInMonth;
+    }
     const jdata: string = JSON && JSON.stringify(jobject);
 
     return this._http.post(apiurl, jdata, {
