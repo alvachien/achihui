@@ -12,7 +12,7 @@
     </mat-toolbar>
     
     <div class="grid-container">
-      <mat-grid-list cols="2" rowHeight="700px">
+      <mat-grid-list cols="2" rowHeight="520px">
         <!-- Grid 1: Template docs. -->
         <mat-grid-tile colspan="2" rowspan="1">
           <mat-card class="dashboard-card">
@@ -86,7 +86,7 @@
                   <mat-row *matRowDef="let row; columns: displayedTmpDocColumns;"></mat-row>
                 </mat-table>
                 
-                <mat-paginator #paginatorTmpDoc [length]="tmpDocs.length" [pageIndex]="0" [pageSize]="3" [pageSizeOptions]="[3, 9, 15, 100]">
+                <mat-paginator #paginatorTmpDoc [length]="tmpDocs.length" [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 10, 20, 50]">
                 </mat-paginator>
               </div>
             </mat-card-content>
