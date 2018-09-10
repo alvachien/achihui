@@ -39,11 +39,11 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
     return this.uiMode === UIMode.Create;
   }
 
-  constructor(public _storageService: FinanceStorageService) {
+  constructor(public _storageService: FinanceStorageService,
+    private _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering constructor of AccountExtADPComponent ...');
     }
-    // this._insobj = new AccountExtraAdvancePayment
   }
 
   ngOnInit(): void {
@@ -143,6 +143,7 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
       let totalAmt: number = 0;
       for (let i: number = 0; i < arDays.length; i++) {
         let item: TemplateDocADP = new TemplateDocADP();
+        item.HID = this._homedefService.ChosedHome.ID;
         item.DocId = i + 1;
         item.TranType = this.tranType;
         item.TranDate = arDays[i];

@@ -11,6 +11,7 @@ import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { AccountExtLoanComponent } from '../account-ext-loan';
+import { AccountExtADPComponent } from '../account-ext-adp';
 
 @Component({
   selector: 'hih-finance-account-detail',
@@ -21,6 +22,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
 
   private routerID: number = -1; // Current object ID in routing
   private _compLoan: AccountExtLoanComponent;
+  private _compADP: AccountExtADPComponent;
   // private _compAsset:
   public currentMode: string;
   public detailObject: Account = undefined;
@@ -30,6 +32,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
 
   // Solution coming from: https://expertcodeblog.wordpress.com/2018/01/12/angular-resolve-error-viewchild-annotation-returns-undefined/
   @ViewChildren(AccountExtLoanComponent) childrenLoan: QueryList<AccountExtLoanComponent>;
+  @ViewChildren(AccountExtADPComponent) childrenADP: QueryList<AccountExtADPComponent>;
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -117,6 +120,10 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
     this.childrenLoan.changes.subscribe((comps: QueryList<AccountExtLoanComponent>) => {
       // Now you can access to the child component
       this._compLoan = comps.first;
+    });
+    this.childrenADP.changes.subscribe((comps: QueryList<AccountExtADPComponent>) => {
+      // Now you can access to the child component
+      this._compADP = comps.first;
     });
   }
   get isFieldChangable(): boolean {
