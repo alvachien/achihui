@@ -9,6 +9,7 @@ export const financeAccountCategoryAsset: number = 7;
 export const financeAccountCategoryAdvancePayment: number = 8; // Advance payment
 export const financeAccountCategoryBorrowFrom: number = 9;
 export const financeAccountCategoryLendTo: number = 10;
+export const financeAccountCategoryAdvanceReceived: number = 11;
 
 export const financeDocTypeNormal: number = 1;
 export const financeDocTypeTransfer: number = 2; // Transfer doc
@@ -20,6 +21,7 @@ export const financeDocTypeAssetSoldOut: number = 8;
 export const financeDocTypeBorrowFrom: number = 9;
 export const financeDocTypeLendTo: number = 10;
 export const financeDocTypeRepay: number = 11;
+export const financeDocTypeAdvanceReceived: number = 12;
 
 export const financeTranTypeOpeningAsset: number = 1;
 export const financeTranTypeOpeningLiability: number = 82;
@@ -67,8 +69,8 @@ export enum UICommonLabelEnum {
  * Enum for Question bank type
  */
 export enum QuestionBankTypeEnum {
-    EssayQuestion       = 1,
-    MultipleChoice      = 2,
+  EssayQuestion       = 1,
+  MultipleChoice      = 2,
 }
 
 /**

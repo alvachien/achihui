@@ -54,11 +54,11 @@ export class Utility {
     let isValid: boolean = false;
 
     if (strMail.indexOf('@') >= 1) {
-      let m_valid_dom: string = strMail.substr(strMail.indexOf('@') + 1);
-      if (m_valid_dom.indexOf('@') === -1) {
-        if (m_valid_dom.indexOf('.') >= 1) {
-          let m_valid_dom_e: string = m_valid_dom.substr(m_valid_dom.indexOf('.') + 1);
-          if (m_valid_dom_e.length >= 1) {
+      let mValidDom: string = strMail.substr(strMail.indexOf('@') + 1);
+      if (mValidDom.indexOf('@') === -1) {
+        if (mValidDom.indexOf('.') >= 1) {
+          let mValidDomE: string = mValidDom.substr(mValidDom.indexOf('.') + 1);
+          if (mValidDomE.length >= 1) {
             isValid = true;
           }
         }
@@ -69,10 +69,10 @@ export class Utility {
   }
 
   public static CheckStringLength(strField: string, minlength: number, maxLength: number): boolean {
-    let length_df: number = strField.length;
+    let lengthDf: number = strField.length;
     let bResult: boolean = false;
 
-    if (length_df >= minlength && length_df <= maxLength) {
+    if (lengthDf >= minlength && lengthDf <= maxLength) {
       bResult = true;
     }
 
@@ -80,26 +80,26 @@ export class Utility {
   }
 
   public static GetPasswordStrengthLevel(strField: string): number {
-    let pass_level: number = 0;
+    let passLevel: number = 0;
 
     if (strField.match(/[a-z]/g)) {
-      pass_level++;
+      passLevel++;
     }
     if (strField.match(/[A-Z]/g)) {
-      pass_level++;
+      passLevel++;
     }
     if (strField.match(/[0-9]/g)) {
-      pass_level++;
+      passLevel++;
     }
     if (strField.length < 5) {
-      if (pass_level >= 1) {
-        pass_level--;
+      if (passLevel >= 1) {
+        passLevel--;
       }
     } else if (strField.length >= 20) {
-      pass_level++;
+      passLevel++;
     }
 
-    return pass_level;
+    return passLevel;
   }
 
   public static hasDuplicatesInStringArray(strarray: string): boolean {
