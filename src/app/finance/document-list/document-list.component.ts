@@ -104,6 +104,9 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   public onCreateADPDocument(): void {
     this._router.navigate(['/finance/document/createadp']);
   }
+  public onCreateADRDocument(): void {
+    this._router.navigate(['/finance/document/createadr']);
+  }
   public onCreateExgDocument(): void {
     this._router.navigate(['/finance/document/createexg']);
   }

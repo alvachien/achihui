@@ -156,9 +156,13 @@ export class UIFinAdvPayDocument {
     this.AdvPayAccount = new HIHFinance.AccountExtraAdvancePayment();
     this.TranDate = moment();
   }
-  public generateDocument(): HIHFinance.Document {
+  public generateDocument(isADP?: boolean): HIHFinance.Document {
     let doc: HIHFinance.Document = new HIHFinance.Document();
-    doc.DocType = hih.financeDocTypeAdvancePayment;
+    if (isADP) {
+      doc.DocType = hih.financeDocTypeAdvancePayment;
+    } else {
+      doc.DocType = hih.financeDocTypeAdvanceReceived;
+    }
     doc.Desp = this.Desp;
     doc.TranCurr = this.TranCurr;
     doc.TranDate = this.TranDate.clone();

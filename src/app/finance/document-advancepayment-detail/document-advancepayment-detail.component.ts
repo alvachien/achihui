@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
   UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  UIDisplayStringUtil, IAccountCategoryFilter,
+  UIDisplayStringUtil, IAccountCategoryFilter, financeAccountCategoryAdvanceReceived,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -25,7 +25,9 @@ import { AccountExtADPComponent } from '../account-ext-adp';
 export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewInit {
 
   private routerID: number = -1; // Current object ID in routing
+  private _isADP: boolean = false;
   public currentMode: string;
+  public currentTitle: string;
   public detailObject: UIFinAdvPayDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
@@ -101,17 +103,33 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
 
       this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'createadp') {
+          if (x[0].path === 'createadp' || x[0].path === 'createadr') {
+            if (x[0].path === 'createadp') {
+              this._isADP = true;
+            } else {
+              this._isADP = false;
+            }
             this.onInitCreateMode();
-          } else if (x[0].path === 'editadp') {
+          } else if (x[0].path === 'editadp' || x[0].path === 'editadr') {
+            if (x[0].path === 'editadp') {
+              this._isADP = true;
+            } else {
+              this._isADP = false;
+            }
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'displayadp') {
+          } else if (x[0].path === 'displayadp' || x[0].path === 'displayadr') {
+            if (x[0].path === 'displayadp') {
+              this._isADP = true;
+            } else {
+              this._isADP = false;
+            }
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
           }
+          this._updateCurrentTitle();
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
@@ -210,7 +228,16 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
     // Terminate current advance payment account
   }
 
+  private _updateCurrentTitle(): void {
+    if (this._isADP) {
+      this.currentTitle = 'Sys.DocTy.AdvancedPayment';
+    } else {
+      this.currentTitle = 'Sys.DocTy.AdvancedRecv';
+    }
+  }
   private onInitCreateMode(): void {
+    this._updateCurrentTitle();
+
     this.detailObject = new UIFinAdvPayDocument();
     this.uiMode = UIMode.Create;
     this.uiAccountStatusFilter = 'Normal';
@@ -226,7 +253,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
   }
 
   private onCreateADPDoc(): void {
-    let docObj: any = this.detailObject.generateDocument();
+    let docObj: any = this.detailObject.generateDocument(this._isADP);
     this.ctrlAccount.generateAccountInfoForSave();
 
     // Check!
@@ -311,7 +338,11 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
     let sobj: any = docObj.writeJSONObject(); // Document first
     let acntobj: Account = new Account();
     acntobj.HID = this._homedefService.ChosedHome.ID;
-    acntobj.CategoryId = financeAccountCategoryAdvancePayment;
+    if (this._isADP) {
+      acntobj.CategoryId = financeAccountCategoryAdvancePayment;
+    } else {
+      acntobj.CategoryId = financeAccountCategoryAdvanceReceived;
+    }
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();

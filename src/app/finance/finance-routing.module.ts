@@ -244,6 +244,10 @@ const routes: Routes = [
             component: DocumentAdvancepaymentDetailComponent,
           },
           {
+            path: 'createadr',
+            component: DocumentAdvancepaymentDetailComponent,
+          },
+          {
             path: 'createexg',
             component: DocumentExchangeDetailComponent,
           },
@@ -284,6 +288,10 @@ const routes: Routes = [
             component: DocumentAdvancepaymentDetailComponent,
           },
           {
+            path: 'displayadr/:id',
+            component: DocumentAdvancepaymentDetailComponent,
+          },
+          {
             path: 'displayexg/:id',
             component: DocumentExchangeDetailComponent,
           },
@@ -321,6 +329,10 @@ const routes: Routes = [
           },
           {
             path: 'editadp/:id',
+            component: DocumentAdvancepaymentDetailComponent,
+          },
+          {
+            path: 'editadr/:id',
             component: DocumentAdvancepaymentDetailComponent,
           },
           {
