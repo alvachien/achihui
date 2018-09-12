@@ -336,6 +336,11 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
 
     // Build the JSON file to API
     let sobj: any = docObj.writeJSONObject(); // Document first
+    if (this._isADP) {
+      sobj.isADP = true;
+    } else {
+      sobj.isADP = false;
+    }
     let acntobj: Account = new Account();
     acntobj.HID = this._homedefService.ChosedHome.ID;
     if (this._isADP) {
