@@ -139,6 +139,8 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
         break;
     }
 
+    // It shall call to the API
+
     if (this.uiMode === UIMode.Create) {
       let totalAmt: number = 0;
       for (let i: number = 0; i < arDays.length; i++) {
