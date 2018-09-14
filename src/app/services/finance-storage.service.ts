@@ -7,7 +7,7 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   Document, DocumentWithPlanExgRateForUpdate, momentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
   UINameValuePair, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, TemplateDocLoan, MonthOnMonthReport,
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
-  ReportTrendExData,
+  ReportTrendExData, FinanceADPCalAPIInput, FinanceADPCalAPIOutput,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -2120,6 +2120,53 @@ export class FinanceStorageService {
   /**
    * Utility part
    */
+  // Calculate ADP tmp. docs
+  public calcADPTmpDocs(datainput: FinanceADPCalAPIInput): Observable<FinanceADPCalAPIOutput[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceADPCalculator';
+    let jobject: any = {
+      startDate: datainput.StartDate.format(momentDateFormat),
+      totalAmount: datainput.TotalAmount,
+      endDate: datainput.EndDate.format(momentDateFormat),
+      rptType: +datainput.RptType,
+      desp: datainput.Desp,
+    };
+    if (datainput.EndDate) {
+      jobject.endDate = datainput.EndDate.format(momentDateFormat);
+    }
+    const jdata: string = JSON && JSON.stringify(jobject);
+
+    return this._http.post(apiurl, jdata, {
+      headers: headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering calcADPTmpDocs in FinanceStorageService: ${response}`);
+        }
+
+        let results: FinanceADPCalAPIOutput[] = [];
+        // Get the result out.
+        let y: any = <any>response;
+        if (y instanceof Array && y.length > 0) {
+          for (let tt of y) {
+            let rst: FinanceADPCalAPIOutput = {
+              TranDate: moment(tt.tranDate, momentDateFormat),
+              TranAmount: tt.tranAmount,
+              Desp: tt.desp,
+            };
+
+            results.push(rst);
+          }
+        }
+        return results;
+      }));
+  }
+
+  // Calculate loan tmp. docs
   public calcLoanTmpDocs(datainput: FinanceLoanCalAPIInput): Observable<FinanceLoanCalAPIOutput[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
@@ -2151,7 +2198,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering getLoanTmpDocs in FinanceStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering calcLoanTmpDocs in FinanceStorageService: ${response}`);
         }
 
         let results: FinanceLoanCalAPIOutput[] = [];

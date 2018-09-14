@@ -2,6 +2,7 @@ import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, TranType,
   AccountExtraAdvancePayment, RepeatFrequencyEnum, UIDisplayStringUtil, TemplateDocADP,
+  FinanceADPCalAPIInput, FinanceADPCalAPIOutput,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
@@ -68,117 +69,25 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
     if (!this.extObject.EndDate.isValid || !this.extObject.StartDate.isValid) {
       return;
     }
-    switch (rtype) {
-      case RepeatFrequencyEnum.Month:
-        let nmon: number = this.extObject.EndDate.diff(this.extObject.StartDate, 'M');
-        for (let i: number = 0; i < nmon; i++) {
-          let nstart: any = this.extObject.StartDate.clone();
-          nstart.add(i, 'M');
-          arDays.push(nstart);
-        }
-        break;
-
-      case RepeatFrequencyEnum.Fortnight:
-        let nfort: number = this.extObject.EndDate.diff(this.extObject.StartDate, 'd') / 14;
-        for (let i: number = 0; i < nfort; i++) {
-          let nstart: any = this.extObject.StartDate.clone();
-          nstart.add(14 * i, 'd');
-          arDays.push(nstart);
-        }
-        break;
-
-      case RepeatFrequencyEnum.Week:
-        let nweek: number = this.extObject.EndDate.diff(this.extObject.StartDate, 'd') / 7;
-        for (let i: number = 0; i < nweek; i++) {
-          let nstart: any = this.extObject.StartDate.clone();
-          nstart.add(7 * i, 'd');
-          arDays.push(nstart);
-        }
-        break;
-
-      case RepeatFrequencyEnum.Day:
-        let nday: number = this.extObject.EndDate.diff(this.extObject.StartDate, 'd');
-        for (let i: number = 0; i < nday; i++) {
-          let nstart: any = this.extObject.StartDate.clone();
-          nstart.add(i, 'd');
-          arDays.push(nstart);
-        }
-        break;
-
-      case RepeatFrequencyEnum.Quarter:
-        let nqrt: number = this.extObject.EndDate.diff(this.extObject.StartDate, 'Q');
-        for (let i: number = 0; i < nqrt; i++) {
-          let nstart: any = this.extObject.StartDate.clone();
-          nstart.add(i, 'Q');
-          arDays.push(nstart);
-        }
-        break;
-
-      case RepeatFrequencyEnum.HalfYear:
-        let nhalfyear: number = this.extObject.EndDate.diff(this.extObject.StartDate, 'Q') / 2;
-        for (let i: number = 0; i < nhalfyear; i++) {
-          let nstart: any = this.extObject.StartDate.clone();
-          nstart.add(2 * i, 'Q');
-          arDays.push(nstart);
-        }
-        break;
-
-      case RepeatFrequencyEnum.Year:
-        let nyear: number = this.extObject.EndDate.diff(this.extObject.StartDate, 'y');
-        for (let i: number = 0; i < nyear; i++) {
-          let nstart: any = this.extObject.StartDate.clone();
-          nstart.add(i, 'y');
-          arDays.push(nstart);
-        }
-        break;
-
-      case RepeatFrequencyEnum.Manual:
-        break;
-
-      default:
-        break;
-    }
-
-    // It shall call to the API
-
-    if (this.uiMode === UIMode.Create) {
-      let totalAmt: number = 0;
-      for (let i: number = 0; i < arDays.length; i++) {
+    let datInput: FinanceADPCalAPIInput = {
+      StartDate: this.extObject.StartDate.clone(),
+      EndDate: this.extObject.EndDate.clone(),
+      RptType: this.extObject.RepeatType,
+      Desp: this.extObject.Comment,
+      TotalAmount: this.tranAmount,
+    };
+    this._storageService.calcADPTmpDocs(datInput).subscribe((rsts: FinanceADPCalAPIOutput[]) => {
+      for (let i: number = 0; i < rsts.length; i++) {
         let item: TemplateDocADP = new TemplateDocADP();
         item.HID = this._homedefService.ChosedHome.ID;
         item.DocId = i + 1;
         item.TranType = this.tranType;
-        item.TranDate = arDays[i];
-        item.TranAmount = Number.parseFloat((this.tranAmount / arDays.length).toFixed(2));
-        totalAmt += item.TranAmount;
+        item.TranDate = rsts[i].TranDate;
+        item.TranAmount = rsts[i].TranAmount;
+        item.Desp = rsts[i].Desp;
         tmpDocs.push(item);
       }
-      if (this.tranAmount !== totalAmt) {
-        tmpDocs[0].TranAmount += (this.tranAmount - totalAmt);
-
-        tmpDocs[0].TranAmount = Number.parseFloat(tmpDocs[0].TranAmount.toFixed(2));
-      }
-
-      if (arDays.length === 0) {
-        let item: TemplateDocADP = new TemplateDocADP();
-        item.DocId = 1;
-        item.TranType = this.tranType;
-        item.TranDate = this.extObject.StartDate.clone();
-        item.TranAmount = this.tranAmount;
-        tmpDocs.push(item);
-      }
-
-      // Update the template desp
-      if (tmpDocs.length === 1) {
-        tmpDocs[0].Desp = this.extObject.Comment;
-      } else {
-        for (let i: number = 0; i < tmpDocs.length; i++) {
-          tmpDocs[i].Desp = this.extObject.Comment + ' | ' + (i + 1).toString() + '/' + tmpDocs.length.toString();
-        }
-      }
-    } else if (this.uiMode === UIMode.Change) {
-      // Do nothing
-    }
+    });
 
     this.dataSource.data = tmpDocs;
   }

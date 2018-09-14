@@ -2646,6 +2646,26 @@ export class DocumentWithPlanExgRateForUpdate {
 }
 
 /**
+ * Finance ADP calculator - API input
+ */
+export interface FinanceADPCalAPIInput {
+  TotalAmount: number;
+  StartDate: moment.Moment;
+  EndDate?: moment.Moment;
+  RptType: hih.RepeatFrequencyEnum;
+  Desp: string;
+}
+
+/**
+ * Finance ADP calculator - API output
+ */
+export interface FinanceADPCalAPIOutput {
+  TranDate: moment.Moment;
+  TranAmount: number;
+  Desp: string;
+}
+
+/**
  * Finance loan calculator - API input
  */
 export interface FinanceLoanCalAPIInput {
