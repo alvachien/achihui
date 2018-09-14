@@ -453,7 +453,8 @@ export class Account extends hih.BaseModel {
     rstObj.comment = this.Comment;
     rstObj.owner = this.OwnerId;
 
-    if (this.CategoryId === hih.financeAccountCategoryAdvancePayment && this.ExtraInfo) {
+    if ((this.CategoryId === hih.financeAccountCategoryAdvancePayment
+      || this.CategoryId === hih.financeAccountCategoryAdvanceReceived) && this.ExtraInfo) {
       rstObj.extraInfo_ADP = this.ExtraInfo.writeJSONObject();
     } else if (this.CategoryId === hih.financeAccountCategoryAsset && this.ExtraInfo) {
       rstObj.extraInfo_AS = this.ExtraInfo.writeJSONObject();

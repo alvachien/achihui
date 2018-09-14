@@ -33,6 +33,12 @@
       name="advacntcmt" #advacntcmt="ngModel">
   </mat-form-field>
 
+  <!-- Ref doc. ID -->
+  <div class="control-full-width" *ngIf="extObject.RefDocId">
+    <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
+    <a routerLink='/finance/document/displaynormal/{{extObject.RefDocId}}' style="margin: 5px;" routerLinkActive="active">{{extObject?.RefDocId}}</a>
+  </div>
+
   <mat-toolbar>
     <button mat-icon-button (click)="onGenerateTmpDocs()" [disabled]="!isFieldChangable" matTooltip="{{'Finance.GenerateTmpDocs' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
   </mat-toolbar>

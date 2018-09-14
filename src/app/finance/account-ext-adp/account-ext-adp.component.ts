@@ -64,11 +64,10 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
 
   public onGenerateTmpDocs(): void {
     let tmpDocs: TemplateDocADP[] = [];
-    let arDays: any[] = [];
-    let rtype: any = this.extObject.RepeatType;
     if (!this.extObject.EndDate.isValid || !this.extObject.StartDate.isValid) {
       return;
     }
+    
     let datInput: FinanceADPCalAPIInput = {
       StartDate: this.extObject.StartDate.clone(),
       EndDate: this.extObject.EndDate.clone(),
@@ -87,9 +86,9 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
         item.Desp = rsts[i].Desp;
         tmpDocs.push(item);
       }
-    });
 
-    this.dataSource.data = tmpDocs;
+      this.dataSource.data = tmpDocs;
+    });
   }
 
   public initCreateMode(): void {

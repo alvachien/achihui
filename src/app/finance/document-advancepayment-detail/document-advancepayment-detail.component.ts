@@ -133,7 +133,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readADPDocument(this.routerID).subscribe((x2: any) => {
+            this._storageService.readADPDocument(this.routerID, this._isADP).subscribe((x2: any) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngAfterViewInit for activateRoute URL: ${x2}`);
               }
@@ -336,11 +336,6 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
 
     // Build the JSON file to API
     let sobj: any = docObj.writeJSONObject(); // Document first
-    if (this._isADP) {
-      sobj.isADP = true;
-    } else {
-      sobj.isADP = false;
-    }
     let acntobj: Account = new Account();
     acntobj.HID = this._homedefService.ChosedHome.ID;
     if (this._isADP) {

@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange,
   financeDocTypeTransfer, financeDocTypeAdvancePayment, OverviewScopeEnum, getOverviewScopeRange,
   financeDocTypeAssetBuyIn, financeDocTypeAssetSoldOut,
-  financeDocTypeBorrowFrom, UICommonLabelEnum, financeDocTypeLendTo, financeDocTypeRepay, } from '../../model';
+  financeDocTypeBorrowFrom, UICommonLabelEnum, financeDocTypeLendTo, financeDocTypeRepay, financeDocTypeAdvanceReceived, } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -124,22 +124,46 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   }
 
   public onDisplayDocument(doc: Document): void {
-    if (doc.DocType === financeDocTypeNormal || doc.DocType === financeDocTypeRepay) {
+    switch(doc.DocType) {
+      case financeDocTypeNormal:
+      case financeDocTypeRepay:
       this.onDisplayNormalDocument(doc);
-    } else if (doc.DocType === financeDocTypeTransfer) {
+      break;
+
+      case financeDocTypeTransfer:
       this.onDisplayTransferDocument(doc);
-    } else if (doc.DocType === financeDocTypeCurrencyExchange) {
+      break;
+
+      case financeDocTypeCurrencyExchange:
       this.onDisplayExgDocument(doc);
-    } else if (doc.DocType === financeDocTypeAdvancePayment) {
+      break;
+
+      case financeDocTypeAdvancePayment:
       this.onDisplayADPDocument(doc);
-    } else if (doc.DocType === financeDocTypeAssetBuyIn) {
+      break;
+
+      case financeDocTypeAdvanceReceived:
+      this.onDisplayADRDocument(doc);
+      break;
+
+      case financeDocTypeAssetBuyIn:
       this.onDisplayAssetBuyInDocument(doc);
-    } else if (doc.DocType === financeDocTypeAssetSoldOut) {
+      break;
+
+      case financeDocTypeAssetSoldOut:
       this.onDisplayAssetSoldOutDocument(doc);
-    } else if (doc.DocType === financeDocTypeBorrowFrom) {
+      break;
+
+      case financeDocTypeBorrowFrom:
       this.onDisplayBorrowFromDocument(doc);
-    } else if (doc.DocType === financeDocTypeLendTo) {
+      break;
+
+      case financeDocTypeLendTo:
       this.onDisplayLendToDocument(doc);
+      break;
+
+      default:
+      break;
     }
   }
   public onDisplayNormalDocument(doc: Document): void {
@@ -153,6 +177,9 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   }
   public onDisplayADPDocument(doc: Document): void {
     this._router.navigate(['/finance/document/displayadp', doc.Id]);
+  }
+  public onDisplayADRDocument(doc: Document): void {
+    this._router.navigate(['/finance/document/displayadr', doc.Id]);
   }
   public onDisplayAssetBuyInDocument(doc: Document): void {
     this._router.navigate(['/finance/document/displayassetbuy', doc.Id]);
@@ -168,22 +195,46 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   }
 
   public onChangeDocument(doc: Document): void {
-    if (doc.DocType === financeDocTypeNormal || doc.DocType === financeDocTypeRepay) {
+    switch(doc.DocType) {
+      case financeDocTypeNormal:
+      case financeDocTypeRepay:
       this.onChangeNormalDocument(doc);
-    } else if (doc.DocType === financeDocTypeTransfer) {
+      break;
+
+      case financeDocTypeTransfer:
       this.onChangeTransferDocument(doc);
-    } else if (doc.DocType === financeDocTypeAdvancePayment) {
-      this.onChangeADPDocument(doc);
-    } else if (doc.DocType === financeDocTypeCurrencyExchange) {
+      break;
+
+      case financeDocTypeCurrencyExchange:
       this.onChangeExgDocument(doc);
-    } else if (doc.DocType === financeDocTypeAssetBuyIn) {
+      break;
+
+      case financeDocTypeAdvancePayment:
+      this.onChangeADPDocument(doc);
+      break;
+
+      case financeDocTypeAdvanceReceived:
+      this.onChangeADRDocument(doc);
+      break;
+
+      case financeDocTypeAssetBuyIn:
       this.onChangeAssetBuyInDocument(doc);
-    } else if (doc.DocType === financeDocTypeAssetSoldOut) {
+      break;
+
+      case financeDocTypeAssetSoldOut:
       this.onChangeAssetSoldOutDocument(doc);
-    } else if (doc.DocType === financeDocTypeBorrowFrom) {
+      break;
+
+      case financeDocTypeBorrowFrom:
       this.onChangeeBorrowFromDocument(doc);
-    } else if (doc.DocType === financeDocTypeLendTo) {
+      break;
+
+      case financeDocTypeLendTo:
       this.onChangeLendToDocument(doc);
+      break;
+
+      default:
+      break;
     }
   }
   public onChangeNormalDocument(doc: Document): void {
@@ -194,6 +245,9 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   }
   public onChangeADPDocument(doc: Document): void {
     this._router.navigate(['/finance/document/editadp', doc.Id]);
+  }
+  public onChangeADRDocument(doc: Document): void {
+    this._router.navigate(['/finance/document/editadr', doc.Id]);
   }
   public onChangeExgDocument(doc: Document): void {
     this._router.navigate(['/finance/document/editexg', doc.Id]);

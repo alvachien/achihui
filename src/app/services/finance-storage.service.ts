@@ -1511,7 +1511,7 @@ export class FinanceStorageService {
    * Read the ADP document from API, it WONT trigger readDocument event!
    * @param docid Id of ADP Document
    */
-  public readADPDocument(docid: number): Observable<any> {
+  public readADPDocument(docid: number, isADP?: boolean): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1520,6 +1520,9 @@ export class FinanceStorageService {
     let apiurl: string = environment.ApiUrl + '/api/financeadpdocument/' + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (isADP !== undefined) {
+      params = params.append('isADP', isADP.toString());
+    }
     return this._http.get(apiurl, {
       headers: headers,
       params: params,
