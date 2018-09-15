@@ -32,7 +32,7 @@ export class SideNavService {
     this.addSubItem(finance, 'Common.Overview', '/finance/overview', 1, 'today');
     // this.addSubItem(finance, 'Finance.AccountCategories', '/finance/acntctgy', 2, 'settings_input_component');
     // this.addSubItem(finance, 'Finance.DocumentTypes', '/finance/doctype', 3, 'view_comfy');
-    // this.addSubItem(finance, 'Finance.TransactionTypes', '/finance/trantype', 4, 'featured_play_list');
+    this.addSubItem(finance, 'Finance.TransactionTypes', '/finance/trantype', 4, 'featured_play_list');
     // this.addSubItem(finance, 'Finance.AssetCategories', '/finance/assetctgy', 5, 'devices');
     this.addSubItem(finance, 'Finance.ConfigObjects', '/finance/config', 2, 'settings_input_component');
     this.addSubItem(finance, 'Finance.Accounts', '/finance/account/tree', 6, 'library_books');
