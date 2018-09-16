@@ -67,7 +67,7 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
     if (!this.extObject.EndDate.isValid || !this.extObject.StartDate.isValid) {
       return;
     }
-    
+
     let datInput: FinanceADPCalAPIInput = {
       StartDate: this.extObject.StartDate.clone(),
       EndDate: this.extObject.EndDate.clone(),
@@ -75,6 +75,7 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
       Desp: this.extObject.Comment,
       TotalAmount: this.tranAmount,
     };
+
     this._storageService.calcADPTmpDocs(datInput).subscribe((rsts: FinanceADPCalAPIOutput[]) => {
       for (let i: number = 0; i < rsts.length; i++) {
         let item: TemplateDocADP = new TemplateDocADP();
