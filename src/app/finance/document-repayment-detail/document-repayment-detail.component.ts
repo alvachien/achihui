@@ -274,53 +274,34 @@ export class DocumentRepaymentDetailComponent implements OnInit {
     if (this._uiStatusService.currentTemplateLoanDoc) {
       this.detailObject.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
 
-      let acntidx: number = this._storageService.Accounts.findIndex((value: Account) => {
-        return value.Id === this._uiStatusService.currentTemplateLoanDoc.AccountId;
-      });
-      this.loanAccount = this._storageService.Accounts[acntidx];
-      let loanacntext: AccountExtraLoan = <AccountExtraLoan>this.loanAccount.ExtraInfo;
+      this._storageService.readAccountEvent.subscribe((x: Account) => {
+        this.loanAccount = x;
+        let loanacntext: AccountExtraLoan = <AccountExtraLoan>this.loanAccount.ExtraInfo;
 
-      // Add two items: repay-in and repay-out
-      let di: DocumentItem = new DocumentItem();
-      di.ItemId = 1;
-      di.AccountId = this._uiStatusService.currentTemplateLoanDoc.AccountId;
-      di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.TranAmount;
-      if (this.loanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
-        di.TranType = financeTranTypeRepaymentIn;
-      } else {
-        di.TranType = financeTranTypeRepaymentOut;
-      }
-      di.ControlCenterId = this._uiStatusService.currentTemplateLoanDoc.ControlCenterId;
-      di.OrderId = this._uiStatusService.currentTemplateLoanDoc.OrderId;
-      di.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
-
-      let aritems: any[] = this.dataSource.data.slice();
-      aritems.push(di);
-
-      di = new DocumentItem();
-      di.ItemId = 2;
-      di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.TranAmount;
-      if (this.loanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
-        di.TranType = financeTranTypeRepaymentOut;
-      } else {
-        di.TranType = financeTranTypeRepaymentIn;
-      }
-      if (loanacntext.PayingAccount) {
-        di.AccountId = loanacntext.PayingAccount;
-      }
-      di.ControlCenterId = this._uiStatusService.currentTemplateLoanDoc.ControlCenterId;
-      di.OrderId = this._uiStatusService.currentTemplateLoanDoc.OrderId;
-      di.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
-      aritems.push(di);
-
-      if (this._uiStatusService.currentTemplateLoanDoc.InterestAmount > 0) {
-        di = new DocumentItem();
-        di.ItemId = 3;
-        di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.InterestAmount;
+        // Add two items: repay-in and repay-out
+        let di: DocumentItem = new DocumentItem();
+        di.ItemId = 1;
+        di.AccountId = this._uiStatusService.currentTemplateLoanDoc.AccountId;
+        di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.TranAmount;
         if (this.loanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
-          di.TranType = financeTranTypeInterestOut;
+          di.TranType = financeTranTypeRepaymentIn;
         } else {
-          di.TranType = financeTranTypeInterestIn;
+          di.TranType = financeTranTypeRepaymentOut;
+        }
+        di.ControlCenterId = this._uiStatusService.currentTemplateLoanDoc.ControlCenterId;
+        di.OrderId = this._uiStatusService.currentTemplateLoanDoc.OrderId;
+        di.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
+
+        let aritems: any[] = this.dataSource.data.slice();
+        aritems.push(di);
+
+        di = new DocumentItem();
+        di.ItemId = 2;
+        di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.TranAmount;
+        if (this.loanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
+          di.TranType = financeTranTypeRepaymentOut;
+        } else {
+          di.TranType = financeTranTypeRepaymentIn;
         }
         if (loanacntext.PayingAccount) {
           di.AccountId = loanacntext.PayingAccount;
@@ -329,8 +310,27 @@ export class DocumentRepaymentDetailComponent implements OnInit {
         di.OrderId = this._uiStatusService.currentTemplateLoanDoc.OrderId;
         di.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
         aritems.push(di);
-      }
-      this.dataSource.data = aritems;
+
+        if (this._uiStatusService.currentTemplateLoanDoc.InterestAmount > 0) {
+          di = new DocumentItem();
+          di.ItemId = 3;
+          di.TranAmount = this._uiStatusService.currentTemplateLoanDoc.InterestAmount;
+          if (this.loanAccount.CategoryId === financeAccountCategoryBorrowFrom) {
+            di.TranType = financeTranTypeInterestOut;
+          } else {
+            di.TranType = financeTranTypeInterestIn;
+          }
+          if (loanacntext.PayingAccount) {
+            di.AccountId = loanacntext.PayingAccount;
+          }
+          di.ControlCenterId = this._uiStatusService.currentTemplateLoanDoc.ControlCenterId;
+          di.OrderId = this._uiStatusService.currentTemplateLoanDoc.OrderId;
+          di.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
+          aritems.push(di);
+        }
+        this.dataSource.data = aritems;
+      });
+      this._storageService.readAccount(this._uiStatusService.currentTemplateLoanDoc.AccountId);
     } else {
       // Show error?
     }

@@ -253,7 +253,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
   }
 
   private onCreateADPDoc(): void {
-    let docObj: any = this.detailObject.generateDocument(this._isADP);
+    let docObj: Document = this.detailObject.generateDocument(this._isADP);
     this.ctrlAccount.generateAccountInfoForSave();
 
     // Check!
@@ -308,7 +308,11 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           if (!recreate) {
-            this._router.navigate(['/finance/document/displayadp/' + x.Id.toString()]);
+            if (this._isADP) {
+              this._router.navigate(['/finance/document/displayadp/' + x.Id.toString()]);
+            } else {
+              this._router.navigate(['/finance/document/displayadr/' + x.Id.toString()]);
+            }
           }
         });
       } else {
