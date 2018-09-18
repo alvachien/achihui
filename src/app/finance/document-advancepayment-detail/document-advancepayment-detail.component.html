@@ -61,9 +61,9 @@
 
         <!-- Desp -->
         <mat-form-field class="control-full-width">
-          <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
-            name="desp" #desp maxlength="44">
-          <mat-hint align="end">{{desp.value.length}} / 45</mat-hint>
+          <input matInput required placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
+            #desp maxlength="44">
+          <mat-hint align="end">{{desp.value?.length || 0}} / 45</mat-hint>
         </mat-form-field>
 
         <!-- CC -->
