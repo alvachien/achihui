@@ -172,6 +172,11 @@ export class UIFinAdvPayDocument {
     fitem.AccountId = this.SourceAccountId;
     fitem.ControlCenterId = this.SourceControlCenterId;
     fitem.OrderId = this.SourceOrderId;
+    if (isADP) {
+      fitem.TranType = hih.financeTranTypeOpeningAsset;
+    } else {
+      fitem.TranType = hih.financeTranTypeOpeningLiability;
+    }
     fitem.TranType = this.SourceTranType;
     fitem.TranAmount = this.TranAmount;
     fitem.Desp = this.Desp;

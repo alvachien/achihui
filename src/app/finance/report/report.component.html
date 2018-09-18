@@ -4,6 +4,32 @@
   </mat-card-header>
   <mat-card-content>
     <mat-tab-group>
+      <!-- Tab: Account -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          {{'Finance.Account' | translate}}
+        </ng-template>
+
+        <div class="mt-2">
+          <mat-grid-list cols="2" rowHeight="400px">
+            <mat-grid-tile colspan="1" rowspan="1">
+              <ngx-charts-number-card
+                [scheme]="colorScheme"
+                [results]="datAccountAsset"
+                (select)="onSelect($event)">
+              </ngx-charts-number-card>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="1" rowspan="1">
+              <mat-grid-tile colspan="1" rowspan="1">
+                <ngx-charts-number-card
+                  [scheme]="colorScheme"
+                  [results]="datAccountLiability"
+                  (select)="onSelect($event)">
+                </ngx-charts-number-card>
+              </mat-grid-tile>
+          </mat-grid-list>
+        </div>
+      </mat-tab>
       <!-- Tab: Overview -->
       <mat-tab>
         <ng-template mat-tab-label>
