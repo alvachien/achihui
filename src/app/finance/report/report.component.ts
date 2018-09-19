@@ -4,12 +4,13 @@ import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString } from '../../model';
+  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Observable, Subject, ReplaySubject, BehaviorSubject, merge, of, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Data source of BS
@@ -109,22 +110,26 @@ export class ReportOrderDataSource extends DataSource<any> {
 export class ReportComponent implements OnInit, OnDestroy {
   private ngUnsubscribe$: ReplaySubject<boolean> = new ReplaySubject(1);
 
+  // MoM
   selectedMOMScope: OverviewScopeEnum;
   momExcludeTransfer: boolean;
   momScopes: UIDisplayString[];
 
+  // B.S.
   displayedBSColumns: string[] = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
   dataSourceBS: ReportBSDataSource | undefined;
   ReportBS: BalanceSheetReport[] = [];
   ReportBSEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorBS') paginatorBS: MatPaginator;
 
+  // CC
   displayedCCColumns: string[] = ['ControlCenter', 'Debit', 'Credit', 'Balance'];
   dataSourceCC: ReportCCDataSource | undefined;
   ReportCC: ControlCenterReport[] = [];
   ReportCCEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorCC') paginatorCC: MatPaginator;
 
+  // Order
   includeInvalid: boolean = false;
   displayedOrderColumns: string[] = ['Order', 'Debit', 'Credit', 'Balance'];
   dataSourceOrder: ReportOrderDataSource | undefined;
@@ -133,8 +138,11 @@ export class ReportComponent implements OnInit, OnDestroy {
   @ViewChild('paginatorOrder') paginatorOrder: MatPaginator;
 
   colorScheme: any = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+    //domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+    domain: ['#1B998B', '#2D3047', '#FFFD82', '#FF9B71', '#E84855'],
   };
+  datAccountLiability: any[];
+  datAccountAsset: any[];
   dataBSAccountDebit: any[] = [];
   dataBSAccountCredit: any[] = [];
   dataBSCategoryDebit: any[] = [];
@@ -144,17 +152,19 @@ export class ReportComponent implements OnInit, OnDestroy {
   dataOrderDebit: any[] = [];
   dataOrderCredit: any[] = [];
   dataMOM: any[] = [];
+  arAccountCtgy: any[] = [];
 
   view: number[] = [];
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
+    private _tranService: TranslateService,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
-    public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService,
-    public _currService: FinCurrencyService,
+    private _homedefService: HomeDefDetailService,
+    private _storageService: FinanceStorageService,
+    private _uiStatusService: UIStatusService,
+    private _currService: FinCurrencyService,
     private media: ObservableMedia) {
     this.selectedMOMScope = OverviewScopeEnum.CurrentYear;
     this.momScopes = [];
@@ -182,8 +192,25 @@ export class ReportComponent implements OnInit, OnDestroy {
     this.changeGraphSize();
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedMOMScope);
 
+    this._storageService.fetchAllAccountCategories().subscribe((arctgy: AccountCategory[]) => {
+      let arstrings: string[] = [];
+      for (let lab of arctgy) {
+        arstrings.push(lab.Name);
+        this.arAccountCtgy.push(lab);
+      }
+
+      this._tranService.get(arstrings).subscribe((x: any) => {
+        for (let attr in x) {
+          for (let lab of this.arAccountCtgy) {
+            if (lab.Name === attr) {
+              lab.DisplayName = x[attr];
+            }
+          }
+        }
+      });
+    });
+
     forkJoin([
-      this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
@@ -202,11 +229,13 @@ export class ReportComponent implements OnInit, OnDestroy {
       this.ReportCC = [];
       this.ReportOrder = [];
       this.dataMOM = [];
+      this.datAccountAsset = [];
+      this.datAccountLiability = [];
 
-      let idxbs: number = 4;
-      let idxcc: number = 5;
-      let idxorder: number = 6;
-      let idxmom: number = 7;
+      let idxbs: number = 3;
+      let idxcc: number = 4;
+      let idxorder: number = 5;
+      let idxmom: number = 6;
 
       // Balance sheet
       if (x[idxbs] instanceof Array && x[idxbs].length > 0) {
@@ -386,7 +415,7 @@ export class ReportComponent implements OnInit, OnDestroy {
 
         let ctgyExist: boolean = false;
         for (let cd of this.dataBSCategoryDebit) {
-          if (cd.name === rbs.AccountCategoryName) {
+          if (cd.ctgyid === rbs.AccountCategoryId) {
             ctgyExist = true;
 
             cd.value += rbs.DebitBalance;
@@ -395,8 +424,20 @@ export class ReportComponent implements OnInit, OnDestroy {
         }
 
         if (!ctgyExist) {
+          let ctgyname: string = '';
+          for (let lab of this.arAccountCtgy) {
+            if (lab.ID === rbs.AccountCategoryId) {
+              ctgyname = lab.DisplayName;
+              break;
+            }
+          }
+          if (ctgyname.length <= 0) {
+            ctgyname = rbs.AccountCategoryName;
+          }
+
           this.dataBSCategoryDebit.push({
-            name: rbs.AccountCategoryName,
+            ctgyid: rbs.AccountCategoryId,
+            name: ctgyname,
             value: rbs.DebitBalance,
           });
         }
@@ -419,10 +460,42 @@ export class ReportComponent implements OnInit, OnDestroy {
         }
 
         if (!ctgyExist) {
+          let ctgyname: string = '';
+          for (let lab of this.arAccountCtgy) {
+            if (lab.ID === rbs.AccountCategoryId) {
+              ctgyname = lab.DisplayName;
+              break;
+            }
+          }
+          if (ctgyname.length <= 0) {
+            ctgyname = rbs.AccountCategoryName;
+          }
+
           this.dataBSCategoryCredit.push({
+            ctgyid: rbs.AccountCategoryId,
             name: rbs.AccountCategoryName,
             value: rbs.CreditBalance,
           });
+        }
+      }
+
+      if (rbs.Balance) {
+        for (let ctgy of this.arAccountCtgy) {
+          if (ctgy.ID === rbs.AccountCategoryId) {
+            if (ctgy.AssetFlag) {
+              this.datAccountAsset.push({
+                name: rbs.AccountName,
+                value: rbs.Balance,
+              });
+            } else {
+              this.datAccountLiability.push({
+                name: rbs.AccountName,
+                value: rbs.Balance * (-1),
+              });
+            }
+
+            break;
+          }
         }
       }
 
