@@ -23,7 +23,8 @@
         </mat-form-field>
 
         <mat-form-field class="control-full-width">
-          <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId" name="ctgy">
+          <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId" 
+            name="ctgy" (selectionChange)="onCategorySelectionChange($event)">
             <mat-option *ngFor="let ctgy of _storageService.AccountCategories" [value]="ctgy.ID">
               {{ctgy.Name | translate}} 
             </mat-option>

@@ -1,17 +1,18 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ViewChildren,
   Input, Output, ViewContainerRef, QueryList, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, MatSelectChange } from '@angular/material';
 import { Observable, forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset,
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo, UICommonLabelEnum,
-  UIDisplayString, UIDisplayStringUtil, AccountStatusEnum } from '../../model';
+  UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived, AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { AccountExtLoanComponent } from '../account-ext-loan';
 import { AccountExtADPComponent } from '../account-ext-adp';
+import { AccountExtAssetComponent } from '../account-ext-asset';
 
 @Component({
   selector: 'hih-finance-account-detail',
@@ -23,7 +24,8 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
   private routerID: number = -1; // Current object ID in routing
   private _compLoan: AccountExtLoanComponent;
   private _compADP: AccountExtADPComponent;
-  // private _compAsset:
+  private _compAsset: AccountExtAssetComponent;
+
   public currentMode: string;
   public detailObject: Account = undefined;
   public uiMode: UIMode = UIMode.Create;
@@ -33,6 +35,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
   // Solution coming from: https://expertcodeblog.wordpress.com/2018/01/12/angular-resolve-error-viewchild-annotation-returns-undefined/
   @ViewChildren(AccountExtLoanComponent) childrenLoan: QueryList<AccountExtLoanComponent>;
   @ViewChildren(AccountExtADPComponent) childrenADP: QueryList<AccountExtADPComponent>;
+  @ViewChildren(AccountExtAssetComponent) childrenAsset: QueryList<AccountExtAssetComponent>;
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -125,6 +128,10 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
       // Now you can access to the child component
       this._compADP = comps.first;
     });
+    this.childrenAsset.changes.subscribe((comps: QueryList<AccountExtAssetComponent>) => {
+      // Now you can access to the child component
+      this._compAsset = comps.first;
+    });
   }
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -143,7 +150,8 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
     return false;
   }
   get isADPAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment)) {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
+      || this.detailObject.CategoryId === financeAccountCategoryAdvanceReceived)) {
       return true;
     }
 
@@ -180,6 +188,17 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
       return false;
     }
     return true;
+  }
+
+  public onCategorySelectionChange($event: MatSelectChange): void {
+    let newctgy: number = +$event.value;
+    if (newctgy === financeAccountCategoryAsset) {
+      this.detailObject.ExtraInfo = new AccountExtraAsset();
+    } else if (newctgy === financeAccountCategoryAdvancePayment || newctgy === financeAccountCategoryAdvanceReceived) {
+      this.detailObject.ExtraInfo = new AccountExtraAdvancePayment();
+    } else if (newctgy === financeAccountCategoryBorrowFrom || newctgy === financeAccountCategoryLendTo) {
+      this.detailObject.ExtraInfo = new AccountExtraLoan();
+    }
   }
 
   public onCloseAccount(): void {
@@ -311,6 +330,17 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
       || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom) {
       if (this._compLoan) {
         this._compLoan.generateAccountInfoForSave();
+      }
+    }
+    if (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
+      || this.detailObject.CategoryId === financeAccountCategoryAdvanceReceived) {
+      if (this._compADP) {
+        this._compADP.generateAccountInfoForSave();
+      }
+    }
+    if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
+      if (this._compAsset) {
+        // this._compAsset.generateAccountInfoForSave();
       }
     }
 

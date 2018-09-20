@@ -138,7 +138,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   @ViewChild('paginatorOrder') paginatorOrder: MatPaginator;
 
   colorScheme: any = {
-    //domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+    // domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
     domain: ['#1B998B', '#2D3047', '#FFFD82', '#FF9B71', '#E84855'],
   };
   datAccountLiability: any[];
