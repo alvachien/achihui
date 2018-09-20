@@ -177,7 +177,7 @@ export class UIFinAdvPayDocument {
     } else {
       fitem.TranType = hih.financeTranTypeOpeningLiability;
     }
-    fitem.TranType = this.SourceTranType;
+    // fitem.TranType = this.SourceTranType;
     fitem.TranAmount = this.TranAmount;
     fitem.Desp = this.Desp;
     doc.Items.push(fitem);
