@@ -98,7 +98,8 @@ export class LearnStorageService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCategories in LearnStorageService: ${response}`);
+            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCategories in LearnStorageService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCategories in LearnStorageService.`);
           }
 
           const rjs: any = <any>response;
@@ -125,7 +126,8 @@ export class LearnStorageService {
         }),
         catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllCategories in LearnStorageService: ${error}`);
+            // console.error(`AC_HIH_UI [Error]: Failed in fetchAllCategories in LearnStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllCategories in LearnStorageService.`);
           }
 
           this._isCtgyListLoaded = false;
@@ -160,7 +162,8 @@ export class LearnStorageService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService: ${response}`);
+            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService.`);
           }
 
           const rjs: any = <any>response;
@@ -180,7 +183,8 @@ export class LearnStorageService {
         }),
         catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService: ${error}`);
+            // console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService.`);
           }
 
           this._isObjListLoaded = true;
@@ -425,7 +429,8 @@ export class LearnStorageService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHistories in LearnStorageService: ${response}`);
+            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHistories in LearnStorageService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHistories in LearnStorageService.`);
           }
 
           const rjs: any = <any>response;
@@ -584,7 +589,8 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByUser in LearnStorageService: ${response}`);
+          // console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByUser in LearnStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByUser in LearnStorageService.`);
         }
 
         return <any>response;
@@ -616,7 +622,8 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByCategory in LearnStorageService: ${response}`);
+          // console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByCategory in LearnStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByCategory in LearnStorageService.`);
         }
 
         return <any>response;
@@ -644,7 +651,8 @@ export class LearnStorageService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllQuestionBankItem in LearnStorageService: ${response}`);
+            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllQuestionBankItem in LearnStorageService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllQuestionBankItem in LearnStorageService.`);
           }
 
           const rjs: any = <any>response;

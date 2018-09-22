@@ -85,7 +85,8 @@ export class HomeDefDetailService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHomeDef in HomeDefDetailService: ${response}`);
+            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHomeDef in HomeDefDetailService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHomeDef in HomeDefDetailService.`);
           }
 
           const rjs: any = <any>response;
@@ -102,7 +103,8 @@ export class HomeDefDetailService {
           return listResult;
         })).subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllHomeDef in HomeDefDetailService: ${x}`);
+            // console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllHomeDef in HomeDefDetailService: ${x}`);
+            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllHomeDef in HomeDefDetailService.`);
           }
 
           this._islistLoaded = true;
@@ -110,7 +112,8 @@ export class HomeDefDetailService {
           this.listDataChange.next(copiedData);
         }, (error: any) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllHomeDef in HomeDefDetailService: ${error}`);
+            // console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllHomeDef in HomeDefDetailService: ${error}`);
+            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllHomeDef in HomeDefDetailService.`);
           }
 
           this._islistLoaded = false;
@@ -229,7 +232,8 @@ export class HomeDefDetailService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefDetailService: ${response}`);
+            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefDetailService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefDetailService.`);
           }
 
           const rjs: any = <any>response;
@@ -246,14 +250,16 @@ export class HomeDefDetailService {
           return listResult;
         })).subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllMembersInChosedHome in HomeDefDetailService: ${x}`);
+            // console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllMembersInChosedHome in HomeDefDetailService: ${x}`);
+            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllMembersInChosedHome in HomeDefDetailService.`);
           }
 
           let copiedData: any = x;
           this.curHomeMembers.next(copiedData);
         }, (error: any) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Error occurred in fetchAllMembersInChosedHome in HomeDefDetailService: ${error}`);
+            // console.error(`AC_HIH_UI [Error]: Error occurred in fetchAllMembersInChosedHome in HomeDefDetailService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Error occurred in fetchAllMembersInChosedHome in HomeDefDetailService.`);
           }
         }, () => {
           // Empty
@@ -280,7 +286,8 @@ export class HomeDefDetailService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchHomeMembers in HomeDefDetailService: ${response}`);
+            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchHomeMembers in HomeDefDetailService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchHomeMembers in HomeDefDetailService.`);
           }
 
           const rjs: any = <any>response;
@@ -297,13 +304,15 @@ export class HomeDefDetailService {
           return listResult;
         })).subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchHomeMembers in HomeDefDetailService: ${x}`);
+            // console.log(`AC_HIH_UI [Debug]: Succeed in fetchHomeMembers in HomeDefDetailService: ${x}`);
+            console.log(`AC_HIH_UI [Debug]: Succeed in fetchHomeMembers in HomeDefDetailService.`);
           }
 
           this.readHomeMembersEvent.emit(x);
         }, (error: any) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchHomeMembers in HomeDefDetailService: ${error}`);
+            // console.log(`AC_HIH_UI [Error]: Error occurred in fetchHomeMembers in HomeDefDetailService: ${error}`);
+            console.log(`AC_HIH_UI [Error]: Error occurred in fetchHomeMembers in HomeDefDetailService.`);
           }
           this.readHomeMembersEvent.emit(undefined);
         }, () => {

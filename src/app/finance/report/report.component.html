@@ -9,34 +9,38 @@
         <ng-template mat-tab-label>
           {{'Finance.Account' | translate}}
         </ng-template>
-        <mat-grid-list cols="2">
-          <mat-grid-tile colspan="1" rowspan="1">
-            <mat-card class="control-full-width">
-              <mat-card-header>
-                <mat-card-title>{{'Finance.Assets' | translate}}</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <ngx-charts-number-card
-                  [scheme]="colorScheme"
-                  [results]="datAccountAsset">
-                </ngx-charts-number-card>
-              </mat-card-content>
-            </mat-card>
-          </mat-grid-tile>
-          <mat-grid-tile colspan="1" rowspan="1">
-            <mat-card class="control-full-width">
-              <mat-card-header>
-                <mat-card-title>{{'Finance.Liabilities' | translate}}</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <ngx-charts-number-card
-                  [scheme]="colorScheme"
-                  [results]="datAccountLiability">
-                </ngx-charts-number-card>
-              </mat-card-content>
-            </mat-card>
-          </mat-grid-tile>
-        </mat-grid-list>
+        <div class="grid-container">
+          <mat-grid-list cols="2" rowHeight="1000px">
+            <mat-grid-tile colspan="1" rowspan="1">
+              <mat-card class="dashboard-card">
+                <mat-card-header>
+                  <mat-card-title>{{'Finance.Assets' | translate}}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <ngx-charts-number-card
+                    [view]="viewAccountChart"
+                    [scheme]="colorScheme"
+                    [results]="datAccountAsset">
+                  </ngx-charts-number-card>
+                </mat-card-content>
+              </mat-card>
+            </mat-grid-tile>
+            <mat-grid-tile colspan="1" rowspan="1">
+              <mat-card class="dashboard-card">
+                <mat-card-header>
+                  <mat-card-title>{{'Finance.Liabilities' | translate}}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <ngx-charts-number-card
+                    [view]="viewAccountChart"
+                    [scheme]="colorScheme"
+                    [results]="datAccountLiability">
+                  </ngx-charts-number-card>
+                </mat-card-content>
+              </mat-card>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </div>
       </mat-tab>
       
       <!-- Tab: Overview -->
@@ -87,31 +91,7 @@
             <div class="col-12 col-md-6">
               <mat-card>
                 <mat-card-header>
-                  <mat-card-title>{{'Finance.Debit' | translate}}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSAccountDebit" (select)="onBSAccountDebitSelect($event)">
-                  </ngx-charts-advanced-pie-chart>
-                </mat-card-content>
-              </mat-card>
-            </div>
-            <div class="col-12 col-md-6">
-              <mat-card>
-                <mat-card-header>
-                  <mat-card-title>{{'Finance.Credit' | translate}}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSAccountCredit" (select)="onBSAccountCreditSelect($event)">
-                  </ngx-charts-advanced-pie-chart>
-                </mat-card-content>
-              </mat-card>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12 col-md-6">
-              <mat-card>
-                <mat-card-header>
-                  <mat-card-title>{{'Finance.Debit' | translate}}</mat-card-title>
+                  <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                   <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSCategoryDebit" (select)="onBSCategoryDebitSelect($event)">
@@ -122,7 +102,7 @@
             <div class="col-12 col-md-6">
               <mat-card>
                 <mat-card-header>
-                  <mat-card-title>{{'Finance.Credit' | translate}}</mat-card-title>
+                  <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                   <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSCategoryCredit" (select)="onBSCategoryCreditSelect($event)">
@@ -164,17 +144,17 @@
               </mat-cell>
             </ng-container>
 
-            <!-- Debit Balance Column -->
+            <!-- Incoming Column -->
             <ng-container matColumnDef="Debit">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.Debit' | translate}}</mat-header-cell>
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Incoming' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 {{ row.DebitBalance?.toFixed(2) }}
               </mat-cell>
             </ng-container>
 
-            <!-- Desp Column -->
+            <!-- Outgoing Column -->
             <ng-container matColumnDef="Credit">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.Credit' | translate}}</mat-header-cell>
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Outgoing' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 {{ row.CreditBalance?.toFixed(2) }}
               </mat-cell>
@@ -207,7 +187,7 @@
             <div class="col-12 col-md-6">
               <mat-card>
                 <mat-card-header>
-                  <mat-card-title>{{'Finance.Debit' | translate}}</mat-card-title>
+                  <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                   <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataCCDebit" (select)="onCCDebitSelect($event)">
@@ -218,7 +198,7 @@
             <div class="col-12 col-md-6">
               <mat-card>
                 <mat-card-header>
-                  <mat-card-title>{{'Finance.Credit' | translate}}</mat-card-title>
+                  <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                   <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataCCCredit" (select)="onCCCreditSelect($event)">
@@ -246,17 +226,17 @@
               </mat-cell>
             </ng-container>
 
-            <!-- Debit Balance Column -->
+            <!-- Incoming Column -->
             <ng-container matColumnDef="Debit">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.Debit' | translate}}</mat-header-cell>
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Incoming' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 {{ row.DebitBalance?.toFixed(2) }}
               </mat-cell>
             </ng-container>
 
-            <!-- Desp Column -->
+            <!-- Outgoing Column -->
             <ng-container matColumnDef="Credit">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.Credit' | translate}}</mat-header-cell>
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Outgoing' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 {{ row.CreditBalance?.toFixed(2) }}
               </mat-cell>
@@ -293,7 +273,7 @@
             <div class="col-12 col-md-6">
               <mat-card>
                 <mat-card-header>
-                  <mat-card-title>{{'Finance.Debit' | translate}}</mat-card-title>
+                  <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                   <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataOrderDebit" (select)="onOrderDebitSelect($event)">
@@ -304,7 +284,7 @@
             <div class="col-12 col-md-6">
               <mat-card>
                 <mat-card-header>
-                  <mat-card-title>{{'Finance.Credit' | translate}}</mat-card-title>
+                  <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                   <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataOrderCredit" (select)="onOrderCreditSelect($event)">
@@ -332,17 +312,17 @@
               </mat-cell>
             </ng-container>
 
-            <!-- Debit Balance Column -->
+            <!-- Incoming Column -->
             <ng-container matColumnDef="Debit">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.Debit' | translate}}</mat-header-cell>
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Incoming' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 {{ row.DebitBalance?.toFixed(2) }}
               </mat-cell>
             </ng-container>
 
-            <!-- Desp Column -->
+            <!-- Outgoing Column -->
             <ng-container matColumnDef="Credit">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.Credit' | translate}}</mat-header-cell>
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Outgoing' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 {{ row.CreditBalance?.toFixed(2) }}
               </mat-cell>

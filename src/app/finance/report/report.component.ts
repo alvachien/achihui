@@ -137,14 +137,13 @@ export class ReportComponent implements OnInit, OnDestroy {
   ReportOrderEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorOrder') paginatorOrder: MatPaginator;
 
+  viewAccountChart: any[] = [600, 900];
   colorScheme: any = {
     // domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
     domain: ['#1B998B', '#2D3047', '#FFFD82', '#FF9B71', '#E84855'],
   };
   datAccountLiability: any[];
   datAccountAsset: any[];
-  dataBSAccountDebit: any[] = [];
-  dataBSAccountCredit: any[] = [];
   dataBSCategoryDebit: any[] = [];
   dataBSCategoryCredit: any[] = [];
   dataCCDebit: any[] = [];
@@ -220,8 +219,6 @@ export class ReportComponent implements OnInit, OnDestroy {
       this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end),
     ]).subscribe((x: any) => {
       this.ReportBS = [];
-      this.dataBSAccountDebit = [];
-      this.dataBSAccountCredit = [];
       this.dataBSCategoryDebit = [];
       this.dataBSCategoryCredit = [];
       this.dataCCDebit = [];
@@ -408,11 +405,6 @@ export class ReportComponent implements OnInit, OnDestroy {
       rbs.onSetData(bs);
 
       if (rbs.DebitBalance) {
-        this.dataBSAccountDebit.push({
-          name: rbs.AccountName,
-          value: rbs.DebitBalance,
-        });
-
         let ctgyExist: boolean = false;
         for (let cd of this.dataBSCategoryDebit) {
           if (cd.ctgyid === rbs.AccountCategoryId) {
@@ -444,14 +436,9 @@ export class ReportComponent implements OnInit, OnDestroy {
       }
 
       if (rbs.CreditBalance) {
-        this.dataBSAccountCredit.push({
-          name: rbs.AccountName,
-          value: rbs.CreditBalance,
-        });
-
         let ctgyExist: boolean = false;
         for (let cd of this.dataBSCategoryCredit) {
-          if (cd.name === rbs.AccountCategoryName) {
+          if (cd.ctgyid === rbs.AccountCategoryId) {
             ctgyExist = true;
 
             cd.value += rbs.CreditBalance;
@@ -473,7 +460,7 @@ export class ReportComponent implements OnInit, OnDestroy {
 
           this.dataBSCategoryCredit.push({
             ctgyid: rbs.AccountCategoryId,
-            name: rbs.AccountCategoryName,
+            name: ctgyname,
             value: rbs.CreditBalance,
           });
         }
