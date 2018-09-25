@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,6 +11,7 @@ import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Observable, Subject, ReplaySubject, BehaviorSubject, merge, of, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+declare var echarts: any;
 
 /**
  * Data source of BS
@@ -107,8 +108,12 @@ export class ReportOrderDataSource extends DataSource<any> {
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.scss'],
 })
-export class ReportComponent implements OnInit, OnDestroy {
+export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   private ngUnsubscribe$: ReplaySubject<boolean> = new ReplaySubject(1);
+
+  // Account
+  @ViewChild('chartAccountIncoming') chartAccountIncoming: ElementRef;
+  @ViewChild('chartAccountOutgoing') chartAccountOutgoing: ElementRef;
 
   // MoM
   selectedMOMScope: OverviewScopeEnum;
@@ -116,6 +121,8 @@ export class ReportComponent implements OnInit, OnDestroy {
   momScopes: UIDisplayString[];
 
   // B.S.
+  @ViewChild('chartAcntCtgyIncoming') chartAcntCtgyIncoming: ElementRef;
+  @ViewChild('chartAcntCtgyOutgoing') chartAcntCtgyOutgoing: ElementRef;
   displayedBSColumns: string[] = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
   dataSourceBS: ReportBSDataSource | undefined;
   ReportBS: BalanceSheetReport[] = [];
@@ -189,8 +196,9 @@ export class ReportComponent implements OnInit, OnDestroy {
       });
 
     this.changeGraphSize();
-    let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedMOMScope);
+  }
 
+  ngAfterViewInit(): void {
     this._storageService.fetchAllAccountCategories().subscribe((arctgy: AccountCategory[]) => {
       let arstrings: string[] = [];
       for (let lab of arctgy) {
@@ -206,58 +214,10 @@ export class ReportComponent implements OnInit, OnDestroy {
             }
           }
         }
+
+        // Fetch data
+        this._fetchData();
       });
-    });
-
-    forkJoin([
-      this._storageService.fetchAllAccounts(),
-      this._storageService.fetchAllControlCenters(),
-      this._storageService.fetchAllOrders(),
-      this._storageService.getReportBS(),
-      this._storageService.getReportCC(),
-      this._storageService.getReportOrder(),
-      this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end),
-    ]).subscribe((x: any) => {
-      this.ReportBS = [];
-      this.dataBSCategoryDebit = [];
-      this.dataBSCategoryCredit = [];
-      this.dataCCDebit = [];
-      this.dataCCCredit = [];
-      this.ReportCC = [];
-      this.ReportOrder = [];
-      this.dataMOM = [];
-      this.datAccountAsset = [];
-      this.datAccountLiability = [];
-
-      let idxbs: number = 3;
-      let idxcc: number = 4;
-      let idxorder: number = 5;
-      let idxmom: number = 6;
-
-      // Balance sheet
-      if (x[idxbs] instanceof Array && x[idxbs].length > 0) {
-        this.refreshBalanceSheetReportData(x[idxbs]);
-      }
-
-      // Control center
-      if (x[idxcc] instanceof Array && x[idxcc].length > 0) {
-        this.refreshControlCenterReportData(x[idxcc]);
-      }
-
-      // Order report
-      if (x[idxorder] instanceof Array && x[idxorder].length > 0) {
-        this.refreshOrderReportData(x[idxorder]);
-      }
-
-      // Month on month
-      if (x[idxmom] instanceof Array && x[idxmom].length > 0) {
-        this.refreshMoMData(x[idxmom]);
-      }
-
-      // Trigger the events
-      this.ReportBSEvent.emit();
-      this.ReportCCEvent.emit();
-      this.ReportOrderEvent.emit();
     });
   }
 
@@ -504,5 +464,279 @@ export class ReportComponent implements OnInit, OnDestroy {
     }
 
     this.view = [graphSize, graphSize / 1.33];
+  }
+
+  private _fetchData(): void {
+    let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedMOMScope);
+
+    forkJoin([
+      this._storageService.fetchAllAccounts(),
+      this._storageService.fetchAllControlCenters(),
+      this._storageService.fetchAllOrders(),
+      this._storageService.getReportBS(),
+      this._storageService.getReportCC(),
+      this._storageService.getReportOrder(),
+      this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end),
+    ]).subscribe((x: any) => {
+      this.ReportBS = [];
+      this.dataBSCategoryDebit = [];
+      this.dataBSCategoryCredit = [];
+      this.dataCCDebit = [];
+      this.dataCCCredit = [];
+      this.ReportCC = [];
+      this.ReportOrder = [];
+      this.dataMOM = [];
+      this.datAccountAsset = [];
+      this.datAccountLiability = [];
+
+      let idxbs: number = 3;
+      let idxcc: number = 4;
+      let idxorder: number = 5;
+      let idxmom: number = 6;
+
+      // Balance sheet
+      if (x[idxbs] instanceof Array && x[idxbs].length > 0) {
+        this.refreshBalanceSheetReportData(x[idxbs]);
+      }
+
+      // Control center
+      if (x[idxcc] instanceof Array && x[idxcc].length > 0) {
+        this.refreshControlCenterReportData(x[idxcc]);
+      }
+
+      // Order report
+      if (x[idxorder] instanceof Array && x[idxorder].length > 0) {
+        this.refreshOrderReportData(x[idxorder]);
+      }
+
+      // Month on month
+      if (x[idxmom] instanceof Array && x[idxmom].length > 0) {
+        this.refreshMoMData(x[idxmom]);
+      }
+
+      this._buildAccountInChart();
+      this._buildAccountOutChart();
+      this._buildAccountCategoryInChart();
+      this._buildAccountCategoryOutChart();
+
+      // Trigger the events
+      this.ReportBSEvent.emit();
+      this.ReportCCEvent.emit();
+      this.ReportOrderEvent.emit();
+    });
+  }
+  private _buildAccountInChart(): void {
+    let chartAcntIn: any = echarts.init(this.chartAccountIncoming.nativeElement);
+
+    // Account incoming
+    let optionAcntIn: any = {
+      backgroundColor: '#2c343c',
+      title: {
+        text: 'Assets',
+        left: 'center',
+        top: 20,
+        textStyle: {
+          color: '#ccc',
+        },
+      },
+      tooltip : {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
+      },
+      visualMap: {
+        show: false,
+        min: 80,
+        max: 600,
+        inRange: {
+          colorLightness: [0, 1],
+        },
+      },
+      series : [{
+        name: 'Accounts',
+        type: 'pie',
+        radius : '55%',
+        center: ['50%', '50%'],
+        data: this.datAccountAsset,
+        roseType: 'radius',
+        label: {
+          normal: {
+            textStyle: {
+              color: 'rgba(255, 255, 255, 0.3)',
+            },
+          },
+        },
+        labelLine: {
+          normal: {
+            lineStyle: {
+              color: 'rgba(255, 255, 255, 0.3)',
+            },
+            smooth: 0.2,
+            length: 10,
+            length2: 20,
+          },
+        },
+        itemStyle: {
+          normal: {
+            color: '#c23531',
+            shadowBlur: 200,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+
+        animationType: 'scale',
+        animationEasing: 'elasticOut',
+        animationDelay: function(idx: any): number {
+          return Math.random() * 200;
+        },
+      }],
+    };
+    chartAcntIn.setOption(optionAcntIn);
+  }
+  private _buildAccountOutChart(): void {
+    let chartAcntOut: any = echarts.init(this.chartAccountOutgoing.nativeElement);
+
+    // Account outgoing
+    let optionAcntOut: any = {
+      backgroundColor: '#dc343c',
+      title: {
+        text: 'Liabilities',
+        left: 'center',
+        top: 20,
+        textStyle: {
+          color: '#ccc',
+        },
+      },
+      tooltip : {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
+      },
+      visualMap: {
+        show: false,
+        min: 80,
+        max: 600,
+        inRange: {
+          colorLightness: [0, 1],
+        },
+      },
+      series : [{
+        name: 'Accounts',
+        type: 'pie',
+        radius : '55%',
+        center: ['50%', '50%'],
+        data: this.datAccountLiability,
+        roseType: 'radius',
+        label: {
+          normal: {
+            textStyle: {
+              color: 'rgba(255, 255, 255, 0.3)',
+            },
+          },
+        },
+        labelLine: {
+          normal: {
+            lineStyle: {
+              color: 'rgba(255, 255, 255, 0.3)',
+            },
+            smooth: 0.2,
+            length: 10,
+            length2: 20,
+          },
+        },
+        itemStyle: {
+          normal: {
+            color: '#c23531',
+            shadowBlur: 200,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+
+        animationType: 'scale',
+        animationEasing: 'elasticOut',
+        animationDelay: function(idx: any): number {
+          return Math.random() * 200;
+        },
+      }],
+    };
+    chartAcntOut.setOption(optionAcntOut);
+  }
+  private _buildAccountCategoryInChart(): void {
+    let chartAcntCtgyIn: any = echarts.init(this.chartAcntCtgyIncoming.nativeElement);
+    let colors: any = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
+    let bgColor: any = '#2E2733';
+
+    // Refer to http://echarts.baidu.com/examples/editor.html?c=sunburst-book
+    // Account category incoming
+    let optionAcntCtgyIn: any = {
+      backgroundColor: bgColor,
+      color: colors,
+      series: [{
+        type: 'sunburst',
+        center: ['50%', '48%'],
+        data: this.dataBSCategoryDebit,
+        // sort: function (a, b) {
+        //     if (a.depth === 1) {
+        //         return b.getValue() - a.getValue();
+        //     }
+        //     else {
+        //         return a.dataIndex - b.dataIndex;
+        //     }
+        // },
+        label: {
+          rotate: 'radial',
+          color: bgColor,
+        },
+        itemStyle: {
+          borderColor: bgColor,
+          borderWidth: 2,
+        },
+        levels: [{}, {
+          r0: 0,
+          r: 40,
+          label: {
+            rotate: 0,
+          },
+        }, {
+          r0: 40,
+          r: 105,
+        }, {
+          r0: 115,
+          r: 140,
+          itemStyle: {
+            shadowBlur: 2,
+            shadowColor: colors[2],
+            color: 'transparent',
+          },
+          label: {
+              rotate: 'tangential',
+              fontSize: 10,
+              color: colors[0],
+          },
+        }, {
+          r0: 140,
+          r: 145,
+          itemStyle: {
+            shadowBlur: 80,
+            shadowColor: colors[0],
+          },
+          label: {
+            position: 'outside',
+            textShadowBlur: 5,
+            textShadowColor: '#333',
+          },
+          downplay: {
+            label: {
+              opacity: 0.5,
+            },
+          },
+        }],
+    }],
+    };
+  }
+  private _buildAccountCategoryOutChart(): void {
+    let chartAcntCtgyOut: any = echarts.init(this.chartAcntCtgyOutgoing.nativeElement);
+    let colors: any = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
+    let bgColor: any = '#2E2733';
+
+    // Account category outgoing
   }
 }

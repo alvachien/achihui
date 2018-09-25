@@ -32,7 +32,8 @@ export const financeTranTypeBorrowFrom: number = 80;
 export const financeTranTypeLendTo: number = 81;
 export const financeTranTypeRepaymentOut: number = 86;
 export const financeTranTypeRepaymentIn: number = 87;
-export const financeTranTypeDownpaymentOut: number = 88;
+export const financeTranTypeAdvancePaymentOut: number = 88; // Advance payment - out
+export const financeTranTypeAdvanceReceiveIn: number = 91; // Advance receive - in
 export const financeTranTypeInterestOut: number = 55;
 export const financeTranTypeInterestIn: number = 8;
 

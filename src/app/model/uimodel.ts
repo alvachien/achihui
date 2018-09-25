@@ -173,9 +173,9 @@ export class UIFinAdvPayDocument {
     fitem.ControlCenterId = this.SourceControlCenterId;
     fitem.OrderId = this.SourceOrderId;
     if (isADP) {
-      fitem.TranType = hih.financeTranTypeOpeningAsset;
+      fitem.TranType = hih.financeTranTypeAdvancePaymentOut;
     } else {
-      fitem.TranType = hih.financeTranTypeOpeningLiability;
+      fitem.TranType = hih.financeTranTypeAdvanceReceiveIn;
     }
     // fitem.TranType = this.SourceTranType;
     fitem.TranAmount = this.TranAmount;
