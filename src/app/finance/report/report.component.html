@@ -79,31 +79,29 @@
         </ng-template>
 
         <div class="mt-2">
-          <div class="row">
-            <div class="col-12 col-md-6">
-              <mat-card>
-                <mat-card-header>
-                  <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                  <div #chartAcntCtgyIncoming style="width: 100%; height: 500px;"></div>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSCategoryDebit" (select)="onBSCategoryDebitSelect($event)">
-                  </ngx-charts-advanced-pie-chart>
-                </mat-card-content>
-              </mat-card>
-            </div>
-            <div class="col-12 col-md-6">
-              <mat-card>
-                <mat-card-header>
-                  <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                  <div #chartAcntCtgyOutgoing style="width: 100%; height: 500px;"></div>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataBSCategoryCredit" (select)="onBSCategoryCreditSelect($event)">
-                  </ngx-charts-advanced-pie-chart>
-                </mat-card-content>
-              </mat-card>
-            </div>
+          <div class="grid-container">
+            <mat-grid-list cols="2" rowHeight="850px">
+              <mat-grid-tile colspan="1" rowspan="1">
+                <mat-card class="dashboard-card">
+                  <mat-card-header>
+                    <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div #chartAcntCtgyIncoming style="width: 100%; height: 500px;"></div>
+                  </mat-card-content>
+                </mat-card>
+              </mat-grid-tile>
+              <mat-grid-tile colspan="1" rowspan="1">
+                <mat-card class="dashboard-card">
+                  <mat-card-header>
+                    <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div #chartAcntCtgyOutgoing style="width: 100%; height: 500px;"></div>
+                  </mat-card-content>
+                </mat-card>
+              </mat-grid-tile>
+            </mat-grid-list>
           </div>
         </div>
         <mat-divider></mat-divider>
