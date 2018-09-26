@@ -316,6 +316,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   private refreshOrderReportData(data: any): void {
+    this.ReportOrder = [];
     for (let bs of data) {
       let rbs: OrderReport  = new OrderReport();
       rbs.onSetData(bs);
@@ -338,6 +339,10 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   private refreshControlCenterReportData(data: any): void {
+    this.dataCCDebit = [];
+    this.dataCCCredit = [];
+    this.ReportCC = [];
+
     for (let bs of data) {
       let rbs: ControlCenterReport  = new ControlCenterReport();
       rbs.onSetData(bs);
@@ -360,6 +365,12 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   private refreshBalanceSheetReportData(data: any): void {
+    this.ReportBS = [];
+    this.dataBSCategoryDebit = [];
+    this.dataBSCategoryCredit = [];
+    this.datAccountAsset = [];
+    this.datAccountLiability = [];
+
     for (let bs of data) {
       let rbs: BalanceSheetReport  = new BalanceSheetReport();
       rbs.onSetData(bs);
@@ -478,17 +489,6 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       this._storageService.getReportOrder(),
       this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end),
     ]).subscribe((x: any) => {
-      this.ReportBS = [];
-      this.dataBSCategoryDebit = [];
-      this.dataBSCategoryCredit = [];
-      this.dataCCDebit = [];
-      this.dataCCCredit = [];
-      this.ReportCC = [];
-      this.ReportOrder = [];
-      this.dataMOM = [];
-      this.datAccountAsset = [];
-      this.datAccountLiability = [];
-
       let idxbs: number = 3;
       let idxcc: number = 4;
       let idxorder: number = 5;
@@ -707,9 +707,9 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             color: 'transparent',
           },
           label: {
-              rotate: 'tangential',
-              fontSize: 10,
-              color: colors[0],
+            rotate: 'tangential',
+            fontSize: 10,
+            color: colors[0],
           },
         }, {
           r0: 140,
@@ -729,7 +729,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             },
           },
         }],
-    }],
+      }],
     };
   }
   private _buildAccountCategoryOutChart(): void {
