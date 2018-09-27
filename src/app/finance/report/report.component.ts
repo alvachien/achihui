@@ -3,8 +3,10 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory } from '../../model';
+import {
+  LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
+  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory
+} from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
@@ -40,7 +42,7 @@ export class ReportBSDataSource extends DataSource<any> {
 
   disconnect(): void {
     // Empty
-   }
+  }
 }
 
 /**
@@ -70,7 +72,7 @@ export class ReportCCDataSource extends DataSource<any> {
 
   disconnect(): void {
     // Empty
-   }
+  }
 }
 
 /**
@@ -121,8 +123,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   momScopes: UIDisplayString[];
 
   // B.S.
-  @ViewChild('chartAcntCtgyIncoming') chartAcntCtgyIncoming: ElementRef;
-  @ViewChild('chartAcntCtgyOutgoing') chartAcntCtgyOutgoing: ElementRef;
+  @ViewChild('chartAcntCtgy') chartAcntCtgy: ElementRef;
   displayedBSColumns: string[] = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
   dataSourceBS: ReportBSDataSource | undefined;
   ReportBS: BalanceSheetReport[] = [];
@@ -318,7 +319,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   private refreshOrderReportData(data: any): void {
     this.ReportOrder = [];
     for (let bs of data) {
-      let rbs: OrderReport  = new OrderReport();
+      let rbs: OrderReport = new OrderReport();
       rbs.onSetData(bs);
 
       if (rbs.DebitBalance) {
@@ -344,7 +345,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ReportCC = [];
 
     for (let bs of data) {
-      let rbs: ControlCenterReport  = new ControlCenterReport();
+      let rbs: ControlCenterReport = new ControlCenterReport();
       rbs.onSetData(bs);
 
       if (rbs.DebitBalance) {
@@ -372,7 +373,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     this.datAccountLiability = [];
 
     for (let bs of data) {
-      let rbs: BalanceSheetReport  = new BalanceSheetReport();
+      let rbs: BalanceSheetReport = new BalanceSheetReport();
       rbs.onSetData(bs);
 
       if (rbs.DebitBalance) {
@@ -516,8 +517,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this._buildAccountInChart();
       this._buildAccountOutChart();
-      this._buildAccountCategoryInChart();
-      this._buildAccountCategoryOutChart();
+      this._buildAccountCategoryChart();
 
       // Trigger the events
       this.ReportBSEvent.emit();
@@ -539,7 +539,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
           color: '#ccc',
         },
       },
-      tooltip : {
+      tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b} : {c} ({d}%)',
       },
@@ -551,10 +551,10 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
           colorLightness: [0, 1],
         },
       },
-      series : [{
+      series: [{
         name: 'Accounts',
         type: 'pie',
-        radius : '55%',
+        radius: '55%',
         center: ['50%', '50%'],
         data: this.datAccountAsset,
         roseType: 'radius',
@@ -585,7 +585,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
         animationType: 'scale',
         animationEasing: 'elasticOut',
-        animationDelay: function(idx: any): number {
+        animationDelay: function (idx: any): number {
           return Math.random() * 200;
         },
       }],
@@ -606,7 +606,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
           color: '#ccc',
         },
       },
-      tooltip : {
+      tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b} : {c} ({d}%)',
       },
@@ -618,10 +618,10 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
           colorLightness: [0, 1],
         },
       },
-      series : [{
+      series: [{
         name: 'Accounts',
         type: 'pie',
-        radius : '55%',
+        radius: '55%',
         center: ['50%', '50%'],
         data: this.datAccountLiability,
         roseType: 'radius',
@@ -652,96 +652,67 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
         animationType: 'scale',
         animationEasing: 'elasticOut',
-        animationDelay: function(idx: any): number {
+        animationDelay: function (idx: any): number {
           return Math.random() * 200;
         },
       }],
     };
     chartAcntOut.setOption(optionAcntOut);
   }
-  private _buildAccountCategoryInChart(): void {
-    let chartAcntCtgyIn: any = echarts.init(this.chartAcntCtgyIncoming.nativeElement);
-    let colors: any = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
-    let bgColor: any = '#2E2733';
-
-    // Refer to http://echarts.baidu.com/examples/editor.html?c=sunburst-book
-    let data = '{"name":"虚构","itemStyle":{"normal":{"color":"#FF7853"}},"children":[{"name":"小说","children":[{"name":"5☆","children":[{"name":"疼","value":1,"itemStyle":{"opacity":1,"color":"#FFAE57"},"label":{"color":"#FFAE57"}},{"name":"慈悲","value":1,"itemStyle":{"opacity":1,"color":"#FFAE57"},"label":{"color":"#FFAE57"}},{"name":"楼下的房客","value":1,"itemStyle":{"opacity":1,"color":"#FFAE57"},"label":{"color":"#FFAE57"}}],"label":{"color":"#FFAE57","downplay":{"opacity":0.5}}},{"name":"4☆","children":[{"name":"虚无的十字架","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}},{"name":"无声告白","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}},{"name":"童年的终结","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}}],"label":{"color":"#FF7853","downplay":{"opacity":0.5}}},{"name":"3☆","children":[{"name":"疯癫老人日记","value":1,"itemStyle":{"opacity":1,"color":"#EA5151"},"label":{"color":"#EA5151"}}],"label":{"color":"#EA5151","downplay":{"opacity":0.5}}}],"itemStyle":{}},{"name":"其他","children":[{"name":"5☆","children":[{"name":"纳博科夫短篇小说全集","value":1,"itemStyle":{"opacity":1,"color":"#FFAE57"},"label":{"color":"#FFAE57"}}],"label":{"color":"#FFAE57","downplay":{"opacity":0.5}}},{"name":"4☆","children":[{"name":"安魂曲","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}},{"name":"人生拼图版","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}}],"label":{"color":"#FF7853","downplay":{"opacity":0.5}}},{"name":"3☆","children":[{"name":"比起爱你，我更需要你","value":1,"itemStyle":{"opacity":1,"color":"#EA5151"},"label":{"color":"#EA5151"}}],"label":{"color":"#EA5151","downplay":{"opacity":0.5}}}],"itemStyle":{}}]},{"name":"非虚构","itemStyle":{"color":"#EA5151"},"children":[{"name":"设计","children":[{"name":"5☆","children":[{"name":"无界面交互","value":1,"itemStyle":{"opacity":1,"color":"#FFAE57"},"label":{"color":"#FFAE57"}}],"label":{"color":"#FFAE57","downplay":{"opacity":0.5}}},{"name":"4☆","children":[{"name":"数字绘图的光照与渲染技术","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}},{"name":"日本建筑解剖书","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}}],"label":{"color":"#FF7853","downplay":{"opacity":0.5}}},{"name":"3☆","children":[{"name":"奇幻世界艺术\n&RPG地图绘制讲座","value":1,"itemStyle":{"opacity":1,"color":"#EA5151"},"label":{"color":"#EA5151"}}],"label":{"color":"#EA5151","downplay":{"opacity":0.5}}}],"itemStyle":{"color":"#EA5151"}},{"name":"社科","children":[{"name":"5☆","children":[{"name":"痛点","value":1,"itemStyle":{"opacity":1,"color":"#FFAE57"},"label":{"color":"#FFAE57"}}],"label":{"color":"#FFAE57","downplay":{"opacity":0.5}}},{"name":"4☆","children":[{"name":"卓有成效的管理者","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}},{"name":"进化","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}},{"name":"后物欲时代的来临","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}}],"label":{"color":"#FF7853","downplay":{"opacity":0.5}}},{"name":"3☆","children":[{"name":"疯癫与文明","value":1,"itemStyle":{"opacity":1,"color":"#EA5151"},"label":{"color":"#EA5151"}}],"label":{"color":"#EA5151","downplay":{"opacity":0.5}}}],"itemStyle":{"color":"#EA5151"}},{"name":"心理","children":[{"name":"5☆","children":[{"name":"我们时代的神经症人格","value":1,"itemStyle":{"opacity":1,"color":"#FFAE57"},"label":{"color":"#FFAE57"}}],"label":{"color":"#FFAE57","downplay":{"opacity":0.5}}},{"name":"4☆","children":[{"name":"皮格马利翁效应","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}},{"name":"受伤的人","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}}],"label":{"color":"#FF7853","downplay":{"opacity":0.5}}},{"name":"3☆","label":{"color":"#EA5151","downplay":{"opacity":0.5}}},{"name":"2☆","children":[{"name":"迷恋","value":1,"itemStyle":{"opacity":1,"color":"#CC3F57"},"label":{"color":"#CC3F57"}}],"label":{"color":"#CC3F57","downplay":{"opacity":0.5}}}],"itemStyle":{"color":"#EA5151"}},{"name":"居家","children":[{"name":"4☆","children":[{"name":"把房子住成家","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}},{"name":"只过必要生活","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}},{"name":"北欧简约风格","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}}],"label":{"color":"#FF7853","downplay":{"opacity":0.5}}}],"itemStyle":{"color":"#EA5151"}},{"name":"绘本","children":[{"name":"5☆","children":[{"name":"设计诗","value":1,"itemStyle":{"opacity":1,"color":"#FFAE57"},"label":{"color":"#FFAE57"}}],"label":{"color":"#FFAE57","downplay":{"opacity":0.5}}},{"name":"4☆","children":[{"name":"假如生活糊弄了你","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}},{"name":"博物学家的神秘动物图鉴","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}}],"label":{"color":"#FF7853","downplay":{"opacity":0.5}}},{"name":"3☆","children":[{"name":"方向","value":1,"itemStyle":{"opacity":1,"color":"#EA5151"},"label":{"color":"#EA5151"}}],"label":{"color":"#EA5151","downplay":{"opacity":0.5}}}],"itemStyle":{"color":"#EA5151"}},{"name":"哲学","children":[{"name":"4☆","children":[{"name":"人生的智慧","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}}],"label":{"color":"#FF7853","downplay":{"opacity":0.5}}}],"itemStyle":{"color":"#EA5151"}},{"name":"技术","children":[{"name":"5☆","children":[{"name":"代码整洁之道","value":1,"itemStyle":{"opacity":1,"color":"#FFAE57"},"label":{"color":"#FFAE57"}}],"label":{"color":"#FFAE57","downplay":{"opacity":0.5}}},{"name":"4☆","children":[{"name":"Three.js 开发指南","value":1,"itemStyle":{"opacity":1,"color":"#FF7853"},"label":{"color":"#FF7853"}}],"label":{"color":"#FF7853","downplay":{"opacity":0.5}}}],"itemStyle":{"color":"#EA5151"}}]}]';
-    let datObj = JSON.parse(data);
-    
-    // Account category incoming
-    let optionAcntCtgyIn: any = {
-      backgroundColor: bgColor,
-      color: colors,
-      series: [{
-        type: 'sunburst',
-        center: ['50%', '48%'],
-        data: this.dataBSCategoryDebit,
-        // sort: function (a, b) {
-        //     if (a.depth === 1) {
-        //         return b.getValue() - a.getValue();
-        //     }
-        //     else {
-        //         return a.dataIndex - b.dataIndex;
-        //     }
-        // },
-        label: {
-          rotate: 'radial',
-          color: bgColor,
+  private _buildAccountCategoryChart(): void {
+    let chartAcntCtgy: any = echarts.init(this.chartAcntCtgy.nativeElement);
+    let option: any = {
+      title : {
+        text: 'Accounting Category',
+        subtext: 'Accounting Category',
+        x: 'center',
+      },
+      tooltip : {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
+      },
+      legend: {
+        x : 'center',
+        y : 'bottom',
+        data: this.arAccountCtgy,
+      },
+      toolbox: {
+        show : true,
+        feature : {
+          mark : {show: true},
+          dataView : {show: true, readOnly: false},
+          magicType : {
+            show: true,
+            type: ['pie', 'funnel'],
+          },
+          restore : {show: true},
+          saveAsImage : {show: true},
         },
-        itemStyle: {
-          borderColor: bgColor,
-          borderWidth: 2,
-        },
-        levels: [{}, {
-          r0: 0,
-          r: 40,
-          label: {
-            rotate: 0,
-          },
+      },
+      calculable : true,
+      series : [{
+          name: '',
+          type: 'pie',
+          // radius: [20, 110],
+          // center: ['25%', '50%'],
+          // roseType : 'radius',
+          radius : [30, 110],
+          center : ['75%', '50%'],
+          roseType : 'area',
+          data: this.dataBSCategoryDebit,
         }, {
-          r0: 40,
-          r: 105,
-        }, {
-          r0: 115,
-          r: 140,
-          itemStyle: {
-            shadowBlur: 2,
-            shadowColor: colors[2],
-            color: 'transparent',
-          },
-          label: {
-            rotate: 'tangential',
-            fontSize: 10,
-            color: colors[0],
-          },
-        }, {
-          r0: 140,
-          r: 145,
-          itemStyle: {
-            shadowBlur: 80,
-            shadowColor: colors[0],
-          },
-          label: {
-            position: 'outside',
-            textShadowBlur: 5,
-            textShadowColor: '#333',
-          },
-          downplay: {
-            label: {
-              opacity: 0.5,
-            },
-          },
+          name: '',
+          type: 'pie',
+          // radius: [20, 110],
+          // center: ['25%', '50%'],
+          // roseType : 'radius',
+          radius : [30, 110],
+          center : ['75%', '50%'],
+          roseType : 'area',
+          data: this.dataBSCategoryCredit,
         }],
-      }],
     };
 
-    chartAcntCtgyIn.setOption(optionAcntCtgyIn);
-  }
-  private _buildAccountCategoryOutChart(): void {
-    let chartAcntCtgyOut: any = echarts.init(this.chartAcntCtgyOutgoing.nativeElement);
-    let colors: any = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
-    let bgColor: any = '#2E2733';
-
-    // Account category outgoing
+    chartAcntCtgy.setOption(option);
   }
 }

@@ -14,6 +14,11 @@
   bottom: 15px;
 }
 
+.dashboard-card-content {
+  /*text-align: center;*/
+  justify-content:space-between;
+}
+
 .table-container {
   display: flex;
   flex-direction: column;
