@@ -120,8 +120,8 @@ export class FinanceStorageService {
           let listRst: AccountCategory[] = [];
           const rjs: any = <any>response;
 
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
+          if (rjs instanceof Array && rjs.length > 0) {
+            for (const si of rjs) {
               const rst: AccountCategory = new AccountCategory();
               rst.onSetData(si);
               listRst.push(rst);
@@ -173,8 +173,8 @@ export class FinanceStorageService {
           let listRst: DocumentType[] = [];
 
           const rjs: any = <any>response;
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
+          if (rjs instanceof Array && rjs.length > 0) {
+            for (const si of rjs) {
               const rst: DocumentType = new DocumentType();
               rst.onSetData(si);
               listRst.push(rst);
@@ -298,8 +298,8 @@ export class FinanceStorageService {
           let listRst: AssetCategory[] = [];
           const rjs: any = <any>response;
 
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
+          if (rjs instanceof Array && rjs.length > 0) {
+            for (const si of rjs) {
               const rst: AssetCategory = new AssetCategory();
               rst.onSetData(si);
               listRst.push(rst);

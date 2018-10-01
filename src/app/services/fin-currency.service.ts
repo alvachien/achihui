@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 export class FinCurrencyService {
   private _islistLoaded: boolean;
 
+  // Buffer in current page.
   listDataChange: BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
   get Currencies(): Currency[] {
     return this.listDataChange.value;
@@ -44,8 +45,8 @@ export class FinCurrencyService {
           let listRst: Currency[] = [];
           const rjs: any = <any>response;
 
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
+          if (rjs instanceof Array && rjs.length > 0) {
+            for (const si of rjs) {
               const rst: Currency = new Currency();
               rst.onSetData(si);
               listRst.push(rst);
@@ -56,16 +57,6 @@ export class FinCurrencyService {
           this.listDataChange.next(listRst);
           return listRst;
         }));
-        // .catch(err => {
-        //   if (environment.LoggingLevel >= LogLevel.Error) {
-        //     console.error(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinCurrencyService: ${err}`);
-        //   }
-
-        //   this._islistLoaded = false;
-        //   this.listDataChange.next([]);
-
-        //   return Observable.throw(err.json());
-        // });
     } else {
       return of(this.listDataChange.value);
     }
