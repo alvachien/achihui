@@ -209,8 +209,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     if (!this.detailObject.Desp) {
       return false;
     } else {
-      this.detailObject.Desp = this.detailObject.Desp.trim();
-      if (this.detailObject.Desp.length <= 0) {
+      if (this.detailObject.Desp.trim().length <= 0) {
         return false;
       }
     }
@@ -222,8 +221,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     if (!this.detailObject.AssetAccount.Name) {
       return false;
     } else {
-      this.detailObject.AssetAccount.Name = this.detailObject.AssetAccount.Name;
-      if (this.detailObject.AssetAccount.Name.length <= 0) {
+      if (this.detailObject.AssetAccount.Name.trim().length <= 0) {
         return false;
       }
     }

@@ -93,8 +93,7 @@ export class ControlCenterDetailComponent implements OnInit {
     }
 
     // Name
-    this.detailObject.Name = this.detailObject.Name.trim();
-    if (this.detailObject.Name.length <= 0) {
+    if (this.detailObject.Name.trim().length <= 0) {
       return false;
     }
 

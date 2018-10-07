@@ -205,8 +205,7 @@ export class DocumentLoanDetailComponent implements OnInit, AfterViewInit {
       return false;
     }
 
-    this.detailObject.Desp = this.detailObject.Desp.trim();
-    if (this.detailObject.Desp.length <= 0) {
+    if (this.detailObject.Desp.trim().length <= 0) {
       return false;
     }
     this.ctrlAccount.generateAccountInfoForSave();

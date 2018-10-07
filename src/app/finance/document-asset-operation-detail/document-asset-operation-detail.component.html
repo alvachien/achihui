@@ -17,7 +17,7 @@
         </mat-expansion-panel-header>
 
         <!-- Currency -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr" name="cur">
             <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
               {{cr.Symbol}} - {{cr.Name | translate}}
@@ -26,7 +26,7 @@
         </mat-form-field>
 
         <!-- Tran date -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="srcdpicker" 
             placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable">
           <mat-datepicker-toggle matSuffix [for]="srcdpicker"></mat-datepicker-toggle>
@@ -34,7 +34,7 @@
         </mat-form-field>
 
         <!-- Desp -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
             name="desp">
         </mat-form-field>
@@ -119,7 +119,7 @@
             <ng-container matColumnDef="Desp">
               <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <mat-form-field class="demo-full-width">
+                <mat-form-field class="control-full-width">
                   <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" 
                     [readonly]="!isFieldChangable" [(ngModel)]="row.Desp" name="itdesp">
                 </mat-form-field> 

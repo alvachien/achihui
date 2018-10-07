@@ -199,8 +199,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
       return false;
     }
 
-    this.detailObject.Desp = this.detailObject.Desp.trim();
-    if (this.detailObject.Desp.length <= 0) {
+    if (this.detailObject.Desp.trim().length <= 0) {
       return false;
     }
 
