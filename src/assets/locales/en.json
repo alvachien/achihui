@@ -472,6 +472,7 @@
     "TradingPartner": "Trading Partner",
     "FirstRepayDate": "First Repay Date",
     "RepayDayInMonth": "Repay day",
+    "LegacyAsset": "Legacy Asset",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

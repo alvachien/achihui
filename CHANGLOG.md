@@ -10,7 +10,7 @@ Bugs fixing and Feature list
 - Using echart's bar/pie chart replace current ngx-charts;
 - Event: Overview page;
 - Learn: Question bank refactor;
-- Authority control: account level;
+- [?] Authority control: account level;
 - Finance: Report click navigation support;
 - Finance: search for document item dynamically;
 - Finance: split the loan document to borrow from (liability) and lend to (asset);
@@ -18,6 +18,7 @@ Bugs fixing and Feature list
 - Finance: Multiple items in Asset document;
 - Finance: Support the repayment document;
 - Finance: Enable scope in Account view;
+- Finance: Legacy asset account;
 
 
 ## Version 0.5.5
