@@ -105,8 +105,8 @@ export class LearnStorageService {
           const rjs: any = <any>response;
           let listRst: LearnCategory[] = [];
 
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
+          if (rjs instanceof Array && rjs.length > 0) {
+            for (const si of rjs) {
               const rst: LearnCategory = new LearnCategory();
               rst.onSetData(si);
               listRst.push(rst);

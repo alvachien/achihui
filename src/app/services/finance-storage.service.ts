@@ -225,8 +225,8 @@ export class FinanceStorageService {
           let listRst: TranType[] = [];
 
           const rjs: any = <any>response;
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
+          if (rjs instanceof Array && rjs.length > 0) {
+            for (const si of rjs) {
               const rst: TranType = new TranType();
               rst.onSetData(si);
               listRst.push(rst);
@@ -351,8 +351,8 @@ export class FinanceStorageService {
           let listRst: Account[] = [];
           const rjs: any = <any>response;
 
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
+          if (rjs instanceof Array && rjs.length > 0) {
+            for (const si of rjs) {
               const rst: Account = new Account();
               rst.onSetData(si);
               listRst.push(rst);
@@ -591,8 +591,8 @@ export class FinanceStorageService {
           let listRst: ControlCenter[] = [];
           const rjs: any = <any>response;
 
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
+          if (rjs instanceof Array && rjs.length > 0) {
+            for (const si of rjs) {
               const rst: ControlCenter = new ControlCenter();
               rst.onSetData(si);
               listRst.push(rst);
@@ -806,8 +806,8 @@ export class FinanceStorageService {
           let listRst: Order[] = [];
 
           const rjs: any = <any>response;
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
+          if (rjs instanceof Array && rjs.length > 0) {
+            for (const si of rjs) {
               const rst: Order = new Order();
               rst.onSetData(si);
               listRst.push(rst);

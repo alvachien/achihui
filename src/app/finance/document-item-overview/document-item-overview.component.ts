@@ -126,7 +126,6 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       let chart: any = echarts.init(this.trendWeekly.nativeElement);
       let arWeekIncome: number[] = [];
       let arWeekOutgo: number[] = [];
-      let arWeekProfit: number[] = [];
 
       arweeks.forEach((val: any) => {
         let idxIncome: number = x.findIndex((val2: ReportTrendExData) => {
@@ -138,7 +137,6 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
         if (idxIncome === -1 && idxOutgo === -1) {
           arWeekIncome.push(0);
           arWeekOutgo.push(0);
-          arWeekProfit.push(0);
         } else {
           let valIncome: number = 0;
           let valOutgo: number = 0;
@@ -150,7 +148,6 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
           }
           arWeekIncome.push(valIncome);
           arWeekOutgo.push(valOutgo);
-          arWeekProfit.push(valIncome + valOutgo);
         }
       });
 
@@ -162,7 +159,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
           },
         },
         legend: {
-          data: ['利润', this.labelOutgo, this.labelIncome],
+          data: [this.labelOutgo, this.labelIncome],
         },
         grid: {
           left: '3%',
@@ -189,20 +186,9 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
         ],
         series : [
           {
-            name: '利润',
-            type: 'bar',
-            label: {
-              normal: {
-                show: true,
-                position: 'inside',
-              },
-            },
-            data: arWeekProfit,
-          },
-          {
             name: this.labelIncome,
             type: 'bar',
-            stack: '总量',
+            // stack: '总量',
             label: {
               normal: {
                 show: true,
@@ -213,7 +199,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
           {
             name: this.labelOutgo,
             type: 'bar',
-            stack: '总量',
+            // stack: '总量',
             label: {
               normal: {
                 show: true,
@@ -225,7 +211,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
         ],
       };
       chart.setOption(option);
-      });
+    });
 
     // Daily
     this._storageService.fetchReportTrendData(ReportTrendExTypeEnum.Daily, true, bgn, end)
@@ -248,7 +234,6 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       let arCtgy: string[] = [];
       let arIncome: number[] = [];
       let arOutgo: number[] = [];
-      let arProfit: number[] = [];
       ardates2.forEach((valdate: moment.Moment) => {
         arCtgy.push(valdate.format(momentDateFormat));
         let valincome: number = 0;
@@ -266,14 +251,13 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
 
         arIncome.push(valincome);
         arOutgo.push(valoutgo);
-        arProfit.push(valincome + valoutgo);
       });
       let option: any = {
         tooltip: {
           trigger: 'axis',
         },
         legend: {
-          data: ['利润', this.labelOutgo, this.labelIncome],
+          data: [this.labelOutgo, this.labelIncome],
         },
         grid: {
           left: '3%',
@@ -296,21 +280,15 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
         },
         series: [
           {
-            name: '利润',
-            type: 'line',
-            stack: '总量',
-            data: arProfit,
-          },
-          {
             name: this.labelOutgo,
             type: 'line',
-            stack: '总量',
+            // stack: '总量',
             data: arOutgo,
           },
           {
             name: this.labelIncome,
             type: 'line',
-            stack: '总量',
+            // stack: '总量',
             data: arIncome,
           },
         ],

@@ -23,14 +23,14 @@
   </mat-form-field>
 
   <!-- Repay day -->
-  <mat-form-field class="control-full-width">
+  <mat-form-field class="control-full-width" *ngIf="isCreateMode">
     <input matInput type="number" [disabled]="!isFieldChangable" placeholder="{{'Finance.RepayDayInMonth' | translate}}" 
       [ngModel]="extObject?.RepayDayInMonth" (ngModelChange)="extObject.RepayDayInMonth=$event"
       name="repayday">
   </mat-form-field>
 
   <!-- First repay date -->
-  <mat-form-field class="control-full-width">
+  <mat-form-field class="control-full-width" *ngIf="isCreateMode">
     <input matInput [ngModel]="extObject?.FirstRepayDate" (ngModelChange)="extObject.FirstRepayDate=$event" [matDatepicker]="firstrpdatedpicker" 
       placeholder="{{'Finance.FirstRepayDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="firstrpdatedpicker"></mat-datepicker-toggle>
