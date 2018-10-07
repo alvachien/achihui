@@ -23,6 +23,8 @@
       <mat-hint align="end">{{assetcomment.value.length}} / 100</mat-hint>
   </mat-form-field>
 
+  <!-- <mat-checkbox></mat-checkbox> -->
+
   <div class="control-full-width" *ngIf="!isCreateMode">
     <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
     <a routerLink='/finance/document/displayassetbuy/{{extObject.RefDocForBuy}}' routerLinkActive="active" *ngIf="extObject.RefDocForBuy">{{extObject?.RefDocForBuy}}</a>

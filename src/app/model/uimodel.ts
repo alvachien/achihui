@@ -390,7 +390,7 @@ export class UIFinAssetOperationDocument {
     } else {
       doc.DocType = hih.financeDocTypeAssetSoldOut;
     }
-
+    doc.TranDate = this.TranDate.clone();
     doc.Desp = this.Desp;
     doc.TranCurr = this.TranCurr;
     doc.ExgRate = this.ExgRate;
@@ -398,7 +398,6 @@ export class UIFinAssetOperationDocument {
 
     this._items.forEach((val: HIHFinance.DocumentItem) => {
       doc.Items.push(val);
-
     });
 
     return doc;
