@@ -693,6 +693,10 @@ export class AccountExtraAsset extends AccountExtra {
   public RefDocForBuy: number;
   public RefDocForSold?: number;
 
+  // Legacy info, just for creation
+  public isLegacy?: boolean;
+  public curValue?: number;
+
   get Name(): string {
     return this._name;
   }
@@ -720,6 +724,8 @@ export class AccountExtraAsset extends AccountExtra {
     aobj.Comment = this.Comment;
     aobj.RefDocForBuy = this.RefDocForBuy;
     aobj.RefDocForSold = this.RefDocForSold;
+    aobj.isLegacy = this.isLegacy;
+    aobj.curValue = this.curValue;
 
     return aobj;
   }
