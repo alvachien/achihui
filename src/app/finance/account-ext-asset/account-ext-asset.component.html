@@ -23,10 +23,38 @@
       <mat-hint align="end">{{assetcomment.value.length}} / 100</mat-hint>
   </mat-form-field>
 
-  <mat-checkbox [(ngModel)]="extObject.isLegacy" color="accent" *ngIf="isCreateMode">{{'Finance.LegacyAsset' | translate}}</mat-checkbox>
+  <mat-checkbox [(ngModel)]="extObject.isLegacy" color="accent" *ngIf="isCreateMode">
+    {{'Finance.LegacyAsset' | translate}}
+  </mat-checkbox>
+
   <mat-form-field class="control-full-width">
-    <input matInput type="number" [(ngModel)]="extObject.curValue">
+    <input matInput [(ngModel)]="extObject.startDate" [matDatepicker]="tdpicker" 
+      placeholder="{{'Common.Date' | translate}}" [disabled]="!extObject.isLegacy">
+    <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
+    <mat-datepicker #tdpicker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field class="control-full-width" *ngIf="isCreateMode">
+    <input matInput type="number" [(ngModel)]="extObject.curValue" [disabled]="!extObject.isLegacy">
     <span matSuffix>{{BaseCurrency}}</span>
+  </mat-form-field>
+
+  <mat-form-field class="control-full-width" *ngIf="isCreateMode">
+    <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!extObject.isLegacy" [(ngModel)]="extObject.ccID"
+      name="srccc">
+      <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+        {{cc.Name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="control-full-width" *ngIf="isCreateMode">
+    <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!extObject.isLegacy" [(ngModel)]="extObject.ordID"
+      name="srcord">
+      <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+        {{ord.Name}}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
 
   <div class="control-full-width" *ngIf="!isCreateMode">

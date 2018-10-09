@@ -4,6 +4,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, Acc
   RepeatFrequencyEnum, UIDisplayStringUtil,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'hih-finance-account-ext-asset',
@@ -25,16 +26,23 @@ export class AccountExtAssetComponent implements OnInit {
     return this._homeService.curHomeSelected.value.BaseCurrency;
   }
 
-  constructor(private _storageService: FinanceStorageService,
+  constructor(public _storageService: FinanceStorageService,
     private _homeService: HomeDefDetailService,
     private _currService: FinCurrencyService) {
     // Do nothing
   }
 
   ngOnInit(): void {
-    // Ensure the asset category list has been loaded
-    this._storageService.fetchAllAssetCategories().subscribe((x: any) => {
+    // Ensure those request has been loaded
+    forkJoin([
+      this._storageService.fetchAllAssetCategories(),
+      this._storageService.fetchAllControlCenters(),
+      this._storageService.fetchAllOrders()]).subscribe((x: any) => {
       // Empty
     });
+  }
+
+  generateAccountInfoForSave(): void {
+    // Placeholder
   }
 }

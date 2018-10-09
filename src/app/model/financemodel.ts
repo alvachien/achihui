@@ -734,6 +734,9 @@ export class AccountExtraAsset extends AccountExtra {
     aobj.RefDocForSold = this.RefDocForSold;
     aobj.isLegacy = this.isLegacy;
     aobj.curValue = this.curValue;
+    aobj.startDate = this.startDate;
+    aobj.ccID = this.ccID;
+    aobj.ordID = this.ordID;
 
     return aobj;
   }

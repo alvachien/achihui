@@ -279,6 +279,12 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
       }
     });
 
+    if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
+      if (this._compAsset) {
+        this._compAsset.generateAccountInfoForSave();
+      }
+    }
+    
     this._storageService.createAccount(this.detailObject);
   }
 
@@ -340,7 +346,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
     }
     if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
       if (this._compAsset) {
-        // this._compAsset.generateAccountInfoForSave();
+        this._compAsset.generateAccountInfoForSave();
       }
     }
 
