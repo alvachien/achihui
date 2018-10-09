@@ -472,7 +472,8 @@
     "TradingPartner": "交易对手方",
     "FirstRepayDate": "首次还款日期",
     "RepayDayInMonth": "还款日",
-    "LegacyAsset": "已有资产",
+    "LegacyAsset": "固有资产",
+    "PresentValue": "当前估价",
 
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",

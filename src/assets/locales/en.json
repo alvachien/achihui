@@ -473,6 +473,7 @@
     "FirstRepayDate": "First Repay Date",
     "RepayDayInMonth": "Repay day",
     "LegacyAsset": "Legacy Asset",
+    "PresentValue": "Present Est. Vaue",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

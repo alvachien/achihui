@@ -23,9 +23,10 @@
       <mat-hint align="end">{{assetcomment.value.length}} / 100</mat-hint>
   </mat-form-field>
 
-  <mat-checkbox [(ngModel)]="extObject.isLegacy" color="accent" *ngIf="isCreateMode"></mat-checkbox>{{'Finance.LegacyAsset' | translate}}</mat-checkbox>
+  <mat-checkbox [(ngModel)]="extObject.isLegacy" color="accent" *ngIf="isCreateMode">{{'Finance.LegacyAsset' | translate}}</mat-checkbox>
   <mat-form-field class="control-full-width">
     <input matInput type="number" [(ngModel)]="extObject.curValue">
+    <span matSuffix>{{BaseCurrency}}</span>
   </mat-form-field>
 
   <div class="control-full-width" *ngIf="!isCreateMode">

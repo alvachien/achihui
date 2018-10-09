@@ -21,11 +21,18 @@ export class AccountExtAssetComponent implements OnInit {
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
+  get BaseCurrency(): string {
+    return this._homeService.curHomeSelected.value.BaseCurrency;
+  }
 
-  constructor(public _storageService: FinanceStorageService) {
+  constructor(private _storageService: FinanceStorageService,
+    private _homeService: HomeDefDetailService,
+    private _currService: FinCurrencyService) {
+    // Do nothing
   }
 
   ngOnInit(): void {
+    // Ensure the asset category list has been loaded
     this._storageService.fetchAllAssetCategories().subscribe((x: any) => {
       // Empty
     });
