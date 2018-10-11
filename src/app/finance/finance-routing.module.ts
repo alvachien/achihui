@@ -35,6 +35,7 @@ import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
 import { DocumentAssetOperationDetailComponent } from './document-asset-operation-detail';
+import { DocumentAssetSoldoutDetailComponent } from './document-asset-soldout-detail';
 import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { DocumentRepaymentDetailComponent } from './document-repayment-detail';
 import { ReportComponent } from './report';
@@ -265,7 +266,7 @@ const routes: Routes = [
           },
           {
             path: 'createassetsold',
-            component: DocumentAssetOperationDetailComponent,
+            component: DocumentAssetSoldoutDetailComponent,
           },
           {
             path: 'createrepay',
@@ -305,11 +306,11 @@ const routes: Routes = [
           },
           {
             path: 'displayassetbuy/:id',
-            component: DocumentAssetOperationDetailComponent,
+            component: DocumentNormalDetailComponent,
           },
           {
             path: 'displayassetsold/:id',
-            component: DocumentAssetOperationDetailComponent,
+            component: DocumentNormalDetailComponent,
           },
           {
             path: 'displayrepay/:id',
@@ -349,11 +350,11 @@ const routes: Routes = [
           },
           {
             path: 'editassetbuy/:id',
-            component: DocumentAssetOperationDetailComponent,
+            component: DocumentNormalDetailComponent,
           },
           {
             path: 'editassetsold/:id',
-            component: DocumentAssetOperationDetailComponent,
+            component: DocumentNormalDetailComponent,
           },
           {
             path: 'editrepay/:id',
