@@ -39,8 +39,8 @@ import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
-import { DocumentAssetOperationDetailComponent } from './document-asset-operation-detail';
-import { DocumentAssetSoldoutDetailComponent } from './document-asset-soldout-detail';
+import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create';
+import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-create';
 import { AssetCategoryComponent } from './asset-category';
 import { AssetCategoryListComponent } from './asset-category-list';
 import { AssetCategoryDetailComponent } from './asset-category-detail';
@@ -100,7 +100,8 @@ import { ConfigComponent } from './config';
     DocumentExchangeDetailComponent,
     DocumentItemOverviewComponent,
     DocumentLoanDetailComponent,
-    DocumentAssetOperationDetailComponent,
+    DocumentAssetBuyInCreateComponent,
+    DocumentAssetSoldoutCreateComponent,
     AssetCategoryComponent,
     AssetCategoryListComponent,
     AssetCategoryDetailComponent,
@@ -121,7 +122,6 @@ import { ConfigComponent } from './config';
     AccountExtCreditCardComponent,
     DocumentRepaymentDetailComponent,
     ConfigComponent,
-    DocumentAssetSoldoutDetailComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

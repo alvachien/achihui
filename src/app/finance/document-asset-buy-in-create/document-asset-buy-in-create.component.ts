@@ -17,17 +17,16 @@ import * as moment from 'moment';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
-  selector: 'hih-document-asset-operation-detail',
-  templateUrl: './document-asset-operation-detail.component.html',
-  styleUrls: ['./document-asset-operation-detail.component.scss'],
+  selector: 'hih-document-asset-buy-in-create',
+  templateUrl: './document-asset-buy-in-create.component.html',
+  styleUrls: ['./document-asset-buy-in-create.component.scss'],
 })
-export class DocumentAssetOperationDetailComponent implements OnInit {
+export class DocumentAssetBuyInCreateComponent implements OnInit {
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
   public detailObject: UIFinAssetOperationDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
-  public pageTitle: string;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -54,7 +53,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent constructor...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent constructor...');
     }
     this.detailObject = new UIFinAssetOperationDocument();
     this.detailObject.isBuyin = true;
@@ -62,7 +61,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit...');
     }
 
     forkJoin([
@@ -76,7 +75,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -115,12 +114,11 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
             this.uiMode = UIMode.Display;
           }
           this.currentMode = getUIModeString(this.uiMode);
-          this.pageTitle = this.detailObject.isBuyin ? 'Sys.DocTy.AssetBuyIn' : 'Sys.DocTy.AssetSoldOut';
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this._storageService.readAssetDocument(this.routerID, this.detailObject.isBuyin).subscribe((x2: any) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetOperationDetailComponent ngOnInit for activateRoute URL: ${x2}`);
+                console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit for activateRoute URL: ${x2}`);
               }
 
               this.detailObject.parseDocument(x2);
@@ -137,7 +135,7 @@ export class DocumentAssetOperationDetailComponent implements OnInit {
       });
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering DocumentAssetOperationDetailComponent's ngOninit, failed to load depended objects : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering DocumentAssetBuyInCreateComponent's ngOninit, failed to load depended objects : ${error}`);
       }
 
       const dlginfo: MessageDialogInfo = {

@@ -437,6 +437,19 @@ export class UIFinAssetOperationDocument {
 }
 
 /**
+ * Asset Soldout document in UI part
+ */
+export class UIFinAssetSoldoutDocument {
+  public tranAmount: number;
+  public desp: string;
+  public assetAccountID: number;
+  public revAccountID: number;
+  public tranDate: moment.Moment;
+  public ccID?: number;
+  public orderID?: number;
+}
+
+/**
  * UI Loan document
  */
 export class UIFinLoanDocument {
