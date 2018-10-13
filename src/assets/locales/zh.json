@@ -196,7 +196,8 @@
       "AccountPayable": "应付账款",
       "AccountReceviable": "应收账款",
       "VirtualAccount": "虚拟账户",
-      "AssetAccount": "资产账户"
+      "AssetAccount": "资产账户",
+      "Insurance": "保险"
     },
     "DocTy": {
       "Normal": "普通收支",
@@ -210,7 +211,9 @@
       "AssetSoldOut": "出售资产或大件家用器具",
       "BorrowFrom": "借入",
       "LendTo": "借出",
-      "Repay": "还款"
+      "Repay": "还款",
+      "AssetValChg": "资产估值变动",
+      "Insurance": "保险"
     },
     "AssCtgy": {
       "Apartment": "公寓",

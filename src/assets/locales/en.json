@@ -196,7 +196,8 @@
       "AccountPayable": "Account Payable",
       "AccountReceviable": "Account Receviable",
       "VirtualAccount": "Virtual Account",
-      "AssetAccount": "Asset Account"
+      "AssetAccount": "Asset Account",
+      "Insurance": "Insurance"
     },
     "DocTy": {
       "Normal": "Normal",
@@ -210,7 +211,9 @@
       "AssetSoldOut": "Sold out Asset",
       "BorrowFrom": "Borrow from",
       "LendTo": "Lend to",
-      "Repay": "Repayment"
+      "Repay": "Repayment",
+      "AssetValChg": "Asset Value Change",
+      "Insurance": "Insurance"
     },
     "AssCtgy": {
       "Apartment": "Apartment",

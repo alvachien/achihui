@@ -1,6 +1,6 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{'Sys.DocTy.AssetSoldOut' | translate}}</mat-card-title>
+    <mat-card-title><h1>{{'Sys.DocTy.AssetSoldOut' | translate}}</h1></mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <mat-vertical-stepper linear #stepper>
@@ -20,17 +20,6 @@
           </mat-form-field>
 
           <mat-form-field class="control-full-width">
-            <mat-select placeholder="{{'Finance.Account' | translate}}" name="acnt" formControlName="revacntControl"
-              required>
-              <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilterEx: uiRevAccountCtgyFilterEx"
-                [value]="acnt.Id">
-                <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}}
-                  ({{acnt.CategoryName | translate}})</span>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field class="control-full-width">
             <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
             <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
             <mat-datepicker #dtpker></mat-datepicker>
@@ -40,16 +29,6 @@
             <input matInput type="number" formControlName="amountControl">
             <span matSuffix>{{BaseCurrency}}</span>
           </mat-form-field>
-
-          <div>
-            <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
-          </div>
-        </form>
-      </mat-step>
-
-      <mat-step [stepControl]="secondFormGroup">
-        <form [formGroup]="secondFormGroup">
-          <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
 
           <mat-form-field class="control-full-width">
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="itcc">
@@ -69,10 +48,127 @@
           </mat-form-field>
 
           <div>
-            <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
             <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
           </div>
         </form>
+      </mat-step>
+
+      <mat-step >
+        <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
+
+        <mat-toolbar>
+          <button mat-icon-button (click)="onCreateDocItem()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></button>
+        </mat-toolbar>
+
+        <mat-table #table [dataSource]="dataSource">
+          <!-- ID Column -->
+          <ng-container matColumnDef="ItemId">
+            <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <button mat-icon-button (click)="onDeleteDocItem(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="example-icon">delete</mat-icon></button>
+              <span class="example-spacer"></span>
+              <mat-form-field>
+                <input matInput type="number" required placeholder="#" [(ngModel)]="row.ItemId" name="itid">
+              </mat-form-field>
+            </mat-cell>
+          </ng-container>
+
+          <!-- AccountID Column -->
+          <ng-container matColumnDef="AccountId">
+            <mat-header-cell *matHeaderCellDef>{{'Finance.Account' | translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-form-field>
+                <mat-select placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="row.AccountId" name="itacnt">
+                  <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilterEx: uiRevAccountCtgyFilterEx" [value]="acnt.Id">
+                    <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Amount Column -->
+          <ng-container matColumnDef="Amount">
+            <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let row"> 
+              <mat-form-field>
+                <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" 
+                  [(ngModel)]="row.TranAmount" name="itamt">
+              </mat-form-field>
+            </mat-cell>
+          </ng-container>
+            
+          <!-- Comment Column -->
+          <ng-container matColumnDef="Desp">
+            <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-form-field class="control-full-width">
+                <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" 
+                  [(ngModel)]="row.Desp" name="itdesp">
+              </mat-form-field> 
+            </mat-cell>
+          </ng-container>
+
+          <!-- Control center Column -->
+          <ng-container matColumnDef="ControlCenter">
+            <mat-header-cell *matHeaderCellDef> {{'Finance.ControlCenter' | translate}} </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-form-field>
+                <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" 
+                  [(ngModel)]="row.ControlCenterId" name="itcc">
+                  <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+                  <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+                    {{tt.Name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Order Column -->
+          <ng-container matColumnDef="Order">
+            <mat-header-cell *matHeaderCellDef> {{'Finance.Order' | translate}} </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-form-field>
+                <mat-select placeholder="{{'Finance.Order' | translate}}" 
+                  [(ngModel)]="row.OrderId" name="itord">
+                  <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+                  <mat-option *ngFor="let tt of arUIOrders | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
+                    {{tt.Name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Tag Column -->
+          <ng-container matColumnDef="Tag">
+            <mat-header-cell *matHeaderCellDef> {{'Common.Tag' | translate}} </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-form-field>
+                <mat-chip-list #tagList>
+                  <mat-chip *ngFor="let term of row.Tags" selectable="true"
+                    removable (remove)="removeItemTag(row, term)">
+                    {{term}}
+                    <mat-icon matChipRemove *ngIf="isFieldChangable">cancel</mat-icon>
+                  </mat-chip>
+                  <input [matChipInputFor]="tagList" [readonly]="!isFieldChangable"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        matChipInputAddOnBlur="true"
+                        (matChipInputTokenEnd)="addItemTag(row, $event)" />
+                </mat-chip-list>
+              </mat-form-field>                
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
       </mat-step>
 
       <mat-step>
@@ -83,10 +179,9 @@
             3. Amount
           -->
         <div class="mat-typography control-full-width">
-          <h1>Asset Account: {{firstFormGroup.get('accountControl').value}}</h1>
-          <h1>Receiving Account: {{firstFormGroup.get('revacntControl').value}}</h1>
-          <h1>{{firstFormGroup.get('amountControl').value}}</h1>
-          <h2>{{firstFormGroup.get('dateControl').value}}</h2>
+          <h2>Asset Account: {{firstFormGroup.get('accountControl').value}}</h2>
+          <h3>{{firstFormGroup.get('amountControl').value}}</h3>
+          <h3>{{firstFormGroup.get('dateControl').value}}</h3>
         </div>
 
         <div>

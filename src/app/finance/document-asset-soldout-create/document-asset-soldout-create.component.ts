@@ -14,6 +14,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, fin
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'hih-document-asset-soldout-create',
@@ -22,16 +23,18 @@ import * as moment from 'moment';
 })
 export class DocumentAssetSoldoutCreateComponent implements OnInit {
   public detailObject: UIFinAssetSoldoutDocument;
-  public firstFormGroup: FormGroup;
-  public secondFormGroup: FormGroup;
   // Step: Generic info
+  public firstFormGroup: FormGroup;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
-  public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
-  // Step: Extra info
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
+  // Step: Extra info
+  public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
+  separatorKeysCodes: any[] = [ENTER, COMMA];
+  dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
+  displayedColumns: string[] = ['ItemId', 'AccountId', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
 
   get BaseCurrency(): string {
     return this._homeService.curHomeSelected.value.BaseCurrency;
@@ -65,11 +68,11 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilterEx = {
         includedCategories: [ financeAccountCategoryAsset ],
-        excludedCategories: []
+        excludedCategories: [],
       };
       this.uiRevAccountCtgyFilterEx = {
         includedCategories: [],
-        excludedCategories: [ financeAccountCategoryAsset ]
+        excludedCategories: [ financeAccountCategoryAsset ],
       };
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
@@ -78,20 +81,83 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
 
     this.firstFormGroup = this._formBuilder.group({
       accountControl: ['', Validators.required],
-      revacntControl: ['', Validators.required],
       dateControl: ['', Validators.required],
       amountControl: ['', Validators.required],
-    });
-
-    this.secondFormGroup = this._formBuilder.group({
       ccControl: [''],
       orderControl: [''],
     });
+
+    this.dataSource.data = [];
+  }
+
+  public onCreateDocItem(): void {
+    let di: DocumentItem = new DocumentItem();
+    di.ItemId = this.getNextItemID();
+
+    let aritems: any[] = this.dataSource.data.slice();
+    aritems.push(di);
+    this.dataSource.data = aritems;
+  }
+
+  public onDeleteDocItem(di: any): void {
+    let aritems: DocumentItem[] = this.dataSource.data.slice();
+
+    let idx: number = -1;
+    for (let i: number = 0; i < aritems.length; i ++) {
+      if (aritems[i].ItemId === di.ItemId) {
+        idx = i;
+        break;
+      }
+    }
+
+    if (idx !== -1) {
+      aritems.splice(idx);
+    }
+
+    this.dataSource.data = aritems;
   }
 
   onSubmit(): void {
     // Perform the check.
-    
+
     // Do the submit.
+  }
+
+  public addItemTag(row: DocumentItem, $event: MatChipInputEvent): void {
+    let input: any = $event.input;
+    let value: any = $event.value;
+
+    // Add new Tag
+    if ((value || '').trim()) {
+      row.Tags.push(value.trim());
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  public removeItemTag(row: DocumentItem, tag: any): void {
+    let index: number = row.Tags.indexOf(tag);
+
+    if (index >= 0) {
+      row.Tags.splice(index, 1);
+    }
+  }
+
+  private getNextItemID(): number {
+    if (this.dataSource.data.length <= 0) {
+      return 1;
+    }
+
+    let nMax: number = 0;
+    for (let item of this.dataSource.data) {
+      if (item.ItemId > nMax) {
+        nMax = item.ItemId;
+      }
+    }
+
+    return nMax + 1;
   }
 }

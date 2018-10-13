@@ -10,6 +10,7 @@ export const financeAccountCategoryAdvancePayment: number = 8; // Advance paymen
 export const financeAccountCategoryBorrowFrom: number = 9;
 export const financeAccountCategoryLendTo: number = 10;
 export const financeAccountCategoryAdvanceReceived: number = 11;
+export const financeAccountCategoryInsurance: number = 12;
 
 export const financeDocTypeNormal: number = 1;
 export const financeDocTypeTransfer: number = 2; // Transfer doc
@@ -22,10 +23,10 @@ export const financeDocTypeBorrowFrom: number = 9;
 export const financeDocTypeLendTo: number = 10;
 export const financeDocTypeRepay: number = 11;
 export const financeDocTypeAdvanceReceived: number = 12;
+export const financeDocTypeInsurance: number = 13;
 
 export const financeTranTypeOpeningAsset: number = 1;
 export const financeTranTypeOpeningLiability: number = 82;
-
 export const financeTranTypeTransferIn: number = 37;
 export const financeTranTypeTransferOut: number = 60;
 export const financeTranTypeBorrowFrom: number = 80;
@@ -36,6 +37,12 @@ export const financeTranTypeAdvancePaymentOut: number = 88; // Advance payment -
 export const financeTranTypeAdvanceReceiveIn: number = 91; // Advance receive - in
 export const financeTranTypeInterestOut: number = 55;
 export const financeTranTypeInterestIn: number = 8;
+export const financeTranTypeAssetValueDecrease: number = 89;
+export const financeTranTypeAssetValueIncrease: number = 90;
+export const financeTranTypeAssetSoldout: number = 92;
+export const financeTranTypeAssetSoldoutIncome: number = 93;
+export const financeTranTypeInsuranceReturn: number = 36;
+export const financeTranTypeInsurancePay: number = 34;
 
 export const languageEn: string = 'en';
 export const languageZh: string = 'zh';
