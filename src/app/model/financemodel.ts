@@ -529,6 +529,14 @@ export interface IAccountCategoryFilter {
 }
 
 /**
+ * Category filter for Account
+ */
+export interface IAccountCategoryFilterEx {
+  includedCategories: number[];
+  excludedCategories: number[];
+}
+
+/**
  * Extra info: Advance payment
  */
 export class AccountExtraAdvancePayment extends AccountExtra {

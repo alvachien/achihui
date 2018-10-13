@@ -54,7 +54,7 @@ import { ControlCenterTreeComponent } from './control-center-tree';
 import { DocumentItemByControlCenterComponent } from './document-item-by-control-center';
 import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
-  UIOrderValidFilterPipe, } from './pipes';
+  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from './pipes';
 import { AccountExtCreditCardComponent } from './account-ext-credit-card';
 import { DocumentRepaymentDetailComponent } from './document-repayment-detail';
 import { ConfigComponent } from './config';
@@ -118,6 +118,7 @@ import { ConfigComponent } from './config';
     OrderValidFilterPipe,
     UIAccountStatusFilterPipe,
     UIAccountCtgyFilterPipe,
+    UIAccountCtgyFilterExPipe,
     UIOrderValidFilterPipe,
     AccountExtCreditCardComponent,
     DocumentRepaymentDetailComponent,

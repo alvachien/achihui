@@ -1,81 +1,100 @@
-<mat-vertical-stepper linear #stepper>
-  <mat-step [stepControl]="firstFormGroup">
-    <form [formGroup]="firstFormGroup">
-      <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Sys.DocTy.AssetSoldOut' | translate}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-vertical-stepper linear #stepper>
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
-      <mat-form-field class="control-full-width">
-        <mat-select placeholder="{{'Finance.Account' | translate}}" name="asstacnt" 
-          formControlName="accountControl" required>
-          <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter" [value]="acnt.Id">
-            <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          <mat-form-field class="control-full-width">
+            <mat-select placeholder="{{'Finance.Account' | translate}}" name="asstacnt" formControlName="accountControl"
+              required>
+              <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilterEx: uiAccountCtgyFilterEx"
+                [value]="acnt.Id">
+                <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}}
+                  ({{acnt.CategoryName | translate}})</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      <mat-form-field class="control-full-width">
-        <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
-        <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
-        <mat-datepicker #dtpker></mat-datepicker>
-      </mat-form-field>
+          <mat-form-field class="control-full-width">
+            <mat-select placeholder="{{'Finance.Account' | translate}}" name="acnt" formControlName="revacntControl"
+              required>
+              <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilterEx: uiRevAccountCtgyFilterEx"
+                [value]="acnt.Id">
+                <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}}
+                  ({{acnt.CategoryName | translate}})</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      <mat-form-field class="control-full-width">
-        <input matInput type="number" formControlName="amountControl">
-        <span matSuffix>{{BaseCurrency}}</span>
-      </mat-form-field>
+          <mat-form-field class="control-full-width">
+            <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
+            <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
+            <mat-datepicker #dtpker></mat-datepicker>
+          </mat-form-field>
 
-      <div>
-        <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
-      </div>
-    </form>
-  </mat-step>
+          <mat-form-field class="control-full-width">
+            <input matInput type="number" formControlName="amountControl">
+            <span matSuffix>{{BaseCurrency}}</span>
+          </mat-form-field>
 
-  <mat-step [stepControl]="secondFormGroup">
-    <form [formGroup]="secondFormGroup">
-      <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
+          <div>
+            <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+          </div>
+        </form>
+      </mat-step>
 
-      <mat-form-field class="control-full-width">
-        <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl"
-          name="itcc">
-          <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-          <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
-            {{tt.Name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <mat-step [stepControl]="secondFormGroup">
+        <form [formGroup]="secondFormGroup">
+          <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
 
-      <mat-form-field class="control-full-width">
-        <mat-select placeholder="{{'Finance.Order' | translate}}"
-          formControlName="orderControl" name="srcord">
-          <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
-            {{ord.Name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    
-      <div>
-        <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
-        <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
-      </div>
-    </form>
-  </mat-step>
+          <mat-form-field class="control-full-width">
+            <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="itcc">
+              <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+              <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+                {{tt.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-  <mat-step>
-    <ng-template matStepLabel>{{'Common.Confirm' | translate}}</ng-template>
-    <!-- 
-      1. Account
-      2. Date
-      3. Amount
-    -->
-    <div class="mat-typography control-full-width">
-      <h1>Asset Account: {{firstFormGroup.get('accountControl').value}}</h1>
-      <h1>{{firstFormGroup.get('amountControl').value}}</h1>
-      <h2>{{firstFormGroup.get('dateControl').value}}</h2>
-    </div>
+          <mat-form-field class="control-full-width">
+            <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl" name="srcord">
+              <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+                {{ord.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-    <div>
-      <button mat-button >{{'Common.Submit' | translate}}</button>
-      <button mat-button (click)="stepper.reset()">{{'Common.Reset' | translate}}</button>
-      <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
-    </div>
-  </mat-step>
-</mat-vertical-stepper>
+          <div>
+            <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+            <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step>
+        <ng-template matStepLabel>{{'Common.Confirm' | translate}}</ng-template>
+        <!-- 
+            1. Account
+            2. Date
+            3. Amount
+          -->
+        <div class="mat-typography control-full-width">
+          <h1>Asset Account: {{firstFormGroup.get('accountControl').value}}</h1>
+          <h1>Receiving Account: {{firstFormGroup.get('revacntControl').value}}</h1>
+          <h1>{{firstFormGroup.get('amountControl').value}}</h1>
+          <h2>{{firstFormGroup.get('dateControl').value}}</h2>
+        </div>
+
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button (click)="stepper.reset()">{{'Common.Reset' | translate}}</button>
+          <button mat-button (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+        </div>
+      </mat-step>
+    </mat-vertical-stepper>
+  </mat-card-content>
+</mat-card>

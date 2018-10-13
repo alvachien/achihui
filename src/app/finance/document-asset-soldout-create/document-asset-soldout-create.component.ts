@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
@@ -10,7 +9,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilter, UIFinAssetSoldoutDocument,
+  IAccountCategoryFilterEx, UIFinAssetSoldoutDocument,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -28,7 +27,8 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   // Step: Generic info
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
-  public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
+  public uiAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
+  public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
   // Step: Extra info
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
@@ -63,7 +63,14 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
       this.uiAccountStatusFilter = undefined;
-      this.uiAccountCtgyFilter = undefined;
+      this.uiAccountCtgyFilterEx = {
+        includedCategories: [ financeAccountCategoryAsset ],
+        excludedCategories: []
+      };
+      this.uiRevAccountCtgyFilterEx = {
+        includedCategories: [],
+        excludedCategories: [ financeAccountCategoryAsset ]
+      };
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
@@ -71,6 +78,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
 
     this.firstFormGroup = this._formBuilder.group({
       accountControl: ['', Validators.required],
+      revacntControl: ['', Validators.required],
       dateControl: ['', Validators.required],
       amountControl: ['', Validators.required],
     });
@@ -79,5 +87,11 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       ccControl: [''],
       orderControl: [''],
     });
+  }
+
+  onSubmit(): void {
+    // Perform the check.
+    
+    // Do the submit.
   }
 }
