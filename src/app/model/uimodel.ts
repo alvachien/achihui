@@ -443,10 +443,11 @@ export class UIFinAssetSoldoutDocument {
   public tranAmount: number;
   public desp: string;
   public assetAccountID: number;
-  public revAccountID: number;
   public tranDate: moment.Moment;
   public ccID?: number;
   public orderID?: number;
+
+  public items: HIHFinance.DocumentItem[] = [];
 }
 
 /**

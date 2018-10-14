@@ -9,7 +9,8 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilterEx, UIFinAssetSoldoutDocument,
+  IAccountCategoryFilterEx, UIFinAssetSoldoutDocument, financeTranTypeAssetSoldoutIncome, momentDateFormat,
+  InfoMessage, MessageType, financeDocTypeAssetSoldOut, financeTranTypeAssetSoldout,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -39,13 +40,34 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   get BaseCurrency(): string {
     return this._homeService.curHomeSelected.value.BaseCurrency;
   }
+  get SoldoutAssetAccountID(): number {
+    let acccontrol = this.firstFormGroup.get('accountControl');
+    if (acccontrol) {
+      return acccontrol.value;
+    }
+  }
+  get SoldoutAmount(): number {
+    let amtctrl = this.firstFormGroup.get('amountControl');
+    if (amtctrl) {
+      return amtctrl.value;
+    }
+  }
+  get SoldoutDate(): string {
+    let datctrl: any = this.firstFormGroup.get('dateControl');
+    if (datctrl && datctrl.value) {
+      return datctrl.value.format(momentDateFormat);
+    }
+
+    return '';
+  }
 
   constructor(public _storageService: FinanceStorageService,
+    private _uiStatusService: UIStatusService,
+    private _dialog: MatDialog,
     private _homeService: HomeDefDetailService,
     private _currService: FinCurrencyService,
     private _formBuilder: FormBuilder) {
-    // Initialize the object
-    this.detailObject = new UIFinAssetSoldoutDocument();
+    // Do nothing
   }
 
   ngOnInit(): void {
@@ -83,6 +105,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       accountControl: ['', Validators.required],
       dateControl: ['', Validators.required],
       amountControl: ['', Validators.required],
+      despControl: ['', Validators.required],
       ccControl: [''],
       orderControl: [''],
     });
@@ -119,8 +142,63 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
 
   onSubmit(): void {
     // Perform the check.
+    let msgs: InfoMessage[] = [];
+    if (!this._doCheck(msgs)) {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: msgs,
+        Button: MessageDialogButtonEnum.onlyok,
+      };
 
-    // Do the submit.
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+
+      return;
+    }
+
+    // Generate the doc, and verify it
+    let docobj: Document = this._generateDoc();
+    if (!docobj.onVerify({
+      ControlCenters: this._storageService.ControlCenters,
+      Orders: this._storageService.Orders,
+      Accounts: this._storageService.Accounts,
+      DocumentTypes: this._storageService.DocumentTypes,
+      TransactionTypes: this._storageService.TranTypes,
+      Currencies: this._currService.Currencies,
+      BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
+    })) {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: docobj.VerifiedMsgs,
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+
+      return;
+    }
+
+    // Do the real submit.
+    this.detailObject = new UIFinAssetSoldoutDocument();
+    this.detailObject.tranDate = docobj.TranDate;
+    this.detailObject.tranAmount = docobj.TranAmount;
+    this.detailObject.desp = docobj.Desp;
+    this.detailObject.assetAccountID = this.SoldoutAssetAccountID;
+    this.detailObject.ccID = this.firstFormGroup.get('ccControl').value;
+    this.detailObject.orderID = this.firstFormGroup.get('orderControl').value;
+    docobj.Items.forEach((val: DocumentItem) => {
+      this.detailObject.items.push(val);
+    });
+    
   }
 
   public addItemTag(row: DocumentItem, $event: MatChipInputEvent): void {
@@ -144,6 +222,64 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     if (index >= 0) {
       row.Tags.splice(index, 1);
     }
+  }
+
+  private _generateDoc(): Document {
+    let ndoc: Document = new Document();
+    ndoc.DocType = financeDocTypeAssetSoldOut;
+    ndoc.HID = this._homeService.ChosedHome.ID;
+    ndoc.TranDate = this.firstFormGroup.get('dateControl').value;
+    ndoc.TranCurr = this._homeService.ChosedHome.BaseCurrency;
+    ndoc.Desp = this.firstFormGroup.get('despControl').value;
+    // Add items
+    this.dataSource.data.forEach((val: DocumentItem) => {
+      val.TranType = financeTranTypeAssetSoldoutIncome;
+      ndoc.Items.push(val);
+    });
+    
+    return ndoc;
+  }
+  private _doCheck(msgs: InfoMessage[]): boolean {
+    let chkrst: boolean = true;
+
+    if (this.dataSource.data.length <= 0) {
+      let msg: InfoMessage = new InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = MessageType.Error;
+      msg.MsgTitle = 'Finance.NoDocumentItem';
+      msg.MsgContent = 'Finance.NoDocumentItem';
+      msgs.push(msg);
+      chkrst = false;
+    }
+
+    let ccid = this.firstFormGroup.get('ccControl').value;
+    let ordid = this.firstFormGroup.get('orderControl').value;
+    if ((!ccid && !ordid) || (ccid && ordid)) {
+      let msg: InfoMessage = new InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = MessageType.Error;
+      msg.MsgTitle = 'Finance.EitherControlCenterOrOrder';
+      msg.MsgContent = 'Finance.EitherControlCenterOrOrder';
+      msgs.push(msg);
+      chkrst = false;
+    }
+
+    // Initialize the object
+    let totalAmt: number = 0;
+    this.dataSource.data.forEach((val: DocumentItem) => {      
+      totalAmt += val.TranAmount;
+    });
+    if (totalAmt !== this.SoldoutAmount) {
+      let msg: InfoMessage = new InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = MessageType.Error;
+      msg.MsgTitle = 'Finance.AmountIsNotCorrect';
+      msg.MsgContent = 'Finance.AmountIsNotCorrect';
+      msgs.push(msg);
+      chkrst = false;
+    }
+
+    return chkrst;
   }
 
   private getNextItemID(): number {
