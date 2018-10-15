@@ -437,20 +437,6 @@ export class UIFinAssetOperationDocument {
 }
 
 /**
- * Asset Soldout document in UI part
- */
-export class UIFinAssetSoldoutDocument {
-  public tranAmount: number;
-  public desp: string;
-  public assetAccountID: number;
-  public tranDate: moment.Moment;
-  public ccID?: number;
-  public orderID?: number;
-
-  public items: HIHFinance.DocumentItem[] = [];
-}
-
-/**
  * UI Loan document
  */
 export class UIFinLoanDocument {

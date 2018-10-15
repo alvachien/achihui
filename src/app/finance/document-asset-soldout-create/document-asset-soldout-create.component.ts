@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
@@ -9,8 +10,8 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilterEx, UIFinAssetSoldoutDocument, financeTranTypeAssetSoldoutIncome, momentDateFormat,
-  InfoMessage, MessageType, financeDocTypeAssetSoldOut, financeTranTypeAssetSoldout,
+  IAccountCategoryFilterEx, financeTranTypeAssetSoldoutIncome, momentDateFormat,
+  InfoMessage, MessageType, financeDocTypeAssetSoldOut, financeTranTypeAssetSoldout, FinanceAssetSoldoutDocumentAPI,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -23,7 +24,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   styleUrls: ['./document-asset-soldout-create.component.scss'],
 })
 export class DocumentAssetSoldoutCreateComponent implements OnInit {
-  public detailObject: UIFinAssetSoldoutDocument;
+  public detailObject: FinanceAssetSoldoutDocumentAPI;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   public arUIAccount: UIAccountForSelection[] = [];
@@ -41,13 +42,13 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     return this._homeService.curHomeSelected.value.BaseCurrency;
   }
   get SoldoutAssetAccountID(): number {
-    let acccontrol = this.firstFormGroup.get('accountControl');
+    let acccontrol: any = this.firstFormGroup.get('accountControl');
     if (acccontrol) {
       return acccontrol.value;
     }
   }
   get SoldoutAmount(): number {
-    let amtctrl = this.firstFormGroup.get('amountControl');
+    let amtctrl: any = this.firstFormGroup.get('amountControl');
     if (amtctrl) {
       return amtctrl.value;
     }
@@ -64,8 +65,10 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   constructor(public _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
     private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
     private _homeService: HomeDefDetailService,
     private _currService: FinCurrencyService,
+    private _router: Router,
     private _formBuilder: FormBuilder) {
     // Do nothing
   }
@@ -188,17 +191,59 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     }
 
     // Do the real submit.
-    this.detailObject = new UIFinAssetSoldoutDocument();
-    this.detailObject.tranDate = docobj.TranDate;
-    this.detailObject.tranAmount = docobj.TranAmount;
+    this.detailObject = new FinanceAssetSoldoutDocumentAPI();
+    this.detailObject.HID = this._homeService.ChosedHome.ID;
+    this.detailObject.tranDate = docobj.TranDate.format(momentDateFormat);
+    this.detailObject.tranCurr = this.BaseCurrency;
+    this.detailObject.tranAmount = this.SoldoutAmount;
     this.detailObject.desp = docobj.Desp;
     this.detailObject.assetAccountID = this.SoldoutAssetAccountID;
-    this.detailObject.ccID = this.firstFormGroup.get('ccControl').value;
+    this.detailObject.controlCenterID = this.firstFormGroup.get('ccControl').value;
     this.detailObject.orderID = this.firstFormGroup.get('orderControl').value;
     docobj.Items.forEach((val: DocumentItem) => {
-      this.detailObject.items.push(val);
+      this.detailObject.items.push(val.writeJSONObject());
     });
-    
+
+    this._storageService.createAssetSoldoutDocument(this.detailObject).subscribe((nid: number) => {
+      // New doc created with ID returned
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetSoldoutCreateComponent for createAssetSoldoutDocument, new doc ID: ${nid}`);
+      }
+
+      // Show success
+      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+          'OK', {
+            duration: 2000,
+          }).afterDismissed().subscribe(() => {
+            this._router.navigate(['/finance/document/displaynormal/' + nid.toString()]);
+          });
+    }, (err: string) => {
+      // Handle the error
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Debug]: Failed in onSubmit in DocumentAssetSoldoutCreateComponent for createAssetSoldoutDocument, result: ${err}`);
+      }
+
+      let msg: InfoMessage = new InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = MessageType.Error;
+      msg.MsgTitle = 'Common.Error';
+      msg.MsgContent = err;
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: [msg],
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+
+      return;
+    }, () => {
+      // DO nothing
+    });
   }
 
   public addItemTag(row: DocumentItem, $event: MatChipInputEvent): void {
@@ -236,7 +281,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       val.TranType = financeTranTypeAssetSoldoutIncome;
       ndoc.Items.push(val);
     });
-    
+
     return ndoc;
   }
   private _doCheck(msgs: InfoMessage[]): boolean {
@@ -252,8 +297,8 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       chkrst = false;
     }
 
-    let ccid = this.firstFormGroup.get('ccControl').value;
-    let ordid = this.firstFormGroup.get('orderControl').value;
+    let ccid: any = this.firstFormGroup.get('ccControl').value;
+    let ordid: any = this.firstFormGroup.get('orderControl').value;
     if ((!ccid && !ordid) || (ccid && ordid)) {
       let msg: InfoMessage = new InfoMessage();
       msg.MsgTime = moment();
@@ -266,7 +311,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
 
     // Initialize the object
     let totalAmt: number = 0;
-    this.dataSource.data.forEach((val: DocumentItem) => {      
+    this.dataSource.data.forEach((val: DocumentItem) => {
       totalAmt += val.TranAmount;
     });
     if (totalAmt !== this.SoldoutAmount) {

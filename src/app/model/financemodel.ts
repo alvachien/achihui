@@ -2684,6 +2684,22 @@ export class DocumentWithPlanExgRateForUpdate {
 }
 
 /**
+ * API for Asset Soldout document
+ */
+export class FinanceAssetSoldoutDocumentAPI {
+  public HID: number;
+  public tranAmount: number;
+  public tranCurr: string;
+  public tranDate: string;
+  public desp: string;
+  public assetAccountID: number;
+  public controlCenterID?: number;
+  public orderID?: number;
+
+  public items: any[] = [];
+}
+
+/**
  * Finance ADP calculator - API input
  */
 export interface FinanceADPCalAPIInput {

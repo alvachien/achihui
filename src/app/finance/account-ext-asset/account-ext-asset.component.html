@@ -57,8 +57,12 @@
     </mat-select>
   </mat-form-field>
 
-  <div class="control-full-width" *ngIf="!isCreateMode">
+  <div class="control-full-width" *ngIf="!isCreateMode && extObject.RefDocForBuy">
     <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
-    <a routerLink='/finance/document/displayassetbuy/{{extObject.RefDocForBuy}}' routerLinkActive="active" *ngIf="extObject.RefDocForBuy">{{extObject?.RefDocForBuy}}</a>
+    <a routerLink='/finance/document/displaynormal/{{extObject.RefDocForBuy}}' routerLinkActive="active">{{extObject.RefDocForBuy}}</a>
+  </div>
+  <div class="control-full-width" *ngIf="!isCreateMode && extObject.RefDocForSold">
+    <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
+    <a routerLink='/finance/document/displaynormal/{{extObject.RefDocForSold}}' routerLinkActive="active">{{extObject.RefDocForSold}}</a>
   </div>
 </div>
