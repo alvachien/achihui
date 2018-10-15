@@ -3,13 +3,14 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilter,
+  IAccountCategoryFilter, momentDateFormat,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -22,11 +23,12 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   styleUrls: ['./document-asset-buy-in-create.component.scss'],
 })
 export class DocumentAssetBuyInCreateComponent implements OnInit {
-  private routerID: number = -1; // Current object ID in routing
-  public currentMode: string;
   public detailObject: UIFinAssetOperationDocument | undefined = undefined;
-  public uiMode: UIMode = UIMode.Create;
-  public step: number = 0;
+  // Step: Generic info
+  public firstFormGroup: FormGroup;
+  public assetAccount: AccountExtraAsset;
+
+  // Second Step
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -37,17 +39,28 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
   displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
 
-  get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  get BaseCurrency(): string {
+    return this._homedefService.curHomeSelected.value.BaseCurrency;
   }
-  get isCreateMode(): boolean {
-    return this.uiMode === UIMode.Create;
+  get BuyinAmount(): number {
+    let amtctrl: any = this.firstFormGroup.get('amountControl');
+    if (amtctrl) {
+      return amtctrl.value;
+    }
+  }
+  get BuyinDate(): string {
+    let datctrl: any = this.firstFormGroup.get('dateControl');
+    if (datctrl && datctrl.value) {
+      return datctrl.value.format(momentDateFormat);
+    }
+
+    return '';
   }
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
-    private _activateRoute: ActivatedRoute,
+    private _formBuilder: FormBuilder,
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
@@ -56,7 +69,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent constructor...');
     }
     this.detailObject = new UIFinAssetOperationDocument();
-    this.detailObject.isBuyin = true;
+    this.assetAccount = new AccountExtraAsset();
   }
 
   ngOnInit(): void {
@@ -85,54 +98,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
-
-      this._activateRoute.url.subscribe((x: any) => {
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'createassetbuy') {
-            this.onInitCreateMode(true);
-          } else if (x[0].path === 'createassetsold') {
-            this.onInitCreateMode(false);
-          } else if (x[0].path === 'editassetbuy') {
-            this.routerID = +x[1].path;
-            this.detailObject.isBuyin = true;
-
-            this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'editassetsold') {
-            this.routerID = +x[1].path;
-            this.detailObject.isBuyin = false;
-
-            this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'displayassetbuy') {
-            this.routerID = +x[1].path;
-            this.detailObject.isBuyin = true;
-
-            this.uiMode = UIMode.Display;
-          } else if (x[0].path === 'displayassetsold') {
-            this.routerID = +x[1].path;
-            this.detailObject.isBuyin = false;
-
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
-
-          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readAssetDocument(this.routerID, this.detailObject.isBuyin).subscribe((x2: any) => {
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit for activateRoute URL: ${x2}`);
-              }
-
-              this.detailObject.parseDocument(x2);
-              this.dataSource.data = this.detailObject.Items;
-            }, (error2: any) => {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readADPDocument : ${error2}`);
-              }
-            });
-          }
-        } else {
-          this.uiMode = UIMode.Invalid;
-        }
-      });
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering DocumentAssetBuyInCreateComponent's ngOninit, failed to load depended objects : ${error}`);
@@ -149,21 +114,15 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
         width: '500px',
         data: dlginfo,
       });
-
-      this.uiMode = UIMode.Invalid;
     });
-  }
 
-  public setStep(index: number): void {
-    this.step = index;
-  }
+    this.firstFormGroup = this._formBuilder.group({
+      dateControl: ['', Validators.required],
+      amountControl: ['', Validators.required],
+      despControl: ['', Validators.required],
+    });
 
-  public nextStep(): void {
-    this.step++;
-  }
-
-  public prevStep(): void {
-    this.step--;
+    this.dataSource.data = [];
   }
 
   public onCreateDocItem(): void {
@@ -194,10 +153,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   }
 
   public canSubmit(): boolean {
-    if (!this.isFieldChangable) {
-      return false;
-    }
-
     // Check name
     if (!this.detailObject) {
       return false;
@@ -236,30 +191,71 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    if (this.uiMode === UIMode.Create) {
-      if (this.detailObject.Items.length > 0) {
-        this.detailObject.Items.splice(0, this.detailObject.Items.length);
+    if (this.detailObject.Items.length > 0) {
+      this.detailObject.Items.splice(0, this.detailObject.Items.length);
+    }
+
+    this.dataSource.data.forEach((val: DocumentItem) => {
+      this.detailObject.Items.push(val);
+    });
+    let docObj: any = this.detailObject.generateDocument();
+
+    // Check!
+    if (!docObj.onVerify({
+      ControlCenters: this._storageService.ControlCenters,
+      Orders: this._storageService.Orders,
+      Accounts: this._storageService.Accounts,
+      DocumentTypes: this._storageService.DocumentTypes,
+      TransactionTypes: this._storageService.TranTypes,
+      Currencies: this._currService.Currencies,
+      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+    })) {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: docObj.VerifiedMsgs,
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+
+      return;
+    }
+
+    this._storageService.createDocumentEvent.subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAssetOperationDetailComponent with : ${x}`);
       }
 
-      this.dataSource.data.forEach((val: DocumentItem) => {
-        this.detailObject.Items.push(val);
-      });
-      let docObj: any = this.detailObject.generateDocument();
+      // Navigate back to list view
+      if (x instanceof Document) {
+        // Show the snackbar
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
 
-      // Check!
-      if (!docObj.onVerify({
-        ControlCenters: this._storageService.ControlCenters,
-        Orders: this._storageService.Orders,
-        Accounts: this._storageService.Accounts,
-        DocumentTypes: this._storageService.DocumentTypes,
-        TransactionTypes: this._storageService.TranTypes,
-        Currencies: this._currService.Currencies,
-        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
-      })) {
-        // Show a dialog for error details
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate([(this.detailObject.isBuyin ? '/finance/document/displayassetbuy/' : '/finance/document/displayassetsold/')
+              + x.Id.toString()]);
+          }
+        });
+      } else {
+        // Show error message
         const dlginfo: MessageDialogInfo = {
           Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          ContentTable: docObj.VerifiedMsgs,
+          Content: x.toString(),
           Button: MessageDialogButtonEnum.onlyok,
         };
 
@@ -267,78 +263,28 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
           disableClose: false,
           width: '500px',
           data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
         });
-
-        return;
       }
+    });
 
-      this._storageService.createDocumentEvent.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAssetOperationDetailComponent with : ${x}`);
-        }
+    docObj.HID = this._homedefService.ChosedHome.ID;
 
-        // Navigate back to list view
-        if (x instanceof Document) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
+    // Build the JSON file to API
+    let sobj: any = docObj.writeJSONObject(); // Document first
+    let acntobj: Account = new Account();
+    acntobj.HID = this._homedefService.ChosedHome.ID;
+    acntobj.CategoryId = financeAccountCategoryAsset;
+    acntobj.Name = docObj.Desp;
+    acntobj.Comment = docObj.Desp;
+    acntobj.ExtraInfo = this.detailObject.AssetAccount;
+    sobj.AccountVM = acntobj.writeJSONObject();
 
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-
-            this.onInitCreateMode(this.detailObject.isBuyin);
-            this.setStep(0);
-            // this._router.navigate([this.detailObject.isBuyin? '/finance/document/createassetbuy/' : '/finance/document/createassetsold/']);
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate([(this.detailObject.isBuyin ? '/finance/document/displayassetbuy/' : '/finance/document/displayassetsold/')
-                + x.Id.toString()]);
-            }
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-
-      docObj.HID = this._homedefService.ChosedHome.ID;
-
-      // Build the JSON file to API
-      let sobj: any = docObj.writeJSONObject(); // Document first
-      let acntobj: Account = new Account();
-      acntobj.HID = this._homedefService.ChosedHome.ID;
-      acntobj.CategoryId = financeAccountCategoryAsset;
-      acntobj.Name = docObj.Desp;
-      acntobj.Comment = docObj.Desp;
-      acntobj.ExtraInfo = this.detailObject.AssetAccount;
-      sobj.AccountVM = acntobj.writeJSONObject();
-
-      this._storageService.createAssetDocument(sobj, this.detailObject.isBuyin);
-    } else if (this.uiMode === UIMode.Change) {
-      // Change current document
-      // TBD.
-    }
+    this._storageService.createAssetDocument(sobj, this.detailObject.isBuyin);
   }
 
   public onBackToList(): void {
@@ -381,21 +327,5 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     }
 
     return nMax + 1;
-  }
-
-  private onInitCreateMode(isbuyin: boolean): void {
-    this.detailObject = new UIFinAssetOperationDocument();
-    this.detailObject.isBuyin = isbuyin;
-    this.uiAccountStatusFilter = 'Normal';
-    this.uiAccountCtgyFilter = {
-      skipADP: true,
-      skipLoan: true,
-      skipAsset: true,
-    };
-    this.uiOrderFilter = true;
-
-    this.uiMode = UIMode.Create;
-    this.detailObject.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
-    this.dataSource.data = [];
   }
 }
