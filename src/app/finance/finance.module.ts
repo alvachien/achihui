@@ -45,6 +45,7 @@ import { AssetCategoryComponent } from './asset-category';
 import { AssetCategoryListComponent } from './asset-category-list';
 import { AssetCategoryDetailComponent } from './asset-category-detail';
 import { AccountExtAssetComponent } from './account-ext-asset';
+import { AccountExtAssetExComponent } from './account-ext-asset-ex';
 import { AccountExtADPComponent } from './account-ext-adp';
 import { AccountExtLoanComponent } from './account-ext-loan';
 import { AccountTreeComponent } from './account-tree';
@@ -106,6 +107,7 @@ import { ConfigComponent } from './config';
     AssetCategoryListComponent,
     AssetCategoryDetailComponent,
     AccountExtAssetComponent,
+    AccountExtAssetExComponent,
     AccountExtADPComponent,
     AccountExtLoanComponent,
     AccountTreeComponent,

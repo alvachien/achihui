@@ -15,19 +15,19 @@
           </mat-form-field>
 
           <mat-form-field class="control-full-width">
-            <input matInput type="number" placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
+            <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
             <span matSuffix>{{BaseCurrency}}</span>
           </mat-form-field>
 
           <mat-form-field class="control-full-width">
             <input matInput type="text" placeholder="{{'Common.Description' | translate}}" formControlName="despControl">
           </mat-form-field>
+
+          <mat-form-field class="control-full-width">
+            <hih-account-ext-asset-ex formControlName="assetControl" required></hih-account-ext-asset-ex>
+          </mat-form-field>
         </form>
         
-        <div class="control-full-width">
-          <hih-finance-account-ext-asset uiMode="1" [extObject]="assetAccount"></hih-finance-account-ext-asset>
-        </div>
-
         <div>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>

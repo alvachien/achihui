@@ -17,7 +17,7 @@ export class AuthGuardService implements CanActivate {
     }
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: entering can Activate of AuthGuard');
+      console.log('AC_HIH_UI [Debug]: Entering can Activate of AuthGuard');
     }
 
     return this.checkLogin(url);
@@ -27,7 +27,7 @@ export class AuthGuardService implements CanActivate {
 
     if (this.authService.authSubject.getValue().isAuthorized) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: entering checkLogin of AuthGuard with TRUE');
+        console.log('AC_HIH_UI [Debug]: Entering checkLogin of AuthGuard with TRUE');
       }
       return true;
     }
@@ -38,7 +38,7 @@ export class AuthGuardService implements CanActivate {
 
     // Navigate to the login page with extras
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: entering checkLogin of AuthGuard with FALSE, therefore redirecting...');
+      console.log('AC_HIH_UI [Debug]: Entering checkLogin of AuthGuard with FALSE, therefore redirecting...');
     }
     this.authService.doLogin();
 

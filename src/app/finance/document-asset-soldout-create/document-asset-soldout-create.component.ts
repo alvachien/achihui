@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
@@ -55,7 +55,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   }
   get SoldoutDate(): string {
     let datctrl: any = this.firstFormGroup.get('dateControl');
-    if (datctrl && datctrl.value) {
+    if (datctrl && datctrl.value && datctrl.value.format) {
       return datctrl.value.format(momentDateFormat);
     }
 
@@ -106,7 +106,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
 
     this.firstFormGroup = this._formBuilder.group({
       accountControl: ['', Validators.required],
-      dateControl: ['', Validators.required],
+      dateControl: new FormControl({value: moment()}, Validators.required),
       amountControl: ['', Validators.required],
       despControl: ['', Validators.required],
       ccControl: [''],

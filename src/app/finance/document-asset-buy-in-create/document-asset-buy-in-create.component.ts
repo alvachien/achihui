@@ -6,6 +6,7 @@ import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
@@ -50,7 +51,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   }
   get BuyinDate(): string {
     let datctrl: any = this.firstFormGroup.get('dateControl');
-    if (datctrl && datctrl.value) {
+    if (datctrl && datctrl.value && datctrl.value.format) {
       return datctrl.value.format(momentDateFormat);
     }
 
@@ -117,9 +118,10 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     });
 
     this.firstFormGroup = this._formBuilder.group({
-      dateControl: ['', Validators.required],
+      dateControl: [{value: moment()}, Validators.required],
       amountControl: ['', Validators.required],
       despControl: ['', Validators.required],
+      assetControl: ['', Validators.required],
     });
 
     this.dataSource.data = [];

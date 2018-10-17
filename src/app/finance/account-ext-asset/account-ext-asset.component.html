@@ -2,7 +2,7 @@
   <mat-form-field class="control-full-width">
     <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" 
       [ngModel]="extObject?.CategoryID" (ngModelChange)="extObject.CategoryID=$event"
-      name="asstctgy" class="demo-full-width">
+      name="asstctgy" class="control-full-width">
       <mat-option *ngFor="let rt of _storageService.AssetCategories" [value]="rt.ID">
         {{rt.Name | translate}}
       </mat-option>

@@ -20,7 +20,7 @@ export class HomeChoseGuardService {
     }
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: entering can Activate of HomeChoseGuardService');
+      console.log('AC_HIH_UI [Debug]: Entering can Activate of HomeChoseGuardService');
     }
 
     if (!this.checkLogin(url)) {
@@ -43,14 +43,14 @@ export class HomeChoseGuardService {
 
     if (this.authService.authSubject.getValue().isAuthorized) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: entering checkLogin of HomeChoseGuardService with TRUE');
+        console.log('AC_HIH_UI [Debug]: Entering checkLogin of HomeChoseGuardService with TRUE');
       }
       return true;
     }
 
     // Navigate to the login page with extras
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: entering checkLogin of HomeChoseGuardService with FALSE, therefore redirecting...');
+      console.log('AC_HIH_UI [Debug]: Entering checkLogin of HomeChoseGuardService with FALSE, therefore redirecting...');
     }
 
     this.authService.doLogin();
