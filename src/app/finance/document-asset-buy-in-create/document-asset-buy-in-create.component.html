@@ -22,12 +22,42 @@
           <mat-form-field class="control-full-width">
             <input matInput type="text" placeholder="{{'Common.Description' | translate}}" formControlName="despControl">
           </mat-form-field>
-
+          
+          <div class="control-full-width">
+            <hih-account-ext-asset-ex formGroupName="assetGroup"></hih-account-ext-asset-ex>
+          </div>
+          
+          <mat-checkbox color="accent" formControlName="legacyControl" #islegacy>
+            {{'Finance.LegacyAsset' | translate}}
+          </mat-checkbox>
+  
           <mat-form-field class="control-full-width">
-            <hih-account-ext-asset-ex formControlName="assetControl" required></hih-account-ext-asset-ex>
+            <input matInput [matDatepicker]="tdpicker"  formControlName="legacyDateControl"
+              [disabled]="!islegacy.checked" [required]="islegacy.checked"
+              placeholder="{{'Common.Date' | translate}}">
+            <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
+            <mat-datepicker #tdpicker></mat-datepicker>
+          </mat-form-field>
+ 
+          <mat-form-field class="control-full-width">
+            <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl"
+              name="srccc">
+              <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+                {{cc.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+  
+          <mat-form-field class="control-full-width">
+            <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl"
+              name="srcord">
+              <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+                {{ord.Name}}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </form>
-        
+
         <div>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>

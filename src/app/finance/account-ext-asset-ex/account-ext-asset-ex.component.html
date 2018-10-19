@@ -1,7 +1,7 @@
-<div class="control-full-width" [formGroup]="attrAsset">
+<ng-container class="control-full-width" [formGroup]="controlContainer.control">
   <mat-form-field class="control-full-width">
-    <mat-select placeholder="{{'Common.Category' | translate}}" 
-      formControlName="ctgyControl" [required]="required"
+    <mat-select placeholder="{{'Common.Category' | translate}}"
+      formControlName="ctgyControl"
       name="asstctgy" class="control-full-width">
       <mat-option *ngFor="let rt of _storageService.AssetCategories" [value]="rt.ID">
         {{rt.Name | translate}}
@@ -11,15 +11,15 @@
 
   <mat-form-field class="control-full-width">
     <input matInput type="text" placeholder="{{'Common.Name' | translate}}" 
-      formControlName="nameControl" [required]="required"
+      formControlName="nameControl"
       name="asstname" #assetname maxlength="50">
-    <mat-hint align="end">{{assetname.value.length}} / 50</mat-hint>
+      <mat-hint align="end">{{assetname.value.length}} / 50</mat-hint>
   </mat-form-field>
 
   <mat-form-field class="control-full-width">
     <input matInput type="text" placeholder="{{'Common.Comment' | translate}}" 
-      formControlName="commentControl" 
+      formControlName="commentControl"
       name="asstcmt" #assetcomment maxlength="100">
-    <mat-hint align="end">{{assetcomment.value.length}} / 100</mat-hint>
+      <mat-hint align="end">{{assetcomment.value.length}} / 100</mat-hint>
   </mat-form-field>
-</div>
+</ng-container>

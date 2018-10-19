@@ -45,7 +45,6 @@ import { AssetCategoryComponent } from './asset-category';
 import { AssetCategoryListComponent } from './asset-category-list';
 import { AssetCategoryDetailComponent } from './asset-category-detail';
 import { AccountExtAssetComponent } from './account-ext-asset';
-import { AccountExtAssetExComponent } from './account-ext-asset-ex';
 import { AccountExtADPComponent } from './account-ext-adp';
 import { AccountExtLoanComponent } from './account-ext-loan';
 import { AccountTreeComponent } from './account-tree';
@@ -59,6 +58,7 @@ import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPip
 import { AccountExtCreditCardComponent } from './account-ext-credit-card';
 import { DocumentRepaymentDetailComponent } from './document-repayment-detail';
 import { ConfigComponent } from './config';
+import { AccountExtAssetExComponent } from './account-ext-asset-ex';
 
 @NgModule({
   imports: [
@@ -107,7 +107,6 @@ import { ConfigComponent } from './config';
     AssetCategoryListComponent,
     AssetCategoryDetailComponent,
     AccountExtAssetComponent,
-    AccountExtAssetExComponent,
     AccountExtADPComponent,
     AccountExtLoanComponent,
     AccountTreeComponent,
@@ -125,6 +124,7 @@ import { ConfigComponent } from './config';
     AccountExtCreditCardComponent,
     DocumentRepaymentDetailComponent,
     ConfigComponent,
+    AccountExtAssetExComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
