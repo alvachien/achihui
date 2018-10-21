@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilter, momentDateFormat,
+  IAccountCategoryFilter, momentDateFormat, InfoMessage, MessageType,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -57,6 +57,18 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     }
 
     return '';
+  }
+  get BuyinAssetName(): string {
+    let namectrl: any = this.firstFormGroup.get('assetGroup').get('nameControl');
+    if (namectrl) {
+      return namectrl.value;
+    }
+  }
+  get IsLegacyAsset(): boolean {
+    let legctrl: any = this.firstFormGroup.get('legacyControl');
+    if (legctrl) {
+      return legctrl.checked;
+    }
   }
 
   constructor(private _dialog: MatDialog,
@@ -159,6 +171,14 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     this.dataSource.data = aritems;
   }
 
+  public onIsLegacyChecked(evnt: MatCheckboxChange) {
+    let chked: boolean = evnt.checked;
+
+    if (chked) {
+      this.firstFormGroup.get('legacyDateControl').disable();
+    }
+  }
+
   public canSubmit(): boolean {
     // Check name
     if (!this.detailObject) {
@@ -198,6 +218,25 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   }
 
   public onSubmit(): void {
+    // Perform the check.
+    let msgs: InfoMessage[] = [];
+    if (!this._doCheck(msgs)) {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: msgs,
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+
+      return;
+    }
+
     if (this.detailObject.Items.length > 0) {
       this.detailObject.Items.splice(0, this.detailObject.Items.length);
     }
@@ -319,6 +358,49 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     if (index >= 0) {
       row.Tags.splice(index, 1);
     }
+  }
+
+  private _doCheck(msgs: InfoMessage[]): boolean {
+    let chkrst: boolean = true;
+
+    if (this.dataSource.data.length <= 0) {
+      let msg: InfoMessage = new InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = MessageType.Error;
+      msg.MsgTitle = 'Finance.NoDocumentItem';
+      msg.MsgContent = 'Finance.NoDocumentItem';
+      msgs.push(msg);
+      chkrst = false;
+    }
+
+    let ccid: any = this.firstFormGroup.get('ccControl').value;
+    let ordid: any = this.firstFormGroup.get('orderControl').value;
+    if ((!ccid && !ordid) || (ccid && ordid)) {
+      let msg: InfoMessage = new InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = MessageType.Error;
+      msg.MsgTitle = 'Finance.EitherControlCenterOrOrder';
+      msg.MsgContent = 'Finance.EitherControlCenterOrOrder';
+      msgs.push(msg);
+      chkrst = false;
+    }
+
+    // Initialize the object
+    let totalAmt: number = 0;
+    this.dataSource.data.forEach((val: DocumentItem) => {
+      totalAmt += val.TranAmount;
+    });
+    if (totalAmt !== this.BuyinAmount) {
+      let msg: InfoMessage = new InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = MessageType.Error;
+      msg.MsgTitle = 'Finance.AmountIsNotCorrect';
+      msg.MsgContent = 'Finance.AmountIsNotCorrect';
+      msgs.push(msg);
+      chkrst = false;
+    }
+
+    return chkrst;
   }
 
   private getNextItemID(): number {

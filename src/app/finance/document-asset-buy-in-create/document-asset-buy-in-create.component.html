@@ -27,13 +27,13 @@
             <hih-account-ext-asset-ex formGroupName="assetGroup"></hih-account-ext-asset-ex>
           </div>
           
-          <mat-checkbox color="accent" formControlName="legacyControl" #islegacy>
+          <mat-checkbox color="accent" formControlName="legacyControl" (change)="onIsLegacyChecked($event)">
             {{'Finance.LegacyAsset' | translate}}
           </mat-checkbox>
   
           <mat-form-field class="control-full-width">
             <input matInput [matDatepicker]="tdpicker"  formControlName="legacyDateControl"
-              [disabled]="!islegacy.checked" [required]="islegacy.checked"
+              [required]="islegacy.checked"
               placeholder="{{'Common.Date' | translate}}">
             <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
             <mat-datepicker #tdpicker></mat-datepicker>
@@ -210,6 +210,7 @@
             3. Amount
           -->
         <div class="mat-typography control-full-width">
+          <h2>{{'Common.Name' | translate}}: {{BuyinAssetName}}</h2>
           <h3>{{'Finance.Amount' | translate}}: {{BuyinAmount}}</h3>
           <h3>{{'Common.Date' | translate}}: {{BuyinDate}}</h3>
         </div>
