@@ -701,18 +701,6 @@ export class AccountExtraAsset extends AccountExtra {
   public RefDocForBuy: number;
   public RefDocForSold?: number;
 
-  // Legacy info, just for creation
-  public isLegacy?: boolean;
-  public startDate: moment.Moment;
-  public curValue?: number;
-  public ccID?: number;
-  public ordID?: number;
-  // public Boolean? LegacyAsset { get; set; }
-  // public DateTime? AssetStartDate { get; set; }
-  // public Decimal? AssetValueInBaseCurrency { get; set; }
-  // public Int32? ControlCenterID { get; set; }
-  // public Int32? OrderID { get; set; }
-
   get Name(): string {
     return this._name;
   }
@@ -740,11 +728,6 @@ export class AccountExtraAsset extends AccountExtra {
     aobj.Comment = this.Comment;
     aobj.RefDocForBuy = this.RefDocForBuy;
     aobj.RefDocForSold = this.RefDocForSold;
-    aobj.isLegacy = this.isLegacy;
-    aobj.curValue = this.curValue;
-    aobj.startDate = this.startDate;
-    aobj.ccID = this.ccID;
-    aobj.ordID = this.ordID;
 
     return aobj;
   }
@@ -757,18 +740,6 @@ export class AccountExtraAsset extends AccountExtra {
     rstobj.refDocForBuy = this.RefDocForBuy;
     if (this.RefDocForSold) {
       rstobj.refDocForSold = this.RefDocForSold;
-    }
-    if (this.isLegacy !== undefined && this.isLegacy === true) {
-      // Write the object
-      rstobj.legacyAsset = true;
-      rstobj.assetStartDate = this.startDate.format(hih.momentDateFormat);
-      rstobj.assetValueInBaseCurrency = this.curValue;
-      if (this.ccID) {
-        rstobj.controlCenterID = this.ccID;
-      }
-      if (this.ordID) {
-        rstobj.orderID = this.ordID;
-      }
     }
 
     return rstobj;
@@ -2683,20 +2654,54 @@ export class DocumentWithPlanExgRateForUpdate {
   public docIDs: number[] = [];
 }
 
-/**
- * API for Asset Soldout document
- */
-export class FinanceAssetSoldoutDocumentAPI {
+export abstract class FinanceAssetDocumentAPIBase {
   public HID: number;
   public tranAmount: number;
   public tranCurr: string;
   public tranDate: string;
   public desp: string;
-  public assetAccountID: number;
   public controlCenterID?: number;
   public orderID?: number;
 
-  public items: any[] = [];
+  public items: DocumentItem[] = [];
+
+  public writeJSONObject(): any {
+    return this;
+  }
+}
+
+/**
+ * API for Asset Buyin document
+ */
+export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
+  public isLegacy?: boolean;
+  public legacyDate?: string;
+  public accountOwner: string;
+  public accountAsset: AccountExtraAsset;
+
+  public writeJSONObject(): any {
+    let rst: any = super.writeJSONObject();
+    if (this.isLegacy) {
+      rst.isLegacy = true;
+      rst.legacyDate = this.legacyDate;
+    }
+    rst.accountOwner = this.accountOwner;
+    rst.accountAsset = this.accountAsset.writeJSONObject();
+    return rst;
+  }
+}
+
+/**
+ * API for Asset Soldout document
+ */
+export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase {
+  public assetAccountID: number;
+
+  public writeJSONObject(): any {
+    let rst: any = super.writeJSONObject();
+    rst.assetAccountID = this.assetAccountID;
+    return rst;
+  }
 }
 
 /**

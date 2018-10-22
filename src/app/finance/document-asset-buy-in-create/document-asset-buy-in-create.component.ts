@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef,
+  Input, Output, ViewContainerRef, ViewChild,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange, MatButton } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
-  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
+  AccountExtraAsset, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilter, momentDateFormat, InfoMessage, MessageType,
+  IAccountCategoryFilter, momentDateFormat, InfoMessage, MessageType, financeDocTypeAssetBuyIn, FinanceAssetBuyinDocumentAPI,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -25,7 +25,6 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   styleUrls: ['./document-asset-buy-in-create.component.scss'],
 })
 export class DocumentAssetBuyInCreateComponent implements OnInit {
-  public detailObject: UIFinAssetOperationDocument | undefined = undefined;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   public assetAccount: AccountExtraAsset;
@@ -36,6 +35,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
+  @ViewChild('btnCrtItem') btnCreateItem: MatButton;
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
@@ -67,7 +67,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   get IsLegacyAsset(): boolean {
     let legctrl: any = this.firstFormGroup.get('legacyControl');
     if (legctrl) {
-      return legctrl.checked;
+      return legctrl.value;
     }
   }
 
@@ -82,7 +82,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent constructor...');
     }
-    this.detailObject = new UIFinAssetOperationDocument();
     this.assetAccount = new AccountExtraAsset();
   }
 
@@ -131,10 +130,11 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     });
 
     this.firstFormGroup = this._formBuilder.group({
-      dateControl: [{value: moment()}, Validators.required],
-      amountControl: ['', Validators.required],
+      dateControl: [{value: moment(), disabled: false}, Validators.required],
+      amountControl: [{value: 0}, Validators.required],
       despControl: ['', Validators.required],
       assetGroup: this._formBuilder.group(getAccountExtAssetFormGroup()),
+      ownerControl: ['', Validators.required],
       legacyControl: '',
       legacyDateControl: [{value: moment(), disabled: true}],
       ccControl: '',
@@ -171,50 +171,16 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     this.dataSource.data = aritems;
   }
 
-  public onIsLegacyChecked(evnt: MatCheckboxChange) {
+  public onIsLegacyChecked(evnt: MatCheckboxChange): void {
     let chked: boolean = evnt.checked;
 
     if (chked) {
+      this.firstFormGroup.get('legacyDateControl').enable();
+      this.btnCreateItem.disabled = true;
+    } else {
       this.firstFormGroup.get('legacyDateControl').disable();
+      this.btnCreateItem.disabled = false;
     }
-  }
-
-  public canSubmit(): boolean {
-    // Check name
-    if (!this.detailObject) {
-      return false;
-    }
-
-    // Check description
-    if (!this.detailObject.Desp) {
-      return false;
-    } else {
-      if (this.detailObject.Desp.trim().length <= 0) {
-        return false;
-      }
-    }
-
-    // Check the extract part
-    if (!this.detailObject.AssetAccount) {
-      return false;
-    }
-    if (!this.detailObject.AssetAccount.Name) {
-      return false;
-    } else {
-      if (this.detailObject.AssetAccount.Name.trim().length <= 0) {
-        return false;
-      }
-    }
-    if (!this.detailObject.AssetAccount.CategoryID) {
-      return false;
-    }
-
-    // Check items
-    if (this.dataSource.data.length <= 0) {
-      return false;
-    }
-
-    return true;
   }
 
   public onSubmit(): void {
@@ -237,29 +203,85 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
       return;
     }
 
-    if (this.detailObject.Items.length > 0) {
-      this.detailObject.Items.splice(0, this.detailObject.Items.length);
+    // Generate the doc, and verify it
+    let docobj: Document = this._generateDoc();
+    if (!this.IsLegacyAsset) {
+      if (!docobj.onVerify({
+        ControlCenters: this._storageService.ControlCenters,
+        Orders: this._storageService.Orders,
+        Accounts: this._storageService.Accounts,
+        DocumentTypes: this._storageService.DocumentTypes,
+        TransactionTypes: this._storageService.TranTypes,
+        Currencies: this._currService.Currencies,
+        BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+      })) {
+        // Show a dialog for error details
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          ContentTable: docobj.VerifiedMsgs,
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        });
+
+        return;
+      }
     }
 
-    this.dataSource.data.forEach((val: DocumentItem) => {
-      this.detailObject.Items.push(val);
-    });
-    let docObj: any = this.detailObject.generateDocument();
+    // Do the real submit.
+    let apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
+    apidetail.HID = this._homedefService.ChosedHome.ID;
+    apidetail.tranDate = docobj.TranDate.format(momentDateFormat);
+    apidetail.tranCurr = this.BaseCurrency;
+    apidetail.tranAmount = this.BuyinAmount;
+    apidetail.desp = docobj.Desp;
+    apidetail.controlCenterID = this.firstFormGroup.get('ccControl').value;
+    apidetail.orderID = this.firstFormGroup.get('orderControl').value;
+    apidetail.isLegacy = this.IsLegacyAsset;
+    if (apidetail.isLegacy) {
+      apidetail.legacyDate = this.firstFormGroup.get('legacyDateControl').value.format(momentDateFormat);
+    }
+    apidetail.accountOwner = this.firstFormGroup.get('ownerControl').value;
+    apidetail.accountAsset = new AccountExtraAsset();
+    apidetail.accountAsset.CategoryID = this.firstFormGroup.get('assetGroup').get('ctgyControl').value;
+    apidetail.accountAsset.Name = this.firstFormGroup.get('assetGroup').get('nameControl').value;
+    apidetail.accountAsset.Comment = this.firstFormGroup.get('assetGroup').get('commentControl').value;
 
-    // Check!
-    if (!docObj.onVerify({
-      ControlCenters: this._storageService.ControlCenters,
-      Orders: this._storageService.Orders,
-      Accounts: this._storageService.Accounts,
-      DocumentTypes: this._storageService.DocumentTypes,
-      TransactionTypes: this._storageService.TranTypes,
-      Currencies: this._currService.Currencies,
-      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
-    })) {
-      // Show a dialog for error details
+    docobj.Items.forEach((val: DocumentItem) => {
+      apidetail.items.push(val);
+    });
+
+    this._storageService.createAssetBuyinDocument(apidetail).subscribe((nid: number) => {
+      // New doc created with ID returned
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetBuyinCreateComponent for createAssetBuyinDocument, new doc ID: ${nid}`);
+      }
+
+      // Show success
+      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        'OK', {
+          duration: 2000,
+        }).afterDismissed().subscribe(() => {
+          this._router.navigate(['/finance/document/displaynormal/' + nid.toString()]);
+        });
+    }, (err: string) => {
+      // Handle the error
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Debug]: Failed in onSubmit in DocumentAssetBuyinCreateComponent for createAssetBuyinDocument, result: ${err}`);
+      }
+
+      let msg: InfoMessage = new InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = MessageType.Error;
+      msg.MsgTitle = 'Common.Error';
+      msg.MsgContent = err;
       const dlginfo: MessageDialogInfo = {
         Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: docObj.VerifiedMsgs,
+        ContentTable: [msg],
         Button: MessageDialogButtonEnum.onlyok,
       };
 
@@ -270,67 +292,9 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
       });
 
       return;
-    }
-
-    this._storageService.createDocumentEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAssetOperationDetailComponent with : ${x}`);
-      }
-
-      // Navigate back to list view
-      if (x instanceof Document) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
-        });
-
-        let recreate: boolean = false;
-        snackbarRef.onAction().subscribe(() => {
-          recreate = true;
-        });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          if (!recreate) {
-            this._router.navigate([(this.detailObject.isBuyin ? '/finance/document/displayassetbuy/' : '/finance/document/displayassetsold/')
-              + x.Id.toString()]);
-          }
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-          }
-        });
-      }
+    }, () => {
+      // DO nothing
     });
-
-    docObj.HID = this._homedefService.ChosedHome.ID;
-
-    // Build the JSON file to API
-    let sobj: any = docObj.writeJSONObject(); // Document first
-    let acntobj: Account = new Account();
-    acntobj.HID = this._homedefService.ChosedHome.ID;
-    acntobj.CategoryId = financeAccountCategoryAsset;
-    acntobj.Name = docObj.Desp;
-    acntobj.Comment = docObj.Desp;
-    acntobj.ExtraInfo = this.detailObject.AssetAccount;
-    sobj.AccountVM = acntobj.writeJSONObject();
-
-    this._storageService.createAssetDocument(sobj, this.detailObject.isBuyin);
   }
 
   public onBackToList(): void {
@@ -362,15 +326,29 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
 
   private _doCheck(msgs: InfoMessage[]): boolean {
     let chkrst: boolean = true;
+    const islegacy: boolean = this.IsLegacyAsset;
 
-    if (this.dataSource.data.length <= 0) {
-      let msg: InfoMessage = new InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = MessageType.Error;
-      msg.MsgTitle = 'Finance.NoDocumentItem';
-      msg.MsgContent = 'Finance.NoDocumentItem';
-      msgs.push(msg);
-      chkrst = false;
+    if (islegacy) {
+      // Don't need the paying accounts
+      if (this.dataSource.data.length > 0) {
+        let msg: InfoMessage = new InfoMessage();
+        msg.MsgTime = moment();
+        msg.MsgType = MessageType.Error;
+        msg.MsgTitle = 'Finance.NoDocumentItem';
+        msg.MsgContent = 'Finance.NoDocumentItem';
+        msgs.push(msg);
+        chkrst = false;
+      }
+    } else {
+      if (this.dataSource.data.length <= 0) {
+        let msg: InfoMessage = new InfoMessage();
+        msg.MsgTime = moment();
+        msg.MsgType = MessageType.Error;
+        msg.MsgTitle = 'Finance.NoDocumentItem';
+        msg.MsgContent = 'Finance.NoDocumentItem';
+        msgs.push(msg);
+        chkrst = false;
+      }
     }
 
     let ccid: any = this.firstFormGroup.get('ccControl').value;
@@ -386,21 +364,41 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     }
 
     // Initialize the object
-    let totalAmt: number = 0;
-    this.dataSource.data.forEach((val: DocumentItem) => {
-      totalAmt += val.TranAmount;
-    });
-    if (totalAmt !== this.BuyinAmount) {
-      let msg: InfoMessage = new InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = MessageType.Error;
-      msg.MsgTitle = 'Finance.AmountIsNotCorrect';
-      msg.MsgContent = 'Finance.AmountIsNotCorrect';
-      msgs.push(msg);
-      chkrst = false;
+    if (islegacy) {
+      // Do nothing here
+    } else {
+      let totalAmt: number = 0;
+      this.dataSource.data.forEach((val: DocumentItem) => {
+        totalAmt += val.TranAmount;
+      });
+      if (totalAmt !== this.BuyinAmount) {
+        let msg: InfoMessage = new InfoMessage();
+        msg.MsgTime = moment();
+        msg.MsgType = MessageType.Error;
+        msg.MsgTitle = 'Finance.AmountIsNotCorrect';
+        msg.MsgContent = 'Finance.AmountIsNotCorrect';
+        msgs.push(msg);
+        chkrst = false;
+      }
     }
 
     return chkrst;
+  }
+  private _generateDoc(): Document {
+    let ndoc: Document = new Document();
+    ndoc.DocType = financeDocTypeAssetBuyIn;
+    ndoc.HID = this._homedefService.ChosedHome.ID;
+    ndoc.TranDate = this.firstFormGroup.get('dateControl').value;
+    ndoc.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
+    ndoc.Desp = this.firstFormGroup.get('despControl').value;
+    // Add items
+    if (!this.IsLegacyAsset) {
+      this.dataSource.data.forEach((val: DocumentItem) => {
+        ndoc.Items.push(val);
+      });
+    }
+
+    return ndoc;
   }
 
   private getNextItemID(): number {

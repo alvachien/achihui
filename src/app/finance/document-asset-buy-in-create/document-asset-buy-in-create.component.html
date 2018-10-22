@@ -27,13 +27,21 @@
             <hih-account-ext-asset-ex formGroupName="assetGroup"></hih-account-ext-asset-ex>
           </div>
           
+          <mat-form-field class="control-full-width">
+            <mat-select placeholder="{{'Finance.Owner' | translate}}" name="owner" formControlName="ownerControl">
+              <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+              <mat-option *ngFor="let usr of _homedefService.MembersInChosedHome" [value]="usr.User">
+                {{usr.DisplayAs}} 
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+  
           <mat-checkbox color="accent" formControlName="legacyControl" (change)="onIsLegacyChecked($event)">
             {{'Finance.LegacyAsset' | translate}}
           </mat-checkbox>
   
           <mat-form-field class="control-full-width">
-            <input matInput [matDatepicker]="tdpicker"  formControlName="legacyDateControl"
-              [required]="islegacy.checked"
+            <input matInput [matDatepicker]="tdpicker"  formControlName="legacyDateControl"              
               placeholder="{{'Common.Date' | translate}}">
             <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
             <mat-datepicker #tdpicker></mat-datepicker>
@@ -66,7 +74,7 @@
       <mat-step>
         <ng-template matStepLabel>{{'Finance.Items' | translate}}</ng-template>
         <mat-toolbar>
-          <button mat-icon-button (click)="onCreateDocItem()" matTooltip="{{'Common.Create' | translate}}">
+          <button mat-icon-button (click)="onCreateDocItem()" matTooltip="{{'Common.Create' | translate}}" #btnCrtItem>
             <mat-icon color="primary">add</mat-icon>
           </button>
         </mat-toolbar>
