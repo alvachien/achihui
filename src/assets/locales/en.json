@@ -151,6 +151,7 @@
     "Dashboard": "Dashboard",
 
     "InvalidName": "Invalid name",
+    "InvalidDate": "Invalid date",
     "NameIsMust": "Name is a must",
     "InvalidValidFrom": "Invalid valid from",
     "ValidFromIsMust": "Valid from is a must",
@@ -491,6 +492,7 @@
     "CurrencyIsMust": "Currency is must",
     "CurrencyFetchFailed": "Failed to fetch currency",
     "NoDocumentItem": "No document item",
+    "HasDocumentItem": "Has document item",
     "AmountIsNotCorrect": "Amount is not correct",
     "AmountIsZeroInTransferDocument": "Transfer document requires the total amount is 0",
     "InvalidItemID": "Invalid Item ID",

@@ -136,7 +136,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
       assetGroup: this._formBuilder.group(getAccountExtAssetFormGroup()),
       ownerControl: ['', Validators.required],
       legacyControl: '',
-      legacyDateControl: [{value: moment(), disabled: true}],
       ccControl: '',
       orderControl: '',
     });
@@ -175,10 +174,8 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     let chked: boolean = evnt.checked;
 
     if (chked) {
-      this.firstFormGroup.get('legacyDateControl').enable();
       this.btnCreateItem.disabled = true;
     } else {
-      this.firstFormGroup.get('legacyDateControl').disable();
       this.btnCreateItem.disabled = false;
     }
   }
@@ -242,9 +239,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     apidetail.controlCenterID = this.firstFormGroup.get('ccControl').value;
     apidetail.orderID = this.firstFormGroup.get('orderControl').value;
     apidetail.isLegacy = this.IsLegacyAsset;
-    if (apidetail.isLegacy) {
-      apidetail.legacyDate = this.firstFormGroup.get('legacyDateControl').value.format(momentDateFormat);
-    }
     apidetail.accountOwner = this.firstFormGroup.get('ownerControl').value;
     apidetail.accountAsset = new AccountExtraAsset();
     apidetail.accountAsset.CategoryID = this.firstFormGroup.get('assetGroup').get('ctgyControl').value;
@@ -329,13 +323,26 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     const islegacy: boolean = this.IsLegacyAsset;
 
     if (islegacy) {
-      // Don't need the paying accounts
+      let tday: moment.Moment = moment();
+      let bdate: moment.Moment = this.firstFormGroup.get('dateControl').value;
+
+      if (tday.isSameOrBefore(this.BuyinDate)) {
+        let msg: InfoMessage = new InfoMessage();
+        msg.MsgTime = moment();
+        msg.MsgType = MessageType.Error;
+        msg.MsgTitle = 'Common.InvalidDate';
+        msg.MsgContent = 'Common.InvalidDate';
+        msgs.push(msg);
+        chkrst = false;
+      }
+
+      // Doc. item created
       if (this.dataSource.data.length > 0) {
         let msg: InfoMessage = new InfoMessage();
         msg.MsgTime = moment();
         msg.MsgType = MessageType.Error;
-        msg.MsgTitle = 'Finance.NoDocumentItem';
-        msg.MsgContent = 'Finance.NoDocumentItem';
+        msg.MsgTitle = 'Finance.HasDocumentItem';
+        msg.MsgContent = 'Finance.HasDocumentItem';
         msgs.push(msg);
         chkrst = false;
       }

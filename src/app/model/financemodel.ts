@@ -2675,7 +2675,6 @@ export abstract class FinanceAssetDocumentAPIBase {
  */
 export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
   public isLegacy?: boolean;
-  public legacyDate?: string;
   public accountOwner: string;
   public accountAsset: AccountExtraAsset;
 
@@ -2683,7 +2682,6 @@ export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
     let rst: any = super.writeJSONObject();
     if (this.isLegacy) {
       rst.isLegacy = true;
-      rst.legacyDate = this.legacyDate;
     }
     rst.accountOwner = this.accountOwner;
     rst.accountAsset = this.accountAsset.writeJSONObject();

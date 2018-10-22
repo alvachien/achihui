@@ -151,6 +151,7 @@
     "Dashboard": "仪表板",
     
     "InvalidName": "无效的名字",
+    "InvalidDate": "无效的日期",
     "NameIsMust": "名字必须输入",
     "InvalidValidFrom": "无效的有效期开始日期",
     "ValidFromIsMust": "有效期开始日必须输入",
@@ -491,6 +492,7 @@
     "CurrencyIsMust": "货币是必须的",
     "CurrencyFetchFailed": "无法获取货币信息",
     "NoDocumentItem": "没有凭证行项目",
+    "HasDocumentItem": "不应该有凭证行项目",
     "AmountIsNotCorrect": "金额不正确",
     "AmountIsZeroInTransferDocument": "转账凭证的总金额必须为0",
     "InvalidItemID": "无效的行项目ID",

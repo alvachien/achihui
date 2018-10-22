@@ -127,6 +127,8 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
     switch(doc.DocType) {
       case financeDocTypeNormal:
       case financeDocTypeRepay:
+      case financeDocTypeAssetBuyIn:
+      case financeDocTypeAssetSoldOut:
       this.onDisplayNormalDocument(doc);
       break;
 
@@ -144,14 +146,6 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
 
       case financeDocTypeAdvanceReceived:
       this.onDisplayADRDocument(doc);
-      break;
-
-      case financeDocTypeAssetBuyIn:
-      this.onDisplayAssetBuyInDocument(doc);
-      break;
-
-      case financeDocTypeAssetSoldOut:
-      this.onDisplayAssetSoldOutDocument(doc);
       break;
 
       case financeDocTypeBorrowFrom:
