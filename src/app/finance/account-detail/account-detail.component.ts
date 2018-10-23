@@ -8,7 +8,7 @@ import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo, UICommonLabelEnum,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
-  AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan } from '../../model';
+  AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { AccountExtLoanComponent } from '../account-ext-loan';
@@ -179,6 +179,21 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
     this.step--;
   }
 
+  public isCategoryDisabled(ctgy: AccountCategory): boolean {
+    if (this.uiMode === UIMode.Create) {
+      if (ctgy.ID === financeAccountCategoryAsset
+        || ctgy.ID === financeAccountCategoryBorrowFrom
+        || ctgy.ID === financeAccountCategoryLendTo
+        || ctgy.ID === financeAccountCategoryAdvancePayment
+        || ctgy.ID === financeAccountCategoryAdvanceReceived) {
+        return true;
+      }
+
+      return false;
+    }
+
+    return false;
+  }
   public canSubmit(): boolean {
     return true;
   }

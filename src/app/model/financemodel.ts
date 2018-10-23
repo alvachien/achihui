@@ -492,7 +492,7 @@ export class Account extends hih.BaseModel {
       this.OwnerId = data.owner;
     }
     if (data && data.status) {
-      this.Status = <AccountStatusEnum>data.Status;
+      this.Status = <AccountStatusEnum>data.status;
     }
     if (data && data.ownerDisplayAs && data.ownerDisplayAs.length > 0) {
       this.OwnerDisplayAs = data.ownerDisplayAs;
