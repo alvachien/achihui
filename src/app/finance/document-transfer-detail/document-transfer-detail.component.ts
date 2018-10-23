@@ -10,7 +10,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIFinTransferDocument, UIMode, getUIModeString, financeDocTypeTransfer,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  IAccountCategoryFilter } from '../../model';
+  IAccountCategoryFilter, momentDateFormat } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -26,9 +26,6 @@ export class DocumentTransferDetailComponent implements OnInit {
   public detailObject: UIFinTransferDocument | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   public step: number = 0;
-  // public commonFormGroup: FormGroup;
-  // public sourceFormGroup: FormGroup;
-  // public targetFormGroup: FormGroup;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -47,6 +44,11 @@ export class DocumentTransferDetailComponent implements OnInit {
 
     return false;
   }
+  get tranDateString(): string {
+    if (this.detailObject) {
+      return this.detailObject.TranDate.format(momentDateFormat);
+    }
+  }
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -64,18 +66,6 @@ export class DocumentTransferDetailComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentTransferDetailComponent ngOnInit...');
     }
-
-    // this.commonFormGroup = this._formBuilder.group({
-    //   tdateCtrl: ['', Validators.required],
-    //   despCtrl: ['', Validators.required],
-    //   amtCtrl: ['', Validators.required]
-    // });
-    // this.sourceFormGroup = this._formBuilder.group({
-    //   //srcaccountCtrl: ['', Validators.required]
-    // });
-    // this.targetFormGroup = this._formBuilder.group({
-    //   //tgtaccountCtrl: ['', Validators.required]
-    // });
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),

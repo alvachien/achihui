@@ -9,7 +9,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  UICommonLabelEnum, IAccountCategoryFilter } from '../../model';
+  UICommonLabelEnum, IAccountCategoryFilter, momentDateFormat, TranType } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -70,6 +70,37 @@ export class DocumentNormalDetailComponent implements OnInit {
     }
 
     return false;
+  }
+  get tranDateString(): string {
+    if (this.detailObject) {
+      return this.detailObject.TranDate.format(momentDateFormat);
+    }
+  }
+  get totalAmount(): number {
+    let amt: number = 0;
+    if (this.detailObject) {
+      for(let it of this.detailObject.Items) {
+        // if (it.TranType.)
+        let tt: TranType = this._storageService.TranTypes.find((val: TranType) => {
+          return val.Id === it.TranType;
+        });
+
+        if (tt) {
+          if (tt.Expense) {
+            amt -= it.TranAmount;
+          } else {
+            amt += it.TranAmount;
+          }
+        }
+      }
+    }
+
+    return amt;
+  }
+  get tranCurr(): string {
+    if (this.detailObject) {
+      return this.detailObject.TranCurr;
+    }
   }
 
   constructor(private _dialog: MatDialog,

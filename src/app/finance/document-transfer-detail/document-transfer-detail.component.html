@@ -126,11 +126,11 @@
       <mat-step>
         <ng-template matStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
         <div class="mat-typography control-full-width">
-          <h2>{{'Common.From' | translate}}: {{detailObject.SourceAccountId}}</h2>
-          <h2>{{'Common.To' | translate}}: {{detailObject.TargetAccountId}}</h2>
+          <h2>{{'Finance.TransferFrom' | translate}}: {{detailObject.SourceAccountId}}</h2>
+          <h2>{{'Finance.TransferTo' | translate}}: {{detailObject.TargetAccountId}}</h2>
           <h2>{{'Finance.Amount' | translate}}: {{detailObject.TranAmount}} ({{detailObject.TranCurr}})</h2>
           <h3>{{'Common.Description' | translate}}: {{detailObject.Desp}}</h3>
-          <h3>{{'Common.Date' | translate}}: {{detailObject.TranDate}}</h3>
+          <h3>{{'Common.Date' | translate}}: {{tranDateString}}</h3>
         </div>
 
         <div>
