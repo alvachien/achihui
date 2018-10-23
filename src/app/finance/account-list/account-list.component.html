@@ -55,6 +55,20 @@
           </mat-cell>
         </ng-container>
 
+        <!-- Status column -->
+        <!-- <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef>{{'Common.Status' | translate}}</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-form-field>
+                <mat-select class="demo-full-width" disabled [(ngModel)]="row.CategoryId" name="ctgy">
+                  <mat-option *ngFor="let ctgy of _storageService.AccountCategories" [value]="ctgy.ID">
+                    {{ctgy.Name | translate}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-cell>
+          </ng-container> -->
+  
         <!-- Comment Column -->
         <ng-container matColumnDef="comment">
           <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>

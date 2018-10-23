@@ -515,7 +515,8 @@
     "DespIsMust": "描述是必须的",
     "DespIsTooLong": "描述长度超出限制",
     "NoExtraInfo": "没有附加信息",
-    "NoTmpDocGenerated": "没有模板凭证，需要生成模板凭证"
+    "NoTmpDocGenerated": "没有模板凭证，需要生成模板凭证",
+    "InvalidDateInLegacyAsset": "创建固有资产，日期必须是早于今天之前"
   },
   "Library": {
     "BookCategories": "图书种类",

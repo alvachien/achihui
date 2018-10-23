@@ -232,7 +232,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     // Do the real submit.
     let apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
     apidetail.HID = this._homedefService.ChosedHome.ID;
-    apidetail.tranDate = docobj.TranDate.format(momentDateFormat);
+    apidetail.tranDate = this.BuyinDate;
     apidetail.tranCurr = this.BaseCurrency;
     apidetail.tranAmount = this.BuyinAmount;
     apidetail.desp = docobj.Desp;
@@ -324,14 +324,16 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
 
     if (islegacy) {
       let tday: moment.Moment = moment();
-      let bdate: moment.Moment = this.firstFormGroup.get('dateControl').value;
+      let tdaystring: string = tday.format(momentDateFormat);
+      let tday2: moment.Moment = moment(tdaystring, momentDateFormat);
+      let bdate: moment.Moment = moment(this.BuyinDate, momentDateFormat);
 
-      if (tday.isSameOrBefore(this.BuyinDate)) {
+      if (tday2.isSameOrBefore(bdate)) {
         let msg: InfoMessage = new InfoMessage();
         msg.MsgTime = moment();
         msg.MsgType = MessageType.Error;
         msg.MsgTitle = 'Common.InvalidDate';
-        msg.MsgContent = 'Common.InvalidDate';
+        msg.MsgContent = 'Finance.InvalidDateInLegacyAsset';
         msgs.push(msg);
         chkrst = false;
       }

@@ -7,7 +7,8 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset,
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo, UICommonLabelEnum,
-  UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived, AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan } from '../../model';
+  UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
+  AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { AccountExtLoanComponent } from '../account-ext-loan';
@@ -284,7 +285,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
         this._compAsset.generateAccountInfoForSave();
       }
     }
-    
+
     this._storageService.createAccount(this.detailObject);
   }
 

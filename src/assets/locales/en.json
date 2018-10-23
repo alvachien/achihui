@@ -515,7 +515,8 @@
     "DespIsMust": "Desp is must",
     "DespIsTooLong": "Desp is too long",
     "NoExtraInfo": "No extra info",
-    "NoTmpDocGenerated": "No template docs, you shall generate them first"
+    "NoTmpDocGenerated": "No template docs, you shall generate them first",
+    "InvalidDateInLegacyAsset": "Transaction date shall be a earlier date than today for Legacy Asset creation"
   },
   "Library": {
     "BookCategories": "Book Categories",
