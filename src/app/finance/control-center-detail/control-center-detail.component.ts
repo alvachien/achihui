@@ -37,12 +37,12 @@ export class ControlCenterDetailComponent implements OnInit {
     }
 
     // Distinguish current mode
-    this._activateRoute.url.subscribe((x) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit for activateRoute URL: ${x}`);
-        }
+    this._activateRoute.url.subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit for activateRoute URL: ${x}`);
+      }
 
-        if (x instanceof Array && x.length > 0) {
+      if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
           this.onInitCreateMode();
         } else if (x[0].path === 'edit') {
@@ -57,12 +57,12 @@ export class ControlCenterDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readControlCenterEvent.subscribe((x) => {
-            if (x instanceof ControlCenter) {
+          this._storageService.readControlCenterEvent.subscribe((x2: any) => {
+            if (x2 instanceof ControlCenter) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, succeed to readControlCenterEvent : ${x}`);
               }
-              this.detailObject = x;
+              this.detailObject = x2;
             } else {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.log(`AC_HIH_UI [Error]: Entering ngOninit in ControlCenterDetailComponent, failed to readControlCenterEvent : ${x}`);
@@ -119,7 +119,7 @@ export class ControlCenterDetailComponent implements OnInit {
   }
 
   private onCreateControlCenter(): void {
-    this._storageService.createControlCenterEvent.subscribe((x) => {
+    this._storageService.createControlCenterEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving createControlCenterEvent in ControlCenterDetailComponent with : ${x}`);
       }
@@ -127,10 +127,10 @@ export class ControlCenterDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof ControlCenter) {
         // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
-        });
+            duration: 3000,
+          });
 
         let recreate: boolean = false;
         snackbarRef.onAction().subscribe(() => {
@@ -170,7 +170,7 @@ export class ControlCenterDetailComponent implements OnInit {
   }
 
   private onUpdateControlCenter(): void {
-    this._storageService.changeControlCenterEvent.subscribe((x) => {
+    this._storageService.changeControlCenterEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving changeControlCenterEvent in ControlCenterDetailComponent with : ${x}`);
       }
@@ -178,10 +178,10 @@ export class ControlCenterDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof ControlCenter) {
         // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
           'OK', {
-          duration: 3000,
-        });
+            duration: 3000,
+          });
 
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display

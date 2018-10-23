@@ -9,11 +9,11 @@
     </div>
 
     <mat-toolbar>
-      <button mat-icon-button (click)="onCreateAccount()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary" class="example-icon">add</mat-icon></button>
+      <button mat-icon-button (click)="onCreateAccount()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary" class="toolbar-icon">add</mat-icon></button>
       <a mat-button routerLink="/finance/account/tree" routerLinkActive="active" matTooltip="{{'Common.HierarchyView' | translate}}">{{'Common.HierarchyView' | translate}}</a>
-      <span class="example-spacer"></span>
-      <mat-form-field>        
-        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onStatusChange()" #select="matSelect">
+      <span class="toolbar-spacer"></span>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onStatusChange()" #statusselect="matSelect">
           <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
           <mat-option *ngFor="let sts of arrayStatus" [value]="sts.value">
             {{sts.i18nterm | translate}}
@@ -56,18 +56,18 @@
         </ng-container>
 
         <!-- Status column -->
-        <!-- <ng-container matColumnDef="status">
-            <mat-header-cell *matHeaderCellDef>{{'Common.Status' | translate}}</mat-header-cell>
-            <mat-cell *matCellDef="let row">
-              <mat-form-field>
-                <mat-select class="demo-full-width" disabled [(ngModel)]="row.CategoryId" name="ctgy">
-                  <mat-option *ngFor="let ctgy of _storageService.AccountCategories" [value]="ctgy.ID">
-                    {{ctgy.Name | translate}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </mat-cell>
-          </ng-container> -->
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef>{{'Common.Status' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <mat-form-field>
+              <mat-select [(ngModel)]="row.Status" disabled>
+                <mat-option *ngFor="let sts of arrayStatus" [value]="sts.value">
+                  {{sts.i18nterm | translate}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
   
         <!-- Comment Column -->
         <ng-container matColumnDef="comment">
@@ -82,6 +82,4 @@
       </mat-paginator>
     </div>
   </mat-card-content>
-  <mat-card-actions>
-  </mat-card-actions>
 </mat-card>

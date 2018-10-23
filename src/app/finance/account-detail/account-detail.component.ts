@@ -8,7 +8,7 @@ import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo, UICommonLabelEnum,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
-  AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory } from '../../model';
+  AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory, financeAccountCategoryInsurance } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { AccountExtLoanComponent } from '../account-ext-loan';
@@ -185,7 +185,8 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
         || ctgy.ID === financeAccountCategoryBorrowFrom
         || ctgy.ID === financeAccountCategoryLendTo
         || ctgy.ID === financeAccountCategoryAdvancePayment
-        || ctgy.ID === financeAccountCategoryAdvanceReceived) {
+        || ctgy.ID === financeAccountCategoryAdvanceReceived
+        || ctgy.ID === financeAccountCategoryInsurance) {
         return true;
       }
 

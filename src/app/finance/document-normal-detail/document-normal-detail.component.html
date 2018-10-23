@@ -17,35 +17,35 @@
         </mat-expansion-panel-header>
 
         <!-- Currency -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <mat-select placeholder="{{'Finance.Currency' | translate}}" 
             [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr" name="curr">
             <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
-                {{cr.Symbol}} - {{cr.Name | translate}}
+              {{cr.Symbol}} - {{cr.Name | translate}}
             </mat-option>
           </mat-select>
         </mat-form-field>
 
         <!-- Tran date -->
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="tdpicker" 
             placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable">
           <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
           <mat-datepicker #tdpicker></mat-datepicker>
         </mat-form-field>        
         
-        <mat-form-field class="demo-full-width">
+        <mat-form-field class="control-full-width">
           <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" maxlength="44"
             [(ngModel)]="detailObject.Desp" name="dsp">
         </mat-form-field>
 
         <!-- Exchange rate -->
-        <mat-form-field class="demo-full-width" *ngIf="isForeignCurrency">
+        <mat-form-field class="control-full-width" *ngIf="isForeignCurrency">
           <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.ExgRate" name="hexrate">
         </mat-form-field>
 
         <!-- Planned Exchange rate -->
-        <div *ngIf="isForeignCurrency" class="demo-full-width">
+        <div *ngIf="isForeignCurrency" class="control-full-width">
           <mat-checkbox [(ngModel)]="detailObject.ExgRate_Plan" color="accent" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
         </div>
         
@@ -126,7 +126,7 @@
             <ng-container matColumnDef="desp">
               <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <mat-form-field class="demo-full-width">
+                <mat-form-field class="control-full-width">
                   <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" maxlength="44"
                     [readonly]="!isFieldChangable" [(ngModel)]="row.Desp" name="itdesp">
                 </mat-form-field> 
@@ -208,7 +208,10 @@
         </mat-expansion-panel-header>
 
         <section class="mat-typography">
-          <h1>{{detailObject?.Desp}}</h1>
+          <div class="mat-typography control-full-width">
+            <h3>{{'Common.Description' | translate}}: {{detailObject.Desp}}</h3>
+            <h3>{{'Common.Date' | translate}}: {{detailObject.TranDate}}</h3>
+          </div>
         </section>
 
         <mat-action-row>

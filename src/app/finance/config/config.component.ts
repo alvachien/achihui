@@ -31,22 +31,22 @@ export class ConfigComponent implements OnInit, AfterViewInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ngOnInit of ConfigComponent ...');
     }
-  }
-
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of ConfigComponent ...');
-    }
 
     forkJoin(
-    this._storageService.fetchAllAccountCategories(),
-    this._storageService.fetchAllDocTypes(),
-    this._storageService.fetchAllAssetCategories(),
+      this._storageService.fetchAllAccountCategories(),
+      this._storageService.fetchAllDocTypes(),
+      this._storageService.fetchAllAssetCategories(),
     ).subscribe((x: any) => {
       // Bind to the tables
       this.dataSourceAcntCtgy.data = x[0];
       this.dataSourceDocType.data = x[1];
       this.dataSourceAsstCtgy.data = x[2];
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of ConfigComponent ...');
+    }
   }
 }

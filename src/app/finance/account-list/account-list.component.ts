@@ -20,7 +20,7 @@ interface IAccountStatusUI {
 })
 export class AccountListComponent implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['id', 'name', 'ctgy', 'comment'];
+  displayedColumns: string[] = ['id', 'name', 'ctgy', 'status', 'comment'];
   dataSource: MatTableDataSource<Account> = new MatTableDataSource<Account>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   arrayStatus: UIDisplayString[] = [];

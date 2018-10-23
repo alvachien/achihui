@@ -11,7 +11,7 @@
         </ng-template>
 
         <div class="table-container mat-elevation-z8">
-          <mat-table #table [dataSource]="dataSourceAcntCtgy">
+          <mat-table #tableAcntCtgy [dataSource]="dataSourceAcntCtgy">
             <!-- ID Column -->
             <ng-container matColumnDef="id">
               <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
@@ -56,7 +56,7 @@
         </ng-template>
 
         <div class="table-container mat-elevation-z8">
-          <mat-table #table [dataSource]="dataSourceDocType">
+          <mat-table #tableDocType [dataSource]="dataSourceDocType">
             <!-- ID Column -->
             <ng-container matColumnDef="id">
               <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
@@ -92,7 +92,7 @@
         </ng-template>
 
         <div class="table-container mat-elevation-z8">
-          <mat-table #table [dataSource]="dataSourceAsstCtgy">
+          <mat-table #tableAssetCtgy [dataSource]="dataSourceAsstCtgy">
             <!-- ID Column -->
             <ng-container matColumnDef="id">
               <mat-header-cell *matHeaderCellDef>#</mat-header-cell>

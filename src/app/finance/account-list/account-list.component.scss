@@ -4,15 +4,15 @@
   min-width: 300px;
  }
   
- .table-header {
-   min-height: 64px;
-   display: flex;
-   align-items: center;
-   padding-left: 24px;
-   font-size: 20px;
- }
+.table-header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  font-size: 20px;
+}
 
- .example-loading-shade {
+.example-loading-shade {
   position: absolute;
   top: 0;
   left: 0;
@@ -30,11 +30,11 @@
   max-height: 600px;
 }
 
-.example-icon {
+.toolbar-icon {
   padding: 0 2px;
 }
   
-.example-spacer {
+.toolbar-spacer {
   flex: 1 1 auto;
 }
 
@@ -55,6 +55,11 @@
 }
 
 .mat-column-ctgy {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.mat-column-status {
   min-width: 150px;
   max-width: 200px;
 }
