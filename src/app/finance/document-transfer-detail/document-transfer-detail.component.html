@@ -40,7 +40,7 @@
         <!-- Planned Exchange rate -->
         <div *ngIf="isForeignCurrency" class="control-full-width">
           <mat-checkbox [(ngModel)]="detailObject.ExgRate_Plan" color="accent" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
-        </div>        
+        </div>
 
         <mat-form-field class="control-full-width">
           <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"

@@ -44,22 +44,25 @@
           </mat-tree-node>
         </mat-tree>
       </div>
+
       <div class="handle handle-row" ngxSplitHandle>
         <i class="material-icons">&#xE25D;</i>
       </div>
+
       <div fxFlex.xs="50%" fxFlex.gt-md="80%" fxFlex.lg="80%" ngxSplitArea>
         <div *ngIf="curNode && curNode.nodetype === 1">
           <mat-toolbar color="primary">
             <span>{{'Finance.AccountCategory' | translate}} - {{curNode?.displayname | translate}}</span>
             <span class="example-spacer"></span>
             <mat-form-field>
-              <mat-select color="accent" class="mt-1" [(ngModel)]="selectedAccountCtgyScope">
+              <mat-select color="accent" [(ngModel)]="selectedAccountCtgyScope">
                 <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
               </mat-select>
             </mat-form-field>
           </mat-toolbar>
           <hih-fin-docitem-by-acntctgy [selectedCategory]="curNode?.id" [selectedAccounts]="selectedAccounts" [selectedScope]="selectedAccountCtgyScope"></hih-fin-docitem-by-acntctgy>
         </div>
+
         <div *ngIf="curNode && curNode.nodetype === 2">
           <mat-toolbar color="primary">
             <span>{{'Finance.Account' | translate}} - {{curNode?.displayname | translate}}</span>

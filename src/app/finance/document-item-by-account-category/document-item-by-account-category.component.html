@@ -13,7 +13,7 @@
       <mat-header-cell *matHeaderCellDef>{{'Finance.Account' | translate}}</mat-header-cell>
       <mat-cell *matCellDef="let row">
         <mat-form-field>
-          <mat-select placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="row.AccountId" name="itacnt">
+          <mat-select disabled placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="row.AccountId" name="itacnt">
             <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
               <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
             </mat-option>

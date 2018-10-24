@@ -18,7 +18,7 @@ Bugs fixing and Feature list
 - Finance: Multiple items in Asset document;
 - Finance: Support the repayment document;
 - Finance: Enable scope in Account view;
-- Finance: Legacy asset account;
+- Finance: Create asset buyin doc for Legacy asset (without payment);
 
 
 ## Version 0.5.5
