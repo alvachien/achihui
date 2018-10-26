@@ -451,7 +451,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof Document) {
         // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentUpdated),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });

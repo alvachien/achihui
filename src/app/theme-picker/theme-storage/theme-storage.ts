@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
-export interface DocsSiteTheme {
-  href: string;
+export interface AppUITheme {
+  name: string;
   accent: string;
   primary: string;
   isDark?: boolean;
@@ -10,29 +10,42 @@ export interface DocsSiteTheme {
 
 @Injectable()
 export class ThemeStorage {
-  static storageKey = 'achih-theme-storage-current';
+  static storageKey: any = 'achih-theme-storage-current';
 
-  public onThemeUpdate: EventEmitter<DocsSiteTheme> = new EventEmitter<DocsSiteTheme>();
+  public onThemeUpdate: EventEmitter<AppUITheme> = new EventEmitter<AppUITheme>();
 
-  public storeTheme(theme: DocsSiteTheme) {
+  public storeTheme(theme: AppUITheme): void {
     try {
       window.localStorage[ThemeStorage.storageKey] = JSON.stringify(theme);
-    } catch (e) { }
+    } catch {
+      // Emtpy
+    }
 
     this.onThemeUpdate.emit(theme);
   }
 
-  public getStoredTheme(): DocsSiteTheme {
+  public getStoredTheme(): AppUITheme | null {
     try {
       return JSON.parse(window.localStorage[ThemeStorage.storageKey] || null);
-    } catch (e) {
+    } catch {
       return null;
     }
   }
 
-  public clearStorage() {
+  public getStoredThemeName(): string | null {
+    let them: any = this.getStoredTheme();
+    if (them !== null) {
+      return them.name;
+    }
+
+    return null;
+  }
+
+  public clearStorage(): void {
     try {
       window.localStorage.removeItem(ThemeStorage.storageKey);
-    } catch (e) { }
+    } catch {
+      // Empty
+    }
   }
 }

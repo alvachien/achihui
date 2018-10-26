@@ -6,8 +6,16 @@
   $foreground: map-get($theme, foreground);
   
   achih-footer {
-    .achih-footer-list {
+    footer {
+      background: mat-color($primary);
+    }
+    
+    .achih-ui-footer {
+      background: mat-color($primary);
+    }
+
+    .achih-ui-footer-links a {
       color: mat-color($primary, default-contrast);
     }
-  }  
+  }
 }

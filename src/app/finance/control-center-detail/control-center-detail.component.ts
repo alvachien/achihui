@@ -26,8 +26,8 @@ export class ControlCenterDetailComponent implements OnInit {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
-    public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService) {
+    public homedefService: HomeDefDetailService,
+    public storageService: FinanceStorageService) {
     this.detailObject = new ControlCenter();
   }
 
@@ -57,7 +57,7 @@ export class ControlCenterDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readControlCenterEvent.subscribe((x2: any) => {
+          this.storageService.readControlCenterEvent.subscribe((x2: any) => {
             if (x2 instanceof ControlCenter) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
                 console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, succeed to readControlCenterEvent : ${x}`);
@@ -71,7 +71,7 @@ export class ControlCenterDetailComponent implements OnInit {
             }
           });
 
-          this._storageService.readControlCenter(this.routerID);
+          this.storageService.readControlCenter(this.routerID);
         }
       }
     }, (error: any) => {
@@ -115,11 +115,11 @@ export class ControlCenterDetailComponent implements OnInit {
   private onInitCreateMode(): void {
     this.detailObject = new ControlCenter();
     this.uiMode = UIMode.Create;
-    this.detailObject.HID = this._homedefService.ChosedHome.ID;
+    this.detailObject.HID = this.homedefService.ChosedHome.ID;
   }
 
   private onCreateControlCenter(): void {
-    this._storageService.createControlCenterEvent.subscribe((x: any) => {
+    this.storageService.createControlCenterEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving createControlCenterEvent in ControlCenterDetailComponent with : ${x}`);
       }
@@ -166,11 +166,11 @@ export class ControlCenterDetailComponent implements OnInit {
       }
     });
 
-    this._storageService.createControlCenter(this.detailObject);
+    this.storageService.createControlCenter(this.detailObject);
   }
 
   private onUpdateControlCenter(): void {
-    this._storageService.changeControlCenterEvent.subscribe((x: any) => {
+    this.storageService.changeControlCenterEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Receiving changeControlCenterEvent in ControlCenterDetailComponent with : ${x}`);
       }
@@ -208,6 +208,6 @@ export class ControlCenterDetailComponent implements OnInit {
       }
     });
 
-    this._storageService.changeControlCenter(this.detailObject);
+    this.storageService.changeControlCenter(this.detailObject);
   }
 }

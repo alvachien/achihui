@@ -510,6 +510,7 @@
     "ControlCenterFetchFailedOrNoCC": "Failed to fetch Control center or no control center created at all",
     "OrderFetchFailedOrNoOrder": "Failed to fetch order or no order created at all",
     "DocumentPosted": "Document Posted",
+    "DocumentUpdated": "Document Updated",
     "NoExchangeRate": "No exchange rate",
     "UnnecessaryExchangeRate": "Exchange rate is unnecessary for base currency",
     "DespIsMust": "Desp is must",

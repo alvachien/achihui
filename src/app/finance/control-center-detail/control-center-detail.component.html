@@ -19,9 +19,18 @@
     <mat-form-field class="control-full-width">
       <mat-select placeholder="{{'Finance.Owner' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.Owner" name="owner">
         <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-        <mat-option *ngFor="let usr of _homedefService.MembersInChosedHome" [value]="usr.User">
+        <mat-option *ngFor="let usr of homedefService.MembersInChosedHome" [value]="usr.User">
           {{usr.DisplayAs}}
         </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="control-full-width">
+      <mat-select placeholder="{{'Common.Parent' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ParentId" name="parid">
+        <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+        <!-- <mat-option *ngFor="let usr of homedefService.MembersInChosedHome" [value]="usr.User">
+          {{usr.DisplayAs}}
+        </mat-option> -->
       </mat-select>
     </mat-form-field>
   </mat-card-content>

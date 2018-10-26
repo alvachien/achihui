@@ -322,6 +322,9 @@ export class UIDisplayStringUtil {
       case UICommonLabelEnum.Outgoing:
         return 'Finance.Outgoing';
 
+      case UICommonLabelEnum.DocumentUpdated:
+        return 'Finance.DocumentUpdated';
+
       default:
         return '';
     }

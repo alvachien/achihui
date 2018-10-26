@@ -79,7 +79,7 @@ export class DocumentNormalDetailComponent implements OnInit {
   get totalAmount(): number {
     let amt: number = 0;
     if (this.detailObject) {
-      for(let it of this.detailObject.Items) {
+      for (let it of this.detailObject.Items) {
         // if (it.TranType.)
         let tt: TranType = this._storageService.TranTypes.find((val: TranType) => {
           return val.Id === it.TranType;
@@ -143,8 +143,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilter = undefined;
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
-      this.uiOrderFilter = undefined;
+      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders);
 
       this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
@@ -154,10 +153,12 @@ export class DocumentNormalDetailComponent implements OnInit {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
+            this.uiOrderFilter = undefined;
           } else if (x[0].path === 'displaynormal') {
             this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
+            this.uiOrderFilter = undefined;
           }
           this.currentMode = getUIModeString(this.uiMode);
 
@@ -444,7 +445,7 @@ export class DocumentNormalDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof Document) {
         // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentUpdated),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });
