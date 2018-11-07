@@ -190,9 +190,9 @@ export class AuthService {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: signed out', resp);
       }
-      setTimeout(5000, () => {
+      setTimeout(() => {
         console.log('AC_HIH_UI [Debug]: testing to see if fired...');
-      });
+      }, 5000);
     }).catch((err: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(err);

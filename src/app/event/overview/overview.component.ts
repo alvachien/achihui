@@ -5,7 +5,6 @@ import { LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN,
 } from '../../model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
-import * as $ from 'jquery';
 import 'fullcalendar';
 import * as moment from 'moment';
 import { forkJoin } from 'rxjs';
@@ -51,7 +50,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     // title: 'Long Event',
     // start: '2018-03-07',
     // end: '2018-03-10'
-    let containerEl: any = $(this.elemcalendar.nativeElement);
+
+    // TBD
+    // let containerEl: any = $(this.elemcalendar.nativeElement);
+    let containerEl: any;
     let that: any = this;
     // this.elemcalendar.nativeElement.
     containerEl.fullCalendar({
