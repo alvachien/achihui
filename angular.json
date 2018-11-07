@@ -43,10 +43,6 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/moment/min/moment-with-locales.min.js",
-              "node_modules/popper.js/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/tinymce/tinymce.js",
               "node_modules/tinymce/themes/modern/theme.js",
               "node_modules/tinymce/plugins/link/plugin.js",
@@ -58,11 +54,7 @@
               "node_modules/tinymce/plugins/lists/plugin.js",
               "node_modules/tinymce/plugins/charmap/plugin.js",
               "node_modules/tinymce/plugins/print/plugin.js",
-              "node_modules/tinymce/plugins/preview/plugin.js",
-              "node_modules/echarts/dist/echarts.min.js",
-              "node_modules/fullcalendar/dist/fullcalendar.min.js",
-              "node_modules/fullcalendar/dist/locale-all.js",
-              "node_modules/echarts-wordcloud/dist/echarts-wordcloud.min.js"
+              "node_modules/tinymce/plugins/preview/plugin.js"
             ]
           },
           "configurations": {
@@ -132,10 +124,6 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/moment/min/moment-with-locales.min.js",
-              "node_modules/popper.js/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/tinymce/tinymce.js",
               "node_modules/tinymce/themes/modern/theme.js",
               "node_modules/tinymce/plugins/link/plugin.js",
@@ -147,11 +135,7 @@
               "node_modules/tinymce/plugins/lists/plugin.js",
               "node_modules/tinymce/plugins/charmap/plugin.js",
               "node_modules/tinymce/plugins/print/plugin.js",
-              "node_modules/tinymce/plugins/preview/plugin.js",
-              "node_modules/echarts/dist/echarts.min.js",
-              "node_modules/fullcalendar/dist/fullcalendar.min.js",
-              "node_modules/fullcalendar/dist/locale-all.js",
-              "node_modules/echarts-wordcloud/dist/echarts-wordcloud.min.js"
+              "node_modules/tinymce/plugins/preview/plugin.js"
             ],
             "styles": [
               "node_modules/fullcalendar/dist/fullcalendar.css",
