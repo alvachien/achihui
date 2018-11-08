@@ -72,7 +72,7 @@
                 <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
               </mat-select>
             </mat-form-field>
-            <button mat-icon-button (click)="onDisplayAccount(curNode?.id)" matTooltip="{{'Common.Display' | translate}}"><mat-icon color="warn" class="example-icon">pageview</mat-icon></button>
+            <button mat-icon-button (click)="onDisplayAccount(curNode?.id)" matTooltip="{{'Common.Display' | translate}}"><mat-icon color="warn" class="example-icon">web_asset</mat-icon></button>
             <button mat-icon-button (click)="onChangeAccount(curNode?.id)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
           </mat-toolbar>
           <hih-fin-docitem-by-acnt [selectedAccount]="curNode?.id" [selectedScope]="selectedAccountScope"></hih-fin-docitem-by-acnt>

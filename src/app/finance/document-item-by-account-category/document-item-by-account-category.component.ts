@@ -17,7 +17,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 export class DocumentItemByAccountCategoryComponent implements OnInit, AfterViewInit {
   private _seledScope: OverviewScopeEnum;
 
-  displayedColumns: string[] = ['AccountId', 'DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
+  displayedColumns: string[] = ['DocID', 'AccountId', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
   arUIAccount: UIAccountForSelection[] = [];
   isLoadingResults: boolean;

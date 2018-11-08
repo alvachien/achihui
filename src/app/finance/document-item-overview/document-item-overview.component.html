@@ -40,7 +40,7 @@
                       <button mat-icon-button color="primary" (click)="onPostTmpDocument(row)">
                         <mat-icon class="example-icon">save</mat-icon>
                       </button>
-                      {{ row.DocId }}
+                      <a routerLink='/finance/document/displaynormal/{{row.DocId}}' routerLinkActive="active">{{row.DocId}}</a>
                     </mat-cell>
                   </ng-container>
 
