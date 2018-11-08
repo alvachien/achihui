@@ -9,6 +9,15 @@ HIH consists of three major building blocks:
 
 There are several common parts which need be documented.
 
+### UI part
+#### Themes
+To compile the scss file to CSS files:
+using commands:
+- node-sass --output-style compressed src\assets\custom-themes\deeppurple-amber.scss > src\assets\css\deeppurple-amber.css
+- node-sass --output-style compressed src\assets\custom-themes\indigo-pink.scss > src\assets\css\indigo-pink.css
+- node-sass --output-style compressed src\assets\custom-themes\pink-bluegrey.scss > src\assets\css\pink-bluegrey.css
+- node-sass --output-style compressed src\assets\custom-themes\purple-green.scss > src\assets\css\purple-green.css
+
 ### Base Model
 
 There is a base class BaseModel which defined the following methods

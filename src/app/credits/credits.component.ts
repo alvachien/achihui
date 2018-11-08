@@ -8,13 +8,13 @@ import { Component, OnInit } from '@angular/core';
 export class CreditsComponent implements OnInit {
   creditApp: any[] = [
     {
-      name: 'Angular 6',
+      name: 'Angular 7+',
       url: 'https://angular.io',
     }, {
-      name: 'TypeScript 2+',
+      name: 'TypeScript 3+',
       url: 'http://www.typescriptlang.org/',
     }, {
-      name: 'Angular Material 6',
+      name: 'Angular Material 7+',
       url: 'https://material.angular.io',
     }, {
       name: 'Ngx-translate',
@@ -23,13 +23,19 @@ export class CreditsComponent implements OnInit {
       name: 'Ngx-Charts',
       url: 'https://github.com/swimlane/ngx-charts',
     }, {
+      name: 'ECharts',
+      url: 'http://echarts.baidu.com/',
+    }, {
+      name: 'fullcalendar',
+      url: 'https://fullcalendar.io/',
+    }, {
       name: 'TinyMCE',
       url: 'https://www.tinymce.com/',
     }, {
       name: 'Moment.js',
       url: 'https://momentjs.com/',
     }, {
-      name: '.NET Core',
+      name: '.NET Core 2.1+',
       url: 'https://dot.net',
     },
   ];

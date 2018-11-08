@@ -10,7 +10,6 @@
   $warn: map-get($theme, warn);
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
-  $next-theme: mat-palette($mat-red);
 
   hih-app {
     background: mat-color($background, background);
@@ -24,7 +23,7 @@
     }
   }
 
-  .achih-ui-footer {
+  .achih-ui-footer, .achih-ui-footer-list {
     background: mat-color($primary);
     color: mat-color($primary, default-contrast);
   }

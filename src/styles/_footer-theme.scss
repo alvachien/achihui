@@ -5,15 +5,9 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
   
-  achih-footer {
-    footer {
-      background: mat-color($primary);
-    }
+  .achih-ui-footer-list {
+    background: mat-color($primary);
     
-    .achih-ui-footer {
-      background: mat-color($primary);
-    }
-
     .achih-ui-footer-links a {
       color: mat-color($primary, default-contrast);
     }

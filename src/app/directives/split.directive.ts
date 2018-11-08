@@ -19,7 +19,7 @@ import { SplitAreaDirective } from './split-area.directive';
 @Directive({
   selector: '[ngxSplit]',
   host: {
-    class: 'ngx-split'
+    class: 'ngx-split',
   },
 })
 export class SplitDirective implements AfterContentInit, OnDestroy {
