@@ -4,92 +4,107 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-accordion class="example-headers-align">
-      <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{'Finance.Header' | translate}}
-          </mat-panel-title>
-          <mat-panel-description>
-            {{'Finance.Header' | translate}}
-            <mat-icon>account_circle</mat-icon>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
+    <mat-tab-group color="accent" backgroundColor="primary">
+      <!-- Tab: Header -->
+      <mat-tab label="{{'Finance.Header' | translate}}">
         <!-- Doc. type -->
-        <mat-form-field class="demo-full-width">
-          <mat-select placeholder="{{'Finance.DocumentType' | translate}}" 
-            [disabled]="!isFieldChangable" [(ngModel)]="detailObject.DocType" name="doctype">
+        <mat-form-field class="control-full-width">
+          <mat-select placeholder="{{'Finance.DocumentType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.DocType"
+            name="doctype">
             <mat-option *ngFor="let dt of _storageService.DocumentTypes" [value]="dt.Id">
-              {{dt.Name | translate}} 
+              {{dt.Name | translate}}
             </mat-option>
           </mat-select>
         </mat-form-field>
 
         <!-- Currency -->
-        <mat-form-field class="demo-full-width">
-          <mat-select placeholder="{{'Finance.Currency' | translate}}" 
-            [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr" name="curr">
+        <mat-form-field class="control-full-width">
+          <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
+            name="curr">
             <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
-                {{cr.Symbol}} - {{cr.Name | translate}}
+              {{cr.Symbol}} - {{cr.Name | translate}}
             </mat-option>
           </mat-select>
         </mat-form-field>
 
         <!-- Tran date -->
-        <mat-form-field class="demo-full-width">
-          <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="tdpicker" 
-            placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable">
+        <mat-form-field class="control-full-width">
+          <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}"
+            [disabled]="!isFieldChangable">
           <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
           <mat-datepicker #tdpicker></mat-datepicker>
-        </mat-form-field>        
-        
+        </mat-form-field>
+
         <!-- Desp -->
-        <mat-form-field class="demo-full-width">
-          <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp" name="hdesp">
+        <mat-form-field class="control-full-width">
+          <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable"
+            [(ngModel)]="detailObject.Desp" name="hdesp">
         </mat-form-field>
 
         <!-- Exchange rate -->
-        <mat-form-field class="demo-full-width" *ngIf="isForeignCurrency">
-          <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.ExgRate" name="hexrate">
+        <mat-form-field class="control-full-width" *ngIf="isForeignCurrency">
+          <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
+            [readonly]="!isFieldChangable" [(ngModel)]="detailObject.ExgRate" name="hexrate">
         </mat-form-field>
 
         <!-- Planned Exchange rate -->
-        <div *ngIf="isForeignCurrency" class="demo-full-width">
-          <mat-slide-toggle [(checked)]="detailObject.ExgRate_Plan" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate' | translate}}</mat-slide-toggle>
-        </div>        
+        <div *ngIf="isForeignCurrency" class="control-full-width">
+          <mat-slide-toggle [(checked)]="detailObject.ExgRate_Plan" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate'
+            | translate}}</mat-slide-toggle>
+        </div>
+      </mat-tab>
+
+      <!-- Tab: Items -->
+      <mat-tab label="{{'Finance.Items' | translate}}">
+        <table mat-table
+              [dataSource]="dataSource" multiTemplateDataRows
+              class="mat-elevation-z8">
+          <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
+            <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+            <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+          </ng-container>
         
-        <mat-action-row>
-          <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{'Finance.Items' | translate}}
-          </mat-panel-title>
-          <mat-panel-description>
-            {{'Finance.Items' | translate}}
-            <mat-icon>format_list_numbered</mat-icon>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
-        <mat-toolbar>
-          <button mat-icon-button (click)="onCreateDocItem()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></button>
-        </mat-toolbar>
-
+          <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+              <div class="example-element-detail"
+                    [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                <div class="example-element-diagram">
+                  <div class="example-element-position"> {{element.position}} </div>
+                  <div class="example-element-symbol"> {{element.symbol}} </div>
+                  <div class="example-element-name"> {{element.name}} </div>
+                  <div class="example-element-weight"> {{element.weight}} </div>
+                </div>
+                <div class="example-element-description">
+                  {{element.description}}
+                  <span class="example-element-description-attribution"> -- Wikipedia </span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+        
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+          <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+              class="example-element-row"
+              [class.example-expanded-row]="expandedElement === element"
+              (click)="expandedElement = element">
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="docitem-detail-row"></tr>
+        </table>
+        
         <div class="table-container mat-elevation-z8">
           <mat-table #table [dataSource]="dataSource">
             <!-- ID Column -->
             <ng-container matColumnDef="ItemId">
               <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <button mat-icon-button [disabled]="!isFieldChangable" (click)="onDeleteDocItem(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="example-icon">delete</mat-icon></button>
+                <button mat-icon-button [disabled]="!isFieldChangable" (click)="onDeleteDocItem(row)" matTooltip="{{'Common.Delete' | translate}}">
+                  <mat-icon color="warn" class="example-icon">delete</mat-icon>
+                </button>
                 <span class="example-spacer"></span>
                 <mat-form-field>
-                  <input matInput type="number" required placeholder="#" 
-                    [readonly]="!isFieldChangable" [(ngModel)]="row.ItemId" name="itid">
+                  <input matInput type="number" required placeholder="#" [readonly]="!isFieldChangable" [(ngModel)]="row.ItemId"
+                    name="itid">
                 </mat-form-field>
               </mat-cell>
             </ng-container>
@@ -99,10 +114,12 @@
               <mat-header-cell *matHeaderCellDef>{{'Finance.Account' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
-                  <mat-select placeholder="{{'Finance.Account' | translate}}" 
-                    [disabled]="!isFieldChangable" [(ngModel)]="row.AccountId" name="itacnt">
-                    <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter" [value]="acnt.Id">
-                      <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
+                  <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable"
+                    [(ngModel)]="row.AccountId" name="itacnt">
+                    <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter"
+                      [value]="acnt.Id">
+                      <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}}
+                        ({{acnt.CategoryName | translate}})</span>
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -114,8 +131,8 @@
               <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionType' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
-                  <mat-select placeholder="{{'Finance.TransactionType' | translate}}" 
-                    [disabled]="!isFieldChangable" [(ngModel)]="row.TranType" name="ittt">
+                  <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable"
+                    [(ngModel)]="row.TranType" name="ittt">
                     <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
                       <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
                     </mat-option>
@@ -123,26 +140,26 @@
                 </mat-form-field>
               </mat-cell>
             </ng-container>
-              
+
             <!-- Amount Column -->
             <ng-container matColumnDef="Amount">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
-              <mat-cell *matCellDef="let row"> 
+              <mat-cell *matCellDef="let row">
                 <mat-form-field>
-                  <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" 
-                    [readonly]="!isFieldChangable" [(ngModel)]="row.TranAmount" name="itamt">
+                  <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable"
+                    [(ngModel)]="row.TranAmount" name="itamt">
                 </mat-form-field>
               </mat-cell>
             </ng-container>
-              
+
             <!-- Comment Column -->
             <ng-container matColumnDef="Desp">
               <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <mat-form-field class="demo-full-width">
-                  <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" 
-                    [readonly]="!isFieldChangable" [(ngModel)]="row.Desp" name="itdesp">
-                </mat-form-field> 
+                <mat-form-field class="control-full-width">
+                  <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable"
+                    [(ngModel)]="row.Desp" name="itdesp">
+                </mat-form-field>
               </mat-cell>
             </ng-container>
 
@@ -151,8 +168,8 @@
               <mat-header-cell *matHeaderCellDef> {{'Finance.ControlCenter' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
-                  <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" 
-                    [disabled]="!isFieldChangable" [(ngModel)]="row.ControlCenterId" name="itcc">
+                  <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable"
+                    [(ngModel)]="row.ControlCenterId" name="itcc">
                     <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
                     <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
                       {{tt.Name}}
@@ -167,8 +184,8 @@
               <mat-header-cell *matHeaderCellDef> {{'Finance.Order' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
-                  <mat-select placeholder="{{'Finance.Order' | translate}}" 
-                    [disabled]="!isFieldChangable" [(ngModel)]="row.OrderId" name="itord">
+                  <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="row.OrderId"
+                    name="itord">
                     <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
                     <mat-option *ngFor="let tt of arUIOrders | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
                       {{tt.Name}}
@@ -177,37 +194,15 @@
                 </mat-form-field>
               </mat-cell>
             </ng-container>
-            
+
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           </mat-table>
         </div>
-  
-        <mat-action-row>
-          <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-          <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{'Common.ReviewForSubmit' | translate}}
-          </mat-panel-title>
-          <mat-panel-description>
-              {{'Common.ReviewForSubmit' | translate}}
-            <mat-icon>playlist_add_check</mat-icon>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
-        <mat-action-row>
-          <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-          <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-    </mat-accordion>
+      </mat-tab>
+    </mat-tab-group>
   </mat-card-content>
-  
+
   <mat-card-actions>
     <button mat-button color="warn" (click)="onBackToList()">{{'Common.BackToList' | translate}}</button>
   </mat-card-actions>
