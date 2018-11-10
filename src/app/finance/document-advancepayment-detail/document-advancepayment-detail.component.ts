@@ -308,9 +308,9 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
           // Navigate to display
           if (!recreate) {
             if (this._isADP) {
-              this._router.navigate(['/finance/document/displayadp/' + x.Id.toString()]);
+              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
             } else {
-              this._router.navigate(['/finance/document/displayadr/' + x.Id.toString()]);
+              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
             }
           }
         });
@@ -349,6 +349,10 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
+    for(let tmpitem of this.detailObject.AdvPayAccount.dpTmpDocs) {
+      tmpitem.ControlCenterId = this.detailObject.SourceControlCenterId;
+      tmpitem.OrderId = this.detailObject.SourceOrderId;
+    }
     acntobj.ExtraInfo = this.detailObject.AdvPayAccount;
     sobj.accountVM = acntobj.writeJSONObject();
 
