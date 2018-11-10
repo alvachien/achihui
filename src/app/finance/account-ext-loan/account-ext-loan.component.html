@@ -86,7 +86,7 @@
   <!-- Ref doc. ID -->
   <div class="control-full-width" *ngIf="extObject.RefDocId">
     <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
-    <a routerLink='/finance/document/displaynormal/{{extObject.RefDocId}}' style="margin: 5px;" routerLinkActive="active">{{extObject?.RefDocId}}</a>
+    <a routerLink='/finance/document/display/{{extObject.RefDocId}}' style="margin: 5px;" routerLinkActive="active">{{extObject?.RefDocId}}</a>
   </div>
 
   <mat-toolbar>
@@ -146,7 +146,7 @@
       <ng-container matColumnDef="RefDoc">
         <mat-header-cell *matHeaderCellDef>{{'Finance.RefDoc' | translate}}</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <a routerLink='/finance/document/displaynormal/{{row.RefDocId}}' routerLinkActive="active" *ngIf="row.RefDocId">{{row.RefDocId}}</a>
+          <a routerLink='/finance/document/display/{{row.RefDocId}}' routerLinkActive="active" *ngIf="row.RefDocId">{{row.RefDocId}}</a>
         </mat-cell>
       </ng-container>
       

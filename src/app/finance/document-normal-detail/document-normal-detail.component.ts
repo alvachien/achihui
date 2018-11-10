@@ -381,7 +381,7 @@ export class DocumentNormalDetailComponent implements OnInit {
           }
 
           if (!isrecreate) {
-            this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
+            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
           }
         });
       } else {
@@ -470,7 +470,7 @@ export class DocumentNormalDetailComponent implements OnInit {
           }
 
           if (!isrecreate) {
-            this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
+            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
           }
         });
       } else {

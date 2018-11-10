@@ -349,7 +349,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
           duration: 3000,
         }).afterDismissed().subscribe(() => {
           // Navigate to display
-          this._router.navigate(['/finance/document/displaynormal/' + x.id]);
+          this._router.navigate(['/finance/document/display/' + x.id]);
         });
       }, (error: any) => {
         // Show error dialog!

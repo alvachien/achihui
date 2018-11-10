@@ -35,14 +35,6 @@
   min-width: 800px;
 }
 
-.example-icon {
-  padding: 0 3px;
-}
-
-.example-spacer {
-  flex: 1 1 auto;
-}
-
 .assetaccount {
   color: green;
 }
@@ -67,4 +59,43 @@
 .mat-column-TranDate {
   min-width: 100px;
   max-width: 150px;
+}
+
+tr.docitem-detail-row {
+  height: 0;
+}
+
+tr.docitem-element-row:not(.docitem-expanded-row):hover {
+  background: #f5f5f5;
+}
+
+tr.docitem-element-row:not(.docitem-expanded-row):active {
+  background: #efefef;
+}
+
+.docitem-element-row td {
+  border-bottom-width: 0;
+}
+
+.docitem-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.mat-column-ItemId {
+  width: 50px;
+}
+
+.mat-column-AccountId, .mat-column-TranType, .mat-column-Amount,
+.mat-column-ControlCenter, .mat-column-Order {
+  width: 120px;
+}
+
+.mat-column-Desp {
+  min-width: 200px;
+  max-width: 300px;  
+}
+
+table {
+  width: 100%;
 }

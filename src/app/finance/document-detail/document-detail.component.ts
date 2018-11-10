@@ -38,8 +38,9 @@ export class DocumentDetailComponent implements OnInit {
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
-  displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order'];
+  displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'TranAmount', 'Desp', 'ControlCenterId', 'OrderId'];
   itemOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  expandedItem: DocumentItem;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -113,6 +114,7 @@ export class DocumentDetailComponent implements OnInit {
                 }
 
                 this.detailObject = x2;
+                this.dataSource.data = this.detailObject.Items;
                 this.itemOperEvent.emit(); // Show the items
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
@@ -148,6 +150,34 @@ export class DocumentDetailComponent implements OnInit {
 
       this.uiMode = UIMode.Invalid;
     });
+  }
+
+  public getHeaderDisplayString(hdr: string): string {
+    switch(hdr) {
+      case 'ItemId':
+      return '#'
+      
+      case 'AccountId':
+      return 'Finance.Account';
+
+      case 'TranType':
+      return 'Finance.TransactionType';
+
+      case 'TranAmount':
+      return 'Finance.Amount';
+
+      case 'Desp':
+      return 'Common.Comment';
+
+      case 'ControlCenterId':
+      return 'Finance.ControlCenter';
+
+      case 'OrderId':
+      return 'Finance.Order';
+
+      default:
+      return '';
+    }
   }
 
   public onBackToList(): void {

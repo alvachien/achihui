@@ -124,68 +124,7 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   }
 
   public onDisplayDocument(doc: Document): void {
-    switch(doc.DocType) {
-      case financeDocTypeNormal:
-      case financeDocTypeRepay:
-      case financeDocTypeAssetBuyIn:
-      case financeDocTypeAssetSoldOut:
-      this.onDisplayNormalDocument(doc);
-      break;
-
-      case financeDocTypeTransfer:
-      this.onDisplayTransferDocument(doc);
-      break;
-
-      case financeDocTypeCurrencyExchange:
-      this.onDisplayExgDocument(doc);
-      break;
-
-      case financeDocTypeAdvancePayment:
-      this.onDisplayADPDocument(doc);
-      break;
-
-      case financeDocTypeAdvanceReceived:
-      this.onDisplayADRDocument(doc);
-      break;
-
-      case financeDocTypeBorrowFrom:
-      this.onDisplayBorrowFromDocument(doc);
-      break;
-
-      case financeDocTypeLendTo:
-      this.onDisplayLendToDocument(doc);
-      break;
-
-      default:
-      break;
-    }
-  }
-  public onDisplayNormalDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/displaynormal', doc.Id]);
-  }
-  public onDisplayTransferDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/displaytransfer', doc.Id]);
-  }
-  public onDisplayExgDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/displayexg', doc.Id]);
-  }
-  public onDisplayADPDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/displayadp', doc.Id]);
-  }
-  public onDisplayADRDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/displayadr', doc.Id]);
-  }
-  public onDisplayAssetBuyInDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/displayassetbuy', doc.Id]);
-  }
-  public onDisplayAssetSoldOutDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/displayassetsold', doc.Id]);
-  }
-  public onDisplayBorrowFromDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/displaybrwfrm', doc.Id]);
-  }
-  public onDisplayLendToDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/displaylendto', doc.Id]);
+    this._router.navigate(['/finance/document/display', doc.Id]);
   }
 
   public onChangeDocument(doc: Document): void {

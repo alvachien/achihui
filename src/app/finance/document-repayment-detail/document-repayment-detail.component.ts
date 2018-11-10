@@ -392,7 +392,7 @@ export class DocumentRepaymentDetailComponent implements OnInit {
             }
 
             if (!isrecreate) {
-              this._router.navigate(['/finance/document/displaynormal/' + x.Id.toString()]);
+              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
             }
           });
         }, (error: HttpErrorResponse) => {

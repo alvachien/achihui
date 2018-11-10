@@ -277,46 +277,6 @@ const routes: Routes = [
             component: DocumentDetailComponent,
           },
           {
-            path: 'displaynormal/:id',
-            component: DocumentNormalDetailComponent,
-          },
-          {
-            path: 'displaytransfer/:id',
-            component: DocumentTransferDetailComponent,
-          },
-          {
-            path: 'displayadp/:id',
-            component: DocumentAdvancepaymentDetailComponent,
-          },
-          {
-            path: 'displayadr/:id',
-            component: DocumentAdvancepaymentDetailComponent,
-          },
-          {
-            path: 'displayexg/:id',
-            component: DocumentExchangeDetailComponent,
-          },
-          {
-            path: 'displaybrwfrm/:id',
-            component: DocumentLoanDetailComponent,
-          },
-          {
-            path: 'displaylendto/:id',
-            component: DocumentLoanDetailComponent,
-          },
-          {
-            path: 'displayassetbuy/:id',
-            component: DocumentNormalDetailComponent,
-          },
-          {
-            path: 'displayassetsold/:id',
-            component: DocumentNormalDetailComponent,
-          },
-          {
-            path: 'displayrepay/:id',
-            component: DocumentRepaymentDetailComponent,
-          },
-          {
             path: 'edit/:id',
             component: DocumentDetailComponent,
           },

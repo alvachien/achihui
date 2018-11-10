@@ -215,7 +215,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
           'OK', {
             duration: 2000,
           }).afterDismissed().subscribe(() => {
-            this._router.navigate(['/finance/document/displaynormal/' + nid.toString()]);
+            this._router.navigate(['/finance/document/display/' + nid.toString()]);
           });
     }, (err: string) => {
       // Handle the error
