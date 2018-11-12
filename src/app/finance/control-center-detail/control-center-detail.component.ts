@@ -1,5 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -20,6 +19,7 @@ export class ControlCenterDetailComponent implements OnInit {
   public currentMode: string;
   public detailObject: ControlCenter | undefined;
   public uiMode: UIMode = UIMode.Create;
+  public existedCC: ControlCenter[];
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -35,6 +35,11 @@ export class ControlCenterDetailComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...');
     }
+
+    this.storageService.fetchAllControlCenters().subscribe((cclist: ControlCenter[]) => {
+      // Load all control centers.
+      this.existedCC = cclist;
+    });
 
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
@@ -60,12 +65,12 @@ export class ControlCenterDetailComponent implements OnInit {
           this.storageService.readControlCenterEvent.subscribe((x2: any) => {
             if (x2 instanceof ControlCenter) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, succeed to readControlCenterEvent : ${x}`);
+                console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, succeed to readControlCenterEvent.`);
               }
               this.detailObject = x2;
             } else {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.log(`AC_HIH_UI [Error]: Entering ngOninit in ControlCenterDetailComponent, failed to readControlCenterEvent : ${x}`);
+                console.error(`AC_HIH_UI [Error]: Entering ngOninit in ControlCenterDetailComponent, failed to readControlCenterEvent: ${x2}`);
               }
               this.detailObject = new ControlCenter();
             }

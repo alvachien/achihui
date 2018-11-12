@@ -142,6 +142,7 @@
     "HabitEvents": "习惯性事务",
     "HabitEvent": "习惯性事务",
     "EventsByTimeline": "时间维度的事务",
+    "IncludeCompleted": "包含已完成项",
     "SentBox": "发件箱",
     "Assignee": "负责人",
     "KeyFigure": "核心数字",

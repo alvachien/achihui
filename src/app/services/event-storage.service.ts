@@ -22,14 +22,15 @@ export class EventStorageService {
    */
   public fetchAllEvents(top: number, skip: number, skipfinished?: boolean,
     dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+    // const requestUrl: any = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
+
     // Fetch all events
     const apiurl: string = environment.ApiUrl + '/api/event';
     const curhid: number = this._homeService.ChosedHome.ID;
-    // const requestUrl: any = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
 
     let headers: HttpHeaders = new HttpHeaders();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('hid', curhid.toString());
     params = params.append('top', top.toString());
     params = params.append('skip', skip.toString());
     if (skipfinished !== undefined) {

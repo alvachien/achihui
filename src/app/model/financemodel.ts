@@ -1065,8 +1065,8 @@ export class ControlCenter extends hih.BaseModel {
     if (data && data.comment && data.comment.length > 0) {
       this.Comment = data.comment;
     }
-    if (data && data.parId) {
-      this.ParentId = +data.parId;
+    if (data && data.parID) {
+      this.ParentId = +data.parID;
     }
     if (data && data.owner && data.owner.length > 0) {
       this.Owner = data.owner;
@@ -2099,7 +2099,7 @@ export class DocumentItem {
       this.ControlCenterName = data.controlCenterName;
     }
     if (data && data.orderID) {
-      this.OrderId = +data.OrderID;
+      this.OrderId = +data.orderID;
     }
     if (data && data.orderName) {
       this.OrderName = data.orderName;

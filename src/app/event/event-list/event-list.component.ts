@@ -1,6 +1,8 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, PageEvent } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, PageEvent,
+  MatSnackBar } from '@angular/material';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, GeneralEvent } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
@@ -16,14 +18,17 @@ export class EventListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'complete', 'assignee'];
   dataSource: any = new MatTableDataSource();
   totalCountOfEvent: number;
+  refreshEvent: EventEmitter<Object> = new EventEmitter<Object>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   isLoadingResults: boolean;
+  includeCompleted: boolean;
 
   constructor(public _homeDefService: HomeDefDetailService,
     private _authService: AuthService,
     private _storageService: EventStorageService,
-    private _router: Router) {
+    private _router: Router,
+    private _snackBar: MatSnackBar) {
     this.isLoadingResults = true;
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -31,6 +36,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
     }
 
     this.totalCountOfEvent = 0;
+    this.includeCompleted = false; // Include completed events
   }
 
   ngOnInit(): void {
@@ -47,12 +53,15 @@ export class EventListComponent implements OnInit, AfterViewInit {
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
-    merge(this.sort.sortChange, this.paginator.page)
+    merge(this.sort.sortChange, this.paginator.page, this.refreshEvent)
       .pipe(
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          return this._storageService!.fetchAllEvents(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize);
+          return this._storageService!.fetchAllEvents(this.paginator.pageSize,
+            this.paginator.pageIndex * this.paginator.pageSize,
+            (this.includeCompleted ? false : true),
+            );
         }),
         map((revdata: any) => {
           // Flip flag to show that loading has finished.
@@ -94,7 +103,17 @@ export class EventListComponent implements OnInit, AfterViewInit {
       // Jump to display mode
       this._router.navigate(['/event/general/display/' + row.ID.toString()]);
     }, (error: any) => {
-      // Show dialog?
+      // Show snackbar
+      this._snackBar.open('Error occurred', undefined, {
+        duration: 1000,
+      });
     });
+  }
+
+  public onRefresh(): void {
+    this.includeCompleted = !this.includeCompleted;
+
+    // Trigger the event.
+    this.refreshEvent.emit();
   }
 }

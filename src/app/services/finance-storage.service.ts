@@ -578,9 +578,9 @@ export class FinanceStorageService {
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
 
       return this._http.get<any>(apiurl, {
-        headers: headers,
-        params: params,
-      })
+          headers: headers,
+          params: params,
+        })
         // .retry(3)
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -603,17 +603,17 @@ export class FinanceStorageService {
           this.listControlCenterChange.next(listRst);
           return listRst;
         }),
-          catchError((error: HttpErrorResponse) => {
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              // console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService: ${error}`);
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService.`);
-            }
+        catchError((error: HttpErrorResponse) => {
+          if (environment.LoggingLevel >= LogLevel.Error) {
+            // console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService.`);
+          }
 
-            this._isConctrolCenterListLoaded = false;
-            this.listControlCenterChange.next([]);
+          this._isConctrolCenterListLoaded = false;
+          this.listControlCenterChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
-          }));
+          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
     } else {
       return of(this.listControlCenterChange.value);
     }
