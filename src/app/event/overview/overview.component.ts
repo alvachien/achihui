@@ -5,7 +5,7 @@ import { LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN,
 } from '../../model';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
-import 'fullcalendar';
+import { Calendar } from 'fullcalendar';
 import * as moment from 'moment';
 import { forkJoin } from 'rxjs';
 
@@ -16,7 +16,7 @@ import { forkJoin } from 'rxjs';
 })
 export class OverviewComponent implements OnInit, AfterViewInit {
   @ViewChild('fcal') elemcalendar: ElementRef;
-  // ctrlCalendar: FullCalendar.Calendar;
+  ctrlCalendar: Calendar;
   initialLocaleCode: string = 'en';
   listEvent: any[];
 
@@ -52,11 +52,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     // end: '2018-03-10'
 
     // TBD
-    // let containerEl: any = $(this.elemcalendar.nativeElement);
-    let containerEl: any;
-    let that: any = this;
-    // this.elemcalendar.nativeElement.
-    containerEl.fullCalendar({
+    this.ctrlCalendar = new Calendar(this.elemcalendar.nativeElement, {
       // options here
       header: {
         left: 'prev,next today',
@@ -65,78 +61,81 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       },
       defaultDate: moment().format(momentDateFormat),
       locale: this.initialLocaleCode,
+      themeSystem: 'bootstrap4',
       navLinks: true, // can click day/week names to navigate views
       editable: true,
       eventLimit: true, // allow "more" link when too many events
       eventSources: [
         // General events
-        {
-          events: (start: any, end: any, timezone: any, callback: any) => {
-            that._storageService.fetchAllEvents(100, 0, true, start, end).subscribe((data: any) => {
-              let arevents: any[] = [];
-              for (let ci of data.contentList) {
-                let gevnt: GeneralEvent = new GeneralEvent();
-                gevnt.onSetData(ci);
+        (arg: any, successCallback: any, failureCallback: any) => {
+          that._storageService.fetchAllEvents(100, 0, true, arg.start, arg.end).subscribe((data: any) => {
+            let arevents: any[] = [];
+            for (let ci of data.contentList) {
+              let gevnt: GeneralEvent = new GeneralEvent();
+              gevnt.onSetData(ci);
 
-                let evnt: any = {
-                  title: gevnt.Name,
-                  start: gevnt.StartTimeFormatString,
-                  end: gevnt.EndTimeFormatString,
-                  id: 'G' + gevnt.ID.toString(),
-                  event_type: 'general',
-                  event_id: gevnt.ID,
-                };
+              let evnt: any = {
+                title: gevnt.Name,
+                start: gevnt.StartTimeFormatString,
+                end: gevnt.EndTimeFormatString,
+                id: 'G' + gevnt.ID.toString(),
+                event_type: 'general',
+                event_id: gevnt.ID,
+              };
+              // color: 'yellow',   // an option!
+              // textColor: 'black', // an option!
 
-                arevents.push(evnt);
-              }
-              callback(arevents);
-            });
-          },
-          color: 'yellow',   // an option!
-          textColor: 'black', // an option!
+              arevents.push(evnt);
+            }
+            successCallback(arevents);
+          });
         },
 
         // Habit events
-        {
-          events: (start: any, end: any, timezone: any, callback: any) => {
-            that._storageService.fetchHabitDetailWithCheckIn(start, end).subscribe((data: any) => {
-              let arevents: any[] = [];
-              for (let ci2 of data) {
-                let hevnt: HabitEventDetailWithCheckInStatistics = new HabitEventDetailWithCheckInStatistics();
-                hevnt.onSetData(ci2);
+        (arg: any, successCallback: any, failureCallback: any) => {
+          that._storageService.fetchHabitDetailWithCheckIn(arg.start, arg.end).subscribe((data: any) => {
+            let arevents: any[] = [];
+            for (let ci2 of data) {
+              let hevnt: HabitEventDetailWithCheckInStatistics = new HabitEventDetailWithCheckInStatistics();
+              hevnt.onSetData(ci2);
 
-                let evnt: any = {
-                  title: hevnt.name,
-                  start: hevnt.StartDateFormatString,
-                  end: hevnt.EndDateFormatString,
-                  id: 'H' + hevnt.habitID.toString(),
-                  event_type: 'habit',
-                  event_id: hevnt.habitID,
-                };
-                arevents.push(evnt);
-              }
+              let evnt: any = {
+                title: hevnt.name,
+                start: hevnt.StartDateFormatString,
+                end: hevnt.EndDateFormatString,
+                id: 'H' + hevnt.habitID.toString(),
+                event_type: 'habit',
+                event_id: hevnt.habitID,
+              };
+              arevents.push(evnt);
+            }
 
-              callback(arevents);
-            });
-          },
-          color: 'grey',   // an option!
-          textColor: 'black', // an option!
+            successCallback(arevents);
+          });
         },
       ],
-      eventClick: (calEvent: any, jsEvent: any, view: any) => {
+      eventClick: (arg: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Enter OverviewComponent's eventClick
-            ${view.name} - ${calEvent.title}, ${jsEvent.pageX} - ${jsEvent.pageY}`);
+            ${arg.view.name} - ${arg.calEvent.title}, ${arg.jsEvent.pageX} - ${arg.jsEvent.pageY}`);
         }
 
-        if (calEvent.event_type === 'general') {
+        if (arg.calEvent.event_type === 'general') {
           // General event
-          that.onNavigateToGeneralEvent(+calEvent.event_id);
-        } else if (calEvent.event_type === 'habit') {
+          that.onNavigateToGeneralEvent(+arg.calEvent.event_id);
+        } else if (arg.calEvent.event_type === 'habit') {
           // Habit
-          this.onNavigateToHabitEvent(calEvent.event_id);
+          this.onNavigateToHabitEvent(arg.calEvent.event_id);
         }
       },
+    });
+
+    this.ctrlCalendar.render();
+
+    let containerEl: any;
+    let that: any = this;
+    // this.elemcalendar.nativeElement.
+    containerEl.fullCalendar({
     });
   }
 

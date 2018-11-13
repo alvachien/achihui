@@ -55,6 +55,8 @@ This project also require the following components:
 * [TinyMce](https://www.tinymce.com/)
 * [Moment.js](https://momentjs.com/)
 * [Ngx-Charts](https://github.com/swimlane/ngx-charts)
+* [FullCalendar](https://fullcalendar.io/)
+* [ECharts](http://echarts.baidu.com/)
 
 ## Contact me
 **Alva Chien | 钱红俊**
