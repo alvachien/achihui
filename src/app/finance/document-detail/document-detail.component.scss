@@ -1,21 +1,11 @@
-.example-headers-align .mat-expansion-panel-header-title, 
-.example-headers-align .mat-expansion-panel-header-description {
-  flex-basis: 0;
-}
-
-.example-headers-align .mat-expansion-panel-header-description {
-  justify-content: space-between;
-  align-items: center;
-}
-
 .control-full-width {
   width: 100%;
 }
 
 .table-container {
-    display: flex;
-    flex-direction: column;
-    min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
  }
   
 .table-header {
@@ -98,4 +88,8 @@ tr.docitem-element-row:not(.docitem-expanded-row):active {
 
 table {
   width: 100%;
+}
+
+.tab-content {
+  margin: 10px;
 }

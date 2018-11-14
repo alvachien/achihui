@@ -44,14 +44,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of OverviewComponent...');
     }
 
-    let dtbgn: moment.Moment = moment();
-    let dtend: moment.Moment = moment().add(1, 'months');
-
-    // title: 'Long Event',
-    // start: '2018-03-07',
-    // end: '2018-03-10'
-
-    // TBD
+    let that: any = this;
     this.ctrlCalendar = new Calendar(this.elemcalendar.nativeElement, {
       // options here
       header: {
@@ -59,16 +52,18 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         center: 'title',
         right: 'month,agendaWeek,agendaDay,listWeek',
       },
-      defaultDate: moment().format(momentDateFormat),
+      defaultDate: new Date(),
       locale: this.initialLocaleCode,
-      themeSystem: 'bootstrap4',
+      themeSystem: 'standard',
       navLinks: true, // can click day/week names to navigate views
       editable: true,
       eventLimit: true, // allow "more" link when too many events
       eventSources: [
         // General events
         (arg: any, successCallback: any, failureCallback: any) => {
-          that._storageService.fetchAllEvents(100, 0, true, arg.start, arg.end).subscribe((data: any) => {
+          let dtbgn: moment.Moment = moment(arg.startStr);
+          let dtend: moment.Moment = moment(arg.endStr);
+          that._storageService.fetchAllEvents(100, 0, true, dtbgn, dtend).subscribe((data: any) => {
             let arevents: any[] = [];
             for (let ci of data.contentList) {
               let gevnt: GeneralEvent = new GeneralEvent();
@@ -81,9 +76,9 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                 id: 'G' + gevnt.ID.toString(),
                 event_type: 'general',
                 event_id: gevnt.ID,
+                color: 'yellow',
+                textColor: 'black',
               };
-              // color: 'yellow',   // an option!
-              // textColor: 'black', // an option!
 
               arevents.push(evnt);
             }
@@ -93,7 +88,9 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
         // Habit events
         (arg: any, successCallback: any, failureCallback: any) => {
-          that._storageService.fetchHabitDetailWithCheckIn(arg.start, arg.end).subscribe((data: any) => {
+          let dtbgn: moment.Moment = moment(arg.startStr);
+          let dtend: moment.Moment = moment(arg.endStr);
+          that._storageService.fetchHabitDetailWithCheckIn(dtbgn, dtend).subscribe((data: any) => {
             let arevents: any[] = [];
             for (let ci2 of data) {
               let hevnt: HabitEventDetailWithCheckInStatistics = new HabitEventDetailWithCheckInStatistics();
@@ -106,6 +103,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                 id: 'H' + hevnt.habitID.toString(),
                 event_type: 'habit',
                 event_id: hevnt.habitID,
+                color: 'grey',
+                textColor: 'white',
               };
               arevents.push(evnt);
             }
@@ -117,26 +116,20 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       eventClick: (arg: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Enter OverviewComponent's eventClick
-            ${arg.view.name} - ${arg.calEvent.title}, ${arg.jsEvent.pageX} - ${arg.jsEvent.pageY}`);
+            ${arg.view.name} - ${arg.event.title}, ${arg.jsEvent.pageX} - ${arg.jsEvent.pageY}`);
         }
 
-        if (arg.calEvent.event_type === 'general') {
+        if (arg.event.extendedProps.event_type === 'general') {
           // General event
-          that.onNavigateToGeneralEvent(+arg.calEvent.event_id);
-        } else if (arg.calEvent.event_type === 'habit') {
+          that.onNavigateToGeneralEvent(+arg.event.extendedProps.event_id);
+        } else if (arg.event.extendedProps.event_type === 'habit') {
           // Habit
-          this.onNavigateToHabitEvent(arg.calEvent.event_id);
+          this.onNavigateToHabitEvent(arg.event.extendedProps.event_id);
         }
       },
     });
 
     this.ctrlCalendar.render();
-
-    let containerEl: any;
-    let that: any = this;
-    // this.elemcalendar.nativeElement.
-    containerEl.fullCalendar({
-    });
   }
 
   public onNavigateToGeneralEvent(id: number): void {

@@ -15,13 +15,14 @@
       </mat-form-field>
       <a mat-icon-button routerLink="/finance/account/create" routerLinkActive="active" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></a>
       <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent" class="example-icon">refresh</mat-icon></button>
-      <span class="example-spacer"></span>
+      <span class="toolbar-spacer"></span>
       <a mat-button routerLink="/finance/account" routerLinkActive="active" matTooltip="{{'Common.ListView' | translate}}">{{'Common.ListView' | translate}}</a>
     </mat-toolbar>
 
-    <div class="example-loading-shade" *ngIf="isLoadingResults">
+    <div class="data-loading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>
+
     <div fxLayout="row" fxLayout.xs="column" style="height:800px" ngxSplit="row">
       <div fxFlex.xs="50%" fxFlex.gt-md="20%" fxFlex.lg="20%" ngxSplitArea>
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
@@ -53,7 +54,7 @@
         <div *ngIf="curNode && curNode.nodetype === 1">
           <mat-toolbar color="primary">
             <span>{{'Finance.AccountCategory' | translate}} - {{curNode?.displayname | translate}}</span>
-            <span class="example-spacer"></span>
+            <span class="toolbar-spacer"></span>
             <mat-form-field>
               <mat-select color="accent" [(ngModel)]="selectedAccountCtgyScope">
                 <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
@@ -66,7 +67,7 @@
         <div *ngIf="curNode && curNode.nodetype === 2">
           <mat-toolbar color="primary">
             <span>{{'Finance.Account' | translate}} - {{curNode?.displayname | translate}}</span>
-            <span class="example-spacer"></span>
+            <span class="toolbar-spacer"></span>
             <mat-form-field>
               <mat-select color="accent" class="mt-1" [(ngModel)]="selectedAccountScope">
                 <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>

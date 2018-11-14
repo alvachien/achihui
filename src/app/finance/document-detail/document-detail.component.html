@@ -7,50 +7,52 @@
     <mat-tab-group color="accent" backgroundColor="primary">
       <!-- Tab: Header -->
       <mat-tab label="{{'Finance.Header' | translate}}">
-        <!-- Doc. type -->
-        <mat-form-field class="control-full-width">
-          <mat-select placeholder="{{'Finance.DocumentType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.DocType"
-            name="doctype">
-            <mat-option *ngFor="let dt of _storageService.DocumentTypes" [value]="dt.Id">
-              {{dt.Name | translate}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div class="tab-content">
+          <!-- Doc. type -->
+          <mat-form-field class="control-full-width">
+            <mat-select placeholder="{{'Finance.DocumentType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.DocType"
+              name="doctype">
+              <mat-option *ngFor="let dt of _storageService.DocumentTypes" [value]="dt.Id">
+                {{dt.Name | translate}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <!-- Currency -->
-        <mat-form-field class="control-full-width">
-          <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
-            name="curr">
-            <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
-              {{cr.Symbol}} - {{cr.Name | translate}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <!-- Currency -->
+          <mat-form-field class="control-full-width">
+            <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
+              name="curr">
+              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+                {{cr.Symbol}} - {{cr.Name | translate}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <!-- Tran date -->
-        <mat-form-field class="control-full-width">
-          <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}"
-            [disabled]="!isFieldChangable">
-          <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
-          <mat-datepicker #tdpicker></mat-datepicker>
-        </mat-form-field>
+          <!-- Tran date -->
+          <mat-form-field class="control-full-width">
+            <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}"
+              [disabled]="!isFieldChangable">
+            <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
+            <mat-datepicker #tdpicker></mat-datepicker>
+          </mat-form-field>
 
-        <!-- Desp -->
-        <mat-form-field class="control-full-width">
-          <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable"
-            [(ngModel)]="detailObject.Desp" name="hdesp">
-        </mat-form-field>
+          <!-- Desp -->
+          <mat-form-field class="control-full-width">
+            <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable"
+              [(ngModel)]="detailObject.Desp" name="hdesp">
+          </mat-form-field>
 
-        <!-- Exchange rate -->
-        <mat-form-field class="control-full-width" *ngIf="isForeignCurrency">
-          <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-            [readonly]="!isFieldChangable" [(ngModel)]="detailObject.ExgRate" name="hexrate">
-        </mat-form-field>
+          <!-- Exchange rate -->
+          <mat-form-field class="control-full-width" *ngIf="isForeignCurrency">
+            <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
+              [readonly]="!isFieldChangable" [(ngModel)]="detailObject.ExgRate" name="hexrate">
+          </mat-form-field>
 
-        <!-- Planned Exchange rate -->
-        <div *ngIf="isForeignCurrency" class="control-full-width">
-          <mat-slide-toggle [(checked)]="detailObject.ExgRate_Plan" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate'
-            | translate}}</mat-slide-toggle>
+          <!-- Planned Exchange rate -->
+          <div *ngIf="isForeignCurrency" class="control-full-width">
+            <mat-slide-toggle [(checked)]="detailObject.ExgRate_Plan" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate'
+              | translate}}</mat-slide-toggle>
+          </div>
         </div>
       </mat-tab>
 

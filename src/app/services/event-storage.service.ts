@@ -25,7 +25,7 @@ export class EventStorageService {
     // const requestUrl: any = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
 
     // Fetch all events
-    const apiurl: string = environment.ApiUrl + '/api/event';
+    const apiurl: string = environment.ApiUrl + '/api/Event';
     const curhid: number = this._homeService.ChosedHome.ID;
 
     let headers: HttpHeaders = new HttpHeaders();

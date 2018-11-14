@@ -12,6 +12,9 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "paths": {
+      "echarts": ["node_modules/echarts/dist/echarts.min.js"]
+    },
     "lib": [
       "es2016",
       "dom"
