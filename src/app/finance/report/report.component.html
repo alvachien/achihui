@@ -11,24 +11,25 @@
         </ng-template>
 
         <div class="grid-container">
-          <mat-grid-list cols="2" rowHeight="850px">
+          <mat-grid-list cols="2" rowHeight="800px">
             <mat-grid-tile colspan="1" rowspan="1">
               <mat-card class="dashboard-card">
                 <mat-card-header>
                   <mat-card-title>{{'Finance.Assets' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <div #chartAccountIncoming style="width: 100%; height: 700px;"></div>
+                  <div echarts [options]="accountIncomingChartOption | async" class="account-incoming-chart"></div>
                 </mat-card-content>
               </mat-card>
             </mat-grid-tile>
+
             <mat-grid-tile colspan="1" rowspan="1">
               <mat-card class="dashboard-card">
                 <mat-card-header>
                   <mat-card-title>{{'Finance.Liabilities' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <div #chartAccountOutgoing style="width: 100%; height: 700px;"></div>
+                  <div echarts [options]="accountOutgoingChartOption | async" class="account-outgoing-chart"></div>
                 </mat-card-content>
               </mat-card>
             </mat-grid-tile>
@@ -57,17 +58,8 @@
                 </mat-form-field>
                 <mat-slide-toggle color="primary" [checked]="momExcludeTransfer" (change)="onMOMExcludeTransferChanged()">{{'Finance.ExcludeTransfer' | translate}}</mat-slide-toggle>
               </mat-toolbar>
-              <div style="height:500px;">
-                <ngx-charts-bar-vertical-2d
-                  [scheme]="colorScheme"
-                  [results]="dataMOM"
-                  xAxis="true"
-                  yAxis="true"
-                  legend="true"
-                  showXAxisLabel="true"
-                  showYAxisLabel="true">
-                </ngx-charts-bar-vertical-2d>
-              </div>
+
+              <div echarts [options]="overviewChartOptions | async" class="overview-chart"></div>
             </mat-card-content>
           </mat-card>
         </div>
@@ -79,7 +71,7 @@
           {{'Finance.BalanceSheetReport' | translate}}
         </ng-template>
 
-        <div #chartAcntCtgy style="height: 500px;"></div>
+        <div echarts [options]="acntCtgyChartOption | async" class="accountcategory-chart"></div>
         
         <mat-divider></mat-divider>
 
@@ -151,32 +143,32 @@
           {{'Finance.ControlCenterReport' | translate}}
         </ng-template>
 
-        <div class="mt-2">
-          <div class="row">
-            <div class="col-12 col-md-6">
-              <mat-card>
+        <div class="grid-container">
+          <mat-grid-list cols="2" rowHeight="500px">
+            <mat-grid-tile colspan="1" rowspan="1">
+              <mat-card class="dashboard-card">
                 <mat-card-header>
                   <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataCCDebit" (select)="onCCDebitSelect($event)">
-                  </ngx-charts-advanced-pie-chart>
+                  <div echarts [options]="ccIncomingChartOption | async" class="account-incoming-chart"></div>
                 </mat-card-content>
               </mat-card>
-            </div>
-            <div class="col-12 col-md-6">
-              <mat-card>
+            </mat-grid-tile>
+
+            <mat-grid-tile colspan="1" rowspan="1">
+              <mat-card class="dashboard-card">
                 <mat-card-header>
                   <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataCCCredit" (select)="onCCCreditSelect($event)">
-                  </ngx-charts-advanced-pie-chart>
+                  <div echarts [options]="ccOutgoingChartOption | async" class="account-outgoing-chart"></div>
                 </mat-card-content>
               </mat-card>
-            </div>
-          </div>
+            </mat-grid-tile>
+          </mat-grid-list>
         </div>
+        
         <mat-divider></mat-divider>
 
         <div class="table-container mat-elevation-z8 mt-2">
@@ -236,33 +228,33 @@
         <mat-toolbar>
           <mat-slide-toggle color="primary" [checked]="includeInvalid" (change)="onReportOrderRefresh()">{{'Finance.InvalidOnes' | translate}}</mat-slide-toggle>
         </mat-toolbar>
-            
-        <div class="mt-2">
-          <div class="row">
-            <div class="col-12 col-md-6">
-              <mat-card>
+
+        <div class="grid-container">
+          <mat-grid-list cols="2" rowHeight="500px">
+            <mat-grid-tile colspan="1" rowspan="1">
+              <mat-card class="dashboard-card">
                 <mat-card-header>
                   <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataOrderDebit" (select)="onOrderDebitSelect($event)">
-                  </ngx-charts-advanced-pie-chart>
+                  <div echarts [options]="orderIncomingChartOption | async" class="account-incoming-chart"></div>
                 </mat-card-content>
               </mat-card>
-            </div>
-            <div class="col-12 col-md-6">
-              <mat-card>
+            </mat-grid-tile>
+
+            <mat-grid-tile colspan="1" rowspan="1">
+              <mat-card class="dashboard-card">
                 <mat-card-header>
                   <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [results]="dataOrderCredit" (select)="onOrderCreditSelect($event)">
-                  </ngx-charts-advanced-pie-chart>
+                  <div echarts [options]="orderOutgoingChartOption | async" class="account-outgoing-chart"></div>
                 </mat-card-content>
               </mat-card>
-            </div>
-          </div>
+            </mat-grid-tile>
+          </mat-grid-list>
         </div>
+  
         <mat-divider></mat-divider>
 
         <div class="table-container mat-elevation-z8 mt-2">

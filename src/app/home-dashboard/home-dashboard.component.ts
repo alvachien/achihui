@@ -1,32 +1,27 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
-  FinCurrencyService, UIStatusService,
-} from '../services';
+import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
+  FinCurrencyService, UIStatusService, } from '../services';
 import { Router } from '@angular/router';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import * as moment from 'moment';
-import {
-  LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
+import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
   TranType, financeTranTypeTransferIn, financeTranTypeTransferOut, HomeKeyFigure,
 } from '../model';
 import { Observable, Subject, BehaviorSubject, forkJoin, ReplaySubject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { EChartOption } from 'echarts';
 
 @Component({
   selector: 'hih-home-dashboard',
   templateUrl: './home-dashboard.component.html',
-  styleUrls: ['./home-dashboard.component.css'],
+  styleUrls: ['./home-dashboard.component.scss'],
 })
 export class HomeDashboardComponent implements OnInit, OnDestroy {
   private ngUnsubscribe$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   selectedFinanceScope: OverviewScopeEnum;
   selectedLearnScope: OverviewScopeEnum;
-  view: number[] = [400, 300]; // Default value
-  colorScheme: any = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
-  };
+
   xLearnUserAxisLabel: string;
   yLearnUserAxisLabel: string;
   legendTitle: string;
@@ -40,6 +35,8 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   mapFinTTIn: Map<number, UINameValuePair<number>> = undefined;
   mapFinTTOut: Map<number, UINameValuePair<number>> = undefined;
   baseCurr: string;
+  datFinIncomingChartOption: Observable<EChartOption>;
+  datFinOutcomingChartOption: Observable<EChartOption>;
 
   constructor(private _authService: AuthService,
     public _homeDefService: HomeDefDetailService,
@@ -170,8 +167,6 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     } else {
       graphSize = 400;
     }
-
-    this.view = [graphSize, graphSize / 1.33];
   }
 
   private _parseFinDataWithTopLevel(): void {

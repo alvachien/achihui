@@ -77,13 +77,30 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <div style="height: 350px;">
-            <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTIn" (select)="onChartIncomeClick($event)">
-            </ngx-charts-advanced-pie-chart>
-          </div>
-          <div style="height: 350px;">
-            <ngx-charts-advanced-pie-chart [scheme]="colorScheme" [label]="totalLabel" [results]="dataFinTTOut" (select)="onChartOutgoingClick($event)">
-            </ngx-charts-advanced-pie-chart>
+          <div class="grid-container">
+            <mat-grid-list cols="1" rowHeight="700px">
+              <mat-grid-tile colspan="1" rowspan="1">
+                <mat-card class="dashboard-card">
+                  <mat-card-header>
+                    <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div echarts [options]="datFinIncomingChartOption | async" class="incoming-chart"></div>
+                  </mat-card-content>
+                </mat-card>
+              </mat-grid-tile>
+  
+              <mat-grid-tile colspan="1" rowspan="1">
+                <mat-card class="dashboard-card">
+                  <mat-card-header>
+                    <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div echarts [options]="datFinOutgoingChartOption | async" class="outgoing-chart"></div>
+                  </mat-card-content>
+                </mat-card>
+              </mat-grid-tile>
+            </mat-grid-list>
           </div>
         </mat-card-content>
       </mat-card>
@@ -109,12 +126,7 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <div style="height: 300px;">
-            <ngx-charts-bar-vertical [scheme]="colorScheme" [results]="dataLrnUser" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
-              [showYAxisLabel]="true" [xAxisLabel]="xLearnUserAxisLabel" [yAxisLabel]="yLearnUserAxisLabel" [legend]="true"
-              [legendTitle]="legendTitle">
-            </ngx-charts-bar-vertical>
-          </div>
+          <div echarts [options]="learnChartOption | async" class="outgoing-chart"></div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>

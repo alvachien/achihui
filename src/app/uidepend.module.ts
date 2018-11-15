@@ -11,7 +11,6 @@ import {
   MatSlideToggleModule, MatSnackBarModule, MatTableModule, MatTabsModule, MatToolbarModule,
   MatTooltipModule, MatFormFieldModule, MatExpansionModule, MatStepperModule, MatTreeModule,
 } from '@angular/material';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { TinyMceDirective } from './directives/tinymce.directive';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SplitAreaDirective, SplitHandleDirective, SplitDirective } from './directives';
@@ -102,7 +101,6 @@ import { NgxEchartsModule } from 'ngx-echarts';
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-    NgxChartsModule,
     NgxEchartsModule,
     TinyMceDirective,
     FlexLayoutModule,

@@ -1,3 +1,13 @@
-.example-spacer {
-  flex: 1 1 auto;
+
+.jumbotron {
+  padding: 4rem 2rem;
+  margin-bottom: 4rem;
+  background-color: #e9ecef;
+  border-radius: 0.3rem;
+}
+
+.jumbotron-fluid {
+  padding-right: 0;
+  padding-left: 0;
+  border-radius: 0;
 }

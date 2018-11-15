@@ -2,10 +2,10 @@ import { Component, OnInit, AfterViewInit, EventEmitter, ViewChild, ElementRef, 
 import { DataSource } from '@angular/cdk/collections';
 import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
+
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory
+import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
+  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -13,7 +13,7 @@ import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Observable, Subject, ReplaySubject, BehaviorSubject, merge, of, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-declare var echarts: any;
+import { EChartOption } from 'echarts';
 
 /**
  * Data source of BS
@@ -114,8 +114,10 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   private ngUnsubscribe$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   // Account
-  @ViewChild('chartAccountIncoming') chartAccountIncoming: ElementRef;
-  @ViewChild('chartAccountOutgoing') chartAccountOutgoing: ElementRef;
+  // @ViewChild('chartAccountIncoming') chartAccountIncoming: ElementRef;
+  // @ViewChild('chartAccountOutgoing') chartAccountOutgoing: ElementRef;
+  accountIncomingChartOption: Observable<EChartOption>;
+  accountOutgoingChartOption: Observable<EChartOption>;
 
   // MoM
   selectedMOMScope: OverviewScopeEnum;
@@ -126,48 +128,50 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       tooltip : {
           trigger: 'axis',
           axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-          }
+              type : 'shadow',        // 默认为直线，可选为：'line' | 'shadow'
+          },
       },
       grid: {
           left: '3%',
           right: '4%',
           bottom: '3%',
-          containLabel: true
+          containLabel: true,
       },
       xAxis : [
           {
               type : 'category',
               data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
               axisTick: {
-                  alignWithLabel: true
-              }
-          }
+                  alignWithLabel: true,
+              },
+          },
       ],
       yAxis : [
           {
               type : 'value',
-              splitArea: {show: true}
-          }
+              splitArea: {show: true},
+          },
       ],
       series : [
           {
               //name:'直接访问',
               type:'bar',
               //barWidth: '60%',
-              data:[10, 52, 200, 334, 390, 330, 220]
+              data:[10, 52, 200, 334, 390, 330, 220],
           },
           {
               //name:'直接访问',
               type:'bar',
               //barWidth: '60%',
-              data:[10, 52, 200, 334, 390, 330, 220]
-          }
-      ]
+              data:[10, 52, 200, 334, 390, 330, 220],
+          },
+      ],
   };
+  overviewChartOptions: Observable<EChartOption>;
 
   // B.S.
-  @ViewChild('chartAcntCtgy') chartAcntCtgy: ElementRef;
+  // @ViewChild('chartAcntCtgy') chartAcntCtgy: ElementRef;
+  acntCtgyChartOption: Observable<EChartOption>;
   displayedBSColumns: string[] = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
   dataSourceBS: ReportBSDataSource | undefined;
   ReportBS: BalanceSheetReport[] = [];
@@ -180,6 +184,8 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   ReportCC: ControlCenterReport[] = [];
   ReportCCEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorCC') paginatorCC: MatPaginator;
+  ccIncomingChartOption: Observable<EChartOption>;
+  ccOutgoingChartOption: Observable<EChartOption>;
 
   // Order
   includeInvalid: boolean = false;
@@ -188,12 +194,9 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   ReportOrder: OrderReport[] = [];
   ReportOrderEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorOrder') paginatorOrder: MatPaginator;
+  orderIncomingChartOption: Observable<EChartOption>;
+  orderOutgoingChartOption: Observable<EChartOption>;
 
-  viewAccountChart: any[] = [600, 900];
-  colorScheme: any = {
-    // domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
-    domain: ['#1B998B', '#2D3047', '#FFFD82', '#FF9B71', '#E84855'],
-  };
   datAccountLiability: any[];
   datAccountAsset: any[];
   dataBSCategoryDebit: any[] = [];
@@ -204,8 +207,6 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   dataOrderCredit: any[] = [];
   dataMOM: any[] = [];
   arAccountCtgy: any[] = [];
-
-  view: number[] = [];
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -321,44 +322,48 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private refreshMoMData(data: any): void {
     this.dataMOM = [];
+    const datIn: any[] = [];
+    const datOut: any[] = [];
 
-    for (let inmom of data) {
-      const strmonth: any = inmom.year.toString() + Utility.prefixInteger(inmom.month, 2);
-      let outidx: number = this.dataMOM.findIndex((val: any) => {
-        return val.name === strmonth;
-      });
+    // for (let inmom of data) {
+    //   const strmonth: any = inmom.year.toString() + Utility.prefixInteger(inmom.month, 2);
+    //   let outidx: number = this.dataMOM.findIndex((val: any) => {
+    //     return val.name === strmonth;
+    //   });
 
-      if (outidx === -1) {
-        let outmom: any = {};
-        outmom.name = strmonth;
-        outmom.series = [];
-        if (inmom.expense) {
-          outmom.series.push({
-            name: this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing),
-            value: inmom.tranAmount,
-          });
-        } else {
-          outmom.series.push({
-            name: this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming),
-            value: inmom.tranAmount,
-          });
-        }
+    //   if (outidx === -1) {
+    //     let outmom: any = {};
+    //     outmom.name = strmonth;
+    //     outmom.series = [];
+    //     if (inmom.expense) {
+    //       outmom.series.push({
+    //         name: this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing),
+    //         value: inmom.tranAmount,
+    //       });
+    //     } else {
+    //       outmom.series.push({
+    //         name: this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming),
+    //         value: inmom.tranAmount,
+    //       });
+    //     }
 
-        this.dataMOM.push(outmom);
-      } else {
-        if (inmom.expense) {
-          this.dataMOM[outidx].series.push({
-            name: this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing),
-            value: inmom.tranAmount,
-          });
-        } else {
-          this.dataMOM[outidx].series.push({
-            name: this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming),
-            value: inmom.tranAmount,
-          });
-        }
-      }
-    }
+    //     this.dataMOM.push(outmom);
+    //   } else {
+    //     if (inmom.expense) {
+    //       this.dataMOM[outidx].series.push({
+    //         name: this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing),
+    //         value: inmom.tranAmount,
+    //       });
+    //     } else {
+    //       this.dataMOM[outidx].series.push({
+    //         name: this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming),
+    //         value: inmom.tranAmount,
+    //       });
+    //     }
+    //   }
+    // }
+
+    this._buildMoMChart();
   }
   private refreshOrderReportData(data: any): void {
     this.ReportOrder = [];
@@ -518,8 +523,6 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       graphSize = 500;
     }
-
-    this.view = [graphSize, graphSize / 1.33];
   }
 
   private _fetchData(): void {
@@ -562,6 +565,10 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       this._buildAccountInChart();
       this._buildAccountOutChart();
       this._buildAccountCategoryChart();
+      this._buildCCInChart();
+      this._buildCCOutChart();
+      this._buildOrderInChart();
+      this._buildOrderOutChart();
 
       // Trigger the events
       this.ReportBSEvent.emit();
@@ -570,193 +577,461 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
   private _buildAccountInChart(): void {
-    let chartAcntIn: any = echarts.init(this.chartAccountIncoming.nativeElement);
-
-    // Account incoming
-    let optionAcntIn: any = {
-      backgroundColor: '#2c343c',
-      title: {
-        text: 'Assets',
-        left: 'center',
-        top: 20,
-        textStyle: {
-          color: '#ccc',
-        },
-      },
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)',
-      },
-      visualMap: {
-        show: false,
-        min: 80,
-        max: 600,
-        inRange: {
-          colorLightness: [0, 1],
-        },
-      },
-      series: [{
-        name: 'Accounts',
-        type: 'pie',
-        radius: '55%',
-        center: ['50%', '50%'],
-        data: this.datAccountAsset,
-        roseType: 'radius',
-        label: {
-          normal: {
+    this.accountIncomingChartOption = of([]).pipe(
+      map(() => {
+        return {
+          backgroundColor: '#2c343c',
+          title: {
+            text: 'Assets',
+            left: 'center',
             textStyle: {
-              color: 'rgba(255, 255, 255, 0.3)',
+              color: '#ccc',
             },
           },
-        },
-        labelLine: {
-          normal: {
-            lineStyle: {
-              color: 'rgba(255, 255, 255, 0.3)',
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
+          },
+          series: [{
+            name: 'Accounts',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '50%'],
+            data: this.datAccountAsset,
+            roseType: 'radius',
+            label: {
+              normal: {
+                textStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+              },
             },
-            smooth: 0.2,
-            length: 10,
-            length2: 20,
-          },
-        },
-        itemStyle: {
-          normal: {
-            color: '#c23531',
-            shadowBlur: 200,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-          },
-        },
+            labelLine: {
+              normal: {
+                lineStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+                smooth: 0.2,
+                length: 10,
+                length2: 20,
+              },
+            },
+            itemStyle: {
+              normal: {
+                color: '#c23531',
+                shadowBlur: 200,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
 
-        animationType: 'scale',
-        animationEasing: 'elasticOut',
-        animationDelay: function (idx: any): number {
-          return Math.random() * 200;
-        },
-      }],
-    };
-    chartAcntIn.setOption(optionAcntIn);
+            animationType: 'scale',
+            animationEasing: 'elasticOut',
+            animationDelay: function (idx: any): number {
+              return Math.random() * 200;
+            },
+          }],
+        };
+      }),
+    );
   }
   private _buildAccountOutChart(): void {
-    let chartAcntOut: any = echarts.init(this.chartAccountOutgoing.nativeElement);
-
-    // Account outgoing
-    let optionAcntOut: any = {
-      backgroundColor: '#dc343c',
-      title: {
-        text: 'Liabilities',
-        left: 'center',
-        top: 20,
-        textStyle: {
-          color: '#ccc',
-        },
-      },
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)',
-      },
-      visualMap: {
-        show: false,
-        min: 80,
-        max: 600,
-        inRange: {
-          colorLightness: [0, 1],
-        },
-      },
-      series: [{
-        name: 'Accounts',
-        type: 'pie',
-        radius: '55%',
-        center: ['50%', '50%'],
-        data: this.datAccountLiability,
-        roseType: 'radius',
-        label: {
-          normal: {
+    this.accountOutgoingChartOption = of([]).pipe(
+      map(() => {
+        return {
+          backgroundColor: '#dc343c',
+          title: {
+            text: 'Liabilities',
+            left: 'center',
             textStyle: {
-              color: 'rgba(255, 255, 255, 0.3)',
+              color: '#ccc',
             },
           },
-        },
-        labelLine: {
-          normal: {
-            lineStyle: {
-              color: 'rgba(255, 255, 255, 0.3)',
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
+          },
+          series: [{
+            name: 'Accounts',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '50%'],
+            data: this.datAccountLiability,
+            roseType: 'radius',
+            label: {
+              normal: {
+                textStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+              },
             },
-            smooth: 0.2,
-            length: 10,
-            length2: 20,
-          },
-        },
-        itemStyle: {
-          normal: {
-            color: '#c23531',
-            shadowBlur: 200,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-          },
-        },
+            labelLine: {
+              normal: {
+                lineStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+                smooth: 0.2,
+                length: 10,
+                length2: 20,
+              },
+            },
+            itemStyle: {
+              normal: {
+                color: '#c23531',
+                shadowBlur: 200,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
 
-        animationType: 'scale',
-        animationEasing: 'elasticOut',
-        animationDelay: function (idx: any): number {
-          return Math.random() * 200;
-        },
-      }],
-    };
-    chartAcntOut.setOption(optionAcntOut);
+            animationType: 'scale',
+            animationEasing: 'elasticOut',
+            animationDelay: function (idx: any): number {
+              return Math.random() * 200;
+            },
+          }],
+        };
+      }),
+    );
   }
   private _buildAccountCategoryChart(): void {
-    let chartAcntCtgy: any = echarts.init(this.chartAcntCtgy.nativeElement);
-    let option: any = {
-      title : {
-        text: 'Accounting Category',
-        subtext: 'Accounting Category',
-        x: 'center',
-      },
-      tooltip : {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)',
-      },
-      legend: {
-        x : 'center',
-        y : 'bottom',
-        data: this.arAccountCtgy,
-      },
-      toolbox: {
-        show : true,
-        feature : {
-          mark : {show: true},
-          dataView : {show: true, readOnly: false},
-          magicType : {
-            show: true,
-            type: ['pie', 'funnel'],
+    // let chartAcntCtgy: any = echarts.init(this.chartAcntCtgy.nativeElement);
+    this.acntCtgyChartOption = of([]).pipe(
+      map(() => {
+        return {
+          title : {
+            text: 'Accounting Category',
+            subtext: 'Accounting Category',
+            x: 'center',
           },
-          restore : {show: true},
-          saveAsImage : {show: true},
-        },
-      },
-      calculable : true,
-      series : [{
-          name: '',
-          type: 'pie',
-          // radius: [20, 110],
-          // center: ['25%', '50%'],
-          // roseType : 'radius',
-          radius : [30, 110],
-          center : ['75%', '50%'],
-          roseType : 'area',
-          data: this.dataBSCategoryDebit,
-        }, {
-          name: '',
-          type: 'pie',
-          // radius: [20, 110],
-          // center: ['25%', '50%'],
-          // roseType : 'radius',
-          radius : [30, 110],
-          center : ['75%', '50%'],
-          roseType : 'area',
-          data: this.dataBSCategoryCredit,
-        }],
-    };
+          tooltip : {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
+          },
+          legend: {
+            x : 'center',
+            y : 'bottom',
+            data: this.arAccountCtgy,
+          },
+          toolbox: {
+            show : true,
+            feature : {
+              mark : {show: true},
+              dataView : {show: true, readOnly: false},
+              magicType : {
+                show: true,
+                type: ['pie', 'funnel'],
+              },
+              restore : {show: true},
+              saveAsImage : {show: true},
+            },
+          },
+          calculable : true,
+          series : [{
+              name: '',
+              type: 'pie',
+              // radius: [20, 110],
+              // center: ['25%', '50%'],
+              // roseType : 'radius',
+              radius : [30, 110],
+              center : ['75%', '50%'],
+              roseType : 'area',
+              data: this.dataBSCategoryDebit,
+            }, {
+              name: '',
+              type: 'pie',
+              // radius: [20, 110],
+              // center: ['25%', '50%'],
+              // roseType : 'radius',
+              radius : [30, 110],
+              center : ['75%', '50%'],
+              roseType : 'area',
+              data: this.dataBSCategoryCredit,
+            }],
+        };
+      }),
+    );
+  }
+  private _buildMoMChart(): void {
+    this.overviewChartOptions = of([]).pipe(
+      map(() => {
+        const xAxisData = [];
+        const data1 = [];
+        const data2 = [];
 
-    chartAcntCtgy.setOption(option);
+        for (let i = 0; i < 10; i++) {
+          xAxisData.push('category' + i);
+          data1.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5);
+          data2.push((Math.cos(i / 5) * (i / 5 - 10) + i / 6) * 5);
+        }
+
+        // Set the option
+        return {
+          legend: {
+            data: ['bar', 'bar2'],
+            align: 'left',
+          },
+          tooltip: {},
+          xAxis: {
+            data: xAxisData,
+            silent: false,
+            splitLine: {
+              show: false,
+            },
+          },
+          yAxis: {
+          },
+          series: [{
+            name: 'bar',
+            type: 'bar',
+            data: data1,
+            animationDelay: (idx) => {
+              return idx * 10;
+            },
+          }, {
+            name: 'bar2',
+            type: 'bar',
+            data: data2,
+            animationDelay: (idx) => {
+              return idx * 10 + 100;
+            },
+          }],
+          animationEasing: 'elasticOut',
+          animationDelayUpdate: (idx) => {
+            return idx * 5;
+          },
+        };
+      }),
+    );
+  }
+  private _buildCCInChart(): void {
+    this.ccIncomingChartOption = of([]).pipe(
+      map(() => {
+        return {
+          backgroundColor: '#2c343c',
+          title: {
+            text: 'Assets',
+            left: 'center',
+            textStyle: {
+              color: '#ccc',
+            },
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
+          },
+          series: [{
+            name: 'Accounts',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '50%'],
+            data: this.datAccountAsset,
+            roseType: 'radius',
+            label: {
+              normal: {
+                textStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+              },
+            },
+            labelLine: {
+              normal: {
+                lineStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+                smooth: 0.2,
+                length: 10,
+                length2: 20,
+              },
+            },
+            itemStyle: {
+              normal: {
+                color: '#c23531',
+                shadowBlur: 200,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+
+            animationType: 'scale',
+            animationEasing: 'elasticOut',
+            animationDelay: function (idx: any): number {
+              return Math.random() * 200;
+            },
+          }],
+        };
+      }),
+    );
+  }
+  private _buildCCOutChart(): void {
+    this.ccOutgoingChartOption = of([]).pipe(
+      map(() => {
+        return {
+          backgroundColor: '#dc343c',
+          title: {
+            text: 'Liabilities',
+            left: 'center',
+            textStyle: {
+              color: '#ccc',
+            },
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
+          },
+          series: [{
+            name: 'Accounts',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '50%'],
+            data: this.datAccountLiability,
+            roseType: 'radius',
+            label: {
+              normal: {
+                textStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+              },
+            },
+            labelLine: {
+              normal: {
+                lineStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+                smooth: 0.2,
+                length: 10,
+                length2: 20,
+              },
+            },
+            itemStyle: {
+              normal: {
+                color: '#c23531',
+                shadowBlur: 200,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+
+            animationType: 'scale',
+            animationEasing: 'elasticOut',
+            animationDelay: function (idx: any): number {
+              return Math.random() * 200;
+            },
+          }],
+        };
+      }),
+    );
+  }
+  private _buildOrderInChart(): void {
+    this.orderIncomingChartOption = of([]).pipe(
+      map(() => {
+        return {
+          backgroundColor: '#2c343c',
+          title: {
+            text: 'Assets',
+            left: 'center',
+            textStyle: {
+              color: '#ccc',
+            },
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
+          },
+          series: [{
+            name: 'Accounts',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '50%'],
+            data: this.datAccountAsset,
+            roseType: 'radius',
+            label: {
+              normal: {
+                textStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+              },
+            },
+            labelLine: {
+              normal: {
+                lineStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+                smooth: 0.2,
+                length: 10,
+                length2: 20,
+              },
+            },
+            itemStyle: {
+              normal: {
+                color: '#c23531',
+                shadowBlur: 200,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+
+            animationType: 'scale',
+            animationEasing: 'elasticOut',
+            animationDelay: function (idx: any): number {
+              return Math.random() * 200;
+            },
+          }],
+        };
+      }),
+    );
+  }
+  private _buildOrderOutChart(): void {
+    this.orderOutgoingChartOption = of([]).pipe(
+      map(() => {
+        return {
+          backgroundColor: '#dc343c',
+          title: {
+            text: 'Liabilities',
+            left: 'center',
+            textStyle: {
+              color: '#ccc',
+            },
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
+          },
+          series: [{
+            name: 'Accounts',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '50%'],
+            data: this.datAccountLiability,
+            roseType: 'radius',
+            label: {
+              normal: {
+                textStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+              },
+            },
+            labelLine: {
+              normal: {
+                lineStyle: {
+                  color: 'rgba(255, 255, 255, 0.3)',
+                },
+                smooth: 0.2,
+                length: 10,
+                length2: 20,
+              },
+            },
+            itemStyle: {
+              normal: {
+                color: '#c23531',
+                shadowBlur: 200,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+
+            animationType: 'scale',
+            animationEasing: 'elasticOut',
+            animationDelay: function (idx: any): number {
+              return Math.random() * 200;
+            },
+          }],
+        };
+      }),
+    );
   }
 }

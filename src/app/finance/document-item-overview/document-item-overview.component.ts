@@ -12,7 +12,7 @@ import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDoc
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
-declare var echarts: any;
+import { EChartOption } from 'echarts';
 
 /**
  * Data source of ADP & Loan docs
@@ -59,8 +59,8 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
   tmpDocs: TemplateDocBase[] = [];
   @ViewChild('paginatorTmpDoc') paginatorTmpDoc: MatPaginator;
   selectedTmpScope: OverviewScopeEnum;
-  @ViewChild('trendWeekly') trendWeekly: ElementRef;
-  @ViewChild('trendDaily') trendDaily: ElementRef;
+  weeklyTrendChartOption: Observable<EChartOption>;
+  dailyTrendChartOption: Observable<EChartOption>;
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -121,180 +121,181 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       arweekdisplay.push(val.year.toString() + '.' + val.week.toString());
     });
 
-    this._storageService.fetchReportTrendData(ReportTrendExTypeEnum.Weekly, true, bgn, end)
-      .subscribe((x: ReportTrendExData[]) => {
-      let chart: any = echarts.init(this.trendWeekly.nativeElement);
-      let arWeekIncome: number[] = [];
-      let arWeekOutgo: number[] = [];
-
-      arweeks.forEach((val: any) => {
-        let idxIncome: number = x.findIndex((val2: ReportTrendExData) => {
-          return val2.tranYear === val.year && val2.tranWeek === val.week && !val2.expense;
-        });
-        let idxOutgo: number = x.findIndex((val2: ReportTrendExData) => {
-          return val2.tranYear === val.year && val2.tranWeek === val.week && val2.expense;
-        });
-        if (idxIncome === -1 && idxOutgo === -1) {
-          arWeekIncome.push(0);
-          arWeekOutgo.push(0);
-        } else {
-          let valIncome: number = 0;
-          let valOutgo: number = 0;
-          if (idxIncome !== -1) {
-            valIncome = x[idxIncome].tranAmount;
-          }
-          if (idxOutgo !== -1) {
-            valOutgo = x[idxOutgo].tranAmount;
-          }
-          arWeekIncome.push(valIncome);
-          arWeekOutgo.push(valOutgo);
-        }
-      });
-
-      let option: any = {
-        tooltip : {
-          trigger: 'axis',
-          axisPointer : {
-            type : 'shadow',
-          },
-        },
-        legend: {
-          data: [this.labelOutgo, this.labelIncome],
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true,
-        },
-        toolbox: {
-          feature: {
-              saveAsImage: {},
-          },
-        },
-        xAxis : [
-          {
-            type : 'value',
-          },
-        ],
-        yAxis : [
-          {
-            type : 'category',
-            axisTick : {show: false},
-            data : arweekdisplay,
-          },
-        ],
-        series : [
-          {
-            name: this.labelIncome,
-            type: 'bar',
-            // stack: '总量',
-            label: {
-              normal: {
-                show: true,
-              },
-            },
-            data: arWeekIncome,
-          },
-          {
-            name: this.labelOutgo,
-            type: 'bar',
-            // stack: '总量',
-            label: {
-              normal: {
-                show: true,
-                position: 'inside',
-              },
-            },
-            data: arWeekOutgo,
-          },
-        ],
-      };
-      chart.setOption(option);
-    });
-
-    // Daily
-    this._storageService.fetchReportTrendData(ReportTrendExTypeEnum.Daily, true, bgn, end)
-      .subscribe((x: ReportTrendExData[]) => {
-      let chart: any = echarts.init(this.trendDaily.nativeElement);
-      let ardates: moment.Moment[] = [];
-      x.forEach((val2: ReportTrendExData) => {
-        let idxdate: number = ardates.findIndex((valdate: moment.Moment) => {
-          return val2.tranDate.isSame(valdate);
-        });
-        if (idxdate === -1) {
-          ardates.push(val2.tranDate);
-        }
-      });
-      let ardates2: moment.Moment[] = ardates.sort((a: moment.Moment, b: moment.Moment) => {
-        if (a.isSame(b)) { return 0; }
-        if (a.isBefore(b)) { return -1; } else { return 1; }
-      });
-
-      let arCtgy: string[] = [];
-      let arIncome: number[] = [];
-      let arOutgo: number[] = [];
-      ardates2.forEach((valdate: moment.Moment) => {
-        arCtgy.push(valdate.format(momentDateFormat));
-        let valincome: number = 0;
-        let valoutgo: number = 0;
-
-        x.forEach((val3: ReportTrendExData) => {
-          if (val3.tranDate.isSame(valdate)) {
-            if (val3.expense) {
-              valoutgo += val3.tranAmount;
+    // Weekly trend
+    this.weeklyTrendChartOption = this._storageService.fetchReportTrendData(ReportTrendExTypeEnum.Weekly, true, bgn, end)
+      .pipe(
+        map((x: ReportTrendExData[]) => {
+          let arWeekIncome: number[] = [];
+          let arWeekOutgo: number[] = [];
+          arweeks.forEach((val: any) => {
+            let idxIncome: number = x.findIndex((val2: ReportTrendExData) => {
+              return val2.tranYear === val.year && val2.tranWeek === val.week && !val2.expense;
+            });
+            let idxOutgo: number = x.findIndex((val2: ReportTrendExData) => {
+              return val2.tranYear === val.year && val2.tranWeek === val.week && val2.expense;
+            });
+            if (idxIncome === -1 && idxOutgo === -1) {
+              arWeekIncome.push(0);
+              arWeekOutgo.push(0);
             } else {
-              valincome += val3.tranAmount;
+              let valIncome: number = 0;
+              let valOutgo: number = 0;
+              if (idxIncome !== -1) {
+                valIncome = x[idxIncome].tranAmount;
+              }
+              if (idxOutgo !== -1) {
+                valOutgo = x[idxOutgo].tranAmount;
+              }
+              arWeekIncome.push(valIncome);
+              arWeekOutgo.push(valOutgo);
             }
-          }
-        });
+          });
 
-        arIncome.push(valincome);
-        arOutgo.push(valoutgo);
-      });
-      let option: any = {
-        tooltip: {
-          trigger: 'axis',
-        },
-        legend: {
-          data: [this.labelOutgo, this.labelIncome],
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true,
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {},
-          },
-        },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: arCtgy,
-        },
-        yAxis: {
-          type: 'value',
-        },
-        series: [
-          {
-            name: this.labelOutgo,
-            type: 'line',
-            // stack: '总量',
-            data: arOutgo,
-          },
-          {
-            name: this.labelIncome,
-            type: 'line',
-            // stack: '总量',
-            data: arIncome,
-          },
-        ],
-    };
-      chart.setOption(option);
-    });
+          return {
+            tooltip : {
+              trigger: 'axis',
+              axisPointer : {
+                type : 'shadow',
+              },
+            },
+            legend: {
+              data: [this.labelOutgo, this.labelIncome],
+            },
+            grid: {
+              left: '3%',
+              right: '4%',
+              bottom: '3%',
+              containLabel: true,
+            },
+            toolbox: {
+              feature: {
+                  saveAsImage: {},
+              },
+            },
+            xAxis : [
+              {
+                type : 'value',
+              },
+            ],
+            yAxis : [
+              {
+                type : 'category',
+                axisTick : {show: false},
+                data : arweekdisplay,
+              },
+            ],
+            series : [
+              {
+                name: this.labelIncome,
+                type: 'bar',
+                // stack: '总量',
+                label: {
+                  normal: {
+                    show: true,
+                  },
+                },
+                data: arWeekIncome,
+              },
+              {
+                name: this.labelOutgo,
+                type: 'bar',
+                // stack: '总量',
+                label: {
+                  normal: {
+                    show: true,
+                    position: 'inside',
+                  },
+                },
+                data: arWeekOutgo,
+              },
+            ],
+          };
+        }),
+      );
+
+    // Daily Trend
+    this.dailyTrendChartOption = this._storageService.fetchReportTrendData(ReportTrendExTypeEnum.Daily, true, bgn, end)
+      .pipe(
+        map((x: ReportTrendExData[]) => {
+          let ardates: moment.Moment[] = [];
+          x.forEach((val2: ReportTrendExData) => {
+            let idxdate: number = ardates.findIndex((valdate: moment.Moment) => {
+              return val2.tranDate.isSame(valdate);
+            });
+            if (idxdate === -1) {
+              ardates.push(val2.tranDate);
+            }
+          });
+          let ardates2: moment.Moment[] = ardates.sort((a: moment.Moment, b: moment.Moment) => {
+            if (a.isSame(b)) { return 0; }
+            if (a.isBefore(b)) { return -1; } else { return 1; }
+          });
+
+          let arCtgy: string[] = [];
+          let arIncome: number[] = [];
+          let arOutgo: number[] = [];
+          ardates2.forEach((valdate: moment.Moment) => {
+            arCtgy.push(valdate.format(momentDateFormat));
+            let valincome: number = 0;
+            let valoutgo: number = 0;
+
+            x.forEach((val3: ReportTrendExData) => {
+              if (val3.tranDate.isSame(valdate)) {
+                if (val3.expense) {
+                  valoutgo += val3.tranAmount;
+                } else {
+                  valincome += val3.tranAmount;
+                }
+              }
+            });
+
+            arIncome.push(valincome);
+            arOutgo.push(valoutgo);
+          });
+
+          return {
+            tooltip: {
+              trigger: 'axis',
+            },
+            legend: {
+              data: [this.labelOutgo, this.labelIncome],
+            },
+            grid: {
+              left: '3%',
+              right: '4%',
+              bottom: '3%',
+              containLabel: true,
+            },
+            toolbox: {
+              feature: {
+                saveAsImage: {},
+              },
+            },
+            xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              data: arCtgy,
+            },
+            yAxis: {
+              type: 'value',
+            },
+            series: [
+              {
+                name: this.labelOutgo,
+                type: 'line',
+                // stack: '总量',
+                data: arOutgo,
+              },
+              {
+                name: this.labelIncome,
+                type: 'line',
+                // stack: '总量',
+                data: arIncome,
+              },
+            ],
+          };
+        }),
+      );
   }
 
   public onTmpDocsRefresh(): void {
