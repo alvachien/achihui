@@ -1,4 +1,4 @@
-
+//
 // Unit test for utility.ts
 //
 
@@ -26,5 +26,12 @@ describe('Unit test for Utility in Model', () => {
     expect(ndate.getFullYear()).toBe(2018);
     expect(ndate.getMonth()).toBe(1);
     expect(ndate.getDate()).toBe(14);
+  });
+
+  it('#3. Utility.getYearMonthDisplayString()', () => {
+    let strResult: string = Utility.getYearMonthDisplayString(2018, 8);
+    expect(strResult).toBe('201808');
+    let strResult2: string = Utility.getYearMonthDisplayString(2018, 11);
+    expect(strResult2).toBe('201811');
   });
 });

@@ -117,4 +117,11 @@ export class Utility {
   public static prefixInteger(num: number, length: number): string {
     return (Array(length).join('0') + num).slice(-length);
   }
+
+  // Get display string for Year/Month
+  // Input: y=2018,m=8; Output: 201808
+  // Input: y=2018,m=11, Output: 201811
+  public static getYearMonthDisplayString(y: number, m: number): string {
+    return y.toString() + dateSplitChar + (m < 10 ? ('0' + m) : m).toString();
+  }
 }

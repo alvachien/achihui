@@ -2,18 +2,17 @@ import { Component, OnInit, AfterViewInit, EventEmitter, ViewChild, ElementRef, 
 import { DataSource } from '@angular/cdk/collections';
 import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ObservableMedia, MediaChange } from '@angular/flex-layout';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable, Subject, ReplaySubject, BehaviorSubject, merge, of, forkJoin } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { EChartOption } from 'echarts';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory,
-} from '../../model';
+  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { ObservableMedia, MediaChange } from '@angular/flex-layout';
-import { Observable, Subject, ReplaySubject, BehaviorSubject, merge, of, forkJoin } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
-import { EChartOption } from 'echarts';
 
 /**
  * Data source of BS
@@ -123,50 +122,6 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedMOMScope: OverviewScopeEnum;
   momExcludeTransfer: boolean;
   momScopes: UIDisplayString[];
-  optionMoM: any = {
-      // color: ['#3F98DB'],
-      tooltip : {
-          trigger: 'axis',
-          axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-              type : 'shadow',        // 默认为直线，可选为：'line' | 'shadow'
-          },
-      },
-      grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true,
-      },
-      xAxis : [
-          {
-              type : 'category',
-              data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-              axisTick: {
-                  alignWithLabel: true,
-              },
-          },
-      ],
-      yAxis : [
-          {
-              type : 'value',
-              splitArea: {show: true},
-          },
-      ],
-      series : [
-          {
-              //name:'直接访问',
-              type:'bar',
-              //barWidth: '60%',
-              data:[10, 52, 200, 334, 390, 330, 220],
-          },
-          {
-              //name:'直接访问',
-              type:'bar',
-              //barWidth: '60%',
-              data:[10, 52, 200, 334, 390, 330, 220],
-          },
-      ],
-  };
   overviewChartOptions: Observable<EChartOption>;
 
   // B.S.
@@ -205,19 +160,20 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   dataCCCredit: any[] = [];
   dataOrderDebit: any[] = [];
   dataOrderCredit: any[] = [];
-  dataMOM: any[] = [];
   arAccountCtgy: any[] = [];
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _tranService: TranslateService,
-    private _router: Router,
-    private _activateRoute: ActivatedRoute,
     private _homedefService: HomeDefDetailService,
     private _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
     private _currService: FinCurrencyService,
     private media: ObservableMedia) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ReportComponent constructor...');
+    }
+
     this.selectedMOMScope = OverviewScopeEnum.CurrentYear;
     this.momScopes = [];
 
@@ -231,6 +187,10 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngOnInit...');
+    }
+
     this.dataSourceBS = new ReportBSDataSource(this, this.paginatorBS);
     this.dataSourceCC = new ReportCCDataSource(this, this.paginatorCC);
     this.dataSourceOrder = new ReportOrderDataSource(this, this.paginatorOrder);
@@ -245,6 +205,10 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngAfterViewInit...');
+    }
+
     this._storageService.fetchAllAccountCategories().subscribe((arctgy: AccountCategory[]) => {
       let arstrings: string[] = [];
       for (let lab of arctgy) {
@@ -268,11 +232,19 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngOnDestroy...');
+    }
+
     this.ngUnsubscribe$.next(true);
     this.ngUnsubscribe$.complete();
   }
 
   public onMOMScopeChanged(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ReportComponent onMOMScopeChanged...');
+    }
+
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedMOMScope);
 
     this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end).subscribe((x: any) => {
@@ -287,33 +259,6 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.onMOMScopeChanged();
   }
-  public onBSAccountDebitSelect($event: any): void {
-    // Do nothing
-  }
-  public onBSAccountCreditSelect($event: any): void {
-    // Do nothing
-  }
-  public onBSCategoryDebitSelect($event: any): void {
-    // Do nothing
-  }
-  public onBSCategoryCreditSelect($event: any): void {
-    // Do nothing
-  }
-  public onCCDebitSelect($event: any): void {
-    // Do nothing
-  }
-  public onCCCreditSelect($event: any): void {
-    // Do nothing
-  }
-  public onOrderDebitSelect($event: any): void {
-    // Do nothing
-  }
-  public onOrderCreditSelect($event: any): void {
-    // Do nothing
-  }
-  public onTrendSelect($event: any): void {
-    // Do nothing
-  }
 
   // Refresh the Order Report
   public onReportOrderRefresh(): void {
@@ -321,49 +266,78 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private refreshMoMData(data: any): void {
-    this.dataMOM = [];
-    const datIn: any[] = [];
-    const datOut: any[] = [];
+    this.overviewChartOptions = of(data).pipe(
+      map((orgdata: any) => {
+        const xAxisData: any[] = [];
+        const datIn: any[] = [];
+        const datOut: any[] = [];
 
-    // for (let inmom of data) {
-    //   const strmonth: any = inmom.year.toString() + Utility.prefixInteger(inmom.month, 2);
-    //   let outidx: number = this.dataMOM.findIndex((val: any) => {
-    //     return val.name === strmonth;
-    //   });
+        if (orgdata instanceof Array && orgdata.length > 0) {
+          // Build xAxis
+          orgdata.forEach((val: any) => {
+            let ntranidx: number = xAxisData.findIndex((value: any) => {
+              if (value === Utility.getYearMonthDisplayString(val.year, val.month)) {
+                  return true;
+                }
+            });
 
-    //   if (outidx === -1) {
-    //     let outmom: any = {};
-    //     outmom.name = strmonth;
-    //     outmom.series = [];
-    //     if (inmom.expense) {
-    //       outmom.series.push({
-    //         name: this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing),
-    //         value: inmom.tranAmount,
-    //       });
-    //     } else {
-    //       outmom.series.push({
-    //         name: this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming),
-    //         value: inmom.tranAmount,
-    //       });
-    //     }
+            if (ntranidx === -1) {
+              xAxisData.push(Utility.getYearMonthDisplayString(val.year, val.month));
+            }
+          });
 
-    //     this.dataMOM.push(outmom);
-    //   } else {
-    //     if (inmom.expense) {
-    //       this.dataMOM[outidx].series.push({
-    //         name: this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing),
-    //         value: inmom.tranAmount,
-    //       });
-    //     } else {
-    //       this.dataMOM[outidx].series.push({
-    //         name: this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming),
-    //         value: inmom.tranAmount,
-    //       });
-    //     }
-    //   }
-    // }
+          // Build data
+          xAxisData.forEach((axis: any) => {
+            orgdata.forEach((val: any) => {
+              if (axis === Utility.getYearMonthDisplayString(val.year, val.month)) {
+                if (val.expense) {
+                  datOut.push(-1 * val.tranAmount);
+                } else {
+                  datIn.push(val.tranAmount);
+                }
+              }
+            });
+          });
+        }
 
-    this._buildMoMChart();
+        // Set the option
+        return {
+          legend: {
+            data: ['Income', 'Outgoing'],
+            align: 'left',
+          },
+          tooltip: {},
+          xAxis: {
+            data: xAxisData,
+            silent: false,
+            splitLine: {
+              show: false,
+            },
+          },
+          yAxis: {
+          },
+          series: [{
+            name: 'Income',
+            type: 'bar',
+            data: datIn,
+            animationDelay: (idx: any) => {
+              return idx * 10;
+            },
+          }, {
+            name: 'Outgoing',
+            type: 'bar',
+            data: datOut,
+            animationDelay: (idx: any) => {
+              return idx * 10 + 100;
+            },
+          }],
+          animationEasing: 'elasticOut',
+          animationDelayUpdate: (idx: any) => {
+            return idx * 5;
+          },
+        };
+      }),
+    );
   }
   private refreshOrderReportData(data: any): void {
     this.ReportOrder = [];
@@ -746,58 +720,6 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
               roseType : 'area',
               data: this.dataBSCategoryCredit,
             }],
-        };
-      }),
-    );
-  }
-  private _buildMoMChart(): void {
-    this.overviewChartOptions = of([]).pipe(
-      map(() => {
-        const xAxisData = [];
-        const data1 = [];
-        const data2 = [];
-
-        for (let i = 0; i < 10; i++) {
-          xAxisData.push('category' + i);
-          data1.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5);
-          data2.push((Math.cos(i / 5) * (i / 5 - 10) + i / 6) * 5);
-        }
-
-        // Set the option
-        return {
-          legend: {
-            data: ['bar', 'bar2'],
-            align: 'left',
-          },
-          tooltip: {},
-          xAxis: {
-            data: xAxisData,
-            silent: false,
-            splitLine: {
-              show: false,
-            },
-          },
-          yAxis: {
-          },
-          series: [{
-            name: 'bar',
-            type: 'bar',
-            data: data1,
-            animationDelay: (idx) => {
-              return idx * 10;
-            },
-          }, {
-            name: 'bar2',
-            type: 'bar',
-            data: data2,
-            animationDelay: (idx) => {
-              return idx * 10 + 100;
-            },
-          }],
-          animationEasing: 'elasticOut',
-          animationDelayUpdate: (idx) => {
-            return idx * 5;
-          },
         };
       }),
     );
