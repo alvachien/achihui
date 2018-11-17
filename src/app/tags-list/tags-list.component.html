@@ -1,7 +1,7 @@
 <mat-tab-group class="demo-tab-group">
   <mat-tab label="{{'Common.TagsCloud' | translate}}">
     <div class="demo-tab-content">
-      <div #tagcloud style="width: 600px; height: 480px;"></div>
+      <div echarts [options]="tagChartOption | async" class="tag-wordcloud-chart"></div>
     </div>
   </mat-tab>
   <mat-tab label="{{'Common.Tag' | translate}}">

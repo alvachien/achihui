@@ -7,6 +7,7 @@ import { LogLevel } from './app/model/common';
 
 /** echarts extensions: */
 import 'echarts/theme/macarons.js';
+import 'echarts-wordcloud/index.js';
 
 if (environment.production) {
   enableProdMode();

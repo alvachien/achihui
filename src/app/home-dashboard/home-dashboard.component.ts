@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
-  FinCurrencyService, UIStatusService, } from '../services';
+import {
+  AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
+  FinCurrencyService, UIStatusService,
+} from '../services';
 import { Router } from '@angular/router';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import * as moment from 'moment';
-import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
+import {
+  LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
   TranType, financeTranTypeTransferIn, financeTranTypeTransferOut, HomeKeyFigure,
 } from '../model';
 import { Observable, Subject, BehaviorSubject, forkJoin, ReplaySubject, merge, of } from 'rxjs';
@@ -22,10 +25,6 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   selectedFinanceScope: OverviewScopeEnum;
   selectedLearnScope: OverviewScopeEnum;
 
-  xLearnUserAxisLabel: string;
-  yLearnUserAxisLabel: string;
-  legendTitle: string;
-  totalLabel: string;
   dataLrnUser: any[] = [];
   selectedTranTypeLevel: TranTypeLevelEnum;
   excludeTransfer: boolean;
@@ -35,8 +34,11 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   mapFinTTIn: Map<number, UINameValuePair<number>> = undefined;
   mapFinTTOut: Map<number, UINameValuePair<number>> = undefined;
   baseCurr: string;
+
+  learnChartOption: Observable<EChartOption>;
   datFinIncomingChartOption: Observable<EChartOption>;
-  datFinOutcomingChartOption: Observable<EChartOption>;
+  datFinOutgoingChartOption: Observable<EChartOption>;
+  eventChartOption: Observable<EChartOption>;
 
   constructor(private _authService: AuthService,
     public _homeDefService: HomeDefDetailService,
@@ -99,6 +101,43 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
             });
           }
         }
+
+        this.learnChartOption = of([]).pipe(
+          map(() => {
+            const xAxisData: any[] = [];
+            this.dataLrnUser.forEach((val: any) => {
+              xAxisData.push(val.name);
+            });
+            return {
+              legend: {
+                data: xAxisData,
+                align: 'left',
+              },
+              tooltip: {},
+              xAxis: {
+                data: xAxisData,
+                silent: false,
+                splitLine: {
+                  show: false,
+                },
+              },
+              yAxis: {
+              },
+              series: [{
+                name: '',
+                type: 'bar',
+                data: this.dataLrnUser,
+                animationDelay: (idx: any) => {
+                  return idx * 10;
+                },
+              }],
+              animationEasing: 'elasticOut',
+              animationDelayUpdate: (idx: any) => {
+                return idx * 5;
+              },
+            };
+          }),
+        )
       });
   }
 
@@ -140,6 +179,90 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
         default:
           break;
       }
+
+      this.datFinIncomingChartOption = of([]).pipe(
+        (map(() => {
+          const legends: any[] = [];
+
+          this.dataFinTTIn.forEach((val: any) => {
+            legends.push(val.name);
+          });
+          return {
+            title: {
+              text: 'Incoming',
+              subtext: '',
+              x: 'center'
+            },
+            tooltip: {
+              trigger: 'item',
+              formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+              orient: 'vertical',
+              left: 'left',
+              data: legends,
+            },
+            series: [
+              {
+                name: 'Incoming',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '60%'],
+                data: this.dataFinTTIn,
+                itemStyle: {
+                  emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ]
+          };
+        })),
+      );
+
+      this.datFinOutgoingChartOption = of([]).pipe(
+        (map(() => {
+          const legends: any[] = [];
+
+          this.dataFinTTOut.forEach((val: any) => {
+            legends.push(val.name);
+          });
+          return {
+            title: {
+              text: 'Outgoing',
+              subtext: '',
+              x: 'center'
+            },
+            tooltip: {
+              trigger: 'item',
+              formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+              orient: 'vertical',
+              left: 'left',
+              data: legends,
+            },
+            series: [
+              {
+                name: 'Outgoing',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '60%'],
+                data: this.dataFinTTOut,
+                itemStyle: {
+                  emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ]
+          };
+        })),
+      );
     }
   }
 
@@ -152,7 +275,51 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
   private _getHomeKeyFigure(): void {
     this._homeDefService.getHomeKeyFigure().subscribe((x: HomeKeyFigure) => {
-      // Do nothing is better
+      this.eventChartOption = of([]).pipe(
+        (map(() => {
+          const legends: any[] = ['Completed', 'Todo'];
+          const eventdata: any[] = [{
+              name: 'Completed',
+              value: x.MyCompletedEvents
+            }, {
+              name: 'Todo',
+              value: x.MyUnCompletedEvents 
+            }
+          ];
+
+          return {
+            title: {
+              text: 'My Events',
+              subtext: '',
+              x: 'center'
+            },
+            tooltip: {
+              trigger: 'item',
+              formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+              orient: 'vertical',
+              left: 'left',
+              data: legends,
+            },
+            series: [{
+                name: 'Events',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '60%'],
+                data: eventdata,
+                itemStyle: {
+                  emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ]
+          };
+        })),
+      );
     });
   }
   private _changeGraphSize(): void {

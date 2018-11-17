@@ -20,9 +20,6 @@ export class CreditsComponent implements OnInit {
       name: 'Ngx-translate',
       url: 'https://github.com/ngx-translate/core',
     }, {
-      name: 'Ngx-Charts',
-      url: 'https://github.com/swimlane/ngx-charts',
-    }, {
       name: 'ECharts',
       url: 'http://echarts.baidu.com/',
     }, {

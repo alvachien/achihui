@@ -9,8 +9,10 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import { EChartOption } from 'echarts';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory, } from '../../model';
+import {
+  LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
+  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory,
+} from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -277,8 +279,8 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
           orgdata.forEach((val: any) => {
             let ntranidx: number = xAxisData.findIndex((value: any) => {
               if (value === Utility.getYearMonthDisplayString(val.year, val.month)) {
-                  return true;
-                }
+                return true;
+              }
             });
 
             if (ntranidx === -1) {
@@ -346,14 +348,14 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       rbs.onSetData(bs);
 
       if (rbs.DebitBalance) {
-        this.dataCCDebit.push({
+        this.dataOrderDebit.push({
           name: rbs.OrderName,
           value: rbs.DebitBalance,
         });
       }
 
       if (rbs.CreditBalance) {
-        this.dataCCCredit.push({
+        this.dataOrderCredit.push({
           name: rbs.OrderName,
           value: rbs.CreditBalance,
         });
@@ -538,7 +540,6 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this._buildAccountInChart();
       this._buildAccountOutChart();
-      this._buildAccountCategoryChart();
       this._buildCCInChart();
       this._buildCCOutChart();
       this._buildOrderInChart();
@@ -666,118 +667,45 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
     );
   }
-  private _buildAccountCategoryChart(): void {
-    // let chartAcntCtgy: any = echarts.init(this.chartAcntCtgy.nativeElement);
-    this.acntCtgyChartOption = of([]).pipe(
-      map(() => {
-        return {
-          title : {
-            text: 'Accounting Category',
-            subtext: 'Accounting Category',
-            x: 'center',
-          },
-          tooltip : {
-            trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
-          },
-          legend: {
-            x : 'center',
-            y : 'bottom',
-            data: this.arAccountCtgy,
-          },
-          toolbox: {
-            show : true,
-            feature : {
-              mark : {show: true},
-              dataView : {show: true, readOnly: false},
-              magicType : {
-                show: true,
-                type: ['pie', 'funnel'],
-              },
-              restore : {show: true},
-              saveAsImage : {show: true},
-            },
-          },
-          calculable : true,
-          series : [{
-              name: '',
-              type: 'pie',
-              // radius: [20, 110],
-              // center: ['25%', '50%'],
-              // roseType : 'radius',
-              radius : [30, 110],
-              center : ['75%', '50%'],
-              roseType : 'area',
-              data: this.dataBSCategoryDebit,
-            }, {
-              name: '',
-              type: 'pie',
-              // radius: [20, 110],
-              // center: ['25%', '50%'],
-              // roseType : 'radius',
-              radius : [30, 110],
-              center : ['75%', '50%'],
-              roseType : 'area',
-              data: this.dataBSCategoryCredit,
-            }],
-        };
-      }),
-    );
-  }
   private _buildCCInChart(): void {
     this.ccIncomingChartOption = of([]).pipe(
       map(() => {
+        const legends: any[] = [];
+
+        this.dataCCDebit.forEach((val: any) => {
+          legends.push(val.name);
+        });
         return {
-          backgroundColor: '#2c343c',
           title: {
-            text: 'Assets',
-            left: 'center',
-            textStyle: {
-              color: '#ccc',
-            },
+            text: 'Incoming',
+            subtext: 'Control Center',
+            x: 'center'
           },
           tooltip: {
             trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
           },
-          series: [{
-            name: 'Accounts',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '50%'],
-            data: this.datAccountAsset,
-            roseType: 'radius',
-            label: {
-              normal: {
-                textStyle: {
-                  color: 'rgba(255, 255, 255, 0.3)',
-                },
-              },
-            },
-            labelLine: {
-              normal: {
-                lineStyle: {
-                  color: 'rgba(255, 255, 255, 0.3)',
-                },
-                smooth: 0.2,
-                length: 10,
-                length2: 20,
-              },
-            },
-            itemStyle: {
-              normal: {
-                color: '#c23531',
-                shadowBlur: 200,
-                shadowColor: 'rgba(0, 0, 0, 0.5)',
-              },
-            },
-
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: function (idx: any): number {
-              return Math.random() * 200;
-            },
-          }],
+          legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: legends,
+          },
+          series: [
+            {
+              name: 'Control Center',
+              type: 'pie',
+              radius: '55%',
+              center: ['50%', '60%'],
+              data: this.dataCCDebit,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
         };
       }),
     );
@@ -785,57 +713,42 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   private _buildCCOutChart(): void {
     this.ccOutgoingChartOption = of([]).pipe(
       map(() => {
+        const legends: any[] = [];
+
+        this.dataCCCredit.forEach((val: any) => {
+          legends.push(val.name);
+        });
         return {
-          backgroundColor: '#dc343c',
           title: {
-            text: 'Liabilities',
-            left: 'center',
-            textStyle: {
-              color: '#ccc',
-            },
+            text: 'Outgoing',
+            subtext: 'Control Center',
+            x: 'center'
           },
           tooltip: {
             trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
           },
-          series: [{
-            name: 'Accounts',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '50%'],
-            data: this.datAccountLiability,
-            roseType: 'radius',
-            label: {
-              normal: {
-                textStyle: {
-                  color: 'rgba(255, 255, 255, 0.3)',
-                },
-              },
-            },
-            labelLine: {
-              normal: {
-                lineStyle: {
-                  color: 'rgba(255, 255, 255, 0.3)',
-                },
-                smooth: 0.2,
-                length: 10,
-                length2: 20,
-              },
-            },
-            itemStyle: {
-              normal: {
-                color: '#c23531',
-                shadowBlur: 200,
-                shadowColor: 'rgba(0, 0, 0, 0.5)',
-              },
-            },
-
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: function (idx: any): number {
-              return Math.random() * 200;
-            },
-          }],
+          legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: legends,
+          },
+          series: [
+            {
+              name: 'Control Center',
+              type: 'pie',
+              radius: '55%',
+              center: ['50%', '60%'],
+              data: this.dataCCCredit,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
         };
       }),
     );
@@ -843,57 +756,42 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   private _buildOrderInChart(): void {
     this.orderIncomingChartOption = of([]).pipe(
       map(() => {
+        const legends: any[] = [];
+
+        this.dataOrderDebit.forEach((val: any) => {
+          legends.push(val.name);
+        });
         return {
-          backgroundColor: '#2c343c',
           title: {
-            text: 'Assets',
-            left: 'center',
-            textStyle: {
-              color: '#ccc',
-            },
+            text: 'Incoming',
+            subtext: 'Order',
+            x: 'center'
           },
           tooltip: {
             trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
           },
-          series: [{
-            name: 'Accounts',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '50%'],
-            data: this.datAccountAsset,
-            roseType: 'radius',
-            label: {
-              normal: {
-                textStyle: {
-                  color: 'rgba(255, 255, 255, 0.3)',
-                },
-              },
-            },
-            labelLine: {
-              normal: {
-                lineStyle: {
-                  color: 'rgba(255, 255, 255, 0.3)',
-                },
-                smooth: 0.2,
-                length: 10,
-                length2: 20,
-              },
-            },
-            itemStyle: {
-              normal: {
-                color: '#c23531',
-                shadowBlur: 200,
-                shadowColor: 'rgba(0, 0, 0, 0.5)',
-              },
-            },
-
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: function (idx: any): number {
-              return Math.random() * 200;
-            },
-          }],
+          legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: legends,
+          },
+          series: [
+            {
+              name: 'Order',
+              type: 'pie',
+              radius: '55%',
+              center: ['50%', '60%'],
+              data: this.dataOrderDebit,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
         };
       }),
     );
@@ -901,57 +799,42 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   private _buildOrderOutChart(): void {
     this.orderOutgoingChartOption = of([]).pipe(
       map(() => {
+        const legends: any[] = [];
+
+        this.dataOrderCredit.forEach((val: any) => {
+          legends.push(val.name);
+        });
         return {
-          backgroundColor: '#dc343c',
           title: {
-            text: 'Liabilities',
-            left: 'center',
-            textStyle: {
-              color: '#ccc',
-            },
+            text: 'Outgoing',
+            subtext: 'Order',
+            x: 'center'
           },
           tooltip: {
             trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
           },
-          series: [{
-            name: 'Accounts',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '50%'],
-            data: this.datAccountLiability,
-            roseType: 'radius',
-            label: {
-              normal: {
-                textStyle: {
-                  color: 'rgba(255, 255, 255, 0.3)',
-                },
-              },
-            },
-            labelLine: {
-              normal: {
-                lineStyle: {
-                  color: 'rgba(255, 255, 255, 0.3)',
-                },
-                smooth: 0.2,
-                length: 10,
-                length2: 20,
-              },
-            },
-            itemStyle: {
-              normal: {
-                color: '#c23531',
-                shadowBlur: 200,
-                shadowColor: 'rgba(0, 0, 0, 0.5)',
-              },
-            },
-
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: function (idx: any): number {
-              return Math.random() * 200;
-            },
-          }],
+          legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: legends,
+          },
+          series: [
+            {
+              name: 'Order',
+              type: 'pie',
+              radius: '55%',
+              center: ['50%', '60%'],
+              data: this.dataOrderCredit,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
         };
       }),
     );

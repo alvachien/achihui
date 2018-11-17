@@ -71,10 +71,6 @@
           {{'Finance.BalanceSheetReport' | translate}}
         </ng-template>
 
-        <div echarts [options]="acntCtgyChartOption | async" class="accountcategory-chart"></div>
-        
-        <mat-divider></mat-divider>
-
         <div class="table-container mat-elevation-z8 mt-2">
           <mat-table #tableBS [dataSource]="dataSourceBS">
             <!-- Account column -->
