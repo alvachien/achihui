@@ -694,8 +694,9 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             {
               name: 'Control Center',
               type: 'pie',
-              radius: '55%',
+              radius: ['10%', '50%'],
               center: ['50%', '60%'],
+              roseType: 'radius',
               data: this.dataCCDebit,
               itemStyle: {
                 emphasis: {
@@ -737,8 +738,9 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             {
               name: 'Control Center',
               type: 'pie',
-              radius: '55%',
+              radius: ['10%', '50%'],
               center: ['50%', '60%'],
+              roseType: 'radius',
               data: this.dataCCCredit,
               itemStyle: {
                 emphasis: {
@@ -780,8 +782,9 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             {
               name: 'Order',
               type: 'pie',
-              radius: '55%',
+              radius: ['10%', '50%'],
               center: ['50%', '60%'],
+              roseType: 'radius',
               data: this.dataOrderDebit,
               itemStyle: {
                 emphasis: {
@@ -823,8 +826,9 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             {
               name: 'Order',
               type: 'pie',
-              radius: '55%',
+              radius: ['10%', '50%'],
               center: ['50%', '60%'],
+              roseType: 'radius',
               data: this.dataOrderCredit,
               itemStyle: {
                 emphasis: {

@@ -193,6 +193,13 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
               subtext: '',
               x: 'center'
             },
+            toolbox: {
+              show: true,
+              feature: {
+                dataView: { show: true, readOnly: true },
+                saveAsImage: { show: true }
+              }
+            },
             tooltip: {
               trigger: 'item',
               formatter: "{a} <br/>{b} : {c} ({d}%)"
@@ -206,8 +213,9 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
               {
                 name: 'Incoming',
                 type: 'pie',
-                radius: '55%',
-                center: ['50%', '60%'],
+                radius : [20, 110],
+                center : ['35%', '55%'],
+                roseType : 'radius',
                 data: this.dataFinTTIn,
                 itemStyle: {
                   emphasis: {
@@ -235,6 +243,13 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
               subtext: '',
               x: 'center'
             },
+            toolbox: {
+              show: true,
+              feature: {
+                dataView: { show: true, readOnly: true },
+                saveAsImage: { show: true }
+              }
+            },
             tooltip: {
               trigger: 'item',
               formatter: "{a} <br/>{b} : {c} ({d}%)"
@@ -248,8 +263,9 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
               {
                 name: 'Outgoing',
                 type: 'pie',
-                radius: '55%',
-                center: ['50%', '60%'],
+                radius : [20, 110],
+                center : ['45%', '65%'],
+                roseType : 'area',
                 data: this.dataFinTTOut,
                 itemStyle: {
                   emphasis: {
@@ -279,12 +295,12 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
         (map(() => {
           const legends: any[] = ['Completed', 'Todo'];
           const eventdata: any[] = [{
-              name: 'Completed',
-              value: x.MyCompletedEvents
-            }, {
-              name: 'Todo',
-              value: x.MyUnCompletedEvents 
-            }
+            name: 'Completed',
+            value: x.MyCompletedEvents
+          }, {
+            name: 'Todo',
+            value: x.MyUnCompletedEvents
+          }
           ];
 
           return {
@@ -303,19 +319,19 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
               data: legends,
             },
             series: [{
-                name: 'Events',
-                type: 'pie',
-                radius: '55%',
-                center: ['50%', '60%'],
-                data: eventdata,
-                itemStyle: {
-                  emphasis: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                  }
+              name: 'Events',
+              type: 'pie',
+              radius: '55%',
+              center: ['50%', '60%'],
+              data: eventdata,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
                 }
               }
+            }
             ]
           };
         })),

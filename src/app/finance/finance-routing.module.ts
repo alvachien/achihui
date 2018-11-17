@@ -36,6 +36,7 @@ import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create';
 import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-create';
+import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create';
 import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { DocumentRepaymentDetailComponent } from './document-repayment-detail';
 import { ReportComponent } from './report';
@@ -267,6 +268,10 @@ const routes: Routes = [
           {
             path: 'createassetsold',
             component: DocumentAssetSoldoutCreateComponent,
+          },
+          {
+            path: 'createassetvalchg',
+            component: DocumentAssetValChgCreateComponent,
           },
           {
             path: 'createrepay',

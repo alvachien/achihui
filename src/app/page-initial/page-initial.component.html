@@ -1,19 +1,19 @@
 <div class="jumbotron" *ngIf="!IsUserLoggedIn || !IsHomeChosed">
 
-  <h1 class="display-3 text-dark" *ngIf="!IsUserLoggedIn">{{'Common.WelcomeToHIH' | translate}}</h1>
-  <p class="lead text-dark" *ngIf="!IsUserLoggedIn">{{'Common.ShortIntroduceHIH' | translate}}</p>
-  <p class="text-dark" *ngIf="!IsUserLoggedIn">{{'Common.RequireLogin' | translate}}</p>
+  <h1 class="display-3" *ngIf="!IsUserLoggedIn">{{'Common.WelcomeToHIH' | translate}}</h1>
+  <h2 class="lead" *ngIf="!IsUserLoggedIn">{{'Common.ShortIntroduceHIH' | translate}}</h2>
+  <p *ngIf="!IsUserLoggedIn">{{'Common.RequireLogin' | translate}}</p>
 
-  <h1 class="display-3 text-dark" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.WelcomeBack' | translate}}</h1>
-  <p class="lead text-dark" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.ShortIntroduceHIH' | translate}}</p>
-  <p class="text-dark" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.RequireChooseHome' | translate}}</p>
+  <h1 class="display-3" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.WelcomeBack' | translate}}</h1>
+  <h2 class="lead" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.ShortIntroduceHIH' | translate}}</h2>
+  <p *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.RequireChooseHome' | translate}}</p>
 
-  <p class="lead" *ngIf="!IsUserLoggedIn">
+  <div *ngIf="!IsUserLoggedIn">
     <button mat-raised-button color="primary" (click)="onGoLogin()">{{'Login.Login' | translate}}</button>
-  </p>
-  <p class="lead" *ngIf="IsUserLoggedIn && !IsHomeChosed">
+  </div>
+  <div *ngIf="IsUserLoggedIn && !IsHomeChosed">
     <button mat-raised-button color="primary" (click)="onGoHomeList()">{{'Nav.HomeList' | translate}}</button>
-  </p>
+  </div>
 </div>
 
 <div class="mt-2" *ngIf="IsUserLoggedIn && IsHomeChosed">
