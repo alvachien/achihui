@@ -27,6 +27,9 @@ Cloud of Tag
 ![Image of Create Document](https://github.com/alvachien/achihui/blob/master/docs/images/create_doc.JPG)
 Create a document
 
+![Image of Document display](https://github.com/alvachien/achihui/blob/master/docs/images/display_doc.JPG)
+Display a posted document
+
 ### Relevant API/App used
 The live demo used the following API/App:
 - AC ID Server [Github Project Link](https://github.com/alvachien/acidserver) : an Identity service hosted in [Azure Link (will be obseleted soon)](http://acidserver.azurewebsites.net);
@@ -40,7 +43,7 @@ Since version 0.1, it supports the Finance Traces and Learning Traces. The detai
 ## Histories
 This project is the UI layer of new HIH, and it continues the HIH development since the previous HIH [Github Project](https://github.com/alvachien/hih);
 
-This project used tons of new UI technologies, including: Angular 6, TypeScript 2+, Material 6, BootStrap 4, Ngx-charts etc;
+This project used tons of new UI technologies, including: Angular 7+, TypeScript 3+, Material 7+, ECharts 4+, etc;
 
 
 ## Credits
@@ -54,9 +57,9 @@ This project also require the following components:
 * [Oidc-Client](https://github.com/IdentityModel/oidc-client-js)
 * [TinyMce](https://www.tinymce.com/)
 * [Moment.js](https://momentjs.com/)
-* [Ngx-Charts](https://github.com/swimlane/ngx-charts)
 * [FullCalendar](https://fullcalendar.io/)
 * [ECharts](http://echarts.baidu.com/)
+* [ngx-echarts](https://github.com/xieziyu/ngx-echarts/)
 
 ## Contact me
 **Alva Chien | 钱红俊**
