@@ -2703,6 +2703,19 @@ export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase 
 }
 
 /**
+ * API for Asset ValChg document
+ */
+export class FinanceAssetValChgDocumentAPI extends FinanceAssetDocumentAPIBase {
+  public assetAccountID: number;
+
+  public writeJSONObject(): any {
+    let rst: any = super.writeJSONObject();
+    rst.assetAccountID = this.assetAccountID;
+    return rst;
+  }
+}
+
+/**
  * Finance ADP calculator - API input
  */
 export interface FinanceADPCalAPIInput {

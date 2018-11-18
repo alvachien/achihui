@@ -23,7 +23,8 @@ export const financeDocTypeBorrowFrom: number = 9;
 export const financeDocTypeLendTo: number = 10;
 export const financeDocTypeRepay: number = 11;
 export const financeDocTypeAdvanceReceived: number = 12;
-export const financeDocTypeInsurance: number = 13;
+export const financeDocTypeAssetValChg: number = 13;
+export const financeDocTypeInsurance: number = 14;
 
 export const financeTranTypeOpeningAsset: number = 1;
 export const financeTranTypeOpeningLiability: number = 82;

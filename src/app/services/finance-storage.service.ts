@@ -7,7 +7,8 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   Document, DocumentWithPlanExgRateForUpdate, momentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
   UINameValuePair, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, TemplateDocLoan, MonthOnMonthReport,
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
-  ReportTrendExData, FinanceADPCalAPIInput, FinanceADPCalAPIOutput, FinanceAssetSoldoutDocumentAPI, FinanceAssetBuyinDocumentAPI,
+  ReportTrendExData, FinanceADPCalAPIInput, FinanceADPCalAPIOutput, FinanceAssetSoldoutDocumentAPI, 
+  FinanceAssetBuyinDocumentAPI, FinanceAssetValChgDocumentAPI,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -1490,6 +1491,37 @@ export class FinanceStorageService {
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log('AC_HIH_UI [Debug]: Entering Map of createAssetSoldoutDocument in FinanceStorageService: ' + response);
+        }
+
+        let ndocid: number = <number>(<any>response);
+        return ndocid;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+    );
+  }
+
+  /**
+   * Create Asset Value Change document via API
+   * @param apidetail Instance of class FinanceAssetValChgDocumentAPI
+   */
+  public createAssetValChgDocument(apidetail: FinanceAssetValChgDocumentAPI): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetValueChange';
+    let jdata: string = JSON && JSON.stringify(apidetail);
+
+    return this._http.post(apiurl, jdata, {
+        headers: headers,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of createAssetValChgDocument in FinanceStorageService: ' + response);
         }
 
         let ndocid: number = <number>(<any>response);
