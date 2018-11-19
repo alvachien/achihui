@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>
-      <h1>{{'Sys.DocTy.AssetSoldOut' | translate}}</h1>
+      <h1>{{'Sys.DocTy.AssetValChg' | translate}}</h1>
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
@@ -10,7 +10,7 @@
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <mat-select placeholder="{{'Finance.Account' | translate}}" name="asstacnt" formControlName="accountControl"
               required>
               <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilterEx: uiAccountCtgyFilterEx"
@@ -21,22 +21,22 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
             <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
             <mat-datepicker #dtpker></mat-datepicker>
           </mat-form-field>
 
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <input matInput type="number" placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
             <span matSuffix>{{BaseCurrency}}</span>
           </mat-form-field>
 
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <input matInput type="text" placeholder="{{'Common.Description' | translate}}" formControlName="despControl">
           </mat-form-field>
 
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="itcc">
               <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
               <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
@@ -45,7 +45,7 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl" name="srcord">
               <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
                 {{ord.Name}}
@@ -66,10 +66,10 @@
             2. Date
             3. Amount
           -->
-        <div class="mat-typography control-full-width">
-          <h2>{{'Sys.AcntCty.AssetAccount' | translate}}: {{SoldoutAssetAccountID}}</h2>
-          <h3>{{'Finance.Amount' | translate}}: {{SoldoutAmount}}</h3>
-          <h3>{{'Common.Date' | translate}}: {{SoldoutDate}}</h3>
+        <div class="mat-typography achih-control-full-width">
+          <h2>{{'Sys.AcntCty.AssetAccount' | translate}}: {{TargetAssetAccountID}}</h2>
+          <h3>{{'Finance.Amount' | translate}}: {{NewEstimatedAmount}}</h3>
+          <h3>{{'Common.Date' | translate}}: {{TransactionDate}}</h3>
         </div>
 
         <div>

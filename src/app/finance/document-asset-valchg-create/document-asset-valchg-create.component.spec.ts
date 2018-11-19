@@ -8,7 +8,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentAssetValChgCreateComponent ]
+      declarations: [ DocumentAssetValChgCreateComponent ],
     })
     .compileComponents();
   }));

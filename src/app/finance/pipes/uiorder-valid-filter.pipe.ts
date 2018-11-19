@@ -8,8 +8,9 @@ import * as moment from 'moment';
 export class UIOrderValidFilterPipe implements PipeTransform {
 
   transform(allOrders: UIOrderForSelection[], args?: boolean): UIOrderForSelection[] {
-    const today: any = moment();
     return allOrders ? allOrders.filter((value: UIOrderForSelection) => {
+      const today: any = moment();
+
       if (args !== undefined) {
         if (args === true) {
           return value._validFrom <= today && value._validTo >= today;

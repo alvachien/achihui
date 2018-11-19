@@ -20,6 +20,9 @@ export class BaseListModel<T> {
 }
 ```
 
+## Theme
+TBD.
+
 ## Using Material Table Component;
 By default, the list page shall use the Material Table component;
 
@@ -115,25 +118,6 @@ Following is the CSS (within scss format):
 .mat-column-Desp {
   min-width: 200px;
   max-width: 400px;
-}
-
-.mat-cell:nth-child(1),
-.mat-header-cell:nth-child(1),
-{
-  flex: 0 0 15%;
-}
-
-.mat-row:hover {
-  background-color: #ffff99;
-  cursor: pointer;
-}
-
-.mat-row:nth-child(even) {
-  background-color: lightgoldenrodyellow;
-}
-
-.mat-row:nth-child(odd) {
-  background-color: white;
 }
 ```
 

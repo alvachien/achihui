@@ -64,3 +64,72 @@ $theme: mat-light-theme($primary, $accent);
 
 @include angular-material-theme($theme);
 @include achih-app-theme($theme);
+
+// Default styles for app-wide
+// Data loading
+.achih-dataloading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Generic
+.achih-control-full-width {
+  width: 100%;
+}
+
+// Card
+mat-card {
+  width: 100%;
+  padding: 1em;
+}
+
+// Form field
+mat-form-field {
+  width: 100%;
+}
+
+// Table
+mat-table {
+  overflow: auto;
+}
+
+.mat-cell:nth-child(1),
+.mat-header-cell:nth-child(1),
+{
+  flex: 0 0 10%;
+} 
+
+// Toolbar
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.toolbar-icon {
+  padding: 0 2px;
+}
+
+// Finance
+.assetaccount {
+  color: green;
+}
+
+.expenseaccount {
+  color: red;
+}
+
+.outgoingtrantype {
+  color: red;
+}
+
+.incomingtrantype {
+  color: green;
+}
+

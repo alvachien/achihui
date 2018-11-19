@@ -12,19 +12,6 @@
   font-size: 20px;
 }
 
-.example-loading-shade {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 56px;
-  right: 0;
-  background: rgba(0, 0, 0, 0.15);
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .mat-table {
   overflow: auto;
 }
@@ -32,14 +19,6 @@
 .mat-cell, .mat-header-cell {
   overflow: hidden;
   word-wrap: break-word;
-}
-
-.mat-row:nth-child(even) {
-  background-color: lightgoldenrodyellow;
-}
-
-.mat-row:nth-child(odd) {
-  background-color: white;
 }
 
 .mat-column-id {
@@ -65,14 +44,3 @@
 .cell-icon {
   padding: 0 3px;
 } 
-
-.mat-cell:nth-child(1),
-.mat-header-cell:nth-child(1),
-{
-  flex: 0 0 10%;
-}
-
-.mat-row:hover {
-  background-color: #ffff99;
-  cursor: pointer;
-}

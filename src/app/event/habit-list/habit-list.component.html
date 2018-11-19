@@ -4,7 +4,7 @@
     <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div class="example-loading-shade" *ngIf="isLoadingResults">
+    <div class="achih-dataloading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>
 
@@ -17,7 +17,7 @@
         <button mat-icon-button (click)="onCheckin()" matTooltip="{{'Common.Checkin' | translate}}"><mat-icon color="accent">plus_one</mat-icon></button>        
       </mat-toolbar>
 
-      <div class="example-container mat-elevation-z8">
+      <div class="table-container mat-elevation-z8">
         <mat-table [dataSource]="dataSource">
 
           <!-- Selection -->

@@ -13,31 +13,12 @@
 }
 
 .mat-table {
-  overflow: auto;
   max-height: 500px;
 }
 
 .cell-icon {
   padding: 0 3px;
 } 
-
-.mat-cell:nth-child(1),
-.mat-header-cell:nth-child(1),
-{
-  flex: 0 0 10%;
-}
-
-.mat-row:hover {
-  background-color: #ffff99;
-}
-
-.mat-row:nth-child(even) {
-  background-color: lightgoldenrodyellow;
-}
-
-.mat-row:nth-child(odd) {
-  background-color: white;
-}
 
 .mat-column-isoname {
   min-width: 50px;

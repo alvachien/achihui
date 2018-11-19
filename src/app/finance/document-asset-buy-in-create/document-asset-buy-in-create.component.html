@@ -8,26 +8,26 @@
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
             <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
             <mat-datepicker #dtpker></mat-datepicker>
           </mat-form-field>
 
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
             <span matSuffix>{{BaseCurrency}}</span>
           </mat-form-field>
 
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <input matInput type="text" placeholder="{{'Common.Description' | translate}}" formControlName="despControl">
           </mat-form-field>
           
-          <div class="control-full-width">
+          <div class="achih-control-full-width">
             <hih-account-ext-asset-ex formGroupName="assetGroup"></hih-account-ext-asset-ex>
           </div>
           
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <mat-select placeholder="{{'Finance.Owner' | translate}}" name="owner" formControlName="ownerControl">
               <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
               <mat-option *ngFor="let usr of _homedefService.MembersInChosedHome" [value]="usr.User">
@@ -40,7 +40,7 @@
             {{'Finance.LegacyAsset' | translate}}
           </mat-checkbox>
   
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl"
               name="srccc">
               <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
@@ -49,7 +49,7 @@
             </mat-select>
           </mat-form-field>
   
-          <mat-form-field class="control-full-width">
+          <mat-form-field>
             <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl"
               name="srcord">
               <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
@@ -79,9 +79,9 @@
               <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <button mat-icon-button (click)="onDeleteDocItem(row)" matTooltip="{{'Common.Delete' | translate}}">
-                  <mat-icon color="warn" class="example-icon">delete</mat-icon>
+                  <mat-icon color="warn" class="toolbar-icon">delete</mat-icon>
                 </button>
-                <span class="example-spacer"></span>
+                <span class="toolbar-spacer"></span>
                 <mat-form-field>
                   <input matInput type="number" required placeholder="#" [(ngModel)]="row.ItemId"
                     name="itid">
@@ -136,7 +136,7 @@
             <ng-container matColumnDef="Desp">
               <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <mat-form-field class="control-full-width">
+                <mat-form-field>
                   <input matInput type="text" required placeholder="{{'Common.Description' |translate}}"
                     [(ngModel)]="row.Desp" name="itdesp">
                 </mat-form-field>
@@ -210,7 +210,7 @@
             2. Date
             3. Amount
           -->
-        <div class="mat-typography control-full-width">
+        <div class="mat-typography achih-control-full-width">
           <h2>{{'Common.Name' | translate}}: {{BuyinAssetName}}</h2>
           <h3>{{'Finance.Amount' | translate}}: {{BuyinAmount}}</h3>
           <h3>{{'Common.Date' | translate}}: {{BuyinDate}}</h3>

@@ -1,19 +1,19 @@
-<div class="control-full-width">
-  <mat-form-field class="control-full-width">
+<div class="achih-control-full-width">
+  <mat-form-field>
     <input matInput [ngModel]="extObject.StartDate" (ngModelChange)="extObject.StartDate=$event" 
       [matDatepicker]="advstartdpicker" placeholder="{{'Common.StartDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="advstartdpicker"></mat-datepicker-toggle>
     <mat-datepicker #advstartdpicker></mat-datepicker>
   </mat-form-field>
 
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput [ngModel]="extObject.EndDate" (ngModelChange)="extObject.EndDate=$event" 
       [matDatepicker]="advenddpicker" placeholder="{{'Common.EndDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="advenddpicker"></mat-datepicker-toggle>
     <mat-datepicker #advenddpicker></mat-datepicker>
   </mat-form-field>
 
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}" [disabled]="!isFieldChangable" 
       [ngModel]="extObject.RepeatType" (ngModelChange)="extObject.RepeatType=$event"
       name="rpttype">
@@ -23,18 +23,18 @@
     </mat-select>
   </mat-form-field>
 
-  <!-- <mat-form-field class="control-full-width">
+  <!-- <mat-form-field>
     <input matInput type="number" [disabled]="!isFieldChangable" placeholder="Deferred days" [(ngModel)]="detailObject.AdvPayAccount.DeferredDays"
       name="dfrrdays" #dfrrdays="ngModel">
   </mat-form-field> -->
 
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" [(ngModel)]="extObject.Comment"
       name="advacntcmt" #advacntcmt="ngModel">
   </mat-form-field>
 
   <!-- Ref doc. ID -->
-  <div class="control-full-width" *ngIf="extObject.RefDocId">
+  <div class="achih-control-full-width" *ngIf="extObject.RefDocId">
     <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
     <a routerLink='/finance/document/display/{{extObject.RefDocId}}' style="margin: 5px;" routerLinkActive="active">{{extObject?.RefDocId}}</a>
   </div>

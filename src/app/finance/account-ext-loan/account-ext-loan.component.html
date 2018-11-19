@@ -1,6 +1,6 @@
-<div class="control-full-width">
+<div class="achih-control-full-width">
   <!-- Start Date -->
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput [ngModel]="extObject?.startDate" (ngModelChange)="extObject.startDate=$event" [matDatepicker]="startdpicker" 
       placeholder="{{'Common.StartDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="startdpicker"></mat-datepicker-toggle>
@@ -8,7 +8,7 @@
   </mat-form-field>
 
   <!-- End Date -->
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput [ngModel]="extObject?.endDate" (ngModelChange)="extObject.endDate=$event" [matDatepicker]="enddpicker" 
       placeholder="{{'Common.EndDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="enddpicker"></mat-datepicker-toggle>
@@ -16,21 +16,21 @@
   </mat-form-field>
 
   <!-- Total months -->
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput type="number" [disabled]="!isFieldChangable" placeholder="{{'Finance.NumberOfPeriods' | translate}}" 
       [ngModel]="extObject?.TotalMonths" (ngModelChange)="extObject.TotalMonths=$event"
       name="totmonth">
   </mat-form-field>
 
   <!-- Repay day -->
-  <mat-form-field class="control-full-width" *ngIf="isCreateMode">
+  <mat-form-field *ngIf="isCreateMode">
     <input matInput type="number" [disabled]="!isFieldChangable" placeholder="{{'Finance.RepayDayInMonth' | translate}}" 
       [ngModel]="extObject?.RepayDayInMonth" (ngModelChange)="extObject.RepayDayInMonth=$event"
       name="repayday">
   </mat-form-field>
 
   <!-- First repay date -->
-  <mat-form-field class="control-full-width" *ngIf="isCreateMode">
+  <mat-form-field *ngIf="isCreateMode">
     <input matInput [ngModel]="extObject?.FirstRepayDate" (ngModelChange)="extObject.FirstRepayDate=$event" [matDatepicker]="firstrpdatedpicker" 
       placeholder="{{'Finance.FirstRepayDate' | translate}}" [disabled]="!isFieldChangable">
     <mat-datepicker-toggle matSuffix [for]="firstrpdatedpicker"></mat-datepicker-toggle>
@@ -42,14 +42,14 @@
     [disabled]="!isFieldChangable">{{'Finance.InterestFreeLoan' | translate}}</mat-checkbox>
 
   <!-- Annual Rate -->
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput type="number" [disabled]="!isFieldChangable || extObject.InterestFree" placeholder="{{'Finance.AnnualRate' | translate}}" 
       [ngModel]="extObject?.annualRate" (ngModelChange)="extObject.annualRate=$event"
       name="annualRate">
   </mat-form-field>
 
   <!-- Repay. method -->
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <mat-select placeholder="{{'Finance.RepaymentMethod' | translate}}" [disabled]="!isFieldChangable" 
       [ngModel]="extObject?.RepayMethod" (ngModelChange)="extObject.RepayMethod=$event"
       name="paymet">
@@ -60,7 +60,7 @@
   </mat-form-field>
 
   <!-- Account -->
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <mat-select placeholder="{{'Finance.PayingAccount' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="extObject.PayingAccount"
       name="payacnt">
       <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter" [value]="acnt.Id">
@@ -70,21 +70,21 @@
   </mat-form-field>
 
   <!-- Partner -->
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Finance.TradingPartner' | translate}}" 
       [ngModel]="extObject?.Partner" (ngModelChange)="extObject.Partner=$event"
       name="ptner">
   </mat-form-field>
   
   <!-- Comment -->
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" 
       [ngModel]="extObject?.Comment" (ngModelChange)="extObject.Comment=$event"
       name="cmt">
   </mat-form-field>
 
   <!-- Ref doc. ID -->
-  <div class="control-full-width" *ngIf="extObject.RefDocId">
+  <div class="achih-control-full-width" *ngIf="extObject.RefDocId">
     <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
     <a routerLink='/finance/document/display/{{extObject.RefDocId}}' style="margin: 5px;" routerLinkActive="active">{{extObject?.RefDocId}}</a>
   </div>

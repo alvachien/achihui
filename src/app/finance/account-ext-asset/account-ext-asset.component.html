@@ -1,34 +1,34 @@
-<div class="control-full-width">
-  <mat-form-field class="control-full-width">
+<div class="achih-control-full-width">
+  <mat-form-field>
     <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" 
       [ngModel]="extObject?.CategoryID" (ngModelChange)="extObject.CategoryID=$event"
-      name="asstctgy" class="control-full-width">
+      name="asstctgy" class="achih-control-full-width">
       <mat-option *ngFor="let rt of _storageService.AssetCategories" [value]="rt.ID">
         {{rt.Name | translate}}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Name' | translate}}" 
       [ngModel]="extObject?.Name" (ngModelChange)="extObject.Name=$event"
       name="asstname" #assetname maxlength="50">
       <mat-hint align="end">{{assetname.value.length}} / 50</mat-hint>
   </mat-form-field>
 
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" 
       [ngModel]="extObject?.Comment" (ngModelChange)="extObject.Comment=$event"
       name="asstcmt" #assetcomment maxlength="100">
       <mat-hint align="end">{{assetcomment.value.length}} / 100</mat-hint>
   </mat-form-field>
 
-  <div class="control-full-width" *ngIf="!isCreateMode && extObject.RefDocForBuy">
+  <div class="achih-control-full-width" *ngIf="!isCreateMode && extObject.RefDocForBuy">
     <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
     <a routerLink='/finance/document/display/{{extObject.RefDocForBuy}}' routerLinkActive="active">{{extObject.RefDocForBuy}}</a>
   </div>
   
-  <div class="control-full-width" *ngIf="!isCreateMode && extObject.RefDocForSold">
+  <div class="achih-control-full-width" *ngIf="!isCreateMode && extObject.RefDocForSold">
     <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
     <a routerLink='/finance/document/display/{{extObject.RefDocForSold}}' routerLinkActive="active">{{extObject.RefDocForSold}}</a>
   </div>

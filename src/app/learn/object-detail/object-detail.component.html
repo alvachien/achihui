@@ -4,13 +4,13 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-form-field class="demo-full-width">
+    <mat-form-field>
       <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name"
         name="name" #objname maxlength="45">
       <mat-hint align="end">{{objname.value.length}} / 45</mat-hint>
     </mat-form-field>
 
-    <mat-form-field class="demo-full-width">
+    <mat-form-field>
       <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId"
         name="ctgy">
         <mat-option *ngFor="let ctgy of _storageService.Categories" [value]="ctgy.Id">
@@ -19,7 +19,7 @@
       </mat-select>
     </mat-form-field>
   
-    <div class="demo-full-width">
+    <div class="achih-control-full-width">
       <textarea id="{{elementId}}" [readonly]="!isFieldChangable" name="content"></textarea>
     </div>
 

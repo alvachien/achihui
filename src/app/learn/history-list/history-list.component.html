@@ -4,9 +4,10 @@
     <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div class="example-loading-shade" *ngIf="isLoadingResults">
+    <div class="achih-dataloading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>
+    
     <mat-toolbar>
       <button mat-icon-button (click)="onCreateHistory()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></button>
       <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent">refresh</mat-icon></button>

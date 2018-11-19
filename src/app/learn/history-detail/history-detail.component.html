@@ -4,7 +4,7 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-form-field class="demo-full-width">
+    <mat-form-field>
       <mat-select placeholder="{{'Login.User' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.UserId"
         name="usr">
         <mat-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
@@ -13,7 +13,15 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="demo-full-width">
+    <div class="achih-control-full-width">
+      <mat-label>{{'Learning.LearningObject' | translate}}</mat-label>
+      <a mat-flat-button *ngIf="!isFieldChangable && detailObject.ObjectId" 
+        routerLink="/learn/object/display/{{detailObject.ObjectId}}">
+        {{detailObject.ObjectId}}
+      </a>
+    </div>
+
+    <mat-form-field>
       <mat-select placeholder="{{'Learning.LearningObject' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.ObjectId"
         name="ctgy">
         <mat-option *ngFor="let obj of _storageService.Objects" [value]="obj.Id">
@@ -22,7 +30,7 @@
       </mat-select>
     </mat-form-field>
   
-    <mat-form-field class="demo-full-width">
+    <mat-form-field>
       <input matInput [(ngModel)]="detailObject.LearnDate" [matDatepicker]="tdpicker" 
         placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable" />
       <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>

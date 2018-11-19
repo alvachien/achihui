@@ -4,7 +4,7 @@
     <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div class="example-loading-shade" *ngIf="isLoadingResults">
+    <div class="achih-dataloading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>
     
@@ -19,8 +19,8 @@
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
           <mat-cell *matCellDef="let row">
-            <button mat-icon-button (click)="onChangeCC(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="example-icon">edit</mat-icon></button>
-            <button mat-icon-button (click)="onDeleteCC(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="example-icon">delete</mat-icon></button>
+            <button mat-icon-button (click)="onChangeCC(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="toolbar-icon">edit</mat-icon></button>
+            <button mat-icon-button (click)="onDeleteCC(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="toolbar-icon">delete</mat-icon></button>
             {{row.Id}}
           </mat-cell>
         </ng-container>

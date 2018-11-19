@@ -1,22 +1,22 @@
-<ng-container class="control-full-width" [formGroup]="controlContainer.control">
-  <mat-form-field class="control-full-width">
+<ng-container class="achih-control-full-width" [formGroup]="controlContainer.control">
+  <mat-form-field>
     <mat-select placeholder="{{'Common.Category' | translate}}"
       formControlName="ctgyControl"
-      name="asstctgy" class="control-full-width">
+      name="asstctgy" class="achih-control-full-width">
       <mat-option *ngFor="let rt of _storageService.AssetCategories" [value]="rt.ID">
         {{rt.Name | translate}}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput type="text" placeholder="{{'Common.Name' | translate}}" 
       formControlName="nameControl"
       name="asstname" #assetname maxlength="50">
       <mat-hint align="end">{{assetname.value.length}} / 50</mat-hint>
   </mat-form-field>
 
-  <mat-form-field class="control-full-width">
+  <mat-form-field>
     <input matInput type="text" placeholder="{{'Common.Comment' | translate}}" 
       formControlName="commentControl"
       name="asstcmt" #assetcomment maxlength="100">

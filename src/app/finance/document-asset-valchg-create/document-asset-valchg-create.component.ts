@@ -16,7 +16,6 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, fin
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'hih-document-asset-valchg-create',
@@ -38,19 +37,19 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
   get BaseCurrency(): string {
     return this._homeService.curHomeSelected.value.BaseCurrency;
   }
-  get SoldoutAssetAccountID(): number {
+  get TargetAssetAccountID(): number {
     let acccontrol: any = this.firstFormGroup.get('accountControl');
     if (acccontrol) {
       return acccontrol.value;
     }
   }
-  get SoldoutAmount(): number {
+  get NewEstimatedAmount(): number {
     let amtctrl: any = this.firstFormGroup.get('amountControl');
     if (amtctrl) {
       return amtctrl.value;
     }
   }
-  get SoldoutDate(): string {
+  get TransactionDate(): string {
     let datctrl: any = this.firstFormGroup.get('dateControl');
     if (datctrl && datctrl.value && datctrl.value.format) {
       return datctrl.value.format(momentDateFormat);
@@ -82,7 +81,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit for forkJoin, result length: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit for forkJoin, result length: ${rst.length}`);
       }
 
       // Accounts
@@ -163,9 +162,9 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     this.detailObject.HID = this._homeService.ChosedHome.ID;
     this.detailObject.tranDate = docobj.TranDate.format(momentDateFormat);
     this.detailObject.tranCurr = this.BaseCurrency;
-    this.detailObject.tranAmount = this.SoldoutAmount;
+    this.detailObject.tranAmount = this.NewEstimatedAmount;
     this.detailObject.desp = docobj.Desp;
-    this.detailObject.assetAccountID = this.SoldoutAssetAccountID;
+    this.detailObject.assetAccountID = this.TargetAssetAccountID;
     this.detailObject.controlCenterID = this.firstFormGroup.get('ccControl').value;
     this.detailObject.orderID = this.firstFormGroup.get('orderControl').value;
     docobj.Items.forEach((val: DocumentItem) => {
@@ -175,7 +174,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     this._storageService.createAssetSoldoutDocument(this.detailObject).subscribe((nid: number) => {
       // New doc created with ID returned
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetSoldoutCreateComponent for createAssetSoldoutDocument, new doc ID: ${nid}`);
+        console.log(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetValChgCreateComponent for createAssetSoldoutDocument, new doc ID: ${nid}`);
       }
 
       // Show success
@@ -188,7 +187,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     }, (err: string) => {
       // Handle the error
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Failed in onSubmit in DocumentAssetSoldoutCreateComponent for createAssetSoldoutDocument, result: ${err}`);
+        console.error(`AC_HIH_UI [Debug]: Failed in onSubmit in DocumentAssetValChgCreateComponent for createAssetSoldoutDocument, result: ${err}`);
       }
 
       let msg: InfoMessage = new InfoMessage();
@@ -240,21 +239,6 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       msg.MsgType = MessageType.Error;
       msg.MsgTitle = 'Finance.EitherControlCenterOrOrder';
       msg.MsgContent = 'Finance.EitherControlCenterOrOrder';
-      msgs.push(msg);
-      chkrst = false;
-    }
-
-    // Initialize the object
-    let totalAmt: number = 0;
-    // this.dataSource.data.forEach((val: DocumentItem) => {
-    //   totalAmt += val.TranAmount;
-    // });
-    if (totalAmt !== this.SoldoutAmount) {
-      let msg: InfoMessage = new InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = MessageType.Error;
-      msg.MsgTitle = 'Finance.AmountIsNotCorrect';
-      msg.MsgContent = 'Finance.AmountIsNotCorrect';
       msgs.push(msg);
       chkrst = false;
     }

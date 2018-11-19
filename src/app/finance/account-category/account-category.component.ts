@@ -5,13 +5,9 @@ import { Component, OnInit } from '@angular/core';
   template: `<router-outlet></router-outlet>`,
   styleUrls: ['./account-category.component.scss'],
 })
-export class AccountCategoryComponent implements OnInit {
+export class AccountCategoryComponent {
 
   constructor() {
-    // Empty
-  }
-
-  ngOnInit(): void {
     // Empty
   }
 }

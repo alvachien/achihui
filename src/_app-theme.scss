@@ -10,6 +10,7 @@
   $warn: map-get($theme, warn);
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
+  $isdark: map-get($theme, is-dark);
 
   hih-app {
     background: mat-color($background, background);
@@ -28,6 +29,30 @@
     color: mat-color($primary, default-contrast);
   }
 
+  .mat-row:nth-child(even) {
+    @if not ($isdark) {
+      background-color: mat-color($primary, 0.1);
+    } @else {
+      background-color: mat-color($background, card, 0.1);
+    }    
+  }
+  
+  .mat-row:nth-child(odd) {
+    @if not ($isdark) {
+      background-color: mat-color($primary, 0.2);
+    } @else {
+      background-color: mat-color($background, card, 0.2);
+    }    
+  }
+
+  .mat-row:hover {
+    @if not ($isdark) {
+      background-color: mat-color($primary, 0.4);
+    } @else {
+      background-color: mat-color($background, card, 0.4);
+    }    
+  }
+  
   @include svg-theme($theme);
   @include footer-theme($theme);
 }

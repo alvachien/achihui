@@ -12,29 +12,9 @@
   font-size: 20px;
 }
 
-.example-loading-shade {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 56px;
-  right: 0;
-  background: rgba(0, 0, 0, 0.15);
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mat-table {
-  overflow: auto;
+mat-table {
   max-height: 600px;
 }
-
-.mat-cell:nth-child(1),
-.mat-header-cell:nth-child(1),
-{
-  flex: 0 0 10%;
-} 
 
 .mat-column-id {
   min-width: 50px;
@@ -49,12 +29,4 @@
 .mat-column-assetflag {
   min-width: 50px;
   max-width: 100px;
-}
-
-.mat-row:nth-child(even) {
-  background-color: lightgoldenrodyellow;
-}
-
-.mat-row:nth-child(odd) {
-  background-color: white;
 }

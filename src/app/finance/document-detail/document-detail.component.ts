@@ -87,7 +87,7 @@ export class DocumentDetailComponent implements OnInit {
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilter = undefined;
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders);
       this.uiOrderFilter = undefined;
 
       this._activateRoute.url.subscribe((x: any) => {
@@ -153,10 +153,10 @@ export class DocumentDetailComponent implements OnInit {
   }
 
   public getHeaderDisplayString(hdr: string): string {
-    switch(hdr) {
+    switch (hdr) {
       case 'ItemId':
-      return '#'
-      
+      return '#';
+
       case 'AccountId':
       return 'Finance.Account';
 

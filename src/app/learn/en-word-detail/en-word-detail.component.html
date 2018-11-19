@@ -5,7 +5,7 @@
   </mat-card-header>
   
   <mat-card-content>
-    <mat-form-field class="demo-full-width">
+    <mat-form-field>
       <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.WordString"
         name="word" #objword maxlength="100">
       <mat-hint align="end">{{objword.value.length}} / 100</mat-hint>
@@ -21,7 +21,7 @@
       </mat-form-field>
     </div>
 
-    <div class="demo-full-width example-container mat-elevation-z8">
+    <div class="achih-control-full-width table-container mat-elevation-z8">
       <mat-table #table [dataSource]="dataSource">
         <!-- ID Column -->
         <ng-container matColumnDef="id">

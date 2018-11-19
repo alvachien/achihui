@@ -17,7 +17,7 @@
         </mat-expansion-panel-header>
 
         <!-- Currency -->
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
             name="cur">
             <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
@@ -27,14 +27,14 @@
         </mat-form-field>
 
         <!-- Tran date -->
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <input matInput [(ngModel)]="detailObject.TranDate" [disabled]="!isFieldChangable" [matDatepicker]="srcdpicker" placeholder="{{'Common.Date' | translate}}">
           <mat-datepicker-toggle matSuffix [for]="srcdpicker"></mat-datepicker-toggle>
           <mat-datepicker #srcdpicker></mat-datepicker>
         </mat-form-field>
 
         <!-- Account -->
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <mat-select placeholder="{{'Finance.Account' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceAccountId"
             name="srcacnt">
             <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter" [value]="acnt.Id">
@@ -44,20 +44,20 @@
         </mat-form-field>
 
         <!-- Amount -->
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.TranAmount"
             name="srcamt">
         </mat-form-field>
 
         <!-- Desp -->
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Desp"
             name="desp" #desp maxlength="44">
           <mat-hint align="end">{{desp.value.length}} / 45</mat-hint>
         </mat-form-field>
 
         <!-- CC -->
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceControlCenterId"
             name="hdrcc">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
@@ -68,7 +68,7 @@
         </mat-form-field>
 
         <!-- Order -->
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <mat-select placeholder="{{'Finance.Order' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceOrderId" name="hdrord">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
             <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
@@ -93,7 +93,7 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <div class="control-full-width">
+        <div class="achih-control-full-width">
           <hih-finance-account-ext-loan [uiMode]="uiMode" [extObject]="detailObject.LoanAccount" [tranAmount]="detailObject.TranAmount"></hih-finance-account-ext-loan>
         </div>
 

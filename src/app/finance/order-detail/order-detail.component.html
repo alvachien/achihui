@@ -16,25 +16,25 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name" name="name"
             #name maxlength="30">
           <mat-hint align="end">{{name.value.length}} / 30</mat-hint>
         </mat-form-field>
 
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <input matInput [(ngModel)]="detailObject.ValidFrom" [disabled]="!isFieldChangable" [matDatepicker]="vfmpicker" placeholder="{{'Common.ValidFrom' | translate}}">
           <mat-datepicker-toggle matSuffix [for]="vfmpicker"></mat-datepicker-toggle>
           <mat-datepicker #vfmpicker></mat-datepicker>
         </mat-form-field>
 
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <input matInput [(ngModel)]="detailObject.ValidTo" [disabled]="!isFieldChangable" [matDatepicker]="vtopicker" placeholder="{{'Common.ValidTo' | translate}}">
           <mat-datepicker-toggle matSuffix [for]="vtopicker"></mat-datepicker-toggle>
           <mat-datepicker #vtopicker></mat-datepicker>
         </mat-form-field>
       
-        <mat-form-field class="control-full-width">
+        <mat-form-field>
           <input matInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="cmt"
             #comment maxlength="45">
           <mat-hint align="end">{{comment.value.length}} / 45</mat-hint>
@@ -129,7 +129,7 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <div class="mat-typography control-full-width">
+        <div class="mat-typography achih-control-full-width">
           <h2>{{'Common.Name' | translate}}: {{detailObject.Name}}</h2>
           <h3>{{'Common.ValidFrom' | translate}}: {{detailObject.ValidFromFormatString}}</h3>
           <h3>{{'Common.ValidTo' | translate}}: {{detailObject.ValidToFormatString}}</h3>

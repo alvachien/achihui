@@ -122,13 +122,16 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
   public onCreateLendToDocument(): void {
     this._router.navigate(['/finance/document/createlendto']);
   }
+  public onCreateAssetValChgDocument(): void {
+    this._router.navigate(['/finance/document/createassetvalchg']);
+  }
 
   public onDisplayDocument(doc: Document): void {
     this._router.navigate(['/finance/document/display', doc.Id]);
   }
 
   public onChangeDocument(doc: Document): void {
-    switch(doc.DocType) {
+    switch (doc.DocType) {
       case financeDocTypeNormal:
       case financeDocTypeRepay:
       this.onChangeNormalDocument(doc);

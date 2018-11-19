@@ -24,7 +24,7 @@
                 </button>
                 <mat-menu #menu="matMenu" xPosition="before">
                   <button mat-icon-button (click)="onTmpDocsRefresh()" matTooltip="{{'Common.Refresh' | translate}}">
-                    <mat-icon color="accent" class="example-icon">refresh</mat-icon>
+                    <mat-icon color="accent" class="toolbar-icon">refresh</mat-icon>
                   </button>
                 </mat-menu>
               </mat-card-title>
@@ -38,7 +38,7 @@
                     <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
                     <mat-cell *matCellDef="let row">
                       <button mat-icon-button color="primary" (click)="onPostTmpDocument(row)">
-                        <mat-icon class="example-icon">save</mat-icon>
+                        <mat-icon class="toolbar-icon">save</mat-icon>
                       </button>
                       {{row.DocId}}
                     </mat-cell>

@@ -8,10 +8,6 @@
   align-items: center;
 }
 
-.control-full-width {
-  width: 100%;
-}
-
 .table-container {
   display: flex;
   flex-direction: column;
@@ -27,16 +23,7 @@
 }
 
 .mat-table {
-  overflow: auto;
   max-height: 800px;
-}
-
-.example-icon {
-  padding: 0 3px;
-}
-
-.example-spacer {
-  flex: 1 1 auto;
 }
 
 .mat-column-DocID {
@@ -62,19 +49,6 @@
 .mat-column-Balance {
   min-width: 100px;
   max-width: 150px;
-}
-
-.mat-row:hover {
-  background-color: #ffff99;
-  cursor: pointer;
-}
-
-.mat-row:nth-child(even) {
-  background-color: lightgoldenrodyellow;
-}
-
-.mat-row:nth-child(odd) {
-  background-color: white;
 }
 
 .mat-form-field {

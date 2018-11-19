@@ -4,21 +4,21 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div class="example-loading-shade" *ngIf="isLoadingResults">
+    <div class="achih-dataloading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>
 
-    <mat-form-field class="demo-full-width">
+    <mat-form-field>
       <input matInput type="text" placeholder="{{'Common.Name' | translate}}" 
         [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name">
     </mat-form-field>
 
-    <mat-form-field class="demo-full-width" *ngIf="IsCreateMode">
+    <mat-form-field *ngIf="IsCreateMode">
       <input matInput type="text" placeholder="{{'Login.DisplayAs' | translate}}"
         [readonly]="!isFieldChangable" [(ngModel)]="detailObject.CreatorDisplayAs">
     </mat-form-field>
 
-    <mat-form-field class="demo-full-width">
+    <mat-form-field>
       <mat-select placeholder="{{'Finance.Currency' | translate}}" [(ngModel)]="detailObject.BaseCurrency" 
         [disabled]="!isFieldChangable" name="basecurr">
         <mat-option *ngFor="let curr of _fincurrService.Currencies" [value]="curr.Currency">
@@ -27,12 +27,12 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="demo-full-width" *ngIf="!IsCreateMode">
+    <mat-form-field *ngIf="!IsCreateMode">
       <input matInput type="text" placeholder="{{'Common.Host' | translate}}" 
         [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Host">
     </mat-form-field>
     
-    <mat-form-field class="demo-full-width">
+    <mat-form-field>
       <input matInput type="text" placeholder="{{'Common.Detail' | translate}}" 
         [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Details">
     </mat-form-field>

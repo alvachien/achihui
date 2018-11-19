@@ -4,7 +4,7 @@
     <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <div class="backend-data-loading-shade" *ngIf="isLoadingResults">
+    <div class="achih-dataloading-shade" *ngIf="isLoadingResults">
       <mat-spinner></mat-spinner>
     </div>
     
@@ -30,6 +30,7 @@
         <button mat-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | translate}}</button>
         <button mat-menu-item (click)="onCreateBorrowFromDocument()">{{'Sys.DocTy.BorrowFrom' | translate}}</button>
         <button mat-menu-item (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | translate}}</button>
+        <button mat-menu-item (click)="onCreateAssetValChgDocument()">{{'Sys.DocTy.AssetValChg' | translate}}</button>
       </mat-menu>
     </mat-toolbar>
 

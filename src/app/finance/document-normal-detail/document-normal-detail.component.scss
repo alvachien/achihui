@@ -8,10 +8,6 @@
   align-items: center;
 }
 
-.control-full-width {
-  width: 100%;
-}
-
 .table-container {
   display: flex;
   flex-direction: column;
@@ -24,10 +20,6 @@
   align-items: center;
   padding-left: 24px;
   font-size: 20px;
-}
-
-.mat-table {
-  overflow: auto;
 }
 
 .mat-cell, .mat-header-cell {
@@ -79,22 +71,3 @@
   padding: 0 2px;
 }
   
-.example-spacer {
-  flex: 1 1 auto;
-}
-
-.assetaccount {
-  color: green;
-}
-
-.expenseaccount {
-  color: red;
-}
-
-.outgoingtrantype {
-  color: red;
-}
-
-.incomingtrantype {
-  color: green;
-}

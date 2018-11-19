@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -6,15 +6,11 @@ import { environment } from '../../environments/environment';
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent {
   version: string;
   relDate: string;
 
   constructor() {
-    // Empty
-  }
-
-  ngOnInit(): void {
     this.version = environment.CurrentVersion;
     this.relDate = environment.ReleasedDate;
   }

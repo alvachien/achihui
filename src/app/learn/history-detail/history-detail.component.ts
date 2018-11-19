@@ -57,15 +57,15 @@ export class HistoryDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readHistoryEvent.subscribe((x: any) => {
-              if (x instanceof LearnHistory) {
+            this._storageService.readHistoryEvent.subscribe((x2: any) => {
+              if (x2 instanceof LearnHistory) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in HistoryDetailComponent, succeed to readControlCenterEvent : ${x}`);
+                  console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in HistoryDetailComponent, succeed to readControlCenterEvent`);
                 }
-                this.detailObject = x;
+                this.detailObject = x2;
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.log(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent, failed to readControlCenterEvent : ${x}`);
+                  console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent, failed to readControlCenterEvent : ${x2}`);
                 }
                 this.detailObject = new LearnHistory();
               }
@@ -127,7 +127,7 @@ export class HistoryDetailComponent implements OnInit {
       // Navigate back to list view
       if (x instanceof LearnHistory) {
         // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
           duration: 3000,
         });

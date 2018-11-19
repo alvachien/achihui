@@ -8,10 +8,6 @@
   align-items: center;
 }
 
-.control-full-width {
-  width: 100%;
-}
-
 .table-container {
   display: flex;
   flex-direction: column;
@@ -19,15 +15,14 @@
 }
 
 .table-header {
- min-height: 64px;
- display: flex;
- align-items: center;
- padding-left: 24px;
- font-size: 20px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  font-size: 20px;
 }
 
 .mat-table {
-  overflow: auto;
   max-height: 600px;
 }
 
