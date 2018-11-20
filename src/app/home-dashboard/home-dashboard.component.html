@@ -87,7 +87,7 @@
                     <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
                   </mat-card-header>
                   <mat-card-content>
-                    <div echarts [options]="datFinIncomingChartOption | async" class="incoming-chart"></div>
+                    <div echarts [options]="datFinIncomingChartOption | async" [theme]="chartTheme" class="incoming-chart"></div>
                   </mat-card-content>
                 </mat-card>
               </mat-grid-tile>
@@ -98,7 +98,7 @@
                     <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
                   </mat-card-header>
                   <mat-card-content>
-                    <div echarts [options]="datFinOutgoingChartOption | async" class="outgoing-chart"></div>
+                    <div echarts [options]="datFinOutgoingChartOption | async" [theme]="chartTheme" class="outgoing-chart"></div>
                   </mat-card-content>
                 </mat-card>
               </mat-grid-tile>
@@ -128,7 +128,7 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <div echarts [options]="learnChartOption | async" class="outgoing-chart"></div>
+          <div echarts [options]="learnChartOption | async" [theme]="chartTheme" class="outgoing-chart"></div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -148,7 +148,7 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <div echarts [options]="eventChartOption | async" class="outgoing-chart"></div>
+          <div echarts [options]="eventChartOption | async" [theme]="chartTheme" class="outgoing-chart"></div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>

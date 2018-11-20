@@ -59,7 +59,7 @@
                 <mat-slide-toggle color="primary" [checked]="momExcludeTransfer" (change)="onMOMExcludeTransferChanged()">{{'Finance.ExcludeTransfer' | translate}}</mat-slide-toggle>
               </mat-toolbar>
 
-              <div echarts [options]="overviewChartOptions | async" class="overview-chart"></div>
+              <div echarts [options]="overviewChartOptions | async" [theme]="chartTheme" class="overview-chart"></div>
             </mat-card-content>
           </mat-card>
         </div>
@@ -147,7 +147,7 @@
                   <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <div echarts [options]="ccIncomingChartOption | async" class="account-incoming-chart"></div>
+                  <div echarts [options]="ccIncomingChartOption | async" [theme]="chartTheme" class="account-incoming-chart"></div>
                 </mat-card-content>
               </mat-card>
             </mat-grid-tile>
@@ -158,7 +158,7 @@
                   <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <div echarts [options]="ccOutgoingChartOption | async" class="account-outgoing-chart"></div>
+                  <div echarts [options]="ccOutgoingChartOption | async" [theme]="chartTheme" class="account-outgoing-chart"></div>
                 </mat-card-content>
               </mat-card>
             </mat-grid-tile>
@@ -233,7 +233,7 @@
                   <mat-card-title>{{'Finance.Incoming' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <div echarts [options]="orderIncomingChartOption | async" class="account-incoming-chart"></div>
+                  <div echarts [options]="orderIncomingChartOption | async" [theme]="chartTheme" class="account-incoming-chart"></div>
                 </mat-card-content>
               </mat-card>
             </mat-grid-tile>
@@ -244,7 +244,7 @@
                   <mat-card-title>{{'Finance.Outgoing' | translate}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  <div echarts [options]="orderOutgoingChartOption | async" class="account-outgoing-chart"></div>
+                  <div echarts [options]="orderOutgoingChartOption | async" [theme]="chartTheme" class="account-outgoing-chart"></div>
                 </mat-card-content>
               </mat-card>
             </mat-grid-tile>

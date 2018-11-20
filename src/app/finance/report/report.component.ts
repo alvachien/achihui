@@ -9,12 +9,12 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import { EChartOption } from 'echarts';
 
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
+import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
   getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { ThemeStorage } from '../../theme-picker/theme-storage/theme-storage';
 
 /**
  * Data source of BS
@@ -164,6 +164,8 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   dataOrderCredit: any[] = [];
   arAccountCtgy: any[] = [];
 
+  chartTheme: string;
+
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _tranService: TranslateService,
@@ -171,6 +173,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     private _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
     private _currService: FinCurrencyService,
+    private _themeStorage: ThemeStorage,
     private media: ObservableMedia) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ReportComponent constructor...');
@@ -184,6 +187,14 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         || val.value === OverviewScopeEnum.CurrentYear || val.value === OverviewScopeEnum.PreviousQuarter
         || val.value === OverviewScopeEnum.PreviousYear) {
         this.momScopes.push(val);
+      }
+    });
+
+    this._themeStorage.onThemeUpdate.subscribe((val: any) => {
+      if (val.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
       }
     });
   }

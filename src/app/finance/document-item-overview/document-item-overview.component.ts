@@ -4,6 +4,9 @@ import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import * as moment from 'moment';
+import { EChartOption } from 'echarts';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
   TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, isOverviewDateInScope,
@@ -11,8 +14,7 @@ import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDoc
   financeTranTypeRepaymentOut, financeTranTypeRepaymentIn, ReportTrendExTypeEnum, ReportTrendExData, momentDateFormat } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import * as moment from 'moment';
-import { EChartOption } from 'echarts';
+import { ThemeStorage } from '../../theme-picker/theme-storage/theme-storage';
 
 /**
  * Data source of ADP & Loan docs
@@ -62,6 +64,8 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
   weeklyTrendChartOption: Observable<EChartOption>;
   dailyTrendChartOption: Observable<EChartOption>;
 
+  chartTheme: string;
+
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
@@ -69,6 +73,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
+    private _themeStorage: ThemeStorage,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent constructor...');
@@ -77,6 +82,14 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
     this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
     this.labelIncome = this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming);
     this.labelOutgo = this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing);
+    
+    this._themeStorage.onThemeUpdate.subscribe((val: any) => {
+      if (val.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
+      }
+    });
   }
 
   ngOnInit(): void {

@@ -9,11 +9,11 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import { EChartOption } from 'echarts';
 
 import { environment } from '../../environments/environment';
-import {
-  LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum,
+import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum,
   UINameValuePair, TranTypeLevelEnum,
   TranType, financeTranTypeTransferIn, financeTranTypeTransferOut, HomeKeyFigure,
 } from '../model';
+import { ThemeStorage } from '../theme-picker/theme-storage/theme-storage';
 
 @Component({
   selector: 'hih-home-dashboard',
@@ -35,6 +35,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   mapFinTTIn: Map<number, UINameValuePair<number>> = undefined;
   mapFinTTOut: Map<number, UINameValuePair<number>> = undefined;
   baseCurr: string;
+  chartTheme: string;
 
   learnChartOption: Observable<EChartOption>;
   datFinIncomingChartOption: Observable<EChartOption>;
@@ -48,6 +49,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     private _currService: FinCurrencyService,
     public _uistatusService: UIStatusService,
     private media: ObservableMedia,
+    private _themeStorage: ThemeStorage,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering constructor of HomeDashboardComponent...');
@@ -57,6 +59,14 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     this.selectedFinanceScope = OverviewScopeEnum.CurrentMonth;
     this.selectedTranTypeLevel = TranTypeLevelEnum.TopLevel;
     this.excludeTransfer = true;
+
+    this._themeStorage.onThemeUpdate.subscribe((val: any) => {
+      if (val.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
+      }
+    });
   }
 
   ngOnInit(): void {

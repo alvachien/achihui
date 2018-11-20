@@ -1,5 +1,4 @@
-import {
-  Component,
+import { Component,
   ViewEncapsulation,
   ChangeDetectionStrategy,
   NgModule,
@@ -27,7 +26,7 @@ import { map, filter } from 'rxjs/operators';
   styleUrls: ['theme-picker.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  host: {'aria-hidden': 'true'},
+  host: { 'aria-hidden': 'true' },
 })
 export class ThemePicker implements OnInit, OnDestroy {
   private _queryParamSubscription: Subscription = Subscription.EMPTY;
