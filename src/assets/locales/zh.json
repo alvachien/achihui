@@ -99,7 +99,8 @@
     "ShortIntroduceHIH": "H.I.H.旨在帮助每个家庭建立数字生活",
     "RequireLogin": "请先登录以体验H.I.H.所提供的各项功能",
     "RequireChooseHome": "请先选择一个您已经加入的家庭、或创建您自己的新家庭以继续",
-    
+    "ShortIntroduceHIH2": "家庭信息总汇 Home Information Hub, 简称HIH, 旨在创建一个以家庭为目标、服务于所有家庭成员的信息中心。",
+
     "GenericInfo": "基础信息",
     "ExtraInfo": "附加信息",
     "ReviewForSubmit": "检查与提交",
@@ -174,7 +175,8 @@
     "MyCompletedEvents": "我完成的事务",
     "MyUncompletedEvents": "我未完成的事务",
     "Relationship": "关系",
-    "TendencyChart": "趋势图"
+    "TendencyChart": "趋势图",
+    "HIHAuthor": "作者: Alva Chien"
   },
   "Sys":{
     "Currency": {

@@ -1,18 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
-  FinCurrencyService, UIStatusService,
-} from '../services';
+import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
+  FinCurrencyService, UIStatusService, } from '../services';
 import { Router } from '@angular/router';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import * as moment from 'moment';
-import {
-  LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
-  TranType, financeTranTypeTransferIn, financeTranTypeTransferOut, HomeKeyFigure,
-} from '../model';
 import { Observable, Subject, BehaviorSubject, forkJoin, ReplaySubject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { EChartOption } from 'echarts';
+
+import { environment } from '../../environments/environment';
+import {
+  LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum,
+  UINameValuePair, TranTypeLevelEnum,
+  TranType, financeTranTypeTransferIn, financeTranTypeTransferOut, HomeKeyFigure,
+} from '../model';
 
 @Component({
   selector: 'hih-home-dashboard',
@@ -48,6 +49,10 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     public _uistatusService: UIStatusService,
     private media: ObservableMedia,
     private _router: Router) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering constructor of HomeDashboardComponent...');
+    }
+
     this.selectedLearnScope = OverviewScopeEnum.CurrentYear;
     this.selectedFinanceScope = OverviewScopeEnum.CurrentMonth;
     this.selectedTranTypeLevel = TranTypeLevelEnum.TopLevel;
@@ -55,6 +60,10 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ngOnInit of HomeDashboardComponent...');
+    }
+
     this.baseCurr = this._homeDefService.ChosedHome.BaseCurrency;
     this._getHomeKeyFigure();
     this.onLearnScopeChanged();
@@ -72,6 +81,10 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ngOnDestroy of HomeDashboardComponent...');
+    }
+
     this.ngUnsubscribe$.next(true);
     this.ngUnsubscribe$.complete();
   }
@@ -85,6 +98,10 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   }
 
   public onLearnScopeChanged(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering onLearnScopeChanged of HomeDashboardComponent...');
+    }
+
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedLearnScope);
 
     this._lrnstorageService.getHistoryReportByUser(bgn, end)
@@ -137,7 +154,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
               },
             };
           }),
-        )
+        );
       });
   }
 
@@ -191,18 +208,18 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
             title: {
               text: 'Incoming',
               subtext: '',
-              x: 'center'
+              x: 'center',
             },
             toolbox: {
               show: true,
               feature: {
                 dataView: { show: true, readOnly: true },
-                saveAsImage: { show: true }
-              }
+                saveAsImage: { show: true },
+              },
             },
             tooltip: {
               trigger: 'item',
-              formatter: "{a} <br/>{b} : {c} ({d}%)"
+              formatter: '{a} <br/>{b} : {c} ({d}%)',
             },
             legend: {
               orient: 'vertical',
@@ -221,11 +238,11 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
                   emphasis: {
                     shadowBlur: 10,
                     shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                  }
-                }
-              }
-            ]
+                    shadowColor: 'rgba(0, 0, 0, 0.5)',
+                  },
+                },
+              },
+            ],
           };
         })),
       );
@@ -241,18 +258,18 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
             title: {
               text: 'Outgoing',
               subtext: '',
-              x: 'center'
+              x: 'center',
             },
             toolbox: {
               show: true,
               feature: {
                 dataView: { show: true, readOnly: true },
-                saveAsImage: { show: true }
-              }
+                saveAsImage: { show: true },
+              },
             },
             tooltip: {
               trigger: 'item',
-              formatter: "{a} <br/>{b} : {c} ({d}%)"
+              formatter: '{a} <br/>{b} : {c} ({d}%)',
             },
             legend: {
               orient: 'vertical',
@@ -271,11 +288,11 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
                   emphasis: {
                     shadowBlur: 10,
                     shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                  }
-                }
-              }
-            ]
+                    shadowColor: 'rgba(0, 0, 0, 0.5)',
+                  },
+                },
+              },
+            ],
           };
         })),
       );
@@ -296,22 +313,22 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
           const legends: any[] = ['Completed', 'Todo'];
           const eventdata: any[] = [{
             name: 'Completed',
-            value: x.MyCompletedEvents
+            value: x.MyCompletedEvents,
           }, {
             name: 'Todo',
-            value: x.MyUnCompletedEvents
-          }
+            value: x.MyUnCompletedEvents,
+          },
           ];
 
           return {
             title: {
               text: 'My Events',
               subtext: '',
-              x: 'center'
+              x: 'center',
             },
             tooltip: {
               trigger: 'item',
-              formatter: "{a} <br/>{b} : {c} ({d}%)"
+              formatter: '{a} <br/>{b} : {c} ({d}%)',
             },
             legend: {
               orient: 'vertical',
@@ -328,11 +345,11 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
                 emphasis: {
                   shadowBlur: 10,
                   shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-              }
-            }
-            ]
+                  shadowColor: 'rgba(0, 0, 0, 0.5)',
+                },
+              },
+            },
+            ],
           };
         })),
       );

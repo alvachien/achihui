@@ -7,7 +7,7 @@ import { SideNavService } from '../services';
   templateUrl: './side-nav-item.component.html',
   styleUrls: ['./side-nav-item.component.scss'],
 })
-export class SideNavItemComponent implements OnInit {
+export class SideNavItemComponent {
 
   @Input() item: SidenavItem;
 
@@ -17,10 +17,6 @@ export class SideNavItemComponent implements OnInit {
   }
 
   constructor(private _service: SideNavService) {
-  }
-
-  ngOnInit(): void {
-    // Do nothing
   }
 
   toggleDropdown(): void {

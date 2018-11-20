@@ -3,14 +3,6 @@ import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageS
   FinCurrencyService, UIStatusService,
 } from '../services';
 import { Router } from '@angular/router';
-import { ObservableMedia, MediaChange } from '@angular/flex-layout';
-
-import * as moment from 'moment';
-import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, UINameValuePair, TranTypeLevelEnum,
-  TranType, financeTranTypeTransferIn, financeTranTypeTransferOut, HomeKeyFigure,
-} from '../model';
-import { Observable, Subject, BehaviorSubject, forkJoin, ReplaySubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-page-initial',

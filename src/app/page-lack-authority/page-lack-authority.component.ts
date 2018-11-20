@@ -1,17 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-page-lack-authority',
   templateUrl: './page-lack-authority.component.html',
-  styleUrls: ['./page-lack-authority.component.scss']
+  styleUrls: ['./page-lack-authority.component.scss'],
 })
-export class PageLackAuthorityComponent implements OnInit {
+export class PageLackAuthorityComponent {
 
   constructor() {
-    // Do nothing
-  }
-
-  ngOnInit(): void {
     // Do nothing
   }
 }

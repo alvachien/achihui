@@ -99,6 +99,7 @@
     "ShortIntroduceHIH": "H.I.H. helps to build a digitial life for each home",
     "RequireLogin": "Please login to enpower the features provided by H.I.H.",
     "RequireChooseHome": "Please choose a Home which you already assigned to, or create your new home to continue",
+    "ShortIntroduceHIH2": "Home Information Hub, with the abbreviation HIH, which was designed to build the central information hub for all necessary information among all family members.",
 
     "GenericInfo": "Generic Info",
     "ExtraInfo": "Extra Info",
@@ -174,7 +175,8 @@
     "MyCompletedEvents": "My Completed Events",
     "MyUncompletedEvents": "My Uncompleted Events",
     "Relationship": "Relationship",
-    "TendencyChart": "Tendency Chart"
+    "TendencyChart": "Tendency Chart",
+    "HIHAuthor": "Writen and Maintained by Alva Chien"
   },
   "Sys":{
     "Currency": {

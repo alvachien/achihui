@@ -8,7 +8,7 @@ import { AuthService, HomeDefDetailService } from '../services';
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.scss'],
 })
-export class UserDetailComponent implements OnInit {
+export class UserDetailComponent {
   usrObject: UserAuthInfo;
 
   constructor(private _authService: AuthService,
@@ -23,9 +23,5 @@ export class UserDetailComponent implements OnInit {
     }, () => {
       // Completed
     });
-  }
-
-  ngOnInit(): void {
-    // Do nothing
   }
 }

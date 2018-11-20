@@ -1,11 +1,11 @@
 <div class="jumbotron" *ngIf="!IsUserLoggedIn || !IsHomeChosed">
 
   <h1 class="display-3" *ngIf="!IsUserLoggedIn">{{'Common.WelcomeToHIH' | translate}}</h1>
-  <h2 class="lead" *ngIf="!IsUserLoggedIn">{{'Common.ShortIntroduceHIH' | translate}}</h2>
+  <h2 *ngIf="!IsUserLoggedIn">{{'Common.ShortIntroduceHIH' | translate}}</h2>
   <p *ngIf="!IsUserLoggedIn">{{'Common.RequireLogin' | translate}}</p>
 
   <h1 class="display-3" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.WelcomeBack' | translate}}</h1>
-  <h2 class="lead" *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.ShortIntroduceHIH' | translate}}</h2>
+  <h2 *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.ShortIntroduceHIH' | translate}}</h2>
   <p *ngIf="IsUserLoggedIn && !IsHomeChosed">{{'Common.RequireChooseHome' | translate}}</p>
 
   <div *ngIf="!IsUserLoggedIn">

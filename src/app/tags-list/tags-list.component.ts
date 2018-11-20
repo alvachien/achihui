@@ -15,7 +15,7 @@ import { EChartOption } from 'echarts';
   templateUrl: './tags-list.component.html',
   styleUrls: ['./tags-list.component.scss'],
 })
-export class TagsListComponent implements OnInit, AfterViewInit {
+export class TagsListComponent implements AfterViewInit {
   tagTerm: string;
   tagType: TagTypeEnum;
   rstSearch: Tag[] = [];
@@ -26,9 +26,6 @@ export class TagsListComponent implements OnInit, AfterViewInit {
     private _router: Router,
     public _uiService: UIStatusService) {
     this.tagType = TagTypeEnum.LearnQuestionBank;
-  }
-
-  ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
@@ -74,7 +71,7 @@ export class TagsListComponent implements OnInit, AfterViewInit {
               },
               data: dataCloud,
             }],
-          }; 
+          };
         }),
       );
     });

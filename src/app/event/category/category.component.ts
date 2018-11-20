@@ -1,19 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'hih-event-category',
   template: `<router-outlet></router-outlet>`,
   styleUrls: ['./category.component.scss'],
 })
-export class CategoryComponent implements OnInit {
+export class CategoryComponent {
 
   constructor() {
-    // Empty
-  }
-
-  ngOnInit(): void {
     // Empty
   }
 }

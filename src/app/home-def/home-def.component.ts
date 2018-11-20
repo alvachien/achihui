@@ -5,13 +5,9 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './home-def.component.html',
   styleUrls: ['./home-def.component.scss'],
 })
-export class HomeDefComponent implements OnInit {
+export class HomeDefComponent {
 
   constructor() {
-    // Empty
-  }
-
-  ngOnInit(): void {
     // Empty
   }
 }

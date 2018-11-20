@@ -6,6 +6,7 @@ Bugs fixing and Feature list
 - Database version automatically update mechanism;
 - Detect API version and databse version;
 - Remove jQuery and Bootstrap;
+- Redesign the dynamic theme;
 - Dashboard introduced;
 - Using echart's wordCloud replace current tag Cloud;
 - Using echart's bar/pie chart replace current ngx-charts;

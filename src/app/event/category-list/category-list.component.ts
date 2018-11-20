@@ -1,11 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment';
-import { LogLevel, } from '../../model';
 import { EventStorageService } from '../../services';
-import { Observable, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-event-category-list',
