@@ -190,6 +190,17 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
+    let curtheme: any = this._themeStorage.getStoredTheme();
+    if (curtheme) {
+      if (curtheme.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
+      }
+    } else {
+      this.chartTheme = 'light';
+    }
+
     this._themeStorage.onThemeUpdate.subscribe((val: any) => {
       if (val.isDark) {
         this.chartTheme = 'dark';
@@ -690,11 +701,11 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
           title: {
             text: 'Incoming',
             subtext: 'Control Center',
-            x: 'center'
+            x: 'center',
           },
           tooltip: {
             trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
           },
           legend: {
             orient: 'vertical',
@@ -713,11 +724,11 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
                 emphasis: {
                   shadowBlur: 10,
                   shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-              }
-            }
-          ]
+                  shadowColor: 'rgba(0, 0, 0, 0.5)',
+                },
+              },
+            },
+          ],
         };
       }),
     );
@@ -734,11 +745,11 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
           title: {
             text: 'Outgoing',
             subtext: 'Control Center',
-            x: 'center'
+            x: 'center',
           },
           tooltip: {
             trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
           },
           legend: {
             orient: 'vertical',
@@ -757,11 +768,11 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
                 emphasis: {
                   shadowBlur: 10,
                   shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-              }
-            }
-          ]
+                  shadowColor: 'rgba(0, 0, 0, 0.5)',
+                },
+              },
+            },
+          ],
         };
       }),
     );
@@ -778,11 +789,11 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
           title: {
             text: 'Incoming',
             subtext: 'Order',
-            x: 'center'
+            x: 'center',
           },
           tooltip: {
             trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
           },
           legend: {
             orient: 'vertical',
@@ -801,11 +812,11 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
                 emphasis: {
                   shadowBlur: 10,
                   shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-              }
-            }
-          ]
+                  shadowColor: 'rgba(0, 0, 0, 0.5)',
+                },
+              },
+            },
+          ],
         };
       }),
     );
@@ -822,11 +833,11 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
           title: {
             text: 'Outgoing',
             subtext: 'Order',
-            x: 'center'
+            x: 'center',
           },
           tooltip: {
             trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
           },
           legend: {
             orient: 'vertical',
@@ -845,11 +856,11 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
                 emphasis: {
                   shadowBlur: 10,
                   shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-              }
-            }
-          ]
+                  shadowColor: 'rgba(0, 0, 0, 0.5)',
+                },
+              },
+            },
+          ],
         };
       }),
     );

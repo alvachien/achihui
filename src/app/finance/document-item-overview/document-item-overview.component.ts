@@ -82,7 +82,18 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
     this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
     this.labelIncome = this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming);
     this.labelOutgo = this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing);
-    
+
+    let curtheme: any = this._themeStorage.getStoredTheme();
+    if (curtheme) {
+      if (curtheme.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
+      }
+    } else {
+      this.chartTheme = 'light';
+    }
+
     this._themeStorage.onThemeUpdate.subscribe((val: any) => {
       if (val.isDark) {
         this.chartTheme = 'dark';

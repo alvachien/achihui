@@ -60,6 +60,17 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     this.selectedTranTypeLevel = TranTypeLevelEnum.TopLevel;
     this.excludeTransfer = true;
 
+    let curtheme: any = this._themeStorage.getStoredTheme();
+    if (curtheme) {
+      if (curtheme.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
+      }
+    } else {
+      this.chartTheme = 'light';
+    }
+
     this._themeStorage.onThemeUpdate.subscribe((val: any) => {
       if (val.isDark) {
         this.chartTheme = 'dark';

@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef,
-} from '@angular/core';
+  Input, Output, ViewContainerRef, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
@@ -66,7 +66,9 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     private _currService: FinCurrencyService,
     private _router: Router,
     private _formBuilder: FormBuilder) {
-    // Do nothing
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent constructor`);
+    }
   }
 
   ngOnInit(): void {
