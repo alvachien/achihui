@@ -1,9 +1,12 @@
 <mat-tab-group class="demo-tab-group">
+  <!-- Tab. Chart View -->
   <mat-tab label="{{'Common.TagsCloud' | translate}}">
     <div class="demo-tab-content">
-      <div echarts [options]="tagChartOption | async" class="tag-wordcloud-chart"></div>
+      <div echarts [options]="tagChartOption | async" [theme]="chartTheme" class="tag-wordcloud-chart"></div>
     </div>
   </mat-tab>
+
+  <!-- Tab. List View -->
   <mat-tab label="{{'Common.Tag' | translate}}">
     <ng-template mat-tab-label>
       {{'Common.Tag' | translate}}

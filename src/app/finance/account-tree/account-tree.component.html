@@ -5,7 +5,7 @@
   </mat-card-header>
   <mat-card-content>
     <mat-toolbar class="mt-2">
-      <mat-form-field>        
+      <mat-form-field class="finaccounttree-toolbar-item">        
         <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onAccountStatusChange()" #select="matSelect">
           <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
           <mat-option *ngFor="let sts of arrayStatus" [value]="sts.value">

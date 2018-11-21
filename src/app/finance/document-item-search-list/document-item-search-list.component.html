@@ -6,38 +6,38 @@
   <mat-card-content>
     <div>
       <div *ngFor="let filter of filters; let idxfilter = index" class="achih-control-full-width">
-        <mat-form-field>
+        <mat-form-field style="width: auto;">
           <mat-select placeholder="{{'Common.Field' | translate}}" [(ngModel)]="filter.fieldName" (selectionChange)="onFieldSelectionChanged(filter)">
             <mat-option *ngFor="let field of allFields" [value]="field.value">
               {{ field.displayas | translate }}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field style="width: auto;">
           <mat-select placeholder="{{'Common.Operator' | translate}}" [(ngModel)]="filter.operator">
             <mat-option *ngFor="let opr of allOperators | operatorFilter: filter.valueType" [value]="opr.value">
               {{ opr.i18nterm | translate }}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field *ngIf="filter.valueType === 1">
+        <mat-form-field *ngIf="filter.valueType === 1" style="width: auto;">
           <input matInput type="number" placeholder="{{'Common.Value' | translate}}" name="lvalue_1" [(ngModel)]="filter.lowValue">
         </mat-form-field>
-        <mat-form-field *ngIf="filter.valueType === 1">
+        <mat-form-field *ngIf="filter.valueType === 1" style="width: auto;">
           <input matInput type="number" placeholder="{{'Common.Value' | translate}}" name="hvalue_1" [(ngModel)]="filter.highValue">
         </mat-form-field>
-        <mat-form-field *ngIf="filter.valueType === 2">
+        <mat-form-field *ngIf="filter.valueType === 2" style="width: auto;">
           <input matInput type="text" placeholder="{{'Common.Value' | translate}}" name="lvalue_2" [(ngModel)]="filter.lowValue">
         </mat-form-field>
-        <mat-form-field *ngIf="filter.valueType === 2">
+        <mat-form-field *ngIf="filter.valueType === 2" style="width: auto;">
           <input matInput type="text" placeholder="{{'Common.Value' | translate}}" name="hvalue_2" [(ngModel)]="filter.highValue">
         </mat-form-field>
-        <mat-form-field *ngIf="filter.valueType === 3">
+        <mat-form-field *ngIf="filter.valueType === 3" style="width: auto;">
           <input matInput [(ngModel)]="filter.lowValue" [matDatepicker]="lvpicker" placeholder="{{'Common.Value' | translate}}">
           <mat-datepicker-toggle matSuffix [for]="lvpicker"></mat-datepicker-toggle>
           <mat-datepicker #lvpicker></mat-datepicker>
         </mat-form-field>
-        <mat-form-field *ngIf="filter.valueType === 3">
+        <mat-form-field *ngIf="filter.valueType === 3" style="width: auto;">
           <input matInput [(ngModel)]="filter.highValue" [matDatepicker]="hvpicker" placeholder="{{'Common.Value' | translate}}">
           <mat-datepicker-toggle matSuffix [for]="hvpicker"></mat-datepicker-toggle>
           <mat-datepicker #hvpicker></mat-datepicker>

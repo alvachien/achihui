@@ -9,6 +9,7 @@ import { HomeDefDetailService } from '../services/home-def-detail.service';
 import { TagsService } from '../services/tags.service';
 import { UIStatusService } from '../services/uistatus.service';
 import { EChartOption } from 'echarts';
+import { ThemeStorage } from '../theme-picker/theme-storage/theme-storage';
 
 @Component({
   selector: 'hih-tags-list',
@@ -21,11 +22,35 @@ export class TagsListComponent implements AfterViewInit {
   rstSearch: Tag[] = [];
   // @ViewChild('tagcloud') tagcloud: ElementRef;
   tagChartOption: Observable<EChartOption>;
+  chartTheme: string;
 
   constructor(private _tagService: TagsService,
     private _router: Router,
+    private _themeStorage: ThemeStorage,
     public _uiService: UIStatusService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering constructor of TagsListComponent...');
+    }
+    
     this.tagType = TagTypeEnum.LearnQuestionBank;
+    let curtheme: any = this._themeStorage.getStoredTheme();
+    if (curtheme) {
+      if (curtheme.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
+      }
+    } else {
+      this.chartTheme = 'light';
+    }
+
+    this._themeStorage.onThemeUpdate.subscribe((val: any) => {
+      if (val.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
+      }
+    });
   }
 
   ngAfterViewInit(): void {

@@ -4,11 +4,27 @@
   </mat-card-header>
   <mat-card-content>
     <mat-toolbar color="primary">
-      <mat-form-field>
+      <mat-form-field class="docitemoverview-toolbar-item">
         <mat-select color="accent" class="mt-1" [(ngModel)]="selectedTmpScope" (selectionChange)="onTmpDocsRefresh()">
           <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
+      <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuDoc"><mat-icon>assignment</mat-icon></button>
+      <mat-menu #matMenuDoc="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
+        <button mat-menu-item (click)="onCreateNormalDocument()">{{'Finance.Document' | translate}}</button>
+        <button mat-menu-item (click)="onCreateTransferDocument()">{{'Finance.TransferDocument' | translate}}</button>
+        <button mat-menu-item (click)="onCreateExgDocument()">{{'Finance.CurrencyExchange' | translate}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="onCreateADPDocument()">{{'Finance.AdvancePayment' | translate}}</button>
+        <button mat-menu-item (click)="onCreateADRDocument()">{{'Sys.DocTy.AdvancedRecv' | translate}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="onCreateBorrowFromDocument()">{{'Sys.DocTy.BorrowFrom' | translate}}</button>
+        <button mat-menu-item (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | translate}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="onCreateAssetBuyInDocument()">{{'Sys.DocTy.AssetBuyIn' | translate}}</button>
+        <button mat-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | translate}}</button>
+        <button mat-menu-item (click)="onCreateAssetValChgDocument()">{{'Sys.DocTy.AssetValChg' | translate}}</button>
+      </mat-menu>
     </mat-toolbar>
     
     <div class="grid-container">

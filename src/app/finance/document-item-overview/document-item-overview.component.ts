@@ -384,4 +384,35 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       this._router.navigate(['/finance/document/createrepay/']);
     }
   }
+  
+  public onCreateNormalDocument(): void {
+    this._router.navigate(['/finance/document/createnormal']);
+  }
+  public onCreateTransferDocument(): void {
+    this._router.navigate(['/finance/document/createtransfer']);
+  }
+  public onCreateADPDocument(): void {
+    this._router.navigate(['/finance/document/createadp']);
+  }
+  public onCreateADRDocument(): void {
+    this._router.navigate(['/finance/document/createadr']);
+  }
+  public onCreateExgDocument(): void {
+    this._router.navigate(['/finance/document/createexg']);
+  }
+  public onCreateAssetBuyInDocument(): void {
+    this._router.navigate(['/finance/document/createassetbuy']);
+  }
+  public onCreateAssetSoldOutDocument(): void {
+    this._router.navigate(['/finance/document/createassetsold']);
+  }
+  public onCreateBorrowFromDocument(): void {
+    this._router.navigate(['/finance/document/createbrwfrm']);
+  }
+  public onCreateLendToDocument(): void {
+    this._router.navigate(['/finance/document/createlendto']);
+  }
+  public onCreateAssetValChgDocument(): void {
+    this._router.navigate(['/finance/document/createassetvalchg']);
+  }
 }

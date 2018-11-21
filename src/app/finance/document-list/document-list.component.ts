@@ -92,9 +92,6 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
     this._docScopeEvent.emit();
   }
 
-  public onCreateDocument(): void {
-    this._router.navigate(['/finance/document/create']);
-  }
   public onCreateNormalDocument(): void {
     this._router.navigate(['/finance/document/createnormal']);
   }

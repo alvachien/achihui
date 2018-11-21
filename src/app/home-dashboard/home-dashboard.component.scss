@@ -25,12 +25,22 @@
   flex-grow: 1;
 }
 
+.learn-chart {
+  width: 90%;
+  height: 250px;
+}
+
 .incoming-chart {
-  width: 100%;
-  height: 300px;
+  width: 90%;
+  height: 400px;
 }
 
 .outgoing-chart {
-  width: 100%;
+  width: 90%;
+  height: 400px;
+}
+
+.event-chart {
+  width: 90%;
   height: 300px;
 }

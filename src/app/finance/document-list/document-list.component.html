@@ -9,7 +9,7 @@
     </div>
     
     <mat-toolbar>
-      <mat-form-field>
+      <mat-form-field class="findoclist-toolbar-item">
         <mat-select color="accent" [(ngModel)]="selectedDocScope" (selectionChange)="onDocScopeChanged()">
           <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
@@ -24,12 +24,15 @@
         <button mat-menu-item (click)="onCreateNormalDocument()">{{'Finance.Document' | translate}}</button>
         <button mat-menu-item (click)="onCreateTransferDocument()">{{'Finance.TransferDocument' | translate}}</button>
         <button mat-menu-item (click)="onCreateExgDocument()">{{'Finance.CurrencyExchange' | translate}}</button>
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="onCreateADPDocument()">{{'Finance.AdvancePayment' | translate}}</button>
         <button mat-menu-item (click)="onCreateADRDocument()">{{'Sys.DocTy.AdvancedRecv' | translate}}</button>
-        <button mat-menu-item (click)="onCreateAssetBuyInDocument()">{{'Sys.DocTy.AssetBuyIn' | translate}}</button>
-        <button mat-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | translate}}</button>
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="onCreateBorrowFromDocument()">{{'Sys.DocTy.BorrowFrom' | translate}}</button>
         <button mat-menu-item (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | translate}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="onCreateAssetBuyInDocument()">{{'Sys.DocTy.AssetBuyIn' | translate}}</button>
+        <button mat-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | translate}}</button>
         <button mat-menu-item (click)="onCreateAssetValChgDocument()">{{'Sys.DocTy.AssetValChg' | translate}}</button>
       </mat-menu>
     </mat-toolbar>

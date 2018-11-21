@@ -57,13 +57,13 @@
         <mat-card-header>
           <mat-card-title>
             {{'Nav.FinanceTrace' | translate}}
-            <mat-toolbar>
-              <mat-form-field>
+            <mat-toolbar color="primary">
+              <mat-form-field style="width:auto;">
                 <mat-select [(ngModel)]="selectedFinanceScope" (selectionChange)="onFinanceScopeChanged()">
                   <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
                 </mat-select>
               </mat-form-field>
-              <mat-form-field>
+              <mat-form-field style="width:auto;">
                 <mat-select [(ngModel)]="selectedTranTypeLevel" (selectionChange)="onFinanceTranTypeChartRedraw()">
                   <mat-option *ngFor="let ttl of _uistatusService.TranTypeLevelStrings" [value]='ttl.value'>{{ttl.i18nterm | translate}}</mat-option>
                 </mat-select>
@@ -114,21 +114,23 @@
         <mat-card-header>
           <mat-card-title>
             {{'Nav.LearningTrace' | translate}}
-            <mat-form-field>
-              <mat-select [(ngModel)]="selectedLearnScope" (selectionChange)="onLearnScopeChanged()">
-                <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu" xPosition="before">
-              <button mat-menu-item>More</button>
-            </mat-menu>
+            <mat-toolbar color="primary">
+              <mat-form-field style="width:auto;">
+                <mat-select [(ngModel)]="selectedLearnScope" (selectionChange)="onLearnScopeChanged()">
+                  <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item>More</button>
+              </mat-menu>
+            </mat-toolbar>
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <div echarts [options]="learnChartOption | async" [theme]="chartTheme" class="outgoing-chart"></div>
+          <div echarts [options]="learnChartOption | async" [theme]="chartTheme" class="learn-chart"></div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -148,7 +150,7 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
-          <div echarts [options]="eventChartOption | async" [theme]="chartTheme" class="outgoing-chart"></div>
+          <div echarts [options]="eventChartOption | async" [theme]="chartTheme" class="event-chart"></div>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
