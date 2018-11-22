@@ -227,7 +227,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
 
     let curidx: number = event.selectedIndex;
     if (curidx === 1) {
-      // Fetch the new idea
+      // Fetch the existing items
       this._storageService.getDocumentItemByAccount(this.TargetAssetAccountID).subscribe((x: any) => {
         // Get the output
         let items: any[] = [];
@@ -238,6 +238,15 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
             items.push(docitem);
           }
         }
+        let fakebalance: any = {
+          TranDateFormatString: this.TransactionDate,
+          TranAmount_LC: this.NewEstimatedAmount,
+        };
+        items.push(fakebalance);
+        items = items.sort((a: any, b: any) => {
+          return a.TranDateFormatString.compare(b.TranDateFormatString);
+        });
+
         this.dataSource.data = items;
       });
     }
