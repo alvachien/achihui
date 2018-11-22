@@ -330,6 +330,13 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             data: ['Income', 'Outgoing'],
             align: 'left',
           },
+          toolbox: {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
+            },
+          },
           tooltip: {},
           xAxis: {
             data: xAxisData,
@@ -585,6 +592,13 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
               color: '#ccc',
             },
           },
+          toolbox: {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
+            },
+          },
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)',
@@ -641,6 +655,13 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             left: 'center',
             textStyle: {
               color: '#ccc',
+            },
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
             },
           },
           tooltip: {
@@ -703,6 +724,13 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             subtext: 'Control Center',
             x: 'center',
           },
+          toolbox: {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
+            },
+          },
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)',
@@ -746,6 +774,13 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             text: 'Outgoing',
             subtext: 'Control Center',
             x: 'center',
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
+            },
           },
           tooltip: {
             trigger: 'item',
@@ -791,6 +826,13 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             subtext: 'Order',
             x: 'center',
           },
+          toolbox: {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
+            },
+          },
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)',
@@ -834,6 +876,13 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             text: 'Outgoing',
             subtext: 'Order',
             x: 'center',
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
+            },
           },
           tooltip: {
             trigger: 'item',

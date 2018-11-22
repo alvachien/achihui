@@ -18,7 +18,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit {
   private _seledScope: OverviewScopeEnum;
 
   displayedColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
-  dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
+  dataSource: MatTableDataSource<DocumentItemWithBalance> = new MatTableDataSource<DocumentItemWithBalance>();
   isLoadingResults: boolean;
   resultsLength: number;
   public subjAccountID: BehaviorSubject<number> = new BehaviorSubject<number>(undefined);

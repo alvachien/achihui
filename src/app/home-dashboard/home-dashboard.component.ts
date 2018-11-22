@@ -151,6 +151,13 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
                 data: xAxisData,
                 align: 'left',
               },
+              toolbox: {
+                show: true,
+                feature: {
+                  dataView: { show: true, readOnly: true },
+                  saveAsImage: { show: true },
+                },
+              },
               tooltip: {},
               xAxis: {
                 data: xAxisData,

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
@@ -8,10 +9,10 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
-  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
+  UIFinAssetOperationDocument, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilterEx, financeTranTypeAssetSoldoutIncome, momentDateFormat,
-  InfoMessage, MessageType, financeDocTypeAssetSoldOut, financeTranTypeAssetSoldout, FinanceAssetSoldoutDocumentAPI,
+  IAccountCategoryFilterEx, momentDateFormat, DocumentItemWithBalance,
+  InfoMessage, MessageType, FinanceAssetSoldoutDocumentAPI, financeDocTypeAssetValChg,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -33,6 +34,8 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
   public uiOrderFilter: boolean | undefined;
   // Step: Extra info
   public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
+  dataSource: MatTableDataSource<DocumentItemWithBalance> = new MatTableDataSource<DocumentItemWithBalance>();
+  displayedColumns: string[] = ['DocId', 'TranDate', 'Amount', 'Balance'];
 
   get BaseCurrency(): string {
     return this._homeService.curHomeSelected.value.BaseCurrency;
@@ -69,6 +72,8 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent constructor`);
     }
+
+    this.dataSource.data = [];
   }
 
   ngOnInit(): void {
@@ -215,9 +220,32 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     });
   }
 
+  public onStepSelectionChange(event: StepperSelectionEvent): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentAssetValChgCreateComponent`);
+    }
+
+    let curidx: number = event.selectedIndex;
+    if (curidx === 1) {
+      // Fetch the new idea
+      this._storageService.getDocumentItemByAccount(this.TargetAssetAccountID).subscribe((x: any) => {
+        // Get the output
+        let items: any[] = [];
+        if (x.contentList && x.contentList instanceof Array && x.contentList.length > 0) {
+          for (let di of x.contentList) {
+            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
+            docitem.onSetData(di);
+            items.push(docitem);
+          }
+        }
+        this.dataSource.data = items;
+      });
+    }
+  }
+
   private _generateDoc(): Document {
     let ndoc: Document = new Document();
-    ndoc.DocType = financeDocTypeAssetSoldOut;
+    ndoc.DocType = financeDocTypeAssetValChg;
     ndoc.HID = this._homeService.ChosedHome.ID;
     ndoc.TranDate = this.firstFormGroup.get('dateControl').value;
     ndoc.TranCurr = this._homeService.ChosedHome.BaseCurrency;

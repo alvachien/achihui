@@ -192,8 +192,10 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
               containLabel: true,
             },
             toolbox: {
+              show: true,
               feature: {
-                  saveAsImage: {},
+                dataView: { show: true, readOnly: true },
+                saveAsImage: { show: true },
               },
             },
             xAxis : [
@@ -291,8 +293,10 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
               containLabel: true,
             },
             toolbox: {
+              show: true,
               feature: {
-                saveAsImage: {},
+                dataView: { show: true, readOnly: true },
+                saveAsImage: { show: true },
               },
             },
             xAxis: {
@@ -384,7 +388,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       this._router.navigate(['/finance/document/createrepay/']);
     }
   }
-  
+
   public onCreateNormalDocument(): void {
     this._router.navigate(['/finance/document/createnormal']);
   }
