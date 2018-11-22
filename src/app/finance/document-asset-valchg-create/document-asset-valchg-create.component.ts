@@ -18,6 +18,23 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStat
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
 
+// Assistant class
+class DocItemWithBlance {
+  DocId: number;
+  TranDate: string;
+  TranAmount: number;
+  Balance: number;
+  NewBlance: number;
+
+  fromData(val: DocumentItemWithBalance) {
+    this.DocId = val.DocId;
+    this.TranDate = val.TranDateFormatString;
+    this.TranAmount = val.TranAmount;
+    this.Balance = val.Balance;
+    this.NewBlance = val.Balance;
+  }
+}
+
 @Component({
   selector: 'hih-document-asset-valchg-create',
   templateUrl: './document-asset-valchg-create.component.html',
@@ -34,8 +51,8 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
   public uiOrderFilter: boolean | undefined;
   // Step: Extra info
   public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
-  dataSource: MatTableDataSource<DocumentItemWithBalance> = new MatTableDataSource<DocumentItemWithBalance>();
-  displayedColumns: string[] = ['DocId', 'TranDate', 'Amount', 'Balance'];
+  dataSource: MatTableDataSource<DocItemWithBlance> = new MatTableDataSource<DocItemWithBlance>();
+  displayedColumns: string[] = ['DocId', 'TranDate', 'Amount', 'Balance', 'NewBalance'];
 
   get BaseCurrency(): string {
     return this._homeService.curHomeSelected.value.BaseCurrency;
@@ -235,18 +252,30 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
           for (let di of x.contentList) {
             let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
             docitem.onSetData(di);
-            items.push(docitem);
+
+            let di2: DocItemWithBlance = new DocItemWithBlance();
+            di2.fromData(docitem);
+            items.push(di2);
           }
         }
-        let fakebalance: any = {
-          TranDateFormatString: this.TransactionDate,
-          TranAmount_LC: this.NewEstimatedAmount,
-        };
+        let fakebalance: DocItemWithBlance = new DocItemWithBlance();
+        // fakebalance.DocId = 0;
+        fakebalance.TranDate = this.TransactionDate;
+        fakebalance.TranAmount = this.NewEstimatedAmount;
+        fakebalance.Balance = 0;
+        fakebalance.NewBlance = 0;
         items.push(fakebalance);
+
         items = items.sort((a: any, b: any) => {
-          return a.TranDateFormatString.compare(b.TranDateFormatString);
+          return a.TranDate.localeCompare(b.TranDate);
         });
 
+        let curbal: number = 0;
+        for(let idx: number = 0; idx < items.length; idx++) {
+          curbal += items[idx].TranAmount;
+          items[idx].NewBlance = curbal;
+        }
+ 
         this.dataSource.data = items;
       });
     }

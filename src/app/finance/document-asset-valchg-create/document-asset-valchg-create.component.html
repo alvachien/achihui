@@ -86,7 +86,7 @@
             <ng-container matColumnDef="TranDate">
               <mat-header-cell *matHeaderCellDef>{{'Common.Date' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                {{row.TranDateFormatString}}
+                {{row.TranDate}}
               </mat-cell>
             </ng-container>              
 
@@ -94,7 +94,7 @@
             <ng-container matColumnDef="Amount">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                {{ row.TranAmount_LC?.toFixed(2) }}
+                {{ row.TranAmount?.toFixed(2) }}
               </mat-cell>
             </ng-container>
 
@@ -106,6 +106,14 @@
               </mat-cell>
             </ng-container>
   
+            <!-- Balance Column -->
+            <ng-container matColumnDef="NewBalance">
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Balance' | translate}}(*)</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                {{ row.NewBalance?.toFixed(2) }}
+              </mat-cell>
+            </ng-container>
+
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           </mat-table>
