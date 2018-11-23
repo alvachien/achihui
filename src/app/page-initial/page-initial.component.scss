@@ -1,4 +1,16 @@
 
+.background::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: url(/assets/images/initial_background.jpg) center top/cover no-repeat;
+  opacity: .7;
+  content: '';
+  z-index: 0;
+}
+
 .jumbotron {
   padding: 4rem 2rem;
   margin-bottom: 4rem;

@@ -1,4 +1,5 @@
-<div class="jumbotron" *ngIf="!IsUserLoggedIn || !IsHomeChosed">
+
+<div class="background" *ngIf="!IsUserLoggedIn || !IsHomeChosed">
 
   <h1 class="display-3" *ngIf="!IsUserLoggedIn">{{'Common.WelcomeToHIH' | translate}}</h1>
   <h2 *ngIf="!IsUserLoggedIn">{{'Common.ShortIntroduceHIH' | translate}}</h2>

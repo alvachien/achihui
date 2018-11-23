@@ -20,18 +20,18 @@ import * as moment from 'moment';
 
 // Assistant class
 class DocItemWithBlance {
-  DocId: number;
-  TranDate: string;
-  TranAmount: number;
-  Balance: number;
-  NewBlance: number;
+  docId: number;
+  tranDate: string;
+  tranAmount: number;
+  balance: number;
+  newBlance: number;
 
-  fromData(val: DocumentItemWithBalance) {
-    this.DocId = val.DocId;
-    this.TranDate = val.TranDateFormatString;
-    this.TranAmount = val.TranAmount;
-    this.Balance = val.Balance;
-    this.NewBlance = val.Balance;
+  fromData(val: DocumentItemWithBalance): void {
+    this.docId = val.DocId;
+    this.tranDate = val.TranDateFormatString;
+    this.tranAmount = val.TranAmount_LC;
+    this.balance = val.Balance;
+    this.newBlance = val.Balance;
   }
 }
 
@@ -258,24 +258,26 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
             items.push(di2);
           }
         }
+
         let fakebalance: DocItemWithBlance = new DocItemWithBlance();
-        // fakebalance.DocId = 0;
-        fakebalance.TranDate = this.TransactionDate;
-        fakebalance.TranAmount = this.NewEstimatedAmount;
-        fakebalance.Balance = 0;
-        fakebalance.NewBlance = 0;
+        // fakebalance.docId = 0;
+        fakebalance.tranDate = this.TransactionDate;
+        fakebalance.tranAmount = 0;
+        fakebalance.balance = 0;
+        fakebalance.newBlance = this.NewEstimatedAmount;
         items.push(fakebalance);
 
+        // Sorting
         items = items.sort((a: any, b: any) => {
-          return a.TranDate.localeCompare(b.TranDate);
+          return a.tranDate.localeCompare(b.tranDate);
         });
 
         let curbal: number = 0;
-        for(let idx: number = 0; idx < items.length; idx++) {
+        for (let idx: number = 0; idx < items.length; idx++) {
           curbal += items[idx].TranAmount;
           items[idx].NewBlance = curbal;
         }
- 
+
         this.dataSource.data = items;
       });
     }
