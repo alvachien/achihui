@@ -9,10 +9,11 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
-  UIFinAssetOperationDocument, UICommonLabelEnum,
+  UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilterEx, momentDateFormat, DocumentItemWithBalance,
-  InfoMessage, MessageType, FinanceAssetSoldoutDocumentAPI, financeDocTypeAssetValChg,
+  InfoMessage, MessageType, financeDocTypeAssetValChg, financeTranTypeAssetValueIncrease,
+  financeTranTypeAssetValueDecrease, FinanceAssetValChgDocumentAPI,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -24,14 +25,14 @@ class DocItemWithBlance {
   tranDate: string;
   tranAmount: number;
   balance: number;
-  newBlance: number;
+  newBalance: number;
 
   fromData(val: DocumentItemWithBalance): void {
     this.docId = val.DocId;
     this.tranDate = val.TranDateFormatString;
     this.tranAmount = val.TranAmount_LC;
     this.balance = val.Balance;
-    this.newBlance = val.Balance;
+    this.newBalance = val.Balance;
   }
 }
 
@@ -41,7 +42,7 @@ class DocItemWithBlance {
   styleUrls: ['./document-asset-valchg-create.component.scss'],
 })
 export class DocumentAssetValChgCreateComponent implements OnInit {
-  public detailObject: FinanceAssetSoldoutDocumentAPI;
+  public detailObject: FinanceAssetValChgDocumentAPI;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   public arUIAccount: UIAccountForSelection[] = [];
@@ -53,7 +54,11 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
   public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
   dataSource: MatTableDataSource<DocItemWithBlance> = new MatTableDataSource<DocItemWithBlance>();
   displayedColumns: string[] = ['DocId', 'TranDate', 'Amount', 'Balance', 'NewBalance'];
+  tranAmount: number;
 
+  get TransactionAmount(): number {
+    return this.tranAmount;
+  }
   get BaseCurrency(): string {
     return this._homeService.curHomeSelected.value.BaseCurrency;
   }
@@ -182,11 +187,11 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     }
 
     // Do the real submit.
-    this.detailObject = new FinanceAssetSoldoutDocumentAPI();
+    this.detailObject = new FinanceAssetValChgDocumentAPI();
     this.detailObject.HID = this._homeService.ChosedHome.ID;
     this.detailObject.tranDate = docobj.TranDate.format(momentDateFormat);
     this.detailObject.tranCurr = this.BaseCurrency;
-    this.detailObject.tranAmount = this.NewEstimatedAmount;
+    this.detailObject.tranAmount = this.TransactionAmount;
     this.detailObject.desp = docobj.Desp;
     this.detailObject.assetAccountID = this.TargetAssetAccountID;
     this.detailObject.controlCenterID = this.firstFormGroup.get('ccControl').value;
@@ -195,10 +200,10 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       this.detailObject.items.push(val.writeJSONObject());
     });
 
-    this._storageService.createAssetSoldoutDocument(this.detailObject).subscribe((nid: number) => {
+    this._storageService.createAssetValChgDocument(this.detailObject).subscribe((nid: number) => {
       // New doc created with ID returned
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetValChgCreateComponent for createAssetSoldoutDocument, new doc ID: ${nid}`);
+        console.log(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetValChgCreateComponent for createAssetValChgDocument, new doc ID: ${nid}`);
       }
 
       // Show success
@@ -211,7 +216,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     }, (err: string) => {
       // Handle the error
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Failed in onSubmit in DocumentAssetValChgCreateComponent for createAssetSoldoutDocument, result: ${err}`);
+        console.error(`AC_HIH_UI [Debug]: Failed in onSubmit in DocumentAssetValChgCreateComponent for createAssetValChgDocument, result: ${err}`);
       }
 
       let msg: InfoMessage = new InfoMessage();
@@ -264,7 +269,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
         fakebalance.tranDate = this.TransactionDate;
         fakebalance.tranAmount = 0;
         fakebalance.balance = 0;
-        fakebalance.newBlance = this.NewEstimatedAmount;
+        fakebalance.newBalance = this.NewEstimatedAmount;
         items.push(fakebalance);
 
         // Sorting
@@ -274,8 +279,13 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
 
         let curbal: number = 0;
         for (let idx: number = 0; idx < items.length; idx++) {
-          curbal += items[idx].TranAmount;
-          items[idx].NewBlance = curbal;
+          curbal += items[idx].tranAmount;
+          if (items[idx].docId) {
+            items[idx].newBalance = curbal;
+          } else {
+            items[idx].tranAmount = items[idx].newBalance - curbal;
+            this.tranAmount = items[idx].tranAmount;
+          }
         }
 
         this.dataSource.data = items;
@@ -291,10 +301,24 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     ndoc.TranCurr = this._homeService.ChosedHome.BaseCurrency;
     ndoc.Desp = this.firstFormGroup.get('despControl').value;
     // Add items
+    let ndocitem: DocumentItem = new DocumentItem();
+    ndocitem.ItemId = 1;
+    ndocitem.AccountId = this.TargetAssetAccountID;
+    ndocitem.ControlCenterId = this.firstFormGroup.get('ccControl').value;
+    ndocitem.OrderId = this.firstFormGroup.get('orderControl').value;
+    ndocitem.Desp = ndoc.Desp;
+    if (this.TransactionAmount > 0) {
+      ndocitem.TranAmount = this.TransactionAmount;
+      ndocitem.TranType = financeTranTypeAssetValueIncrease;
+    } else {
+      ndocitem.TranAmount = this.TransactionAmount * -1;
+      ndocitem.TranType = financeTranTypeAssetValueDecrease;
+    }
     // this.dataSource.data.forEach((val: DocumentItem) => {
     //   val.TranType = financeTranTypeAssetSoldoutIncome;
     //   ndoc.Items.push(val);
     // });
+    ndoc.Items.push(ndocitem);
 
     return ndoc;
   }

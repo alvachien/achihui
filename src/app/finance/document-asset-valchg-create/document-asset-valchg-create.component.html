@@ -28,7 +28,7 @@
           </mat-form-field>
 
           <mat-form-field>
-            <input matInput type="number" placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
+            <input matInput type="number" placeholder="{{'Finance.Balance' | translate}}" formControlName="amountControl">
             <span matSuffix>{{BaseCurrency}}</span>
           </mat-form-field>
 
@@ -68,7 +68,8 @@
           -->
         <div class="mat-typography achih-control-full-width">
           <h2>{{'Sys.AcntCty.AssetAccount' | translate}}: {{TargetAssetAccountID}}</h2>
-          <h3>{{'Finance.Amount' | translate}}: {{NewEstimatedAmount}}</h3>
+          <h3 *ngIf="TransactionAmount">{{'Finance.Amount' | translate}}: {{TransactionAmount.toFixed(2)}}</h3>
+          <h3 *ngIf="NewEstimatedAmount">{{'Finance.Balance' | translate}}: {{NewEstimatedAmount.toFixed(2)}}</h3>
           <h3>{{'Common.Date' | translate}}: {{TransactionDate}}</h3>
         </div>
 
