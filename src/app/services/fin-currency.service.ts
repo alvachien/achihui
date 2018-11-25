@@ -39,7 +39,7 @@ export class FinCurrencyService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinCurrencyService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinCurrencyService`);
           }
 
           let listRst: Currency[] = [];

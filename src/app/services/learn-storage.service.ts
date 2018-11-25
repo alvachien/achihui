@@ -915,7 +915,7 @@ export class LearnStorageService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllEnWord in LearnStorageService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllEnWord in LearnStorageService`);
           }
 
           const rjs: any = <any>response;
@@ -1062,7 +1062,7 @@ export class LearnStorageService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllEnSentence in LearnStorageService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllEnSentence in LearnStorageService`);
           }
 
           const rjs: any = <any>response;

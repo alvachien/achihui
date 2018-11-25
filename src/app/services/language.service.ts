@@ -37,7 +37,7 @@ export class LanguageService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllLanguages in LanguageService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllLanguages in LanguageService`);
           }
 
           const rjs: any = <any>response;

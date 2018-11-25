@@ -69,7 +69,7 @@ export class EventStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readObject in EventStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering readObject in EventStorageService`);
         }
 
         let hd: GeneralEvent = new GeneralEvent();
@@ -166,7 +166,7 @@ export class EventStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readRecurEvent in EventStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering readRecurEvent in EventStorageService`);
         }
 
         let repdata: any = <any>response;
@@ -209,7 +209,7 @@ export class EventStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering createRecurEvent in EventStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering createRecurEvent in EventStorageService`);
         }
 
         let hd: RecurEvent = new RecurEvent();
@@ -243,7 +243,7 @@ export class EventStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering calcRecurEvents in EventStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering calcRecurEvents in EventStorageService`);
         }
 
         let arRst: GeneralEvent[] = [];
@@ -280,7 +280,7 @@ export class EventStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering createRecurEvent in EventStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering createRecurEvent in EventStorageService`);
         }
 
         return response.ok;
@@ -340,7 +340,7 @@ export class EventStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readHabitEvent in EventStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering readHabitEvent in EventStorageService`);
         }
 
         let hd: EventHabit = new EventHabit();

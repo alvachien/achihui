@@ -55,7 +55,7 @@
           <mat-toolbar color="primary">
             <span>{{'Finance.AccountCategory' | translate}} - {{curNode?.displayname | translate}}</span>
             <span class="toolbar-spacer"></span>
-            <mat-form-field>
+            <mat-form-field class="finaccounttree-toolbar-item">
               <mat-select color="accent" [(ngModel)]="selectedAccountCtgyScope">
                 <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
               </mat-select>
@@ -68,7 +68,7 @@
           <mat-toolbar color="primary">
             <span>{{'Finance.Account' | translate}} - {{curNode?.displayname | translate}}</span>
             <span class="toolbar-spacer"></span>
-            <mat-form-field>
+            <mat-form-field class="finaccounttree-toolbar-item">
               <mat-select color="accent" class="mt-1" [(ngModel)]="selectedAccountScope">
                 <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
               </mat-select>

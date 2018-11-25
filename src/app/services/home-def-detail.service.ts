@@ -137,7 +137,7 @@ export class HomeDefDetailService {
     this._http.get(apiurl, { headers: headers, })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering map in ReadHomeDef in HomeDefDetailService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering map in ReadHomeDef in HomeDefDetailService`);
         }
 
         const rjs: any = <any>response;

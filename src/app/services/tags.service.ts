@@ -56,7 +56,7 @@ export class TagsService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService: ${response}`);
+            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService`);
           }
 
           let listCountRst: TagCount[] = [];
