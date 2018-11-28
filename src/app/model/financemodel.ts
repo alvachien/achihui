@@ -2656,7 +2656,6 @@ export class DocumentWithPlanExgRateForUpdate {
 
 export abstract class FinanceAssetDocumentAPIBase {
   public HID: number;
-  public tranAmount: number;
   public tranCurr: string;
   public tranDate: string;
   public desp: string;
@@ -2675,6 +2674,7 @@ export abstract class FinanceAssetDocumentAPIBase {
  */
 export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
   public isLegacy?: boolean;
+  public tranAmount: number;
   public accountOwner: string;
   public accountAsset: AccountExtraAsset;
 
@@ -2694,6 +2694,7 @@ export class FinanceAssetBuyinDocumentAPI extends FinanceAssetDocumentAPIBase {
  */
 export class FinanceAssetSoldoutDocumentAPI extends FinanceAssetDocumentAPIBase {
   public assetAccountID: number;
+  public tranAmount: number;
 
   public writeJSONObject(): any {
     let rst: any = super.writeJSONObject();

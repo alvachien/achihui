@@ -191,7 +191,6 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     this.detailObject.HID = this._homeService.ChosedHome.ID;
     this.detailObject.tranDate = docobj.TranDate.format(momentDateFormat);
     this.detailObject.tranCurr = this.BaseCurrency;
-    this.detailObject.tranAmount = Math.abs(this.TransactionAmount);
     this.detailObject.desp = docobj.Desp;
     this.detailObject.assetAccountID = this.TargetAssetAccountID;
     this.detailObject.controlCenterID = this.firstFormGroup.get('ccControl').value;
@@ -314,10 +313,6 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       ndocitem.TranAmount = Math.abs(this.TransactionAmount);
       ndocitem.TranType = financeTranTypeAssetValueDecrease;
     }
-    // this.dataSource.data.forEach((val: DocumentItem) => {
-    //   val.TranType = financeTranTypeAssetSoldoutIncome;
-    //   ndoc.Items.push(val);
-    // });
     ndoc.Items.push(ndocitem);
 
     return ndoc;
