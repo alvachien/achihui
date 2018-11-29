@@ -222,7 +222,7 @@ export class DocumentTransferDetailComponent implements OnInit {
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             if (!recreate) {
-              this._router.navigate(['/finance/document/displaytransfer/' + x.Id.toString()]);
+              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
             }
           });
         } else {
