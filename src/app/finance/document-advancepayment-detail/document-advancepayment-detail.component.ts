@@ -349,7 +349,7 @@ export class DocumentAdvancepaymentDetailComponent implements OnInit, AfterViewI
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
-    for(let tmpitem of this.detailObject.AdvPayAccount.dpTmpDocs) {
+    for (let tmpitem of this.detailObject.AdvPayAccount.dpTmpDocs) {
       tmpitem.ControlCenterId = this.detailObject.SourceControlCenterId;
       tmpitem.OrderId = this.detailObject.SourceOrderId;
     }

@@ -42,6 +42,7 @@ import { DocumentLoanDetailComponent } from './document-loan-detail';
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create';
 import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-create';
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create';
+import { DocumentADPCreateComponent } from './document-adpcreate';
 import { AssetCategoryComponent } from './asset-category';
 import { AssetCategoryListComponent } from './asset-category-list';
 import { AssetCategoryDetailComponent } from './asset-category-detail';
@@ -127,6 +128,7 @@ import { AccountExtAssetExComponent } from './account-ext-asset-ex';
     DocumentRepaymentDetailComponent,
     ConfigComponent,
     AccountExtAssetExComponent,
+    DocumentADPCreateComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

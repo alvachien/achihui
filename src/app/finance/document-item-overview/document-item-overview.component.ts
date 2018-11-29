@@ -374,9 +374,18 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       // Do the ADP posting!
       this._storageService.doPostADPTmpDoc(doc).subscribe((x: any) => {
         // Show the posted document - after the snackbar!
-        this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
+        let snackBarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'Open', {
           duration: 3000,
-        }).afterDismissed().subscribe(() => {
+        });
+
+        // Closed
+        snackBarRef.afterDismissed().subscribe(() => {
+          // Need refresh the list
+          this.onTmpDocsRefresh();
+        });
+
+        // Click to open
+        snackBarRef.onAction().subscribe(() => {
           // Navigate to display
           this._router.navigate(['/finance/document/display/' + x.id]);
         });

@@ -31,6 +31,7 @@ import { DocumentDetailComponent } from './document-detail';
 import { DocumentNormalDetailComponent } from './document-normal-detail';
 import { DocumentTransferDetailComponent } from './document-transfer-detail';
 import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment-detail';
+import { DocumentADPCreateComponent } from './document-adpcreate';
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
