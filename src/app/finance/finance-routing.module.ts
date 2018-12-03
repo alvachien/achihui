@@ -30,7 +30,6 @@ import { DocumentListComponent } from './document-list';
 import { DocumentDetailComponent } from './document-detail';
 import { DocumentNormalDetailComponent } from './document-normal-detail';
 import { DocumentTransferDetailComponent } from './document-transfer-detail';
-import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment-detail';
 import { DocumentADPCreateComponent } from './document-adpcreate';
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
@@ -245,11 +244,10 @@ const routes: Routes = [
           {
             path: 'createadp',
             component: DocumentADPCreateComponent,
-            // component: DocumentAdvancepaymentDetailComponent,
           },
           {
             path: 'createadr',
-            component: DocumentAdvancepaymentDetailComponent,
+            component: DocumentADPCreateComponent,
           },
           {
             path: 'createexg',
@@ -295,14 +293,14 @@ const routes: Routes = [
             path: 'edittransfer/:id',
             component: DocumentTransferDetailComponent,
           },
-          {
-            path: 'editadp/:id',
-            component: DocumentAdvancepaymentDetailComponent,
-          },
-          {
-            path: 'editadr/:id',
-            component: DocumentAdvancepaymentDetailComponent,
-          },
+          // {
+          //   path: 'editadp/:id',
+          //   component: DocumentAdvancepaymentDetailComponent,
+          // },
+          // {
+          //   path: 'editadr/:id',
+          //   component: DocumentAdvancepaymentDetailComponent,
+          // },
           {
             path: 'editexg/:id',
             component: DocumentExchangeDetailComponent,

@@ -35,7 +35,6 @@ import { DocumentDetailComponent } from './document-detail';
 import { ReportComponent } from './report';
 import { DocumentNormalDetailComponent } from './document-normal-detail';
 import { DocumentTransferDetailComponent } from './document-transfer-detail';
-import { DocumentAdvancepaymentDetailComponent } from './document-advancepayment-detail';
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
@@ -99,7 +98,6 @@ import { AccountExtAssetExComponent } from './account-ext-asset-ex';
     ReportComponent,
     DocumentNormalDetailComponent,
     DocumentTransferDetailComponent,
-    DocumentAdvancepaymentDetailComponent,
     DocumentExchangeDetailComponent,
     DocumentItemOverviewComponent,
     DocumentLoanDetailComponent,

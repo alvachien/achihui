@@ -76,6 +76,9 @@
             </mat-select>
           </mat-form-field>
         </form>
+        <div>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
       </mat-step>
 
       <!-- Step 2: Extra Info -->
@@ -86,6 +89,10 @@
           [tranType]="TranType" 
           [tranAmount]="TranAmount">
         </hih-finance-account-ext-adp>
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button color="primary" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+        </div>
       </mat-step>
 
     </mat-vertical-stepper>
