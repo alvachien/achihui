@@ -244,7 +244,8 @@ const routes: Routes = [
           },
           {
             path: 'createadp',
-            component: DocumentAdvancepaymentDetailComponent,
+            component: DocumentADPCreateComponent,
+            // component: DocumentAdvancepaymentDetailComponent,
           },
           {
             path: 'createadr',

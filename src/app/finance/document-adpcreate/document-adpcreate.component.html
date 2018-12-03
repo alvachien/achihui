@@ -6,80 +6,88 @@
   </mat-card-header>
   <mat-card-content>
     <mat-vertical-stepper linear #stepper (selectionChange)="onStepSelectionChange($event)">
+
+      <!-- Step 1. Generic Info -->
       <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
-        <!-- Currency -->
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
-            name="cur">
-            <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
-              {{cr.Symbol}} - {{cr.Name | translate}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <!-- Tran date -->
+          <mat-form-field>
+            <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
+            <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
+            <mat-datepicker #dtpker></mat-datepicker>
+          </mat-form-field>
 
-        <!-- Tran date -->
-        <mat-form-field>
-          <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
-          <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
-          <mat-datepicker #dtpker></mat-datepicker>
-        </mat-form-field>
+          <!-- Account -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Account' | translate}}" formControlName="accountControl">
+              <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
+                <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">
+                  {{acnt.Name}} ({{acnt.CategoryName | translate}})
+                </span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <!-- Tran type -->
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.SourceTranType" name="srctt">
-            <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
-              <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <!-- Tran type -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.TransactionType' | translate}}" formControlName="tranTypeControl">
+              <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
+                <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <!-- Account -->
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.Account' | translate}}" name="asstacnt" formControlName="accountControl"
-            required>
-            <mat-option *ngFor="let acnt of arUIAccount">
-              <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}}
-                ({{acnt.CategoryName | translate}})</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <!-- Amount -->
+          <mat-form-field>
+            <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
+          </mat-form-field>
 
-        <!-- Amount -->
-        <mat-form-field>
-          <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
-          <span matSuffix>{{BaseCurrency}}</span>
-        </mat-form-field>
+          <!-- Currency -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
+              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+                {{cr.Symbol}} - {{cr.Name | translate}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <!-- Desp -->
-        <mat-form-field>
-          <input matInput type="text" placeholder="{{'Common.Description' | translate}}" formControlName="despControl">
-        </mat-form-field>
+          <!-- Desp -->
+          <mat-form-field>
+            <input matInput type="text" placeholder="{{'Common.Description' | translate}}" formControlName="despControl">
+          </mat-form-field>
 
-        <!-- CC -->
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl"
-            name="srccc">
-            <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
-              {{cc.Name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <!-- CC -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="srccc">
+              <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+                {{cc.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <!-- Order -->
-        <mat-form-field>
-          <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl"
-            name="srcord">
-            <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
-              {{ord.Name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
+          <!-- Order -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl" name="srcord">
+              <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+                {{ord.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </form>
       </mat-step>
+
+      <!-- Step 2: Extra Info -->
+      <mat-step>
+        <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
+        <hih-finance-account-ext-adp [uiMode]="curMode" 
+          [extObject]="accountAdvPay" 
+          [tranType]="TranType" 
+          [tranAmount]="TranAmount">
+        </hih-finance-account-ext-adp>
+      </mat-step>
+
     </mat-vertical-stepper>
   </mat-card-content>
 </mat-card>
