@@ -38,6 +38,11 @@ import { DocumentTransferDetailComponent } from './document-transfer-detail';
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
+import { DocumentNormalCreateComponent } from './document-normal-create';
+import { DocumentTransferCreateComponent } from './document-transfer-create';
+import { DocumentRepaymentCreateComponent } from './document-repayment-create';
+import { DocumentLoanCreateComponent } from './document-loan-create';
+import { DocumentExchangeCreateComponent } from './document-exchange-create';
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create';
 import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-create';
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create';
@@ -127,6 +132,11 @@ import { AccountExtAssetExComponent } from './account-ext-asset-ex';
     ConfigComponent,
     AccountExtAssetExComponent,
     DocumentADPCreateComponent,
+    DocumentNormalCreateComponent,
+    DocumentTransferCreateComponent,
+    DocumentRepaymentCreateComponent,
+    DocumentLoanCreateComponent,
+    DocumentExchangeCreateComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

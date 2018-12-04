@@ -37,6 +37,11 @@ import { DocumentLoanDetailComponent } from './document-loan-detail';
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create';
 import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-create';
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create';
+import { DocumentNormalCreateComponent } from './document-normal-create';
+import { DocumentTransferCreateComponent } from './document-transfer-create';
+import { DocumentRepaymentCreateComponent } from './document-repayment-create';
+import { DocumentLoanCreateComponent } from './document-loan-create';
+import { DocumentExchangeCreateComponent } from './document-exchange-create';
 import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { DocumentRepaymentDetailComponent } from './document-repayment-detail';
 import { ReportComponent } from './report';
@@ -229,10 +234,10 @@ const routes: Routes = [
             path: '',
             component: DocumentListComponent,
           },
-          {
-            path: 'create',
-            component: DocumentDetailComponent,
-          },
+          // {
+          //   path: 'create',
+          //   component: DocumentDetailComponent,
+          // },
           {
             path: 'createnormal',
             component: DocumentNormalDetailComponent,

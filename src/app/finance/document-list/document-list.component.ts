@@ -171,31 +171,31 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
     }
   }
   public onChangeNormalDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/editnormal', doc.Id]);
+    this._router.navigate(['/finance/document/edit', doc.Id]);
   }
   public onChangeTransferDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/edittransfer', doc.Id]);
+    this._router.navigate(['/finance/document/edit', doc.Id]);
   }
   public onChangeADPDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/editadp', doc.Id]);
+    this._router.navigate(['/finance/document/edit', doc.Id]);
   }
   public onChangeADRDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/editadr', doc.Id]);
+    this._router.navigate(['/finance/document/edit', doc.Id]);
   }
   public onChangeExgDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/editexg', doc.Id]);
+    this._router.navigate(['/finance/document/edit', doc.Id]);
   }
   public onChangeAssetBuyInDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/editassetbuy', doc.Id]);
+    this._router.navigate(['/finance/document/edit', doc.Id]);
   }
   public onChangeAssetSoldOutDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/editassetsold', doc.Id]);
+    this._router.navigate(['/finance/document/edit', doc.Id]);
   }
   public onChangeeBorrowFromDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/editbrwfrm', doc.Id]);
+    this._router.navigate(['/finance/document/edit', doc.Id]);
   }
   public onChangeLendToDocument(doc: Document): void {
-    this._router.navigate(['/finance/document/editlendto', doc.Id]);
+    this._router.navigate(['/finance/document/edit', doc.Id]);
   }
 
   public onDeleteDocument(doc: Document): void {

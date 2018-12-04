@@ -132,7 +132,7 @@ export class DocumentADPCreateComponent implements OnInit {
             // Set default currency
             this.firstFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
             this.firstFormGroup.get('dateControl').setValue(moment());
-        
+
             this._cdr.detectChanges();
           }
         }
@@ -140,13 +140,13 @@ export class DocumentADPCreateComponent implements OnInit {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit, failed to load depended objects : ${error}`);
         }
-  
+
         const dlginfo: MessageDialogInfo = {
           Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           Button: MessageDialogButtonEnum.onlyok,
         };
-  
+
         this._dialog.open(MessageDialogComponent, {
           disableClose: false,
           width: '500px',
