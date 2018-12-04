@@ -244,7 +244,8 @@ const routes: Routes = [
           },
           {
             path: 'createtransfer',
-            component: DocumentTransferDetailComponent,
+            // component: DocumentTransferDetailComponent,
+            component: DocumentTransferCreateComponent,
           },
           {
             path: 'createadp',
