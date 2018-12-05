@@ -1,3 +1,258 @@
-<p>
-  document-exchange-create works!
-</p>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Finance.CurrencyExchange' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-horizontal-stepper linear="true">
+      <!-- Step: Generic info -->
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
+
+          <!-- Tran date -->
+          <mat-form-field>
+            <input matInput formControlName="dateControl" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+            <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
+            <mat-datepicker #tdpicker></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Description -->
+          <mat-form-field>
+            <input matInput type="text" placeholder="{{'Common.Description' |translate}}" maxlength="44"
+              formControlName="despControl">
+          </mat-form-field>
+        </form>
+
+        <div>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
+      </mat-step>
+
+      <!-- Step: From -->
+      <mat-step [stepControl]="fromFormGroup">
+        <form [formGroup]="fromFormGroup">
+          <ng-template matStepLabel>{{'Finance.TransferFrom' | translate}}</ng-template>
+
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Account' | translate}}" formControlName="accountControl">
+              <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter"
+                [value]="acnt.Id">
+                <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">
+                  {{acnt.Name}} ({{acnt.CategoryName | translate}})
+                </span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" 
+              formControlName="amountControl">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
+              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+                {{cr.Symbol}} - {{cr.Name | translate}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="isForeignSourceCurrency">
+            <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" 
+              matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
+              formControlName="exgControl">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl">
+              <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+                {{cc.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl">
+              <mat-option *ngFor="let ord of _storageService.Orders | uiOrderValidFilter: uiOrderFilter" [value]="ord.Id">
+                {{ord.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.BackButton' | translate}}</button>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
+      </mat-step>
+
+      <!-- Step: To -->
+      <mat-step [stepControl]="toFormGroup">
+        <form [formGroup]="toFormGroup">
+          <ng-template matStepLabel>{{'Finance.TransferTo' | translate}}</ng-template>
+
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Account' | translate}}" formControlName="accountControl">
+              <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter"
+                [value]="acnt.Id">
+                <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">
+                  {{acnt.Name}} ({{acnt.CategoryName | translate}})
+                </span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" 
+              formControlName="amountControl">
+          </mat-form-field>
+  
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
+              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+                {{cr.Symbol}} - {{cr.Name | translate}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="isForeignTargetCurrency">
+            <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
+              formControlName="exgControl">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl">
+              <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+              <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+                {{cc.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl">
+              <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+              <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
+                {{tt.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+        
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.BackButton' | translate}}</button>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
+      </mat-step>
+
+      <!-- Step: Previous doc -->
+      <mat-step>
+        <ng-template matStepLabel>{{'Finance.PreviousDocWithPlannedExgRate' | translate}}</ng-template>
+        <div class="table-container mat-elevation-z8">
+          <mat-table #table [dataSource]="dataSource">
+            <!-- ID Column -->
+            <ng-container matColumnDef="ItemId">
+              <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <button mat-icon-button (click)="onDeleteDocItem(row)" matTooltip="{{'Common.Delete' | translate}}">
+                  <mat-icon color="warn" class="toolbar-icon">delete</mat-icon>
+                </button>
+                <span class="toolbar-spacer"></span>
+                <mat-form-field>
+                  <input matInput type="number" required placeholder="#" [(ngModel)]="row.ItemId" name="itid">
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
+
+            <!-- AccountID Column -->
+            <ng-container matColumnDef="AccountId">
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Account' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <mat-select placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="row.AccountId" name="itacnt">
+                    <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter"
+                      [value]="acnt.Id">
+                      <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}}
+                        ({{acnt.CategoryName | translate}})</span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
+
+            <!-- TranType Column -->
+            <ng-container matColumnDef="TranType">
+              <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionType' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [(ngModel)]="row.TranType" name="ittt">
+                    <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
+                      <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Amount Column -->
+            <ng-container matColumnDef="Amount">
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [(ngModel)]="row.TranAmount"
+                    name="itamt">
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Comment Column -->
+            <ng-container matColumnDef="Desp">
+              <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" [(ngModel)]="row.Desp"
+                    name="itdesp">
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Control center Column -->
+            <ng-container matColumnDef="ControlCenter">
+              <mat-header-cell *matHeaderCellDef> {{'Finance.ControlCenter' | translate}} </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" [(ngModel)]="row.ControlCenterId"
+                    name="itcc">
+                    <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+                    <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+                      {{tt.Name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Order Column -->
+            <ng-container matColumnDef="Order">
+              <mat-header-cell *matHeaderCellDef> {{'Finance.Order' | translate}} </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-form-field>
+                  <mat-select placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="row.OrderId" name="itord">
+                    <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+                    <mat-option *ngFor="let tt of arUIOrders | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
+                      {{tt.Name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+        </div>
+
+      </mat-step>
+    </mat-horizontal-stepper>
+  </mat-card-content>
+</mat-card>
