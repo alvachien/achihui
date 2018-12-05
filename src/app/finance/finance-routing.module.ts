@@ -28,8 +28,6 @@ import { OrderDetailComponent } from './order-detail';
 import { DocumentComponent } from './document';
 import { DocumentListComponent } from './document-list';
 import { DocumentDetailComponent } from './document-detail';
-import { DocumentNormalDetailComponent } from './document-normal-detail';
-import { DocumentTransferDetailComponent } from './document-transfer-detail';
 import { DocumentADPCreateComponent } from './document-adpcreate';
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
@@ -240,7 +238,7 @@ const routes: Routes = [
           // },
           {
             path: 'createnormal',
-            component: DocumentNormalDetailComponent,
+            component: DocumentNormalCreateComponent,
           },
           {
             path: 'createtransfer',
@@ -291,14 +289,14 @@ const routes: Routes = [
             path: 'edit/:id',
             component: DocumentDetailComponent,
           },
-          {
-            path: 'editnormal/:id',
-            component: DocumentNormalDetailComponent,
-          },
-          {
-            path: 'edittransfer/:id',
-            component: DocumentTransferDetailComponent,
-          },
+          // {
+          //   path: 'editnormal/:id',
+          //   component: DocumentNormalDetailComponent,
+          // },
+          // {
+          //   path: 'edittransfer/:id',
+          //   component: DocumentTransferDetailComponent,
+          // },
           // {
           //   path: 'editadp/:id',
           //   component: DocumentAdvancepaymentDetailComponent,
@@ -307,30 +305,30 @@ const routes: Routes = [
           //   path: 'editadr/:id',
           //   component: DocumentAdvancepaymentDetailComponent,
           // },
-          {
-            path: 'editexg/:id',
-            component: DocumentExchangeDetailComponent,
-          },
-          {
-            path: 'editbrwfrm/:id',
-            component: DocumentLoanDetailComponent,
-          },
-          {
-            path: 'editlendto/:id',
-            component: DocumentLoanDetailComponent,
-          },
-          {
-            path: 'editassetbuy/:id',
-            component: DocumentNormalDetailComponent,
-          },
-          {
-            path: 'editassetsold/:id',
-            component: DocumentNormalDetailComponent,
-          },
-          {
-            path: 'editrepay/:id',
-            component: DocumentRepaymentDetailComponent,
-          },
+          // {
+          //   path: 'editexg/:id',
+          //   component: DocumentExchangeDetailComponent,
+          // },
+          // {
+          //   path: 'editbrwfrm/:id',
+          //   component: DocumentLoanDetailComponent,
+          // },
+          // {
+          //   path: 'editlendto/:id',
+          //   component: DocumentLoanDetailComponent,
+          // },
+          // {
+          //   path: 'editassetbuy/:id',
+          //   component: DocumentNormalDetailComponent,
+          // },
+          // {
+          //   path: 'editassetsold/:id',
+          //   component: DocumentNormalDetailComponent,
+          // },
+          // {
+          //   path: 'editrepay/:id',
+          //   component: DocumentRepaymentDetailComponent,
+          // },
         ],
       },
       {

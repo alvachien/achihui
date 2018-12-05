@@ -33,8 +33,6 @@ import { DocumentComponent } from './document';
 import { DocumentListComponent } from './document-list';
 import { DocumentDetailComponent } from './document-detail';
 import { ReportComponent } from './report';
-import { DocumentNormalDetailComponent } from './document-normal-detail';
-import { DocumentTransferDetailComponent } from './document-transfer-detail';
 import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
@@ -101,8 +99,6 @@ import { AccountExtAssetExComponent } from './account-ext-asset-ex';
     OrderListComponent,
     OrderDetailComponent,
     ReportComponent,
-    DocumentNormalDetailComponent,
-    DocumentTransferDetailComponent,
     DocumentExchangeDetailComponent,
     DocumentItemOverviewComponent,
     DocumentLoanDetailComponent,

@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef, ViewChild,
-} from '@angular/core';
+  Input, Output, ViewContainerRef, ViewChild, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange, MatButton } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';

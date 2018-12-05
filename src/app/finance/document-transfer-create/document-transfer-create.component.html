@@ -132,17 +132,18 @@
       <mat-step>
         <ng-template matStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
         <div class="mat-typography achih-control-full-width">
+          <h2>{{'Finance.Amount' | translate}}: {{TranAmount}} ({{TranCurrency}})</h2>
+          <h3>{{'Common.Date' | translate}}: {{TranDate}}</h3>
           <!-- <h2>{{'Finance.TransferFrom' | translate}}: {{detailObject.SourceAccountId}}</h2>
-          <h2>{{'Finance.TransferTo' | translate}}: {{detailObject.TargetAccountId}}</h2>
-          <h2>{{'Finance.Amount' | translate}}: {{detailObject.TranAmount}} ({{detailObject.TranCurr}})</h2>
+          <h2>{{'Finance.TransferTo' | translate}}: {{detailObject.TargetAccountId}}</h2>          
           <h3>{{'Common.Description' | translate}}: {{detailObject.Desp}}</h3>
-          <h3>{{'Common.Date' | translate}}: {{tranDateString}}</h3> -->
+           -->
         </div>
 
         <div>
           <button mat-button matStepperPrevious>{{'Common.BackButton' | translate}}</button>
-          <button mat-button color="primary" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' |
-            translate}}</button>
+          <button mat-button (click)="onReset()">{{'Common.Reset' | translate}}</button>
+          <button mat-button color="primary" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
         </div>
       </mat-step>
     </mat-horizontal-stepper>

@@ -1,21 +1,20 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatHorizontalStepper } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
-  UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum,
+  UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum, financeDocTypeTransfer,
+  financeTranTypeTransferOut, financeTranTypeTransferIn,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   UIDisplayStringUtil, IAccountCategoryFilter, financeAccountCategoryAdvanceReceived, TranType,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
-import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { AccountExtADPComponent } from '../account-ext-adp';
 
 @Component({
   selector: 'hih-document-transfer-create',
@@ -28,6 +27,8 @@ export class DocumentTransferCreateComponent implements OnInit {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
+  // Stepper
+  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Header info
   public headerFormGroup: FormGroup;
   // Step: From
@@ -75,13 +76,13 @@ export class DocumentTransferCreateComponent implements OnInit {
     private _router: Router,
     private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent constructor...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnInit...');
     }
 
     this.headerFormGroup = this._formBuilder.group({
@@ -90,7 +91,7 @@ export class DocumentTransferCreateComponent implements OnInit {
       amountControl: ['', Validators.required],
       currControl: ['', Validators.required],
       exgControl: [''],
-      exgpControl: ['']
+      exgpControl: [''],
     });
     this.fromFormGroup = this._formBuilder.group({
       accountControl: ['', Validators.required],
@@ -102,7 +103,7 @@ export class DocumentTransferCreateComponent implements OnInit {
       ccControl: [''],
       orderControl: [''],
     });
-    
+
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllDocTypes(),
@@ -127,6 +128,121 @@ export class DocumentTransferCreateComponent implements OnInit {
   }
 
   onSubmit(): void {
+    let docObj: Document = this._generateDoc();
 
+    // Check!
+    if (!docObj.onVerify({
+      ControlCenters: this._storageService.ControlCenters,
+      Orders: this._storageService.Orders,
+      Accounts: this._storageService.Accounts,
+      DocumentTypes: this._storageService.DocumentTypes,
+      TransactionTypes: this._storageService.TranTypes,
+      Currencies: this._currService.Currencies,
+      BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
+    })) {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: docObj.VerifiedMsgs,
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+
+      return;
+    }
+
+    this._storageService.createDocumentEvent.subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentTransferCreateComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof Document) {
+        // Show the snackbar
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
+
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
+          this.onReset();
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+          }
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    this._storageService.createDocument(docObj);
+  }
+
+  public onReset(): void {
+    if (this._stepper) {
+      this._stepper.reset();
+    }
+  }
+
+  private _generateDoc(): Document {
+    let doc: Document = new Document();
+    doc.DocType = financeDocTypeTransfer;
+    doc.HID = this._homeService.ChosedHome.ID;
+    doc.TranDate = moment(this.TranDate, momentDateFormat);
+    doc.Desp = this.headerFormGroup.get('despControl').value;
+    doc.TranCurr = this.TranCurrency;
+    if (this.isForeignCurrency) {
+      doc.ExgRate = this.headerFormGroup.get('exgControl').value;
+      doc.ExgRate_Plan = this.headerFormGroup.get('exgpControl').value;
+    }
+
+    let docitem: DocumentItem = new DocumentItem();
+    docitem.ItemId = 1;
+    docitem.AccountId = this.fromFormGroup.get('accountControl').value;
+    docitem.ControlCenterId = this.fromFormGroup.get('ccControl').value;
+    docitem.OrderId = this.fromFormGroup.get('orderControl').value;
+    docitem.TranType = financeTranTypeTransferOut;
+    docitem.TranAmount = this.TranAmount;
+    docitem.Desp = doc.Desp;
+    doc.Items.push(docitem);
+
+    docitem = new DocumentItem();
+    docitem.ItemId = 2;
+    docitem.AccountId = this.toFormGroup.get('accountControl').value;
+    docitem.TranType = financeTranTypeTransferIn;
+    docitem.ControlCenterId = this.toFormGroup.get('ccControl').value;
+    docitem.OrderId = this.toFormGroup.get('orderControl').value;
+    docitem.TranAmount = this.TranAmount;
+    docitem.Desp = doc.Desp;
+    doc.Items.push(docitem);
+
+    return doc;
   }
 }
