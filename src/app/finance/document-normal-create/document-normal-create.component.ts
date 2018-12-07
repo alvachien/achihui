@@ -229,7 +229,6 @@ export class DocumentNormalCreateComponent implements OnInit {
   }
 
   public onReset(): void {
-    // Do nothing
     if (this._stepper) {
       this._stepper.reset();
     }

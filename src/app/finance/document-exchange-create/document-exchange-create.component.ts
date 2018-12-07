@@ -1,18 +1,23 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef,
+import {
+  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+  Input, Output, ViewContainerRef, ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
+import { SelectionModel } from '@angular/cdk/collections';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper } from '@angular/material';
 import { Observable, Subject, BehaviorSubject, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument,
+import {
+  LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   UIMode, getUIModeString, financeDocTypeCurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate,
-  IAccountCategoryFilter } from '../../model';
+  IAccountCategoryFilter, momentDateFormat,
+} from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -28,6 +33,8 @@ export class DocumentExchangeCreateComponent implements OnInit {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
+  // Stepper
+  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: From
@@ -37,8 +44,19 @@ export class DocumentExchangeCreateComponent implements OnInit {
   // Step: Prev. doc items
   separatorKeysCodes: any[] = [ENTER, COMMA];
   dataSource: MatTableDataSource<DocumentWithPlanExgRate> = new MatTableDataSource<DocumentWithPlanExgRate>();
-  displayedColumns: string[] = ['DocID', 'DocType', 'TranDate', 'Desp', 'Desp', 'ControlCenter', 'Order'];
+  displayedColumns: string[] = ['select', 'DocID', 'DocType', 'TranDate', 'Desp', 'Currency',
+    'ExchangeRate', 'PropExchangeRate', 'Currency2', 'ExchangeRate2', 'PropExchangeRate2',
+  ];
+  selection: any = new SelectionModel<DocumentWithPlanExgRate>(true, []);
 
+  get tranDateString(): string {
+    let datctrl: any = this.firstFormGroup.get('dateControl');
+    if (datctrl && datctrl.value && datctrl.value.format) {
+      return datctrl.value.format(momentDateFormat);
+    }
+
+    return '';
+  }
   get sourceCurrency(): string {
     let currctrl: any = this.fromFormGroup.get('currControl');
     if (currctrl) {
@@ -75,7 +93,7 @@ export class DocumentExchangeCreateComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService,
-    private _formBuilder: FormBuilder) { 
+    private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent constructor...');
     }
@@ -120,7 +138,7 @@ export class DocumentExchangeCreateComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -133,4 +151,123 @@ export class DocumentExchangeCreateComponent implements OnInit {
     });
   }
 
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected(): boolean {
+    const numSelected: number = this.selection.selected.length;
+    const numRows: number = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle(): void {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach((row: any) => this.selection.select(row));
+  }
+
+  public onStepSelectionChange(event: StepperSelectionEvent): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentExchangeCreateComponent: ${event.selectedIndex}`);
+    }
+
+    // Perform checks
+    if (event.selectedIndex === 3) {
+      let arrqt: any[] = [];
+      let arprvdocs: any[] = [];
+      if (this.isForeignSourceCurrency) {
+        arrqt.push(this._storageService.fetchPreviousDocWithPlanExgRate(this.sourceCurrency));
+      } else if (this.isForeignTargetCurrency) {
+        arrqt.push(this._storageService.fetchPreviousDocWithPlanExgRate(this.targetCurrency));
+      }
+
+      forkJoin(arrqt).subscribe((x: any) => {
+        if (x instanceof Array && x.length > 0) {
+          for (let it of x) {
+            if (it && it instanceof Array && it.length > 0) {
+              for (let itdtl of it) {
+                if (itdtl) {
+                  let pvdoc: DocumentWithPlanExgRate = new DocumentWithPlanExgRate();
+                  pvdoc.onSetData(itdtl);
+                  arprvdocs.push(pvdoc);
+                }
+              }
+            }
+          }
+
+          this.dataSource.data = arprvdocs;
+        }
+      });
+      }
+  }
+
+  // Reset button
+  onReset(): void {
+    if (this._stepper) {
+      this._stepper.reset();
+    }
+  }
+
+  onSubmit(): void {
+    let docObj: Document = this._generateDocument();
+
+    // Check!
+    if (!docObj.onVerify({
+      ControlCenters: this._storageService.ControlCenters,
+      Orders: this._storageService.Orders,
+      Accounts: this._storageService.Accounts,
+      DocumentTypes: this._storageService.DocumentTypes,
+      TransactionTypes: this._storageService.TranTypes,
+      Currencies: this._currService.Currencies,
+      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+    })) {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: docObj.VerifiedMsgs,
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+
+      return;
+    }
+
+  }
+
+  private _generateDocument(): Document {
+    let doc: Document = new Document();
+    doc.DocType = financeDocTypeCurrencyExchange;
+    doc.Desp = this.Desp;
+    doc.TranCurr = this.sourceCurrency;
+    doc.TranCurr2 = this.targetCurrency;
+    doc.ExgRate = this.SourceExchangeRate;
+    doc.ExgRate2 = this.TargetExchangeRate;
+
+    let docitem: DocumentItem = new DocumentItem();
+    docitem.ItemId = 1;
+    docitem.AccountId = this.SourceAccountId;
+    docitem.ControlCenterId = this.SourceControlCenterId;
+    docitem.OrderId = this.SourceOrderId;
+    docitem.TranType = hih.financeTranTypeTransferOut;
+    docitem.TranAmount = this.SourceTranAmount;
+    docitem.Desp = this.Desp;
+    doc.Items.push(docitem);
+
+    docitem = new DocumentItem();
+    docitem.ItemId = 2;
+    docitem.AccountId = this.TargetAccountId;
+    docitem.TranType = hih.financeTranTypeTransferIn;
+    docitem.ControlCenterId = this.TargetControlCenterId;
+    docitem.OrderId = this.TargetOrderId;
+    docitem.TranAmount = this.TargetTranAmount;
+    docitem.UseCurr2 = true;
+    docitem.Desp = this.Desp;
+    doc.Items.push(docitem);
+
+    return doc;
+  }
 }

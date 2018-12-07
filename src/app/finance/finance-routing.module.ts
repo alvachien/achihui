@@ -29,7 +29,6 @@ import { DocumentComponent } from './document';
 import { DocumentListComponent } from './document-list';
 import { DocumentDetailComponent } from './document-detail';
 import { DocumentADPCreateComponent } from './document-adpcreate';
-import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create';
@@ -242,7 +241,6 @@ const routes: Routes = [
           },
           {
             path: 'createtransfer',
-            // component: DocumentTransferDetailComponent,
             component: DocumentTransferCreateComponent,
           },
           {
@@ -255,7 +253,7 @@ const routes: Routes = [
           },
           {
             path: 'createexg',
-            component: DocumentExchangeDetailComponent,
+            component: DocumentExchangeCreateComponent,
           },
           {
             path: 'createbrwfrm',
