@@ -33,7 +33,6 @@ import { DocumentComponent } from './document';
 import { DocumentListComponent } from './document-list';
 import { DocumentDetailComponent } from './document-detail';
 import { ReportComponent } from './report';
-import { DocumentExchangeDetailComponent } from './document-exchange-detail';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentLoanDetailComponent } from './document-loan-detail';
 import { DocumentNormalCreateComponent } from './document-normal-create';
@@ -99,7 +98,6 @@ import { AccountExtAssetExComponent } from './account-ext-asset-ex';
     OrderListComponent,
     OrderDetailComponent,
     ReportComponent,
-    DocumentExchangeDetailComponent,
     DocumentItemOverviewComponent,
     DocumentLoanDetailComponent,
     DocumentAssetBuyInCreateComponent,

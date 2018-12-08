@@ -1,3 +1,23 @@
-<p>
-  document-repayment-create works!
-</p>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Sys.DocTy.Repay' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-horizontal-stepper linear="true" (selectionChange)="onStepSelectionChange($event)">
+      <!-- Step: Generic info -->
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
+
+          <!-- Tran date -->
+          <mat-form-field>
+            <input matInput formControlName="dateControl" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+            <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
+            <mat-datepicker #tdpicker></mat-datepicker>
+          </mat-form-field>
+        </form>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </mat-card-content>
+</mat-card>

@@ -16,7 +16,7 @@ import {
   LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   UIMode, getUIModeString, financeDocTypeCurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate,
-  IAccountCategoryFilter, momentDateFormat,
+  IAccountCategoryFilter, momentDateFormat, financeTranTypeTransferIn, financeTranTypeTransferOut,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -197,7 +197,7 @@ export class DocumentExchangeCreateComponent implements OnInit {
           this.dataSource.data = arprvdocs;
         }
       });
-      }
+    }
   }
 
   // Reset button
@@ -236,36 +236,124 @@ export class DocumentExchangeCreateComponent implements OnInit {
       return;
     }
 
+    this._storageService.createDocumentEvent.subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentExchangeCreateComponent with : ${x}`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof Document) {
+        let cobj: DocumentWithPlanExgRateForUpdate = new DocumentWithPlanExgRateForUpdate();
+        cobj.hid = this._homedefService.ChosedHome.ID;
+        if (this.selection.length > 0) {
+          for (let pd of this.selection) {
+            if (pd) {
+              cobj.docIDs.push(pd.DocID);
+            }
+          }
+        }
+
+        if (cobj.docIDs.length > 0) {
+          if (this.isForeignSourceCurrency) {
+            cobj.targetCurrency = this.sourceCurrency;
+            cobj.exchangeRate = this.fromFormGroup.get('exgControl').value;
+          } else if (this.isForeignTargetCurrency) {
+            cobj.targetCurrency = this.targetCurrency;
+            cobj.exchangeRate = this.toFormGroup.get('exgControl').value;
+          }
+
+          this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe((rst: any) => {
+            let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+              this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+              duration: 3000,
+            });
+
+            let recreate: boolean = false;
+            snackbarRef.onAction().subscribe(() => {
+              this.onReset();
+            });
+
+            snackbarRef.afterDismissed().subscribe(() => {
+              // Navigate to display
+              if (!recreate) {
+                this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+              }
+            });
+          }, (error: any) => {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Debug]: Message dialog result ${error}`);
+            }
+
+            // Show something?
+            this._snackbar.open('Document Posted but previous doc failed to update', 'OK', {
+              duration: 3000,
+            }).afterDismissed().subscribe(() => {
+              // Navigate to display
+              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+            });
+          });
+        } else {
+          // Show the snackbar
+          this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
+            duration: 3000,
+          }).afterDismissed().subscribe(() => {
+            // Navigate to display
+            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+          });
+        }
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    docObj.HID = this._homedefService.ChosedHome.ID;
+    this._storageService.createDocument(docObj);
   }
 
   private _generateDocument(): Document {
     let doc: Document = new Document();
     doc.DocType = financeDocTypeCurrencyExchange;
-    doc.Desp = this.Desp;
+    doc.Desp = this.firstFormGroup.get('despControl').value;
     doc.TranCurr = this.sourceCurrency;
     doc.TranCurr2 = this.targetCurrency;
-    doc.ExgRate = this.SourceExchangeRate;
-    doc.ExgRate2 = this.TargetExchangeRate;
+    doc.ExgRate = this.fromFormGroup.get('exgControl').value;
+    doc.ExgRate2 = this.toFormGroup.get('exgControl').value;
 
     let docitem: DocumentItem = new DocumentItem();
     docitem.ItemId = 1;
-    docitem.AccountId = this.SourceAccountId;
-    docitem.ControlCenterId = this.SourceControlCenterId;
-    docitem.OrderId = this.SourceOrderId;
-    docitem.TranType = hih.financeTranTypeTransferOut;
-    docitem.TranAmount = this.SourceTranAmount;
-    docitem.Desp = this.Desp;
+    docitem.AccountId = this.fromFormGroup.get('accountControl').value;
+    docitem.ControlCenterId = this.fromFormGroup.get('ccControl').value;;
+    docitem.OrderId = this.fromFormGroup.get('orderControl').value;
+    docitem.TranType = financeTranTypeTransferOut;
+    docitem.TranAmount = this.fromFormGroup.get('amountControl').value;
+    docitem.Desp = doc.Desp;
     doc.Items.push(docitem);
 
     docitem = new DocumentItem();
     docitem.ItemId = 2;
-    docitem.AccountId = this.TargetAccountId;
-    docitem.TranType = hih.financeTranTypeTransferIn;
-    docitem.ControlCenterId = this.TargetControlCenterId;
-    docitem.OrderId = this.TargetOrderId;
-    docitem.TranAmount = this.TargetTranAmount;
+    docitem.AccountId = this.toFormGroup.get('accountControl').value;
+    docitem.TranType = financeTranTypeTransferIn;
+    docitem.ControlCenterId = this.toFormGroup.get('ccControl').value;
+    docitem.OrderId = this.toFormGroup.get('orderControl').value;
+    docitem.TranAmount = this.toFormGroup.get('amountControl').value;
     docitem.UseCurr2 = true;
-    docitem.Desp = this.Desp;
+    docitem.Desp = doc.Desp;
     doc.Items.push(docitem);
 
     return doc;
