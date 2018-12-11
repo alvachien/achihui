@@ -232,46 +232,48 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
           this.dataFinTTIn.forEach((val: any) => {
             legends.push(val.name);
           });
-          return {
-            title: {
-              text: 'Incoming',
-              subtext: '',
-              x: 'center',
+
+          let option: EChartOption = {};
+          option.title = {
+            text: 'Incoming',
+            subtext: '',
+            left: 'center',
+          };
+          option.toolbox = {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
             },
-            toolbox: {
-              show: true,
-              feature: {
-                dataView: { show: true, readOnly: true },
-                saveAsImage: { show: true },
-              },
-            },
-            tooltip: {
-              trigger: 'item',
-              formatter: '{a} <br/>{b} : {c} ({d}%)',
-            },
-            legend: {
-              orient: 'vertical',
-              left: 'left',
-              data: legends,
-            },
-            series: [
-              {
-                name: 'Incoming',
-                type: 'pie',
-                radius : [20, 110],
-                center : ['35%', '55%'],
-                roseType : 'radius',
-                data: this.dataFinTTIn,
-                itemStyle: {
-                  emphasis: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                  },
+          };
+          option.tooltip = {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
+          };
+          option.legend = {
+            orient: 'vertical',
+            left: 'left',
+            data: legends,
+          };
+          option.series = [
+            {
+              name: 'Incoming',
+              type: 'pie',
+              radius : [20, 110],
+              center : ['35%', '55%'],
+              roseType : 'radius',
+              data: this.dataFinTTIn,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)',
                 },
               },
-            ],
-          };
+            },
+          ];
+
+          return option;
         })),
       );
 
@@ -282,46 +284,48 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
           this.dataFinTTOut.forEach((val: any) => {
             legends.push(val.name);
           });
-          return {
-            title: {
-              text: 'Outgoing',
-              subtext: '',
-              x: 'center',
+
+          let option: EChartOption = {};
+          option.title = {
+            text: 'Outgoing',
+            subtext: '',
+            left: 'center',
+          };
+          option.toolbox = {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
             },
-            toolbox: {
-              show: true,
-              feature: {
-                dataView: { show: true, readOnly: true },
-                saveAsImage: { show: true },
-              },
-            },
-            tooltip: {
-              trigger: 'item',
-              formatter: '{a} <br/>{b} : {c} ({d}%)',
-            },
-            legend: {
-              orient: 'vertical',
-              left: 'left',
-              data: legends,
-            },
-            series: [
-              {
-                name: 'Outgoing',
-                type: 'pie',
-                radius : [20, 110],
-                center : ['45%', '65%'],
-                roseType : 'area',
-                data: this.dataFinTTOut,
-                itemStyle: {
-                  emphasis: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                  },
+          };
+          option.tooltip = {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
+          };
+          option.legend = {
+            orient: 'vertical',
+            left: 'left',
+            data: legends,
+          };
+          option.series = [
+            {
+              name: 'Outgoing',
+              type: 'pie',
+              radius : [20, 110],
+              center : ['45%', '65%'],
+              roseType : 'area',
+              data: this.dataFinTTOut,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)',
                 },
               },
-            ],
-          };
+            },
+          ];
+
+          return option;
         })),
       );
     }
@@ -348,37 +352,38 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
           },
           ];
 
-          return {
-            title: {
-              text: 'My Events',
-              subtext: '',
-              x: 'center',
-            },
-            tooltip: {
-              trigger: 'item',
-              formatter: '{a} <br/>{b} : {c} ({d}%)',
-            },
-            legend: {
-              orient: 'vertical',
-              left: 'left',
-              data: legends,
-            },
-            series: [{
-              name: 'Events',
-              type: 'pie',
-              radius: '55%',
-              center: ['50%', '60%'],
-              data: eventdata,
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)',
-                },
+          let option: EChartOption = {};
+          option.title = {
+            text: 'My Events',
+            subtext: '',
+            left: 'center',
+          };
+          option.tooltip = {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)',
+          };
+          option.legend = {
+            orient: 'vertical',
+            left: 'left',
+            data: legends,
+          };
+          option.series = [{
+            name: 'Events',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '60%'],
+            data: eventdata,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
               },
             },
-            ],
-          };
+          },
+          ];
+
+          return option;
         })),
       );
     });

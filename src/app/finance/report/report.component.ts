@@ -583,92 +583,95 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   private _buildAccountInChart(): void {
     this.accountIncomingChartOption = of([]).pipe(
       map(() => {
-        return {
-          backgroundColor: '#2c343c',
-          title: {
-            text: 'Assets',
-            left: 'center',
-            textStyle: {
-              color: '#ccc',
-            },
+        let option: EChartOption = {};
+        option.backgroundColor = '#2c343c';
+        option.title = {
+          text: 'Assets',
+          left: 'center',
+          textStyle: {
+            color: '#ccc',
           },
-          toolbox: {
-            show: true,
-            feature: {
-              dataView: { show: true, readOnly: true },
-              saveAsImage: { show: true },
-            },
-          },
-          tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
-          },
-          series: [{
-            name: 'Accounts',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '50%'],
-            data: this.datAccountAsset,
-            roseType: 'radius',
-            label: {
-              normal: {
-                textStyle: {
-                  color: 'rgba(255, 255, 255, 0.3)',
-                },
-              },
-            },
-            labelLine: {
-              normal: {
-                lineStyle: {
-                  color: 'rgba(255, 255, 255, 0.3)',
-                },
-                smooth: 0.2,
-                length: 10,
-                length2: 20,
-              },
-            },
-            itemStyle: {
-              normal: {
-                color: '#c23531',
-                shadowBlur: 200,
-                shadowColor: 'rgba(0, 0, 0, 0.5)',
-              },
-            },
-
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: function (idx: any): number {
-              return Math.random() * 200;
-            },
-          }],
         };
+        option.toolbox = {
+          show: true,
+          feature: {
+            dataView: { show: true, readOnly: true },
+            saveAsImage: { show: true },
+          },
+        };
+        option.tooltip = {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)',
+        };
+        option.series = [{
+          name: 'Accounts',
+          type: 'pie',
+          radius: '55%',
+          center: ['50%', '50%'],
+          data: this.datAccountAsset,
+          roseType: 'radius',
+          label: {
+            normal: {
+              textStyle: {
+                color: 'rgba(255, 255, 255, 0.3)',
+              },
+            },
+          },
+          labelLine: {
+            normal: {
+              lineStyle: {
+                color: 'rgba(255, 255, 255, 0.3)',
+              },
+              smooth: 0.2,
+              length: 10,
+              length2: 20,
+            },
+          },
+          itemStyle: {
+            normal: {
+              color: '#c23531',
+              shadowBlur: 200,
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+            },
+          },
+
+          animationType: 'scale',
+          animationEasing: 'elasticOut',
+          animationDelay: function (idx: any): number {
+            return Math.random() * 200;
+          },
+        },
+        ];
+
+        return option;
       }),
     );
   }
   private _buildAccountOutChart(): void {
     this.accountOutgoingChartOption = of([]).pipe(
       map(() => {
-        return {
-          backgroundColor: '#dc343c',
-          title: {
-            text: 'Liabilities',
-            left: 'center',
-            textStyle: {
-              color: '#ccc',
-            },
+        let option: EChartOption = {};
+        option.backgroundColor = '#dc343c';
+        option.title = {
+          text: 'Liabilities',
+          left: 'center',
+          textStyle: {
+            color: '#ccc',
           },
-          toolbox: {
-            show: true,
-            feature: {
-              dataView: { show: true, readOnly: true },
-              saveAsImage: { show: true },
-            },
+        };
+        option.toolbox = {
+          show: true,
+          feature: {
+            dataView: { show: true, readOnly: true },
+            saveAsImage: { show: true },
           },
-          tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
-          },
-          series: [{
+        };
+        option.tooltip = {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)',
+        };
+        option.series = [
+          {
             name: 'Accounts',
             type: 'pie',
             radius: '55%',
@@ -705,8 +708,10 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             animationDelay: function (idx: any): number {
               return Math.random() * 200;
             },
-          }],
-        };
+          }
+        ];
+
+        return option;
       }),
     );
   }
@@ -718,46 +723,46 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dataCCDebit.forEach((val: any) => {
           legends.push(val.name);
         });
-        return {
-          title: {
-            text: 'Incoming',
-            subtext: 'Control Center',
-            x: 'center',
+
+        let option: EChartOption = {};
+        option.title = {
+          text: 'Incoming',
+          subtext: 'Control Center',
+        };
+        option.toolbox = {
+          show: true,
+          feature: {
+            dataView: { show: true, readOnly: true },
+            saveAsImage: { show: true },
           },
-          toolbox: {
-            show: true,
-            feature: {
-              dataView: { show: true, readOnly: true },
-              saveAsImage: { show: true },
-            },
-          },
-          tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-            data: legends,
-          },
-          series: [
-            {
-              name: 'Control Center',
-              type: 'pie',
-              radius: ['10%', '50%'],
-              center: ['50%', '60%'],
-              roseType: 'radius',
-              data: this.dataCCDebit,
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)',
-                },
+        };
+        option.tooltip = {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)',
+        };
+        option.legend = {
+          orient: 'vertical',
+          left: 'left',
+          data: legends,
+        };
+        option.series = [{
+            name: 'Control Center',
+            type: 'pie',
+            radius: ['10%', '50%'],
+            center: ['50%', '60%'],
+            roseType: 'radius',
+            data: this.dataCCDebit,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
               },
             },
-          ],
-        };
+          },
+        ];
+
+        return option;
       }),
     );
   }
@@ -769,46 +774,47 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dataCCCredit.forEach((val: any) => {
           legends.push(val.name);
         });
-        return {
-          title: {
-            text: 'Outgoing',
-            subtext: 'Control Center',
-            x: 'center',
+
+        let option: EChartOption = {};
+        option.title = {
+          text: 'Outgoing',
+          subtext: 'Control Center',
+        };
+        option.toolbox = {
+          show: true,
+          feature: {
+            dataView: { show: true, readOnly: true },
+            saveAsImage: { show: true },
           },
-          toolbox: {
-            show: true,
-            feature: {
-              dataView: { show: true, readOnly: true },
-              saveAsImage: { show: true },
-            },
-          },
-          tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-            data: legends,
-          },
-          series: [
-            {
-              name: 'Control Center',
-              type: 'pie',
-              radius: ['10%', '50%'],
-              center: ['50%', '60%'],
-              roseType: 'radius',
-              data: this.dataCCCredit,
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)',
-                },
+        };
+        option.tooltip = {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)',
+        };
+        option.legend = {
+          orient: 'vertical',
+          left: 'left',
+          data: legends,
+        };
+        option.series = [
+          {
+            name: 'Control Center',
+            type: 'pie',
+            radius: ['10%', '50%'],
+            center: ['50%', '60%'],
+            roseType: 'radius',
+            data: this.dataCCCredit,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
               },
             },
-          ],
-        };
+          },
+        ];
+
+        return option;
       }),
     );
   }
@@ -820,46 +826,47 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dataOrderDebit.forEach((val: any) => {
           legends.push(val.name);
         });
-        return {
-          title: {
-            text: 'Incoming',
-            subtext: 'Order',
-            x: 'center',
+
+        let option: EChartOption = {};
+        option.title = {
+          text: 'Incoming',
+          subtext: 'Order',
+        };
+        option.toolbox = {
+          show: true,
+          feature: {
+            dataView: { show: true, readOnly: true },
+            saveAsImage: { show: true },
           },
-          toolbox: {
-            show: true,
-            feature: {
-              dataView: { show: true, readOnly: true },
-              saveAsImage: { show: true },
-            },
-          },
-          tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-            data: legends,
-          },
-          series: [
-            {
-              name: 'Order',
-              type: 'pie',
-              radius: ['10%', '50%'],
-              center: ['50%', '60%'],
-              roseType: 'radius',
-              data: this.dataOrderDebit,
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)',
-                },
+        };
+        option.tooltip = {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)',
+        };
+        option.legend = {
+          orient: 'vertical',
+          left: 'left',
+          data: legends,
+        };
+        option.series = [
+          {
+            name: 'Order',
+            type: 'pie',
+            radius: ['10%', '50%'],
+            center: ['50%', '60%'],
+            roseType: 'radius',
+            data: this.dataOrderDebit,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
               },
             },
-          ],
-        };
+          },
+        ];
+
+        return option;
       }),
     );
   }
@@ -871,46 +878,47 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dataOrderCredit.forEach((val: any) => {
           legends.push(val.name);
         });
-        return {
-          title: {
-            text: 'Outgoing',
-            subtext: 'Order',
-            x: 'center',
+
+        let option: EChartOption = {};
+        option.title = {
+          text: 'Outgoing',
+          subtext: 'Order',
+        };
+        option.toolbox = {
+          show: true,
+          feature: {
+            dataView: { show: true, readOnly: true },
+            saveAsImage: { show: true },
           },
-          toolbox: {
-            show: true,
-            feature: {
-              dataView: { show: true, readOnly: true },
-              saveAsImage: { show: true },
-            },
-          },
-          tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b} : {c} ({d}%)',
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-            data: legends,
-          },
-          series: [
-            {
-              name: 'Order',
-              type: 'pie',
-              radius: ['10%', '50%'],
-              center: ['50%', '60%'],
-              roseType: 'radius',
-              data: this.dataOrderCredit,
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)',
-                },
+        };
+        option.tooltip = {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)',
+        };
+        option.legend = {
+          orient: 'vertical',
+          left: 'left',
+          data: legends,
+        };
+        option.series = [
+          {
+            name: 'Order',
+            type: 'pie',
+            radius: ['10%', '50%'],
+            center: ['50%', '60%'],
+            roseType: 'radius',
+            data: this.dataOrderCredit,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
               },
             },
-          ],
-        };
+          },
+        ];
+
+        return option;
       }),
     );
   }

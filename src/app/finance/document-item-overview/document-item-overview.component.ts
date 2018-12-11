@@ -175,67 +175,64 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
             }
           });
 
-          return {
-            tooltip : {
-              trigger: 'axis',
-              axisPointer : {
-                type : 'shadow',
-              },
+          let option: EChartOption = {};
+          option.tooltip = {
+            trigger: 'axis',
+            axisPointer : {
+              type : 'shadow',
             },
-            legend: {
-              data: [this.labelOutgo, this.labelIncome],
-            },
-            grid: {
-              left: '3%',
-              right: '4%',
-              bottom: '3%',
-              containLabel: true,
-            },
-            toolbox: {
-              show: true,
-              feature: {
-                dataView: { show: true, readOnly: true },
-                saveAsImage: { show: true },
-              },
-            },
-            xAxis : [
-              {
-                type : 'value',
-              },
-            ],
-            yAxis : [
-              {
-                type : 'category',
-                axisTick : {show: false},
-                data : arweekdisplay,
-              },
-            ],
-            series : [
-              {
-                name: this.labelIncome,
-                type: 'bar',
-                // stack: '总量',
-                label: {
-                  normal: {
-                    show: true,
-                  },
-                },
-                data: arWeekIncome,
-              },
-              {
-                name: this.labelOutgo,
-                type: 'bar',
-                // stack: '总量',
-                label: {
-                  normal: {
-                    show: true,
-                    position: 'inside',
-                  },
-                },
-                data: arWeekOutgo,
-              },
-            ],
           };
+          option.legend = {
+            data: [this.labelOutgo, this.labelIncome],
+          };
+          option.grid = {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true,
+          };
+          option.toolbox = {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
+            },
+          };
+          option.xAxis = {
+            type : 'value',
+          };
+          option.yAxis = {
+            type : 'category',
+            axisTick : {show: false},
+            data : arweekdisplay,
+          };
+          option.series = [
+            {
+              name: this.labelIncome,
+              type: 'bar',
+              // stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                },
+              },
+              data: arWeekIncome,
+            },
+            {
+              name: this.labelOutgo,
+              type: 'bar',
+              // stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'inside',
+                },
+              },
+              data: arWeekOutgo,
+            },
+          ];
+
+          return option;
         }),
       );
 
@@ -279,49 +276,50 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
             arOutgo.push(valoutgo);
           });
 
-          return {
-            tooltip: {
-              trigger: 'axis',
-            },
-            legend: {
-              data: [this.labelOutgo, this.labelIncome],
-            },
-            grid: {
-              left: '3%',
-              right: '4%',
-              bottom: '3%',
-              containLabel: true,
-            },
-            toolbox: {
-              show: true,
-              feature: {
-                dataView: { show: true, readOnly: true },
-                saveAsImage: { show: true },
-              },
-            },
-            xAxis: {
-              type: 'category',
-              boundaryGap: false,
-              data: arCtgy,
-            },
-            yAxis: {
-              type: 'value',
-            },
-            series: [
-              {
-                name: this.labelOutgo,
-                type: 'line',
-                // stack: '总量',
-                data: arOutgo,
-              },
-              {
-                name: this.labelIncome,
-                type: 'line',
-                // stack: '总量',
-                data: arIncome,
-              },
-            ],
+          let option: EChartOption = {};
+          option.tooltip = {
+            trigger: 'axis',
           };
+          option.legend = {
+            data: [this.labelOutgo, this.labelIncome],
+          };
+          option.grid = {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true,
+          };
+          option.toolbox = {
+            show: true,
+            feature: {
+              dataView: { show: true, readOnly: true },
+              saveAsImage: { show: true },
+            },
+          };
+          option.xAxis = {
+            type: 'category',
+            boundaryGap: false,
+            data: arCtgy,
+          };
+          option.yAxis = {
+            type: 'value',
+          };
+          option.series = [
+            {
+              name: this.labelOutgo,
+              type: 'line',
+              // stack: '总量',
+              data: arOutgo,
+            },
+            {
+              name: this.labelIncome,
+              type: 'line',
+              // stack: '总量',
+              data: arIncome,
+            },
+          ];
+          
+          return option;
         }),
       );
   }
