@@ -1,3 +1,110 @@
-<p>
-  document-loan-create works!
-</p>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{documentTitle | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-horizontal-stepper linear="true" (selectionChange)="onStepSelectionChange($event)">
+      <!-- Step: Generic Info -->
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
+
+          <!-- Tran date -->
+          <mat-form-field>
+            <input matInput formControlName="dateControl" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+            <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
+            <mat-datepicker #tdpicker></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Description -->
+          <mat-form-field>
+            <input matInput type="text" placeholder="{{'Common.Description' |translate}}" maxlength="44"
+              formControlName="despControl" #desp>
+            <mat-hint align="end">{{desp.value.length}} / 44</mat-hint>
+          </mat-form-field>
+  
+          <!-- Amount -->
+          <mat-form-field>
+            <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
+          </mat-form-field>
+  
+          <!-- Currency -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
+              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+                {{cr.Symbol}} - {{cr.Name | translate}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+  
+          <!-- Account -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Account' | translate}}" formControlName="accountControl">
+              <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter"
+                [value]="acnt.Id">
+                <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}}
+                  ({{acnt.CategoryName | translate}})</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- CC -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl">
+              <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+                {{cc.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Order -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl">
+              <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+                {{ord.Name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>    
+        </form>
+
+        <div>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
+      </mat-step>
+
+      <!-- Step: Extra Info -->
+      <mat-step>
+        <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
+
+        <div class="achih-control-full-width">
+          <hih-finance-account-ext-loan [uiMode]="1" [extObject]="loanAccount" [tranAmount]="tranAmount"></hih-finance-account-ext-loan>
+        </div>
+  
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
+      </mat-step>
+
+      <!-- Step: Review and Confirm -->
+      <mat-step>
+        <ng-template matStepLabel>{{'Common.Confirm' | translate}}</ng-template>
+        <!-- 
+              1. Account
+              2. Date
+              3. Amount
+            -->
+        <div class="mat-typography achih-control-full-width">
+          <h3>{{'Common.Date' | translate}}: {{tranDate}}</h3>
+        </div>
+
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button (click)="onReset()">{{'Common.Reset' | translate}}</button>
+          <button mat-button (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </mat-card-content>
+</mat-card>

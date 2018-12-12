@@ -257,11 +257,13 @@ const routes: Routes = [
           },
           {
             path: 'createbrwfrm',
-            component: DocumentLoanDetailComponent,
+            // component: DocumentLoanDetailComponent,
+            component: DocumentLoanCreateComponent,
           },
           {
             path: 'createlendto',
-            component: DocumentLoanDetailComponent,
+            // component: DocumentLoanDetailComponent,
+            component: DocumentLoanCreateComponent,
           },
           {
             path: 'createassetbuy',
@@ -277,7 +279,8 @@ const routes: Routes = [
           },
           {
             path: 'createrepay',
-            component: DocumentRepaymentDetailComponent,
+            // component: DocumentRepaymentDetailComponent,
+            component: DocumentRepaymentCreateComponent,
           },
           {
             path: 'display/:id',

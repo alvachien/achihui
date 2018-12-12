@@ -338,7 +338,7 @@ export class DocumentExchangeCreateComponent implements OnInit {
     let docitem: DocumentItem = new DocumentItem();
     docitem.ItemId = 1;
     docitem.AccountId = this.fromFormGroup.get('accountControl').value;
-    docitem.ControlCenterId = this.fromFormGroup.get('ccControl').value;;
+    docitem.ControlCenterId = this.fromFormGroup.get('ccControl').value;
     docitem.OrderId = this.fromFormGroup.get('orderControl').value;
     docitem.TranType = financeTranTypeTransferOut;
     docitem.TranAmount = this.fromFormGroup.get('amountControl').value;
