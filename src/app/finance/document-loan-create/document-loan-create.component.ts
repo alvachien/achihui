@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, EventEmitter,
+import {
+  Component, OnInit, OnDestroy, EventEmitter,
   Input, Output, ViewContainerRef, ViewChild, ChangeDetectorRef,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -11,10 +12,13 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeBorrowFrom,
+import {
+  LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeBorrowFrom,
   financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo, financeDocTypeLendTo, TemplateDocLoan, UIFinLoanDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, IAccountCategoryFilter } from '../../model';
+  FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, IAccountCategoryFilter, AccountExtraLoan,
+  momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom,
+} from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -39,6 +43,29 @@ export class DocumentLoanCreateComponent implements OnInit {
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
+  // Step: Extra Info
+  public loanAccount: AccountExtraLoan;
+
+  get tranAmount(): number {
+    let amtctrl: any = this.firstFormGroup.get('amountControl');
+    if (amtctrl) {
+      return amtctrl.value;
+    }
+  }
+  get tranDate(): string {
+    let datctrl: any = this.firstFormGroup.get('dateControl');
+    if (datctrl && datctrl.value && datctrl.value.format) {
+      return datctrl.value.format(momentDateFormat);
+    }
+
+    return '';
+  }
+  get tranCurrency(): string {
+    let currctrl: any = this.firstFormGroup.get('currControl');
+    if (currctrl) {
+      return currctrl.value;
+    }
+  }
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -54,6 +81,7 @@ export class DocumentLoanCreateComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent constructor...');
     }
+    this.loanAccount = new AccountExtraLoan();
   }
 
   ngOnInit(): void {
@@ -64,6 +92,11 @@ export class DocumentLoanCreateComponent implements OnInit {
     this.firstFormGroup = this._formBuilder.group({
       dateControl: [{ value: moment(), disabled: false }, Validators.required],
       despControl: ['', Validators.required],
+      amountControl: ['', Validators.required],
+      currControl: ['', Validators.required],
+      accountControl: ['', Validators.required],
+      ccControl: [''],
+      orderControl: [''],
     });
 
     forkJoin([
@@ -76,7 +109,7 @@ export class DocumentLoanCreateComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanDetailComponent ngAfterViewInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngAfterViewInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -121,5 +154,100 @@ export class DocumentLoanCreateComponent implements OnInit {
         data: dlginfo,
       });
     });
+  }
+
+  public onStepSelectionChange(event: StepperSelectionEvent): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentLoanDetailComponent`);
+    }
+  }
+
+  onReset(): void {
+    this._stepper.reset();
+  }
+
+  onSubmit(): void {
+    // Do the real submit
+    let docObj: Document = this._generateDocument();
+    // Check on template docs
+    if (!this.loanAccount.RepayMethod) {
+      this._showErrorDialog('No repayment method!');
+      return;
+    }
+
+    // Todo!
+    // for (let tdoc of this.ctrlAccount.extObject.loanTmpDocs) {
+    //   if (!tdoc.TranAmount) {
+    //     this._showErrorDialog('No tran. amount');
+    //     return;
+    //   }
+    // }
+
+    // Check!
+    if (!docObj.onVerify({
+      ControlCenters: this._storageService.ControlCenters,
+      Orders: this._storageService.Orders,
+      Accounts: this._storageService.Accounts,
+      DocumentTypes: this._storageService.DocumentTypes,
+      TransactionTypes: this._storageService.TranTypes,
+      Currencies: this._currService.Currencies,
+      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+    })) {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: docObj.VerifiedMsgs,
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+
+      return;
+    }
+  }
+
+  private _showErrorDialog(errormsg: string): void {
+    // Show a dialog for error details
+    const dlginfo: MessageDialogInfo = {
+      Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+      Content: errormsg,
+      Button: MessageDialogButtonEnum.onlyok,
+    };
+
+    this._dialog.open(MessageDialogComponent, {
+      disableClose: false,
+      width: '500px',
+      data: dlginfo,
+    });
+
+    return;
+  }
+
+  private _generateDocument(): Document {
+    let doc: Document = new Document();
+    doc.DocType = this.loanType;
+    doc.Desp = this.firstFormGroup.get('despControl').value;
+    doc.TranCurr = this.tranCurrency;
+    doc.TranDate = moment(this.tranDate, momentDateFormat);
+
+    let fitem: DocumentItem = new DocumentItem();
+    fitem.ItemId = 1;
+    fitem.AccountId = this.firstFormGroup.get('accountControl').value;
+    fitem.ControlCenterId = this.firstFormGroup.get('ccControl').value;
+    fitem.OrderId = this.firstFormGroup.get('orderControl').value;
+    if (this.loanType === financeDocTypeLendTo) {
+      fitem.TranType = financeTranTypeLendTo;
+    } else {
+      fitem.TranType = financeTranTypeBorrowFrom;
+    }
+    fitem.TranAmount = this.tranAmount;
+    fitem.Desp = doc.Desp;
+    doc.Items.push(fitem);
+
+    return doc;
   }
 }

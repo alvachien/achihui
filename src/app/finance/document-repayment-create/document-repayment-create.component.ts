@@ -1,11 +1,15 @@
 import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ViewChild,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource } from '@angular/material';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource, MatHorizontalStepper } from '@angular/material';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import * as moment from 'moment';
+
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
@@ -29,6 +33,11 @@ export class DocumentRepaymentCreateComponent implements OnInit {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
+  // Stepper
+  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
+  // Step: Generic info
+  public firstFormGroup: FormGroup;
+  
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
@@ -43,7 +52,8 @@ export class DocumentRepaymentCreateComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
-    public _currService: FinCurrencyService) {
+    public _currService: FinCurrencyService,
+    private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent constructor...');
     }
@@ -55,6 +65,16 @@ export class DocumentRepaymentCreateComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent ngOnInit...');
     }
+
+    this.firstFormGroup = this._formBuilder.group({
+      dateControl: [{ value: moment(), disabled: false }, Validators.required],
+      despControl: ['', Validators.required],
+      amountControl: ['', Validators.required],
+      currControl: ['', Validators.required],
+      accountControl: ['', Validators.required],
+      ccControl: ['', Validators.required],
+      orderControl: ['', Validators.required],
+    });
     
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -80,4 +100,17 @@ export class DocumentRepaymentCreateComponent implements OnInit {
 
   }
 
+  public onStepSelectionChange(event: StepperSelectionEvent): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentLoanDetailComponent`);
+    }
+  }
+
+  onReset(): void {
+    this._stepper.reset();
+  }
+
+  onSubmit(): void {
+    // Do the real submit
+  }
 }

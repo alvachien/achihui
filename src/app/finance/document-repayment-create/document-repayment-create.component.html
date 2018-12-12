@@ -16,6 +16,15 @@
             <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
             <mat-datepicker #tdpicker></mat-datepicker>
           </mat-form-field>
+          
+          <!-- Currency -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
+              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+                {{cr.Symbol}} - {{cr.Name | translate}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </form>
       </mat-step>
     </mat-horizontal-stepper>

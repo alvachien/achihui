@@ -91,12 +91,13 @@
       <mat-step>
         <ng-template matStepLabel>{{'Common.Confirm' | translate}}</ng-template>
         <!-- 
-              1. Account
-              2. Date
-              3. Amount
-            -->
+          1. Account
+          2. Date
+          3. Amount
+        -->
         <div class="mat-typography achih-control-full-width">
           <h3>{{'Common.Date' | translate}}: {{tranDate}}</h3>
+          <h3>{{'Common.Amount' | translate}}: {{tranAmount}} {{tranCurrency}}</h3>
         </div>
 
         <div>
