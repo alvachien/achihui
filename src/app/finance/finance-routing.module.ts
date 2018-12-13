@@ -30,7 +30,6 @@ import { DocumentListComponent } from './document-list';
 import { DocumentDetailComponent } from './document-detail';
 import { DocumentADPCreateComponent } from './document-adpcreate';
 import { DocumentItemOverviewComponent } from './document-item-overview';
-import { DocumentLoanDetailComponent } from './document-loan-detail';
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create';
 import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-create';
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create';

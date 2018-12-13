@@ -34,7 +34,6 @@ import { DocumentListComponent } from './document-list';
 import { DocumentDetailComponent } from './document-detail';
 import { ReportComponent } from './report';
 import { DocumentItemOverviewComponent } from './document-item-overview';
-import { DocumentLoanDetailComponent } from './document-loan-detail';
 import { DocumentNormalCreateComponent } from './document-normal-create';
 import { DocumentTransferCreateComponent } from './document-transfer-create';
 import { DocumentRepaymentCreateComponent } from './document-repayment-create';
@@ -99,7 +98,6 @@ import { AccountExtAssetExComponent } from './account-ext-asset-ex';
     OrderDetailComponent,
     ReportComponent,
     DocumentItemOverviewComponent,
-    DocumentLoanDetailComponent,
     DocumentAssetBuyInCreateComponent,
     DocumentAssetSoldoutCreateComponent,
     DocumentAssetValChgCreateComponent,

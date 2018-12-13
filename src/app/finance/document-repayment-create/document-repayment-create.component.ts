@@ -15,7 +15,7 @@ import {
   LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   UICommonLabelEnum, IAccountCategoryFilter, financeDocTypeRepay, financeTranTypeRepaymentOut, financeTranTypeInterestOut,
-  financeAccountCategoryBorrowFrom, financeTranTypeRepaymentIn, financeTranTypeInterestIn, AccountExtraLoan
+  financeAccountCategoryBorrowFrom, financeTranTypeRepaymentIn, financeTranTypeInterestIn,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -25,7 +25,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'hih-document-repayment-create',
   templateUrl: './document-repayment-create.component.html',
-  styleUrls: ['./document-repayment-create.component.scss']
+  styleUrls: ['./document-repayment-create.component.scss'],
 })
 export class DocumentRepaymentCreateComponent implements OnInit {
   public arUIAccount: UIAccountForSelection[] = [];
@@ -37,7 +37,7 @@ export class DocumentRepaymentCreateComponent implements OnInit {
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
-  
+
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
@@ -66,16 +66,15 @@ export class DocumentRepaymentCreateComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent ngOnInit...');
     }
 
+    // Start create the UI controls
     this.firstFormGroup = this._formBuilder.group({
       dateControl: [{ value: moment(), disabled: false }, Validators.required],
       despControl: ['', Validators.required],
-      amountControl: ['', Validators.required],
       currControl: ['', Validators.required],
-      accountControl: ['', Validators.required],
-      ccControl: ['', Validators.required],
-      orderControl: ['', Validators.required],
+      exgControl: '',
+      exgpControl: '',
     });
-    
+
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllDocTypes(),

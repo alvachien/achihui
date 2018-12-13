@@ -4,7 +4,6 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SelectionModel } from '@angular/cdk/collections';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper } from '@angular/material';
 import { Observable, forkJoin, merge } from 'rxjs';
@@ -21,7 +20,6 @@ import {
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AccountExtLoanComponent } from '../account-ext-loan';
 
@@ -45,6 +43,7 @@ export class DocumentLoanCreateComponent implements OnInit {
   public firstFormGroup: FormGroup;
   // Step: Extra Info
   public loanAccount: AccountExtraLoan;
+  @ViewChild(AccountExtLoanComponent) ctrlAccount: AccountExtLoanComponent;
 
   get tranAmount(): number {
     let amtctrl: any = this.firstFormGroup.get('amountControl');
@@ -158,7 +157,14 @@ export class DocumentLoanCreateComponent implements OnInit {
 
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentLoanDetailComponent`);
+      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentLoanCreateComponent: ${event.selectedIndex}`);
+    }
+
+    if (event.selectedIndex === 2) {
+      // For confirm
+      if (this.ctrlAccount !== undefined) {
+        this.ctrlAccount.generateAccountInfoForSave();
+      }
     }
   }
 
@@ -174,14 +180,12 @@ export class DocumentLoanCreateComponent implements OnInit {
       this._showErrorDialog('No repayment method!');
       return;
     }
-
-    // Todo!
-    // for (let tdoc of this.ctrlAccount.extObject.loanTmpDocs) {
-    //   if (!tdoc.TranAmount) {
-    //     this._showErrorDialog('No tran. amount');
-    //     return;
-    //   }
-    // }
+    for (let tdoc of this.ctrlAccount.extObject.loanTmpDocs) {
+      if (!tdoc.TranAmount) {
+        this._showErrorDialog('No tran. amount');
+        return;
+      }
+    }
 
     // Check!
     if (!docObj.onVerify({
@@ -208,6 +212,60 @@ export class DocumentLoanCreateComponent implements OnInit {
 
       return;
     }
+
+    // Build the JSON file to API
+    let sobj: any = docObj.writeJSONObject(); // Document first
+    let acntobj: Account = new Account();
+    acntobj.HID = this._homedefService.ChosedHome.ID;
+    acntobj.CategoryId = this.loanType;
+    acntobj.Name = docObj.Desp;
+    acntobj.Comment = docObj.Desp;
+    acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
+    acntobj.ExtraInfo = this.loanAccount;
+    sobj.accountVM = acntobj.writeJSONObject();
+
+    this._storageService.createDocumentEvent.subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentLoanCreateComponent`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof Document) {
+        // Show the snackbar
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
+
+        snackbarRef.onAction().subscribe(() => {
+          this.onReset();
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
+
+    this._storageService.createLoanDocument(sobj);
   }
 
   private _showErrorDialog(errormsg: string): void {
@@ -229,6 +287,7 @@ export class DocumentLoanCreateComponent implements OnInit {
 
   private _generateDocument(): Document {
     let doc: Document = new Document();
+    doc.HID = this._homedefService.ChosedHome.ID;
     doc.DocType = this.loanType;
     doc.Desp = this.firstFormGroup.get('despControl').value;
     doc.TranCurr = this.tranCurrency;

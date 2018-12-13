@@ -23,9 +23,36 @@
               <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
                 {{cr.Symbol}} - {{cr.Name | translate}}
               </mat-option>
-            </mat-select>
+            </mat-select>            
           </mat-form-field>
+
+          <!-- Description -->
+          <mat-form-field>
+            <input matInput type="text" placeholder="{{'Common.Description' |translate}}" maxlength="44"
+              formControlName="despControl" #desp>
+            <mat-hint align="end">{{desp.value.length}} / 44</mat-hint>
+          </mat-form-field>
+
+          <!-- Exchange rate -->
+          <mat-form-field *ngIf="isForeignCurrency">
+            <input matInput type="number" placeholder="{{'Finance.ExchangeRate' | translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
+              formControlName="exgControl">
+          </mat-form-field>
+
+          <!-- Planned Exchange rate -->
+          <div *ngIf="isForeignCurrency" class="achih-control-full-width">
+            <mat-checkbox formControlName="exgpControl" color="accent">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
+          </div>
+          
+          <div>
+            <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+          </div>
         </form>
+      </mat-step>
+
+      <!-- Step: -->
+      <mat-step>
+        
       </mat-step>
     </mat-horizontal-stepper>
   </mat-card-content>
