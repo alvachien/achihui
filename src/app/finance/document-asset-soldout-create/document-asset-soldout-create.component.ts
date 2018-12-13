@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilterEx, financeTranTypeAssetSoldoutIncome, momentDateFormat,
+  IAccountCategoryFilterEx, financeTranTypeAssetSoldoutIncome, momentDateFormat, ModelUtility,
   InfoMessage, MessageType, financeDocTypeAssetSoldOut, financeTranTypeAssetSoldout, FinanceAssetSoldoutDocumentAPI,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
@@ -118,7 +118,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
 
   public onCreateDocItem(): void {
     let di: DocumentItem = new DocumentItem();
-    di.ItemId = this.getNextItemID();
+    di.ItemId = ModelUtility.getFinanceNextItemID(this.dataSource.data);
 
     let aritems: any[] = this.dataSource.data.slice();
     aritems.push(di);
@@ -325,20 +325,5 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     }
 
     return chkrst;
-  }
-
-  private getNextItemID(): number {
-    if (this.dataSource.data.length <= 0) {
-      return 1;
-    }
-
-    let nMax: number = 0;
-    for (let item of this.dataSource.data) {
-      if (item.ItemId > nMax) {
-        nMax = item.ItemId;
-      }
-    }
-
-    return nMax + 1;
   }
 }

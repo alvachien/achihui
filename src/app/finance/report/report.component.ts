@@ -10,7 +10,7 @@ import { EChartOption } from 'echarts';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Utility, UIDisplayString, AccountCategory,
+  getOverviewScopeRange, UICommonLabelEnum, ModelUtility, UIDisplayString, AccountCategory,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -300,20 +300,20 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
           // Build xAxis
           orgdata.forEach((val: any) => {
             let ntranidx: number = xAxisData.findIndex((value: any) => {
-              if (value === Utility.getYearMonthDisplayString(val.year, val.month)) {
+              if (value === ModelUtility.getYearMonthDisplayString(val.year, val.month)) {
                 return true;
               }
             });
 
             if (ntranidx === -1) {
-              xAxisData.push(Utility.getYearMonthDisplayString(val.year, val.month));
+              xAxisData.push(ModelUtility.getYearMonthDisplayString(val.year, val.month));
             }
           });
 
           // Build data
           xAxisData.forEach((axis: any) => {
             orgdata.forEach((val: any) => {
-              if (axis === Utility.getYearMonthDisplayString(val.year, val.month)) {
+              if (axis === ModelUtility.getYearMonthDisplayString(val.year, val.month)) {
                 if (val.expense) {
                   datOut.push(-1 * val.tranAmount);
                 } else {

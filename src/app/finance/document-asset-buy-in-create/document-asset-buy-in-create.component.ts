@@ -8,7 +8,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
-  AccountExtraAsset, UICommonLabelEnum,
+  AccountExtraAsset, UICommonLabelEnum, ModelUtility,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilter, momentDateFormat, InfoMessage, MessageType, financeDocTypeAssetBuyIn, FinanceAssetBuyinDocumentAPI,
 } from '../../model';
@@ -144,7 +144,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
 
   public onCreateDocItem(): void {
     let di: DocumentItem = new DocumentItem();
-    di.ItemId = this.getNextItemID();
+    di.ItemId = ModelUtility.getFinanceNextItemID(this.dataSource.data);
 
     let aritems: any[] = this.dataSource.data.slice();
     aritems.push(di);
@@ -407,20 +407,5 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     }
 
     return ndoc;
-  }
-
-  private getNextItemID(): number {
-    if (this.dataSource.data.length <= 0) {
-      return 1;
-    }
-
-    let nMax: number = 0;
-    for (let item of this.dataSource.data) {
-      if (item.ItemId > nMax) {
-        nMax = item.ItemId;
-      }
-    }
-
-    return nMax + 1;
   }
 }

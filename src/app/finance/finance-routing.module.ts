@@ -39,7 +39,6 @@ import { DocumentRepaymentCreateComponent } from './document-repayment-create';
 import { DocumentLoanCreateComponent } from './document-loan-create';
 import { DocumentExchangeCreateComponent } from './document-exchange-create';
 import { DocumentItemSearchListComponent } from './document-item-search-list';
-import { DocumentRepaymentDetailComponent } from './document-repayment-detail';
 import { ReportComponent } from './report';
 import { ConfigComponent } from './config';
 

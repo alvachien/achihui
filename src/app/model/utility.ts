@@ -1,6 +1,15 @@
 import { dateSplitChar } from './common';
+import { DocumentItem } from './financemodel';
 
-export class Utility {
+/**
+ * Utility class in Model
+ */
+export class ModelUtility {
+  /**
+   * Convert date to string
+   * @param dt an instance of Date
+   * @returns a result string
+   */
   public static Date2String(dt: Date): string {
     // From: http://stackoverflow.com/questions/1056728/where-can-i-find-documentation-on-formatting-a-date-in-javascript
     // let curr_date : string = dt.getDate().toString();
@@ -14,6 +23,11 @@ export class Utility {
     return y.toString() + dateSplitChar + (m < 10 ? ('0' + m) : m).toString() + dateSplitChar + (d < 10 ? ('0' + d) : d).toString();
   }
 
+  /**
+   * Parse string to Date
+   * @param s string to parse
+   * @returns a new Date
+   */
   public static String2Date(s: string): Date {
     if (!s) {
       return new Date();
@@ -30,6 +44,12 @@ export class Utility {
     }
   }
 
+  /**
+   * Workout the distance between two days
+   * @param first First date
+   * @param second Second date
+   * @returns number between two days
+   */
   public static DaysBetween(first: Date, second: Date): number {
 
     // Copy date parts of the timestamps, discarding the time parts.
@@ -45,11 +65,20 @@ export class Utility {
     return Math.floor(days);
   }
 
+  /**
+   * Round a number to 2 digits
+   * @param num Number to do the rounding
+   */
   public static Round2Two(num: number): number {
     // return +(Math.round(num + "e+2")  + "e-2");
     return Math.round(num * 100) / 100;
   }
 
+  /**
+   * Check mail format
+   * @param strMail String of the mail
+   * @returns true if strMail is valid
+   */
   public static CheckMail(strMail: string): boolean {
     let isValid: boolean = false;
 
@@ -68,6 +97,13 @@ export class Utility {
     return isValid;
   }
 
+  /**
+   * Check the length of string
+   * @param strField String to be checked
+   * @param minlength Min. length allowed
+   * @param maxLength Max. length allowed
+   * @returns true if the string meet the length check
+   */
   public static CheckStringLength(strField: string, minlength: number, maxLength: number): boolean {
     let lengthDf: number = strField.length;
     let bResult: boolean = false;
@@ -79,6 +115,11 @@ export class Utility {
     return bResult;
   }
 
+  /**
+   * Get strength level of a password
+   * @param strField Password to be check
+   * @returns number of level
+   */
   public static GetPasswordStrengthLevel(strField: string): number {
     let passLevel: number = 0;
 
@@ -102,6 +143,11 @@ export class Utility {
     return passLevel;
   }
 
+  /**
+   * Check duplicated entries in an array
+   * @param strarray Array to be check
+   * @returns true indicates duplicated entries exist
+   */
   public static hasDuplicatesInStringArray(strarray: string): boolean {
     let valuesSoFar: any = Object.create(undefined);
     for (let i: number = 0; i < strarray.length; ++i) {
@@ -114,14 +160,47 @@ export class Utility {
     return false;
   }
 
+  /**
+   * Provide a number with prefix
+   * @param num Number to be work
+   * @param length Length specified in prefix
+   * @returns a string
+   * @example Input: num=2,length=3; Output: 002
+   */
   public static prefixInteger(num: number, length: number): string {
     return (Array(length).join('0') + num).slice(-length);
   }
 
-  // Get display string for Year/Month
-  // Input: y=2018,m=8; Output: 201808
-  // Input: y=2018,m=11, Output: 201811
+  /**
+   * Get display string for Year/Month
+   * @param y Year
+   * @param m Month
+   * @returns a string
+   * Example:
+   * @example Input: y=2018,m=8; Output: 201808
+   * @example Input: y=2018,m=11, Output: 201811
+   */
   public static getYearMonthDisplayString(y: number, m: number): string {
     return y.toString() + dateSplitChar + (m < 10 ? ('0' + m) : m).toString();
+  }
+
+  /**
+   * Get next ID for Finance Document Item
+   * @param items Existing Document Items
+   * @returns Next suitable ID
+   */
+  public static getFinanceNextItemID(items: DocumentItem[]): number {
+    if (items.length <= 0) {
+      return 1;
+    }
+
+    let nMax: number = 0;
+    for (let item of items) {
+      if (item.ItemId > nMax) {
+        nMax = item.ItemId;
+      }
+    }
+
+    return nMax + 1;
   }
 }

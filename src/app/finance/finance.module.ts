@@ -58,7 +58,6 @@ import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from './pipes';
 import { AccountExtCreditCardComponent } from './account-ext-credit-card';
-import { DocumentRepaymentDetailComponent } from './document-repayment-detail';
 import { ConfigComponent } from './config';
 import { AccountExtAssetExComponent } from './account-ext-asset-ex';
 
@@ -120,7 +119,6 @@ import { AccountExtAssetExComponent } from './account-ext-asset-ex';
     UIAccountCtgyFilterExPipe,
     UIOrderValidFilterPipe,
     AccountExtCreditCardComponent,
-    DocumentRepaymentDetailComponent,
     ConfigComponent,
     AccountExtAssetExComponent,
     DocumentADPCreateComponent,

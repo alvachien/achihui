@@ -14,7 +14,7 @@ import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  UICommonLabelEnum, IAccountCategoryFilter, momentDateFormat,
+  UICommonLabelEnum, IAccountCategoryFilter, momentDateFormat, ModelUtility,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -115,7 +115,7 @@ export class DocumentNormalCreateComponent implements OnInit {
 
   public onCreateDocItem(): void {
     let di: DocumentItem = new DocumentItem();
-    di.ItemId = this._getNextItemID();
+    di.ItemId = ModelUtility.getFinanceNextItemID(this.dataSource.data);
 
     let exitems: DocumentItem[] = this.dataSource.data.slice();
     exitems.push(di);
@@ -255,23 +255,6 @@ export class DocumentNormalCreateComponent implements OnInit {
     if (index >= 0) {
       row.Tags.splice(index, 1);
     }
-  }
-
-  private _getNextItemID(): number {
-    let exitems: DocumentItem[] = this.dataSource.data.slice();
-
-    if (exitems.length <= 0) {
-      return 1;
-    }
-
-    let nMax: number = 0;
-    for (let item of exitems) {
-      if (item.ItemId > nMax) {
-        nMax = item.ItemId;
-      }
-    }
-
-    return nMax + 1;
   }
 
   private _generateDocObject(): Document {

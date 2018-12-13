@@ -66,7 +66,7 @@ export class DocumentADPCreateComponent implements OnInit {
     private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _homeService: HomeDefDetailService,
-    private _currService: FinCurrencyService,
+    public _currService: FinCurrencyService,
     private _router: Router,
     private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -154,7 +154,6 @@ export class DocumentADPCreateComponent implements OnInit {
         });
       });
     });
-
   }
 
   canSubmit(): boolean {
