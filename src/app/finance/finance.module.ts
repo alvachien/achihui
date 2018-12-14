@@ -60,6 +60,9 @@ import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPip
 import { AccountExtCreditCardComponent } from './account-ext-credit-card';
 import { ConfigComponent } from './config';
 import { AccountExtAssetExComponent } from './account-ext-asset-ex';
+import { PlanComponent } from './plan';
+import { PlanDetailComponent } from './plan-detail';
+import { PlanListComponent } from './plan-list';
 
 @NgModule({
   imports: [
@@ -127,6 +130,9 @@ import { AccountExtAssetExComponent } from './account-ext-asset-ex';
     DocumentRepaymentCreateComponent,
     DocumentLoanCreateComponent,
     DocumentExchangeCreateComponent,
+    PlanComponent,
+    PlanDetailComponent,
+    PlanListComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

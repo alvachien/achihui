@@ -41,6 +41,9 @@ import { DocumentExchangeCreateComponent } from './document-exchange-create';
 import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { ReportComponent } from './report';
 import { ConfigComponent } from './config';
+import { PlanComponent } from './plan';
+import { PlanDetailComponent } from './plan-detail';
+import { PlanListComponent } from './plan-list';
 
 const routes: Routes = [
   {
@@ -337,6 +340,28 @@ const routes: Routes = [
       {
         path: 'report',
         component: ReportComponent,
+      },
+      {
+        path: 'plan',
+        component: PlanComponent,
+        children: [
+          {
+            path: '',
+            component: PlanListComponent,
+          },
+          {
+            path: 'create',
+            component: PlanDetailComponent,
+          },
+          {
+            path: 'display/:id',
+            component: PlanDetailComponent,
+          },
+          {
+            path: 'edit/:id',
+            component: PlanDetailComponent,
+          },
+        ],
       },
     ],
   },

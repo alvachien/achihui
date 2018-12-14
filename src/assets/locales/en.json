@@ -481,6 +481,7 @@
     "RepayDayInMonth": "Repay day",
     "LegacyAsset": "Legacy Asset",
     "PresentValue": "Present Est. Vaue",
+    "Plan": "Finance Plan",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

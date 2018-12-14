@@ -41,7 +41,8 @@ export class SideNavService {
     this.addSubItem(finance, 'Finance.Orders', '/finance/order', 9, 'tune');
     this.addSubItem(finance, 'Finance.Documents', '/finance/document', 10, 'assignment');
     this.addSubItem(finance, 'Finance.Reports', '/finance/report', 11, 'account_balance');
-    this.addSubItem(finance, 'Common.Search', '/finance/search', 12, 'search');
+    this.addSubItem(finance, 'Finance.Plan', '/finance/plan', 12, 'score');
+    this.addSubItem(finance, 'Common.Search', '/finance/search', 13, 'search');
 
     const library: any = this.addItem('Nav.Libraries', 'subject', undefined, 4);
     // this.addSubItem(library, 'Nav.Person', '/library/person', 1, 'face');
