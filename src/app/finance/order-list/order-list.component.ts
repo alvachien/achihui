@@ -3,6 +3,7 @@ import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, Order, UICommonLabelEnum, momentDateFormat } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
@@ -31,7 +32,7 @@ export class OrderListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnInit...');
     }
 
     this.isLoadingResults = true;

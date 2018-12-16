@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { Observable, forkJoin, Subject, BehaviorSubject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
@@ -39,7 +40,6 @@ export class DocumentDetailComponent implements OnInit {
 
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
   displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'TranAmount', 'Desp', 'ControlCenterId', 'OrderId'];
-  itemOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   expandedItem: DocumentItem;
 
   get isFieldChangable(): boolean {
@@ -61,6 +61,9 @@ export class DocumentDetailComponent implements OnInit {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering constructor ngOnInit...');
+    }
     this.detailObject = new Document();
   }
 
@@ -94,7 +97,9 @@ export class DocumentDetailComponent implements OnInit {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
             // Create is not allowed!
-            // this.onInitCreateMode();
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Debug]: Entering ngOninit, error in wrong create mode!`);
+            }
           } else if (x[0].path === 'edit') {
             this.routerID = +x[1].path;
 
@@ -115,7 +120,6 @@ export class DocumentDetailComponent implements OnInit {
 
                 this.detailObject = x2;
                 this.dataSource.data = this.detailObject.Items;
-                this.itemOperEvent.emit(); // Show the items
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);

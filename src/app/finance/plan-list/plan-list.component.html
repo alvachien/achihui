@@ -4,6 +4,11 @@
     <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
+    <mat-toolbar color="primary">
+      <span>{{'Finance.Plan' | translate}}</span>
+      <span class="toolbar-spacer"></span>
+      <mat-icon class="toolbar-icon" (click)="onCreatePlan()">add</mat-icon>
+    </mat-toolbar>
     <p>TBD</p>
   </mat-card-content>
 </mat-card>

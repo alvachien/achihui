@@ -39,7 +39,6 @@
             ],
             "styles": [
               "node_modules/fullcalendar/dist/fullcalendar.min.css",
-              "src/assets/fonts/material-icons.css",
               "src/styles.scss"
             ],
             "scripts": [
@@ -141,7 +140,6 @@
             ],
             "styles": [
               "node_modules/fullcalendar/dist/fullcalendar.css",
-              "src/assets/fonts/material-icons.css",
               "src/styles.scss"
             ],
             "assets": [

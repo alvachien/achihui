@@ -2306,6 +2306,72 @@ export class TemplateDocLoan extends TemplateDocBase {
 }
 
 /**
+ * Plan type
+ */
+export enum PlanTypeEnum {
+  Account           = 0,
+  AccountCategory   = 1,
+  ControlCenter     = 2,
+  TranType          = 3,
+}
+
+/**
+ * Plan
+ */
+export class Plan extends hih.BaseModel {
+  private _planType: PlanTypeEnum;
+  private _accountID: number;
+  private _accountCtgyID: number;
+  private _ccID: number;
+  private _tranTypeID: number;
+  private _targetDate: moment.Moment;
+  private _tagetBalance: number;
+
+  get PlanType(): PlanTypeEnum {
+    return this._planType;
+  }
+  set PlanType(pt: PlanTypeEnum) {
+    this._planType = pt;
+  }
+  get AccountID(): number {
+    return this._accountID;    
+  }
+  set AccountID(acid: number) {
+    this._accountID = acid;
+  }
+  get AccountCategoryID(): number {
+    return this._accountCtgyID;
+  }
+  set AccountCategoryID(acid: number) {
+    this._accountCtgyID = acid;
+  }
+  get ControlCenterID(): number {
+    return this._ccID;
+  }
+  set ControlCenterID(ccid: number) {
+    this._ccID = ccid;
+  }
+  get TranTypeID(): number {
+    return this._tranTypeID;
+  }
+  set TranTypeID(ttid: number) {
+    this._tranTypeID = ttid;
+  }
+  get TargetDate(): moment.Moment {
+    return this._targetDate;
+  }
+  set TargetDate(tdate: moment.Moment) {
+    this._targetDate = tdate;
+  }
+  get TargetBalance(): number {
+    return this._tagetBalance;
+  }
+  set TargetBalance(tb: number) {
+    this._tagetBalance = tb;
+  }
+}
+
+/**
  * Report base
  */
 export class FinanceReportBase {
