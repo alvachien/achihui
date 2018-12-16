@@ -7,6 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, Order, SettlementRule, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';

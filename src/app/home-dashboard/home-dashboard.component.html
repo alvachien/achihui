@@ -57,7 +57,7 @@
         <mat-card-header>
           <mat-card-title>
             {{'Nav.FinanceTrace' | translate}}
-            <mat-toolbar color="primary">
+            <mat-toolbar color="accent">
               <mat-form-field style="width:auto;">
                 <mat-select [(ngModel)]="selectedFinanceScope" (selectionChange)="onFinanceScopeChanged()">
                   <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
@@ -114,7 +114,7 @@
         <mat-card-header>
           <mat-card-title>
             {{'Nav.LearningTrace' | translate}}
-            <mat-toolbar color="primary">
+            <mat-toolbar color="accent">
               <mat-form-field style="width:auto;">
                 <mat-select [(ngModel)]="selectedLearnScope" (selectionChange)="onLearnScopeChanged()">
                   <mat-option *ngFor="let scp of _uistatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>

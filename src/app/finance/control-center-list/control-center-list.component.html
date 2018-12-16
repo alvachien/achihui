@@ -8,7 +8,7 @@
       <mat-spinner></mat-spinner>
     </div>
     
-    <mat-toolbar>
+    <mat-toolbar color="accent" class="mt-2">
       <button mat-icon-button (click)="onCreateCC()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></button>
       <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent">refresh</mat-icon></button>
       <a mat-button routerLink="/finance/controlcenter/tree" routerLinkActive="active" matTooltip="{{'Common.HierarchyView' | translate}}">{{'Common.HierarchyView' | translate}}</a>

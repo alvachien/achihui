@@ -2326,6 +2326,7 @@ export class Plan extends hih.BaseModel {
   private _tranTypeID: number;
   private _targetDate: moment.Moment;
   private _tagetBalance: number;
+  private _description: string;
 
   get PlanType(): PlanTypeEnum {
     return this._planType;
@@ -2368,6 +2369,12 @@ export class Plan extends hih.BaseModel {
   }
   set TargetBalance(tb: number) {
     this._tagetBalance = tb;
+  }
+  get Description(): string {
+    return this._description;
+  }
+  set Description(desp: string) {
+    this._description = desp;
   }
 }
 
