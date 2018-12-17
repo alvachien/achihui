@@ -2,10 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
+import { Observable, forkJoin, Subject, BehaviorSubject, merge, of } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Plan, PlanTypeEnum, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
+import {
+  LogLevel, Plan, PlanTypeEnum, UIMode, getUIModeString, UICommonLabelEnum, BuildupAccountForSelection,
+  UIAccountForSelection, IAccountCategoryFilter,
+} from '../../model';
+import { HomeDefDetailService, FinanceStorageService, UIStatusService, FinCurrencyService } from '../../services';
 
 @Component({
   selector: 'hih-finance-plan-detail',
@@ -18,6 +22,10 @@ export class PlanDetailComponent implements OnInit {
   public uiMode: UIMode = UIMode.Create;
   public mainFormGroup: FormGroup;
   public detailObject: Plan;
+  public arUIAccount: UIAccountForSelection[] = [];
+  public uiAccountStatusFilter: string | undefined;
+  public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
+
   get baseCurrency(): string {
     return this._homedefService.curHomeSelected.value.BaseCurrency;
   }
@@ -25,45 +33,70 @@ export class PlanDetailComponent implements OnInit {
   constructor(private _homedefService: HomeDefDetailService,
     private _formBuilder: FormBuilder,
     private _router: Router,
-    private _activateRoute: ActivatedRoute) {
+    private _activateRoute: ActivatedRoute,
+    public _storageService: FinanceStorageService,
+    public _currService: FinCurrencyService) {
     this.detailObject = new Plan();
   }
 
   ngOnInit(): void {
-    this._activateRoute.url.subscribe((x: any) => {
+    forkJoin([
+      this._storageService.fetchAllAccountCategories(),
+      this._storageService.fetchAllTranTypes(),
+      this._storageService.fetchAllAccounts(),
+      this._storageService.fetchAllControlCenters(),
+      this._storageService.fetchAllOrders(),
+      this._currService.fetchAllCurrencies(),
+    ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit for activateRoute URL: ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.mainFormGroup = this._formBuilder.group({
-            dateControl: [{value: moment(), disabled: false}, Validators.required],
-            tgtbalanceControl: [{value: 0}, Validators.required],
-            despControl: ['', Validators.required],
-          });
-        } else if (x[0].path === 'edit') {
-          this._routerID = +x[1].path;
+      // Accounts
+      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.uiAccountStatusFilter = undefined;
+      this.uiAccountCtgyFilter = undefined;
 
-          this.uiMode = UIMode.Change;
-          this.mainFormGroup = this._formBuilder.group({
-            dateControl: [{value: moment(), disabled: false}, Validators.required],
-            tgtbalanceControl: [{value: 0}, Validators.required],
-            despControl: ['', Validators.required],
-          });
-        } else if (x[0].path === 'display') {
-          this._routerID = +x[1].path;
-
-          this.uiMode = UIMode.Display;
-          this.mainFormGroup = this._formBuilder.group({
-            dateControl: [{value: moment(), disabled: false}, Validators.required],
-            tgtbalanceControl: [{value: 0}, Validators.required],
-            despControl: ['', Validators.required],
-          });
+      this._activateRoute.url.subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
-        
-        this.currentMode = getUIModeString(this.uiMode);
-      }
+
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.mainFormGroup = this._formBuilder.group({
+              dateControl: [{ value: moment(), disabled: false }, Validators.required],
+              accountControl: ['', Validators.required],
+              tgtbalanceControl: [{ value: 0 }, Validators.required],
+              despControl: ['', Validators.required],
+            });
+          } else if (x[0].path === 'edit') {
+            this._routerID = +x[1].path;
+
+            this.uiMode = UIMode.Change;
+            this.mainFormGroup = this._formBuilder.group({
+              dateControl: [{ value: moment(), disabled: false }, Validators.required],
+              accountControl: ['', Validators.required],
+              tgtbalanceControl: [{ value: 0 }, Validators.required],
+              despControl: ['', Validators.required],
+            });
+          } else if (x[0].path === 'display') {
+            this._routerID = +x[1].path;
+
+            this.uiMode = UIMode.Display;
+
+            // Let's assume the value is here
+            this.mainFormGroup = this._formBuilder.group({
+              dateControl: [{ value: moment(), disabled: true }, Validators.required],
+              accountControl: ['', Validators.required],
+              tgtbalanceControl: [{ value: 100, disabled: true }, Validators.required],
+              despControl: [{ value: 'Test', disabled: true }, Validators.required],
+            });
+          }
+
+          this.currentMode = getUIModeString(this.uiMode);
+        }
+      });
     });
   }
 }

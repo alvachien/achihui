@@ -2319,6 +2319,7 @@ export enum PlanTypeEnum {
  * Plan
  */
 export class Plan extends hih.BaseModel {
+  private _id: number;
   private _planType: PlanTypeEnum;
   private _accountID: number;
   private _accountCtgyID: number;
@@ -2328,6 +2329,12 @@ export class Plan extends hih.BaseModel {
   private _tagetBalance: number;
   private _description: string;
 
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
   get PlanType(): PlanTypeEnum {
     return this._planType;
   }
@@ -2335,7 +2342,7 @@ export class Plan extends hih.BaseModel {
     this._planType = pt;
   }
   get AccountID(): number {
-    return this._accountID;    
+    return this._accountID;
   }
   set AccountID(acid: number) {
     this._accountID = acid;
@@ -2382,9 +2389,27 @@ export class Plan extends hih.BaseModel {
  * Report base
  */
 export class FinanceReportBase {
-  public DebitBalance: number;
-  public CreditBalance: number;
-  public Balance: number;
+  private _debitBalance: number;
+  private _creditBalance: number;
+  private _balance: number;
+  get DebitBalance(): number {
+    return this._debitBalance;
+  }
+  set DebitBalance(db: number) {
+    this._debitBalance = db;
+  }
+  get CreditBalance(): number {
+    return this._creditBalance;
+  }
+  set CreditBalance(cb: number) {
+    this._creditBalance = cb;
+  }
+  get Balance(): number {
+    return this._balance;
+  }
+  set Balance(bal: number) {
+    this._balance = bal;
+  }
 
   public onSetData(data: any): void {
     if (data && data.debitBalance) {
@@ -2411,10 +2436,34 @@ export class FinanceReportBase {
  * Balance sheet
  */
 export class BalanceSheetReport extends FinanceReportBase {
-  public AccountId: number;
-  public AccountName: string;
-  public AccountCategoryId: number;
-  public AccountCategoryName: string;
+  private _accountID: number;
+  private _accountName: string;
+  private _accountCtgyID: number;
+  private _accountCtgyName: string;
+  get AccountId(): number {
+    return this._accountID;
+  }
+  set AccountId(acid: number) {
+    this._accountID = acid;
+  }
+  get AccountName(): string {
+    return this._accountName;
+  }
+  set AccountName(acntname: string) {
+    this._accountName = acntname;
+  }
+  get AccountCategoryId(): number {
+    return this._accountCtgyID;
+  }
+  set AccountCategoryId(ctgyid: number) {
+    this._accountCtgyID = ctgyid;
+  }
+  get AccountCategoryName(): string {
+    return this._accountCtgyName;
+  }
+  set AccountCategoryName(ctgyName: string) {
+    this._accountCtgyName = ctgyName;
+  }
 
   public onSetData(data: any): void {
     super.onSetData(data);
@@ -2438,8 +2487,21 @@ export class BalanceSheetReport extends FinanceReportBase {
  * Control center report
  */
 export class ControlCenterReport extends FinanceReportBase {
-  public ControlCenterId: number;
-  public ControlCenterName: string;
+  private _ccID: number;
+  private _ccName: string;
+  get ControlCenterId(): number {
+    return this._ccID;
+  }
+  set ControlCenterId(ccid: number) {
+    this._ccID = ccid;
+  }
+  get ControlCenterName(): string {
+    return this._ccName;
+  }
+  set ControlCenterName(ccname: string) {
+    this._ccName = ccname;
+  }
+
   public onSetData(data: any): void {
     super.onSetData(data);
 
@@ -2456,8 +2518,20 @@ export class ControlCenterReport extends FinanceReportBase {
  * Order report
  */
 export class OrderReport extends FinanceReportBase {
-  public OrderId: number;
-  public OrderName: string;
+  private _orderID: number;
+  private _orderName: string;
+  get OrderId(): number {
+    return this._orderID;
+  }
+  set OrderId(oid: number) {
+    this._orderID = oid;
+  }
+  get OrderName(): string {
+    return this._orderName;
+  }
+  set OrderName(oname: string) {
+    this._orderName = oname;
+  }
 
   public onSetData(data: any): void {
     super.onSetData(data);
@@ -2475,10 +2549,35 @@ export class OrderReport extends FinanceReportBase {
  * Tran type report
  */
 export class TranTypeReport {
-  public TranType: number;
-  public TranTypeName: string;
-  public ExpenseFlag: boolean;
-  public TranAmount: number;
+  private _tranType: number;
+  private _tranTypeName: string;
+  private _expenseFlag: boolean;
+  private _tranAmount: number;
+
+  get TranType(): number {
+    return this._tranType;
+  }
+  set TranType(tt: number) {
+    this._tranType = tt;
+  }
+  get TranTypeName(): string {
+    return this._tranTypeName;
+  }
+  set TranTypeName(ttname: string) {
+    this._tranTypeName = ttname;
+  }
+  get ExpenseFlag(): boolean {
+    return this._expenseFlag;
+  }
+  set ExpenseFlag(ef: boolean) {
+    this._expenseFlag = ef;
+  }
+  get TranAmount(): number {
+    return this._tranAmount;
+  }
+  set TranAmount(tamt: number) {
+    this._tranAmount = tamt;
+  }
   public TranDate: moment.Moment;
 
   public onSetData(data: any): void {

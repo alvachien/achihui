@@ -11,6 +11,54 @@
         <mat-icon color="primary" class="toolbar-icon">add</mat-icon>
       </button>
     </mat-toolbar>
-    <p>TBD</p>
+
+    <!-- Table -->
+    <div class="table-container mat-elevation-z8">
+      <mat-table #table [dataSource]="dataSource">
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button mat-icon-button (click)="onChangePlan(row)" matTooltip="{{'Common.Edit' | translate}}">
+              <mat-icon color="accent">edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onDeletePlan(row)" matTooltip="{{'Common.Delete' | translate}}">
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+            {{row.Id}}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Account ID Column -->
+        <ng-container matColumnDef="accid">
+          <mat-header-cell *matHeaderCellDef>{{'Finance.Account' | translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.AccountID}} </mat-cell>
+        </ng-container>
+
+        <!-- Target date Column -->
+        <ng-container matColumnDef="tgtdate">
+          <mat-header-cell *matHeaderCellDef> {{'Common.Date' | translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.TargetDate}} </mat-cell>
+        </ng-container>
+
+        <!-- Target Balance Column -->
+        <ng-container matColumnDef="tgtbalance">
+          <mat-header-cell *matHeaderCellDef> {{'Finance.Balance' | translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.TargetBalance}} </mat-cell>
+        </ng-container>
+
+        <!-- Desp Column -->
+        <ng-container matColumnDef="desp">
+          <mat-header-cell *matHeaderCellDef> {{'Common.Description' | translate}} </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.Description}} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onDisplayPlan(row)"></mat-row>
+      </mat-table>
+      <mat-paginator #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+      </mat-table>
+    </div>
   </mat-card-content>
 </mat-card>
