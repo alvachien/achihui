@@ -62,7 +62,7 @@
         <div class="table-container mat-elevation-z8">
           <mat-table #table [dataSource]="dataSource">
             <!-- ID Column -->
-            <ng-container matColumnDef="ItemId">
+            <ng-container matColumnDef="itemid">
               <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <button mat-icon-button (click)="onDeleteDocItem(row)" matTooltip="{{'Common.Delete' | translate}}">
@@ -76,7 +76,7 @@
             </ng-container>
 
             <!-- AccountID Column -->
-            <ng-container matColumnDef="AccountId">
+            <ng-container matColumnDef="accountid">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Account' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
@@ -92,7 +92,7 @@
             </ng-container>
 
             <!-- TranType Column -->
-            <ng-container matColumnDef="TranType">
+            <ng-container matColumnDef="trantype">
               <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionType' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
@@ -106,7 +106,7 @@
             </ng-container>
 
             <!-- Amount Column -->
-            <ng-container matColumnDef="Amount">
+            <ng-container matColumnDef="amount">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
@@ -117,7 +117,7 @@
             </ng-container>
 
             <!-- Comment Column -->
-            <ng-container matColumnDef="Desp">
+            <ng-container matColumnDef="desp">
               <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
@@ -128,7 +128,7 @@
             </ng-container>
 
             <!-- Control center Column -->
-            <ng-container matColumnDef="ControlCenter">
+            <ng-container matColumnDef="controlcenter">
               <mat-header-cell *matHeaderCellDef> {{'Finance.ControlCenter' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
@@ -144,7 +144,7 @@
             </ng-container>
 
             <!-- Order Column -->
-            <ng-container matColumnDef="Order">
+            <ng-container matColumnDef="order">
               <mat-header-cell *matHeaderCellDef> {{'Finance.Order' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
@@ -159,7 +159,7 @@
             </ng-container>
 
             <!-- Tag Column -->
-            <ng-container matColumnDef="Tag">
+            <ng-container matColumnDef="tag">
               <mat-header-cell *matHeaderCellDef> {{'Common.Tag' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>

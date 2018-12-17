@@ -19,7 +19,7 @@
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
           <mat-cell *matCellDef="let row">
-            <button mat-icon-button (click)="onChangePlan(row)" matTooltip="{{'Common.Edit' | translate}}">
+            <button mat-icon-button (click)="onEditPlan(row)" matTooltip="{{'Common.Edit' | translate}}">
               <mat-icon color="accent">edit</mat-icon>
             </button>
             <button mat-icon-button (click)="onDeletePlan(row)" matTooltip="{{'Common.Delete' | translate}}">
@@ -58,7 +58,6 @@
       </mat-table>
       <mat-paginator #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
-      </mat-table>
     </div>
   </mat-card-content>
 </mat-card>

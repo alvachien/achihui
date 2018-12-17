@@ -13,7 +13,7 @@
 
       <!-- Account -->
       <mat-form-field>
-        <mat-select placeholder="{{'Finance.Account' | translate}}" name="asstacnt" formControlName="accountControl"
+        <mat-select placeholder="{{'Finance.Account' | translate}}" formControlName="accountControl"
           required>
           <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilterEx: uiAccountCtgyFilterEx"
             [value]="acnt.Id">
@@ -25,8 +25,8 @@
 
       <!-- Target balance -->
       <mat-form-field>
-        <input matInput type="number" placeholder="{{'Finance.Amount' |translate}}" formControlName="tgtbalanceControl">
-        <span>{{baseCurrency}}</span>
+        <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="tgtbalanceControl">
+        <span matSuffix>{{baseCurrency}}</span>
       </mat-form-field>
 
       <!-- Desp -->

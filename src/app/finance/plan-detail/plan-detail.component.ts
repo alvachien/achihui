@@ -7,7 +7,7 @@ import { Observable, forkJoin, Subject, BehaviorSubject, merge, of } from 'rxjs'
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, Plan, PlanTypeEnum, UIMode, getUIModeString, UICommonLabelEnum, BuildupAccountForSelection,
-  UIAccountForSelection, IAccountCategoryFilter,
+  UIAccountForSelection, IAccountCategoryFilter, momentDateFormat,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService, FinCurrencyService } from '../../services';
 
@@ -40,12 +40,18 @@ export class PlanDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.mainFormGroup = this._formBuilder.group({
+      dateControl: [{ value: moment(), disabled: false }, Validators.required],
+      accountControl: ['', Validators.required],
+      tgtbalanceControl: [{ value: 0 }, Validators.required],
+      despControl: ['', Validators.required],
+    });
+    
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllTranTypes(),
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllControlCenters(),
-      this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -64,21 +70,15 @@ export class PlanDetailComponent implements OnInit {
 
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
-            this.mainFormGroup = this._formBuilder.group({
-              dateControl: [{ value: moment(), disabled: false }, Validators.required],
-              accountControl: ['', Validators.required],
-              tgtbalanceControl: [{ value: 0 }, Validators.required],
-              despControl: ['', Validators.required],
-            });
           } else if (x[0].path === 'edit') {
             this._routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
-            this.mainFormGroup = this._formBuilder.group({
-              dateControl: [{ value: moment(), disabled: false }, Validators.required],
-              accountControl: ['', Validators.required],
-              tgtbalanceControl: [{ value: 0 }, Validators.required],
-              despControl: ['', Validators.required],
+            this.mainFormGroup.setValue({
+              dateControl: moment('2019-2-1', momentDateFormat),
+              accountControl: 5,
+              tgtbalanceControl: 100,
+              despControl: 'Test'
             });
           } else if (x[0].path === 'display') {
             this._routerID = +x[1].path;
@@ -86,12 +86,13 @@ export class PlanDetailComponent implements OnInit {
             this.uiMode = UIMode.Display;
 
             // Let's assume the value is here
-            this.mainFormGroup = this._formBuilder.group({
-              dateControl: [{ value: moment(), disabled: true }, Validators.required],
-              accountControl: ['', Validators.required],
-              tgtbalanceControl: [{ value: 100, disabled: true }, Validators.required],
-              despControl: [{ value: 'Test', disabled: true }, Validators.required],
+            this.mainFormGroup.setValue({
+              dateControl: moment('2019-2-1', momentDateFormat),
+              accountControl: 5,
+              tgtbalanceControl: 100,
+              despControl: 'Test'
             });
+            this.mainFormGroup.disable();
           }
 
           this.currentMode = getUIModeString(this.uiMode);
