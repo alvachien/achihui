@@ -365,25 +365,47 @@ export abstract class AccountExtra {
  */
 export class Account extends hih.BaseModel {
   private _id: number;
+  private _hid: number;
+  private _ctgyid: number;
+  private _name: string;
+  private _comment: string;
+  private _ownerid: string;
   get Id(): number {
     return this._id;
   }
   set Id(id: number) {
     this._id = id;
   }
-
-  private _hid: number;
   get HID(): number {
     return this._hid;
   }
   set HID(hid: number) {
     this._hid = hid;
   }
-
-  public CategoryId: number;
-  public Name: string;
-  public Comment: string;
-  public OwnerId: string;
+  get CategoryId(): number {
+    return this._ctgyid;
+  }
+  set CategoryId(cid: number) {
+    this._ctgyid = cid;
+  }
+  get Name(): string {
+    return this._name;
+  }
+  set Name(name: string) {
+    this._name = name;
+  }
+  get Comment(): string {
+    return this._comment;
+  }
+  set Comment(cmt: string) {
+    this._comment = cmt;
+  }
+  get OwnerId(): string {
+    return this._ownerid;
+  }
+  set OwnerId(oid: string) {
+    this._ownerid = oid;
+  }
   public Status: AccountStatusEnum;
 
   public CategoryName: string;
