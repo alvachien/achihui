@@ -11,7 +11,8 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
   TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, isOverviewDateInScope,
   UIOrderForSelection, UIAccountForSelection, BuildupAccountForSelection, BuildupOrderForSelection, financeAccountCategoryBorrowFrom,
-  financeTranTypeRepaymentOut, financeTranTypeRepaymentIn, ReportTrendExTypeEnum, ReportTrendExData, momentDateFormat } from '../../model';
+  financeTranTypeRepaymentOut, financeTranTypeRepaymentIn, ReportTrendExTypeEnum, ReportTrendExData, momentDateFormat,
+  DocumentCreatedFrequenciesByUser, HomeMember, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ThemeStorage } from '../../theme-picker/theme-storage/theme-storage';
@@ -63,6 +64,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
   selectedTmpScope: OverviewScopeEnum;
   weeklyTrendChartOption: Observable<EChartOption>;
   dailyTrendChartOption: Observable<EChartOption>;
+  userDocAmountChartOption: Observable<EChartOption>;
 
   chartTheme: string;
 
@@ -114,6 +116,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),
+      this._homedefService.fetchHomeMembers(this._homedefService.ChosedHome.ID),
     ]).subscribe((x: any) => {
       // Refresh the template documents
       this.onTmpDocsRefresh();
@@ -144,6 +147,11 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
     arweeks.forEach((val: any) => {
       arweekdisplay.push(val.year.toString() + '.' + val.week.toString());
     });
+
+    // User document amount
+    this.userDocAmountChartOption = this._storageService.fetchDocPostedFrequencyPerUser().pipe(
+      map((x: DocumentCreatedFrequenciesByUser[]) => this._buildUserDocAmount(x)),
+    );
 
     // Weekly trend
     this.weeklyTrendChartOption = this._storageService.fetchReportTrendData(ReportTrendExTypeEnum.Weekly, true, bgn, end)
@@ -210,7 +218,6 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
             {
               name: this.labelIncome,
               type: 'bar',
-              // stack: '总量',
               label: {
                 normal: {
                   show: true,
@@ -221,7 +228,6 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
             {
               name: this.labelOutgo,
               type: 'bar',
-              // stack: '总量',
               label: {
                 normal: {
                   show: true,
@@ -308,17 +314,15 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
             {
               name: this.labelOutgo,
               type: 'line',
-              // stack: '总量',
               data: arOutgo,
             },
             {
               name: this.labelIncome,
               type: 'line',
-              // stack: '总量',
               data: arIncome,
             },
           ];
-          
+
           return option;
         }),
       );
@@ -425,5 +429,96 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
   }
   public onCreateAssetValChgDocument(): void {
     this._router.navigate(['/finance/document/createassetvalchg']);
+  }
+
+  private _buildUserDocAmount(x: DocumentCreatedFrequenciesByUser[]): EChartOption {
+    let option: EChartOption = {};
+    let ardata: any = [];
+    let arLegends: string[] = [];
+    for (let lidx: number = 0; lidx < this._homedefService.MembersInChosedHome.length; lidx ++) {
+      ardata.push([]);
+      arLegends.push(this._homedefService.MembersInChosedHome[lidx].DisplayAs);
+    }
+
+    let arweeks2: any[] = [];
+    let rbgn: moment.Moment = moment().subtract(1, 'M');
+    let bgnweek2: any = rbgn.format('w');
+    let bgnweekyear2: any = rbgn.format('gggg');
+    let endweek2: any = moment().format('w');
+    let endweekyear2: any = moment().format('gggg');
+    for (let iweekyear: number = +bgnweekyear2; iweekyear <= +endweekyear2; iweekyear++) {
+      for (let iweek: number = +bgnweek2; iweek <= +endweek2; iweek ++) {
+        arweeks2.push({
+          year: +iweekyear,
+          week: +iweek,
+        });
+      }
+    }
+    let arweekdisplay2: string[] = [];
+    arweeks2.forEach((val: any) => {
+      arweekdisplay2.push(val.year.toString() + '.' + val.week.toString());
+    });
+
+    arweeks2.forEach((val: any) => {
+      // For each member
+      this._homedefService.MembersInChosedHome.forEach((mem: HomeMember, memIdx: number) => {
+        let idxWeek: number = x.findIndex((val2: DocumentCreatedFrequenciesByUser) => {
+          return val2.year === val.year && val2.week && +val2.week === +val.week
+            && val2.userID.localeCompare(mem.User) === 0;
+        });
+
+        if (idxWeek === -1) {
+          ardata[memIdx].push(0);
+        } else {
+          ardata[memIdx].push(x[idxWeek].amountOfDocuments);
+        }
+      });
+    });
+
+    option.tooltip = {
+      trigger: 'axis',
+      axisPointer : {
+        type : 'shadow',
+      },
+    };
+    option.legend = {
+      data: arLegends,
+    };
+    option.grid = {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true,
+    };
+    option.toolbox = {
+      show: true,
+      feature: {
+        dataView: { show: true, readOnly: true },
+        saveAsImage: { show: true },
+      },
+    };
+    option.xAxis = [{
+        type : 'category',
+        data : arweekdisplay2,
+      },
+    ];
+    option.yAxis = [{
+      type : 'value',
+    }];
+    option.series = [];
+    for (let lidx: number = 0; lidx < this._homedefService.MembersInChosedHome.length; lidx ++) {
+      option.series.push({
+        name: this._homedefService.MembersInChosedHome[lidx].DisplayAs,
+        type: 'bar',
+        label: {
+          normal: {
+            show: true,
+          },
+        },
+        data: ardata[lidx],
+      });
+    }
+
+    return option;
   }
 }

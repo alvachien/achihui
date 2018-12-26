@@ -2848,6 +2848,38 @@ export class DocumentWithPlanExgRateForUpdate {
   public docIDs: number[] = [];
 }
 
+/**
+ * Document created frequencies by user
+ */
+export class DocumentCreatedFrequenciesByUser {
+  public userID: string;
+  public year: number;
+  public month?: string;
+  public week?: string;
+  public amountOfDocuments: number;
+
+  public onSetData(data: any): void {
+    if (data && data.userID) {
+      this.userID = data.userID;
+    }
+    if (data && data.year) {
+      this.year = +data.year;
+    }
+    if (data && data.month) {
+      this.month = data.month;
+    }
+    if (data && data.week) {
+      this.week = data.week;
+    }
+    if (data && data.amountOfDocuments) {
+      this.amountOfDocuments = +data.amountOfDocuments;
+    }
+  }
+}
+
+/**
+ * Basic API for Asset document
+ */
 export abstract class FinanceAssetDocumentAPIBase {
   public HID: number;
   public tranCurr: string;

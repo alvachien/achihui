@@ -8,7 +8,7 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   UINameValuePair, FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, TemplateDocLoan, MonthOnMonthReport,
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
   ReportTrendExData, FinanceADPCalAPIInput, FinanceADPCalAPIOutput, FinanceAssetSoldoutDocumentAPI,
-  FinanceAssetBuyinDocumentAPI, FinanceAssetValChgDocumentAPI,
+  FinanceAssetBuyinDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentCreatedFrequenciesByUser,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -2232,6 +2232,37 @@ export class FinanceStorageService {
         totalCount: x.totalCount,
         items: arrst,
       };
+    }));
+  }
+
+  /**
+   * Fetch doc posted frequency per user
+   */
+  public fetchDocPostedFrequencyPerUser(): Observable<DocumentCreatedFrequenciesByUser[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinanceDocCreatedFrequenciesByUser';
+    return this._http.get(apiurl, {
+      headers: headers,
+      params: params,
+    }).pipe(map((response: HttpResponse<any>) => {
+      // Read the data out
+      let rst: DocumentCreatedFrequenciesByUser[] = [];
+
+      if (response instanceof Array && response.length > 0) {
+        for (let tt of response) {
+          let mmp: DocumentCreatedFrequenciesByUser = new DocumentCreatedFrequenciesByUser();
+          mmp.onSetData(tt);
+          rst.push(mmp);
+        }
+      }
+
+      return rst;
     }));
   }
 

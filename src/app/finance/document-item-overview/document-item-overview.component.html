@@ -109,7 +109,21 @@
           </mat-card>
         </mat-grid-tile>
 
-        <!-- Weekly trend -->
+        <!-- Grid 2: User hot -->
+        <mat-grid-tile colspan="2" rowspan="1">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-card-title>
+                {{'Common.Weekly' | translate}}
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+              <div echarts [options]="userDocAmountChartOption | async" [theme]="chartTheme" class="trend-chart"></div>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
+
+        <!-- Grid 3: Weekly trend -->
         <mat-grid-tile colspan="1" rowspan="1">
           <mat-card class="dashboard-card">
             <mat-card-header>
@@ -123,7 +137,7 @@
           </mat-card>
         </mat-grid-tile>
 
-        <!-- Daily trend -->
+        <!-- Grid 4: Daily trend -->
         <mat-grid-tile colspan="1" rowspan="1">
           <mat-card class="dashboard-card">
             <mat-card-header>
