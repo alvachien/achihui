@@ -17,7 +17,7 @@
       <button mat-icon-button (click)="onRefreshList()" matTooltip="{{'Common.Refresh' | translate}}">
         <mat-icon mat-icon-button color="primary" class="cell-icon">refresh</mat-icon>
       </button>
-      <button mat-icon-button color="accent" matTooltip="{{'Common.Create' | translate}}" [matMenuTriggerFor]="matMenuCreateDoc">
+      <button mat-icon-button matTooltip="{{'Common.Create' | translate}}" [matMenuTriggerFor]="matMenuCreateDoc">
         <mat-icon>add</mat-icon>
       </button>
       <mat-menu #matMenuCreateDoc="matMenu" overlapTrigger="false">
@@ -30,6 +30,7 @@
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="onCreateBorrowFromDocument()">{{'Sys.DocTy.BorrowFrom' | translate}}</button>
         <button mat-menu-item (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | translate}}</button>
+        <button mat-menu-item (click)="onCreateRepayDocument()">{{'Sys.DocTy.Repay' | translate}}</button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="onCreateAssetBuyInDocument()">{{'Sys.DocTy.AssetBuyIn' | translate}}</button>
         <button mat-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | translate}}</button>
