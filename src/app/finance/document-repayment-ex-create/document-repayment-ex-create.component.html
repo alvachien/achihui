@@ -1,0 +1,34 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{'Sys.DocTy.Repay' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-horizontal-stepper linear="true" (selectionChange)="onStepSelectionChange($event)">
+      <!-- Step: Generic info -->
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
+
+          <!-- Tran date -->
+          <mat-form-field>
+            <input matInput formControlName="dateControl" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+            <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
+            <mat-datepicker #tdpicker></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Account -->
+          <mat-form-field>
+            <input type="text" placeholder="{{'Finance.Asset' | translate}}" aria-label="Asset" matInput formControlName="accountCtrl" [matAutocomplete]="accountAuto">
+            <mat-autocomplete #accountAuto="matAutocomplete" [displayWith]="displayAccountFn">
+              <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                {{option.name}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </form>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </mat-card-content>
+</mat-card>
+

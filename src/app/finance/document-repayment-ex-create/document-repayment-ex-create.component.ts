@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource, MatHorizontalStepper } from '@angular/material';
 import { Observable, forkJoin, merge } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
@@ -24,11 +24,11 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'hih-document-repayment-create',
-  templateUrl: './document-repayment-create.component.html',
-  styleUrls: ['./document-repayment-create.component.scss'],
+  selector: 'hih-document-repayment-ex-create',
+  templateUrl: './document-repayment-ex-create.component.html',
+  styleUrls: ['./document-repayment-ex-create.component.scss'],
 })
-export class DocumentRepaymentCreateComponent implements OnInit {
+export class DocumentRepaymentExCreateComponent implements OnInit {
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -76,7 +76,7 @@ export class DocumentRepaymentCreateComponent implements OnInit {
     public _currService: FinCurrencyService,
     private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent constructor...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent constructor...');
     }
 
     this.dataSource = new MatTableDataSource();
@@ -84,7 +84,7 @@ export class DocumentRepaymentCreateComponent implements OnInit {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnInit...');
     }
 
     // Start create the UI controls
@@ -106,7 +106,7 @@ export class DocumentRepaymentCreateComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -184,155 +184,11 @@ export class DocumentRepaymentCreateComponent implements OnInit {
 
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentRepaymentCreateComponent: ${event.selectedIndex}`);
+      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentRepaymentExCreateComponent: ${event.selectedIndex}`);
     }
   }
 
   onReset(): void {
     this._stepper.reset();
-  }
-
-  onSubmit(): void {
-    let docObj: Document = this._generateDocument();
-
-    // Check!
-    if (!docObj.onVerify({
-      ControlCenters: this._storageService.ControlCenters,
-      Orders: this._storageService.Orders,
-      Accounts: this._storageService.Accounts,
-      DocumentTypes: this._storageService.DocumentTypes,
-      TransactionTypes: this._storageService.TranTypes,
-      Currencies: this._currService.Currencies,
-      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
-    })) {
-      // Show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: docObj.VerifiedMsgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
-
-      return;
-    }
-
-    this._storageService.createLoanRepayDoc(docObj, this.loanAccount.Id, this._uiStatusService.currentTemplateLoanDoc.DocId)
-      .subscribe((x: Document) => {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-
-        let isrecreate: boolean = false;
-        snackbarRef.onAction().subscribe(() => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent, Snackbar onAction()`);
-          }
-
-          isrecreate = true;
-        });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent, Snackbar afterDismissed with ${isrecreate}`);
-          }
-
-          if (!isrecreate) {
-            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-          }
-        });
-      }, (error: HttpErrorResponse) => {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent, Message dialog result ${x2}`);
-          }
-        });
-      });
-  }
-
-  public onCreateDocItem(): void {
-    let di: DocumentItem = new DocumentItem();
-    di.ItemId = ModelUtility.getFinanceNextItemID(this.dataSource.data);
-
-    let aritems: any[] = this.dataSource.data.slice();
-    aritems.push(di);
-    this.dataSource.data = aritems;
-  }
-
-  public onDeleteDocItem(di: any): void {
-    let idx: number = -1;
-    let aritems: any[] = this.dataSource.data.slice();
-    for (let i: number = 0; i < aritems.length; i++) {
-      if (aritems[i].ItemId === di.ItemId) {
-        idx = i;
-        break;
-      }
-    }
-
-    if (idx !== -1) {
-      aritems.splice(idx);
-
-      this.dataSource.data = aritems;
-    }
-  }
-  public addItemTag(row: DocumentItem, $event: MatChipInputEvent): void {
-    let input: any = $event.input;
-    let value: any = $event.value;
-
-    // Add new Tag
-    if ((value || '').trim()) {
-      row.Tags.push(value.trim());
-    }
-
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
-  }
-
-  public removeItemTag(row: DocumentItem, tag: any): void {
-    let index: number = row.Tags.indexOf(tag);
-
-    if (index >= 0) {
-      row.Tags.splice(index, 1);
-    }
-  }
-
-  private _generateDocument(): Document {
-    let docObj: Document = new Document();
-    docObj.HID = this._homedefService.ChosedHome.ID;
-    docObj.DocType = financeDocTypeRepay;
-    docObj.TranDate = moment(this.tranDate, momentDateFormat);
-    docObj.TranCurr = this.tranCurrency;
-    docObj.Desp = this.firstFormGroup.get('despControl').value;
-    if (this.isForeignCurrency) {
-      docObj.ExgRate = this.firstFormGroup.get('exgControl').value;
-      docObj.ExgRate_Plan = this.firstFormGroup.get('exgpControl').value;
-    }
-
-    for (let item of this.dataSource.data) {
-      docObj.Items.push(item);
-    }
-
-    return docObj;
   }
 }

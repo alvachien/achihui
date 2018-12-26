@@ -42,6 +42,7 @@ import { DocumentExchangeCreateComponent } from './document-exchange-create';
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create';
 import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-create';
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create';
+import { DocumentRepaymentExCreateComponent } from './document-repayment-ex-create';
 import { DocumentADPCreateComponent } from './document-adpcreate';
 import { AssetCategoryComponent } from './asset-category';
 import { AssetCategoryListComponent } from './asset-category-list';
@@ -133,6 +134,7 @@ import { PlanListComponent } from './plan-list';
     PlanComponent,
     PlanDetailComponent,
     PlanListComponent,
+    DocumentRepaymentExCreateComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

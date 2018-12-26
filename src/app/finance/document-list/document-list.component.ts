@@ -123,7 +123,7 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
     this._router.navigate(['/finance/document/createassetvalchg']);
   }
   public onCreateRepayDocument(): void {
-    this._router.navigate(['/finance/document/createrepay']);
+    this._router.navigate(['/finance/document/createrepayex']);
   }
 
   public onDisplayDocument(doc: Document): void {

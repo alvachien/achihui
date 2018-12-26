@@ -38,6 +38,7 @@ import { DocumentTransferCreateComponent } from './document-transfer-create';
 import { DocumentRepaymentCreateComponent } from './document-repayment-create';
 import { DocumentLoanCreateComponent } from './document-loan-create';
 import { DocumentExchangeCreateComponent } from './document-exchange-create';
+import { DocumentRepaymentExCreateComponent } from './document-repayment-ex-create';
 import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { ReportComponent } from './report';
 import { ConfigComponent } from './config';
@@ -282,6 +283,10 @@ const routes: Routes = [
             path: 'createrepay',
             // component: DocumentRepaymentDetailComponent,
             component: DocumentRepaymentCreateComponent,
+          },
+          {
+            path: 'createrepayex',
+            component: DocumentRepaymentExCreateComponent,
           },
           {
             path: 'display/:id',
