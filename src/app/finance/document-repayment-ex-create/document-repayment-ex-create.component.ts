@@ -30,8 +30,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class DocumentRepaymentExCreateComponent implements OnInit {
   public arUIAccount: UIAccountForSelection[] = [];
-  public uiAccountStatusFilter: string | undefined;
-  public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
+  public filteredUIAccount: Observable<UIAccountForSelection[]>;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   // Stepper
@@ -90,10 +89,9 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
     // Start create the UI controls
     this.firstFormGroup = this._formBuilder.group({
       dateControl: [{ value: moment(), disabled: false }, Validators.required],
-      despControl: ['', Validators.required],
+      accountControl: ['', Validators.required],
       currControl: ['', Validators.required],
-      exgControl: '',
-      exgpControl: '',
+      despControl: '',
     });
 
     forkJoin([
@@ -111,8 +109,12 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
-      this.uiAccountStatusFilter = undefined;
-      this.uiAccountCtgyFilter = undefined;
+      this.filteredUIAccount = this.firstFormGroup.get('accountControl').valueChanges
+      .pipe(
+        startWith<string | UIAccountForSelection>(''),
+        map((value: any) => typeof value === 'string' ? value : value.Name),
+        map((name: any) => name ? this._filterAccount(name) : this.arUIAccount.slice()),
+      );
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
@@ -186,9 +188,38 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentRepaymentExCreateComponent: ${event.selectedIndex}`);
     }
+
+    if (event.previouslySelectedIndex === 0) {
+      let selectedAcnt: UIAccountForSelection = this.firstFormGroup.get('accountControl').value;
+      if (!this.loanAccount) {
+        if (selectedAcnt) {
+          // Read it
+          this._storageService.readAccountEvent.subscribe((x: Account) => {
+            this.loanAccount = x;
+            let loanacntext: AccountExtraLoan = <AccountExtraLoan>this.loanAccount.ExtraInfo;
+            // Fetch out the latest tmp. doc
+          });
+
+          this._storageService.readAccount(selectedAcnt.Id);
+        }
+      } else {
+        // Check whether the loan account has been changed
+        // Todo
+      }
+    }
   }
 
-  onReset(): void {
+  public onReset(): void {
     this._stepper.reset();
+  }
+
+  public displayAccountFn(acnt?: UIAccountForSelection): string | undefined {
+    return acnt ? acnt.Name : undefined;
+  }
+
+  private _filterAccount(name: string): UIAccountForSelection[] {
+    const filterValue: any = name.toLowerCase();
+
+    return this.arUIAccount.filter((option: UIAccountForSelection) => option.Name.toLowerCase().indexOf(filterValue) === 0);
   }
 }

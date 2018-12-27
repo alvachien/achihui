@@ -127,7 +127,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
           this.onNavigateToHabitEvent(arg.event.extendedProps.event_id);
         }
       },
-      plugins: [],
     });
 
     this.ctrlCalendar.render();

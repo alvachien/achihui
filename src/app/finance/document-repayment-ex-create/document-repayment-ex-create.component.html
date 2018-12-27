@@ -19,16 +19,45 @@
 
           <!-- Account -->
           <mat-form-field>
-            <input type="text" placeholder="{{'Finance.Asset' | translate}}" aria-label="Asset" matInput formControlName="accountCtrl" [matAutocomplete]="accountAuto">
+            <input type="text" placeholder="{{'Finance.Assets' | translate}}" aria-label="Asset" 
+              matInput formControlName="accountControl" [matAutocomplete]="accountAuto">
             <mat-autocomplete #accountAuto="matAutocomplete" [displayWith]="displayAccountFn">
-              <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                {{option.name}}
+              <mat-option *ngFor="let acnt of filteredUIAccount | async" [value]="acnt">
+                {{acnt.Name}}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
+
+          <!-- Currency -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
+              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+                {{cr.Symbol}} - {{cr.Name | translate}}
+              </mat-option>
+            </mat-select>            
+          </mat-form-field>
+
+          <!-- Description -->
+          <mat-form-field>
+            <input matInput type="text" placeholder="{{'Common.Description' |translate}}" maxlength="44"
+              formControlName="despControl" #desp>
+            <mat-hint align="end">{{desp.value.length}} / 44</mat-hint>
+          </mat-form-field>          
         </form>
+        <div>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
+      </mat-step>
+
+      <!-- Step: Latest unpayed info -->
+      <mat-step>
+        <ng-template matStepLabel>{{'Finance.TemplateDocument' | translate}}</ng-template>
+        
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
       </mat-step>
     </mat-horizontal-stepper>
   </mat-card-content>
 </mat-card>
-
