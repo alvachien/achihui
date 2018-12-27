@@ -2321,9 +2321,8 @@ export class TemplateDocLoan extends TemplateDocBase {
 
     if (data && data.interestAmount) {
       this.InterestAmount = +data.interestAmount;
+      this._totalAmount = this._tranAmount + this._amtInterest;
     }
-
-    this._totalAmount = this._tranAmount + this._amtInterest;
   }
 }
 

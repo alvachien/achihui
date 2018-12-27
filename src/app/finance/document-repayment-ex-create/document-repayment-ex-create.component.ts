@@ -9,6 +9,7 @@ import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource, MatHoriz
 import { Observable, forkJoin, merge } from 'rxjs';
 import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 import * as moment from 'moment';
+import { SelectionModel } from '@angular/cdk/collections';
 
 import { environment } from '../../../environments/environment';
 import {
@@ -16,12 +17,17 @@ import {
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   UICommonLabelEnum, IAccountCategoryFilter, financeDocTypeRepay, financeTranTypeRepaymentOut, financeTranTypeInterestOut,
   financeAccountCategoryBorrowFrom, financeTranTypeRepaymentIn, financeTranTypeInterestIn, ModelUtility, momentDateFormat,
-  AccountExtraLoan,
+  AccountExtraLoan, TemplateDocLoan,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { HttpErrorResponse } from '@angular/common/http';
+
+class PayingAccountInfo {
+  public accountID: number;
+  public amount: number;
+}
 
 @Component({
   selector: 'hih-document-repayment-ex-create',
@@ -37,11 +43,17 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
-  // Step: Items
+  // Step: Tmp. loan
   separatorKeysCodes: any[] = [ENTER, COMMA];
-  displayedColumns: string[] = ['itemid', 'accountid', 'trantype', 'amount', 'desp', 'controlcenter', 'order', 'tag'];
-  dataSource: MatTableDataSource<DocumentItem>;
+  displayedColumns: string[] = ['select', 'accountid', 'amount', 'interestamount', 'totalamount',
+    'desp', 'controlcenter', 'order'];
+  dataSource: MatTableDataSource<TemplateDocLoan>;
+  selectionTmpDoc: any = new SelectionModel<TemplateDocLoan>(true, []);
   loanAccount: Account;
+  totalAmount: number;
+  // Step: Paying accounts
+  dataSourcePayingAccount: MatTableDataSource<PayingAccountInfo>;
+  displayedPayingAccountColumns: string[] = ['accountid', 'amount'];
 
   get tranDate(): string {
     let datctrl: any = this.firstFormGroup.get('dateControl');
@@ -79,6 +91,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
     }
 
     this.dataSource = new MatTableDataSource();
+    this.dataSourcePayingAccount = new MatTableDataSource();
   }
 
   ngOnInit(): void {
@@ -176,6 +189,8 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
             di.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
             aritems.push(di);
           }
+
+          this._uiStatusService.currentTemplateLoanDoc = undefined;
           this.dataSource.data = aritems;
         });
 
@@ -197,7 +212,16 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
           this._storageService.readAccountEvent.subscribe((x: Account) => {
             this.loanAccount = x;
             let loanacntext: AccountExtraLoan = <AccountExtraLoan>this.loanAccount.ExtraInfo;
+
             // Fetch out the latest tmp. doc
+            let arItems: TemplateDocLoan[] = [];
+            loanacntext.loanTmpDocs.forEach((tmpdoc: TemplateDocLoan) => {
+              if (!tmpdoc.RefDocId) {
+                arItems.push(tmpdoc);
+              }
+            });
+
+            this.dataSource.data = arItems;
           });
 
           this._storageService.readAccount(selectedAcnt.Id);
@@ -206,6 +230,57 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
         // Check whether the loan account has been changed
         // Todo
       }
+    } else if (event.previouslySelectedIndex === 1) {
+      // Check the selected
+      const numSelected: number = this.selectionTmpDoc.selected.length;
+
+      if (numSelected !== 1) {
+        // Report the error
+        this._snackbar.open('Select one and only one template loan', undefined, {
+          duration: 1200,
+        }).afterDismissed().subscribe(() => {
+          // Change it back
+          this._stepper.selectedIndex = event.previouslySelectedIndex;
+        });
+      } else {
+        const selectedrow: TemplateDocLoan = this.selectionTmpDoc.selected[0];
+        this.totalAmount = selectedrow.TranAmount + (selectedrow.InterestAmount ? selectedrow.InterestAmount : 0);
+
+        if (!this.totalAmount) {
+          // Report the error
+          this._snackbar.open('Total amount is zero which is invalid', undefined, {
+            duration: 1200,
+          }).afterDismissed().subscribe(() => {
+            // Change it back
+            this._stepper.selectedIndex = event.previouslySelectedIndex;
+          });
+        }
+      }
+    } else if (event.previouslySelectedIndex === 2) {
+      // Ensure the paying amount equals to the total amount
+      let payedamount: number = 0;
+      let chkedrst: boolean = true;
+      this.dataSourcePayingAccount.data.forEach((trow: PayingAccountInfo) => {
+        if (!trow.amount) {
+          chkedrst = false;
+        } else {
+          payedamount += trow.amount;
+        }
+      });
+
+      if (chkedrst) {
+        chkedrst = (payedamount === this.totalAmount);
+      }
+
+      if (!chkedrst) {
+        // Report the error
+        this._snackbar.open('Payed amount not equal to total amount', undefined, {
+          duration: 1200,
+        }).afterDismissed().subscribe(() => {
+          // Change it back
+          this._stepper.selectedIndex = event.previouslySelectedIndex;
+        });
+      }
     }
   }
 
@@ -213,8 +288,33 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
     this._stepper.reset();
   }
 
+  public onSubmit(): void {
+    // Todo
+  }
+
   public displayAccountFn(acnt?: UIAccountForSelection): string | undefined {
     return acnt ? acnt.Name : undefined;
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  public isAllSelected(): boolean {
+    const numSelected: number = this.selectionTmpDoc.selected.length;
+    const numRows: number = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  public masterToggle(): void {
+    this.isAllSelected() ?
+        this.selectionTmpDoc.clear() :
+        this.dataSource.data.forEach((row: any) => this.selectionTmpDoc.select(row));
+  }
+
+  public onCreatePayingAccount(): void {
+    let arrows: any[] = this.dataSourcePayingAccount.data.slice();
+    let nrow: PayingAccountInfo = new PayingAccountInfo();
+    arrows.push(nrow);
+    this.dataSourcePayingAccount.data = arrows;
   }
 
   private _filterAccount(name: string): UIAccountForSelection[] {

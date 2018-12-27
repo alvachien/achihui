@@ -174,6 +174,8 @@ export class DocumentRepaymentCreateComponent implements OnInit {
             di.Desp = this._uiStatusService.currentTemplateLoanDoc.Desp;
             aritems.push(di);
           }
+
+          this._uiStatusService.currentTemplateLoanDoc = undefined;
           this.dataSource.data = aritems;
         });
 
