@@ -35,7 +35,6 @@ import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-cr
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create';
 import { DocumentNormalCreateComponent } from './document-normal-create';
 import { DocumentTransferCreateComponent } from './document-transfer-create';
-import { DocumentRepaymentCreateComponent } from './document-repayment-create';
 import { DocumentLoanCreateComponent } from './document-loan-create';
 import { DocumentExchangeCreateComponent } from './document-exchange-create';
 import { DocumentRepaymentExCreateComponent } from './document-repayment-ex-create';
@@ -278,11 +277,6 @@ const routes: Routes = [
           {
             path: 'createassetvalchg',
             component: DocumentAssetValChgCreateComponent,
-          },
-          {
-            path: 'createrepay',
-            // component: DocumentRepaymentDetailComponent,
-            component: DocumentRepaymentCreateComponent,
           },
           {
             path: 'createrepayex',

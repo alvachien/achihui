@@ -1,6 +1,9 @@
 import { Component, OnInit, OnDestroy, EventEmitter, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnHistory, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
@@ -19,14 +22,21 @@ export class HistoryDetailComponent implements OnInit {
   public currentMode: string;
   public detailObject: LearnHistory | undefined;
   public uiMode: UIMode = UIMode.Create;
+  // UI elements
+  public firstFormGroup: FormGroup;
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
+    private _formBuilder: FormBuilder,
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HistoryDetailComponent constructor...');
+    }
+
     this.detailObject = new LearnHistory();
   }
 
@@ -34,6 +44,14 @@ export class HistoryDetailComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HistoryDetailComponent ngOnInit...');
     }
+
+    // Start create the UI elements
+    this.firstFormGroup = this._formBuilder.group({
+      dateControl: [{ value: moment(), disabled: false }, Validators.required],
+      accountControl: ['', Validators.required],
+      currControl: ['', Validators.required],
+      despControl: '',
+    });
 
     this._storageService.fetchAllObjects().subscribe((x1: any) => {
       // Distinguish current mode
@@ -82,7 +100,10 @@ export class HistoryDetailComponent implements OnInit {
         // Empty
       });
     }, (error: any) => {
-      // empty
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent with activateRoute URL : ${error}`);
+      }
+      // Show the error dialog
     });
   }
 

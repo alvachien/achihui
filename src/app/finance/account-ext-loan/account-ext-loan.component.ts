@@ -34,6 +34,8 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
   }
   @Input() uiMode: UIMode;
   @Input() tranAmount: number;
+  @Input() controlCenterID?: number;
+  @Input() orderID?: number;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -134,6 +136,12 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
           // tmpdoc.TranType = this.detailObject.SourceTranType;
+          if (this.controlCenterID) {
+            tmpdoc.ControlCenterId = this.controlCenterID;
+          }
+          if (this.orderID) {
+            tmpdoc.OrderId = this.orderID;
+          }
           tmpdoc.Desp = this.extObject.Comment + ' | ' + (tmpdocs.length + 1).toString()
             + ' / ' + x.length.toString();
           tmpdocs.push(tmpdoc);
@@ -200,6 +208,12 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
           tmpdoc.TranAmount = rst.TranAmount;
           tmpdoc.TranDate = rst.TranDate;
           // tmpdoc.TranType = this.detailObject.SourceTranType;
+          if (this.controlCenterID) {
+            tmpdoc.ControlCenterId = this.controlCenterID;
+          }
+          if (this.orderID) {
+            tmpdoc.OrderId = this.orderID;
+          }
           tmpdoc.Desp = this.extObject.Comment + ' | ' + rstidx.toString()
             + ' / ' + x.length.toString();
           arKeepItems.push(tmpdoc);

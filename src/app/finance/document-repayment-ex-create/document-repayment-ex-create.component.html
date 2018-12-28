@@ -193,7 +193,7 @@
                 <button mat-icon-button (click)="onDeletePayingAccount(row)" matTooltip="{{'Common.Delete' | translate}}">
                   <mat-icon color="warn" class="toolbar-icon">delete</mat-icon>
                 </button>
-                <mat-form-field style="width: 100px;">
+                <mat-form-field>
                   <mat-select placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="row.accountID" name="payacnt">
                     <mat-option *ngFor="let acnt of arUIAccount | uiAccountCtgyFilter: uiAccountCtgyFilter"
                       [value]="acnt.Id">
@@ -231,9 +231,10 @@
       <mat-step>
         <ng-template matStepLabel>{{'Common.Confirm' | translate}}</ng-template>
         <div class="mat-typography achih-control-full-width">
-          <h3>{{'Common.Date' | translate}}: {{tranDate}}</h3>
+          <h3>{{'Common.Date' | translate}} : {{tranDate}}</h3>
           <h2>{{'Finance.Amount' | translate}} : {{totalAmount}}</h2>
-          <h2>{{'Finance.Account' | translate}}</h2>
+          <h2>{{'Finance.Account' | translate}} : {{loanAccount ? loanAccount.Name : ''}}</h2>
+          <h2>{{'Finance.TemplateDocument' | translate}} : {{selectedTmpDoc ? selectedTmpDoc.Desp : ''}}</h2>
         </div>
 
         <div>

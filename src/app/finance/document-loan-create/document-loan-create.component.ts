@@ -65,6 +65,18 @@ export class DocumentLoanCreateComponent implements OnInit {
       return currctrl.value;
     }
   }
+  get controlCenterID(): number {
+    let ccctrl: any = this.firstFormGroup.get('ccControl');
+    if (ccctrl) {
+      return ccctrl.value;
+    }
+  }
+  get orderID(): number {
+    let orderctrl: any = this.firstFormGroup.get('orderControl');
+    if (orderctrl) {
+      return orderctrl.value;
+    }
+  }
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -162,7 +174,7 @@ export class DocumentLoanCreateComponent implements OnInit {
 
     if (event.selectedIndex === 2) {
       // For confirm
-      if (this.ctrlAccount !== undefined) {
+      if (this.ctrlAccount) {
         this.ctrlAccount.generateAccountInfoForSave();
       }
     }

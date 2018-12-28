@@ -36,7 +36,6 @@ import { ReportComponent } from './report';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentNormalCreateComponent } from './document-normal-create';
 import { DocumentTransferCreateComponent } from './document-transfer-create';
-import { DocumentRepaymentCreateComponent } from './document-repayment-create';
 import { DocumentLoanCreateComponent } from './document-loan-create';
 import { DocumentExchangeCreateComponent } from './document-exchange-create';
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create';
@@ -128,7 +127,6 @@ import { PlanListComponent } from './plan-list';
     DocumentADPCreateComponent,
     DocumentNormalCreateComponent,
     DocumentTransferCreateComponent,
-    DocumentRepaymentCreateComponent,
     DocumentLoanCreateComponent,
     DocumentExchangeCreateComponent,
     PlanComponent,

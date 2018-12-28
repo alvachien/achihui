@@ -78,6 +78,11 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
 
     return false;
   }
+  get selectedTmpDoc(): TemplateDocLoan {
+    if (this.selectionTmpDoc.selected.length === 1) {
+      return this.selectionTmpDoc.selected[0];
+    }
+  }
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -142,6 +147,10 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
       this.uiOrderFilter = undefined;
 
       if (this._uiStatusService.currentTemplateLoanDoc) {
+        // Loan account
+        this.firstFormGroup.get('accountControl').setValue(this.arUIAccount.find((val: UIAccountForSelection) => {
+          return val.Id === this._uiStatusService.currentTemplateLoanDoc.AccountId;
+        }));
         this.firstFormGroup.get('despControl').setValue(this._uiStatusService.currentTemplateLoanDoc.Desp);
 
         // Read the account out
@@ -177,10 +186,18 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
       const numSelected: number = this.selectionTmpDoc.selected.length;
 
       if (numSelected !== 1) {
-        // Report the error
-        this._snackbar.open('Select one and only one template loan', undefined, {
-          duration: 1200,
-        }).afterDismissed().subscribe(() => {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: 'Select one and only one template loan',
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
           // Change it back
           this._stepper.selectedIndex = event.previouslySelectedIndex;
         });
@@ -189,10 +206,18 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
         this.totalAmount = +(selectedrow.TranAmount + (selectedrow.InterestAmount ? selectedrow.InterestAmount : 0)).toFixed(2);
 
         if (!this.totalAmount) {
-          // Report the error
-          this._snackbar.open('Total amount is zero which is invalid', undefined, {
-            duration: 1200,
-          }).afterDismissed().subscribe(() => {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: 'Total amount is zero which is invalid',
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
             // Change it back
             this._stepper.selectedIndex = event.previouslySelectedIndex;
           });
@@ -217,10 +242,18 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
       }
 
       if (!chkedrst) {
-        // Report the error
-        this._snackbar.open('Payed amount not equal to total amount', undefined, {
-          duration: 1200,
-        }).afterDismissed().subscribe(() => {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: 'Payed amount not equal to total amount',
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
           // Change it back
           this._stepper.selectedIndex = event.previouslySelectedIndex;
         });
@@ -232,7 +265,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
     this._stepper.reset();
     this.dataSource.data = [];
     this.dataSourcePayingAccount.data = [];
-    this.selectionTmpDoc.selected = [];
+    this.selectionTmpDoc.clear();
     this.loanAccount = undefined;
 
     // Set default values
@@ -269,7 +302,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
       return;
     }
 
-    this._storageService.createLoanRepayDoc(docObj, this.loanAccount.Id, this._uiStatusService.currentTemplateLoanDoc.DocId)
+    this._storageService.createLoanRepayDoc(docObj, this.loanAccount.Id, this.selectedTmpDoc.DocId)
       .subscribe((x: Document) => {
         // Show the snackbar
         let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
@@ -376,7 +409,12 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
 
       // Set the selected items
       if (this._uiStatusService.currentTemplateLoanDoc) {
-        this.selectionTmpDoc.selected.push(this._uiStatusService.currentTemplateLoanDoc);
+        this.selectionTmpDoc.clear();
+        this.dataSource.data.forEach((item: TemplateDocLoan) => {
+          if (+item.DocId === +this._uiStatusService.currentTemplateLoanDoc.DocId) {
+            this.selectionTmpDoc.select(item);
+          }
+        });
 
         // Add paying account
         let arPayingAccounts: PayingAccountInfo[] = [];
@@ -459,13 +497,20 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
         }
 
         if (tranAmount > 0) {
-          if (tranAmount > this.dataSourcePayingAccount.data[idx].amount) {
+          nleftAmount = +(tranAmount - this.dataSourcePayingAccount.data[idx].amount).toFixed(2);
+          if (nleftAmount > 0) {
             di.TranAmount = this.dataSourcePayingAccount.data[idx].amount;
-            tranAmount = +(tranAmount - this.dataSourcePayingAccount.data[idx].amount).toFixed(2);
-          } else {
+            tranAmount = nleftAmount;
+            nleftAmount = 0;
+          } else if (nleftAmount < 0) {
             di.TranAmount = tranAmount;
             tranAmount = 0;
-            nleftAmount = +(this.dataSourcePayingAccount.data[idx].amount - tranAmount).toFixed(2);
+            nleftAmount = Math.abs(nleftAmount);
+            idx --; // For this case, reduce the pointer
+          } else {
+            di.TranAmount = tranAmount;
+            nleftAmount = 0;
+            tranAmount = 0;
           }
         } else if (nleftAmount > 0) {
           di.TranAmount = nleftAmount;

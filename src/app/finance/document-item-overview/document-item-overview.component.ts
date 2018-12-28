@@ -111,12 +111,12 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
     }
 
     this.dataSourceTmpDoc = new TmpDocStillOpenDataSource(this, this.paginatorTmpDoc);
+    this._homedefService.fetchHomeMembers(this._homedefService.ChosedHome.ID);
 
     forkJoin([
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),
-      this._homedefService.fetchHomeMembers(this._homedefService.ChosedHome.ID),
     ]).subscribe((x: any) => {
       // Refresh the template documents
       this.onTmpDocsRefresh();
@@ -396,7 +396,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       });
     } else if (doc instanceof TemplateDocLoan) {
       this._uiStatusService.currentTemplateLoanDoc = doc;
-      this._router.navigate(['/finance/document/createrepay/']);
+      this._router.navigate(['/finance/document/createrepayex/']);
     }
   }
 
