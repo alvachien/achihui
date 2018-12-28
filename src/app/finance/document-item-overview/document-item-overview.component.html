@@ -9,7 +9,7 @@
           <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuDoc"><mat-icon>assignment</mat-icon></button>
+      <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuDoc" matTooltip="{{'Finance.Document' | translate}}"><mat-icon>assignment</mat-icon></button>
       <mat-menu #matMenuDoc="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
         <button mat-menu-item (click)="onCreateNormalDocument()">{{'Finance.Document' | translate}}</button>
         <button mat-menu-item (click)="onCreateTransferDocument()">{{'Finance.TransferDocument' | translate}}</button>
@@ -20,10 +20,16 @@
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="onCreateBorrowFromDocument()">{{'Sys.DocTy.BorrowFrom' | translate}}</button>
         <button mat-menu-item (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | translate}}</button>
+        <button mat-menu-item (click)="onCreateRepayDocument()">{{'Sys.DocTy.Repay' | translate}}</button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="onCreateAssetBuyInDocument()">{{'Sys.DocTy.AssetBuyIn' | translate}}</button>
         <button mat-menu-item (click)="onCreateAssetValChgDocument()">{{'Sys.DocTy.AssetValChg' | translate}}</button>
         <button mat-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | translate}}</button>
+      </mat-menu>
+      <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuPlan" matTooltip="{{'Finance.Plan' | translate}}"><mat-icon>score</mat-icon></button>
+      <mat-menu #matMenuPlan="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
+        <button mat-menu-item (click)="onOpenPlanList()">{{'Finance.Plan' | translate}} - {{'Common.ListView' | translate}}</button>
+        <button mat-menu-item (click)="onCreatePlan()">{{'Finance.Plan' | translate}} - {{'Common.Create' | translate}}</button>
       </mat-menu>
     </mat-toolbar>
     

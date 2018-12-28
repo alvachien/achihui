@@ -12,6 +12,10 @@
   font-size: 20px;
 }
 
+mat-table {
+  min-height: 500px;
+}
+
 mat-row {
   cursor: pointer;
 }

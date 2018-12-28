@@ -21,8 +21,8 @@
           <mat-form-field>
             <input type="text" placeholder="{{'Finance.Assets' | translate}}" aria-label="Asset" 
               matInput formControlName="accountControl" [matAutocomplete]="accountAuto">
-            <mat-autocomplete #accountAuto="matAutocomplete" [displayWith]="displayAccountFn">
-              <mat-option *ngFor="let acnt of filteredUIAccount | async" [value]="acnt">
+            <mat-autocomplete #accountAuto="matAutocomplete" [displayWith]="displayLoanAccountFn">
+              <mat-option *ngFor="let acnt of filteredLoanAccount | async" [value]="acnt">
                 {{acnt.Name}}
               </mat-option>
             </mat-autocomplete>
@@ -113,7 +113,7 @@
             <ng-container matColumnDef="totalamount">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                {{+row.TranAmount + (row.InterestAmount? +row.InterestAmount : 0) }}
+                {{(+row.TranAmount + (row.InterestAmount? +row.InterestAmount : 0)).toFixed(2) }}
               </mat-cell>
             </ng-container>
 
@@ -172,23 +172,30 @@
 
       <!-- Step 3: Paying accounts -->
       <mat-step>
-        <ng-template matStepLabel>{{'Sys.DocTy.Repay' | translate}}</ng-template>
+        <ng-template matStepLabel>{{'Finance.PayingAccount' | translate}}</ng-template>
+
+        <div class="mat-typography achih-control-full-width">
+          <h2>{{'Finance.Amount' | translate}} : {{totalAmount}}</h2>
+        </div>
+  
+        <mat-toolbar>
+          <button mat-icon-button (click)="onCreatePayingAccount()" matTooltip="{{'Common.Create' | translate}}" #btnCrtItem>
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-toolbar>
 
         <div class="table-container mat-elevation-z8">
-          <mat-toolbar>
-            <button mat-icon-button (click)="onCreatePayingAccount()" matTooltip="{{'Common.Create' | translate}}" #btnCrtItem>
-              <mat-icon>add</mat-icon>
-            </button>
-          </mat-toolbar>
-
           <mat-table #table [dataSource]="dataSourcePayingAccount">
             <!-- AccountID Column -->
             <ng-container matColumnDef="accountid">
               <mat-header-cell *matHeaderCellDef>{{'Finance.Account' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <mat-form-field>
-                  <mat-select placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="row.accountId" name="payacnt">
-                    <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter"
+                <button mat-icon-button (click)="onDeletePayingAccount(row)" matTooltip="{{'Common.Delete' | translate}}">
+                  <mat-icon color="warn" class="toolbar-icon">delete</mat-icon>
+                </button>
+                <mat-form-field style="width: 100px;">
+                  <mat-select placeholder="{{'Finance.Account' | translate}}" [(ngModel)]="row.accountID" name="payacnt">
+                    <mat-option *ngFor="let acnt of arUIAccount | uiAccountCtgyFilter: uiAccountCtgyFilter"
                       [value]="acnt.Id">
                       <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}}
                         ({{acnt.CategoryName | translate}})</span>
@@ -225,6 +232,8 @@
         <ng-template matStepLabel>{{'Common.Confirm' | translate}}</ng-template>
         <div class="mat-typography achih-control-full-width">
           <h3>{{'Common.Date' | translate}}: {{tranDate}}</h3>
+          <h2>{{'Finance.Amount' | translate}} : {{totalAmount}}</h2>
+          <h2>{{'Finance.Account' | translate}}</h2>
         </div>
 
         <div>

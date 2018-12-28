@@ -427,8 +427,18 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
   public onCreateLendToDocument(): void {
     this._router.navigate(['/finance/document/createlendto']);
   }
+  public onCreateRepayDocument(): void {
+    this._router.navigate(['/finance/document/createrepayex']);
+  }
   public onCreateAssetValChgDocument(): void {
     this._router.navigate(['/finance/document/createassetvalchg']);
+  }
+
+  public onOpenPlanList(): void {
+    this._router.navigate(['/finance/plan']);
+  }
+  public onCreatePlan(): void {
+    this._router.navigate(['/finance/plan/create']);
   }
 
   private _buildUserDocAmount(x: DocumentCreatedFrequenciesByUser[]): EChartOption {
