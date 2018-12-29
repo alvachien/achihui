@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, LearnHistory, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
+import { LogLevel, LearnHistory, UIMode, getUIModeString, UICommonLabelEnum, LearnObject } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
@@ -23,7 +23,7 @@ export class HistoryDetailComponent implements OnInit {
   public detailObject: LearnHistory | undefined;
   public uiMode: UIMode = UIMode.Create;
   // UI elements
-  public firstFormGroup: FormGroup;
+  public detailFormGroup: FormGroup;
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -46,11 +46,10 @@ export class HistoryDetailComponent implements OnInit {
     }
 
     // Start create the UI elements
-    this.firstFormGroup = this._formBuilder.group({
+    this.detailFormGroup = this._formBuilder.group({
       dateControl: [{ value: moment(), disabled: false }, Validators.required],
-      accountControl: ['', Validators.required],
-      currControl: ['', Validators.required],
-      despControl: '',
+      userControl: ['', Validators.required],
+      objControl: ['', Validators.required],
     });
 
     this._storageService.fetchAllObjects().subscribe((x1: any) => {
@@ -78,12 +77,12 @@ export class HistoryDetailComponent implements OnInit {
             this._storageService.readHistoryEvent.subscribe((x2: any) => {
               if (x2 instanceof LearnHistory) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in HistoryDetailComponent, succeed to readControlCenterEvent`);
+                  console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in HistoryDetailComponent, succeed to readHistoryEvent`);
                 }
                 this.detailObject = x2;
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent, failed to readControlCenterEvent : ${x2}`);
+                  console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent, failed to readHistoryEvent : ${x2}`);
                 }
                 this.detailObject = new LearnHistory();
               }
@@ -131,6 +130,12 @@ export class HistoryDetailComponent implements OnInit {
   public onCancel(): void {
     // Jump back to the list view
     this._router.navigate(['/learn/history']);
+  }
+
+  public displayObjectFn(obj?: LearnObject): string | undefined {
+    return obj ?
+      (obj.Name + ' (' + obj.CategoryName + ')') :
+      undefined;
   }
 
   private onInitCreateMode(): void {
