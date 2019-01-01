@@ -5,6 +5,7 @@ import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Plan, PlanTypeEnum, UICommonLabelEnum, momentDateFormat } from '../../model';
+import { FinanceStorageService, HomeDefDetailService, } from '../../services';
 
 @Component({
   selector: 'hih-finance-plan-list',
@@ -16,7 +17,9 @@ export class PlanListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'accid', 'tgtdate', 'tgtbalance', 'desp'];
   dataSource: MatTableDataSource<Plan> = new MatTableDataSource<Plan>();
 
-  constructor(private _router: Router) {
+  constructor(private _router: Router,
+    private _homeDefService: HomeDefDetailService,
+    private _storageService: FinanceStorageService) {
     this.isLoadingResults = false;
   }
 
@@ -25,7 +28,7 @@ export class PlanListComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering PlanListComponent ngOnInit...');
     }
 
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // For testing, fake data
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     let nplan: Plan = new Plan();
