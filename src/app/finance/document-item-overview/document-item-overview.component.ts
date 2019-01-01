@@ -131,18 +131,15 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
     // Weekly
     let { BeginDate: bgn,  EndDate: end } = getOverviewScopeRange(this.selectedTmpScope);
     let arweeks: any[] = [];
-    let bgnweek: any = bgn.format('w');
-    let bgnweekyear: any = bgn.format('gggg');
-    let endweek: any = end.format('w');
-    let endweekyear: any = end.format('gggg');
-    for (let iweekyear: number = +bgnweekyear; iweekyear <= +endweekyear; iweekyear++) {
-      for (let iweek: number = +bgnweek; iweek <= +endweek; iweek ++) {
-        arweeks.push({
-          year: +iweekyear,
-          week: +iweek,
-        });
-      }
+    let ibgn: moment.Moment = bgn.clone();
+    do {
+      arweeks.push({
+        year: +ibgn.get('year'),
+        week: +ibgn.get('week'),
+      });
+      ibgn = ibgn.add(1, 'week');
     }
+    while(ibgn.isBefore(end));
     let arweekdisplay: string[] = [];
     arweeks.forEach((val: any) => {
       arweekdisplay.push(val.year.toString() + '.' + val.week.toString());
@@ -451,29 +448,26 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
     }
 
     let arweeks2: any[] = [];
+    let rend: moment.Moment = moment();
     let rbgn: moment.Moment = moment().subtract(1, 'M');
-    let bgnweek2: any = rbgn.format('w');
-    let bgnweekyear2: any = rbgn.format('gggg');
-    let endweek2: any = moment().format('w');
-    let endweekyear2: any = moment().format('gggg');
-    for (let iweekyear: number = +bgnweekyear2; iweekyear <= +endweekyear2; iweekyear++) {
-      for (let iweek: number = +bgnweek2; iweek <= +endweek2; iweek ++) {
-        arweeks2.push({
-          year: +iweekyear,
-          week: +iweek,
-        });
-      }
+    do {
+      arweeks2.push({
+        year: +rbgn.get('year'),
+        week: +rbgn.get('week'),
+      });
+      rbgn = rbgn.add(1, 'week');
     }
+    while(rbgn.isBefore(rend));
     let arweekdisplay2: string[] = [];
     arweeks2.forEach((val: any) => {
       arweekdisplay2.push(val.year.toString() + '.' + val.week.toString());
     });
 
-    arweeks2.forEach((val: any) => {
-      // For each member
+    arweeks2.forEach((curweek: any) => {
+      // For each week
       this._homedefService.MembersInChosedHome.forEach((mem: HomeMember, memIdx: number) => {
         let idxWeek: number = x.findIndex((val2: DocumentCreatedFrequenciesByUser) => {
-          return val2.year === val.year && val2.week && +val2.week === +val.week
+          return val2.year === curweek.year && val2.week && +val2.week === +curweek.week
             && val2.userID.localeCompare(mem.User) === 0;
         });
 

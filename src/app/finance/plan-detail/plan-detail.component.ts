@@ -100,4 +100,12 @@ export class PlanDetailComponent implements OnInit {
       });
     });
   }
+
+  public onSubmit(): void {
+    // Submit current form
+  }
+
+  public onCancel(): void {
+    // Cancel
+  }
 }

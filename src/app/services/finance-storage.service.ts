@@ -9,6 +9,7 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
   ReportTrendExData, FinanceADPCalAPIInput, FinanceADPCalAPIOutput, FinanceAssetSoldoutDocumentAPI,
   FinanceAssetBuyinDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentCreatedFrequenciesByUser,
+  Plan,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -998,7 +999,67 @@ export class FinanceStorageService {
   }
 
   /**
+   * Fetch all plans out 
+   * @param top The maximum returned amount
+   * @param skip Skip the amount
+   * 
+   */
+  public fetchAllPlans(top?: number, skip?: number): Observable<BaseListModel<Plan>> {
+    const apiurl: string = environment.ApiUrl + '/api/FinancePlan';
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (top) {
+      params = params.append('top', top.toString());
+    }
+    if (skip !== undefined) {
+      params = params.append('skip', skip.toString());
+    }
+
+    return this._http.get(apiurl, {
+      headers: headers,
+      params: params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllPlans in FinanceStorageService.`);
+        }
+
+        let listRst: Plan[] = [];
+        const rjs: any = <any>response;
+        if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+          for (const si of rjs.contentList) {
+            const rst: Plan = new Plan();
+            rst.onSetData(si);
+            listRst.push(rst);
+          }
+        }
+        let rstObj: BaseListModel<Plan> = new BaseListModel<Plan>();
+        rstObj.totalCount = +rjs.totalCount;
+        rstObj.contentList = listRst;
+
+        return rstObj;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Failed in fetchAllPlans in FinanceStorageService: ${error}`);
+        }
+
+        return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
    * Read all documents out
+   * @param dtbgn Begin date
+   * @param dtend End Date
+   * @param top The maximum returned amount
+   * @param skip Skip the amount
    */
   public fetchAllDocuments(dtbgn?: moment.Moment, dtend?: moment.Moment, top?: number, skip?: number): Observable<BaseListModel<Document>> {
     const apiurl: string = environment.ApiUrl + '/api/FinanceDocument';

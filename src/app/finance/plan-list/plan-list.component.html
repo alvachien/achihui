@@ -38,7 +38,7 @@
         <!-- Target date Column -->
         <ng-container matColumnDef="tgtdate">
           <mat-header-cell *matHeaderCellDef> {{'Common.Date' | translate}} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.TargetDate}} </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.TargetDate | date:'YYYY-m-dd'}} </mat-cell>
         </ng-container>
 
         <!-- Target Balance Column -->
@@ -56,7 +56,8 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onDisplayPlan(row)"></mat-row>
       </mat-table>
-      <mat-paginator #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      <mat-paginator #paginator 
+        [length]="totalPlanCount" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
     </div>
   </mat-card-content>

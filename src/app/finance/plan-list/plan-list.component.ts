@@ -4,7 +4,7 @@ import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Plan, PlanTypeEnum, UICommonLabelEnum, momentDateFormat } from '../../model';
+import { LogLevel, Plan, PlanTypeEnum, UICommonLabelEnum, momentDateFormat, BaseListModel } from '../../model';
 import { FinanceStorageService, HomeDefDetailService, } from '../../services';
 
 @Component({
@@ -16,6 +16,7 @@ export class PlanListComponent implements OnInit {
   isLoadingResults: boolean;
   displayedColumns: string[] = ['id', 'accid', 'tgtdate', 'tgtbalance', 'desp'];
   dataSource: MatTableDataSource<Plan> = new MatTableDataSource<Plan>();
+  totalPlanCount: number;
 
   constructor(private _router: Router,
     private _homeDefService: HomeDefDetailService,
@@ -28,17 +29,10 @@ export class PlanListComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering PlanListComponent ngOnInit...');
     }
 
-     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // For testing, fake data
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    let nplan: Plan = new Plan();
-    nplan.ID = 1;
-    nplan.PlanType = PlanTypeEnum.Account;
-    nplan.AccountID = 1;
-    nplan.TargetDate = moment('2019-02-01', momentDateFormat);
-    nplan.TargetBalance = 1000;
-    nplan.Description = 'Test 1';
-    this.dataSource.data = [nplan];
+    this._storageService.fetchAllPlans().subscribe((x: BaseListModel<Plan>) => {
+      this.totalPlanCount = x.totalCount;
+      this.dataSource.data = x.contentList;
+    });
   }
 
   onCreatePlan(): void {
