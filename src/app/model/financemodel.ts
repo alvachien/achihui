@@ -1697,6 +1697,7 @@ export class Document extends hih.BaseModel {
           }
           chkrst = false;
         } else {
+          // Amount
           let amtItem: number = 0;
           for (let tt of context.TransactionTypes) {
             let ftt: TranType = <TranType>tt;
@@ -1720,6 +1721,23 @@ export class Document extends hih.BaseModel {
               amtTotal += amtItem * this.ExgRate / 100;
             } else {
               amtTotal += amtItem;
+            }
+          }
+
+          // Order valid check
+          if (fit.OrderId > 0 && context && context.Orders.length > 0) {
+            let vordidx: number = context.Orders.findIndex((ord: Order) => {
+              return (+fit.OrderId === +ord.Id && this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo));
+            });
+
+            if (vordidx === -1) {
+              let msg: hih.InfoMessage = new hih.InfoMessage();
+              msg.MsgTime = moment();
+              msg.MsgType = hih.MessageType.Error;
+              msg.MsgTitle = 'Finance.InvalidOrder';
+              msg.MsgContent = 'Finance.InvalidOrder';
+              this.VerifiedMsgs.push(msg);
+              chkrst = false;
             }
           }
         }

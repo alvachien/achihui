@@ -13,7 +13,7 @@ export class UIOrderValidFilterPipe implements PipeTransform {
 
       if (args !== undefined) {
         if (args === true) {
-          return value._validFrom <= today && value._validTo >= today;
+          return value._validFrom.isBefore(today) && value._validTo.isAfter(today);
         } else {
           return true;
         }

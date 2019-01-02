@@ -4,8 +4,8 @@
     <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-vertical-stepper linear #stepper>
-      <!-- Step: Generic info -->
+    <mat-vertical-stepper linear="true" (selectionChange)="onStepSelectionChange($event)" #stepper>
+      <!-- Step 1: Generic info -->
       <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
@@ -48,7 +48,7 @@
         </div>
       </mat-step>
 
-      <!-- Step: Items -->
+      <!-- Step 2: Items -->
       <mat-step>
         <ng-template matStepLabel>{{'Finance.Items' | translate}}</ng-template>
         <mat-toolbar>
@@ -148,7 +148,7 @@
                 <mat-form-field>
                   <mat-select placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="row.OrderId" name="itord">
                     <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-                    <mat-option *ngFor="let tt of arUIOrders | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
+                    <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
                       {{tt.Name}}
                     </mat-option>
                   </mat-select>
@@ -183,7 +183,7 @@
         </div>
       </mat-step>
 
-      <!-- Step: Confirm -->
+      <!-- Step 3: Confirm -->
       <mat-step>
         <ng-template matStepLabel>{{'Common.Confirm' | translate}}</ng-template>
         <!-- 
@@ -193,6 +193,9 @@
         -->
         <div class="mat-typography achih-control-full-width">
           <h3>{{'Common.Date' | translate}}: {{TranDate}}</h3>
+          <h2>{{'Common.Description' |translate}}: {{tranDesp}}</h2>
+          <h2 *ngIf="inAmount">{{'Finance.Incoming' | translate}}: {{inAmount}} {{TranCurrency}}</h2>
+          <h2 *ngIf="outAmount">{{'Finance.Outgoing' | translate}}: {{outAmount}} {{TranCurrency}}</h2>
         </div>
 
         <div>
