@@ -29,6 +29,9 @@ export class PlanDetailComponent implements OnInit {
   get baseCurrency(): string {
     return this._homedefService.curHomeSelected.value.BaseCurrency;
   }
+  get isFieldChangable(): boolean {
+    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
 
   constructor(private _homedefService: HomeDefDetailService,
     private _formBuilder: FormBuilder,

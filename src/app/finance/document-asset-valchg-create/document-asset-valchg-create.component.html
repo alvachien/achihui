@@ -47,7 +47,7 @@
 
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl" name="srcord">
-              <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+              <mat-option *ngFor="let ord of arUIOrder" [value]="ord.Id">
                 {{ord.Name}}
               </mat-option>
             </mat-select>
