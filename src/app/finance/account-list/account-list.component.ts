@@ -6,6 +6,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService } from '../../services';
+import { HttpErrorResponse } from '@angular/common/http';
 
 // Account status UI, don't need expose.
 interface IAccountStatusUI {
@@ -29,6 +30,9 @@ export class AccountListComponent implements OnInit, AfterViewInit {
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent constructor...');
+    }
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
     this.selectedStatus = AccountStatusEnum.Normal;
 
@@ -47,8 +51,10 @@ export class AccountListComponent implements OnInit, AfterViewInit {
       this._storageService.fetchAllAccountCategories(),
     ]).subscribe((x: any) => {
       this._buildDataSource();
-    }, (error: any) => {
-      // Do nothing
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit but failed forkJoin: ${error.message}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });

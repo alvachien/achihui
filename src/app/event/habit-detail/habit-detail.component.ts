@@ -1,20 +1,25 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
+
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil,
   momentDateFormat, EventHabitCheckin } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
 import * as moment from 'moment';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'hih-event-habit-detail',
   templateUrl: './habit-detail.component.html',
   styleUrls: ['./habit-detail.component.scss', ],
 })
-export class HabitDetailComponent implements OnInit {
+export class HabitDetailComponent implements OnInit, OnDestroy {
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
+  private _homeMemStub: Subscription;
+
   public currentMode: string;
   public detailObject: EventHabit;
   public isLoadingData: boolean;
@@ -49,7 +54,7 @@ export class HabitDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering ngOnInit of HabitDetailComponent...');
     }
 
-    this._homedefService.curHomeMembers.subscribe((mem: any) => {
+    this._homeMemStub = this._homedefService.curHomeMembers.subscribe((mem: any) => {
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -81,12 +86,20 @@ export class HabitDetailComponent implements OnInit {
             });
           }
         }
-      }, (error: any) => {
-        // Empty
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed: ${error.message}`);
+        }
       }, () => {
         // Empty
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this._homeMemStub) {
+      this._homeMemStub.unsubscribe();
+    }
   }
 
   public onCancel(): void {

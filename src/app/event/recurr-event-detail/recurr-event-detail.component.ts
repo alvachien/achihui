@@ -1,10 +1,10 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, GeneralEvent, RecurEvent, UIDisplayStringUtil } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -12,9 +12,11 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
   templateUrl: './recurr-event-detail.component.html',
   styleUrls: ['./recurr-event-detail.component.scss'],
 })
-export class RecurrEventDetailComponent implements OnInit {
+export class RecurrEventDetailComponent implements OnInit, OnDestroy {
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
+  private _homeMemStub: Subscription;
+
   public currentMode: string;
   public detailObject: RecurEvent;
   public isLoadingData: boolean;
@@ -44,7 +46,7 @@ export class RecurrEventDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering ngOnInit of RecurrEventDetailComponent...');
     }
 
-    this._homedefService.curHomeMembers.subscribe((mem: any) => {
+    this._homeMemStub = this._homedefService.curHomeMembers.subscribe((mem: any) => {
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -82,6 +84,12 @@ export class RecurrEventDetailComponent implements OnInit {
         // Empty
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this._homeMemStub) {
+      this._homeMemStub.unsubscribe();
+    }
   }
 
   public onCancel(): void {

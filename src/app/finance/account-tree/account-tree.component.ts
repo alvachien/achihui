@@ -129,6 +129,10 @@ export class AccountTreeComponent implements OnInit {
     this.dataSource.data = [];
 
     this._storageService.fetchAllAccounts().subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent onAccountStatusChange, fetchAllAccounts...');
+      }
+
       this.availableCategories = this._storageService.AccountCategories;
       this.availableAccounts = this._filterAccountsByStatus(<Account[]>x);
 

@@ -1,10 +1,10 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, GeneralEvent, RecurEvent } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -12,7 +12,8 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
   templateUrl: './recurr-event-list.component.html',
   styleUrls: ['./recurr-event-list.component.scss'],
 })
-export class RecurrEventListComponent implements OnInit, AfterViewInit {
+export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _homeMemStub: Subscription;
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'assignee'];
   dataSource: MatTableDataSource<RecurEvent>;
 
@@ -49,9 +50,15 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this._homeDefService.curHomeMembers.subscribe((x: any) => {
+    this._homeMemStub = this._homeDefService.curHomeMembers.subscribe((x: any) => {
       this.fetchRecurEvents();
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this._homeMemStub) {
+      this._homeMemStub.unsubscribe();
+    }
   }
 
   public onCreateRecurEvent(): void {

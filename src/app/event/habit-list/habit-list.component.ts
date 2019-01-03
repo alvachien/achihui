@@ -1,20 +1,23 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { environment } from '../../../environments/environment';
 import { LogLevel, EventHabit, EventHabitDetail, EventHabitCheckin } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import * as moment from 'moment';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'hih-event-habit-list',
   templateUrl: './habit-list.component.html',
   styleUrls: ['./habit-list.component.scss', ],
 })
-export class HabitListComponent implements OnInit, AfterViewInit {
+export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _homeMemStub: Subscription;
+
   displayedColumns: string[] = ['select', 'id', 'name', 'start', 'end', 'assignee'];
   dataSource: MatTableDataSource<EventHabit>;
   selection: SelectionModel<EventHabit>;
@@ -52,9 +55,15 @@ export class HabitListComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this._homeDefService.curHomeMembers.subscribe((x: any) => {
+    this._homeMemStub = this._homeDefService.curHomeMembers.subscribe((x: any) => {
       this.fetchHabitEvents();
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this._homeMemStub) {
+      this._homeMemStub.unsubscribe();
+    }
   }
 
   public onCreateHabitEvent(): void {
@@ -82,8 +91,10 @@ export class HabitListComponent implements OnInit, AfterViewInit {
       // hcheckin.hid = this.
       this._storageService.checkInHabitEvent(hcheckin).subscribe((x: any) => {
         // Do nothing
-      }, (error: any) => {
-        // Do nothing
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Enter onCheckin of HabitListComponent but failed: ${error.message}`);
+        }    
       });
     }
   }

@@ -57,6 +57,9 @@ export class ControlCenterListComponent implements OnInit {
     private _router: Router,
     private _uiStatusService: UIStatusService,
     private _dialog: MatDialog) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent constructor...');
+    }
     this.isLoadingResults = false;
   }
 

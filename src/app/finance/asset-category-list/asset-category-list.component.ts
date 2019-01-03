@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, AssetCategory } from '../../model';
@@ -45,7 +45,8 @@ export class AssetCategoryDataSource extends DataSource<any> {
   styleUrls: ['./asset-category-list.component.scss'],
   animations: [fadeAnimation],
 })
-export class AssetCategoryListComponent implements OnInit {
+export class AssetCategoryListComponent implements OnInit, OnDestroy {
+  private _readStub: Subscription;
   displayedColumns: string[] = ['id', 'name', 'desp'];
   dataSource: AssetCategoryDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -60,12 +61,18 @@ export class AssetCategoryListComponent implements OnInit {
     this.isLoadingResults = true;
     this.dataSource = new AssetCategoryDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllAssetCategories().subscribe((x: any) => {
+    this._readStub = this._storageService.fetchAllAssetCategories().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
     }, (error: any) => {
       // Do nothing
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this._readStub) {
+      this._readStub.unsubscribe();
+    }
   }
 }

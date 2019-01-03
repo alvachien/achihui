@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ViewChildren
   Input, Output, ViewContainerRef, QueryList, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatSelectChange } from '@angular/material';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset,
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
@@ -14,14 +14,18 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 import { AccountExtLoanComponent } from '../account-ext-loan';
 import { AccountExtADPComponent } from '../account-ext-adp';
 import { AccountExtAssetComponent } from '../account-ext-asset';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'hih-finance-account-detail',
   templateUrl: './account-detail.component.html',
   styleUrls: ['./account-detail.component.scss'],
 })
-export class AccountDetailComponent implements OnInit, AfterViewInit {
+export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  private _readStub: Subscription;
+  private _createStub: Subscription;
+  private _changeStub: Subscription;
   private routerID: number = -1; // Current object ID in routing
   private _compLoan: AccountExtLoanComponent;
   private _compADP: AccountExtADPComponent;
@@ -38,6 +42,39 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
   @ViewChildren(AccountExtADPComponent) childrenADP: QueryList<AccountExtADPComponent>;
   @ViewChildren(AccountExtAssetComponent) childrenAsset: QueryList<AccountExtAssetComponent>;
 
+  get isFieldChangable(): boolean {
+    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
+  get isChangeMode(): boolean {
+    return this.uiMode === UIMode.Change;
+  }
+  get isCreateMode(): boolean {
+    return this.uiMode === UIMode.Create;
+  }
+  get isAssetAccount(): boolean {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryAsset)) {
+      return true;
+    }
+
+    return false;
+  }
+  get isADPAccount(): boolean {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
+      || this.detailObject.CategoryId === financeAccountCategoryAdvanceReceived)) {
+      return true;
+    }
+
+    return false;
+  }
+  get isLoanAccount(): boolean {
+    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryBorrowFrom
+    || this.detailObject.CategoryId === financeAccountCategoryLendTo)) {
+      return true;
+    }
+
+    return false;
+  }
+
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
@@ -45,6 +82,9 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering constructor of AccountDetailComponent ...');
+    }
     this.detailObject = new Account();
 
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
@@ -80,7 +120,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readAccountEvent.subscribe((x3: any) => {
+            this._readStub = this._storageService.readAccountEvent.subscribe((x3: any) => {
               if (x3 instanceof Account) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readAccount : ${x3}`);
@@ -97,7 +137,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
                 // }
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readAccount : ${x3}`);
+                  console.error(`AC_HIH_UI [Error]: Entering ngOninit in AccountDetailComponent, failed to readAccount : ${x3}`);
                 }
                 this.detailObject = new Account();
               }
@@ -106,9 +146,9 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
             this._storageService.readAccount(this.routerID);
           }
         }
-      }, (error: any) => {
+      }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Entering ngOnInit in AccountDetailComponent with activateRoute URL : ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering ngOnInit in AccountDetailComponent, failed with activateRoute: ${error.message}`);
         }
       }, () => {
         // Empty
@@ -134,37 +174,17 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
       this._compAsset = comps.first;
     });
   }
-  get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
-  }
-  get isChangeMode(): boolean {
-    return this.uiMode === UIMode.Change;
-  }
-  get isCreateMode(): boolean {
-    return this.uiMode === UIMode.Create;
-  }
-  get isAssetAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryAsset)) {
-      return true;
-    }
 
-    return false;
-  }
-  get isADPAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
-      || this.detailObject.CategoryId === financeAccountCategoryAdvanceReceived)) {
-      return true;
+  ngOnDestroy(): void {
+    if (this._readStub) {
+      this._readStub.unsubscribe();
     }
-
-    return false;
-  }
-  get isLoanAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryBorrowFrom
-    || this.detailObject.CategoryId === financeAccountCategoryLendTo)) {
-      return true;
+    if (this._createStub) {
+      this._createStub.unsubscribe();
     }
-
-    return false;
+    if (this._changeStub) {
+      this._changeStub.unsubscribe();
+    }
   }
 
   public setStep(index: number): void {
@@ -226,7 +246,10 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
         // Navigate to current account again
         this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
       });
-    }, (error: any) => {
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering onCloseAccount in AccountDetailComponent, failed: ${error.message}`);
+      }
       // Show the snabckbar
     }, () => {
       // Do nothing
@@ -248,57 +271,59 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
   }
 
   private onCreateImpl(): void {
-    this._storageService.createAccountEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createAccountEvent in AccountDetailComponent with : ${x}`);
-      }
-
-      // Navigate back to list view
-      if (x instanceof Account) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
-        });
-
-        let recreate: boolean = false;
-        snackbarRef.onAction().subscribe(() => {
-          recreate = true;
-
-          this.onInitCreateMode();
-          this.setStep(0);
-        });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          if (!recreate) {
-            this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
-          }
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-          }
-        });
-      }
-    });
-
-    if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
-      if (this._compAsset) {
-        this._compAsset.generateAccountInfoForSave();
+    if (!this._createStub) {
+      this._createStub = this._storageService.createAccountEvent.subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Receiving createAccountEvent in AccountDetailComponent with : ${x}`);
+        }
+  
+        // Navigate back to list view
+        if (x instanceof Account) {
+          // Show the snackbar
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
+          });
+  
+          let recreate: boolean = false;
+          snackbarRef.onAction().subscribe(() => {
+            recreate = true;
+  
+            this.onInitCreateMode();
+            this.setStep(0);
+          });
+  
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
+            if (!recreate) {
+              this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+            }
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+  
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            }
+          });
+        }
+      });
+  
+      if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
+        if (this._compAsset) {
+          this._compAsset.generateAccountInfoForSave();
+        }
       }
     }
 
@@ -306,65 +331,67 @@ export class AccountDetailComponent implements OnInit, AfterViewInit {
   }
 
   private onUpdateImpl(): void {
-    this._storageService.changeAccountEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving changeAccountEvent in AccountDetailComponent with : ${x}`);
+    if (!this._changeStub) {
+      this._changeStub = this._storageService.changeAccountEvent.subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Receiving changeAccountEvent in AccountDetailComponent with : ${x}`);
+        }
+  
+        // Navigate back to list view
+        if (x instanceof Account) {
+          // Show the snackbar
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
+            'OK', {
+            duration: 3000,
+          });
+  
+          snackbarRef.onAction().subscribe(() => {
+            this.onInitCreateMode();
+            this.setStep(0);
+          });
+  
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
+            this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+  
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            }
+          });
+        }
+      });
+  
+      if (this.detailObject.CategoryId === financeAccountCategoryLendTo
+        || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom) {
+        if (this._compLoan) {
+          this._compLoan.generateAccountInfoForSave();
+        }
       }
-
-      // Navigate back to list view
-      if (x instanceof Account) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
-          'OK', {
-          duration: 3000,
-        });
-
-        snackbarRef.onAction().subscribe(() => {
-          this.onInitCreateMode();
-          this.setStep(0);
-        });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-          }
-        });
+      if (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
+        || this.detailObject.CategoryId === financeAccountCategoryAdvanceReceived) {
+        if (this._compADP) {
+          this._compADP.generateAccountInfoForSave();
+        }
       }
-    });
-
-    if (this.detailObject.CategoryId === financeAccountCategoryLendTo
-      || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom) {
-      if (this._compLoan) {
-        this._compLoan.generateAccountInfoForSave();
-      }
-    }
-    if (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
-      || this.detailObject.CategoryId === financeAccountCategoryAdvanceReceived) {
-      if (this._compADP) {
-        this._compADP.generateAccountInfoForSave();
-      }
-    }
-    if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
-      if (this._compAsset) {
-        this._compAsset.generateAccountInfoForSave();
-      }
+      if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
+        if (this._compAsset) {
+          this._compAsset.generateAccountInfoForSave();
+        }
+      }  
     }
 
     this._storageService.changeAccount(this.detailObject);

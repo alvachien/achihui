@@ -25,7 +25,7 @@ There are also some utilities parts:
 
 ## Utilities
 Besides the pages listed above, there are several utility points need be highlighted:
-- Events
+- Events: Events are widely used to exchange information across components;
 ```typescript
 import { EventEmitter } from '@angular/core';
 // Define a variable
@@ -33,8 +33,7 @@ public operEvent = new EventEmitter<any>();
 // Trigger an event
 operEvent.emit(val);
 ```
-- Dialog
-To show a dialog, do the following:
+- Dialog: To show a dialog, do the following:
 ```typescript
 import { MatDialog } from '@angular/material';
 
@@ -56,8 +55,64 @@ this._dialog.open(MessageDialogComponent, {
 });
 ```
 
-- Snackbar
-To show a snackbar, do the following:
+- Snackbar: To show a snackbar, do the following:
 ```typescript
 import { MatSnackBar } from '@angular/material';
+```
+
+- Subscription (subscribe and unsubscribe): Exclude the 'http' related method, when you subscribe some Subject, you need unscribe it manually.
+```typescript
+private _eventStub: Subscription;
+
+ngOnInit(): void {
+    this._eventStub = someEvent.subscribe((x: any) => {
+        // Do something
+    });
+}
+
+ngOnDestroy(): void {
+    if (this._eventStub) {
+        this._eventStub.unsubscribe();
+    }
+}
+```
+
+- Data Loading Animation: It's user friend design to show a data loading animation when the UI layer is communicating with API layer.
+
+To achieve so, the following HTML part and codes are required:
+```html
+<div class="achih-dataloading-shade" *ngIf="isLoadingData">
+    <mat-spinner></mat-spinner>
+</div>
+```
+
+```css
+.achih-dataloading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+```
+
+```typescript
+public isLoadingData: boolean;
+
+constructor() {
+    this.isLoadingData = false;
+}
+
+ngOnInit() {
+    this.isLoadingData = true;
+    // DO data loading
+    loadData.subscribe((x: any) => {
+        this.isLoadingData = false;
+    });
+}
 ```

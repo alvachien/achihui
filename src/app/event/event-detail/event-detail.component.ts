@@ -1,20 +1,23 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, GeneralEvent } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'hih-event-detail',
   templateUrl: './event-detail.component.html',
   styleUrls: ['./event-detail.component.scss'],
 })
-export class EventDetailComponent implements OnInit {
+export class EventDetailComponent implements OnInit, OnDestroy {
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
+  private _homeMemStub: Subscription;
+
   public currentMode: string;
   public detailObject: GeneralEvent;
   public isLoadingData: boolean;
@@ -44,7 +47,7 @@ export class EventDetailComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering ngOnInit of EventDetailComponent...');
     }
 
-    this._homedefService.curHomeMembers.subscribe((mem: any) => {
+    this._homeMemStub = this._homedefService.curHomeMembers.subscribe((mem: any) => {
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -74,12 +77,20 @@ export class EventDetailComponent implements OnInit {
             });
           }
         }
-      }, (error: any) => {
-        // Empty
+      }, (error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering EventDetailComponent ngOnInit but failed: ${error.message}`);
+        }
       }, () => {
         // Empty
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this._homeMemStub) {
+      this._homeMemStub.unsubscribe();
+    }    
   }
 
   public onCancel(): void {
