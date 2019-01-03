@@ -5,7 +5,7 @@
   </mat-card-header>
   <mat-card-content>
     <mat-horizontal-stepper linear="true" (selectionChange)="onStepSelectionChange($event)">
-      <!-- Step: Generic info -->
+      <!-- Step 1: Generic info -->
       <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
@@ -243,7 +243,6 @@
           <button mat-button (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
         </div>  
       </mat-step>
-
     </mat-horizontal-stepper>
   </mat-card-content>
 </mat-card>

@@ -50,7 +50,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
   displayedColumns: string[] = ['select', 'accountid', 'amount', 'interestamount', 'totalamount',
     'desp', 'controlcenter', 'order'];
   dataSource: MatTableDataSource<TemplateDocLoan>;
-  selectionTmpDoc: any = new SelectionModel<TemplateDocLoan>(true, []);
+  selectionTmpDoc: SelectionModel<TemplateDocLoan>;
   loanAccount: Account;
   totalAmount: number;
   // Step: Paying accounts
@@ -98,6 +98,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
 
     this.dataSource = new MatTableDataSource();
     this.dataSourcePayingAccount = new MatTableDataSource();
+    this.selectionTmpDoc = new SelectionModel<TemplateDocLoan>(false, []);
   }
 
   ngOnInit(): void {
@@ -262,6 +263,10 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
   }
 
   public onReset(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering onReset in DocumentRepaymentExCreateComponent`);
+    }
+
     this._stepper.reset();
     this.dataSource.data = [];
     this.dataSourcePayingAccount.data = [];
@@ -395,7 +400,15 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
   }
 
   private _readLoanAccount(nAcntID: number): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering _readLoanAccount in DocumentRepaymentExCreateComponent`);
+    }
+
     this._storageService.readAccountEvent.subscribe((x: Account) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent, success in readAccountEvent`);
+      }
+
       this.loanAccount = x;
       let loanacntext: AccountExtraLoan = <AccountExtraLoan>this.loanAccount.ExtraInfo;
       // Fetch out the latest tmp. doc
