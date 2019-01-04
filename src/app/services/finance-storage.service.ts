@@ -999,10 +999,10 @@ export class FinanceStorageService {
   }
 
   /**
-   * Fetch all plans out 
+   * Fetch all plans out
    * @param top The maximum returned amount
    * @param skip Skip the amount
-   * 
+   *
    */
   public fetchAllPlans(top?: number, skip?: number): Observable<BaseListModel<Plan>> {
     const apiurl: string = environment.ApiUrl + '/api/FinancePlan';

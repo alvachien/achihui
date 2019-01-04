@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../environments/environment';
 import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, UIMode, getUIModeString } from '../model';
 import { AuthService, HomeDefDetailService, FinCurrencyService } from '../services';
@@ -10,8 +13,10 @@ import { AuthService, HomeDefDetailService, FinCurrencyService } from '../servic
   templateUrl: './home-def-detail.component.html',
   styleUrls: ['./home-def-detail.component.scss'],
 })
-export class HomeDefDetailComponent implements OnInit {
+export class HomeDefDetailComponent implements OnInit, OnDestroy {
   private routerID: number = -1; // Current object ID in routing
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
   public detailObject: HomeDef | undefined;
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
@@ -30,10 +35,13 @@ export class HomeDefDetailComponent implements OnInit {
     private _dialog: MatDialog,
     private _router: Router,
     private _activateRoute: ActivatedRoute) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor`);
+    }
 
     this.isLoadingResults = false;
     this.detailObject = new HomeDef();
-    this._fincurrService.fetchAllCurrencies().subscribe((x: any) => {
+    this._fincurrService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Ensure the GET is fired
     });
     this._homedefService.listDataChange.subscribe((x: any) => {
@@ -44,6 +52,10 @@ export class HomeDefDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit`);
+    }
+
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -86,6 +98,13 @@ export class HomeDefDetailComponent implements OnInit {
     }, () => {
       // Empty
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public canSubmit(): boolean {

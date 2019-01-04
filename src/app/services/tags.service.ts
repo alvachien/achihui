@@ -91,7 +91,7 @@ export class TagsService {
         }),
         catchError((err: any) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllTags in TagsService: ${err}`);
+            console.error(`AC_HIH_UI [Error]: Entering TagsService, fetchAllTags, failed with ${err}`);
           }
 
           // this._islistLoaded = false;

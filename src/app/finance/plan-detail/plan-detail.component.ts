@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
-import { Observable, forkJoin, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { Observable, forkJoin, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import {
@@ -16,8 +17,9 @@ import { HomeDefDetailService, FinanceStorageService, UIStatusService, FinCurren
   templateUrl: './plan-detail.component.html',
   styleUrls: ['./plan-detail.component.scss'],
 })
-export class PlanDetailComponent implements OnInit {
+export class PlanDetailComponent implements OnInit, OnDestroy {
   private _routerID: number;
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   public mainFormGroup: FormGroup;
@@ -39,26 +41,33 @@ export class PlanDetailComponent implements OnInit {
     private _activateRoute: ActivatedRoute,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering PlanDetailComponent constructor...');
+    }
     this.detailObject = new Plan();
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit...');
+    }
+
     this.mainFormGroup = this._formBuilder.group({
       dateControl: [{ value: moment(), disabled: false }, Validators.required],
       accountControl: ['', Validators.required],
       tgtbalanceControl: [{ value: 0 }, Validators.required],
       despControl: ['', Validators.required],
     });
-    
+
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllTranTypes(),
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllControlCenters(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, forkJoin: ${rst.length}`);
       }
 
       // Accounts
@@ -73,6 +82,7 @@ export class PlanDetailComponent implements OnInit {
 
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
+            // Do nothing
           } else if (x[0].path === 'edit') {
             this._routerID = +x[1].path;
 
@@ -81,7 +91,7 @@ export class PlanDetailComponent implements OnInit {
               dateControl: moment('2019-2-1', momentDateFormat),
               accountControl: 5,
               tgtbalanceControl: 100,
-              despControl: 'Test'
+              despControl: 'Test',
             });
           } else if (x[0].path === 'display') {
             this._routerID = +x[1].path;
@@ -93,7 +103,7 @@ export class PlanDetailComponent implements OnInit {
               dateControl: moment('2019-2-1', momentDateFormat),
               accountControl: 5,
               tgtbalanceControl: 100,
-              despControl: 'Test'
+              despControl: 'Test',
             });
             this.mainFormGroup.disable();
           }
@@ -102,6 +112,14 @@ export class PlanDetailComponent implements OnInit {
         }
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onSubmit(): void {

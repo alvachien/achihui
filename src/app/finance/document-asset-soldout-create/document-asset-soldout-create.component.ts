@@ -70,7 +70,9 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     private _currService: FinCurrencyService,
     private _router: Router,
     private _formBuilder: FormBuilder) {
-    // Do nothing
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor`);
+    }
   }
 
   ngOnInit(): void {
@@ -220,7 +222,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     }, (err: string) => {
       // Handle the error
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Failed in onSubmit in DocumentAssetSoldoutCreateComponent for createAssetSoldoutDocument, result: ${err}`);
+        console.error(`AC_HIH_UI [Error]: Failed in onSubmit in DocumentAssetSoldoutCreateComponent for createAssetSoldoutDocument, result: ${err}`);
       }
 
       let msg: InfoMessage = new InfoMessage();

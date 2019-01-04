@@ -52,7 +52,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     private _themeStorage: ThemeStorage,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering constructor of HomeDashboardComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering HomeDashboardComponent constructor...');
     }
 
     this.selectedLearnScope = OverviewScopeEnum.CurrentYear;
@@ -82,14 +82,14 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngOnInit of HomeDashboardComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering HomeDashboardComponent ngOnInit...');
     }
 
     this.baseCurr = this._homeDefService.ChosedHome.BaseCurrency;
     this._getHomeKeyFigure();
     this.onLearnScopeChanged();
 
-    this._finstorageService.fetchAllTranTypes().subscribe((x: any) => {
+    this._finstorageService.fetchAllTranTypes().pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: any) => {
       this.listTranType = x;
       this.onFinanceScopeChanged();
     });

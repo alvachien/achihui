@@ -50,7 +50,7 @@ this._dialog.open(MessageDialogComponent, {
 }).afterClosed().subscribe((x2: any) => {
     // Do nothing!
     if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+        console.log(`AC_HIH_UI [Debug]: Entering XXXComponent, afterClosed, Message dialog result ${x2}`);
     }
 });
 ```
@@ -74,6 +74,25 @@ ngOnDestroy(): void {
     if (this._eventStub) {
         this._eventStub.unsubscribe();
     }
+}
+```
+
+There is one better solution for one-time reading logic:
+```typescript
+class myComponent { 
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1); 
+  constructor(private serviceA: ServiceA, 
+    private serviceB: ServiceB, 
+    private serviceC: ServiceC) {
+  } 
+  ngOnInit() { 
+    this.serviceA.pipe(takeUntil(this.destroyed$)).subscribe(...); 
+    this.serviceB.pipe(takeUntil(this.destroyed$)).subscribe(...); 
+    this.serviceC.pipe(takeUntil(this.destroyed$)).subscribe(...); 
+  } 
+  ngOnDestroy() { 
+    this.destroyed$.next(true); this.destroyed$.complete(); 
+  }
 }
 ```
 

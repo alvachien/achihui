@@ -28,7 +28,7 @@ export class ReportBSDataSource extends DataSource<any> {
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<BalanceSheetReport[]> {
     const displayDataChanges: any[] = [
-      this._parentComponent.ReportBSEvent,
+      this._parentComponent.eventReportBS,
       this._paginator.page,
     ];
 
@@ -58,7 +58,7 @@ export class ReportCCDataSource extends DataSource<any> {
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<ControlCenterReport[]> {
     const displayDataChanges: any[] = [
-      this._parentComponent.ReportCCEvent,
+      this._parentComponent.eventReportCC,
       this._paginator.page,
     ];
 
@@ -88,7 +88,7 @@ export class ReportOrderDataSource extends DataSource<any> {
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<OrderReport[]> {
     const displayDataChanges: any[] = [
-      this._parentComponent.ReportOrderEvent,
+      this._parentComponent.eventReportOrder,
       this._paginator.page,
     ];
 
@@ -132,14 +132,14 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedBSColumns: string[] = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
   dataSourceBS: ReportBSDataSource | undefined;
   ReportBS: BalanceSheetReport[] = [];
-  ReportBSEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  eventReportBS: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorBS') paginatorBS: MatPaginator;
 
   // CC
   displayedCCColumns: string[] = ['ControlCenter', 'Debit', 'Credit', 'Balance'];
   dataSourceCC: ReportCCDataSource | undefined;
   ReportCC: ControlCenterReport[] = [];
-  ReportCCEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  eventReportCC: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorCC') paginatorCC: MatPaginator;
   ccIncomingChartOption: Observable<EChartOption>;
   ccOutgoingChartOption: Observable<EChartOption>;
@@ -149,7 +149,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedOrderColumns: string[] = ['Order', 'Debit', 'Credit', 'Balance'];
   dataSourceOrder: ReportOrderDataSource | undefined;
   ReportOrder: OrderReport[] = [];
-  ReportOrderEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  eventReportOrder: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   @ViewChild('paginatorOrder') paginatorOrder: MatPaginator;
   orderIncomingChartOption: Observable<EChartOption>;
   orderOutgoingChartOption: Observable<EChartOption>;
@@ -233,14 +233,14 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngAfterViewInit...');
     }
 
-    this._storageService.fetchAllAccountCategories().subscribe((arctgy: AccountCategory[]) => {
+    this._storageService.fetchAllAccountCategories().pipe(takeUntil(this.ngUnsubscribe$)).subscribe((arctgy: AccountCategory[]) => {
       let arstrings: string[] = [];
       for (let lab of arctgy) {
         arstrings.push(lab.Name);
         this.arAccountCtgy.push(lab);
       }
 
-      this._tranService.get(arstrings).subscribe((x: any) => {
+      this._tranService.get(arstrings).pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: any) => {
         for (let attr in x) {
           for (let lab of this.arAccountCtgy) {
             if (lab.Name === attr) {
@@ -541,7 +541,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       this._storageService.getReportCC(),
       this._storageService.getReportOrder(),
       this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end),
-    ]).subscribe((x: any) => {
+    ]).pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: any) => {
       let idxbs: number = 3;
       let idxcc: number = 4;
       let idxorder: number = 5;
@@ -575,9 +575,9 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       this._buildOrderOutChart();
 
       // Trigger the events
-      this.ReportBSEvent.emit();
-      this.ReportCCEvent.emit();
-      this.ReportOrderEvent.emit();
+      this.eventReportBS.emit();
+      this.eventReportCC.emit();
+      this.eventReportOrder.emit();
     });
   }
   private _buildAccountInChart(): void {

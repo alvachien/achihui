@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
-import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of as observableOf, ReplaySubject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+
+import { environment } from '../../../environments/environment';
 import { LogLevel, TranType, TranTypeLevelEnum, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 
@@ -32,7 +34,8 @@ export class TranTypeTreeFlatNode {
   templateUrl: './tran-type-tree.component.html',
   styleUrls: ['./tran-type-tree.component.scss'],
 })
-export class TranTypeTreeComponent implements OnInit {
+export class TranTypeTreeComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   isLoadingResults: boolean;
   treeControl: FlatTreeControl<TranTypeTreeFlatNode>;
   treeFlattener: MatTreeFlattener<TranTypeTreeNode, TranTypeTreeFlatNode>;
@@ -40,6 +43,9 @@ export class TranTypeTreeComponent implements OnInit {
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent constructor...');
+    }
 
     this.isLoadingResults = false;
 
@@ -50,8 +56,15 @@ export class TranTypeTreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnInit...');
+    }
     this.isLoadingResults = true;
-    this._storageService.fetchAllTranTypes().subscribe((x: any) => {
+    this._storageService.fetchAllTranTypes().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnInit, fetchAllTranTypes...');
+      }
+
       let nodes: TranTypeTreeNode[] = this._buildTypeTree(x, 1);
       this.dataSource.data = nodes;
     }, (error: any) => {
@@ -59,6 +72,14 @@ export class TranTypeTreeComponent implements OnInit {
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   transformer = (node: TranTypeTreeNode, level: number) => {

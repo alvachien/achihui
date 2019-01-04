@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter } from '@angu
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
-import { Observable, forkJoin, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal, UICommonLabelEnum,
@@ -25,8 +25,10 @@ import { ENTER, COMMA, } from '@angular/cdk/keycodes';
     ]),
   ],
 })
-export class DocumentDetailComponent implements OnInit {
+export class DocumentDetailComponent implements OnInit, OnDestroy {
   private routerID: number = -1; // Current object ID in routing
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
   public currentMode: string;
   public detailObject: Document | undefined = undefined;
   public uiMode: UIMode = UIMode.Display;
@@ -62,7 +64,7 @@ export class DocumentDetailComponent implements OnInit {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering constructor ngOnInit...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...');
     }
     this.detailObject = new Document();
   }
@@ -98,7 +100,7 @@ export class DocumentDetailComponent implements OnInit {
           if (x[0].path === 'create') {
             // Create is not allowed!
             if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Debug]: Entering ngOninit, error in wrong create mode!`);
+              console.error(`AC_HIH_UI [Error]: Entering DocumentDetailComponent, ngOninit, error in wrong create mode!`);
             }
           } else if (x[0].path === 'edit') {
             this.routerID = +x[1].path;
@@ -112,7 +114,7 @@ export class DocumentDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocumentEvent.subscribe((x2: any) => {
+            this._storageService.readDocumentEvent.pipe(takeUntil(this.destroyed$)).subscribe((x2: any) => {
               if (x2 instanceof Document) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
@@ -154,6 +156,11 @@ export class DocumentDetailComponent implements OnInit {
 
       this.uiMode = UIMode.Invalid;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 
   public getHeaderDisplayString(hdr: string): string {

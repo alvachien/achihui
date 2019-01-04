@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import * as moment from 'moment';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Plan, PlanTypeEnum, UICommonLabelEnum, momentDateFormat, BaseListModel } from '../../model';
@@ -12,7 +14,8 @@ import { FinanceStorageService, HomeDefDetailService, } from '../../services';
   templateUrl: './plan-list.component.html',
   styleUrls: ['./plan-list.component.scss'],
 })
-export class PlanListComponent implements OnInit {
+export class PlanListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   isLoadingResults: boolean;
   displayedColumns: string[] = ['id', 'accid', 'tgtdate', 'tgtbalance', 'desp'];
   dataSource: MatTableDataSource<Plan> = new MatTableDataSource<Plan>();
@@ -21,6 +24,9 @@ export class PlanListComponent implements OnInit {
   constructor(private _router: Router,
     private _homeDefService: HomeDefDetailService,
     private _storageService: FinanceStorageService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering PlanListComponent constructor...');
+    }
     this.isLoadingResults = false;
   }
 
@@ -29,10 +35,18 @@ export class PlanListComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering PlanListComponent ngOnInit...');
     }
 
-    this._storageService.fetchAllPlans().subscribe((x: BaseListModel<Plan>) => {
+    this._storageService.fetchAllPlans().pipe(takeUntil(this._destroyed$)).subscribe((x: BaseListModel<Plan>) => {
       this.totalPlanCount = x.totalCount;
       this.dataSource.data = x.contentList;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering PlanListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   onCreatePlan(): void {

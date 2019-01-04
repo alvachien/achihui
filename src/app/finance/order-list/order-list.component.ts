@@ -1,8 +1,8 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy, } from '@angular/core';
 import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Order, UICommonLabelEnum, momentDateFormat } from '../../model';
@@ -15,7 +15,8 @@ import * as moment from 'moment';
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.scss'],
 })
-export class OrderListComponent implements OnInit, AfterViewInit {
+export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['id', 'name', 'ValidFrom', 'ValidTo', 'comment'];
   dataSource: MatTableDataSource<Order> = new MatTableDataSource<Order>();
@@ -27,6 +28,9 @@ export class OrderListComponent implements OnInit, AfterViewInit {
     public _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
     private _router: Router) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering OrderListComponent constructor...');
+    }
     this.isLoadingResults = false;
   }
 
@@ -37,17 +41,34 @@ export class OrderListComponent implements OnInit, AfterViewInit {
 
     this.isLoadingResults = true;
 
-    this._storageService.fetchAllOrders().subscribe((x: any) => {
+    this._storageService.fetchAllOrders().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnInit, fetchAllOrders.');
+      }
+
       this._buildDataSource();
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.log(`AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders, failed with ${error}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });
   }
 
   ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering OrderListComponent ngAfterViewInit...');
+    }
     this.dataSource.paginator = this.paginator;
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onCreateOrder(): void {
@@ -77,7 +98,7 @@ export class OrderListComponent implements OnInit, AfterViewInit {
     }).afterClosed().subscribe((x2: any) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+        console.log(`AC_HIH_UI [Debug]: Entering OrderListComponent, onDeleteOrder, Message dialog result ${x2}`);
       }
 
       if (x2) {
@@ -90,7 +111,7 @@ export class OrderListComponent implements OnInit, AfterViewInit {
     this.isLoadingResults = true;
     this.includeInvalid = !this.includeInvalid;
 
-    this._storageService.fetchAllOrders(true).subscribe((x: any) => {
+    this._storageService.fetchAllOrders(true).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       this._buildDataSource();
     }, (error: any) => {
       // Do nothing

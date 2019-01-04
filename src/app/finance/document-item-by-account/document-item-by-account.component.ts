@@ -1,8 +1,8 @@
-import { Component, ViewChild, OnInit, AfterViewInit, Input } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
-import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { LogLevel, Account, DocumentItemWithBalance, OverviewScopeEnum, getOverviewScopeRange, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -13,7 +13,8 @@ import { environment } from '../../../environments/environment';
   templateUrl: './document-item-by-account.component.html',
   styleUrls: ['./document-item-by-account.component.scss'],
 })
-export class DocumentItemByAccountComponent implements OnInit, AfterViewInit {
+export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   private _seledAccount: number;
   private _seledScope: OverviewScopeEnum;
 
@@ -65,7 +66,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent ngOnInit...');
     }
 
-    this._storageService.fetchAllTranTypes().subscribe((x: any) => {
+    this._storageService.fetchAllTranTypes().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Just ensure the HTTP GET fired.
     });
   }
@@ -80,7 +81,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit {
     }
 
     // this.dataSource.paginator = this.paginator;
-    this.subjAccountID.subscribe(() => this.paginator.pageIndex = 0);
+    this.subjAccountID.pipe(takeUntil(this._destroyed$)).subscribe(() => this.paginator.pageIndex = 0);
 
     merge(this.subjAccountID, this.subjScope, this.paginator.page)
       .pipe(
@@ -116,5 +117,13 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit {
           return observableOf([]);
         }),
     ).subscribe((data: any) => this.dataSource.data = data);
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 }

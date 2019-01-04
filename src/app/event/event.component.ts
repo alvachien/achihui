@@ -48,7 +48,7 @@ export class EventComponent implements OnInit, OnDestroy {
         this._langChangeSub.unsubscribe();
       }
     } catch (err) {
-      console.error(err);
+      console.error(`AC_HIH_UI [Error]: Enter EventComponent's ngOnDestroy: ${err}`);
     }
   }
 

@@ -97,7 +97,7 @@ export class LibraryStorageService {
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllBookCategories in LibraryStorageService: ${error}`);
+              console.error(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllBookCategories, failed with: ${error}`);
             }
 
             this._isBookCtgyListLoaded = false;
@@ -155,7 +155,7 @@ export class LibraryStorageService {
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllMovieGenres in LibraryStorageService: ${error}`);
+              console.error(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllMovieGenres, failed with: ${error}`);
             }
 
             this._isMovieGenreListLoaded = false;
@@ -206,7 +206,7 @@ export class LibraryStorageService {
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllLocations in LibraryStorageService: ${error}`);
+              console.error(`AC_HIH_UI [Error]: Entering LibraryStorageService fetchAllLocations failed with: ${error}`);
             }
 
             this._isLocationListLoaded = false;
@@ -257,7 +257,7 @@ export class LibraryStorageService {
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllBooks in LibraryStorageService: ${error}`);
+              console.error(`AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllBooks failed with ${error}`);
             }
 
             this._isBookListLoaded = false;

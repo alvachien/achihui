@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef, ViewChild, } from '@angular/core';
+import { Component, OnInit, ViewChild, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange, MatButton } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, forkJoin, merge, of } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -264,7 +263,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     }, (err: string) => {
       // Handle the error
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Failed in onSubmit in DocumentAssetBuyinCreateComponent for createAssetBuyinDocument, result: ${err}`);
+        console.error(`AC_HIH_UI [Error]: Failed in onSubmit in DocumentAssetBuyinCreateComponent for createAssetBuyinDocument, result: ${err}`);
       }
 
       let msg: InfoMessage = new InfoMessage();

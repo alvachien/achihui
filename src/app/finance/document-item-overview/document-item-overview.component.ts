@@ -1,9 +1,9 @@
-import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import { EChartOption } from 'echarts';
 
@@ -52,7 +52,8 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
   templateUrl: './document-item-overview.component.html',
   styleUrls: ['./document-item-overview.component.scss'],
 })
-export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
+export class DocumentItemOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   private labelIncome: string;
   private labelOutgo: string;
 
@@ -96,7 +97,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       this.chartTheme = 'light';
     }
 
-    this._themeStorage.onThemeUpdate.subscribe((val: any) => {
+    this._themeStorage.onThemeUpdate.pipe(takeUntil(this._destroyed$)).subscribe((val: any) => {
       if (val.isDark) {
         this.chartTheme = 'dark';
       } else {
@@ -139,7 +140,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       });
       ibgn = ibgn.add(1, 'week');
     }
-    while(ibgn.isBefore(end));
+    while (ibgn.isBefore(end));
     let arweekdisplay: string[] = [];
     arweeks.forEach((val: any) => {
       arweekdisplay.push(val.year.toString() + '.' + val.week.toString());
@@ -325,6 +326,14 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       );
   }
 
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+  }
+
   public onTmpDocsRefresh(): void {
     let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedTmpScope);
     forkJoin([
@@ -390,6 +399,9 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
         });
       }, (error: any) => {
         // Show error dialog!
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering DocumentItemOverviewComponent onPostTmpDocument, failed with ${error}`);
+        }
       });
     } else if (doc instanceof TemplateDocLoan) {
       this._uiStatusService.currentTemplateLoanDoc = doc;
@@ -457,7 +469,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit {
       });
       rbgn = rbgn.add(1, 'week');
     }
-    while(rbgn.isBefore(rend));
+    while (rbgn.isBefore(rend));
     let arweekdisplay2: string[] = [];
     arweeks2.forEach((val: any) => {
       arweekdisplay2.push(val.year.toString() + '.' + val.week.toString());

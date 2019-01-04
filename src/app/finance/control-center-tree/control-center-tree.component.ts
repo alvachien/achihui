@@ -64,6 +64,10 @@ export class ControlCenterTreeComponent implements OnInit {
     this.isLoadingResults = true;
     this._storageService.fetchAllControlCenters()
       .subscribe((value: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent ngOnInit, fetchAllControlCenters...');
+        }
+
         let nodes: ControlCenterTreeNode[] = this._buildControlCenterTree(this._storageService.ControlCenters, 1);
         this.dataSource.data = nodes;
       }, (error: any) => {

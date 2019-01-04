@@ -89,7 +89,7 @@ export class TinyMceDirective implements OnDestroy, AfterViewInit, ControlValueA
       tinymce.activeEditor.on('keyup change', () => this.updateValue());
     } catch (err) {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Exception in ngAfterViewInit of TinyMceDirective: ${err ? err.toString() : ''}`);
+        console.error(`AC_HIH_UI [Error]: Exception in ngAfterViewInit of TinyMceDirective: ${err ? err.toString() : ''}`);
       }
     }
   }
@@ -128,7 +128,7 @@ export class TinyMceDirective implements OnDestroy, AfterViewInit, ControlValueA
       }
     } catch (err) {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Exception in ngAfterViewInit of LearnObjectDetail: ${err ? err.toString() : ''}`);
+        console.error(`AC_HIH_UI [Error]: Exception in ngAfterViewInit of LearnObjectDetail: ${err ? err.toString() : ''}`);
       }
     }
   }

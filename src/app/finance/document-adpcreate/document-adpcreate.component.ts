@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
-import { Observable, forkJoin, merge, of } from 'rxjs';
+import { Observable, forkJoin, merge, of, Subscription } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
+import {
+  LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
   UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   UIDisplayStringUtil, IAccountCategoryFilter, financeAccountCategoryAdvanceReceived, TranType,
@@ -22,8 +23,9 @@ import { AccountExtADPComponent } from '../account-ext-adp';
   templateUrl: './document-adpcreate.component.html',
   styleUrls: ['./document-adpcreate.component.scss'],
 })
-export class DocumentADPCreateComponent implements OnInit {
+export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   private _isADP: boolean;
+  private _createDocStub: Subscription;
 
   public curMode: UIMode = UIMode.Create;
   public accountAdvPay: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
@@ -156,6 +158,12 @@ export class DocumentADPCreateComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this._createDocStub) {
+      this._createDocStub.unsubscribe();
+    }
+  }
+
   canSubmit(): boolean {
     this.ctrlAccount.generateAccountInfoForSave();
     if (this.ctrlAccount.extObject.dpTmpDocs.length <= 0) {
@@ -206,54 +214,56 @@ export class DocumentADPCreateComponent implements OnInit {
       return;
     }
 
-    this._storageService.createDocumentEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentAdvancepaymentDetailComponent with : ${x}`);
-      }
+    if (!this._createDocStub) {
+      this._createDocStub = this._storageService.createDocumentEvent.subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, createDocumentEvent`);
+        }
 
-      // Navigate back to list view
-      if (x instanceof Document) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
+        // Navigate back to list view
+        if (x instanceof Document) {
+          // Show the snackbar
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+              duration: 3000,
+            });
+
+          let recreate: boolean = false;
+          snackbarRef.onAction().subscribe(() => {
+            recreate = true;
           });
 
-        let recreate: boolean = false;
-        snackbarRef.onAction().subscribe(() => {
-          recreate = true;
-        });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          if (!recreate) {
-            if (this._isADP) {
-              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-            } else {
-              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
+            if (!recreate) {
+              if (this._isADP) {
+                this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+              } else {
+                this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+              }
             }
-          }
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
 
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-          }
-        });
-      }
-    });
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, failed, Message dialog result ${x2}`);
+            }
+          });
+        }
+      });
+    }
 
     docObj.HID = this._homeService.ChosedHome.ID;
 

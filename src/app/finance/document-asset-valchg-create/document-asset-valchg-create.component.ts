@@ -110,7 +110,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit for forkJoin, result length: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit, forkJoin, result length: ${rst.length}`);
       }
 
       // Accounts
@@ -215,7 +215,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     }, (err: string) => {
       // Handle the error
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Failed in onSubmit in DocumentAssetValChgCreateComponent for createAssetValChgDocument, result: ${err}`);
+        console.error(`AC_HIH_UI [Error]: Failed in onSubmit in DocumentAssetValChgCreateComponent for createAssetValChgDocument, result: ${err}`);
       }
 
       let msg: InfoMessage = new InfoMessage();
@@ -246,7 +246,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentAssetValChgCreateComponent`);
     }
 
-    let curidx: number = event.selectedIndex;
+    const curidx: number = event.selectedIndex;
     if (curidx === 1) {
       // Fetch the existing items
       this._storageService.getDocumentItemByAccount(this.TargetAssetAccountID).subscribe((x: any) => {

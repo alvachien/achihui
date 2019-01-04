@@ -6,8 +6,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper } from '@angular/material';
-import { Observable, forkJoin, merge } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
@@ -28,7 +28,9 @@ import { AccountExtLoanComponent } from '../account-ext-loan';
   templateUrl: './document-loan-create.component.html',
   styleUrls: ['./document-loan-create.component.scss'],
 })
-export class DocumentLoanCreateComponent implements OnInit {
+export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _createDocSub: Subscription;
   private loanType: number;
 
   public documentTitle: string;
@@ -118,9 +120,9 @@ export class DocumentLoanCreateComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngAfterViewInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -150,7 +152,7 @@ export class DocumentLoanCreateComponent implements OnInit {
       });
     }, (error: HttpErrorResponse) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit, failed to load depended objects : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${error}`);
       }
 
       const dlginfo: MessageDialogInfo = {
@@ -167,9 +169,20 @@ export class DocumentLoanCreateComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+    if (this._createDocSub) {
+      this._createDocSub.unsubscribe();
+    }
+  }
+
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentLoanCreateComponent: ${event.selectedIndex}`);
+      console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent onStepSelectionChange where index = ${event.selectedIndex}`);
     }
 
     if (event.selectedIndex === 2) {
@@ -236,46 +249,48 @@ export class DocumentLoanCreateComponent implements OnInit {
     acntobj.ExtraInfo = this.loanAccount;
     sobj.accountVM = acntobj.writeJSONObject();
 
-    this._storageService.createDocumentEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentLoanCreateComponent`);
-      }
+    if (!this._createDocSub) {
+      this._createDocSub = this._storageService.createDocumentEvent.subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createDocumentEvent`);
+        }
 
-      // Navigate back to list view
-      if (x instanceof Document) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
-        });
+        // Navigate back to list view
+        if (x instanceof Document) {
+          // Show the snackbar
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+              duration: 3000,
+            });
 
-        snackbarRef.onAction().subscribe(() => {
-          this.onReset();
-        });
+          snackbarRef.onAction().subscribe(() => {
+            this.onReset();
+          });
 
-        snackbarRef.afterDismissed().subscribe(() => {
-          this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
+          snackbarRef.afterDismissed().subscribe(() => {
+            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
 
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-          }
-        });
-      }
-    });
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, Message dialog result ${x2}`);
+            }
+          });
+        }
+      });
+    }
 
     this._storageService.createLoanDocument(sobj);
   }

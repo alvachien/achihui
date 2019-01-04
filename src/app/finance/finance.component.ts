@@ -46,7 +46,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         this._langChangeSub.unsubscribe();
       }
     } catch (err) {
-      console.error(err);
+      console.error(`AC_HIH_UI [Error]: Entering FinanceComponent's ngOnDestroy: ${err}`);
     }
   }
 

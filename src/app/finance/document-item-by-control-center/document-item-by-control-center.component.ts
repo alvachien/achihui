@@ -1,20 +1,20 @@
-import { Component, ViewChild, OnInit, AfterViewInit, Input } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { LogLevel, ControlCenter, DocumentItemWithBalance, OverviewScopeEnum, getOverviewScopeRange } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { environment } from '../../../environments/environment';
-import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-fin-docitem-by-cc',
   templateUrl: './document-item-by-control-center.component.html',
   styleUrls: ['./document-item-by-control-center.component.scss'],
 })
-export class DocumentItemByControlCenterComponent implements OnInit, AfterViewInit {
-
+export class DocumentItemByControlCenterComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   private _seledCC: number;
   private _seledScope: OverviewScopeEnum;
 
@@ -116,5 +116,13 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
           return observableOf([]);
         }),
     ).subscribe((data: any) => this.dataSource.data = data);
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 }

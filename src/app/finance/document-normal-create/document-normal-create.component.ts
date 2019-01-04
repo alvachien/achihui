@@ -4,11 +4,12 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange, MatVerticalStepper,
-  } from '@angular/material';
+import {
+  MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange, MatVerticalStepper,
+} from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Observable, forkJoin, merge } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
@@ -26,7 +27,9 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   templateUrl: './document-normal-create.component.html',
   styleUrls: ['./document-normal-create.component.scss'],
 })
-export class DocumentNormalCreateComponent implements OnInit {
+export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _createSub: Subscription;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -117,9 +120,9 @@ export class DocumentNormalCreateComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -129,6 +132,18 @@ export class DocumentNormalCreateComponent implements OnInit {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders);
     });
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+
+    if (this._createSub) {
+      this._createSub.unsubscribe();
+    }
   }
 
   public onCreateDocItem(): void {
@@ -187,61 +202,63 @@ export class DocumentNormalCreateComponent implements OnInit {
       return;
     }
 
-    this._storageService.createDocumentEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentNormalCreateComponent with : ${x}`);
-      }
+    if (!this._createSub) {
+      this._createSub = this._storageService.createDocumentEvent.subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentNormalCreateComponent with : ${x}`);
+        }
 
-      // Navigate back to list view
-      if (x instanceof Document) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
+        // Navigate back to list view
+        if (x instanceof Document) {
+          // Show the snackbar
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+              duration: 3000,
+            });
+
+          let isrecreate: boolean = false;
+          snackbarRef.onAction().subscribe(() => {
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar onAction()`);
+            }
+
+            isrecreate = true;
+
+            // Re-initial the page for another create
+            this.onReset();
           });
 
-        let isrecreate: boolean = false;
-        snackbarRef.onAction().subscribe(() => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar onAction()`);
-          }
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar afterDismissed with ${isrecreate}`);
+            }
 
-          isrecreate = true;
+            if (!isrecreate) {
+              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+            }
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
 
-          // Re-initial the page for another create
-          this.onReset();
-        });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar afterDismissed with ${isrecreate}`);
-          }
-
-          if (!isrecreate) {
-            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-          }
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);
-          }
-        });
-      }
-    });
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);
+            }
+          });
+        }
+      });
+    }
 
     this._storageService.createDocument(detailObject);
   }
@@ -283,7 +300,7 @@ export class DocumentNormalCreateComponent implements OnInit {
 
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentRepaymentExCreateComponent: ${event.selectedIndex}`);
+      console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent onStepSelectionChange with index = ${event.selectedIndex}`);
     }
 
     if (event.selectedIndex === 2) {

@@ -250,7 +250,6 @@ export class HomeDefDetailService {
           return listResult;
         })).subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllMembersInChosedHome in HomeDefDetailService: ${x}`);
             console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllMembersInChosedHome in HomeDefDetailService.`);
           }
 
@@ -258,8 +257,7 @@ export class HomeDefDetailService {
           this.curHomeMembers.next(copiedData);
         }, (error: any) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            // console.error(`AC_HIH_UI [Error]: Error occurred in fetchAllMembersInChosedHome in HomeDefDetailService: ${error}`);
-            console.error(`AC_HIH_UI [Error]: Error occurred in fetchAllMembersInChosedHome in HomeDefDetailService.`);
+            console.error(`AC_HIH_UI [Error]: HomeDefDetailService, fetchAllMembersInChosedHome, failed with ${error}`);
           }
         }, () => {
           // Empty

@@ -179,7 +179,7 @@ export class QuestionBankDetailComponent implements OnInit {
   private onQtnBankCreate(): void {
     this._storageService.createQuestionEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createQuestionEvent in QuestionBankDetailComponent with : ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent`);
       }
 
       // Navigate back to list view
@@ -218,7 +218,7 @@ export class QuestionBankDetailComponent implements OnInit {
         }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent, failed dialog result ${x2}`);
           }
         });
       }
@@ -232,7 +232,7 @@ export class QuestionBankDetailComponent implements OnInit {
   private onQtnBankUpdate(): void {
     this._storageService.updateQuestionEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving updateQuestionEvent in QuestionBankDetailComponent with : ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent`);
       }
 
       // Navigate back to list view
@@ -261,7 +261,7 @@ export class QuestionBankDetailComponent implements OnInit {
         }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent, failed dialog result ${x2}`);
           }
         });
       }

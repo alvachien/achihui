@@ -6,8 +6,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource, MatHorizontalStepper } from '@angular/material';
-import { Observable, forkJoin, merge } from 'rxjs';
-import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
+import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import { SelectionModel } from '@angular/cdk/collections';
 
@@ -35,7 +35,10 @@ class PayingAccountInfo {
   templateUrl: './document-repayment-ex-create.component.html',
   styleUrls: ['./document-repayment-ex-create.component.scss'],
 })
-export class DocumentRepaymentExCreateComponent implements OnInit {
+export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _readAccountSub: Subscription;
+
   public arUIAccount: UIAccountForSelection[] = [];
   public arUILoanAccount: UIAccountForSelection[] = [];
   public filteredLoanAccount: Observable<UIAccountForSelection[]>;
@@ -122,7 +125,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
@@ -134,14 +137,14 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
       this.arUILoanAccount = this.arUIAccount.filter((val: UIAccountForSelection) => {
         return val.CategoryId === financeAccountCategoryBorrowFrom
-              || val.CategoryId === financeAccountCategoryLendTo;
+          || val.CategoryId === financeAccountCategoryLendTo;
       });
       this.filteredLoanAccount = this.firstFormGroup.get('accountControl').valueChanges
-      .pipe(
-        startWith<string | UIAccountForSelection>(''),
-        map((value: any) => typeof value === 'string' ? value : value.Name),
-        map((name: any) => name ? this._filterLoanAccount(name) : this.arUILoanAccount.slice()),
-      );
+        .pipe(
+          startWith<string | UIAccountForSelection>(''),
+          map((value: any) => typeof value === 'string' ? value : value.Name),
+          map((name: any) => name ? this._filterLoanAccount(name) : this.arUILoanAccount.slice()),
+        );
 
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
@@ -160,9 +163,20 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+    if (this._readAccountSub) {
+      this._readAccountSub.unsubscribe();
+    }
+  }
+
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentRepaymentExCreateComponent: ${event.selectedIndex}`);
+      console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent onStepSelectionChange with idex = ${event.selectedIndex}`);
     }
 
     if (event.previouslySelectedIndex === 0 && event.selectedIndex === 1) {
@@ -369,8 +383,8 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   public masterToggle(): void {
     this.isAllSelected() ?
-        this.selectionTmpDoc.clear() :
-        this.dataSource.data.forEach((row: any) => this.selectionTmpDoc.select(row));
+      this.selectionTmpDoc.clear() :
+      this.dataSource.data.forEach((row: any) => this.selectionTmpDoc.select(row));
   }
 
   public onCreatePayingAccount(): void {
@@ -404,49 +418,52 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
       console.log(`AC_HIH_UI [Debug]: Entering _readLoanAccount in DocumentRepaymentExCreateComponent`);
     }
 
-    this._storageService.readAccountEvent.subscribe((x: Account) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent, success in readAccountEvent`);
-      }
-
-      this.loanAccount = x;
-      let loanacntext: AccountExtraLoan = <AccountExtraLoan>this.loanAccount.ExtraInfo;
-      // Fetch out the latest tmp. doc
-      let arItems: TemplateDocLoan[] = [];
-      loanacntext.loanTmpDocs.forEach((tmpdoc: TemplateDocLoan) => {
-        if (!tmpdoc.RefDocId) {
-          arItems.push(tmpdoc);
+    if (!this._readAccountSub) {
+      this._readAccountSub = this._storageService.readAccountEvent.subscribe((x: Account) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent, success in readAccountEvent`);
         }
-      });
-      this.dataSource.data = arItems;
 
-      // Set the selected items
-      if (this._uiStatusService.currentTemplateLoanDoc) {
-        this.selectionTmpDoc.clear();
-        this.dataSource.data.forEach((item: TemplateDocLoan) => {
-          if (+item.DocId === +this._uiStatusService.currentTemplateLoanDoc.DocId) {
-            this.selectionTmpDoc.select(item);
+        this.loanAccount = x;
+        let loanacntext: AccountExtraLoan = <AccountExtraLoan>this.loanAccount.ExtraInfo;
+        // Fetch out the latest tmp. doc
+        let arItems: TemplateDocLoan[] = [];
+        loanacntext.loanTmpDocs.forEach((tmpdoc: TemplateDocLoan) => {
+          if (!tmpdoc.RefDocId) {
+            arItems.push(tmpdoc);
           }
         });
+        this.dataSource.data = arItems;
 
-        // Add paying account
-        let arPayingAccounts: PayingAccountInfo[] = [];
-        arPayingAccounts.push({
-          accountID: loanacntext.PayingAccount,
-          amount: this._uiStatusService.currentTemplateLoanDoc.TranAmount,
-        });
-        if (this._uiStatusService.currentTemplateLoanDoc.InterestAmount) {
+        // Set the selected items
+        if (this._uiStatusService.currentTemplateLoanDoc) {
+          this.selectionTmpDoc.clear();
+          this.dataSource.data.forEach((item: TemplateDocLoan) => {
+            if (+item.DocId === +this._uiStatusService.currentTemplateLoanDoc.DocId) {
+              this.selectionTmpDoc.select(item);
+            }
+          });
+
+          // Add paying account
+          let arPayingAccounts: PayingAccountInfo[] = [];
           arPayingAccounts.push({
             accountID: loanacntext.PayingAccount,
-            amount: this._uiStatusService.currentTemplateLoanDoc.InterestAmount,
+            amount: this._uiStatusService.currentTemplateLoanDoc.TranAmount,
           });
-        }
-        this.dataSourcePayingAccount.data = arPayingAccounts;
+          if (this._uiStatusService.currentTemplateLoanDoc.InterestAmount) {
+            arPayingAccounts.push({
+              accountID: loanacntext.PayingAccount,
+              amount: this._uiStatusService.currentTemplateLoanDoc.InterestAmount,
+            });
+          }
+          this.dataSourcePayingAccount.data = arPayingAccounts;
 
-        // Clear it
-        this._uiStatusService.currentTemplateLoanDoc = undefined;
-      }
-    });
+          // Clear it
+          this._uiStatusService.currentTemplateLoanDoc = undefined;
+        }
+      });
+    }
+
     this._storageService.readAccount(nAcntID);
   }
 
@@ -489,7 +506,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
 
     if (this.totalAmount > 0 && this.dataSourcePayingAccount.data.length > 0) {
       let nleftAmount: number = 0;
-      for (let idx: number = 0; idx < this.dataSourcePayingAccount.data.length; idx ++) {
+      for (let idx: number = 0; idx < this.dataSourcePayingAccount.data.length; idx++) {
         di = new DocumentItem();
         di.ItemId = curItemIdx++;
         di.AccountId = this.dataSourcePayingAccount.data[idx].accountID;
@@ -519,7 +536,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit {
             di.TranAmount = tranAmount;
             tranAmount = 0;
             nleftAmount = Math.abs(nleftAmount);
-            idx --; // For this case, reduce the pointer
+            idx--; // For this case, reduce the pointer
           } else {
             di.TranAmount = tranAmount;
             nleftAmount = 0;

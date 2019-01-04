@@ -68,7 +68,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     } catch (err) {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Exception in ngAfterViewInit of LearnObjectDetail: ${err ? err.toString() : ''}`);
+        console.error(`AC_HIH_UI [Error]: Entering ObjectDetailComponent, ngAfterViewInit, failed with: ${err ? err.toString() : ''}`);
       }
 
       return;
@@ -123,7 +123,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering ngOnInit in ObjectDetailComponent with activateRoute URL : ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering ObjectDetailComponent, ngOnInit failed with activateRoute URL: ${error}`);
         }
       }, () => {
         // Empty
@@ -135,14 +135,14 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngOnDestroy of LearnObjectDetail');
+      console.log('AC_HIH_UI [Debug]: Entering ObjectDetailComponent, ngOnDestroy');
     }
 
     try {
       tinymce.remove(this.editor);
     } catch (err) {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Exception in ngOnDestroy of LearnObjectDetail: ${err ? err.toString() : ''}`);
+        console.error(`AC_HIH_UI [Error]: Entering ObjectDetailComponent, ngOnDestroy, failed with: ${err ? err.toString() : ''}`);
       }
     }
   }
@@ -186,7 +186,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private onCreateObject(): void {
     this._storageService.createObjectEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createObjectEvent in ObjectDetailComponent with : ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent`);
       }
 
       // Navigate back to list view
@@ -225,7 +225,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent, failed dialog result ${x2}`);
           }
         });
       }
@@ -238,7 +238,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private onUpdateObject(): void {
     this._storageService.updateObjectEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving updateObjectEvent in ObjectDetailComponent with : ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent`);
       }
 
       // Navigate back to list view
@@ -268,7 +268,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent, failed dialog result ${x2}`);
           }
         });
       }

@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import {
+  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -53,7 +54,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...');
       }
-        
+
       // Load all control centers.
       this.existedCC = cclist;
     });
@@ -92,7 +93,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                 }
                 this.detailObject = new ControlCenter();
               }
-            });  
+            });
           }
 
           this.storageService.readControlCenter(this.routerID);
@@ -157,9 +158,9 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     if (!this._createStub) {
       this._createStub = this.storageService.createControlCenterEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createControlCenterEvent in ControlCenterDetailComponent with : ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent`);
         }
-  
+
         // Navigate back to list view
         if (x instanceof ControlCenter) {
           // Show the snackbar
@@ -167,14 +168,14 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
               duration: 3000,
             });
-  
+
           let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
             recreate = true;
-  
+
             this.onInitCreateMode();
           });
-  
+
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             if (!recreate) {
@@ -188,7 +189,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
             Content: x.toString(),
             Button: MessageDialogButtonEnum.onlyok,
           };
-  
+
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
@@ -196,7 +197,8 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+              console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent,
+                failed, dialog result ${x2}`);
             }
           });
         }
@@ -210,9 +212,9 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     if (!this._changeStub) {
       this._changeStub = this.storageService.changeControlCenterEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving changeControlCenterEvent in ControlCenterDetailComponent with : ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
         }
-  
+
         // Navigate back to list view
         if (x instanceof ControlCenter) {
           // Show the snackbar
@@ -220,7 +222,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
             'OK', {
               duration: 3000,
             });
-  
+
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
@@ -232,7 +234,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
             Content: x.toString(),
             Button: MessageDialogButtonEnum.onlyok,
           };
-  
+
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
@@ -240,7 +242,8 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+              console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent,
+                failed, Message dialog result ${x2}`);
             }
           });
         }

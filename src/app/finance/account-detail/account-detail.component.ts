@@ -1,14 +1,19 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ViewChildren,
-  Input, Output, ViewContainerRef, QueryList, } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ViewChildren,
+  Input, Output, ViewContainerRef, QueryList,
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatSelectChange } from '@angular/material';
 import { Observable, forkJoin, Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset,
+import {
+  LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset,
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo, UICommonLabelEnum,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
-  AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory, financeAccountCategoryInsurance } from '../../model';
+  AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory,
+  financeAccountCategoryInsurance,
+} from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { AccountExtLoanComponent } from '../account-ext-loan';
@@ -68,7 +73,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
   get isLoanAccount(): boolean {
     if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryBorrowFrom
-    || this.detailObject.CategoryId === financeAccountCategoryLendTo)) {
+      || this.detailObject.CategoryId === financeAccountCategoryLendTo)) {
       return true;
     }
 
@@ -221,7 +226,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public canCloseAccount(): boolean {
     if (this.detailObject === undefined
-    || this.detailObject.Status !== AccountStatusEnum.Normal) {
+      || this.detailObject.Status !== AccountStatusEnum.Normal) {
       return false;
     }
     return true;
@@ -276,23 +281,23 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createAccountEvent in AccountDetailComponent with : ${x}`);
         }
-  
+
         // Navigate back to list view
         if (x instanceof Account) {
           // Show the snackbar
           let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-  
+              duration: 3000,
+            });
+
           let recreate: boolean = false;
           snackbarRef.onAction().subscribe(() => {
             recreate = true;
-  
+
             this.onInitCreateMode();
             this.setStep(0);
           });
-  
+
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             if (!recreate) {
@@ -306,7 +311,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
             Content: x.toString(),
             Button: MessageDialogButtonEnum.onlyok,
           };
-  
+
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
@@ -314,12 +319,12 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
           }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+              console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onCreateImpl, Error, Message dialog result ${x2}`);
             }
           });
         }
       });
-  
+
       if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
         if (this._compAsset) {
           this._compAsset.generateAccountInfoForSave();
@@ -334,22 +339,22 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!this._changeStub) {
       this._changeStub = this._storageService.changeAccountEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving changeAccountEvent in AccountDetailComponent with : ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onUpdateImpl, changeAccountEvent with : ${x}`);
         }
-  
+
         // Navigate back to list view
         if (x instanceof Account) {
           // Show the snackbar
           let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
             'OK', {
-            duration: 3000,
-          });
-  
+              duration: 3000,
+            });
+
           snackbarRef.onAction().subscribe(() => {
             this.onInitCreateMode();
             this.setStep(0);
           });
-  
+
           snackbarRef.afterDismissed().subscribe(() => {
             // Navigate to display
             this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
@@ -361,7 +366,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
             Content: x.toString(),
             Button: MessageDialogButtonEnum.onlyok,
           };
-  
+
           this._dialog.open(MessageDialogComponent, {
             disableClose: false,
             width: '500px',
@@ -369,12 +374,12 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
           }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+              console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onUpdateImpl, changeAccountEvent, failed, dialog result ${x2}`);
             }
           });
         }
       });
-  
+
       if (this.detailObject.CategoryId === financeAccountCategoryLendTo
         || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom) {
         if (this._compLoan) {
@@ -391,7 +396,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         if (this._compAsset) {
           this._compAsset.generateAccountInfoForSave();
         }
-      }  
+      }
     }
 
     this._storageService.changeAccount(this.detailObject);

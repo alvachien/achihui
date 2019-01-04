@@ -1,12 +1,14 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatHorizontalStepper } from '@angular/material';
-import { Observable, forkJoin, merge, of } from 'rxjs';
+import { Observable, forkJoin, merge, of, ReplaySubject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
+import {
+  LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
   UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum, financeDocTypeTransfer,
   financeTranTypeTransferOut, financeTranTypeTransferIn,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
@@ -21,7 +23,9 @@ import * as moment from 'moment';
   templateUrl: './document-transfer-create.component.html',
   styleUrls: ['./document-transfer-create.component.scss'],
 })
-export class DocumentTransferCreateComponent implements OnInit {
+export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _createSub: Subscription;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -112,7 +116,7 @@ export class DocumentTransferCreateComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
       this.uiAccountStatusFilter = undefined;
@@ -121,6 +125,17 @@ export class DocumentTransferCreateComponent implements OnInit {
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+
+    if (this._createSub) {
+      this._createSub.unsubscribe();
+    }
   }
 
   canSubmit(): boolean {
@@ -156,51 +171,53 @@ export class DocumentTransferCreateComponent implements OnInit {
       return;
     }
 
-    this._storageService.createDocumentEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentTransferCreateComponent with : ${x}`);
-      }
+    if (!this._createSub) {
+      this._createSub = this._storageService.createDocumentEvent.subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent, onSubmit, createDocumentEvent`);
+        }
 
-      // Navigate back to list view
-      if (x instanceof Document) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
-        });
+        // Navigate back to list view
+        if (x instanceof Document) {
+          // Show the snackbar
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+              duration: 3000,
+            });
 
-        let recreate: boolean = false;
-        snackbarRef.onAction().subscribe(() => {
-          recreate = true;
-          this.onReset();
-        });
+          let recreate: boolean = false;
+          snackbarRef.onAction().subscribe(() => {
+            recreate = true;
+            this.onReset();
+          });
 
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          if (!recreate) {
-            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-          }
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
+            if (!recreate) {
+              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+            }
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
 
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-          }
-        });
-      }
-    });
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent, onSubmit, Message dialog result ${x2}`);
+            }
+          });
+        }
+      });
+    }
 
     this._storageService.createDocument(docObj);
   }

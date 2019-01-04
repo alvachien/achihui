@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, OnInit, Input } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, OnInit, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { LogLevel, Account, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection,
@@ -6,15 +6,16 @@ import { LogLevel, Account, DocumentItemWithBalance, UIAccountForSelection, Buil
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { environment } from '../../../environments/environment';
-import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-fin-docitem-by-acntctgy',
   templateUrl: './document-item-by-account-category.component.html',
   styleUrls: ['./document-item-by-account-category.component.scss'],
 })
-export class DocumentItemByAccountCategoryComponent implements OnInit, AfterViewInit {
+export class DocumentItemByAccountCategoryComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   private _seledScope: OverviewScopeEnum;
 
   displayedColumns: string[] = ['DocID', 'AccountId', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
@@ -70,7 +71,7 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
     forkJoin([
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllTranTypes(),
-    ]).subscribe((x: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
     });
@@ -85,10 +86,11 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountCategoryComponent ngAfterViewInit...');
     }
 
-    this.subjAccountIDS.subscribe(() => this.paginator.pageIndex = 0);
+    this.subjAccountIDS.pipe(takeUntil(this._destroyed$)).subscribe(() => this.paginator.pageIndex = 0);
 
     merge(this.subjAccountIDS, this.subjScope, this.paginator.page)
       .pipe(
+        takeUntil(this._destroyed$),
         startWith({}),
         switchMap(() => {
           if (this.subjAccountIDS.value === undefined || this.subjAccountIDS.value.length <= 0) {
@@ -133,5 +135,13 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
           return observableOf([]);
         }),
     ).subscribe((data: any) => this.dataSource.data = data);
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountCategoryComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 }

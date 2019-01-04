@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, AfterViewInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, EventEmitter, OnDestroy } from '@angular/core';
 import { MatPaginator, MatDialog, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange,
   financeDocTypeTransfer, financeDocTypeAdvancePayment, OverviewScopeEnum, getOverviewScopeRange,
@@ -16,7 +16,8 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   templateUrl: './document-list.component.html',
   styleUrls: ['./document-list.component.scss'],
 })
-export class DocumentListComponent implements OnInit, AfterViewInit {
+export class DocumentListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   private _docScopeEvent: EventEmitter<any> = new EventEmitter<any>();
 
   displayedColumns: string[] = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
@@ -31,6 +32,9 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
     public _uiStatusService: UIStatusService,
     private _router: Router,
     private _dialog: MatDialog) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...');
+    }
     this.isLoadingResults = false;
     this.totalDocumentCount = 0;
   }
@@ -51,6 +55,7 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
 
     merge(this.paginator.page, this._docScopeEvent)
       .pipe(
+        takeUntil(this._destroyed$),
         startWith({}),
         switchMap(() => {
           let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
@@ -82,6 +87,14 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
 
     // Load the data
     this._docScopeEvent.emit();
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onRefreshList(): void {
@@ -216,11 +229,11 @@ export class DocumentListComponent implements OnInit, AfterViewInit {
     }).afterClosed().subscribe((x2: any) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentListComponent, onDeleteDocument, Message dialog result ${x2}`);
       }
 
       if (x2) {
-        this._storageService.deleteDocumentEvent.subscribe((x: any) => {
+        this._storageService.deleteDocumentEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
           // Refresh the list!
           this.onRefreshList();
         }, (err2: any) => {

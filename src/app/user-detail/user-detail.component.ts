@@ -18,7 +18,7 @@ export class UserDetailComponent {
       this.usrObject = x;
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error('AC HIH UI [Error]: Failed in subscribe to User', error);
+        console.error(`AC HIH UI [Error]: Entering UserDetailComponent, Failed in subscribe: ${error}`);
       }
     }, () => {
       // Completed

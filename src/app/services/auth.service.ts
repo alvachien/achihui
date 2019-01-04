@@ -72,13 +72,13 @@ export class AuthService {
 
     this.mgr.events.addAccessTokenExpiring(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.warn('AC_HIH_UI [Debug]: token expiring');
+        console.warn('AC_HIH_UI [Warn]: token expiring');
       }
     });
 
     this.mgr.events.addAccessTokenExpired(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.error('AC_HIH_UI [Debug]: token expired');
+        console.error('AC_HIH_UI [Error]: token expired');
       }
 
       this.doLogin();
@@ -129,7 +129,7 @@ export class AuthService {
       }
     }).catch((e: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error('AC_HIH_UI [Debug]: clearStateState error', e.message);
+        console.error('AC_HIH_UI [Error]: clearStateState error', e.message);
       }
     });
   }

@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, Currency } from '../model';
 import { FinCurrencyService } from '../services';
@@ -43,7 +43,8 @@ export class CurrencyDataSource extends DataSource<any> {
   templateUrl: './finance-currency.component.html',
   styleUrls: ['./finance-currency.component.scss'],
 })
-export class FinanceCurrencyComponent implements OnInit {
+export class FinanceCurrencyComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['curr', 'name', 'symbol'];
   dataSource: CurrencyDataSource | undefined;
@@ -51,12 +52,27 @@ export class FinanceCurrencyComponent implements OnInit {
 
   constructor(public _currService: FinCurrencyService,
     private _router: Router) {
-    this._currService.fetchAllCurrencies().subscribe((x: any) => {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent constructor...');
+    }
+
+    this._currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Do nothing
     });
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnInit...');
+    }
     this.dataSource = new CurrencyDataSource(this._currService, this.paginator);
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 }

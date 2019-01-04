@@ -1,12 +1,12 @@
-import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter, OnDestroy } from '@angular/core';
 import {
   GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil,
   DocumentItem, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection,
-  GeneralFilterValueType,
+  GeneralFilterValueType, LogLevel,
 } from '../../model';
-import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { environment, } from '../../../environments/environment';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { AuthService, FinanceStorageService } from '../../services';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
@@ -17,7 +17,8 @@ import * as moment from 'moment';
   templateUrl: './document-item-search-list.component.html',
   styleUrls: ['./document-item-search-list.component.scss'],
 })
-export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
+export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   filters: GeneralFilterItem[] = [];
   allOperators: UIDisplayString[] = [];
   allFields: any[] = [];
@@ -34,6 +35,10 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
   constructor(private _http: HttpClient,
     private _authService: AuthService,
     private _storageService: FinanceStorageService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent constructor...');
+    }
+
     this.resultsLength = 0;
     this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
     this.allFields = [{
@@ -69,11 +74,14 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngOnInit...');
+    }
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllTranTypes(),
-    ]).subscribe((x: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
 
@@ -86,11 +94,16 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
    * be able to query its view for the initialized paginator.
    */
   ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngAfterViewInit...');
+    }
+
     // this.dataSource.paginator = this.paginator;
-    this.subjFilters.subscribe(() => this.paginator.pageIndex = 0);
+    this.subjFilters.pipe(takeUntil(this._destroyed$)).subscribe(() => this.paginator.pageIndex = 0);
 
     merge(this.subjFilters, this.paginator.page)
       .pipe(
+        takeUntil(this._destroyed$),
         startWith({}),
         switchMap(() => {
           if (this.subjFilters.value.length <= 0) {
@@ -115,6 +128,14 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit {
           return observableOf([]);
         }),
     ).subscribe((data: any) => this.dataSource.data = data);
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onAddFilter(): void {

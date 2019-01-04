@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, TranType, TranTypeLevelEnum, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
@@ -62,7 +63,8 @@ import { FinanceStorageService, UIStatusService } from '../../services';
   templateUrl: './tran-type-list.component.html',
   styleUrls: ['./tran-type-list.component.scss'],
 })
-export class TranTypeListComponent implements OnInit, AfterViewInit {
+export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['id', 'name', 'expflag', 'fulldisplay', 'hierlvl', 'parent', 'comment'];
   // !!! Second option !!!
@@ -100,10 +102,14 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
       }
     };
     this.dataSource.filterPredicate =
-      (data: TranType, filter: string) => (data.Name.indexOf(filter) !== -1 ) || (data.Comment && data.Comment.indexOf(filter) !== -1);
+      (data: TranType, filter: string) =>
+      (data.Name.indexOf(filter) !== -1 ) || (data.Comment && data.Comment.indexOf(filter) !== -1);
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnInit...');
+    }
     // !!! First option !!!
     // this.dataSource = new TranTypeDataSource(this._storageService, this.paginator);
 
@@ -113,16 +119,25 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
     // !!! First option !!!
 
     this.isLoadingResults = true;
-    this._storageService.fetchAllTranTypes().subscribe((x: any) => {
+    this._storageService.fetchAllTranTypes().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnInit, fetchAllTranTypes...');
+      }
+
       this.dataSource.data = x;
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering TranTypeListComponent ngOnInit, fetchAllTranTypes, failed with ${error}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });
   }
 
   ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngAfterViewInit...');
+    }
     // !!! Second option !!!
     // this.ttDatabase = new TranTypeListDao(this._storageService);
     // // If the user changes the sort order, reset back to the first page.
@@ -151,6 +166,14 @@ export class TranTypeListComponent implements OnInit, AfterViewInit {
 
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   getTranTypeLevelString(trantype: TranTypeLevelEnum): string {

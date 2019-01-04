@@ -92,13 +92,13 @@ export class QuestionBankListComponent implements OnInit {
   public onDeleteQuestion(qst: QuestionBankItem): void {
     this._storageService.deleteQuestionEvent.subscribe(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving deleteQuestionEvent in QuestionBankListComponent`);
+        console.log(`AC_HIH_UI [Debug]: Entering QuestionBankListComponent, onDeleteQuestion`);
       }
 
       // Do nothing
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Debug]: Receiving deleteQuestionEvent in QuestionBankListComponent with : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering QuestionBankListComponent, onDeleteQuestion, deleteQuestionEvent failed with: ${error}`);
       }
     }, () => {
       // Empty

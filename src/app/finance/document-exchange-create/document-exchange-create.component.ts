@@ -1,13 +1,12 @@
 import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef, ViewChild,
+  Component, OnInit, OnDestroy, ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper } from '@angular/material';
-import { Observable, Subject, BehaviorSubject, forkJoin, merge, of } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, forkJoin, merge, of, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import * as moment from 'moment';
 
@@ -27,7 +26,9 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   templateUrl: './document-exchange-create.component.html',
   styleUrls: ['./document-exchange-create.component.scss'],
 })
-export class DocumentExchangeCreateComponent implements OnInit {
+export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
+  private _createDocStub: Subscription;
+
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -138,7 +139,7 @@ export class DocumentExchangeCreateComponent implements OnInit {
       this._currService.fetchAllCurrencies(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnInit, forkJoin: ${rst.length}`);
       }
 
       // Accounts
@@ -149,6 +150,15 @@ export class DocumentExchangeCreateComponent implements OnInit {
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnDestroy...');
+    }
+    if (this._createDocStub) {
+      this._createDocStub.unsubscribe();
+    }
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -236,91 +246,93 @@ export class DocumentExchangeCreateComponent implements OnInit {
       return;
     }
 
-    this._storageService.createDocumentEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentExchangeCreateComponent with : ${x}`);
-      }
-
-      // Navigate back to list view
-      if (x instanceof Document) {
-        let cobj: DocumentWithPlanExgRateForUpdate = new DocumentWithPlanExgRateForUpdate();
-        cobj.hid = this._homedefService.ChosedHome.ID;
-        if (this.selection.length > 0) {
-          for (let pd of this.selection) {
-            if (pd) {
-              cobj.docIDs.push(pd.DocID);
-            }
-          }
+    if (!this._createDocStub) {
+      this._createDocStub = this._storageService.createDocumentEvent.subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, createDocumentEvent`);
         }
 
-        if (cobj.docIDs.length > 0) {
-          if (this.isForeignSourceCurrency) {
-            cobj.targetCurrency = this.sourceCurrency;
-            cobj.exchangeRate = this.fromFormGroup.get('exgControl').value;
-          } else if (this.isForeignTargetCurrency) {
-            cobj.targetCurrency = this.targetCurrency;
-            cobj.exchangeRate = this.toFormGroup.get('exgControl').value;
+        // Navigate back to list view
+        if (x instanceof Document) {
+          let cobj: DocumentWithPlanExgRateForUpdate = new DocumentWithPlanExgRateForUpdate();
+          cobj.hid = this._homedefService.ChosedHome.ID;
+          if (this.selection.length > 0) {
+            for (let pd of this.selection) {
+              if (pd) {
+                cobj.docIDs.push(pd.DocID);
+              }
+            }
           }
 
-          this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe((rst: any) => {
-            let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-              this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-              duration: 3000,
-            });
-
-            let recreate: boolean = false;
-            snackbarRef.onAction().subscribe(() => {
-              this.onReset();
-            });
-
-            snackbarRef.afterDismissed().subscribe(() => {
-              // Navigate to display
-              if (!recreate) {
-                this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-              }
-            });
-          }, (error: any) => {
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Debug]: Message dialog result ${error}`);
+          if (cobj.docIDs.length > 0) {
+            if (this.isForeignSourceCurrency) {
+              cobj.targetCurrency = this.sourceCurrency;
+              cobj.exchangeRate = this.fromFormGroup.get('exgControl').value;
+            } else if (this.isForeignTargetCurrency) {
+              cobj.targetCurrency = this.targetCurrency;
+              cobj.exchangeRate = this.toFormGroup.get('exgControl').value;
             }
 
-            // Show something?
-            this._snackbar.open('Document Posted but previous doc failed to update', 'OK', {
+            this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe((rst: any) => {
+              let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+                this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+                  duration: 3000,
+                });
+
+              let recreate: boolean = false;
+              snackbarRef.onAction().subscribe(() => {
+                this.onReset();
+              });
+
+              snackbarRef.afterDismissed().subscribe(() => {
+                // Navigate to display
+                if (!recreate) {
+                  this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+                }
+              });
+            }, (error: any) => {
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Error]: Entering DocumentExchangeCreateComponent, onSubmit, failed, Message dialog result ${error}`);
+              }
+
+              // Show something?
+              this._snackbar.open('Document Posted but previous doc failed to update', 'OK', {
+                duration: 3000,
+              }).afterDismissed().subscribe(() => {
+                // Navigate to display
+                this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+              });
+            });
+          } else {
+            // Show the snackbar
+            this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
               duration: 3000,
             }).afterDismissed().subscribe(() => {
               // Navigate to display
               this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
             });
-          });
+          }
         } else {
-          // Show the snackbar
-          this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
-            duration: 3000,
-          }).afterDismissed().subscribe(() => {
-            // Navigate to display
-            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, Message dialog result ${x2}`);
+            }
           });
         }
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
-          }
-        });
-      }
-    });
+      });
+    }
 
     docObj.HID = this._homedefService.ChosedHome.ID;
     this._storageService.createDocument(docObj);

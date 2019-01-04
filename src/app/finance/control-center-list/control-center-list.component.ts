@@ -72,6 +72,9 @@ export class ControlCenterListComponent implements OnInit {
     this.dataSource = new ControlCenterDataSource(this._storageService, this.paginator);
     this._storageService.fetchAllControlCenters().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...');
+      }
     }, (error: any) => {
       // Do nothing
     }, () => {
@@ -106,7 +109,7 @@ export class ControlCenterListComponent implements OnInit {
     }).afterClosed().subscribe((x2: any) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+        console.log(`AC_HIH_UI [Debug]: Entering ControlCenterListComponent, onDeleteCC, Message dialog result ${x2}`);
       }
 
       if (x2) {
@@ -119,6 +122,9 @@ export class ControlCenterListComponent implements OnInit {
     this.isLoadingResults = true;
     this._storageService.fetchAllControlCenters(true).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent OnRefresh, fetchAllControlCenters...');
+      }
     }, (error: any) => {
       // Do nothing
     }, () => {

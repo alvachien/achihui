@@ -11,7 +11,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 @Component({
   selector: 'hih-learn-en-word-detail',
   templateUrl: './en-word-detail.component.html',
-  styleUrls: ['./en-word-detail.component.scss']
+  styleUrls: ['./en-word-detail.component.scss'],
 })
 export class EnWordDetailComponent implements OnInit, AfterViewInit {
 
@@ -63,16 +63,16 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readEnWordEvent.subscribe((x: any) => {
-            if (x instanceof EnWord) {
+          this._storageService.readEnWordEvent.subscribe((x2: any) => {
+            if (x2 instanceof EnWord) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readEnWord : ${x}`);
+                console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, ngOninit, readEnWordEvent`);
               }
 
-              this.detailObject = x;
+              this.detailObject = x2;
             } else {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readEnWord : ${x}`);
+                console.error(`AC_HIH_UI [Error]: Entering EnWordDetailComponent, ngOninit, readEnWordEvent, failed: ${x}`);
               }
               this.detailObject = new EnWord();
             }
@@ -116,15 +116,15 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
 
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
-      this._storageService.createEnWordEvent.subscribe((x) => {
+      this._storageService.createEnWordEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createEnWordEvent in EnWordDetailComponent with : ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, createEnWordEvent`);
         }
 
         // Navigate back to list view
         if (x instanceof EnWord) {
           // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });
@@ -157,7 +157,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
           }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+              console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, Message dialog result ${x2}`);
             }
           });
         }

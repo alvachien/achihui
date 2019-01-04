@@ -147,7 +147,7 @@ export class HistoryDetailComponent implements OnInit {
   private onCreateHistory(): void {
     this._storageService.createHistoryEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createObjectEvent in HistoryDetailComponent with : ${x}`);
+        console.log(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, onCreateHistory, createHistoryEvent`);
       }
 
       // Navigate back to list view
@@ -187,7 +187,7 @@ export class HistoryDetailComponent implements OnInit {
         }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+            console.log(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, onCreateHistory, createHistoryEvent, failed, dialog result ${x2}`);
           }
         });
       }

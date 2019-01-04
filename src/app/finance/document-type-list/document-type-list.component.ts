@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, DocumentType } from '../../model';
 import { FinanceStorageService } from '../../services';
@@ -43,7 +43,8 @@ export class DocumentTypeDataSource extends DataSource<any> {
   templateUrl: './document-type-list.component.html',
   styleUrls: ['./document-type-list.component.scss'],
 })
-export class DocumentTypeListComponent implements OnInit {
+export class DocumentTypeListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['id', 'name', 'comment'];
   dataSource: DocumentTypeDataSource | undefined;
@@ -52,19 +53,38 @@ export class DocumentTypeListComponent implements OnInit {
 
   constructor(public _storageService: FinanceStorageService,
     private _router: Router) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentTypeListComponent constructor...');
+    }
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentTypeListComponent ngOnInit...');
+    }
     this.isLoadingResults = true;
     this.dataSource = new DocumentTypeDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllDocTypes().subscribe((x: any) => {
-      // Just ensure the REQUEST has been sent
+    this._storageService.fetchAllDocTypes().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC_HIH_UI [Debug]: Entering DocumentTypeListComponent ngOnInit fetchAllDocTypes...');
+      }
+        // Just ensure the REQUEST has been sent
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering DocumentTypeListComponent ngOnInit, fetchAllDocTypes, failed with ${error}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentTypeListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 }

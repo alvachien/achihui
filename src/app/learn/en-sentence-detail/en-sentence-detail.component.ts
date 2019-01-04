@@ -57,16 +57,16 @@ export class EnSentenceDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readEnSentenceEvent.subscribe((x: any) => {
-            if (x instanceof EnSentence) {
+          this._storageService.readEnSentenceEvent.subscribe((x2: any) => {
+            if (x2 instanceof EnSentence) {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readEnWord : ${x}`);
+                console.log(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent, ngOninit, readEnSentenceEvent`);
               }
 
-              this.detailObject = x;
+              this.detailObject = x2;
             } else {
               if (environment.LoggingLevel >= LogLevel.Error) {
-                console.log(`AC_HIH_UI [Error]: Entering ngOninit, failed to readEnWord : ${x}`);
+                console.log(`AC_HIH_UI [Error]: Entering EnSentenceDetailComponent, ngOninit, readEnSentenceEvent, failed: ${x}`);
               }
               this.detailObject = new EnSentence();
             }
@@ -77,7 +77,7 @@ export class EnSentenceDetailComponent implements OnInit {
       }
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.log(`AC_HIH_UI [Error]: Entering ngOnInit in EnSentenceDetailComponent with activateRoute URL : ${error}`);
+        console.log(`AC_HIH_UI [Error]: Entering EnSentenceDetailComponent, ngOnInit, with activateRoute URL : ${error}`);
       }
     }, () => {
       // Empty
@@ -96,13 +96,13 @@ export class EnSentenceDetailComponent implements OnInit {
     if (this.uiMode === UIMode.Create) {
       this._storageService.createEnSentenceEvent.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createEnSentenceEvent in EnWordDetailComponent with : ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent, onSubmit, createEnSentenceEvent`);
         }
 
         // Navigate back to list view
         if (x instanceof EnSentence) {
           // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess), 
+          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
             this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
             duration: 3000,
           });
@@ -135,7 +135,7 @@ export class EnSentenceDetailComponent implements OnInit {
           }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Message dialog result ${x2}`);
+              console.log(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent, onSubmit, Message dialog result ${x2}`);
             }
           });
         }
