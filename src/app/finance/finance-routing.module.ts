@@ -1,19 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { FinanceComponent } from './finance.component';
-import { AccountCategoryComponent } from './account-category';
-import { AccountCategoryDetailComponent } from './account-category-detail';
-import { AccountCategoryListComponent } from './account-category-list';
-import { DocumentTypeComponent } from './document-type';
-import { DocumentTypeListComponent } from './document-type-list';
-import { DocumentTypeDetailComponent } from './document-type-detail';
 import { TranTypeComponent } from './tran-type';
 import { TranTypeListComponent } from './tran-type-list';
 import { TranTypeTreeComponent } from './tran-type-tree';
-import { TranTypeDetailComponent } from './tran-type-detail';
-import { AssetCategoryComponent } from './asset-category';
-import { AssetCategoryListComponent } from './asset-category-list';
-import { AssetCategoryDetailComponent } from './asset-category-detail';
 import { AccountComponent } from './account';
 import { AccountListComponent } from './account-list';
 import { AccountTreeComponent } from './account-tree';
@@ -59,50 +49,6 @@ const routes: Routes = [
         component: ConfigComponent,
       },
       {
-        path: 'acntctgy',
-        component: AccountCategoryComponent,
-        children: [
-          {
-            path: '',
-            component: AccountCategoryListComponent,
-          },
-          {
-            path: 'create',
-            component: AccountCategoryDetailComponent,
-          },
-          {
-            path: 'display/:id',
-            component: AccountCategoryDetailComponent,
-          },
-          {
-            path: 'edit/:id',
-            component: AccountCategoryDetailComponent,
-          },
-        ],
-      },
-      {
-        path: 'doctype',
-        component: DocumentTypeComponent,
-        children: [
-          {
-            path: '',
-            component: DocumentTypeListComponent,
-          },
-          {
-            path: 'create',
-            component: DocumentTypeDetailComponent,
-          },
-          {
-            path: 'display/:id',
-            component: DocumentTypeDetailComponent,
-          },
-          {
-            path: 'edit/:id',
-            component: DocumentTypeDetailComponent,
-          },
-        ],
-      },
-      {
         path: 'trantype',
         component: TranTypeComponent,
         children: [
@@ -113,40 +59,6 @@ const routes: Routes = [
           {
             path: 'list',
             component: TranTypeListComponent,
-          },
-          {
-            path: 'create',
-            component: TranTypeDetailComponent,
-          },
-          {
-            path: 'display/:id',
-            component: TranTypeDetailComponent,
-          },
-          {
-            path: 'edit/:id',
-            component: TranTypeDetailComponent,
-          },
-        ],
-      },
-      {
-        path: 'assetctgy',
-        component: AssetCategoryComponent,
-        children: [
-          {
-            path: '',
-            component: AssetCategoryListComponent,
-          },
-          {
-            path: 'create',
-            component: AssetCategoryDetailComponent,
-          },
-          {
-            path: 'display/:id',
-            component: AssetCategoryDetailComponent,
-          },
-          {
-            path: 'edit/:id',
-            component: AssetCategoryDetailComponent,
           },
         ],
       },

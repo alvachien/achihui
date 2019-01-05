@@ -8,7 +8,8 @@ import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisp
   momentDateFormat, EventHabitCheckin } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
 import * as moment from 'moment';
-import { Subscription } from 'rxjs';
+import { Subscription, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-event-habit-detail',
@@ -19,6 +20,7 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
   private _homeMemStub: Subscription;
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   public currentMode: string;
   public detailObject: EventHabit;
@@ -42,7 +44,7 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering constructor of HabitDetailComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering HabitDetailComponent constructor ...');
     }
 
     this.onInitCreateMode();
@@ -51,10 +53,12 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngOnInit of HabitDetailComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnInit...');
     }
 
-    this._homeMemStub = this._homedefService.curHomeMembers.subscribe((mem: any) => {
+    this._homeMemStub = this._homedefService.curHomeMembers
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((mem: any) => {
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -78,7 +82,9 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this.isLoadingData = true;
 
-            this._storageService.readHabitEvent(this.routerID).subscribe((y: any) => {
+            this._storageService.readHabitEvent(this.routerID)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe((y: any) => {
               this.detailObject = y;
               this.dataSourceSimulateResult.data = this.detailObject.details;
               this.dataSourceCheckIn.data = this.detailObject.checkInLogs;
@@ -97,6 +103,11 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
     if (this._homeMemStub) {
       this._homeMemStub.unsubscribe();
     }
@@ -108,7 +119,9 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
   }
 
   public onGenerateDetails(): void {
-    this._storageService.generateHabitEvent(this.detailObject).subscribe((x: any) => {
+    this._storageService.generateHabitEvent(this.detailObject)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       // Show the result.
       if (x instanceof Array && x.length > 0) {
         this.detailObject.details = [];
@@ -140,7 +153,9 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
   private createImpl(): void {
-    this._storageService.createHabitEvent(this.detailObject).subscribe((x: any) => {
+    this._storageService.createHabitEvent(this.detailObject)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       // Navigate to display
       let gevnt: EventHabit = new EventHabit();
       gevnt.onSetData(x);

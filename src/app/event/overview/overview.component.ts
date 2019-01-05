@@ -7,7 +7,8 @@ import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { Calendar } from 'fullcalendar';
 import * as moment from 'moment';
-import { forkJoin } from 'rxjs';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-event-overview',
@@ -15,6 +16,7 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit, AfterViewInit {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   @ViewChild('fcal') elemcalendar: ElementRef;
   ctrlCalendar: Calendar;
   initialLocaleCode: string = 'en';
@@ -35,13 +37,13 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngOnInit of OverviewComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering OverviewComponent ngOnInit ...');
     }
   }
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of OverviewComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering OverviewComponent ngAfterViewInit...');
     }
 
     let that: any = this;
@@ -132,16 +134,23 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
     this.ctrlCalendar.render();
   }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering OverviewComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+  }
 
   public onNavigateToGeneralEvent(id: number): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering onNavigateToGeneralEvent of OverviewComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering OverviewComponent onNavigateToGeneralEvent...');
     }
     this._router.navigate(['/event/general/display/' + id.toString()]);
   }
   public onNavigateToHabitEvent(id: number): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering onNavigateToHabitEvent of OverviewComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering OverviewComponent onNavigateToHabitEvent...');
     }
     this._router.navigate(['/event/habit/display/' + id.toString()]);
   }

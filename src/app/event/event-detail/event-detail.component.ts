@@ -4,8 +4,8 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, GeneralEvent } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of, Subscription } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, merge, of, Subscription, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -14,6 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./event-detail.component.scss'],
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
   private _homeMemStub: Subscription;
@@ -35,7 +36,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering constructor of EventDetailComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering EventDetailComponent constructor...');
     }
 
     this.onInitCreateMode();
@@ -44,10 +45,13 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngOnInit of EventDetailComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnInit...');
     }
 
-    this._homeMemStub = this._homedefService.curHomeMembers.subscribe((mem: any) => {
+    this._homeMemStub = this._homedefService.curHomeMembers
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((mem: any) => {
+
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -77,9 +81,9 @@ export class EventDetailComponent implements OnInit, OnDestroy {
             });
           }
         }
-      }, (error: HttpErrorResponse) => {
+      }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering EventDetailComponent ngOnInit but failed: ${error.message}`);
+          console.error(`AC_HIH_UI [Error]: Entering EventDetailComponent ngOnInit but failed: ${error}`);
         }
       }, () => {
         // Empty
@@ -88,6 +92,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
     if (this._homeMemStub) {
       this._homeMemStub.unsubscribe();
     }    
@@ -112,7 +121,9 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
   private createImpl(): void {
-    this._storageService.createGeneralEvent(this.detailObject).subscribe((x: any) => {
+    this._storageService.createGeneralEvent(this.detailObject)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       // Navigate to display
       let gevnt: GeneralEvent = new GeneralEvent();
       gevnt.onSetData(x);

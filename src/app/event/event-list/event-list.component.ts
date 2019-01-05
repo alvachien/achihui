@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, PageEvent,
   MatSnackBar } from '@angular/material';
@@ -6,15 +6,16 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT
 import { environment } from '../../../environments/environment';
 import { LogLevel, GeneralEvent } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of, forkJoin } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, merge, of, forkJoin, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-event-list',
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.scss'],
 })
-export class EventListComponent implements OnInit, AfterViewInit {
+export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'complete', 'assignee'];
   dataSource: any = new MatTableDataSource();
   totalCountOfEvent: number;
@@ -32,7 +33,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
     this.isLoadingResults = true;
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter constructor of EventListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Enter EventListComponent constructor...`);
     }
 
     this.totalCountOfEvent = 0;
@@ -41,20 +42,21 @@ export class EventListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter ngOnInit of EventListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Enter EventListComponent ngOnInit...`);
     }
   }
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter ngAfterViewInit of EventListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Enter EventListComponent ngAfterViewInit...`);
     }
 
     // If the user changes the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    this.sort.sortChange.pipe(takeUntil(this._destroyed$)).subscribe(() => this.paginator.pageIndex = 0);
 
     merge(this.sort.sortChange, this.paginator.page, this.refreshEvent)
       .pipe(
+        takeUntil(this._destroyed$),
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
@@ -89,6 +91,13 @@ export class EventListComponent implements OnInit, AfterViewInit {
         this.dataSource.data = rslts;
       });
   }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering EventListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+  }
 
   public onCreateEvent(): void {
     this._router.navigate(['/event/general/create']);
@@ -99,7 +108,9 @@ export class EventListComponent implements OnInit, AfterViewInit {
   }
 
   public onMarkAsDone(row: GeneralEvent): void {
-    this._storageService.completeGeneralEvent(row).subscribe((x: any) => {
+    this._storageService.completeGeneralEvent(row)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       // Jump to display mode
       this._router.navigate(['/event/general/display/' + row.ID.toString()]);
     }, (error: any) => {

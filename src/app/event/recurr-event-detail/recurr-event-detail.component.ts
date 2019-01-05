@@ -4,8 +4,8 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, GeneralEvent, RecurEvent, UIDisplayStringUtil } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of, Subscription } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, merge, of, Subscription, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-event-recurrevent-detail',
@@ -16,6 +16,7 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
   private _homeMemStub: Subscription;
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   public currentMode: string;
   public detailObject: RecurEvent;
@@ -34,7 +35,7 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering constructor of RecurrEventDetailComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent constructor...');
     }
 
     this.onInitCreateMode();
@@ -43,10 +44,12 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngOnInit of RecurrEventDetailComponent...');
+      console.log('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnInit...');
     }
 
-    this._homeMemStub = this._homedefService.curHomeMembers.subscribe((mem: any) => {
+    this._homeMemStub = this._homedefService.curHomeMembers
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((mem: any) => {
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -70,7 +73,9 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this.isLoadingData = true;
 
-            this._storageService.readRecurEvent(this.routerID).subscribe((y: any) => {
+            this._storageService.readRecurEvent(this.routerID)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe((y: any) => {
               this.detailObject = <RecurEvent>y.Header;
               this.dataSourceSimulateResult.data = y.Events;
 
@@ -87,6 +92,11 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
     if (this._homeMemStub) {
       this._homeMemStub.unsubscribe();
     }
@@ -98,7 +108,9 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
   }
 
   public onSimulateRecurEvents(): void {
-    this._storageService.calcRecurEvents(this.detailObject).subscribe((x: any) => {
+    this._storageService.calcRecurEvents(this.detailObject)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       // Show the result.
       this.dataSourceSimulateResult.data = x;
     });
@@ -118,7 +130,9 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
   private createImpl(): void {
-    this._storageService.createRecurEvent(this.detailObject).subscribe((x: RecurEvent) => {
+    this._storageService.createRecurEvent(this.detailObject)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: RecurEvent) => {
       // Navigate to display
       this._router.navigate(['/event/recur/display/' + x.ID.toString()]);
     });

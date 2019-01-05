@@ -5,8 +5,8 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { environment } from '../../../environments/environment';
 import { LogLevel, EventHabit, EventHabitDetail, EventHabitCheckin } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of, Subscription } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, merge, of, Subscription, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -17,6 +17,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _homeMemStub: Subscription;
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['select', 'id', 'name', 'start', 'end', 'assignee'];
   dataSource: MatTableDataSource<EventHabit>;
@@ -34,7 +35,7 @@ export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isLoadingResults = true;
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter constructor of HabitListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Entering HabitListComponent constructor...`);
     }
 
     this.dataSource = new MatTableDataSource([]);
@@ -43,24 +44,31 @@ export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter ngOnInit of HabitListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Entering HabitListComponent ngOnInit...`);
     }
   }
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter ngAfterViewInit of HabitListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Entering HabitListComponent ngAfterViewInit...`);
     }
 
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this._homeMemStub = this._homeDefService.curHomeMembers.subscribe((x: any) => {
+    this._homeMemStub = this._homeDefService.curHomeMembers
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       this.fetchHabitEvents();
     });
   }
 
   ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HabitListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
     if (this._homeMemStub) {
       this._homeMemStub.unsubscribe();
     }
@@ -89,7 +97,9 @@ export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
       hcheckin.comment = 'Test';
 
       // hcheckin.hid = this.
-      this._storageService.checkInHabitEvent(hcheckin).subscribe((x: any) => {
+      this._storageService.checkInHabitEvent(hcheckin)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((x: any) => {
         // Do nothing
       }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
@@ -106,6 +116,7 @@ export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
   public fetchHabitEvents(): void {
     this.paginator.page
       .pipe(
+      takeUntil(this._destroyed$),
       startWith({}),
       switchMap(() => {
         this.isLoadingResults = true;

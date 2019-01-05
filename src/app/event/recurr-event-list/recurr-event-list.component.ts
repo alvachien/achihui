@@ -4,8 +4,8 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT
 import { environment } from '../../../environments/environment';
 import { LogLevel, GeneralEvent, RecurEvent } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
-import { Observable, merge, of, Subscription } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, merge, of, Subscription, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-event-recurrevent-list',
@@ -13,6 +13,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
   styleUrls: ['./recurr-event-list.component.scss'],
 })
 export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   private _homeMemStub: Subscription;
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'assignee'];
   dataSource: MatTableDataSource<RecurEvent>;
@@ -30,7 +31,7 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
     this.isLoadingResults = true;
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter constructor of RecurrEventListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent constructor...`);
     }
 
     this.dataSource = new MatTableDataSource([]);
@@ -38,24 +39,31 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter ngOnInit of RecurrEventListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngOnInit...`);
     }
   }
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter ngAfterViewInit of RecurrEventListComponent`);
+      console.log(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngAfterViewInit...`);
     }
 
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this._homeMemStub = this._homeDefService.curHomeMembers.subscribe((x: any) => {
+    this._homeMemStub = this._homeDefService.curHomeMembers
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       this.fetchRecurEvents();
     });
   }
 
   ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
     if (this._homeMemStub) {
       this._homeMemStub.unsubscribe();
     }
@@ -65,7 +73,9 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
     this._router.navigate(['/event/recur/create']);
   }
   public onDeleteRecurEvent(rid: number): void {
-    this._storageService.deleteRecurEvent(rid).subscribe((rst: boolean) => {
+    this._storageService.deleteRecurEvent(rid)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((rst: boolean) => {
       if (rst) {
         // Show snackbar
         this._snackbar.open('Event Deleted', undefined, {
@@ -89,6 +99,7 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
   public fetchRecurEvents(): void {
     this.paginator.page
       .pipe(
+        takeUntil(this._destroyed$),
       startWith({}),
       switchMap(() => {
         this.isLoadingResults = true;
@@ -119,7 +130,9 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   public onMarkAsDone(row: GeneralEvent): void {
-    this._storageService.completeGeneralEvent(row).subscribe((x: any) => {
+    this._storageService.completeGeneralEvent(row)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       // Jump to display mode
       this._router.navigate(['/event/recur/display/' + row.ID.toString()]);
     }, (error: any) => {
