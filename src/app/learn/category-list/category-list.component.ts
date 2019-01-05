@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnCategory } from '../../model';
 import { LearnStorageService } from '../../services';
@@ -43,7 +44,8 @@ export class LearnCategoryDataSource extends DataSource<any> {
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.scss'],
 })
-export class CategoryListComponent implements OnInit {
+export class CategoryListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   dataSource: LearnCategoryDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -51,19 +53,34 @@ export class CategoryListComponent implements OnInit {
 
   constructor(public _storageService: LearnStorageService,
     private _router: Router) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent constructor...');
+    }
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent ngOnInit...');
+    }
     this.isLoadingResults = true;
 
     this.dataSource = new LearnCategoryDataSource(this._storageService, this.paginator);
-    this._storageService.fetchAllCategories().subscribe((x: any) => {
+    this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Just ensure the request has been fired
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering CategoryListComponent ngOnInit, fetchAllCategories, failed with ${error}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 }

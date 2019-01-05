@@ -1,13 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatDialog } from '@angular/material';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, QuestionBankItem, UIMode, getUIModeString, TagTypeEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService, TagsService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { Observable, forkJoin, merge } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, merge, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 /**
  * Data source of Question bank
@@ -44,7 +45,8 @@ export class QuestionBankDataSource extends DataSource<any> {
   templateUrl: './question-bank-list.component.html',
   styleUrls: ['./question-bank-list.component.scss'],
 })
-export class QuestionBankListComponent implements OnInit {
+export class QuestionBankListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['id', 'type', 'question', 'briefawr' ];
   dataSource: QuestionBankDataSource | undefined;
@@ -68,13 +70,20 @@ export class QuestionBankListComponent implements OnInit {
     forkJoin([
       // this._tagService.fetchAllTags(TagTypeEnum.LearnQuestionBank),
       this._storageService.fetchAllQuestionBankItem(),
-    ]).subscribe((x: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // DO nothing
     }, (error: any) => {
       // Do nothing
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onCreateQuestion(): void {
@@ -90,7 +99,7 @@ export class QuestionBankListComponent implements OnInit {
   }
 
   public onDeleteQuestion(qst: QuestionBankItem): void {
-    this._storageService.deleteQuestionEvent.subscribe(() => {
+    this._storageService.deleteQuestionEvent.pipe(takeUntil(this._destroyed$)).subscribe(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering QuestionBankListComponent, onDeleteQuestion`);
       }

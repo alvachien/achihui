@@ -8,15 +8,19 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, LearnHistory, UIMode, getUIModeString, UICommonLabelEnum, LearnObject } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject, Subscription } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-learn-history-detail',
   templateUrl: './history-detail.component.html',
   styleUrls: ['./history-detail.component.scss'],
 })
-export class HistoryDetailComponent implements OnInit {
+export class HistoryDetailComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _readSub: Subscription;
+  private _createSub: Subscription;
+  private _changeSub: Subscription;
 
   private routerID: string = ''; // Current history ID in routing
   public currentMode: string;
@@ -52,7 +56,7 @@ export class HistoryDetailComponent implements OnInit {
       objControl: ['', Validators.required],
     });
 
-    this._storageService.fetchAllObjects().subscribe((x1: any) => {
+    this._storageService.fetchAllObjects().pipe(takeUntil(this._destroyed$)).subscribe((x1: any) => {
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -74,19 +78,21 @@ export class HistoryDetailComponent implements OnInit {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readHistoryEvent.subscribe((x2: any) => {
-              if (x2 instanceof LearnHistory) {
-                if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in HistoryDetailComponent, succeed to readHistoryEvent`);
+            if (!this._readSub) {
+              this._readSub = this._storageService.readHistoryEvent.pipe(takeUntil(this._destroyed$)).subscribe((x2: any) => {
+                if (x2 instanceof LearnHistory) {
+                  if (environment.LoggingLevel >= LogLevel.Debug) {
+                    console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in HistoryDetailComponent, succeed to readHistoryEvent`);
+                  }
+                  this.detailObject = x2;
+                } else {
+                  if (environment.LoggingLevel >= LogLevel.Error) {
+                    console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent, failed to readHistoryEvent : ${x2}`);
+                  }
+                  this.detailObject = new LearnHistory();
                 }
-                this.detailObject = x2;
-              } else {
-                if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering ngOnInit in HistoryDetailComponent, failed to readHistoryEvent : ${x2}`);
-                }
-                this.detailObject = new LearnHistory();
-              }
-            });
+              });
+            }
 
             this._storageService.readHistory(this.routerID);
           }
@@ -104,6 +110,22 @@ export class HistoryDetailComponent implements OnInit {
       }
       // Show the error dialog
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HistroryDetailComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+    if (this._readSub) {
+      this._readSub.unsubscribe();
+    }
+    if (this._createSub) {
+      this._createSub.unsubscribe();
+    }
+    if (this._changeSub) {
+      this._changeSub.unsubscribe();
+    }
   }
 
   get isFieldChangable(): boolean {
@@ -145,53 +167,57 @@ export class HistoryDetailComponent implements OnInit {
   }
 
   private onCreateHistory(): void {
-    this._storageService.createHistoryEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, onCreateHistory, createHistoryEvent`);
-      }
-
-      // Navigate back to list view
-      if (x instanceof LearnHistory) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
-        });
-
-        let recreate: boolean = false;
-
-        snackbarRef.onAction().subscribe(() => {
-          recreate = true;
-          this.onInitCreateMode();
-          // this._router.navigate(['/learn/history/create']);
-        });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          if (!recreate) {
-            this._router.navigate(['/learn/history/display/' + x.generateKey()]);
-          }
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
+    if (!this._createSub) {
+      this._createSub = this._storageService.createHistoryEvent
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, onCreateHistory, createHistoryEvent, failed, dialog result ${x2}`);
+            console.log(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, onCreateHistory, createHistoryEvent`);
+          }
+
+          // Navigate back to list view
+          if (x instanceof LearnHistory) {
+            // Show the snackbar
+            let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+              this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+                duration: 3000,
+              });
+
+            let recreate: boolean = false;
+
+            snackbarRef.onAction().subscribe(() => {
+              recreate = true;
+              this.onInitCreateMode();
+              // this._router.navigate(['/learn/history/create']);
+            });
+
+            snackbarRef.afterDismissed().subscribe(() => {
+              // Navigate to display
+              if (!recreate) {
+                this._router.navigate(['/learn/history/display/' + x.generateKey()]);
+              }
+            });
+          } else {
+            // Show error message
+            const dlginfo: MessageDialogInfo = {
+              Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+              Content: x.toString(),
+              Button: MessageDialogButtonEnum.onlyok,
+            };
+
+            this._dialog.open(MessageDialogComponent, {
+              disableClose: false,
+              width: '500px',
+              data: dlginfo,
+            }).afterClosed().subscribe((x2: any) => {
+              // Do nothing!
+              if (environment.LoggingLevel >= LogLevel.Debug) {
+                console.log(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, onCreateHistory, createHistoryEvent, failed, dialog result ${x2}`);
+              }
+            });
           }
         });
-      }
-    });
+    }
 
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this._storageService.createHistory(this.detailObject);

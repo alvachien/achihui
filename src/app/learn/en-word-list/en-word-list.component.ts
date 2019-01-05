@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, HostBinding, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, HostBinding, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators'
+;
 import { environment } from '../../../environments/environment';
 import { LogLevel, EnWord, EnWordExplain } from '../../model';
 import { LearnStorageService } from '../../services';
@@ -44,7 +45,8 @@ export class EnWordDataSource extends DataSource<any> {
   styleUrls: ['./en-word-list.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class EnWordListComponent implements OnInit {
+export class EnWordListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['id', 'word' ];
   dataSource: EnWordDataSource | undefined = undefined;
@@ -64,16 +66,25 @@ export class EnWordListComponent implements OnInit {
     this.isLoadingResults = true;
     this.dataSource = new EnWordDataSource(this._storageService, this.paginator);
 
-    this._storageService.fetchAllEnWords().subscribe((x: any) => {
+    this._storageService.fetchAllEnWords().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (x) {
         // Empty
       }
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in EnWordListComponent with activateRoute URL : ${error}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering EnWordListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onCreateEnWord(): void {
@@ -97,7 +108,9 @@ export class EnWordListComponent implements OnInit {
     this._storageService.fetchAllEnWords(true).subscribe((x: any) => {
       // Do nothing
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in EnWordListComponent with activateRoute URL : ${error}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });

@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
-import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of as observableOf, ReplaySubject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+
+import { environment } from '../../../environments/environment';
 import { LogLevel, LearnCategory } from '../../model';
 import { LearnStorageService, UIStatusService } from '../../services';
 import { LearnCategoryTreeNode, LearnCategoryTreeFlatNode } from '../category-tree';
@@ -13,7 +15,8 @@ import { LearnCategoryTreeNode, LearnCategoryTreeFlatNode } from '../category-tr
   templateUrl: './object-tree.component.html',
   styleUrls: ['./object-tree.component.scss']
 })
-export class ObjectTreeComponent implements OnInit {
+export class ObjectTreeComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   isLoadingResults: boolean;
   curNode: LearnCategoryTreeFlatNode;
   treeControl: FlatTreeControl<LearnCategoryTreeFlatNode>;
@@ -33,7 +36,7 @@ export class ObjectTreeComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoadingResults = true;
-    this._storageService.fetchAllCategories().subscribe((x: any) => {
+    this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       let nodes: LearnCategoryTreeNode[] = this._buildCategoryTree(x, 1);
       this.dataSource.data = nodes;
     }, (error: any) => {
@@ -41,6 +44,13 @@ export class ObjectTreeComponent implements OnInit {
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ObjectTreeComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   onTreeNodeClicked(node: LearnCategoryTreeFlatNode): void {

@@ -1,10 +1,10 @@
-import { Component, OnInit, AfterViewInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, Inject, OnDestroy } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../environments/environment';
 import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, HomeMsg, HomeMember } from '../model';
 import { AuthService, HomeDefDetailService, UIStatusService } from '../services';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-home-msg',
@@ -13,7 +13,8 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
     './home-message.component.scss',
   ],
 })
-export class HomeMessageComponent implements OnInit, AfterViewInit {
+export class HomeMessageComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   displayedColumns: string[] = ['id', 'userfrom', 'userto', 'title', 'senddate'];
   dataSource: MatTableDataSource<HomeMsg>;
   sentBox: boolean;
@@ -26,6 +27,9 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
   constructor(private _homeDefService: HomeDefDetailService,
     private _authService: AuthService,
     public _dialog: MatDialog) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent constructor...');
+    }
     this.isLoadingResults = true;
     this.sentBox = false;
 
@@ -36,14 +40,26 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // Empty
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent ngOnInit...');
+    }
   }
 
   ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent ngAfterViewInit...');
+    }
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
     this.fetchMessages();
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onSwitchSentBox(): void {
@@ -115,6 +131,7 @@ export class HomeMessageComponent implements OnInit, AfterViewInit {
   private fetchMessages(): void {
     this.paginator.page
       .pipe(
+      takeUntil(this._destroyed$),
       startWith({}),
       switchMap(() => {
         this.isLoadingResults = true;

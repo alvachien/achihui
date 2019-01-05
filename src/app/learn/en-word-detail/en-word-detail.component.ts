@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EnWord, EnWordExplain, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
@@ -13,7 +15,10 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   templateUrl: './en-word-detail.component.html',
   styleUrls: ['./en-word-detail.component.scss'],
 })
-export class EnWordDetailComponent implements OnInit, AfterViewInit {
+export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _createSub: Subscription;
+  private _readSub: Subscription;
 
   private routerID: number = -1; // Current object ID in routing
   public currentMode: string;
@@ -33,6 +38,9 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering EnWordDetailComponent constructor...');
+    }
     this.detailObject = new EnWord();
     this.dataSource = new MatTableDataSource(this.detailObject.Explains);
   }
@@ -63,20 +71,22 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readEnWordEvent.subscribe((x2: any) => {
-            if (x2 instanceof EnWord) {
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, ngOninit, readEnWordEvent`);
+          if (!this._readSub) {
+            this._readSub = this._storageService.readEnWordEvent.subscribe((x2: any) => {
+              if (x2 instanceof EnWord) {
+                if (environment.LoggingLevel >= LogLevel.Debug) {
+                  console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, ngOninit, readEnWordEvent`);
+                }
+  
+                this.detailObject = x2;
+              } else {
+                if (environment.LoggingLevel >= LogLevel.Error) {
+                  console.error(`AC_HIH_UI [Error]: Entering EnWordDetailComponent, ngOninit, readEnWordEvent, failed: ${x}`);
+                }
+                this.detailObject = new EnWord();
               }
-
-              this.detailObject = x2;
-            } else {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering EnWordDetailComponent, ngOninit, readEnWordEvent, failed: ${x}`);
-              }
-              this.detailObject = new EnWord();
-            }
-          });
+            });
+          }
 
           this._storageService.readEnWord(this.routerID);
         }
@@ -99,8 +109,25 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnDestroy...');
+    }
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+    if (this._readSub) {
+      this._readSub.unsubscribe();
+    }
+    if (this._createSub) {
+      this._createSub.unsubscribe();
+    }
   }
 
   applyFilter(filterValue: string): void {
@@ -116,52 +143,54 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit {
 
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
-      this._storageService.createEnWordEvent.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, createEnWordEvent`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof EnWord) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-
-            this.onInitCreateMode();
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/learn/enword/display/' + x.ID.toString()]);
-            }
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
+      if (!this._createSub) {
+        this._createSub = this._storageService.createEnWordEvent.subscribe((x: any) => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, createEnWordEvent`);
+          }
+  
+          // Navigate back to list view
+          if (x instanceof EnWord) {
+            // Show the snackbar
+            let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+              this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+              duration: 3000,
+            });
+  
+            let recreate: boolean = false;
+            snackbarRef.onAction().subscribe(() => {
+              recreate = true;
+  
+              this.onInitCreateMode();
+            });
+  
+            snackbarRef.afterDismissed().subscribe(() => {
+              // Navigate to display
+              if (!recreate) {
+                this._router.navigate(['/learn/enword/display/' + x.ID.toString()]);
+              }
+            });
+          } else {
+            // Show error message
+            const dlginfo: MessageDialogInfo = {
+              Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+              Content: x.toString(),
+              Button: MessageDialogButtonEnum.onlyok,
+            };
+  
+            this._dialog.open(MessageDialogComponent, {
+              disableClose: false,
+              width: '500px',
+              data: dlginfo,
+            }).afterClosed().subscribe((x2: any) => {
+              // Do nothing!
+              if (environment.LoggingLevel >= LogLevel.Debug) {
+                console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, Message dialog result ${x2}`);
+              }
+            });
+          }
+        });
+      }
 
       this._storageService.createEnWord(this.detailObject);
     } else if (this.uiMode === UIMode.Change) {

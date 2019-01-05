@@ -6,7 +6,8 @@ import { LogLevel, QuestionBankItem, QuestionBankSubItem, UIMode, getUIModeStrin
   QuestionBankTypeEnum, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ENTER, COMMA, SPACE } from '@angular/cdk/keycodes';
 
 @Component({
@@ -14,9 +15,13 @@ import { ENTER, COMMA, SPACE } from '@angular/cdk/keycodes';
   templateUrl: './question-bank-detail.component.html',
   styleUrls: ['./question-bank-detail.component.scss'],
 })
-export class QuestionBankDetailComponent implements OnInit {
+export class QuestionBankDetailComponent implements OnInit, OnDestroy {
 
   private routerID: number = -1; // Current object ID in routing
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _createSub: Subscription;
+  private _changeSub: Subscription;
+  private _readSub: Subscription;
   public currentMode: string;
   public detailObject: QuestionBankItem | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
@@ -62,20 +67,22 @@ export class QuestionBankDetailComponent implements OnInit {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readQuestionEvent.subscribe((y: any) => {
-            if (y instanceof QuestionBankItem) {
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in QuestionBankDetailComponent, succeed to readQuestionEvent : ${y}`);
+          if (!this._readSub) {
+            this._readSub = this._storageService.readQuestionEvent.subscribe((y: any) => {
+              if (y instanceof QuestionBankItem) {
+                if (environment.LoggingLevel >= LogLevel.Debug) {
+                  console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in QuestionBankDetailComponent, succeed to readQuestionEvent : ${y}`);
+                }
+                this.detailObject = y;
+                this.dataSourceSub.data = this.detailObject.SubItems;
+              } else {
+                if (environment.LoggingLevel >= LogLevel.Error) {
+                  console.error(`AC_HIH_UI [Error]: Entering ngOnInit in QuestionBankDetailComponent, failed to readQuestionEvent : ${y}`);
+                }
+                this.detailObject = new QuestionBankItem();
               }
-              this.detailObject = y;
-              this.dataSourceSub.data = this.detailObject.SubItems;
-            } else {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering ngOnInit in QuestionBankDetailComponent, failed to readQuestionEvent : ${y}`);
-              }
-              this.detailObject = new QuestionBankItem();
-            }
-          });
+            });  
+          }
 
           this._storageService.readQuestionBank(this.routerID);
         }
@@ -87,6 +94,22 @@ export class QuestionBankDetailComponent implements OnInit {
     }, () => {
       // Empty
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+    if (this._readSub) {
+      this._readSub.unsubscribe();
+    }
+    if (this._createSub) {
+      this._createSub.unsubscribe();
+    }
+    if (this._changeSub) {
+      this._changeSub.unsubscribe();
+    }
   }
 
   get isFieldChangable(): boolean {
@@ -177,52 +200,54 @@ export class QuestionBankDetailComponent implements OnInit {
   }
 
   private onQtnBankCreate(): void {
-    this._storageService.createQuestionEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent`);
-      }
-
-      // Navigate back to list view
-      if (x instanceof QuestionBankItem) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-          this._uiService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
-        });
-
-        let recreate: boolean = false;
-        snackbarRef.onAction().subscribe(() => {
-          recreate = true;
-          this.onInitCreateMode();
-          // this._router.navigate(['/learn/questionbank/create']);
-        });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          if (!recreate) {
-            this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
-          }
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent, failed dialog result ${x2}`);
-          }
-        });
-      }
-    });
+    if (!this._createSub) {
+      this._createSub = this._storageService.createQuestionEvent.subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent`);
+        }
+  
+        // Navigate back to list view
+        if (x instanceof QuestionBankItem) {
+          // Show the snackbar
+          let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+            this._uiService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
+          });
+  
+          let recreate: boolean = false;
+          snackbarRef.onAction().subscribe(() => {
+            recreate = true;
+            this.onInitCreateMode();
+            // this._router.navigate(['/learn/questionbank/create']);
+          });
+  
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
+            if (!recreate) {
+              this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
+            }
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+  
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent, failed dialog result ${x2}`);
+            }
+          });
+        }
+      });
+    }
 
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this.detailObject.SubItems = this.dataSourceSub.data;
@@ -230,42 +255,44 @@ export class QuestionBankDetailComponent implements OnInit {
   }
 
   private onQtnBankUpdate(): void {
-    this._storageService.updateQuestionEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent`);
-      }
-
-      // Navigate back to list view
-      if (x instanceof QuestionBankItem) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
-          duration: 1000,
-        });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent, failed dialog result ${x2}`);
-          }
-        });
-      }
-    });
+    if (!this._changeSub) {
+      this._changeSub = this._storageService.updateQuestionEvent.subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent`);
+        }
+  
+        // Navigate back to list view
+        if (x instanceof QuestionBankItem) {
+          // Show the snackbar
+          let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
+            duration: 1000,
+          });
+  
+          snackbarRef.afterDismissed().subscribe(() => {
+            // Navigate to display
+            this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
+          });
+        } else {
+          // Show error message
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
+            Content: x.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+  
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
+            // Do nothing!
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent, failed dialog result ${x2}`);
+            }
+          });
+        }
+      });  
+    }
 
     this.detailObject.SubItems = [];
     this.detailObject.SubItems = this.dataSourceSub.data;

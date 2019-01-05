@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, HostBinding, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, HostBinding, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, EnSentence, EnSentenceExplain } from '../../model';
 import { LearnStorageService } from '../../services';
@@ -44,7 +44,8 @@ export class EnSentenceDataSource extends DataSource<any> {
   styleUrls: ['./en-sentence-list.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class EnSentenceListComponent implements OnInit {
+export class EnSentenceListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['id', 'sent' ];
   dataSource: EnSentenceDataSource | undefined = undefined;
@@ -53,6 +54,9 @@ export class EnSentenceListComponent implements OnInit {
 
   constructor(public _storageService: LearnStorageService,
     private _router: Router) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent constructor...');
+    }
     this.isLoadingResults = false;
   }
 
@@ -65,16 +69,26 @@ export class EnSentenceListComponent implements OnInit {
     this.dataSource = new EnSentenceDataSource(this._storageService, this.paginator);
 
     this._storageService.fetchAllEnSentences()
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
         // Just ensure the REQUEST has been sent
         if (x) {
           // Do nothing
         }
       }, (error: any) => {
-        // Do nothing
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering ngOnInit in EnSentenceListComponent with activateRoute URL : ${error}`);
+        }
       }, () => {
         this.isLoadingResults = false;
       });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onCreateEnSentence(): void {
@@ -95,10 +109,14 @@ export class EnSentenceListComponent implements OnInit {
 
   public onRefresh(): void {
     this.isLoadingResults = true;
-    this._storageService.fetchAllEnSentences(true).subscribe((x: any) => {
+    this._storageService.fetchAllEnSentences(true)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       // Do nothing
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in EnSentenceListComponent with activateRoute URL : ${error}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });

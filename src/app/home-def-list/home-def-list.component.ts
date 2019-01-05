@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, Subject, BehaviorSubject, of, merge } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, of, merge, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson } from '../model';
 import { HomeDefDetailService } from '../services';
@@ -43,7 +43,8 @@ export class HomeDefDataSource extends DataSource<any> {
   templateUrl: './home-def-list.component.html',
   styleUrls: ['./home-def-list.component.scss'],
 })
-export class HomeDefListComponent implements OnInit {
+export class HomeDefListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['id', 'name', 'host', 'currency', 'details'];
   dataSource: HomeDefDataSource | undefined;
@@ -56,11 +57,24 @@ export class HomeDefListComponent implements OnInit {
 
   constructor(public _homedefService: HomeDefDetailService,
     private _router: Router) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...');
+    }
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...');
+    }
     this.dataSource = new HomeDefDataSource(this._homedefService, this.paginator);
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onCreateHome(): void {

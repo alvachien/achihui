@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
-import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of as observableOf, ReplaySubject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+
+import { environment } from '../../../environments/environment';
 import { LogLevel, LearnCategory } from '../../model';
 import { LearnStorageService, UIStatusService } from '../../services';
 
@@ -32,7 +34,8 @@ export class LearnCategoryTreeFlatNode {
   templateUrl: './category-tree.component.html',
   styleUrls: ['./category-tree.component.scss'],
 })
-export class CategoryTreeComponent implements OnInit {
+export class CategoryTreeComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   isLoadingResults: boolean;
   treeControl: FlatTreeControl<LearnCategoryTreeFlatNode>;
   treeFlattener: MatTreeFlattener<LearnCategoryTreeNode, LearnCategoryTreeFlatNode>;
@@ -40,7 +43,10 @@ export class CategoryTreeComponent implements OnInit {
 
   constructor(public _storageService: LearnStorageService,
     public _uiStatusService: UIStatusService) {
-
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering CategoryTreeComponent constructor...');
+    }
+  
     this.isLoadingResults = false;
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
@@ -50,15 +56,27 @@ export class CategoryTreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering CategoryTreeComponent ngOnInit...');
+    }
     this.isLoadingResults = true;
-    this._storageService.fetchAllCategories().subscribe((x: any) => {
+    this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       let nodes: LearnCategoryTreeNode[] = this._buildCategoryTree(x, 1);
       this.dataSource.data = nodes;
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering CategoryTreeComponent ngOnInit fetchAllCategories failed with ${error}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering CategoryTreeComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   transformer = (node: LearnCategoryTreeNode, level: number) => {

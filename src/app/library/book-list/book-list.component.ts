@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, HostBinding } from '@angular/core';
+import { Component, OnInit, ViewChild, HostBinding, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, Subject, BehaviorSubject, forkJoin, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, forkJoin, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, Book } from '../../model';
 import { LibraryStorageService } from '../../services';
@@ -43,31 +44,43 @@ export class LibBookDataSource extends DataSource<any> {
   templateUrl: './book-list.component.html',
   styleUrls: ['./book-list.component.scss'],
 })
-export class BookListComponent implements OnInit {
+export class BookListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: LibBookDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LibraryStorageService,
-    private _router: Router) { }
+    private _router: Router) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering BookListComponent constructor...');
+    }
+
+    this.dataSource = new LibBookDataSource(this._storageService, this.paginator);
+  }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering BookListComponent ngOnInit...');
     }
 
-    this.dataSource = new LibBookDataSource(this._storageService, this.paginator);
-
     forkJoin([
       this._storageService.fetchAllBookCategories(),
       // this._storageService.fetchAllObjects(),
-    ]).subscribe((x: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (x) {
         // Do nothing
       }
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering BookListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onCreateBook(): void {

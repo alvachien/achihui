@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, HostBinding } from '@angular/core';
+import { Component, OnInit, ViewChild, HostBinding, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, Subject, BehaviorSubject, forkJoin, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, forkJoin, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject, LearnHistory } from '../../model';
 import { LearnStorageService } from '../../services';
@@ -43,7 +43,8 @@ export class LearnHistoryDataSource extends DataSource<any> {
   templateUrl: './history-list.component.html',
   styleUrls: ['./history-list.component.scss'],
 })
-export class HistoryListComponent implements OnInit {
+export class HistoryListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['objid', 'objname', 'usrname', 'learndate'];
   dataSource: LearnHistoryDataSource | undefined;
@@ -67,16 +68,25 @@ export class HistoryListComponent implements OnInit {
       this._storageService.fetchAllCategories(),
       this._storageService.fetchAllObjects(),
       this._storageService.fetchAllHistories(),
-    ]).subscribe((x: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (x) {
         // Empty
       }
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering HistoryListComponent ngOnInit forkJoin failed with: ${error}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HistoryListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onCreateHistory(): void {
@@ -97,10 +107,12 @@ export class HistoryListComponent implements OnInit {
 
   public onRefresh(): void {
     this.isLoadingResults = true;
-    this._storageService.fetchAllHistories(true).subscribe((x: any) => {
+    this._storageService.fetchAllHistories(true).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Do nothing
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering HistoryListComponent onRefresh failed with: ${error}`);
+      }
     }, () => {
       this.isLoadingResults = false;
     });

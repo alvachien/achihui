@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, HostBinding } from '@angular/core';
+import { Component, OnInit, ViewChild, HostBinding, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, forkJoin, merge } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, forkJoin, merge, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject } from '../../model';
 import { LearnStorageService } from '../../services';
@@ -43,7 +43,8 @@ export class LearnObjectDataSource extends DataSource<any> {
   templateUrl: './object-list.component.html',
   styleUrls: ['./object-list.component.scss'],
 })
-export class ObjectListComponent implements OnInit {
+export class ObjectListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: LearnObjectDataSource | undefined;
@@ -68,7 +69,7 @@ export class ObjectListComponent implements OnInit {
     forkJoin([
       this._storageService.fetchAllCategories(),
       this._storageService.fetchAllObjects(),
-    ]).subscribe((x: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (x) {
         // Do NOTHING
@@ -78,6 +79,13 @@ export class ObjectListComponent implements OnInit {
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onCreateObject(): void {
