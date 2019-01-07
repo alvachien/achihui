@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, LearnCategory, LearnObject, LearnHistory, QuestionBankItem, momentDateFormat,
@@ -133,7 +133,7 @@ export class LearnStorageService {
           this._isCtgyListLoaded = false;
           this.listCategoryChange.next([]);
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
     } else {
       return of(this.listCategoryChange.value);
@@ -190,7 +190,7 @@ export class LearnStorageService {
           this._isObjListLoaded = true;
           this.listObjectChange.next([]);
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
     } else {
       return of(this.listObjectChange.value);
@@ -456,7 +456,7 @@ export class LearnStorageService {
           this._isHistListLoaded = true;
           this.listHistoryChange.next([]);
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
     } else {
       return of(this.listHistoryChange.value);
@@ -678,7 +678,7 @@ export class LearnStorageService {
           this._isQtnBankListLoaded = true;
           this.listQtnBankChange.next([]);
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
     } else {
       return of(this.listQtnBankChange.value);
@@ -941,7 +941,7 @@ export class LearnStorageService {
           this._isEnWordListLoaded = true;
           this.listEnWordChange.next([]);
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
     } else {
       return of(this.listEnWordChange.value);
@@ -1088,7 +1088,7 @@ export class LearnStorageService {
           this._isEnSentListLoaded = true;
           this.listEnSentChange.next([]);
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
     } else {
       return of(this.listEnSentChange.value);

@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, BookCategory, Book, Location, MovieGenre, Movie, momentDateFormat } from '../model';
@@ -103,7 +103,7 @@ export class LibraryStorageService {
             this._isBookCtgyListLoaded = false;
             this.listBookCategoryChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
       return of(this.listBookCategoryChange.value);
@@ -161,7 +161,7 @@ export class LibraryStorageService {
             this._isMovieGenreListLoaded = false;
             this.listMovieGenreChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
       return of(this.listMovieGenreChange.value);
@@ -212,7 +212,7 @@ export class LibraryStorageService {
             this._isLocationListLoaded = false;
             this.listLocationChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
       return of(this.listLocationChange.value);
@@ -263,7 +263,7 @@ export class LibraryStorageService {
             this._isBookListLoaded = false;
             this.listBookChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
       return of(this.listLocationChange.value);

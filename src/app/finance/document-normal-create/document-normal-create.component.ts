@@ -203,7 +203,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     }
 
     if (!this._createSub) {
-      this._createSub = this._storageService.createDocumentEvent.subscribe((x: any) => {
+      this._createSub = this._storageService.createDocumentEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentNormalCreateComponent with : ${x}`);
         }

@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, Tag, TagCount, TagTypeEnum } from '../model';
@@ -31,7 +31,7 @@ export class TagsService {
     reqamt: boolean,
     tagtype?: TagTypeEnum,
     tagterm?: string,
-  ): Observable<TagCount[] | Tag[]> {
+  ): Observable<any> {
     // if (!this._islistLoaded || forceReload) {
       const apiurl: string = environment.ApiUrl + '/api/Tag';
 
@@ -97,7 +97,7 @@ export class TagsService {
           // this._islistLoaded = false;
           // this.listDataChange.next([]);
 
-          return Observable.throw(err.json());
+          return throwError(err.json());
         }));
     // } else {
     //   return Observable.of(this.listDataChange.value);

@@ -143,7 +143,7 @@ export class FinanceStorageService {
             this._isAcntCtgyListLoaded = false;
             this.listAccountCategoryChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
       return of(this.listAccountCategoryChange.value);
@@ -195,7 +195,7 @@ export class FinanceStorageService {
             this._isDocTypeListLoaded = false;
             this.listDocTypeChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
       return of(this.listDocTypeChange.value);
@@ -269,7 +269,7 @@ export class FinanceStorageService {
             this._isTranTypeListLoaded = false;
             this.listTranTypeChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
       return of(this.listTranTypeChange.value);
@@ -321,7 +321,7 @@ export class FinanceStorageService {
             this._isAsstCtgyListLoaded = false;
             this.listAssetCategoryChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
       return of(this.listAssetCategoryChange.value);
@@ -374,7 +374,7 @@ export class FinanceStorageService {
             this._isAccountListLoaded = false;
             this.listAccountChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
       return of(this.listAccountChange.value);
@@ -614,7 +614,7 @@ export class FinanceStorageService {
           this._isConctrolCenterListLoaded = false;
           this.listControlCenterChange.next([]);
 
-          return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
     } else {
       return of(this.listControlCenterChange.value);
@@ -831,7 +831,7 @@ export class FinanceStorageService {
             this._isOrderListLoaded = false;
             this.listOrderChange.next([]);
 
-            return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
       return of(this.listOrderChange.value);
@@ -1050,7 +1050,67 @@ export class FinanceStorageService {
           console.error(`AC_HIH_UI [Error]: Failed in fetchAllPlans in FinanceStorageService: ${error}`);
         }
 
-        return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * Create the plan
+   */
+  public createPlan(nplan: Plan): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    const apiurl: string = environment.ApiUrl + '/api/FinancePlan';
+
+    const jdata: string = nplan.writeJSONString();
+    return this._http.post(apiurl, jdata, {
+      headers: headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering Map of createPlan in FinanceStorageService: ' + response);
+        }
+
+        let hd: Plan = new Plan();
+        hd.onSetData(response);
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Failed in createPlan in FinanceStorageService: ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  /**
+   * read the plan
+   */
+  public readPlan(planid: number): Observable<Plan> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/FinancePlan/' + planid.toString();
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.get(apiurl, {
+      headers: headers,
+      params: params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering readPlan in FinanceStorageService`);
+        }
+
+        let hd: Plan = new Plan();
+        hd.onSetData(response);
+        return hd;
       }));
   }
 
@@ -1114,7 +1174,7 @@ export class FinanceStorageService {
           console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocuments in FinanceStorageService: ${error}`);
         }
 
-        return Observable.throw(error.statusText + '; ' + error.error + '; ' + error.message);
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 

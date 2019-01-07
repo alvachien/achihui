@@ -2359,13 +2359,16 @@ export enum PlanTypeEnum {
  */
 export class Plan extends hih.BaseModel {
   private _id: number;
+  private _hid: number;
   private _planType: PlanTypeEnum;
   private _accountID: number;
   private _accountCtgyID: number;
   private _ccID: number;
   private _tranTypeID: number;
+  private _startDate: moment.Moment;
   private _targetDate: moment.Moment;
   private _tagetBalance: number;
+  private _tranCurr: string;
   private _description: string;
 
   get ID(): number {
@@ -2373,6 +2376,12 @@ export class Plan extends hih.BaseModel {
   }
   set ID(id: number) {
     this._id = id;
+  }
+  get HID(): number {
+    return this._hid;
+  }
+  set HID(hid: number) {
+    this._hid = hid;
   }
   get PlanType(): PlanTypeEnum {
     return this._planType;
@@ -2404,6 +2413,12 @@ export class Plan extends hih.BaseModel {
   set TranTypeID(ttid: number) {
     this._tranTypeID = ttid;
   }
+  get StartDate(): moment.Moment {
+    return this._startDate;
+  }
+  set StartDate(sd: moment.Moment) {
+    this._startDate = sd;
+  }
   get TargetDate(): moment.Moment {
     return this._targetDate;
   }
@@ -2416,11 +2431,81 @@ export class Plan extends hih.BaseModel {
   set TargetBalance(tb: number) {
     this._tagetBalance = tb;
   }
+  get TranCurrency(): string {
+    return this._tranCurr;
+  }
+  set TranCurrency(curr: string) {
+    this._tranCurr = curr;
+  }
   get Description(): string {
     return this._description;
   }
   set Description(desp: string) {
     this._description = desp;
+  }
+
+  public onVerify(context?: any): boolean {
+    if (!super.onVerify(context)) {
+      return false;
+    }
+
+    let bsuccess: boolean = true;
+    // Check date
+    let today: moment.Moment = moment();
+    if (today.isAfter(this.TargetDate)) {
+      let msg: hih.InfoMessage = new hih.InfoMessage();
+      msg.MsgType = hih.MessageType.Warning;
+      msg.MsgTitle = 'Invalid date';
+      msg.MsgContent = 'Invalid date';
+      this.VerifiedMsgs.push(msg);
+    }
+    // Check account! - TBD
+
+    return bsuccess;
+  }
+  public writeJSONObject(): any {
+    let rstObj: any = super.writeJSONObject();
+
+    rstObj.ID = this.ID;
+    rstObj.HID = this.HID;
+    rstObj.planType = +this.PlanType;
+    rstObj.accountID = this.AccountID;
+    rstObj.startDate = this.StartDate.format(hih.momentDateFormat);
+    rstObj.targetDate = this.TargetDate.format(hih.momentDateFormat);
+    rstObj.targetBalance = this.TargetBalance;
+    rstObj.tranCurr = this.TranCurrency;
+    rstObj.description = this.Description;
+    return rstObj;
+  }
+  public onSetData(data: any): void {
+    super.onSetData(data);
+    if (data && data.ID) {
+      this.ID = +data.ID;
+    }
+    if (data && data.HID) {
+      this.HID = +data.HID;
+    }
+    if (data && data.planType) {
+      this.PlanType = data.planType;
+    }
+    if (data && data.accountID) {
+      this.AccountID = data.accountID;
+    }
+    if (data && data.startDate) {
+      this.StartDate = moment(data.startDate, hih.momentDateFormat);
+    }
+    if (data && data.targetDate) {
+      this.TargetDate = moment(data.targetDate, hih.momentDateFormat);
+    }
+    if (data && data.targetBalance) {
+      this.TargetBalance = data.targetBalance;
+    }
+    if (data && data.tranCurr) {
+      this.TranCurrency = data.tranCurr;
+    }
+    if (data && data.description) {
+      this.Description = data.description;
+    }
   }
 }
 
