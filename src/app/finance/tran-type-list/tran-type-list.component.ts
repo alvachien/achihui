@@ -64,7 +64,7 @@ import { FinanceStorageService, UIStatusService } from '../../services';
   styleUrls: ['./tran-type-list.component.scss'],
 })
 export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'name', 'expflag', 'fulldisplay', 'hierlvl', 'parent', 'comment'];
   // !!! Second option !!!
@@ -110,6 +110,8 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
     // !!! First option !!!
     // this.dataSource = new TranTypeDataSource(this._storageService, this.paginator);
 

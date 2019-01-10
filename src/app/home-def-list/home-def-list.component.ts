@@ -44,7 +44,7 @@ export class HomeDefDataSource extends DataSource<any> {
   styleUrls: ['./home-def-list.component.scss'],
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'name', 'host', 'currency', 'details'];
   dataSource: HomeDefDataSource | undefined;
@@ -67,6 +67,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...');
     }
+    this._destroyed$ = new ReplaySubject(1);
     this.dataSource = new HomeDefDataSource(this._homedefService, this.paginator);
   }
   ngOnDestroy(): void {

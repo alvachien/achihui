@@ -14,7 +14,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
   ],
 })
 export class HomeMessageComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'userfrom', 'userto', 'title', 'senddate'];
   dataSource: MatTableDataSource<HomeMsg>;
   sentBox: boolean;
@@ -43,6 +43,8 @@ export class HomeMessageComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
   }
 
   ngAfterViewInit(): void {

@@ -45,7 +45,7 @@ export class EnSentenceDataSource extends DataSource<any> {
   encapsulation: ViewEncapsulation.None,
 })
 export class EnSentenceListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'sent' ];
   dataSource: EnSentenceDataSource | undefined = undefined;
@@ -65,6 +65,7 @@ export class EnSentenceListComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this.dataSource = new EnSentenceDataSource(this._storageService, this.paginator);
 

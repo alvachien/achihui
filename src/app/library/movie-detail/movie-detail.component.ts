@@ -11,7 +11,7 @@ import { LogLevel } from '../../model';
   styleUrls: ['./movie-detail.component.scss'],
 })
 export class MovieDetailComponent implements OnInit {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -23,6 +23,8 @@ export class MovieDetailComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering MovieDetailComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {

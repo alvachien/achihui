@@ -14,7 +14,7 @@ import { EventStorageService } from '../../services';
   styleUrls: ['./category-list.component.scss'],
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -29,7 +29,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent ngOnInit...');
     }
-    // Empty for now
+
+    this._destroyed$ = new ReplaySubject(1);
 
     // this.dataSource = new BookCategoryDataSource(this._storageService, this.paginator);
     // this._storageService.fetchAllBookCategories().subscribe((x) => {

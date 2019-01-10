@@ -15,7 +15,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   styleUrls: ['./object-by-category.component.scss'],
 })
 export class ObjectByCategoryComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _seledCategory: number;
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
@@ -61,7 +61,8 @@ export class ObjectByCategoryComponent implements OnInit, AfterViewInit, OnDestr
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent ngOnInit...');
     }
-     // Do nothing
+    
+    this._destroyed$ = new ReplaySubject(1);
    }
 
   /**

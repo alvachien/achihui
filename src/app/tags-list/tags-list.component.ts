@@ -1,18 +1,13 @@
 import { Component, OnInit, ViewChild, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, of, pipe } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of, pipe, ReplaySubject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { EChartOption } from 'echarts';
+import { MatSnackBar } from '@angular/material';
 
 import { environment } from '../../environments/environment';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-
 import { LogLevel, Tag, TagCount, TagTypeEnum } from '../model';
-import { AuthService } from '../services/auth.service';
-import { HomeDefDetailService } from '../services/home-def-detail.service';
-import { TagsService } from '../services/tags.service';
-import { UIStatusService } from '../services/uistatus.service';
-import { EChartOption } from 'echarts';
+import { AuthService, TagsService, HomeDefDetailService, UIStatusService } from '../services';
 import { ThemeStorage } from '../theme-picker/theme-storage/theme-storage';
 
 @Component({
@@ -20,8 +15,8 @@ import { ThemeStorage } from '../theme-picker/theme-storage/theme-storage';
   templateUrl: './tags-list.component.html',
   styleUrls: ['./tags-list.component.scss'],
 })
-export class TagsListComponent implements AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+export class TagsListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
   tagTerm: string;
   tagType: TagTypeEnum;
   rstSearch: Tag[] = [];
@@ -32,6 +27,7 @@ export class TagsListComponent implements AfterViewInit, OnDestroy {
   constructor(private _tagService: TagsService,
     private _router: Router,
     private _themeStorage: ThemeStorage,
+    private _snackbar: MatSnackBar,
     public _uiService: UIStatusService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering TagsListComponent constructor...');
@@ -48,7 +44,14 @@ export class TagsListComponent implements AfterViewInit, OnDestroy {
     } else {
       this.chartTheme = 'light';
     }
+  }
 
+  ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnInit...');
+    }
+
+    this._destroyed$ = new ReplaySubject(1);
     this._themeStorage.onThemeUpdate.pipe(takeUntil(this._destroyed$)).subscribe((val: any) => {
       if (val.isDark) {
         this.chartTheme = 'dark';
@@ -59,7 +62,15 @@ export class TagsListComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterViewInit...');
+    }
+
     this._tagService.fetchAllTags(true).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterViewInit, fetchAllTags...');
+      }
+
       let dataCloud: any[] = [];
       for (let s1 of x) {
         let s2: TagCount = <TagCount>s1;
@@ -104,6 +115,14 @@ export class TagsListComponent implements AfterViewInit, OnDestroy {
           };
         }),
       );
+    }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering TagsListComponent ngAfterViewInit, fetchAllTags, failed ${error}`);
+      }
+
+      this._snackbar.open(error, undefined, {
+        duration: 2000
+      });
     });
   }
 
@@ -120,6 +139,10 @@ export class TagsListComponent implements AfterViewInit, OnDestroy {
   // }
 
   public onSearchTagTerm(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent onSearchTagTerm...');
+    }
+
     this._tagService.fetchAllTags(false, this.tagType, this.tagTerm)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {

@@ -45,7 +45,7 @@ export class LibLocationDataSource extends DataSource<any> {
   styleUrls: ['./location-list.component.scss'],
 })
 export class LocationListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: LibLocationDataSource | undefined;
@@ -63,6 +63,8 @@ export class LocationListComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering LocationListComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {

@@ -6,6 +6,9 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, Acc
   RepeatFrequencyEnum, UIDisplayStringUtil,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material';
 
 export function getAccountExtAssetFormGroup(): any {
   return {

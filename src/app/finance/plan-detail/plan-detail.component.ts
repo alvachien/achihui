@@ -22,7 +22,7 @@ import { ElementSchemaRegistry } from '@angular/compiler';
 })
 export class PlanDetailComponent implements OnInit, OnDestroy {
   private _routerID: number;
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   public mainFormGroup: FormGroup;
@@ -57,6 +57,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     this.mainFormGroup = this._formBuilder.group({
       dateControl: [{ value: moment(), disabled: false }, Validators.required],

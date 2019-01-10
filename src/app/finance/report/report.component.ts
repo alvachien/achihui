@@ -112,7 +112,7 @@ export class ReportOrderDataSource extends DataSource<any> {
   styleUrls: ['./report.component.scss'],
 })
 export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
-  private ngUnsubscribe$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private ngUnsubscribe$: ReplaySubject<boolean>;
 
   // Account
   // @ViewChild('chartAccountIncoming') chartAccountIncoming: ElementRef;
@@ -200,20 +200,21 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.chartTheme = 'light';
     }
-
-    this._themeStorage.onThemeUpdate.subscribe((val: any) => {
-      if (val.isDark) {
-        this.chartTheme = 'dark';
-      } else {
-        this.chartTheme = 'light';
-      }
-    });
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngOnInit...');
     }
+
+    this.ngUnsubscribe$ = new ReplaySubject(1);
+    this._themeStorage.onThemeUpdate.pipe(takeUntil(this.ngUnsubscribe$)).subscribe((val: any) => {
+      if (val.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
+      }
+    });
 
     this.dataSourceBS = new ReportBSDataSource(this, this.paginatorBS);
     this.dataSourceCC = new ReportCCDataSource(this, this.paginatorCC);

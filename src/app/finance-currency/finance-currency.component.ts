@@ -44,7 +44,7 @@ export class CurrencyDataSource extends DataSource<any> {
   styleUrls: ['./finance-currency.component.scss'],
 })
 export class FinanceCurrencyComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['curr', 'name', 'symbol'];
   dataSource: CurrencyDataSource | undefined;
@@ -55,17 +55,17 @@ export class FinanceCurrencyComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent constructor...');
     }
-
-    this._currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-      // Do nothing
-    });
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnInit...');
     }
-    this.dataSource = new CurrencyDataSource(this._currService, this.paginator);
+    this._destroyed$ = new ReplaySubject(1);
+    this._currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      // Do nothing
+      this.dataSource = new CurrencyDataSource(this._currService, this.paginator);
+    });
   }
 
   ngOnDestroy(): void {

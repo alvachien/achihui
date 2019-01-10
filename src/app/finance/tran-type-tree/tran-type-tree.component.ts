@@ -35,7 +35,7 @@ export class TranTypeTreeFlatNode {
   styleUrls: ['./tran-type-tree.component.scss'],
 })
 export class TranTypeTreeComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   treeControl: FlatTreeControl<TranTypeTreeFlatNode>;
   treeFlattener: MatTreeFlattener<TranTypeTreeNode, TranTypeTreeFlatNode>;
@@ -59,6 +59,8 @@ export class TranTypeTreeComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this._storageService.fetchAllTranTypes().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {

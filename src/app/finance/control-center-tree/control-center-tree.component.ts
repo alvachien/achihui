@@ -1,9 +1,9 @@
-import { OnInit, AfterViewInit, Component, Directive, ViewChild, Input, ElementRef, } from '@angular/core';
+import { OnInit, AfterViewInit, Component, Directive, ViewChild, Input, OnDestroy, } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
-import { BehaviorSubject, Observable, forkJoin, of as observableOf } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, forkJoin, of as observableOf, ReplaySubject, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { LogLevel, ControlCenter, UIDisplayString, UIDisplayStringUtil, OverviewScopeEnum } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { environment } from '../../../environments/environment';
@@ -33,7 +33,8 @@ export class ControlCenterTreeFlatNode {
   templateUrl: './control-center-tree.component.html',
   styleUrls: ['./control-center-tree.component.scss'],
 })
-export class ControlCenterTreeComponent implements OnInit {
+export class ControlCenterTreeComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   treeControl: FlatTreeControl<ControlCenterTreeFlatNode>;
   treeFlattener: MatTreeFlattener<ControlCenterTreeNode, ControlCenterTreeFlatNode>;
@@ -61,6 +62,7 @@ export class ControlCenterTreeComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this._storageService.fetchAllControlCenters()
       .subscribe((value: any) => {
@@ -75,6 +77,11 @@ export class ControlCenterTreeComponent implements OnInit {
       }, () => {
         this.isLoadingResults = false;
       });
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   onTreeNodeClicked(node: ControlCenterTreeFlatNode): void {

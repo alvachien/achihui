@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil,
   momentDateFormat, EventHabitCheckin } from '../../model';
@@ -20,7 +20,7 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
   private _homeMemStub: Subscription;
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   public currentMode: string;
   public detailObject: EventHabit;
@@ -42,6 +42,7 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
+    private _snackBar: MatSnackBar,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HabitDetailComponent constructor ...');
@@ -55,6 +56,8 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     this._homeMemStub = this._homedefService.curHomeMembers
       .pipe(takeUntil(this._destroyed$))
@@ -89,13 +92,24 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
               this.dataSourceSimulateResult.data = this.detailObject.details;
               this.dataSourceCheckIn.data = this.detailObject.checkInLogs;
               this.isLoadingData = false;
+            }, (error: HttpErrorResponse) => {
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed to readHabitEvent: ${error.message}`);
+              }
+        
+              this._snackBar.open(error.message, undefined, {
+                duration: 2000
+              });        
             });
           }
         }
-      }, (error: HttpErrorResponse) => {
+      }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed: ${error.message}`);
+          console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed: ${error}`);
         }
+        this._snackBar.open(error.toString(), undefined, {
+          duration: 2000
+        });        
       }, () => {
         // Empty
       });
@@ -136,6 +150,14 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
         this.detailObject.details = [];
       }
       this.dataSourceSimulateResult.data = this.detailObject.details;
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent onGenerateDetails but failed to generateHabitEvent: ${error.message}`);
+      }
+
+      this._snackBar.open(error.message, undefined, {
+        duration: 2000
+      });
     });
   }
 
@@ -160,6 +182,14 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
       let gevnt: EventHabit = new EventHabit();
       gevnt.onSetData(x);
       this._router.navigate(['/event/habit/display/' + gevnt.ID.toString()]);
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent createImpl but failed to createHabitEvent: ${error.message}`);
+      }
+
+      this._snackBar.open(error.message, undefined, {
+        duration: 2000
+      });
     });
   }
   private updateImpl(): void {

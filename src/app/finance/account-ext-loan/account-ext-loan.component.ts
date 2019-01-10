@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, OnDestroy } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraLoan, UIAccountForSelection,
   IAccountCategoryFilter, BuildupAccountForSelection, TemplateDocLoan, FinanceLoanCalAPIInput, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { forkJoin } from 'rxjs';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil, take } from 'rxjs/operators';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -13,8 +14,9 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   templateUrl: './account-ext-loan.component.html',
   styleUrls: ['./account-ext-loan.component.scss'],
 })
-export class AccountExtLoanComponent implements OnInit, AfterViewInit {
+export class AccountExtLoanComponent implements OnInit, AfterViewInit, OnDestroy {
   private _insobj: AccountExtraLoan;
+  private _destroyed$: ReplaySubject<boolean>;
   public currentMode: string;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
@@ -59,6 +61,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent ngOnInit`);
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this.uiAccountStatusFilter = undefined;
     this.uiAccountCtgyFilter = {
       skipADP: true,
@@ -69,7 +72,9 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
     forkJoin(
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAccounts(),
-    ).subscribe((x: any) => {
+    )
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
     });
 
@@ -82,6 +87,11 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent ngAfterViewInit`);
     }
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public initCreateMode(): void {

@@ -12,7 +12,7 @@ import { AuthService, HomeDefDetailService } from '../services';
   styleUrls: ['./user-detail.component.scss'],
 })
 export class UserDetailComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   usrObject: UserAuthInfo;
 
@@ -27,6 +27,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering UserDetailComponent ngOnInit...');
     }
+    this._destroyed$ = new ReplaySubject(1);
     this._authService.authContent.pipe(takeUntil(this._destroyed$)).subscribe((x: UserAuthInfo) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: Entering UserDetailComponent ngOnInit, authContent...');

@@ -15,7 +15,7 @@ import { AuthService, HomeDefDetailService, FinCurrencyService } from '../servic
 })
 export class HomeDefDetailComponent implements OnInit, OnDestroy {
   private routerID: number = -1; // Current object ID in routing
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   public detailObject: HomeDef | undefined;
   public currentMode: string;
@@ -41,6 +41,14 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
     this.isLoadingResults = false;
     this.detailObject = new HomeDef();
+  }
+
+  ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit`);
+    }
+
+    this._destroyed$ = new ReplaySubject(1);
     this._fincurrService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Ensure the GET is fired
     });
@@ -49,12 +57,6 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         console.log(`AC_HIH_UI [Debug]: Entering listDataChange of HomeDefDetailComponent... ${x}`);
       }
     });
-  }
-
-  ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit`);
-    }
 
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {

@@ -53,7 +53,7 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
   styleUrls: ['./document-item-overview.component.scss'],
 })
 export class DocumentItemOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private labelIncome: string;
   private labelOutgo: string;
 
@@ -96,6 +96,14 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit, OnD
     } else {
       this.chartTheme = 'light';
     }
+  }
+
+  ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnInit...');
+    }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     this._themeStorage.onThemeUpdate.pipe(takeUntil(this._destroyed$)).subscribe((val: any) => {
       if (val.isDark) {
@@ -104,13 +112,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit, OnD
         this.chartTheme = 'light';
       }
     });
-  }
-
-  ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnInit...');
-    }
-
+    
     this.dataSourceTmpDoc = new TmpDocStillOpenDataSource(this, this.paginatorTmpDoc);
     this._homedefService.fetchHomeMembers(this._homedefService.ChosedHome.ID);
 

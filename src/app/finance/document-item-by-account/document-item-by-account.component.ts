@@ -14,7 +14,7 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./document-item-by-account.component.scss'],
 })
 export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _seledAccount: number;
   private _seledScope: OverviewScopeEnum;
 
@@ -65,6 +65,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent ngOnInit...');
     }
+    this._destroyed$ = new ReplaySubject(1);
 
     this._storageService.fetchAllTranTypes().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Just ensure the HTTP GET fired.

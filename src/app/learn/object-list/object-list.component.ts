@@ -44,7 +44,7 @@ export class LearnObjectDataSource extends DataSource<any> {
   styleUrls: ['./object-list.component.scss'],
 })
 export class ObjectListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: LearnObjectDataSource | undefined;
@@ -62,6 +62,7 @@ export class ObjectListComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnInit...');
     }
+    this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
     this.dataSource = new LearnObjectDataSource(this._storageService, this.paginator);

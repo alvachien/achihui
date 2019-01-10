@@ -45,7 +45,7 @@ export class LibBookDataSource extends DataSource<any> {
   styleUrls: ['./book-list.component.scss'],
 })
 export class BookListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: LibBookDataSource | undefined;
@@ -64,6 +64,8 @@ export class BookListComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering BookListComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
       this._storageService.fetchAllBookCategories(),

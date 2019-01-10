@@ -35,7 +35,7 @@ export class LearnCategoryTreeFlatNode {
   styleUrls: ['./category-tree.component.scss'],
 })
 export class CategoryTreeComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   treeControl: FlatTreeControl<LearnCategoryTreeFlatNode>;
   treeFlattener: MatTreeFlattener<LearnCategoryTreeNode, LearnCategoryTreeFlatNode>;
@@ -59,6 +59,8 @@ export class CategoryTreeComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering CategoryTreeComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       let nodes: LearnCategoryTreeNode[] = this._buildCategoryTree(x, 1);

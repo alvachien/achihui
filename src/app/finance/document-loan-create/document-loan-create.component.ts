@@ -29,7 +29,7 @@ import { AccountExtLoanComponent } from '../account-ext-loan';
   styleUrls: ['./document-loan-create.component.scss'],
 })
 export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _createDocSub: Subscription;
   private loanType: number;
 
@@ -102,6 +102,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this.firstFormGroup = this._formBuilder.group({
       dateControl: [{ value: moment(), disabled: false }, Validators.required],
       despControl: ['', Validators.required],

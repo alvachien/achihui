@@ -17,7 +17,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   styleUrls: ['./document-list.component.scss'],
 })
 export class DocumentListComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _docScopeEvent: EventEmitter<any> = new EventEmitter<any>();
 
   displayedColumns: string[] = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
@@ -44,6 +44,7 @@ export class DocumentListComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this.selectedDocScope = OverviewScopeEnum.CurrentMonth;
     this.isLoadingResults = true;
   }

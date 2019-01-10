@@ -27,7 +27,7 @@ import { ENTER, COMMA, } from '@angular/cdk/keycodes';
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   private routerID: number = -1; // Current object ID in routing
-  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private destroyed$: ReplaySubject<boolean>;
 
   public currentMode: string;
   public detailObject: Document | undefined = undefined;
@@ -74,6 +74,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...');
     }
 
+    this.destroyed$ = new ReplaySubject(1);
+
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllDocTypes(),
@@ -82,7 +84,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst: any) => {
+    ])
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }

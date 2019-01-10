@@ -8,6 +8,7 @@ import { LogLevel, GeneralEvent } from '../../model';
 import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
 import { Observable, merge, of, forkJoin, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'hih-event-list',
@@ -15,7 +16,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
   styleUrls: ['./event-list.component.scss'],
 })
 export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'complete', 'assignee'];
   dataSource: any = new MatTableDataSource();
   totalCountOfEvent: number;
@@ -44,6 +45,8 @@ export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Enter EventListComponent ngOnInit...`);
     }
+
+    this._destroyed$ = new ReplaySubject(1);
   }
 
   ngAfterViewInit(): void {
@@ -113,9 +116,13 @@ export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((x: any) => {
       // Jump to display mode
       this._router.navigate(['/event/general/display/' + row.ID.toString()]);
-    }, (error: any) => {
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering EventListComponent onMarkAsDone but failed to completeGeneralEvent: ${error.message}`);
+      }
+
       // Show snackbar
-      this._snackBar.open('Error occurred', undefined, {
+      this._snackBar.open(error.message, undefined, {
         duration: 1000,
       });
     });

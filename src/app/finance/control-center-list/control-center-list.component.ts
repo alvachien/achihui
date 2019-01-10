@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, ControlCenter, UICommonLabelEnum } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
@@ -46,8 +46,8 @@ export class ControlCenterDataSource extends DataSource<any> {
   styleUrls: ['./control-center-list.component.scss'],
   animations: [fadeAnimation],
 })
-export class ControlCenterListComponent implements OnInit {
-
+export class ControlCenterListComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'comment'];
   dataSource: ControlCenterDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -68,6 +68,7 @@ export class ControlCenterListComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this.dataSource = new ControlCenterDataSource(this._storageService, this.paginator);
     this._storageService.fetchAllControlCenters().subscribe((x: any) => {
@@ -80,6 +81,11 @@ export class ControlCenterListComponent implements OnInit {
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onCreateCC(): void {

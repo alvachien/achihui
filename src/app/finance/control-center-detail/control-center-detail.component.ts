@@ -8,7 +8,8 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, ControlCenter, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { Subscription } from 'rxjs';
+import { Subscription, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/Operators';
 
 @Component({
   selector: 'hih-finance-control-center-detail',
@@ -16,6 +17,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./control-center-detail.component.scss'],
 })
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
   private _listReadStub: Subscription;
   private _readStub: Subscription;
   private _createStub: Subscription;
@@ -49,8 +51,11 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...');
     }
+    this._destroyed$ = new ReplaySubject(1);
 
-    this._listReadStub = this.storageService.fetchAllControlCenters().subscribe((cclist: ControlCenter[]) => {
+    this._listReadStub = this.storageService.fetchAllControlCenters()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((cclist: ControlCenter[]) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...');
       }
@@ -81,16 +86,22 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
           if (!this._readStub) {
-            this._readStub = this.storageService.readControlCenterEvent.subscribe((x2: any) => {
+            this._readStub = this.storageService.readControlCenterEvent
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe((x2: any) => {
               if (x2 instanceof ControlCenter) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, succeed to readControlCenterEvent.`);
+                  console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, readControlCenterEvent.`);
                 }
                 this.detailObject = x2;
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering ngOninit in ControlCenterDetailComponent, failed to readControlCenterEvent: ${x2}`);
+                  console.error(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenterEvent failed: ${x2}`);
                 }
+                this._snackbar.open(x2.toString(), undefined, {
+                  duration: 2000
+                });
+
                 this.detailObject = new ControlCenter();
               }
             });
@@ -101,7 +112,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       }
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in ControlCenterDetailComponent with activateRoute URL : ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOnInit with activateRoute URL : ${error}`);
       }
     }, () => {
       // Empty
@@ -109,6 +120,9 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
+
     if (this._listReadStub) {
       this._listReadStub.unsubscribe();
     }
@@ -156,7 +170,9 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
   private onCreateControlCenter(): void {
     if (!this._createStub) {
-      this._createStub = this.storageService.createControlCenterEvent.subscribe((x: any) => {
+      this._createStub = this.storageService.createControlCenterEvent
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent`);
         }
@@ -210,7 +226,9 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
   private onUpdateControlCenter(): void {
     if (!this._changeStub) {
-      this._changeStub = this.storageService.changeControlCenterEvent.subscribe((x: any) => {
+      this._changeStub = this.storageService.changeControlCenterEvent
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
         }

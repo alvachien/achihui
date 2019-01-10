@@ -16,7 +16,7 @@ import * as moment from 'moment';
   styleUrls: ['./order-list.component.scss'],
 })
 export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'name', 'ValidFrom', 'ValidTo', 'comment'];
   dataSource: MatTableDataSource<Order> = new MatTableDataSource<Order>();
@@ -38,6 +38,8 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
 

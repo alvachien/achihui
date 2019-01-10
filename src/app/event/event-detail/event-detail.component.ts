@@ -1,12 +1,13 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { environment } from '../../../environments/environment';
-import { LogLevel, UIMode, getUIModeString, GeneralEvent } from '../../model';
-import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { Observable, merge, of, Subscription, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
+
+import { environment } from '../../../environments/environment';
+import { LogLevel, UIMode, getUIModeString, GeneralEvent } from '../../model';
+import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
 
 @Component({
   selector: 'hih-event-detail',
@@ -14,7 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./event-detail.component.scss'],
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
   private _homeMemStub: Subscription;
@@ -33,6 +34,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   constructor(private _storageService: EventStorageService,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _snackBar: MatSnackBar,
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -47,6 +49,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     this._homeMemStub = this._homedefService.curHomeMembers
       .pipe(takeUntil(this._destroyed$))
@@ -75,9 +79,21 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this.isLoadingData = true;
 
-            this._storageService.readGeneralEvent(this.routerID).subscribe((y: any) => {
+            this._storageService.readGeneralEvent(this.routerID)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe((y: any) => {
               this.detailObject = y;
               this.isLoadingData = false;
+            }, (error: HttpErrorResponse) => {
+              // Error occurred
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Error]: Entering EventDetailComponent ngOnInit but failed to readGeneralEvent: ${error.message}`);
+              }
+
+              // Show a snackbar for it
+              this._snackBar.open(error.message, undefined, {
+                duration: 2000
+              });
             });
           }
         }
@@ -128,6 +144,13 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       let gevnt: GeneralEvent = new GeneralEvent();
       gevnt.onSetData(x);
       this._router.navigate(['/event/general/display/' + gevnt.ID.toString()]);
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering EventDetailComponent createImpl but failed to createGeneralEvent: ${error.message}`);
+      }
+
+      this._snackBar.open(error.message, undefined,
+        { duration: 2000 });
     });
   }
   private updateImpl(): void {

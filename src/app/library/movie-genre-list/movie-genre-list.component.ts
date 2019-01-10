@@ -14,7 +14,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
   styleUrls: ['./movie-genre-list.component.scss'],
 })
 export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   dataSource: any = new MatTableDataSource();
 
@@ -43,6 +43,8 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngOnInit...`);
     }
+
+    this._destroyed$ = new ReplaySubject(1);
   }
 
   ngAfterViewInit(): void {

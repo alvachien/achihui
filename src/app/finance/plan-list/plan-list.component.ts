@@ -15,7 +15,7 @@ import { FinanceStorageService, HomeDefDetailService, } from '../../services';
   styleUrls: ['./plan-list.component.scss'],
 })
 export class PlanListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   displayedColumns: string[] = ['id', 'accid', 'tgtdate', 'tgtbalance', 'desp'];
   dataSource: MatTableDataSource<Plan> = new MatTableDataSource<Plan>();
@@ -34,6 +34,8 @@ export class PlanListComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering PlanListComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     this._storageService.fetchAllPlans().pipe(takeUntil(this._destroyed$)).subscribe((x: BaseListModel<Plan>) => {
       this.totalPlanCount = x.totalCount;

@@ -24,7 +24,7 @@ import * as moment from 'moment';
   styleUrls: ['./document-transfer-create.component.scss'],
 })
 export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _createSub: Subscription;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
@@ -89,6 +89,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this.headerFormGroup = this._formBuilder.group({
       dateControl: new FormControl({ value: moment() }, Validators.required),
       despControl: ['', Validators.required],

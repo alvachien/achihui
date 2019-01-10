@@ -44,7 +44,7 @@ export class LanguageDataSource extends DataSource<any> {
   styleUrls: ['./language.component.scss'],
 })
 export class LanguageComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['lcid', 'isoname', 'enname', 'nvname', 'appflag'];
   dataSource: LanguageDataSource | undefined;
@@ -60,6 +60,7 @@ export class LanguageComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering LanguageComponent ngOnInit...');
     }
+    this._destroyed$ = new ReplaySubject(1);
     this.dataSource = new LanguageDataSource(this._storageService, this.paginator);
 
     this._storageService.fetchAllLanguages();

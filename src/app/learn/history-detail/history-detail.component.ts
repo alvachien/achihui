@@ -17,7 +17,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
   styleUrls: ['./history-detail.component.scss'],
 })
 export class HistoryDetailComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _readSub: Subscription;
   private _createSub: Subscription;
   private _changeSub: Subscription;
@@ -49,6 +49,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering HistoryDetailComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     // Start create the UI elements
     this.detailFormGroup = this._formBuilder.group({
       dateControl: [{ value: moment(), disabled: false }, Validators.required],

@@ -21,7 +21,7 @@ import { ThemeStorage } from '../theme-picker/theme-storage/theme-storage';
   styleUrls: ['./home-dashboard.component.scss'],
 })
 export class HomeDashboardComponent implements OnInit, OnDestroy {
-  private ngUnsubscribe$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private ngUnsubscribe$: ReplaySubject<boolean>;
 
   selectedFinanceScope: OverviewScopeEnum;
   selectedLearnScope: OverviewScopeEnum;
@@ -70,20 +70,20 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     } else {
       this.chartTheme = 'light';
     }
-
-    this._themeStorage.onThemeUpdate.subscribe((val: any) => {
-      if (val.isDark) {
-        this.chartTheme = 'dark';
-      } else {
-        this.chartTheme = 'light';
-      }
-    });
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HomeDashboardComponent ngOnInit...');
     }
+    this.ngUnsubscribe$ = new ReplaySubject(1);
+    this._themeStorage.onThemeUpdate.pipe(takeUntil(this.ngUnsubscribe$)).subscribe((val: any) => {
+      if (val.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
+      }
+    });
 
     this.baseCurr = this._homeDefService.ChosedHome.BaseCurrency;
     this._getHomeKeyFigure();

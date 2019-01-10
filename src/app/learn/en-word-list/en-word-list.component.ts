@@ -46,7 +46,7 @@ export class EnWordDataSource extends DataSource<any> {
   encapsulation: ViewEncapsulation.None,
 })
 export class EnWordListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'word' ];
   dataSource: EnWordDataSource | undefined = undefined;
@@ -63,6 +63,7 @@ export class EnWordListComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering EnWordListComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this.dataSource = new EnWordDataSource(this._storageService, this.paginator);
 

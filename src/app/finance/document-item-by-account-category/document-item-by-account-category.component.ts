@@ -15,7 +15,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
   styleUrls: ['./document-item-by-account-category.component.scss'],
 })
 export class DocumentItemByAccountCategoryComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _seledScope: OverviewScopeEnum;
 
   displayedColumns: string[] = ['DocID', 'AccountId', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
@@ -68,6 +68,7 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountCategoryComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     forkJoin([
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllTranTypes(),

@@ -44,7 +44,7 @@ export class BookCategoryDataSource extends DataSource<any> {
   styleUrls: ['./book-category-list.component.scss']
 })
 export class BookCategoryListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   dataSource: BookCategoryDataSource | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -62,6 +62,8 @@ export class BookCategoryListComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering BookCategoryListComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
     this._storageService.fetchAllBookCategories()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {

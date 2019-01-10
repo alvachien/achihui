@@ -16,7 +16,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   styleUrls: ['./en-word-detail.component.scss'],
 })
 export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _createSub: Subscription;
   private _readSub: Subscription;
 
@@ -50,6 +50,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {

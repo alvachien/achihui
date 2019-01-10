@@ -1,11 +1,12 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, GeneralEvent, RecurEvent, UIDisplayStringUtil } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
 import { Observable, merge, of, Subscription, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'hih-event-recurrevent-detail',
@@ -16,7 +17,7 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
   private _homeMemStub: Subscription;
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   public currentMode: string;
   public detailObject: RecurEvent;
@@ -32,6 +33,7 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
   constructor(private _storageService: EventStorageService,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _snackBar: MatSnackBar,
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -46,6 +48,8 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     this._homeMemStub = this._homedefService.curHomeMembers
       .pipe(takeUntil(this._destroyed$))
@@ -80,11 +84,25 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
               this.dataSourceSimulateResult.data = y.Events;
 
               this.isLoadingData = false;
+            }, (error: HttpErrorResponse) => {
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Error]: Enter RecurrEventDetailComponent ngOnInit, but failed with readRecurEvent: ${error.message}`);
+              }
+
+              this._snackBar.open(error.message, undefined, {
+                duration: 2000
+              });      
             });
           }
         }
       }, (error: any) => {
-        // Empty
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Enter RecurrEventDetailComponent ngOnInit, but failed with URL: ${error}`);
+        }
+
+        this._snackBar.open(error.toString(), undefined, {
+          duration: 2000
+        });      
       }, () => {
         // Empty
       });
@@ -113,6 +131,14 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
       .subscribe((x: any) => {
       // Show the result.
       this.dataSourceSimulateResult.data = x;
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Enter RecurrEventDetailComponent onSimulateRecurEvents, but failed with calcRecurEvents: ${error.message}`);
+      }
+
+      this._snackBar.open(error.message, undefined, {
+        duration: 2000
+      });
     });
   }
 
@@ -135,6 +161,14 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
       .subscribe((x: RecurEvent) => {
       // Navigate to display
       this._router.navigate(['/event/recur/display/' + x.ID.toString()]);
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Enter RecurrEventDetailComponent createImpl, but failed with createRecurEvent: ${error.message}`);
+      }
+
+      this._snackBar.open(error.message, undefined, {
+        duration: 2000
+      });
     });
   }
   private updateImpl(): void {

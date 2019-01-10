@@ -44,7 +44,7 @@ export class LearnHistoryDataSource extends DataSource<any> {
   styleUrls: ['./history-list.component.scss'],
 })
 export class HistoryListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['objid', 'objname', 'usrname', 'learndate'];
   dataSource: LearnHistoryDataSource | undefined;
@@ -61,6 +61,7 @@ export class HistoryListComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering HistoryListComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this.dataSource = new LearnHistoryDataSource(this._storageService, this.paginator);
 

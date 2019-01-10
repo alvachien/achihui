@@ -1,14 +1,15 @@
-import { OnInit, AfterViewInit, Component, Directive, ViewChild, Input, ElementRef, } from '@angular/core';
+import { OnInit, AfterViewInit, Component, Directive, ViewChild, Input, OnDestroy, } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 import { environment } from '../../../environments/environment';
-import { BehaviorSubject, Observable, forkJoin, of as observableOf } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, forkJoin, of as observableOf, ReplaySubject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil, OverviewScopeEnum,
   getOverviewScopeRange } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * Node type for Account tree
@@ -45,7 +46,8 @@ export class AccountTreeFlatNode {
   templateUrl: './account-tree.component.html',
   styleUrls: ['./account-tree.component.scss'],
 })
-export class AccountTreeComponent implements OnInit {
+export class AccountTreeComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
   treeControl: FlatTreeControl<AccountTreeFlatNode>;
   treeFlattener: MatTreeFlattener<AccountTreeNode, AccountTreeFlatNode>;
@@ -61,6 +63,7 @@ export class AccountTreeComponent implements OnInit {
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
+    private _snackbar: MatSnackBar,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent constructor...');
@@ -87,7 +90,17 @@ export class AccountTreeComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this._refreshTree();
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnDestroy...');
+    }
+
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   onTreeNodeClicked(node: AccountTreeFlatNode): void {
@@ -128,7 +141,9 @@ export class AccountTreeComponent implements OnInit {
     this.isLoadingResults = true;
     this.dataSource.data = [];
 
-    this._storageService.fetchAllAccounts().subscribe((x: any) => {
+    this._storageService.fetchAllAccounts()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent onAccountStatusChange, fetchAllAccounts...');
       }
@@ -139,7 +154,13 @@ export class AccountTreeComponent implements OnInit {
       let nodes: AccountTreeNode[] = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
       this.dataSource.data = nodes;
     }, (error: any) => {
-      // Do nothing
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering AccountTreeComponent onAccountStatusChange, fetchAllAccounts failed: ${error.toString()}`);
+      }
+
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000
+      });
     }, () => {
       this.isLoadingResults = false;
     });
@@ -191,6 +212,7 @@ export class AccountTreeComponent implements OnInit {
     this.isLoadingResults = true;
 
     forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts(isReload))
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((value: any) => {
         // Parse the data
         this.availableCategories = value[0];

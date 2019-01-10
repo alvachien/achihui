@@ -16,7 +16,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit, AfterViewInit {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   @ViewChild('fcal') elemcalendar: ElementRef;
   ctrlCalendar: Calendar;
   initialLocaleCode: string = 'en';
@@ -39,6 +39,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering OverviewComponent ngOnInit ...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
   }
 
   ngAfterViewInit(): void {
@@ -65,7 +67,9 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         (arg: any, successCallback: any, failureCallback: any) => {
           let dtbgn: moment.Moment = moment(arg.startStr);
           let dtend: moment.Moment = moment(arg.endStr);
-          that._storageService.fetchAllEvents(100, 0, true, dtbgn, dtend).subscribe((data: any) => {
+          that._storageService.fetchAllEvents(100, 0, true, dtbgn, dtend)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((data: any) => {
             let arevents: any[] = [];
             for (let ci of data.contentList) {
               let gevnt: GeneralEvent = new GeneralEvent();
@@ -92,7 +96,9 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         (arg: any, successCallback: any, failureCallback: any) => {
           let dtbgn: moment.Moment = moment(arg.startStr);
           let dtend: moment.Moment = moment(arg.endStr);
-          that._storageService.fetchHabitDetailWithCheckIn(dtbgn, dtend).subscribe((data: any) => {
+          that._storageService.fetchHabitDetailWithCheckIn(dtbgn, dtend)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((data: any) => {
             let arevents: any[] = [];
             for (let ci2 of data) {
               let hevnt: HabitEventDetailWithCheckInStatistics = new HabitEventDetailWithCheckInStatistics();

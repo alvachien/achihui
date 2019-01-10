@@ -18,7 +18,7 @@ import { ENTER, COMMA, SPACE } from '@angular/cdk/keycodes';
 export class QuestionBankDetailComponent implements OnInit, OnDestroy {
 
   private routerID: number = -1; // Current object ID in routing
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _createSub: Subscription;
   private _changeSub: Subscription;
   private _readSub: Subscription;
@@ -45,6 +45,8 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {

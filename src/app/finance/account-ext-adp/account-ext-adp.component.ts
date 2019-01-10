@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, OnDestroy } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, TranType,
   AccountExtraAdvancePayment, RepeatFrequencyEnum, UIDisplayStringUtil, TemplateDocADP,
@@ -6,13 +6,17 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, Tra
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-finance-account-ext-adp',
   templateUrl: './account-ext-adp.component.html',
   styleUrls: ['./account-ext-adp.component.scss'],
 })
-export class AccountExtADPComponent implements OnInit, AfterViewInit {
+export class AccountExtADPComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
   private _insobj: AccountExtraAdvancePayment;
   public currentMode: string;
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
@@ -41,16 +45,18 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
   }
 
   constructor(public _storageService: FinanceStorageService,
+    private _snackbar: MatSnackBar,
     private _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering constructor of AccountExtADPComponent ...');
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngOnInit of AccountExtADPComponent ...');
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPComponent ngOnInit...');
     }
+    this._destroyed$ = new ReplaySubject(1);
     if (this._insobj.dpTmpDocs.length > 0) {
       this.dataSource.data = this._insobj.dpTmpDocs;
     }
@@ -58,8 +64,16 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of AccountExtADPComponent ...');
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPComponent ngAfterViewInit...');
     }
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onGenerateTmpDocs(): void {
@@ -76,7 +90,9 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
       TotalAmount: this.tranAmount,
     };
 
-    this._storageService.calcADPTmpDocs(datInput).subscribe((rsts: FinanceADPCalAPIOutput[]) => {
+    this._storageService.calcADPTmpDocs(datInput)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((rsts: FinanceADPCalAPIOutput[]) => {
       for (let i: number = 0; i < rsts.length; i++) {
         let item: TemplateDocADP = new TemplateDocADP();
         item.HID = this._homedefService.ChosedHome.ID;
@@ -89,6 +105,14 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit {
       }
 
       this.dataSource.data = tmpDocs;
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering AccountExtADPComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${error.message}`);
+      }
+
+      this._snackbar.open(error.message, undefined, {
+        duration: 2000
+      });
     });
   }
 

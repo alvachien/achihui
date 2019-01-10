@@ -46,7 +46,7 @@ export class QuestionBankDataSource extends DataSource<any> {
   styleUrls: ['./question-bank-list.component.scss'],
 })
 export class QuestionBankListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'type', 'question', 'briefawr' ];
   dataSource: QuestionBankDataSource | undefined;
@@ -64,6 +64,7 @@ export class QuestionBankListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this.dataSource = new QuestionBankDataSource(this._storageService, this.paginator);
 

@@ -36,7 +36,7 @@ class PayingAccountInfo {
   styleUrls: ['./document-repayment-ex-create.component.scss'],
 })
 export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _readAccountSub: Subscription;
 
   public arUIAccount: UIAccountForSelection[] = [];
@@ -108,6 +108,8 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     // Start create the UI controls
     this.firstFormGroup = this._formBuilder.group({

@@ -45,7 +45,7 @@ export class SRuleDataSource extends DataSource<any> {
 export class OrderDetailComponent implements OnInit, OnDestroy {
 
   private routerID: number = -1; // Current object ID in routing
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _createSub: Subscription;
   private _changeSub: Subscription;
   private _readSub: Subscription;
@@ -82,6 +82,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     this._storageService.fetchAllControlCenters().pipe(takeUntil(this._destroyed$)).subscribe((cc: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {

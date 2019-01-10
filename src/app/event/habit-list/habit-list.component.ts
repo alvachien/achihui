@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { environment } from '../../../environments/environment';
 import { LogLevel, EventHabit, EventHabitDetail, EventHabitCheckin } from '../../model';
@@ -17,7 +17,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _homeMemStub: Subscription;
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['select', 'id', 'name', 'start', 'end', 'assignee'];
   dataSource: MatTableDataSource<EventHabit>;
@@ -31,6 +31,7 @@ export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(public _homeDefService: HomeDefDetailService,
     private _authService: AuthService,
     private _storageService: EventStorageService,
+    private _snackBar: MatSnackBar,
     private _router: Router) {
     this.isLoadingResults = true;
 
@@ -46,6 +47,8 @@ export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering HabitListComponent ngOnInit...`);
     }
+
+    this._destroyed$ = new ReplaySubject(1);
   }
 
   ngAfterViewInit(): void {
@@ -103,8 +106,11 @@ export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
         // Do nothing
       }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Enter onCheckin of HabitListComponent but failed: ${error.message}`);
-        }    
+          console.error(`AC_HIH_UI [Error]: Enter HabitListComponent onCheckin, but failed with checkInHabitEvent: ${error.message}`);
+        }
+        this._snackBar.open(error.message, undefined, {
+          duration: 2000
+        });
       });
     }
   }

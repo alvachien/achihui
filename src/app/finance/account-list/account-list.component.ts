@@ -1,8 +1,8 @@
-import { Component, OnInit, AfterViewInit, ViewChild, HostBinding } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Component, OnInit, AfterViewInit, ViewChild, HostBinding, OnDestroy } from '@angular/core';
+import { MatPaginator, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, forkJoin, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService } from '../../services';
@@ -19,7 +19,8 @@ interface IAccountStatusUI {
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.scss'],
 })
-export class AccountListComponent implements OnInit, AfterViewInit {
+export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'name', 'ctgy', 'status', 'comment'];
   dataSource: MatTableDataSource<Account> = new MatTableDataSource<Account>();
@@ -29,6 +30,7 @@ export class AccountListComponent implements OnInit, AfterViewInit {
   isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,
+    private _snackbar: MatSnackBar,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountListComponent constructor...');
@@ -44,24 +46,42 @@ export class AccountListComponent implements OnInit, AfterViewInit {
       console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
 
     forkJoin([
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllAccountCategories(),
-    ]).subscribe((x: any) => {
+    ])
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       this._buildDataSource();
     }, (error: HttpErrorResponse) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit but failed forkJoin: ${error.message}`);
       }
+
+      this._snackbar.open(error.message, undefined, {
+        duration: 2000
+      });
     }, () => {
       this.isLoadingResults = false;
     });
   }
 
   ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngAfterViewInit...');
+    }
     this.dataSource.paginator = this.paginator;
+  }
+
+  ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...');
+    }
+    this._destroyed$.next(true);
+    this._destroyed$.complete();
   }
 
   public onCreateAccount(): void {

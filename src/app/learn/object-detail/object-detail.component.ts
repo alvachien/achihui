@@ -21,7 +21,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private routerID: number = -1; // Current object ID in routing
   private editor: any;
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _createSub: Subscription;
   private _changeSub: Subscription;
 
@@ -50,6 +50,8 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
   }
 
   ngAfterViewInit(): void {

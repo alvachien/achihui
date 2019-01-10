@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, GeneralEvent, RecurEvent } from '../../model';
@@ -13,7 +14,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
   styleUrls: ['./recurr-event-list.component.scss'],
 })
 export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _homeMemStub: Subscription;
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'assignee'];
   dataSource: MatTableDataSource<RecurEvent>;
@@ -41,6 +42,8 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngOnInit...`);
     }
+
+    this._destroyed$ = new ReplaySubject(1);
   }
 
   ngAfterViewInit(): void {
@@ -78,12 +81,20 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
       .subscribe((rst: boolean) => {
       if (rst) {
         // Show snackbar
-        this._snackbar.open('Event Deleted', undefined, {
+        this._snackbar.open(`Event ${rid} Deleted`, undefined, {
           duration: 2000,
         });
       } else {
         // Do nothing
       }
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Enter RecurrEventListComponent onDeleteRecurEvent, failed with deleteRecurEvent: ${error.message}`);
+      }
+
+      this._snackbar.open(error.message, undefined, {
+        duration: 2000
+      });
     });
   }
 
@@ -99,7 +110,7 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
   public fetchRecurEvents(): void {
     this.paginator.page
       .pipe(
-        takeUntil(this._destroyed$),
+      takeUntil(this._destroyed$),
       startWith({}),
       switchMap(() => {
         this.isLoadingResults = true;
@@ -135,8 +146,14 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
       .subscribe((x: any) => {
       // Jump to display mode
       this._router.navigate(['/event/recur/display/' + row.ID.toString()]);
-    }, (error: any) => {
-      // Show dialog?
+    }, (error: HttpErrorResponse) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Enter RecurrEventDetailComponent createImpl, but failed with createRecurEvent: ${error.message}`);
+      }
+
+      this._snackbar.open(error.message, undefined, {
+        duration: 2000
+      });
     });
   }
 }

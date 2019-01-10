@@ -28,7 +28,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   styleUrls: ['./document-normal-create.component.scss'],
 })
 export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _createSub: Subscription;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
@@ -98,6 +98,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     // Start create the UI controls
     this.firstFormGroup = this._formBuilder.group({

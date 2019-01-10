@@ -11,7 +11,7 @@ import { LogLevel } from '../../model';
   styleUrls: ['./location-detail.component.scss']
 })
 export class LocationDetailComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
 
   constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -23,6 +23,8 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnInit...');
     }
+
+    this._destroyed$ = new ReplaySubject(1);
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {

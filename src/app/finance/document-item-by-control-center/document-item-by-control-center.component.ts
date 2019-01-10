@@ -14,7 +14,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
   styleUrls: ['./document-item-by-control-center.component.scss'],
 })
 export class DocumentItemByControlCenterComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   private _seledCC: number;
   private _seledScope: OverviewScopeEnum;
 
@@ -66,6 +66,7 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
     this._storageService.fetchAllTranTypes().subscribe((x: any) => {
       // Just ensure the HTTP GET fired.
     });

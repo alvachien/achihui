@@ -18,7 +18,7 @@ import * as moment from 'moment';
   styleUrls: ['./document-item-search-list.component.scss'],
 })
 export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroyed$: ReplaySubject<boolean>;
   filters: GeneralFilterItem[] = [];
   allOperators: UIDisplayString[] = [];
   allFields: any[] = [];
@@ -77,6 +77,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngOnInit...');
     }
+    this._destroyed$ = new ReplaySubject(1);
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAccounts(),
