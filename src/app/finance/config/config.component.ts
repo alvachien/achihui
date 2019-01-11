@@ -54,7 +54,7 @@ export class ConfigComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
       this._snackbar.open(error.toString(), undefined, {
-        duration: 2000
+        duration: 2000,
       });
     });
   }

@@ -111,7 +111,7 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit, OnDestroy 
       }
 
       this._snackbar.open(error.message, undefined, {
-        duration: 2000
+        duration: 2000,
       });
     });
   }

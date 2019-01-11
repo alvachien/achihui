@@ -33,10 +33,17 @@ export class AccountExtAssetComponent implements OnInit, OnDestroy {
     private _homeService: HomeDefDetailService,
     private _snackBar: MatSnackBar,
     private _currService: FinCurrencyService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetComponent constructor`);
+    }
     // Do nothing
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetComponent ngOnInit`);
+    }
+
     this._destroyed$ = new ReplaySubject(1);
 
     // Ensure those request has been loaded
@@ -47,10 +54,21 @@ export class AccountExtAssetComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
       // Empty
+    }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering AccountExtAssetComponent ngOnInit, forkJoin failed: ${error}`);
+      }
+
+      this._snackBar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
 
   ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetComponent ngOnDestroy`);
+    }
     this._destroyed$.next(true);
     this._destroyed$.complete();
   }

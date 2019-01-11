@@ -27,10 +27,14 @@ export class AccountExtAssetExComponent implements OnInit {
 
   constructor(public controlContainer: ControlContainer,
     public _storageService: FinanceStorageService) {
-      // Do nothing
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent constructor`);
     }
+  }
 
   ngOnInit(): void {
-    // Do nothing
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent ngOnInit`);
+    }
   }
 }

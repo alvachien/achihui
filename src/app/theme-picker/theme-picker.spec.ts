@@ -11,9 +11,9 @@ describe('ThemePicker', () => {
   }));
 
   it('should install theme based on href', () => {
-    const fixture = TestBed.createComponent(ThemePicker);
-    const component = fixture.componentInstance;
-    const href = 'pink-bluegrey.css';
+    const fixture: any = TestBed.createComponent(ThemePicker);
+    const component: any = fixture.componentInstance;
+    const href: any = 'pink-bluegrey.css';
     spyOn(component.styleManager, 'setStyle');
     component.installTheme({
       primary: '#E91E63',

@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import {
+  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -41,7 +42,7 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ObjectDetailComponent constructor...');
     }
-  
+
     this.detailObject = new LearnObject();
     this.elementId = 'tinymce' + Math.round(100 * Math.random()).toString();
   }
@@ -208,51 +209,51 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       this._createSub = this._storageService.createObjectEvent
         .pipe(takeUntil(this._destroyed$))
         .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent`);
-        }
-  
-        // Navigate back to list view
-        if (x instanceof LearnObject) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-  
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-            this.onInitCreateMode();
-            // this._router.navigate(['/learn/object/create']);
-          });
-  
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
-            }
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-  
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent, failed dialog result ${x2}`);
-            }
-          });
-        }
-      });
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent`);
+          }
+
+          // Navigate back to list view
+          if (x instanceof LearnObject) {
+            // Show the snackbar
+            let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+              this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+                duration: 3000,
+              });
+
+            let recreate: boolean = false;
+            snackbarRef.onAction().subscribe(() => {
+              recreate = true;
+              this.onInitCreateMode();
+              // this._router.navigate(['/learn/object/create']);
+            });
+
+            snackbarRef.afterDismissed().subscribe(() => {
+              // Navigate to display
+              if (!recreate) {
+                this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
+              }
+            });
+          } else {
+            // Show error message
+            const dlginfo: MessageDialogInfo = {
+              Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+              Content: x.toString(),
+              Button: MessageDialogButtonEnum.onlyok,
+            };
+
+            this._dialog.open(MessageDialogComponent, {
+              disableClose: false,
+              width: '500px',
+              data: dlginfo,
+            }).afterClosed().subscribe((x2: any) => {
+              // Do nothing!
+              if (environment.LoggingLevel >= LogLevel.Debug) {
+                console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent, failed: ${x2}`);
+              }
+            });
+          }
+        });
     }
 
     this.detailObject.Content = tinymce.activeEditor.getContent();
@@ -264,42 +265,42 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       this._changeSub = this._storageService.updateObjectEvent
         .pipe(takeUntil(this._destroyed$))
         .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent`);
-        }
-  
-        // Navigate back to list view
-        if (x instanceof LearnObject) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
-            'OK', {
-            duration: 3000,
-          });
-  
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
-          });
-        } else {
-          // Show error message with dialog
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-  
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent, failed dialog result ${x2}`);
-            }
-          });
-        }
-      });
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent`);
+          }
+
+          // Navigate back to list view
+          if (x instanceof LearnObject) {
+            // Show the snackbar
+            let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
+              undefined, {
+                duration: 3000,
+              });
+
+            snackbarRef.afterDismissed().subscribe(() => {
+              // Navigate to display
+              this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
+            });
+          } else {
+            // Show error message with dialog
+            const dlginfo: MessageDialogInfo = {
+              Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+              Content: x.toString(),
+              Button: MessageDialogButtonEnum.onlyok,
+            };
+
+            this._dialog.open(MessageDialogComponent, {
+              disableClose: false,
+              width: '500px',
+              data: dlginfo,
+            }).afterClosed().subscribe((x2: any) => {
+              // Do nothing!
+              if (environment.LoggingLevel >= LogLevel.Debug) {
+                console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent, failed: ${x2}`);
+              }
+            });
+          }
+        });
     }
 
     // Update mode

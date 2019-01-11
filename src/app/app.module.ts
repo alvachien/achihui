@@ -42,6 +42,7 @@ import { FooterComponent } from './footer';
 import { HomeDashboardComponent } from './home-dashboard';
 import { UserDetailComponent } from './user-detail';
 import { PageFatalErrorComponent } from './page-fatal-error';
+import { environment } from '../environments/environment';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');

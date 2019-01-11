@@ -90,6 +90,9 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent ngOnDestroy`);
+    }
     this._destroyed$.next(true);
     this._destroyed$.complete();
   }

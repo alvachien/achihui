@@ -159,7 +159,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
       }
 
       this._snackbar.open(error.toString(), undefined, {
-        duration: 2000
+        duration: 2000,
       });
     }, () => {
       this.isLoadingResults = false;

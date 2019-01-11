@@ -25,9 +25,6 @@ module.exports = function (config) {
     files: [
       { pattern: './src/test.ts', watched: false }
     ],
-    preprocessors: {
-      './src/test.ts': ['@angular-devkit/build-angular']
-    },
     mime: {
       'text/x-typescript': ['ts','tsx']
     },

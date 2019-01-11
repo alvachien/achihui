@@ -155,7 +155,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
                   }
 
                   this._snackbar.open(x3, undefined, {
-                    duration: 2000
+                    duration: 2000,
                   });
                   this.detailObject = new Account();
                 }
@@ -171,7 +171,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         }
 
         this._snackbar.open(error.toString(), undefined, {
-          duration: 2000
+          duration: 2000,
         });
       }, () => {
         // Empty
@@ -283,7 +283,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
       // Show the snabckbar
       this._snackbar.open(error.message, undefined, {
-        duration: 2000
+        duration: 2000,
       });
     }, () => {
       // Do nothing
