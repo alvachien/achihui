@@ -163,7 +163,8 @@
                 "input": "src",
                 "output": "/"
               }
-            ]
+            ],
+            "codeCoverage": true
           }
         },
         "lint": {

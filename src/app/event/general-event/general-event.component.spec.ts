@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { GeneralEventComponent } from './general-event.component';
 
@@ -8,6 +9,7 @@ describe('GeneralEventComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ RouterTestingModule ],
       declarations: [ GeneralEventComponent ]
     })
     .compileComponents();
@@ -19,7 +21,7 @@ describe('GeneralEventComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('1. should create', () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,26 +1,26 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { EventComponent } from './event.component';
 
 describe('EventComponent', () => {
-  // let component: EventComponent;
-  // let fixture: ComponentFixture<EventComponent>;
+  let component: EventComponent;
+  let fixture: ComponentFixture<EventComponent>;
 
   beforeEach(async(() => {
-    // TestBed.configureTestingModule({
-    //   declarations: [ EventComponent ]
-    // })
-    // .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      declarations: [ EventComponent ]
+    })
+    .compileComponents();
   }));
 
   beforeEach(() => {
-    // fixture = TestBed.createComponent(EventComponent);
-    // component = fixture.componentInstance;
-    // fixture.detectChanges();
+    fixture = TestBed.createComponent(EventComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  it('should be created', () => {
-    // expect(component).toBeTruthy();
-    expect(1).toBe(1);
+  it('1. should be created', () => {
+    expect(component).toBeTruthy();
   });
 });

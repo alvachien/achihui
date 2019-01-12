@@ -18,7 +18,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
-  private _homeMemStub: Subscription;
 
   public currentMode: string;
   public detailObject: GeneralEvent;
@@ -35,7 +34,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _snackBar: MatSnackBar,
-    private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering EventDetailComponent constructor...');
@@ -52,58 +50,55 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this._homeMemStub = this._homedefService.curHomeMembers
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((mem: any) => {
+    this._homedefService.fetchAllMembersInChosedHome();
 
-      // Distinguish current mode
-      this._activateRoute.url.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnInit for activateRoute URL: ${x}`);
+    // Distinguish current mode
+    this._activateRoute.url.subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnInit for activateRoute URL: ${x}`);
+      }
+
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.onInitCreateMode();
+        } else if (x[0].path === 'edit') {
+          this.routerID = +x[1].path;
+
+          this.uiMode = UIMode.Change;
+        } else if (x[0].path === 'display') {
+          this.routerID = +x[1].path;
+
+          this.uiMode = UIMode.Display;
         }
+        this.currentMode = getUIModeString(this.uiMode);
 
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.onInitCreateMode();
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
+        if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+          this.isLoadingData = true;
 
-            this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
+          this._storageService.readGeneralEvent(this.routerID)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((y: any) => {
+            this.detailObject = y;
+            this.isLoadingData = false;
+          }, (error: HttpErrorResponse) => {
+            // Error occurred
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Error]: Entering EventDetailComponent ngOnInit but failed to readGeneralEvent: ${error.message}`);
+            }
 
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
-
-          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this.isLoadingData = true;
-
-            this._storageService.readGeneralEvent(this.routerID)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe((y: any) => {
-              this.detailObject = y;
-              this.isLoadingData = false;
-            }, (error: HttpErrorResponse) => {
-              // Error occurred
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering EventDetailComponent ngOnInit but failed to readGeneralEvent: ${error.message}`);
-              }
-
-              // Show a snackbar for it
-              this._snackBar.open(error.message, undefined, {
-                duration: 2000
-              });
+            // Show a snackbar for it
+            this._snackBar.open(error.message, undefined, {
+              duration: 2000
             });
-          }
+          });
         }
-      }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering EventDetailComponent ngOnInit but failed: ${error}`);
-        }
-      }, () => {
-        // Empty
-      });
+      }
+    }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering EventDetailComponent ngOnInit but failed: ${error}`);
+      }
+    }, () => {
+      // Empty
     });
   }
 
@@ -113,9 +108,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
-    if (this._homeMemStub) {
-      this._homeMemStub.unsubscribe();
-    }    
   }
 
   public onCancel(): void {

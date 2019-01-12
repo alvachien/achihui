@@ -1,13 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { UIDependModule } from '../../uidepend.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { CategoryComponent } from './category.component';
 
-describe('CategoryComponent', () => {
+describe('Event: CategoryComponent', () => {
   let component: CategoryComponent;
   let fixture: ComponentFixture<CategoryComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ UIDependModule, RouterTestingModule ],
       declarations: [ CategoryComponent ]
     })
     .compileComponents();
@@ -19,7 +22,7 @@ describe('CategoryComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
+  it('1. should be created', () => {
     expect(component).toBeTruthy();
   });
 });

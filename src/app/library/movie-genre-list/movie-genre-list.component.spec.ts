@@ -1,14 +1,33 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { UIDependModule } from '../../uidepend.module';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { HttpClient } from "@angular/common/http";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpLoaderTestFactory } from '../../../testing';
 
 import { MovieGenreListComponent } from './movie-genre-list.component';
 
 describe('MovieGenreListComponent', () => {
   let component: MovieGenreListComponent;
   let fixture: ComponentFixture<MovieGenreListComponent>;
+  let translate: TranslateService;
+  let http: HttpTestingController;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MovieGenreListComponent ]
+      imports: [
+        UIDependModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: HttpLoaderTestFactory,
+            deps: [HttpClient]
+          }
+        })
+      ],
+      declarations: [ MovieGenreListComponent ],
+      providers: [TranslateService]
     })
     .compileComponents();
   }));
@@ -16,6 +35,8 @@ describe('MovieGenreListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MovieGenreListComponent);
     component = fixture.componentInstance;
+    translate = TestBed.get(TranslateService);
+    http = TestBed.get(HttpTestingController);
     fixture.detectChanges();
   });
 

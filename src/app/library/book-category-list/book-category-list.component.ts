@@ -4,6 +4,7 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, BookCategory } from '../../model';
 import { LibraryStorageService } from '../../services';

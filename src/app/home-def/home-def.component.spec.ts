@@ -1,26 +1,27 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { HomeDefComponent } from './home-def.component';
 
 describe('HomeDefComponent', () => {
   let component: HomeDefComponent;
-  // let fixture: ComponentFixture<HomeDefComponent>;
+  let fixture: ComponentFixture<HomeDefComponent>;
 
   beforeEach(async(() => {
-    // TestBed.configureTestingModule({
-    //   declarations: [ HomeDefComponent ],
-    // })
-    // .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      declarations: [ HomeDefComponent ],
+    })
+    .compileComponents();
   }));
 
   beforeEach(() => {
-    // fixture = TestBed.createComponent(HomeDefComponent);
-    // component = fixture.componentInstance;
-    // fixture.detectChanges();
+    fixture = TestBed.createComponent(HomeDefComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  it('should be created', () => {
-    // expect(component).toBeTruthy();
-    expect(component).toBeFalsy();
+  it('1. should be created', () => {
+    expect(component).toBeTruthy();
   });
 });
