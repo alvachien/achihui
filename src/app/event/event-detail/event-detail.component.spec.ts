@@ -4,11 +4,15 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { FormsModule } from '@angular/forms';
-import { EventStorageService, HomeDefDetailService } from 'app/services';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { of } from 'rxjs';
+import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
+} from '@angular/material';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory, ActivatedRouteStub } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub } from '../../../testing';
+import { EventStorageService, HomeDefDetailService } from 'app/services';
 import { EventDetailComponent } from './event-detail.component';
 
 describe('EventDetailComponent', () => {
@@ -25,11 +29,19 @@ describe('EventDetailComponent', () => {
     });
     const chosedHomeMemSpy = homeService.fetchAllMembersInChosedHome.and.returnValue();
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const activatedRouteStub = new ActivatedRouteStub();
+    const activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})]);
+
+    /*     const tree: UrlTree = router.parseUrl('/team;id=33');
+      *     const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
+      *     const s: UrlSegment[] = g.segments;
+      *     s[0].path; // returns 'team'
+      *     s[0].parameters; // returns {id: 33}
+      * */
 
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
+        BrowserAnimationsModule,
         FormsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
@@ -43,6 +55,9 @@ describe('EventDetailComponent', () => {
       declarations: [ EventDetailComponent ],
       providers: [
         TranslateService,
+        { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: EventStorageService, useValue: stgserviceStub },
         { provide: Router, useValue: routerSpy },
         { provide: HomeDefDetailService, useValue: homeService },

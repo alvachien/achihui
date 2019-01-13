@@ -5,7 +5,7 @@ import { ReplaySubject } from 'rxjs';
  * An ActivateRoute test double with a `paramMap` observable.
  * Use the `setParamMap()` method to add the next `paramMap` value.
  */
-export class ActivatedRouteStub {
+export class ActivatedRouteParamStub {
   // Use a ReplaySubject to share previous values with subscribers
   // and pump new values into the `paramMap` observable
   private subject = new ReplaySubject<ParamMap>();
@@ -22,10 +22,3 @@ export class ActivatedRouteStub {
     this.subject.next(convertToParamMap(params));
   };
 }
-
-
-/*
-Copyright 2017-2018 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

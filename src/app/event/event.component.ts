@@ -15,11 +15,7 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 })
 export class EventComponent implements OnInit, OnDestroy {
   private _langChangeSub: any;
-  constructor(private _authService: AuthService,
-    private _homeDefService: HomeDefDetailService,
-    private _storageService: FinanceStorageService,
-    private _currService: FinCurrencyService,
-    private _uistatusService: UIStatusService,
+  constructor(private _uistatusService: UIStatusService,
     private _dateAdapter: DateAdapter<MomentDateAdapter>) {
   }
 

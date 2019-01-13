@@ -19,7 +19,6 @@ import { takeUntil } from 'rxjs/operators';
 export class HabitDetailComponent implements OnInit, OnDestroy {
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
-  private _homeMemStub: Subscription;
   private _destroyed$: ReplaySubject<boolean>;
 
   public currentMode: string;
@@ -41,7 +40,6 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
   constructor(private _storageService: EventStorageService,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
-    private _uiStatusService: UIStatusService,
     private _snackBar: MatSnackBar,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -59,60 +57,56 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this._homeMemStub = this._homedefService.curHomeMembers
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((mem: any) => {
-      // Distinguish current mode
-      this._activateRoute.url.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnInit for activateRoute URL: ${x}`);
+    // Distinguish current mode
+    this._activateRoute.url.subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnInit for activateRoute URL: ${x}`);
+      }
+
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.onInitCreateMode();
+        } else if (x[0].path === 'edit') {
+          this.routerID = +x[1].path;
+
+          this.uiMode = UIMode.Change;
+        } else if (x[0].path === 'display') {
+          this.routerID = +x[1].path;
+
+          this.uiMode = UIMode.Display;
         }
+        this.currentMode = getUIModeString(this.uiMode);
 
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.onInitCreateMode();
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
+        if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+          this.isLoadingData = true;
 
-            this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
-
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
-
-          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this.isLoadingData = true;
-
-            this._storageService.readHabitEvent(this.routerID)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe((y: any) => {
-              this.detailObject = y;
-              this.dataSourceSimulateResult.data = this.detailObject.details;
-              this.dataSourceCheckIn.data = this.detailObject.checkInLogs;
-              this.isLoadingData = false;
-            }, (error: HttpErrorResponse) => {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed to readHabitEvent: ${error.message}`);
-              }
-        
-              this._snackBar.open(error.message, undefined, {
-                duration: 2000
-              });        
-            });
-          }
+          this._storageService.readHabitEvent(this.routerID)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((y: any) => {
+            this.detailObject = y;
+            this.dataSourceSimulateResult.data = this.detailObject.details;
+            this.dataSourceCheckIn.data = this.detailObject.checkInLogs;
+            this.isLoadingData = false;
+          }, (error: HttpErrorResponse) => {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed to readHabitEvent: ${error.message}`);
+            }
+      
+            this._snackBar.open(error.message, undefined, {
+              duration: 2000
+            });        
+          });
         }
-      }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed: ${error}`);
-        }
-        this._snackBar.open(error.toString(), undefined, {
-          duration: 2000
-        });        
-      }, () => {
-        // Empty
-      });
+      }
+    }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed: ${error}`);
+      }
+      this._snackBar.open(error.toString(), undefined, {
+        duration: 2000
+      });        
+    }, () => {
+      // Empty
     });
   }
 
@@ -122,9 +116,6 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
-    if (this._homeMemStub) {
-      this._homeMemStub.unsubscribe();
-    }
   }
 
   public onCancel(): void {

@@ -3,7 +3,16 @@ import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { HttpLoaderTestFactory } from '../../../testing';
+import { FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
+import { of } from 'rxjs';
+import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
+} from '@angular/material';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub } from '../../../testing';
+import { EventStorageService, HomeDefDetailService } from 'app/services';
 import { HabitDetailComponent } from './habit-detail.component';
 
 describe('HabitDetailComponent', () => {
@@ -13,9 +22,20 @@ describe('HabitDetailComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
+    const stgserviceStub: Partial<EventStorageService> = {};
+    const homeService = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
+    const chosedHomeSpy = homeService.ChosedHome.and.returnValue( {
+      _id: 1
+    });
+    const chosedHomeMemSpy = homeService.fetchAllMembersInChosedHome.and.returnValue();
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})]);
+
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
+        FormsModule,
+        BrowserAnimationsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {
@@ -26,7 +46,16 @@ describe('HabitDetailComponent', () => {
         })
       ],
       declarations: [ HabitDetailComponent ],
-      providers: [TranslateService]
+      providers: [
+        TranslateService,
+        { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
+        { provide: EventStorageService, useValue: stgserviceStub },
+        { provide: Router, useValue: routerSpy },
+        { provide: HomeDefDetailService, useValue: homeService },
+        { provide: ActivatedRoute, useValue: activatedRouteStub }
+      ]
     })
     .compileComponents();
   }));

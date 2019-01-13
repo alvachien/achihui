@@ -71,22 +71,24 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             .pipe(takeUntil(this._destroyed$))
             .subscribe((data: any) => {
             let arevents: any[] = [];
-            for (let ci of data.contentList) {
-              let gevnt: GeneralEvent = new GeneralEvent();
-              gevnt.onSetData(ci);
-
-              let evnt: any = {
-                title: gevnt.Name,
-                start: gevnt.StartTimeFormatString,
-                end: gevnt.EndTimeFormatString,
-                id: 'G' + gevnt.ID.toString(),
-                event_type: 'general',
-                event_id: gevnt.ID,
-                color: 'yellow',
-                textColor: 'black',
-              };
-
-              arevents.push(evnt);
+            if (data && data.contentList && data.contentList instanceof Array) {
+              for (let ci of data.contentList) {
+                let gevnt: GeneralEvent = new GeneralEvent();
+                gevnt.onSetData(ci);
+  
+                let evnt: any = {
+                  title: gevnt.Name,
+                  start: gevnt.StartTimeFormatString,
+                  end: gevnt.EndTimeFormatString,
+                  id: 'G' + gevnt.ID.toString(),
+                  event_type: 'general',
+                  event_id: gevnt.ID,
+                  color: 'yellow',
+                  textColor: 'black',
+                };
+  
+                arevents.push(evnt);
+              }  
             }
             successCallback(arevents);
           });
@@ -100,23 +102,24 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             .pipe(takeUntil(this._destroyed$))
             .subscribe((data: any) => {
             let arevents: any[] = [];
-            for (let ci2 of data) {
-              let hevnt: HabitEventDetailWithCheckInStatistics = new HabitEventDetailWithCheckInStatistics();
-              hevnt.onSetData(ci2);
-
-              let evnt: any = {
-                title: hevnt.name,
-                start: hevnt.StartDateFormatString,
-                end: hevnt.EndDateFormatString,
-                id: 'H' + hevnt.habitID.toString(),
-                event_type: 'habit',
-                event_id: hevnt.habitID,
-                color: 'grey',
-                textColor: 'white',
-              };
-              arevents.push(evnt);
+            if (data && data instanceof Array) {
+              for (let ci2 of data) {
+                let hevnt: HabitEventDetailWithCheckInStatistics = new HabitEventDetailWithCheckInStatistics();
+                hevnt.onSetData(ci2);
+  
+                let evnt: any = {
+                  title: hevnt.name,
+                  start: hevnt.StartDateFormatString,
+                  end: hevnt.EndDateFormatString,
+                  id: 'H' + hevnt.habitID.toString(),
+                  event_type: 'habit',
+                  event_id: hevnt.habitID,
+                  color: 'grey',
+                  textColor: 'white',
+                };
+                arevents.push(evnt);
+              }
             }
-
             successCallback(arevents);
           });
         },

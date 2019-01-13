@@ -3,8 +3,12 @@ import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { HttpLoaderTestFactory } from '../../../testing';
+import { FormsModule } from '@angular/forms';
+import { of } from 'rxjs';
+import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { HttpLoaderTestFactory } from '../../../testing';
 import { AccountListComponent } from './account-list.component';
 
 describe('AccountListComponent', () => {

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
@@ -13,9 +13,8 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
   templateUrl: './recurr-event-list.component.html',
   styleUrls: ['./recurr-event-list.component.scss'],
 })
-export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class RecurrEventListComponent implements OnInit, AfterContentInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _homeMemStub: Subscription;
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'assignee'];
   dataSource: MatTableDataSource<RecurEvent>;
 
@@ -25,7 +24,6 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
   isLoadingResults: boolean;
 
   constructor(public _homeDefService: HomeDefDetailService,
-    private _authService: AuthService,
     private _storageService: EventStorageService,
     private _snackbar: MatSnackBar,
     private _router: Router) {
@@ -46,19 +44,16 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
     this._destroyed$ = new ReplaySubject(1);
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngAfterViewInit...`);
+      console.log(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngAfterContentInit...`);
     }
 
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this._homeMemStub = this._homeDefService.curHomeMembers
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((x: any) => {
-      this.fetchRecurEvents();
-    });
+    this._homeDefService.fetchAllMembersInChosedHome();
+    this.fetchRecurEvents();
   }
 
   ngOnDestroy(): void {
@@ -67,9 +62,6 @@ export class RecurrEventListComponent implements OnInit, AfterViewInit, OnDestro
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
-    if (this._homeMemStub) {
-      this._homeMemStub.unsubscribe();
-    }
   }
 
   public onCreateRecurEvent(): void {

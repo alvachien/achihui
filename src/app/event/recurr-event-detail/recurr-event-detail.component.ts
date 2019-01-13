@@ -16,7 +16,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class RecurrEventDetailComponent implements OnInit, OnDestroy {
   private uiMode: UIMode;
   private routerID: number = -1; // Current object ID in routing
-  private _homeMemStub: Subscription;
   private _destroyed$: ReplaySubject<boolean>;
 
   public currentMode: string;
@@ -34,7 +33,6 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _snackBar: MatSnackBar,
-    private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent constructor...');
@@ -51,61 +49,58 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this._homeMemStub = this._homedefService.curHomeMembers
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((mem: any) => {
-      // Distinguish current mode
-      this._activateRoute.url.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnInit for activateRoute URL: ${x}`);
+    this._homedefService.fetchAllMembersInChosedHome();
+    // Distinguish current mode
+    this._activateRoute.url.subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnInit for activateRoute URL: ${x}`);
+      }
+
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.onInitCreateMode();
+        } else if (x[0].path === 'edit') {
+          this.routerID = +x[1].path;
+
+          this.uiMode = UIMode.Change;
+        } else if (x[0].path === 'display') {
+          this.routerID = +x[1].path;
+
+          this.uiMode = UIMode.Display;
         }
+        this.currentMode = getUIModeString(this.uiMode);
 
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.onInitCreateMode();
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
+        if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+          this.isLoadingData = true;
 
-            this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
+          this._storageService.readRecurEvent(this.routerID)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((y: any) => {
+            this.detailObject = <RecurEvent>y.Header;
+            this.dataSourceSimulateResult.data = y.Events;
 
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
+            this.isLoadingData = false;
+          }, (error: HttpErrorResponse) => {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Error]: Enter RecurrEventDetailComponent ngOnInit, but failed with readRecurEvent: ${error.message}`);
+            }
 
-          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this.isLoadingData = true;
-
-            this._storageService.readRecurEvent(this.routerID)
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe((y: any) => {
-              this.detailObject = <RecurEvent>y.Header;
-              this.dataSourceSimulateResult.data = y.Events;
-
-              this.isLoadingData = false;
-            }, (error: HttpErrorResponse) => {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Enter RecurrEventDetailComponent ngOnInit, but failed with readRecurEvent: ${error.message}`);
-              }
-
-              this._snackBar.open(error.message, undefined, {
-                duration: 2000
-              });      
-            });
-          }
+            this._snackBar.open(error.message, undefined, {
+              duration: 2000
+            });      
+          });
         }
-      }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Enter RecurrEventDetailComponent ngOnInit, but failed with URL: ${error}`);
-        }
+      }
+    }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Enter RecurrEventDetailComponent ngOnInit, but failed with URL: ${error}`);
+      }
 
-        this._snackBar.open(error.toString(), undefined, {
-          duration: 2000
-        });      
-      }, () => {
-        // Empty
-      });
+      this._snackBar.open(error.toString(), undefined, {
+        duration: 2000
+      });      
+    }, () => {
+      // Empty
     });
   }
 
@@ -115,9 +110,6 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
-    if (this._homeMemStub) {
-      this._homeMemStub.unsubscribe();
-    }
   }
 
   public onCancel(): void {

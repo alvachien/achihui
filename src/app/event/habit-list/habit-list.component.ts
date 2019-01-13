@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -15,8 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './habit-list.component.html',
   styleUrls: ['./habit-list.component.scss', ],
 })
-export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
-  private _homeMemStub: Subscription;
+export class HabitListComponent implements OnInit, AfterContentInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['select', 'id', 'name', 'start', 'end', 'assignee'];
@@ -29,7 +28,6 @@ export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
   isLoadingResults: boolean;
 
   constructor(public _homeDefService: HomeDefDetailService,
-    private _authService: AuthService,
     private _storageService: EventStorageService,
     private _snackBar: MatSnackBar,
     private _router: Router) {
@@ -51,19 +49,16 @@ export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering HabitListComponent ngAfterViewInit...`);
+      console.log(`AC_HIH_UI [Debug]: Entering HabitListComponent ngAfterContentInit...`);
     }
 
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this._homeMemStub = this._homeDefService.curHomeMembers
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((x: any) => {
-      this.fetchHabitEvents();
-    });
+    this._homeDefService.fetchAllMembersInChosedHome();
+    this.fetchHabitEvents();
   }
 
   ngOnDestroy(): void {
@@ -72,9 +67,6 @@ export class HabitListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
-    if (this._homeMemStub) {
-      this._homeMemStub.unsubscribe();
-    }
   }
 
   public onCreateHabitEvent(): void {

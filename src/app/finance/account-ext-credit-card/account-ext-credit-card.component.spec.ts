@@ -4,6 +4,8 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { HttpLoaderTestFactory } from '../../../testing';
+import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AccountExtCreditCardComponent } from './account-ext-credit-card.component';
 
@@ -13,7 +15,23 @@ describe('AccountExtCreditCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AccountExtCreditCardComponent ]
+      imports: [
+        UIDependModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: HttpLoaderTestFactory,
+            deps: [HttpClient]
+          }
+        })
+      ],
+      declarations: [ AccountExtCreditCardComponent ],
+      providers: [
+        TranslateService
+      ]
     })
     .compileComponents();
   }));

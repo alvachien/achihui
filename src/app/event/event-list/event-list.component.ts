@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ViewChild, EventEmitter, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, PageEvent,
   MatSnackBar } from '@angular/material';
@@ -15,7 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.scss'],
 })
-export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'complete', 'assignee'];
   dataSource: any = new MatTableDataSource();
@@ -26,9 +26,7 @@ export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
   isLoadingResults: boolean;
   includeCompleted: boolean;
 
-  constructor(public _homeDefService: HomeDefDetailService,
-    private _authService: AuthService,
-    private _storageService: EventStorageService,
+  constructor(private _storageService: EventStorageService,
     private _router: Router,
     private _snackBar: MatSnackBar) {
     this.isLoadingResults = true;
@@ -49,9 +47,9 @@ export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter EventListComponent ngAfterViewInit...`);
+      console.log(`AC_HIH_UI [Debug]: Enter EventListComponent ngAfterContentInit...`);
     }
 
     // If the user changes the sort order, reset back to the first page.

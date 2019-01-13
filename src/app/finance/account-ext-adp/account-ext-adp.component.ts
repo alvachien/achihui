@@ -50,6 +50,7 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit, OnDestroy 
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountExtADPComponent constructor...');
     }
+    this._insobj = new AccountExtraAdvancePayment();
   }
 
   ngOnInit(): void {
@@ -57,7 +58,7 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit, OnDestroy 
       console.log('AC_HIH_UI [Debug]: Entering AccountExtADPComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
-    if (this._insobj.dpTmpDocs.length > 0) {
+    if (this._insobj && this._insobj.dpTmpDocs && this._insobj.dpTmpDocs.length > 0) {
       this.dataSource.data = this._insobj.dpTmpDocs;
     }
   }
