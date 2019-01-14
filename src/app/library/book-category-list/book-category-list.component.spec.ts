@@ -1,12 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpLoaderTestFactory } from '../../../testing';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { BookCategoryListComponent } from './book-category-list.component';
 import { LibraryStorageService } from 'app/services';
@@ -16,38 +18,40 @@ describe('BookCategoryListComponent', () => {
   let fixture: ComponentFixture<BookCategoryListComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
-  let fetchAllBookCategoriesSpy: any;
 
   // let stgserviceStub: Partial<LibraryStorageService>;
 
   beforeEach(async(() => {
     // Create a spy
-    const stgservice = jasmine.createSpyObj('LibraryStorageService', ['fetchAllBookCategories']);
+    const stgservice: any = jasmine.createSpyObj('LibraryStorageService', ['fetchAllBookCategories']);
     // Make the spy return a synchronous Observable with the test data
-    fetchAllBookCategoriesSpy = stgservice.fetchAllBookCategories.and.returnValue( of([]) );
-
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const fetchAllBookCategoriesSpy: any = stgservice.fetchAllBookCategories.and.returnValue( of([]) );
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
         RouterTestingModule,
         HttpClientTestingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
-      declarations: [ BookCategoryListComponent ],
+      declarations: [
+        BookCategoryListComponent,
+      ],
       providers: [
         TranslateService,
-        { provide: LibraryStorageService, useValue: fetchAllBookCategoriesSpy },
-        { provide: Router, useValue: routerSpy }
-        // {provide: LibraryStorageService, useValue: stgserviceStub }
-      ]
+        { provide: LibraryStorageService, useValue: stgservice },
+        { provide: Router, useValue: routerSpy },
+      ],
     })
     .compileComponents();
   }));
@@ -57,7 +61,7 @@ describe('BookCategoryListComponent', () => {
     component = fixture.componentInstance;
     translate = TestBed.get(TranslateService);
     http = TestBed.get(HttpTestingController);
-    
+
     fixture.detectChanges();
   });
 

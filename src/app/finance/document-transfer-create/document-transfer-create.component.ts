@@ -70,9 +70,6 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
 
   constructor(public _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
-    private _activateRoute: ActivatedRoute,
-    private _cdr: ChangeDetectorRef,
-    private _authService: AuthService,
     private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _homeService: HomeDefDetailService,

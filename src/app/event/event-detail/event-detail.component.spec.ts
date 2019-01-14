@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { of } from 'rxjs';
@@ -23,13 +23,13 @@ describe('EventDetailComponent', () => {
 
   beforeEach(async(() => {
     const stgserviceStub: Partial<EventStorageService> = {};
-    const homeService = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
-    const chosedHomeSpy = homeService.ChosedHome.and.returnValue( {
-      _id: 1
+    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
+    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+      _id: 1,
     });
-    const chosedHomeMemSpy = homeService.fetchAllMembersInChosedHome.and.returnValue();
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})]);
+    const chosedHomeMemSpy: any = homeService.fetchAllMembersInChosedHome.and.returnValue();
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})]);
 
     /*     const tree: UrlTree = router.parseUrl('/team;id=33');
       *     const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
@@ -48,9 +48,9 @@ describe('EventDetailComponent', () => {
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
       declarations: [ EventDetailComponent ],
       providers: [
@@ -61,8 +61,8 @@ describe('EventDetailComponent', () => {
         { provide: EventStorageService, useValue: stgserviceStub },
         { provide: Router, useValue: routerSpy },
         { provide: HomeDefDetailService, useValue: homeService },
-        { provide: ActivatedRoute, useValue: activatedRouteStub }
-      ]
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
+      ],
     })
     .compileComponents();
   }));

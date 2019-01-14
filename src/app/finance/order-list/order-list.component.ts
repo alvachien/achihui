@@ -125,16 +125,18 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _buildDataSource(): void {
     let mtoday: moment.Moment = moment();
     let mtoday2: moment.Moment = moment(mtoday.format(momentDateFormat), momentDateFormat);
-    this.dataSource.data = this._storageService.Orders.filter((value: Order) => {
-      if (this.includeInvalid !== true) {
-        if (value._validFrom.isBefore(mtoday2) && value._validTo.isAfter(mtoday2)) {
-          return true;
-        } else {
-          return false;
+    if (this._storageService.Orders) {
+      this.dataSource.data = this._storageService.Orders.filter((value: Order) => {
+        if (this.includeInvalid !== true) {
+          if (value._validFrom.isBefore(mtoday2) && value._validTo.isAfter(mtoday2)) {
+            return true;
+          } else {
+            return false;
+          }
         }
-      }
 
-      return true;
-    });
+        return true;
+      });
+    }
   }
 }

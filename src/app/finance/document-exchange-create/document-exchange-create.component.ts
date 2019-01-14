@@ -89,7 +89,6 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
-    private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,

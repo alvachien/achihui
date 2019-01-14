@@ -6,8 +6,8 @@ describe('OperatorFilterPipe', () => {
   it('1. create an instance', () => {
     expect(pipe).toBeTruthy();
   });
-  
+
   it('2. Test the empty array', () => {
-    expect(pipe.transform([])).toBe([]);
+    expect(pipe.transform([])).toEqual([]);
   });
 });

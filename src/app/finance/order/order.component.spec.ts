@@ -9,7 +9,7 @@ describe('OrderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [ RouterTestingModule ],
       declarations: [ OrderComponent ],
     })
     .compileComponents();

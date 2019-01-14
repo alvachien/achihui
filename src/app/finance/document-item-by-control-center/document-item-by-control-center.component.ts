@@ -48,10 +48,7 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private _dialog: MatDialog,
-    private _snackbar: MatSnackBar,
-    private _router: Router,
-    private _activateRoute: ActivatedRoute,
+  constructor(
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,

@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpLoaderTestFactory } from '../../../testing';
 
 import { CategoryListComponent } from './category-list.component';
@@ -24,8 +24,8 @@ describe('EventCategoryListComponent', () => {
 
     stgserviceStub = {};
 
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
@@ -34,18 +34,18 @@ describe('EventCategoryListComponent', () => {
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
       declarations: [
-        CategoryListComponent
+        CategoryListComponent,
       ],
       providers: [
         TranslateService,
         { provide: EventStorageService, useValue: stgserviceStub },
-        { provide: Router, useValue: routerSpy }
-      ]
+        { provide: Router, useValue: routerSpy },
+      ],
     })
     .compileComponents();
   }));

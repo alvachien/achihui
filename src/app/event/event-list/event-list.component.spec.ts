@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
@@ -19,9 +19,9 @@ describe('EventListComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
-    const storageService = jasmine.createSpyObj('EventStorageService', ['fetchAllEvents']);
-    const fetchAllEventsSpy = storageService.fetchAllEvents.and.returnValue(of([]));
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const storageService: any = jasmine.createSpyObj('EventStorageService', ['fetchAllEvents']);
+    const fetchAllEventsSpy: any = storageService.fetchAllEvents.and.returnValue(of([]));
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [
@@ -33,16 +33,16 @@ describe('EventListComponent', () => {
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
       declarations: [ EventListComponent ],
       providers: [
         TranslateService,
         { provide: EventStorageService, useValue: storageService },
         { provide: Router, useValue: routerSpy },
-      ]
+      ],
     })
     .compileComponents();
   }));

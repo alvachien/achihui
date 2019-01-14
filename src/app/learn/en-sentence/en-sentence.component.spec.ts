@@ -10,7 +10,9 @@ describe('EnSentenceComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ EnSentenceComponent ]
+      declarations: [
+        EnSentenceComponent,
+      ],
     })
     .compileComponents();
   }));

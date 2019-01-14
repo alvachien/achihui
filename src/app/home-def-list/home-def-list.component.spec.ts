@@ -1,15 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HttpLoaderTestFactory } from '../../testing';
 import { HomeDefListComponent } from './home-def-list.component';
+import { HomeDefDetailService } from '../services';
 
 describe('HomeDefListComponent', () => {
   let component: HomeDefListComponent;
@@ -18,20 +19,35 @@ describe('HomeDefListComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
+    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchHomeMembers']);
+    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+      _id: 1,
+      BaseCurrency: 'CNY',
+    });
+    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
+        FormsModule,
+        ReactiveFormsModule,
         HttpClientTestingModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
       declarations: [ HomeDefListComponent ],
-      providers: [TranslateService]
+      providers: [
+        TranslateService,
+        { provide: HomeDefDetailService, useValue: homeService },
+        { provide: Router, useValue: routerSpy },
+      ],
     })
     .compileComponents();
   }));
@@ -45,7 +61,6 @@ describe('HomeDefListComponent', () => {
   });
 
   it('should be created', () => {
-    // expect(component).toBeTruthy();
-    expect(component).toBeFalsy();
+    expect(component).toBeTruthy();
   });
 });

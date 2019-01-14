@@ -1,42 +1,11 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatTable } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, of, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson } from '../model';
 import { HomeDefDetailService } from '../services';
-
-/**
- * Data source of Home def.
- */
-export class HomeDefDataSource extends DataSource<any> {
-  constructor(private _homedefService: HomeDefDetailService,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<HomeDef[]> {
-    const displayDataChanges: any[] = [
-      this._homedefService.listDataChange,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._homedefService.HomeDefs.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
 
 @Component({
   selector: 'hih-home-def-list',
@@ -47,7 +16,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'name', 'host', 'currency', 'details'];
-  dataSource: HomeDefDataSource | undefined;
+  dataSource: MatTableDataSource<HomeDef> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isLoadingResults: boolean;
 
@@ -68,7 +37,6 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
-    this.dataSource = new HomeDefDataSource(this._homedefService, this.paginator);
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {

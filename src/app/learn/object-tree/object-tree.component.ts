@@ -13,7 +13,7 @@ import { LearnCategoryTreeNode, LearnCategoryTreeFlatNode } from '../category-tr
 @Component({
   selector: 'app-object-tree',
   templateUrl: './object-tree.component.html',
-  styleUrls: ['./object-tree.component.scss']
+  styleUrls: ['./object-tree.component.scss'],
 })
 export class ObjectTreeComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
@@ -23,8 +23,10 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
   treeFlattener: MatTreeFlattener<LearnCategoryTreeNode, LearnCategoryTreeFlatNode>;
   dataSource: MatTreeFlatDataSource<LearnCategoryTreeNode, LearnCategoryTreeFlatNode>;
 
-  constructor(public _storageService: LearnStorageService,
-    public _uiStatusService: UIStatusService) {
+  constructor(public _storageService: LearnStorageService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ObjectTreeComponent constructor...');
+    }
 
     this.isLoadingResults = false;
 
@@ -35,11 +37,17 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ObjectTreeComponent ngOnInit...');
+    }
+
     this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-      let nodes: LearnCategoryTreeNode[] = this._buildCategoryTree(x, 1);
-      this.dataSource.data = nodes;
+      if (x) {
+        let nodes: LearnCategoryTreeNode[] = this._buildCategoryTree(x, 1);
+        this.dataSource.data = nodes;
+      }
     }, (error: any) => {
       // Do nothing
     }, () => {

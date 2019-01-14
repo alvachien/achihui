@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpLoaderTestFactory } from '../../../testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule, ControlContainer, NgForm } from '@angular/forms';
@@ -19,7 +19,7 @@ describe('AccountExtAssetExComponent', () => {
 
   beforeEach(async(() => {
     // Blocked by the error: No Provider of ControlContainer
-    // 
+    //
 
     // const storageServiceStub: Partial<FinanceStorageService> = {
     //   AssetCategories: []

@@ -10,7 +10,7 @@ describe('HabitComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ HabitComponent ]
+      declarations: [ HabitComponent ],
     })
     .compileComponents();
   }));

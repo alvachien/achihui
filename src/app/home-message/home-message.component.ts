@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ViewChild, Inject, OnDestroy } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../environments/environment';
 import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, HomeMsg, HomeMember } from '../model';
@@ -13,7 +13,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
     './home-message.component.scss',
   ],
 })
-export class HomeMessageComponent implements OnInit, AfterViewInit, OnDestroy {
+export class HomeMessageComponent implements OnInit, AfterContentInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'userfrom', 'userto', 'title', 'senddate'];
   dataSource: MatTableDataSource<HomeMsg>;
@@ -45,16 +45,15 @@ export class HomeMessageComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
+    this.fetchMessages();
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent ngAfterViewInit...');
+      console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent AfterContentInit...');
     }
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-
-    this.fetchMessages();
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {

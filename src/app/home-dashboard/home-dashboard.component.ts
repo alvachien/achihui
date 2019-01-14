@@ -42,11 +42,10 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   datFinOutgoingChartOption: Observable<EChartOption>;
   eventChartOption: Observable<EChartOption>;
 
-  constructor(private _authService: AuthService,
+  constructor(
     public _homeDefService: HomeDefDetailService,
     private _lrnstorageService: LearnStorageService,
     private _finstorageService: FinanceStorageService,
-    private _currService: FinCurrencyService,
     public _uistatusService: UIStatusService,
     private media: ObservableMedia,
     private _themeStorage: ThemeStorage,

@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterContentInit, OnDestroy } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -52,7 +52,7 @@ export class TmpDocStillOpenDataSource extends DataSource<any> {
   templateUrl: './document-item-overview.component.html',
   styleUrls: ['./document-item-overview.component.scss'],
 })
-export class DocumentItemOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   private labelIncome: string;
   private labelOutgo: string;
@@ -69,10 +69,9 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit, OnD
 
   chartTheme: string;
 
-  constructor(private _dialog: MatDialog,
+  constructor(
     private _snackbar: MatSnackBar,
     private _router: Router,
-    private _activateRoute: ActivatedRoute,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
@@ -112,7 +111,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit, OnD
         this.chartTheme = 'light';
       }
     });
-    
+
     this.dataSourceTmpDoc = new TmpDocStillOpenDataSource(this, this.paginatorTmpDoc);
     this._homedefService.fetchHomeMembers(this._homedefService.ChosedHome.ID);
 
@@ -126,9 +125,9 @@ export class DocumentItemOverviewComponent implements OnInit, AfterViewInit, OnD
     });
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngAfterViewInit...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngAfterContentInit...');
     }
 
     // Weekly

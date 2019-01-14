@@ -63,6 +63,9 @@ export class ConfigComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ConfigComponent ngAfterViewInit...');
     }
+    this.dataSourceAcntCtgy.paginator = this.paginatorAcntCtgy;
+    this.dataSourceDocType.paginator = this.paginatorDocType;
+    this.dataSourceAsstCtgy.paginator = this.paginatorAstCtgy;
   }
 
   ngOnDestroy(): void {

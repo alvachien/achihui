@@ -165,9 +165,11 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   }
 
   canSubmit(): boolean {
-    this.ctrlAccount.generateAccountInfoForSave();
-    if (this.ctrlAccount.extObject.dpTmpDocs.length <= 0) {
-      return false;
+    if (this.ctrlAccount) {
+      this.ctrlAccount.generateAccountInfoForSave();
+      if (this.ctrlAccount.extObject.dpTmpDocs.length <= 0) {
+        return false;
+      }
     }
 
     return true;

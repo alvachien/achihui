@@ -86,7 +86,7 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
-    private _router: Router) {
+    ) {
 
     this.isLoadingResults = false;
     this.dataSource.sortingDataAccessor = (data: TranType, property: string) => {

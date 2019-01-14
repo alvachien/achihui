@@ -641,39 +641,43 @@ export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg:
   ctgyFilter?: HIHFinance.IAccountCategoryFilter): UIAccountForSelection[] {
   let arrst: UIAccountForSelection[] = [];
 
-  for (let acnt of acnts) {
-    let rst: UIAccountForSelection = new UIAccountForSelection();
-    rst.CategoryId = acnt.CategoryId;
-    rst.Id = acnt.Id;
-    rst.Name = acnt.Name;
-    rst.Status = acnt.Status;
+  if (acnts && acnts.length > 0) {
+    for (let acnt of acnts) {
+      let rst: UIAccountForSelection = new UIAccountForSelection();
+      rst.CategoryId = acnt.CategoryId;
+      rst.Id = acnt.Id;
+      rst.Name = acnt.Name;
+      rst.Status = acnt.Status;
 
-    // Skip some categories
-    if (ctgyFilter !== undefined
-      && ctgyFilter.skipADP === true
-      && acnt.CategoryId === hih.financeAccountCategoryAdvancePayment) {
-      continue;
-    }
-    if (ctgyFilter !== undefined
-      && ctgyFilter.skipLoan === true
-      && (acnt.CategoryId === hih.financeAccountCategoryBorrowFrom
-      || acnt.CategoryId === hih.financeAccountCategoryLendTo)) {
-      continue;
-    }
-    if (ctgyFilter !== undefined
-      && ctgyFilter.skipAsset === true
-      && acnt.CategoryId === hih.financeAccountCategoryAsset) {
-      continue;
-    }
-
-    for (let ctgy of acntctg) {
-      if (ctgy.ID === rst.CategoryId) {
-        rst.CategoryName = ctgy.Name;
-        rst.AssetFlag = ctgy.AssetFlag;
+      // Skip some categories
+      if (ctgyFilter !== undefined
+        && ctgyFilter.skipADP === true
+        && acnt.CategoryId === hih.financeAccountCategoryAdvancePayment) {
+        continue;
       }
-    }
+      if (ctgyFilter !== undefined
+        && ctgyFilter.skipLoan === true
+        && (acnt.CategoryId === hih.financeAccountCategoryBorrowFrom
+        || acnt.CategoryId === hih.financeAccountCategoryLendTo)) {
+        continue;
+      }
+      if (ctgyFilter !== undefined
+        && ctgyFilter.skipAsset === true
+        && acnt.CategoryId === hih.financeAccountCategoryAsset) {
+        continue;
+      }
 
-    arrst.push(rst);
+      if (acntctg && acntctg.length > 0) {
+        for (let ctgy of acntctg) {
+          if (ctgy.ID === rst.CategoryId) {
+            rst.CategoryName = ctgy.Name;
+            rst.AssetFlag = ctgy.AssetFlag;
+          }
+        }
+      }
+
+      arrst.push(rst);
+    }
   }
 
   return arrst;
@@ -697,21 +701,23 @@ export class UIOrderForSelection {
 export function BuildupOrderForSelection(orders: HIHFinance.Order[], skipinv?: boolean): UIOrderForSelection[] {
   let arrst: UIOrderForSelection[] = [];
 
-  for (let ord of orders) {
-    let rst: UIOrderForSelection = new UIOrderForSelection();
-    rst.Id = ord.Id;
-    rst.Name = ord.Name;
-    rst._validFrom = ord._validFrom.clone();
-    rst._validTo = ord._validTo.clone();
+  if (orders && orders.length > 0) {
+    for (let ord of orders) {
+      let rst: UIOrderForSelection = new UIOrderForSelection();
+      rst.Id = ord.Id;
+      rst.Name = ord.Name;
+      rst._validFrom = ord._validFrom.clone();
+      rst._validTo = ord._validTo.clone();
 
-    // Skip some categories
-    if (skipinv) {
-      if (rst._validFrom > moment() || rst._validTo < moment()) {
-        continue;
+      // Skip some categories
+      if (skipinv) {
+        if (rst._validFrom > moment() || rst._validTo < moment()) {
+          continue;
+        }
       }
-    }
 
-    arrst.push(rst);
+      arrst.push(rst);
+    }
   }
 
   return arrst;

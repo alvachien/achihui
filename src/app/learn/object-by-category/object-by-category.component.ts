@@ -45,13 +45,7 @@ export class ObjectByCategoryComponent implements OnInit, AfterViewInit, OnDestr
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private _dialog: MatDialog,
-    private _snackbar: MatSnackBar,
-    private _router: Router,
-    private _activateRoute: ActivatedRoute,
-    public _homedefService: HomeDefDetailService,
-    public _storageService: LearnStorageService,
-    public _uiStatusService: UIStatusService) {
+  constructor(public _storageService: LearnStorageService) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent constructor...');
       }
@@ -61,7 +55,7 @@ export class ObjectByCategoryComponent implements OnInit, AfterViewInit, OnDestr
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent ngOnInit...');
     }
-    
+
     this._destroyed$ = new ReplaySubject(1);
    }
 

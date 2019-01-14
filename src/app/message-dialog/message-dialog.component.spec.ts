@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { HttpLoaderTestFactory } from '../../testing';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { MatDialogModule } from '@angular/material';
 
+import { HttpLoaderTestFactory } from '../../testing';
 import { MessageDialogComponent } from './message-dialog.component';
 
 describe('MessageDialogComponent', () => {
@@ -18,16 +19,21 @@ describe('MessageDialogComponent', () => {
       imports: [
         UIDependModule,
         HttpClientTestingModule,
+        MatDialogModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
-      declarations: [ MessageDialogComponent ],
-      providers: [TranslateService]
+      declarations: [
+        MessageDialogComponent,
+      ],
+      providers: [
+        TranslateService,
+      ],
     })
     .compileComponents();
   }));

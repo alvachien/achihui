@@ -67,8 +67,10 @@ export class TranTypeTreeComponent implements OnInit, OnDestroy {
         console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnInit, fetchAllTranTypes...');
       }
 
-      let nodes: TranTypeTreeNode[] = this._buildTypeTree(x, 1);
-      this.dataSource.data = nodes;
+      if (x) {
+        let nodes: TranTypeTreeNode[] = this._buildTypeTree(x, 1);
+        this.dataSource.data = nodes;
+      }
     }, (error: any) => {
       // Do nothing
     }, () => {

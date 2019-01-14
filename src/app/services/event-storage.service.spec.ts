@@ -1,11 +1,18 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { EventStorageService } from './event-storage.service';
 
 describe('EventStorageService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [EventStorageService]
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        EventStorageService,
+      ],
     });
   });
 

@@ -6,7 +6,7 @@ import { FinanceStorageService, AuthService, HomeDefDetailService } from './';
 
 describe('FinanceStorageService', () => {
   let httpClient: HttpClient;
-  let httpTestingController: HttpTestingController;  
+  let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
     // const spy = jasmine.createSpyObj('AuthService', ['authSubject']);
@@ -14,11 +14,13 @@ describe('FinanceStorageService', () => {
     const homeServiceStub: Partial<HomeDefDetailService> = {};
 
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
+      imports: [
+        HttpClientTestingModule,
+      ],
       providers: [
         FinanceStorageService,
         { providers: AuthService, useValue: authServiceStub },
-        { providers: HomeDefDetailService, useValue: homeServiceStub }
+        { providers: HomeDefDetailService, useValue: homeServiceStub },
       ],
     });
 

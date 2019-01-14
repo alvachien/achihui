@@ -10,7 +10,7 @@ describe('MovieGenreComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ MovieGenreComponent ]
+      declarations: [ MovieGenreComponent ],
     })
     .compileComponents();
   }));

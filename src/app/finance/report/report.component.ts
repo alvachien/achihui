@@ -1,6 +1,5 @@
-import { Component, OnInit, AfterViewInit, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
+import { Component, OnInit, AfterContentInit, AfterViewInit, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource, MatTable, } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,102 +15,12 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStat
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ThemeStorage } from '../../theme-picker/theme-storage/theme-storage';
 
-/**
- * Data source of BS
- */
-export class ReportBSDataSource extends DataSource<any> {
-  constructor(private _parentComponent: ReportComponent,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<BalanceSheetReport[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.eventReportBS,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._parentComponent.ReportBS.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
-/**
- * Data source of CC
- */
-export class ReportCCDataSource extends DataSource<any> {
-  constructor(private _parentComponent: ReportComponent,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<ControlCenterReport[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.eventReportCC,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._parentComponent.ReportCC.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
-/**
- * Data source of Order
- */
-export class ReportOrderDataSource extends DataSource<any> {
-  constructor(private _parentComponent: ReportComponent,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<OrderReport[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.eventReportOrder,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._parentComponent.ReportOrder.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
 @Component({
   selector: 'hih-finance-report',
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.scss'],
 })
-export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit, OnDestroy {
   private ngUnsubscribe$: ReplaySubject<boolean>;
 
   // Account
@@ -130,16 +39,12 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   // @ViewChild('chartAcntCtgy') chartAcntCtgy: ElementRef;
   acntCtgyChartOption: Observable<EChartOption>;
   displayedBSColumns: string[] = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
-  dataSourceBS: ReportBSDataSource | undefined;
-  ReportBS: BalanceSheetReport[] = [];
-  eventReportBS: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  dataSourceBS: MatTableDataSource<BalanceSheetReport> = new MatTableDataSource();
   @ViewChild('paginatorBS') paginatorBS: MatPaginator;
 
   // CC
   displayedCCColumns: string[] = ['ControlCenter', 'Debit', 'Credit', 'Balance'];
-  dataSourceCC: ReportCCDataSource | undefined;
-  ReportCC: ControlCenterReport[] = [];
-  eventReportCC: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  dataSourceCC: MatTableDataSource<ControlCenterReport> = new MatTableDataSource();
   @ViewChild('paginatorCC') paginatorCC: MatPaginator;
   ccIncomingChartOption: Observable<EChartOption>;
   ccOutgoingChartOption: Observable<EChartOption>;
@@ -147,9 +52,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
   // Order
   includeInvalid: boolean = false;
   displayedOrderColumns: string[] = ['Order', 'Debit', 'Credit', 'Balance'];
-  dataSourceOrder: ReportOrderDataSource | undefined;
-  ReportOrder: OrderReport[] = [];
-  eventReportOrder: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  dataSourceOrder: MatTableDataSource<OrderReport> = new MatTableDataSource();
   @ViewChild('paginatorOrder') paginatorOrder: MatPaginator;
   orderIncomingChartOption: Observable<EChartOption>;
   orderOutgoingChartOption: Observable<EChartOption>;
@@ -166,13 +69,10 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
   chartTheme: string;
 
-  constructor(private _dialog: MatDialog,
-    private _snackbar: MatSnackBar,
+  constructor(
     private _tranService: TranslateService,
-    private _homedefService: HomeDefDetailService,
     private _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
-    private _currService: FinCurrencyService,
     private _themeStorage: ThemeStorage,
     private media: ObservableMedia) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -216,10 +116,6 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    this.dataSourceBS = new ReportBSDataSource(this, this.paginatorBS);
-    this.dataSourceCC = new ReportCCDataSource(this, this.paginatorCC);
-    this.dataSourceOrder = new ReportOrderDataSource(this, this.paginatorOrder);
-
     this.media.asObservable()
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((change: MediaChange) => {
@@ -233,26 +129,37 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngAfterViewInit...');
     }
+    this.dataSourceBS.paginator = this.paginatorBS;
+    this.dataSourceCC.paginator = this.paginatorCC;
+    this.dataSourceOrder.paginator = this.paginatorOrder;
+  }
+
+  ngAfterContentInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngAfterContentInit...');
+    }
 
     this._storageService.fetchAllAccountCategories().pipe(takeUntil(this.ngUnsubscribe$)).subscribe((arctgy: AccountCategory[]) => {
-      let arstrings: string[] = [];
-      for (let lab of arctgy) {
-        arstrings.push(lab.Name);
-        this.arAccountCtgy.push(lab);
-      }
-
-      this._tranService.get(arstrings).pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: any) => {
-        for (let attr in x) {
-          for (let lab of this.arAccountCtgy) {
-            if (lab.Name === attr) {
-              lab.DisplayName = x[attr];
-            }
-          }
+      if (arctgy && arctgy instanceof Array && arctgy.length > 0) {
+        let arstrings: string[] = [];
+        for (let lab of arctgy) {
+          arstrings.push(lab.Name);
+          this.arAccountCtgy.push(lab);
         }
 
-        // Fetch data
-        this._fetchData();
-      });
+        this._tranService.get(arstrings).pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: any) => {
+          for (let attr in x) {
+            for (let lab of this.arAccountCtgy) {
+              if (lab.Name === attr) {
+                lab.DisplayName = x[attr];
+              }
+            }
+          }
+
+          // Fetch data
+          this._fetchData();
+        });
+      }
     });
   }
 
@@ -372,7 +279,6 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
   private refreshOrderReportData(data: any): void {
-    this.ReportOrder = [];
     for (let bs of data) {
       let rbs: OrderReport = new OrderReport();
       rbs.onSetData(bs);
@@ -391,13 +297,13 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       }
 
-      this.ReportOrder.push(rbs);
+      // this.ReportOrder.push(rbs);
     }
   }
   private refreshControlCenterReportData(data: any): void {
     this.dataCCDebit = [];
     this.dataCCCredit = [];
-    this.ReportCC = [];
+    // this.ReportCC = [];
 
     for (let bs of data) {
       let rbs: ControlCenterReport = new ControlCenterReport();
@@ -417,11 +323,11 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       }
 
-      this.ReportCC.push(rbs);
+      // this.ReportCC.push(rbs);
     }
   }
   private refreshBalanceSheetReportData(data: any): void {
-    this.ReportBS = [];
+    // this.ReportBS = [];
     this.dataBSCategoryDebit = [];
     this.dataBSCategoryCredit = [];
     this.datAccountAsset = [];
@@ -513,7 +419,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
 
-      this.ReportBS.push(rbs);
+      // this.ReportBS.push(rbs);
     }
   }
 
@@ -574,11 +480,6 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
       this._buildCCOutChart();
       this._buildOrderInChart();
       this._buildOrderOutChart();
-
-      // Trigger the events
-      this.eventReportBS.emit();
-      this.eventReportCC.emit();
-      this.eventReportOrder.emit();
     });
   }
   private _buildAccountInChart(): void {
@@ -709,7 +610,7 @@ export class ReportComponent implements OnInit, AfterViewInit, OnDestroy {
             animationDelay: function (idx: any): number {
               return Math.random() * 200;
             },
-          }
+          },
         ];
 
         return option;

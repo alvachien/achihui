@@ -10,7 +10,7 @@ describe('MovieComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ MovieComponent ]
+      declarations: [ MovieComponent ],
     })
     .compileComponents();
   }));

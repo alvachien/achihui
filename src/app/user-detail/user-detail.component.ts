@@ -16,8 +16,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
   usrObject: UserAuthInfo;
 
-  constructor(private _authService: AuthService,
-    private _homedefService: HomeDefDetailService) {
+  constructor(private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering UserDetailComponent constructor...');
     }

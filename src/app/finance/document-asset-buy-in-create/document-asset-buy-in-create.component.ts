@@ -40,7 +40,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
 
   get BaseCurrency(): string {
-    return this._homedefService.curHomeSelected.value.BaseCurrency;
+    return this._homedefService.ChosedHome.BaseCurrency;
   }
   get BuyinAmount(): number {
     let amtctrl: any = this.firstFormGroup.get('amountControl');

@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,7 +11,7 @@ import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPip
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
   } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
-  
+
 import { HttpLoaderTestFactory, RouterLinkDirectiveStub } from '../../../testing';
 import { AccountExtLoanComponent } from './account-ext-loan.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
@@ -23,12 +23,12 @@ describe('AccountExtLoanComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
-    const stroageService = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
-    const fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    const fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    const homeService = jasmine.createSpyObj('HomeDefService', ['ChosedHome']);
-    const chosedHomeSpy = homeService.ChosedHome.and.returnValue( {
-      _id: 1
+    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
+    const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
+    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
+    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome']);
+    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+      _id: 1,
     });
     const uiServiceStub: Partial<UIStatusService> = {};
 
@@ -42,11 +42,11 @@ describe('AccountExtLoanComponent', () => {
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
-      declarations: [ 
+      declarations: [
         UIAccountStatusFilterPipe,
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
@@ -62,7 +62,7 @@ describe('AccountExtLoanComponent', () => {
         { provide: FinanceStorageService, useValue: stroageService },
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: UIStatusService, useValue: uiServiceStub },
-      ]
+      ],
     })
     .compileComponents();
   }));

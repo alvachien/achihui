@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
-  FinCurrencyService, UIStatusService,
-} from '../services';
+import { AuthService, HomeDefDetailService } from '../services';
 import { Router } from '@angular/router';
 
 @Component({
@@ -20,7 +18,6 @@ export class PageInitialComponent implements OnInit {
 
   constructor(private _authService: AuthService,
     public _homeDefService: HomeDefDetailService,
-    public _uistatusService: UIStatusService,
     private _router: Router) {
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterContentInit, EventEmitter, OnDestroy } from '@angular/core';
 import { MatPaginator, MatDialog, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, merge, of, ReplaySubject } from 'rxjs';
@@ -16,7 +16,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   templateUrl: './document-list.component.html',
   styleUrls: ['./document-list.component.scss'],
 })
-export class DocumentListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DocumentListComponent implements OnInit, AfterContentInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   private _docScopeEvent: EventEmitter<any> = new EventEmitter<any>();
 
@@ -49,9 +49,9 @@ export class DocumentListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isLoadingResults = true;
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngAfterViewInit...');
+      console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngAfterContentInit...');
     }
 
     merge(this.paginator.page, this._docScopeEvent)
@@ -63,9 +63,19 @@ export class DocumentListComponent implements OnInit, AfterViewInit, OnDestroy {
           return this._storageService!.fetchAllDocuments(bgn, end, this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize);
         }),
         map((revdata: any) => {
-          this.totalDocumentCount = +revdata.totalCount;
+          if (revdata) {
+            if (revdata.totalCount) {
+              this.totalDocumentCount = +revdata.totalCount;
+            } else {
+              this.totalDocumentCount = 0;
+            }
 
-          return revdata.contentList;
+            if (revdata.contentList) {
+              return revdata.contentList;
+            }
+          }
+
+          return [];
         }),
         catchError((error: any) => {
           const dlginfo: MessageDialogInfo = {

@@ -41,10 +41,7 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
-      <mat-paginator #paginator 
-        [length]="_storageService.BookCategories.length" 
-        [pageIndex]="0" 
-        [pageSize]="10" 
+      <mat-paginator #paginator
         [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
     </div>

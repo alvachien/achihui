@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AboutComponent } from './about.component';
 import { environment } from '../../environments/environment';
 import { HttpLoaderTestFactory } from '../../testing';
@@ -22,14 +22,14 @@ describe('AboutComponent', () => {
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
       declarations: [
-        AboutComponent
+        AboutComponent,
       ],
-      providers: [TranslateService]
+      providers: [TranslateService],
     })
     .compileComponents();
   }));
@@ -50,15 +50,15 @@ describe('AboutComponent', () => {
   it('2. check current version', () => {
     // spyOn(translate, 'getBrowserLang').and.returnValue('en');
 
-    const compiled = fixture.debugElement.nativeElement;
-    const p = compiled.querySelector('#curversion');
+    const compiled: any = fixture.debugElement.nativeElement;
+    const p: any = compiled.querySelector('#curversion');
     expect(p.textContent).toEqual('Nav.Version: ' + environment.CurrentVersion);
 
     translate.use('en');
     http.expectOne('/assets/i18n/en.json').flush({
       'Nav': {
-        'Version': 'Version'
-      }
+        'Version': 'Version',
+      },
     });
     http.verify();
 

@@ -10,7 +10,9 @@ describe('EnWordComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ EnWordComponent ]
+      declarations: [
+        EnWordComponent,
+      ],
     })
     .compileComponents();
   }));

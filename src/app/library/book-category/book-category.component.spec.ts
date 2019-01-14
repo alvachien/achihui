@@ -10,7 +10,7 @@ describe('BookCategoryComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ BookCategoryComponent ]
+      declarations: [ BookCategoryComponent ],
     })
     .compileComponents();
   }));

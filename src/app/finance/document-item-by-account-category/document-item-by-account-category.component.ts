@@ -41,7 +41,7 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
 
   @Input()
   set selectedAccounts(ids: number[]) {
-    if (ids.length <= 0) {
+    if (!ids) {
       return; // Just return
     }
 
@@ -50,10 +50,7 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private _dialog: MatDialog,
-    private _snackbar: MatSnackBar,
-    private _router: Router,
-    private _activateRoute: ActivatedRoute,
+  constructor(
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
@@ -94,7 +91,7 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
         takeUntil(this._destroyed$),
         startWith({}),
         switchMap(() => {
-          if (this.subjAccountIDS.value === undefined || this.subjAccountIDS.value.length <= 0) {
+          if (!this.subjAccountIDS.value) {
             return observableOf([]);
           }
 
@@ -115,10 +112,10 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
           this.resultsLength = 0;
 
           let ardi: any[] = [];
-          if (data && data instanceof Array && data.length > 0) {
+          if (!data) {
             for (let val of data) {
               this.resultsLength += val.totalCount;
-              if (val && val.contentList instanceof Array && val.contentList.length > 0) {
+              if (val && val.contentList && val.contentList instanceof Array && val.contentList.length > 0) {
                 for (let val2 of val.contentList) {
                   let di: DocumentItemWithBalance = new DocumentItemWithBalance();
                   di.onSetData(val2);

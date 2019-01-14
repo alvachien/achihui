@@ -48,10 +48,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private _dialog: MatDialog,
-    private _snackbar: MatSnackBar,
-    private _router: Router,
-    private _activateRoute: ActivatedRoute,
+  constructor(
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
@@ -104,7 +101,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
           this.resultsLength = data.totalCount;
 
           let ardi: any[] = [];
-          if (data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
+          if (data && data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
             for (let di of data.contentList) {
               let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
               docitem.onSetData(di);

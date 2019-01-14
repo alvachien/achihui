@@ -10,7 +10,7 @@ describe('GeneralEventComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ RouterTestingModule ],
-      declarations: [ GeneralEventComponent ]
+      declarations: [ GeneralEventComponent ],
     })
     .compileComponents();
   }));

@@ -10,7 +10,9 @@ describe('HistoryComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ HistoryComponent ],
+      declarations: [
+        HistoryComponent,
+      ],
     })
     .compileComponents();
   }));

@@ -32,7 +32,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
 
   get baseCurrency(): string {
-    return this._homedefService.curHomeSelected.value.BaseCurrency;
+    return this._homedefService.ChosedHome.BaseCurrency;
   }
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;

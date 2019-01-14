@@ -52,11 +52,11 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     this._fincurrService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Ensure the GET is fired
     });
-    this._homedefService.listDataChange.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering listDataChange of HomeDefDetailComponent... ${x}`);
-      }
-    });
+    // this._homedefService.listDataChange.subscribe((x: any) => {
+    //   if (environment.LoggingLevel >= LogLevel.Debug) {
+    //     console.log(`AC_HIH_UI [Debug]: Entering listDataChange of HomeDefDetailComponent... ${x}`);
+    //   }
+    // });
 
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {

@@ -32,9 +32,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
   resultsLength: number;
   public subjFilters: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
-  constructor(private _http: HttpClient,
-    private _authService: AuthService,
-    private _storageService: FinanceStorageService) {
+  constructor(private _storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent constructor...');
     }
@@ -120,9 +118,14 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
         map((data: any) => {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
-          this.resultsLength = data.totalCount;
+          if (data && data.totalCount) {
+            this.resultsLength = data.totalCount;
 
-          return data.items;
+            return data.items;
+          } else {
+            this.resultsLength = 0;
+            return [];
+          }
         }),
         catchError(() => {
           this.isLoadingResults = false;

@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed, } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
@@ -23,12 +23,12 @@ describe('AccountExtADPComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const stroageService = jasmine.createSpyObj('FinanceStorageService', ['calcADPTmpDocs']);
-    const calcADPTmpDocsSpy = stroageService.calcADPTmpDocs.and.returnValue(of([]));
-    const homeService = jasmine.createSpyObj('HomeDefService', ['ChosedHome']);
-    const chosedHomeSpy = homeService.ChosedHome.and.returnValue( {
-      _id: 1
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['calcADPTmpDocs']);
+    const calcADPTmpDocsSpy: any = stroageService.calcADPTmpDocs.and.returnValue(of([]));
+    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome']);
+    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+      _id: 1,
     });
 
     TestBed.configureTestingModule({
@@ -41,13 +41,13 @@ describe('AccountExtADPComponent', () => {
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
-      declarations: [ 
+      declarations: [
         RouterLinkDirectiveStub,
-        AccountExtADPComponent
+        AccountExtADPComponent,
       ],
       providers: [
         TranslateService,
@@ -57,7 +57,7 @@ describe('AccountExtADPComponent', () => {
         { provide: Router, useValue: routerSpy },
         { provide: FinanceStorageService, useValue: stroageService },
         { provide: HomeDefDetailService, useValue: homeService },
-      ]
+      ],
     })
     .compileComponents();
   }));
@@ -70,12 +70,12 @@ describe('AccountExtADPComponent', () => {
     fixture.detectChanges();
 
     // find DebugElements with an attached RouterLinkStubDirective
-    const linkDes = fixture.debugElement
+    const linkDes: any = fixture.debugElement
       .queryAll(By.directive(RouterLinkDirectiveStub));
 
     // get attached link directive instances
     // using each DebugElement's injector
-    const routerLinks = linkDes.map(de => de.injector.get(RouterLinkDirectiveStub));
+    const routerLinks: any = linkDes.map((de: any) => de.injector.get(RouterLinkDirectiveStub));
   });
 
   it('should be created', () => {
@@ -89,16 +89,16 @@ describe('AccountExtADPComponent', () => {
   //   expect(routerLinks[1].linkParams).toBe('/heroes');
   //   expect(routerLinks[2].linkParams).toBe('/about');
   // });
-  
+
   // it('can click Heroes link in template', () => {
   //   const heroesLinkDe = linkDes[1];   // heroes link DebugElement
   //   const heroesLink = routerLinks[1]; // heroes link directive
-  
+
   //   expect(heroesLink.navigatedTo).toBeNull('should not have navigated yet');
-  
+
   //   heroesLinkDe.triggerEventHandler('click', null);
   //   fixture.detectChanges();
-  
+
   //   expect(heroesLink.navigatedTo).toBe('/heroes');
-  // });  
+  // });
 });

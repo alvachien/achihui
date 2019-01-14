@@ -1,11 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { of } from 'rxjs';
 
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub } from '../../../testing';
 import { BookListComponent } from './book-list.component';
+import { LibraryStorageService } from 'app/services';
 
 describe('BookListComponent', () => {
   let component: BookListComponent;
@@ -14,20 +18,32 @@ describe('BookListComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
+    const stgservice: any = jasmine.createSpyObj('LibraryStorageService', ['fetchAllBookCategories']);
+    const fetchAllBookCategoriesSpy: any = stgservice.fetchAllBookCategories.and.returnValue( of([]) );
+
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
         HttpClientTestingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
-      declarations: [ BookListComponent ],
-      providers: [TranslateService]
+      declarations: [
+        RouterLinkDirectiveStub,
+        BookListComponent,
+      ],
+      providers: [
+        TranslateService,
+        { provide: LibraryStorageService, useValue: stgservice },
+      ],
     })
     .compileComponents();
   }));

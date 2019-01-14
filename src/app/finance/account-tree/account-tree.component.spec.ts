@@ -1,15 +1,29 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
+import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Component, Input } from '@angular/core';
 
 import { HttpLoaderTestFactory } from '../../../testing';
 import { AccountTreeComponent } from './account-tree.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
+
+@Component({selector: 'hih-fin-docitem-by-acntctgy', template: ''})
+class DocItemByAcntCtgyComponent {
+  @Input() selectedCategory: any;
+  @Input() selectedAccounts: any;
+  @Input() selectedScope: any;
+}
+@Component({selector: 'hih-fin-docitem-by-acnt', template: ''})
+class DocItemByAcntComponent {
+  @Input() selectedAccount: any;
+  @Input() selectedScope: any;
+}
 
 describe('AccountTreeComponent', () => {
   let component: AccountTreeComponent;
@@ -18,12 +32,13 @@ describe('AccountTreeComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
-    const stroageService = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
-    const fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    const fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    const homeService = jasmine.createSpyObj('HomeDefService', ['ChosedHome']);
-    const chosedHomeSpy = homeService.ChosedHome.and.returnValue( {
-      _id: 1
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
+    const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
+    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
+    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome']);
+    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+      _id: 1,
     });
     const uiServiceStub: Partial<UIStatusService> = {};
 
@@ -37,19 +52,22 @@ describe('AccountTreeComponent', () => {
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
-      declarations: [ 
+      declarations: [
+        DocItemByAcntCtgyComponent,
+        DocItemByAcntComponent,
         AccountTreeComponent,
       ],
       providers: [
         TranslateService,
+        { provide: Router, useValue: routerSpy },
         { provide: FinanceStorageService, useValue: stroageService },
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: UIStatusService, useValue: uiServiceStub },
-      ]
+      ],
     })
     .compileComponents();
   }));
@@ -60,7 +78,7 @@ describe('AccountTreeComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('1. should create', () => {
     expect(component).toBeTruthy();
   });
 });

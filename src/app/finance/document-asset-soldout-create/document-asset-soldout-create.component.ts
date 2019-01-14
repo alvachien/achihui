@@ -39,7 +39,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   displayedColumns: string[] = ['ItemId', 'AccountId', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
 
   get BaseCurrency(): string {
-    return this._homeService.curHomeSelected.value.BaseCurrency;
+    return this._homeService.ChosedHome.BaseCurrency;
   }
   get SoldoutAssetAccountID(): number {
     let acccontrol: any = this.firstFormGroup.get('accountControl');

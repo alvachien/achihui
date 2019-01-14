@@ -22,14 +22,8 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild(MatSort) sort: MatSort;
   isLoadingResults: boolean;
 
-  get movieGenreCount(): number {
-    return this._storageService!.MovieGenres.length;
-  }
-
-  constructor(public _homeDefService: HomeDefDetailService,
-    private _authService: AuthService,
-    private _storageService: LibraryStorageService,
-    private _router: Router) {
+  constructor(
+    private _storageService: LibraryStorageService) {
     this.isLoadingResults = true;
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -45,6 +39,22 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
+    this.isLoadingResults = true;
+    this._storageService!.fetchAllMovieGenres().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngAfterViewInit fetchAllMovieGenres...`);
+      }
+      if (x) {
+        this.dataSource.data = x;
+      }
+    }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Enter MovieGenreListComponent ngAfterViewInit, failed with: ${error}`);
+      }
+    }, () => {
+      this.isLoadingResults = false;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -54,20 +64,8 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy
 
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.isLoadingResults = true;
-    this._storageService!.fetchAllMovieGenres().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngAfterViewInit fetchAllMovieGenres...`);
-      }
-      this.dataSource.data = x;
-    }, (error: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Enter MovieGenreListComponent ngAfterViewInit, failed with: ${error}`);
-      }
-    }, () => {
-      this.isLoadingResults = false;
-    });
   }
+
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngOnDestroy...');

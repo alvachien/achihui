@@ -60,7 +60,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     return this.tranAmount;
   }
   get BaseCurrency(): string {
-    return this._homeService.curHomeSelected.value.BaseCurrency;
+    return this._homeService.ChosedHome.BaseCurrency;
   }
   get TargetAssetAccountID(): number {
     let acccontrol: any = this.firstFormGroup.get('accountControl');

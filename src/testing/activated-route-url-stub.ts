@@ -8,17 +8,17 @@ import { ReplaySubject } from 'rxjs';
 export class ActivatedRouteUrlStub {
   // Use a ReplaySubject to share previous values with subscribers
   // and pump new values into the `url` observable
-  private subject = new ReplaySubject<UrlSegment[]>();
+  private subject: any = new ReplaySubject<UrlSegment[]>();
+
+  /** The mock url observable */
+  readonly url: any = this.subject.asObservable();
 
   constructor(initialUrls?: UrlSegment[]) {
     this.setURL(initialUrls);
   }
 
-  /** The mock url observable */
-  readonly url = this.subject.asObservable();
-
   /** Set the url observables's next value */
-  setURL(url?: UrlSegment[]) {
+  setURL(url?: UrlSegment[]): void {
     this.subject.next(url);
-  };
+  }
 }

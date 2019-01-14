@@ -22,7 +22,6 @@ export class PlanListComponent implements OnInit, OnDestroy {
   totalPlanCount: number;
 
   constructor(private _router: Router,
-    private _homeDefService: HomeDefDetailService,
     private _storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering PlanListComponent constructor...');
@@ -38,8 +37,10 @@ export class PlanListComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this._storageService.fetchAllPlans().pipe(takeUntil(this._destroyed$)).subscribe((x: BaseListModel<Plan>) => {
-      this.totalPlanCount = x.totalCount;
-      this.dataSource.data = x.contentList;
+      if (x) {
+        this.totalPlanCount = x.totalCount;
+        this.dataSource.data = x.contentList;
+      }
     });
   }
 

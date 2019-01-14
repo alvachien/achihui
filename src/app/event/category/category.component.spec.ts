@@ -11,7 +11,7 @@ describe('Event: CategoryComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ UIDependModule, RouterTestingModule ],
-      declarations: [ CategoryComponent ]
+      declarations: [ CategoryComponent ],
     })
     .compileComponents();
   }));

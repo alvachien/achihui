@@ -10,7 +10,7 @@ describe('LocationComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ LocationComponent ]
+      declarations: [ LocationComponent ],
     })
     .compileComponents();
   }));

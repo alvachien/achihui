@@ -10,7 +10,7 @@ describe('RecurrEventComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ RecurrEventComponent ]
+      declarations: [ RecurrEventComponent ],
     })
     .compileComponents();
   }));

@@ -70,8 +70,10 @@ export class ControlCenterTreeComponent implements OnInit, OnDestroy {
           console.log('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent ngOnInit, fetchAllControlCenters...');
         }
 
-        let nodes: ControlCenterTreeNode[] = this._buildControlCenterTree(this._storageService.ControlCenters, 1);
-        this.dataSource.data = nodes;
+        if (this._storageService.ControlCenters) {
+          let nodes: ControlCenterTreeNode[] = this._buildControlCenterTree(this._storageService.ControlCenters, 1);
+          this.dataSource.data = nodes;
+        }
       }, (error: any) => {
         // Do nothing
       }, () => {

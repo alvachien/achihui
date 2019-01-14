@@ -41,12 +41,11 @@ export class CategoryTreeComponent implements OnInit, OnDestroy {
   treeFlattener: MatTreeFlattener<LearnCategoryTreeNode, LearnCategoryTreeFlatNode>;
   dataSource: MatTreeFlatDataSource<LearnCategoryTreeNode, LearnCategoryTreeFlatNode>;
 
-  constructor(public _storageService: LearnStorageService,
-    public _uiStatusService: UIStatusService) {
+  constructor(public _storageService: LearnStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering CategoryTreeComponent constructor...');
     }
-  
+
     this.isLoadingResults = false;
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
@@ -63,8 +62,10 @@ export class CategoryTreeComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-      let nodes: LearnCategoryTreeNode[] = this._buildCategoryTree(x, 1);
-      this.dataSource.data = nodes;
+      if (x) {
+        let nodes: LearnCategoryTreeNode[] = this._buildCategoryTree(x, 1);
+        this.dataSource.data = nodes;
+      }
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering CategoryTreeComponent ngOnInit fetchAllCategories failed with ${error}`);
