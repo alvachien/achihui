@@ -1,12 +1,14 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { AuthService } from './auth.service';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { asyncData, asyncError } from '../../testing/async-observable-helpers';
+import { BehaviorSubject } from 'rxjs';
 
 import { Currency } from '../model';
 import { FinCurrencyService } from './fin-currency.service';
 import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
+import { UserAuthInfo } from '../model';
 
 describe('FinCurrencyService (with mocks)', () => {
   let service: FinCurrencyService;
@@ -15,9 +17,23 @@ describe('FinCurrencyService (with mocks)', () => {
   const currAPIURL: any = environment.ApiUrl + '/api/FinanceCurrency';
 
   beforeEach(() => {
+    const authServiceStub: Partial<AuthService> = {};
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchHomeMembers']);
+    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+      _id: 1,
+      BaseCurrency: 'CNY',
+    });
+    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
+
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [FinCurrencyService],
+      imports: [
+        HttpClientTestingModule
+      ],
+      providers: [
+        FinCurrencyService,
+        { provide: AuthService, useValue: authServiceStub },
+      ],
     });
 
     // Inject the http, test controller, and service-under-test

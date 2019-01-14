@@ -27,7 +27,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering UserDetailComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
-    this._authService.authContent.pipe(takeUntil(this._destroyed$)).subscribe((x: UserAuthInfo) => {
+    this._authService.authSubject.pipe(takeUntil(this._destroyed$)).subscribe((x: UserAuthInfo) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: Entering UserDetailComponent ngOnInit, authContent...');
       }

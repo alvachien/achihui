@@ -1,17 +1,26 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
-import { FinanceStorageService, AuthService, HomeDefDetailService } from './';
+import { FinanceStorageService, } from './finance-storage.service';
+import { AuthService } from './auth.service';
+import { HomeDefDetailService } from './home-def-detail.service';
+import { UserAuthInfo } from '../model';
 
 describe('FinanceStorageService', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
-    // const spy = jasmine.createSpyObj('AuthService', ['authSubject']);
     const authServiceStub: Partial<AuthService> = {};
-    const homeServiceStub: Partial<HomeDefDetailService> = {};
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchHomeMembers']);
+    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+      _id: 1,
+      BaseCurrency: 'CNY',
+    });
+    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
 
     TestBed.configureTestingModule({
       imports: [
@@ -19,8 +28,8 @@ describe('FinanceStorageService', () => {
       ],
       providers: [
         FinanceStorageService,
-        { providers: AuthService, useValue: authServiceStub },
-        { providers: HomeDefDetailService, useValue: homeServiceStub },
+        { provide: AuthService, userValue: authServiceStub },
+        { provide: HomeDefDetailService, userValue: homeService },
       ],
     });
 

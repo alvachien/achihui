@@ -3,9 +3,18 @@ import { UIDependModule } from '../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
 import { HttpLoaderTestFactory } from '../../testing';
 import { SideNavComponent } from './side-nav.component';
+import { SideNavService } from '../services';
+
+@Component({ selector: 'hih-sidenav-item', template: '' })
+class SideNavItemComponent {
+  @Input() item: any;
+}
 
 describe('SideNavComponent', () => {
   let component: SideNavComponent;
@@ -14,6 +23,9 @@ describe('SideNavComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate', 'events']);
+    const eventsSpy = routerSpy.events.and.returnValue(of([]));
+    
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
@@ -27,8 +39,13 @@ describe('SideNavComponent', () => {
         }),
       ],
       declarations: [
+        SideNavItemComponent,
         SideNavComponent,
       ],
+      providers: [
+        SideNavService,
+        { provide: Router, useValue: routerSpy },
+      ]
     })
     .compileComponents();
   }));

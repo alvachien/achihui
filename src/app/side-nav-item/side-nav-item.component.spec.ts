@@ -4,8 +4,18 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { HttpLoaderTestFactory } from '../../testing';
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub } from '../../testing';
 import { SideNavItemComponent } from './side-nav-item.component';
+import { SideNavService } from '../services';
+
+import { Input, Directive, } from '@angular/core';
+
+@Directive({
+  selector: '[routerLinkActiveOptions]',
+})
+class RouterLinkActiveOptionDirectiveStub {
+  @Input('routerLinkActiveOptions') activeOptions: any;
+}
 
 describe('SideNavItemComponent', () => {
   let component: SideNavItemComponent;
@@ -27,7 +37,12 @@ describe('SideNavItemComponent', () => {
         }),
       ],
       declarations: [
+        RouterLinkDirectiveStub,
+        RouterLinkActiveOptionDirectiveStub,
         SideNavItemComponent,
+      ],
+      providers: [
+        SideNavService,
       ],
     })
     .compileComponents();

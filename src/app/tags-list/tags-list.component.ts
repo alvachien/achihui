@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterContentInit, ElementRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, pipe, ReplaySubject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { ThemeStorage } from '../theme-picker/theme-storage/theme-storage';
   templateUrl: './tags-list.component.html',
   styleUrls: ['./tags-list.component.scss'],
 })
-export class TagsListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   tagTerm: string;
   tagType: TagTypeEnum;
@@ -61,14 +61,18 @@ export class TagsListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterViewInit...');
+      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterContentInit...');
     }
 
     this._tagService.fetchAllTags(true).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterViewInit, fetchAllTags...');
+        console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterContentInit, fetchAllTags...');
+      }
+
+      if (!x) {
+        return;
       }
 
       let dataCloud: any[] = [];
@@ -117,7 +121,7 @@ export class TagsListComponent implements OnInit, AfterViewInit, OnDestroy {
       );
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering TagsListComponent ngAfterViewInit, fetchAllTags, failed ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering TagsListComponent ngAfterContentInit, fetchAllTags, failed ${error}`);
       }
 
       this._snackbar.open(error, undefined, {

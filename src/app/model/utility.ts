@@ -177,8 +177,8 @@ export class ModelUtility {
    * @param m Month
    * @returns a string
    * Example:
-   * @example Input: y=2018,m=8; Output: 201808
-   * @example Input: y=2018,m=11, Output: 201811
+   * @example Input: y=2018,m=8; Output: 2018-08
+   * @example Input: y=2018,m=11, Output: 2018-11
    */
   public static getYearMonthDisplayString(y: number, m: number): string {
     return y.toString() + dateSplitChar + (m < 10 ? ('0' + m) : m).toString();

@@ -42,7 +42,9 @@ describe('HomeDefListComponent', () => {
           },
         }),
       ],
-      declarations: [ HomeDefListComponent ],
+      declarations: [
+        HomeDefListComponent,
+      ],
       providers: [
         TranslateService,
         { provide: HomeDefDetailService, useValue: homeService },

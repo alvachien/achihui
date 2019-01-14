@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { HttpLoaderTestFactory } from '../../testing';
 import { PageInitialComponent } from './page-initial.component';
-import { AuthService } from '../services';
+import { AuthService, HomeDefDetailService, } from '../services';
 import { UserAuthInfo } from '../model';
 
 @Component({ selector: 'hih-home-dashboard', template: '' })
@@ -26,6 +26,12 @@ describe('PageInitialComponent', () => {
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchHomeMembers']);
+    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+      _id: 1,
+      BaseCurrency: 'CNY',
+    });
+    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
 
     TestBed.configureTestingModule({
       imports: [
@@ -47,6 +53,7 @@ describe('PageInitialComponent', () => {
         TranslateService,
         { provide: Router, useValue: routerSpy },
         { provide: AuthService, useValue: authServiceStub },
+        { provide: HomeDefDetailService, useValue: homeService },
       ],
     })
     .compileComponents();

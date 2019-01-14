@@ -27,12 +27,12 @@ describe('ThemeStorage Service', () => {
   it('should set the current theme name', () => {
     expect(getCurrTheme()).toEqual(testTheme.name);
     service.storeTheme(secondTestTheme);
-    expect(getCurrTheme()).toEqual(secondTestTheme.name);
+    expect(getCurrTheme()).toEqual(secondTestTheme);
   });
 
   it('should get the current theme name', () => {
     const theme: any = service.getStoredThemeName();
-    expect(theme).toEqual(testTheme.name);
+    expect(theme).toEqual(testTheme);
   });
 
   it('should clear the stored theme data', () => {

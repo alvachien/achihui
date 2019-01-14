@@ -5,9 +5,12 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BehaviorSubject } from 'rxjs';
 
-import { HttpLoaderTestFactory } from '../../testing';
+import { HttpLoaderTestFactory, } from '../../testing';
 import { UserDetailComponent } from './user-detail.component';
+import { AuthService } from '../services';
+import { UserAuthInfo } from '../model';
 
 describe('UserDetailComponent', () => {
   let component: UserDetailComponent;
@@ -16,6 +19,9 @@ describe('UserDetailComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
+    const authServiceStub: Partial<AuthService> = {};
+    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
@@ -34,6 +40,9 @@ describe('UserDetailComponent', () => {
       declarations: [
         UserDetailComponent,
       ],
+      providers: [
+        { provide: AuthService, useValue: authServiceStub },
+      ]
     })
     .compileComponents();
   }));

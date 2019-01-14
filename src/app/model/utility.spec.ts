@@ -30,8 +30,8 @@ describe('Unit test for ModelUtility in Model', () => {
 
   it('#3. Utility.getYearMonthDisplayString()', () => {
     let strResult: string = ModelUtility.getYearMonthDisplayString(2018, 8);
-    expect(strResult).toBe('201808');
+    expect(strResult).toBe('2018-08');
     let strResult2: string = ModelUtility.getYearMonthDisplayString(2018, 11);
-    expect(strResult2).toBe('201811');
+    expect(strResult2).toBe('2018-11');
   });
 });
