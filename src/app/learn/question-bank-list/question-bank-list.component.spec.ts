@@ -5,29 +5,59 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { of } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { HttpLoaderTestFactory } from '../../../testing';
 import { QuestionBankListComponent } from './question-bank-list.component';
+import { LearnStorageService, UIStatusService, } from '../../services';
 
 describe('QuestionBankListComponent', () => {
   let component: QuestionBankListComponent;
-  // let fixture: ComponentFixture<QuestionBankListComponent>;
+  let fixture: ComponentFixture<QuestionBankListComponent>;
 
   beforeEach(async(() => {
-    // TestBed.configureTestingModule({
-    //   declarations: [ QuestionBankListComponent ]
-    // })
-    // .compileComponents();
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const lrnStroageService: any = jasmine.createSpyObj('LearnStorageService', [
+      'fetchAllQuestionBankItem',
+    ]);
+    const fetchAllQuestionBankItemSpy: any = lrnStroageService.fetchAllQuestionBankItem.and.returnValue(of([]));
+
+    TestBed.configureTestingModule({
+      imports: [
+        UIDependModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientTestingModule,
+        BrowserAnimationsModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: HttpLoaderTestFactory,
+            deps: [HttpClient],
+          },
+        }),
+      ],
+      declarations: [
+        QuestionBankListComponent,
+      ],
+      providers: [
+        TranslateService,
+        UIStatusService,
+        { provide: Router, useValue: routerSpy },
+        { provide: LearnStorageService, useValue: lrnStroageService },
+      ],
+    })
+    .compileComponents();
   }));
 
   beforeEach(() => {
-    // fixture = TestBed.createComponent(QuestionBankListComponent);
-    // component = fixture.componentInstance;
-    // fixture.detectChanges();
+    fixture = TestBed.createComponent(QuestionBankListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should be created', () => {
-    // expect(component).toBeTruthy();
-    expect(component).toBeFalsy();
+    expect(component).toBeTruthy();
   });
 });

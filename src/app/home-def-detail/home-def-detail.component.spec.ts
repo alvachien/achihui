@@ -31,7 +31,7 @@ describe('HomeDefDetailComponent', () => {
     });
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('display', {})] as UrlSegment[]);
+    const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [

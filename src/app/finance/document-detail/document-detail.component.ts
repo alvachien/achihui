@@ -106,6 +106,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             if (environment.LoggingLevel >= LogLevel.Error) {
               console.error(`AC_HIH_UI [Error]: Entering DocumentDetailComponent, ngOninit, error in wrong create mode!`);
             }
+            this.uiMode = UIMode.Invalid;
           } else if (x[0].path === 'edit') {
             this.routerID = +x[1].path;
 

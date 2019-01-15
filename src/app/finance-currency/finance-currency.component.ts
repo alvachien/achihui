@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, merge, of, ReplaySubject } from 'rxjs';
@@ -14,7 +13,7 @@ import { FinCurrencyService } from '../services';
   templateUrl: './finance-currency.component.html',
   styleUrls: ['./finance-currency.component.scss'],
 })
-export class FinanceCurrencyComponent implements OnInit, OnDestroy {
+export class FinanceCurrencyComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['curr', 'name', 'symbol'];
@@ -32,12 +31,18 @@ export class FinanceCurrencyComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
-    this.dataSource.paginator = this.paginator;
 
     this._currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Do nothing
       this.dataSource.data = x;
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngAfterViewInit...');
+    }
+    this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {

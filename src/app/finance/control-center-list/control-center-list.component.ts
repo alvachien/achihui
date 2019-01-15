@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator, MatDialog } from '@angular/material';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { MatPaginator, MatDialog, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -10,46 +9,16 @@ import { FinanceStorageService, UIStatusService } from '../../services';
 import { fadeAnimation } from '../../utility';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
-/**
- * Data source of Control center
- */
-export class ControlCenterDataSource extends DataSource<any> {
-  constructor(private _storageService: FinanceStorageService,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<ControlCenter[]> {
-    const displayDataChanges: any[] = [
-      this._storageService.listControlCenterChange,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._storageService.ControlCenters.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
 @Component({
   selector: 'hih-finance-control-center-list',
   templateUrl: './control-center-list.component.html',
   styleUrls: ['./control-center-list.component.scss'],
   animations: [fadeAnimation],
 })
-export class ControlCenterListComponent implements OnInit, OnDestroy {
+export class ControlCenterListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'comment'];
-  dataSource: ControlCenterDataSource | undefined;
+  dataSource: MatTableDataSource<ControlCenter> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isLoadingResults: boolean;
 
@@ -70,12 +39,12 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
-    this.dataSource = new ControlCenterDataSource(this._storageService, this.paginator);
     this._storageService.fetchAllControlCenters().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...');
       }
+      this.dataSource.data = x;
     }, (error: any) => {
       // Do nothing
     }, () => {
@@ -83,7 +52,17 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngAfterViewInit...');
+    }
+    this.dataSource.paginator = this.paginator;
+  }
+
   ngOnDestroy(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...');
+    }
     this._destroyed$.next(true);
     this._destroyed$.complete();
   }

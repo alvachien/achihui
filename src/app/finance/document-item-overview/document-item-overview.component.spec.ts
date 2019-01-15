@@ -41,6 +41,8 @@ describe('DocumentItemOverviewComponent', () => {
       'fetchAllAssetCategories',
       'fetchDocPostedFrequencyPerUser',
       'fetchReportTrendData',
+      'getADPTmpDocs',
+      'getLoanTmpDocs',
     ]);
     const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
     const fetchAllAssetCategoriesSpy: any = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
@@ -51,6 +53,8 @@ describe('DocumentItemOverviewComponent', () => {
     const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
     const fetchDocPostedFrequencyPerUserSpy: any = stroageService.fetchDocPostedFrequencyPerUser.and.returnValue(of([]));
     const fetchReportTrendDataSpy: any = stroageService.fetchReportTrendData.and.returnValue(of([]));
+    const getADPTmpDocsSpy: any = stroageService.getADPTmpDocs.and.returnValue(of([]));
+    const getLoanTmpDocsSpy: any = stroageService.getLoanTmpDocs.and.returnValue(of([]));
     const themeStorageStub: Partial<ThemeStorage> = {};
     themeStorageStub.getStoredTheme = () => { return undefined; };
     themeStorageStub.onThemeUpdate = new EventEmitter<any>();

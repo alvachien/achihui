@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 
 import { HttpLoaderTestFactory } from '../../testing';
 import { SideNavComponent } from './side-nav.component';
@@ -23,9 +23,9 @@ describe('SideNavComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate', 'events']);
-    const eventsSpy = routerSpy.events.and.returnValue(of([]));
-    
+    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy.events = new BehaviorSubject([]);
+
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
@@ -45,7 +45,7 @@ describe('SideNavComponent', () => {
       providers: [
         SideNavService,
         { provide: Router, useValue: routerSpy },
-      ]
+      ],
     })
     .compileComponents();
   }));

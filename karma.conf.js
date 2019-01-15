@@ -20,6 +20,9 @@ module.exports = function (config) {
       }
     },
     client:{
+      jasmine: {
+        random: false
+      },
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
     files: [
@@ -33,7 +36,8 @@ module.exports = function (config) {
       fixWebpackSourcePaths: true
     },
     angularCli: {
-      environment: 'dev'
+      environment: 'dev',
+      codeCoverage: true
     },
     reporters: config.angularCli && config.angularCli.codeCoverage
               ? ['progress', 'coverage-istanbul']

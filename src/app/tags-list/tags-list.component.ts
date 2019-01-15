@@ -32,7 +32,7 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering TagsListComponent constructor...');
     }
-    
+
     this.tagType = TagTypeEnum.LearnQuestionBank;
     let curtheme: any = this._themeStorage.getStoredTheme();
     if (curtheme) {
@@ -125,7 +125,7 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
       }
 
       this._snackbar.open(error, undefined, {
-        duration: 2000
+        duration: 2000,
       });
     });
   }

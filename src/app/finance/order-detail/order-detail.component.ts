@@ -1,10 +1,8 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { Observable, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -12,30 +10,6 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Order, SettlementRule, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-
-/**
- * Data source of Settle Rule
- */
-export class SRuleDataSource extends DataSource<any> {
-  constructor(private _parentComponent: OrderDetailComponent) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<SettlementRule[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.ruleOperEvent,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      return this._parentComponent.detailObject.SRules;
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
 
 @Component({
   selector: 'hih-finance-order-detail',
@@ -58,8 +32,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   }
 
   displayedColumns: string[] = ['rid', 'ccid', 'precent', 'comment'];
-  dataSource: SRuleDataSource | undefined;
-  ruleOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+  dataSource: MatTableDataSource<SettlementRule> = new MatTableDataSource();
+  // ruleOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -75,7 +49,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering OrderDetailComponent constructor...');
     }
     this.detailObject = new Order();
-    this.dataSource = new SRuleDataSource(this);
   }
 
   ngOnInit(): void {
@@ -117,7 +90,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
                   }
 
                   this.detailObject = x2;
-                  this.ruleOperEvent.emit(); // Reload the rules
+                  this.dataSource.data = this.detailObject.SRules;
+                  // this.ruleOperEvent.emit(); // Reload the rules
                 } else {
                   if (environment.LoggingLevel >= LogLevel.Error) {
                     console.error(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, failed to readOrder : ${x2}`);
@@ -194,7 +168,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     srule.RuleId = this.getNextRuleID();
     this.detailObject.SRules.push(srule);
 
-    this.ruleOperEvent.emit();
+    // this.ruleOperEvent.emit();
   }
 
   public onDeleteRule(rule: any): void {
@@ -207,7 +181,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     }
 
     this.detailObject.SRules.splice(idx);
-    this.ruleOperEvent.emit();
+    // this.ruleOperEvent.emit();
   }
 
   public onSubmit(): void {

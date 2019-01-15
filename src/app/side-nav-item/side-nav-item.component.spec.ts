@@ -13,7 +13,7 @@ import { Input, Directive, } from '@angular/core';
 @Directive({
   selector: '[routerLinkActiveOptions]',
 })
-class RouterLinkActiveOptionDirectiveStub {
+class RouterLinkActiveOptionStubDirective {
   @Input('routerLinkActiveOptions') activeOptions: any;
 }
 
@@ -38,10 +38,11 @@ describe('SideNavItemComponent', () => {
       ],
       declarations: [
         RouterLinkDirectiveStub,
-        RouterLinkActiveOptionDirectiveStub,
+        RouterLinkActiveOptionStubDirective,
         SideNavItemComponent,
       ],
       providers: [
+        TranslateService,
         SideNavService,
       ],
     })

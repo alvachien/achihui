@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatDialog } from '@angular/material';
+import { MatPaginator, MatDialog, MatTableDataSource } from '@angular/material';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, QuestionBankItem, UIMode, getUIModeString, TagTypeEnum } from '../../model';
@@ -10,46 +9,16 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 import { Observable, forkJoin, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
-/**
- * Data source of Question bank
- */
-export class QuestionBankDataSource extends DataSource<any> {
-  constructor(private _storageService: LearnStorageService,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<QuestionBankItem[]> {
-    const displayDataChanges: any[] = [
-      this._storageService.listQtnBankChange,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._storageService.QuestionBanks.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
 @Component({
   selector: 'hih-learn-question-bank-list',
   templateUrl: './question-bank-list.component.html',
   styleUrls: ['./question-bank-list.component.scss'],
 })
-export class QuestionBankListComponent implements OnInit, OnDestroy {
+export class QuestionBankListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'type', 'question', 'briefawr' ];
-  dataSource: QuestionBankDataSource | undefined;
+  dataSource: MatTableDataSource<QuestionBankItem> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   allTags: string[] = [];
   isSlideMode: boolean = false;
@@ -57,27 +26,39 @@ export class QuestionBankListComponent implements OnInit, OnDestroy {
 
   constructor(public _storageService: LearnStorageService,
     public _uiService: UIStatusService,
-    public _tagService: TagsService,
     private _router: Router) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent constructor...');
+    }
     this.isSlideMode = false;
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent ngOnInit...');
+    }
     this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
-    this.dataSource = new QuestionBankDataSource(this._storageService, this.paginator);
 
     forkJoin([
-      // this._tagService.fetchAllTags(TagTypeEnum.LearnQuestionBank),
       this._storageService.fetchAllQuestionBankItem(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // DO nothing
+      if (x) {
+        this.dataSource.data = x;
+      }
     }, (error: any) => {
       // Do nothing
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent ngAfterViewInit...');
+    }
+    this.dataSource.paginator = this.paginator;
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {

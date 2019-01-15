@@ -57,7 +57,6 @@ describe('AccountListComponent', () => {
   });
 
   it('should be created', () => {
-    // expect(component).toBeTruthy();
-    expect(1).toBe(1);
+    expect(component).toBeTruthy();
   });
 });

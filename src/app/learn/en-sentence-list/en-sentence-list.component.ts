@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild, HostBinding, ViewEncapsulation, OnDestroy } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator } from '@angular/material';
+import { Component, OnInit, ViewChild, HostBinding, AfterViewInit, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { MatPaginator, MatTableDataSource, MatTable } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -8,47 +7,17 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, EnSentence, EnSentenceExplain } from '../../model';
 import { LearnStorageService } from '../../services';
 
-/**
- * Data source of En. Sentence
- */
-export class EnSentenceDataSource extends DataSource<any> {
-  constructor(private _storageService: LearnStorageService,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<EnSentence[]> {
-    const displayDataChanges: any[] = [
-      this._storageService.listEnSentChange,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._storageService.EnSentences.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
 @Component({
   selector: 'hih-learn-en-sentence-list',
   templateUrl: './en-sentence-list.component.html',
   styleUrls: ['./en-sentence-list.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class EnSentenceListComponent implements OnInit, OnDestroy {
+export class EnSentenceListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'sent' ];
-  dataSource: EnSentenceDataSource | undefined = undefined;
+  dataSource: MatTableDataSource<EnSentence> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isLoadingResults: boolean;
 
@@ -67,14 +36,12 @@ export class EnSentenceListComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
-    this.dataSource = new EnSentenceDataSource(this._storageService, this.paginator);
 
     this._storageService.fetchAllEnSentences()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
-        // Just ensure the REQUEST has been sent
         if (x) {
-          // Do nothing
+          this.dataSource.data = x;
         }
       }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
@@ -84,6 +51,14 @@ export class EnSentenceListComponent implements OnInit, OnDestroy {
         this.isLoadingResults = false;
       });
   }
+
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngAfterViewInit...');
+    }
+    this.dataSource.paginator = this.paginator;
+  }
+
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngOnDestroy...');

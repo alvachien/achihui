@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef, ViewEncapsulation, ViewChild } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+  Input, Output, ViewContainerRef, ViewEncapsulation, ViewChild,
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { Observable, ReplaySubject, Subscription } from 'rxjs';
@@ -78,7 +80,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, ngOninit, readEnWordEvent`);
                 }
-  
+
                 this.detailObject = x2;
               } else {
                 if (environment.LoggingLevel >= LogLevel.Error) {
@@ -149,22 +151,22 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, createEnWordEvent`);
           }
-  
+
           // Navigate back to list view
           if (x instanceof EnWord) {
             // Show the snackbar
             let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
               this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-              duration: 3000,
-            });
-  
+                duration: 3000,
+              });
+
             let recreate: boolean = false;
             snackbarRef.onAction().subscribe(() => {
               recreate = true;
-  
+
               this.onInitCreateMode();
             });
-  
+
             snackbarRef.afterDismissed().subscribe(() => {
               // Navigate to display
               if (!recreate) {
@@ -178,7 +180,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
               Content: x.toString(),
               Button: MessageDialogButtonEnum.onlyok,
             };
-  
+
             this._dialog.open(MessageDialogComponent, {
               disableClose: false,
               width: '500px',

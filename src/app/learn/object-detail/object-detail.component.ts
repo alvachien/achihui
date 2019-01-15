@@ -1,5 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterContentInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -18,7 +17,7 @@ declare var tinymce: any;
   templateUrl: './object-detail.component.html',
   styleUrls: ['./object-detail.component.scss'],
 })
-export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ObjectDetailComponent implements OnInit, AfterContentInit, OnDestroy {
 
   private routerID: number = -1; // Current object ID in routing
   private editor: any;
@@ -55,9 +54,9 @@ export class ObjectDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngAfterViewInit of LearnObjectDetail');
+      console.log('AC_HIH_UI [Debug]: Entering LearnObjectDetail ngAfterContentInit');
     }
 
     try {

@@ -20,13 +20,13 @@ export class SideNavItemComponent {
   }
 
   toggleDropdown(): void {
-    if (this.item.hasSubItems()) {
+    if (this.item && this.item.hasSubItems()) {
       this._service.toggleCurrentlyOpen(this.item);
     }
   }
 
   getSubItemsHeight(): any {
-    if (this.item.hasSubItems()) {
+    if (this.item && this.item.hasSubItems()) {
       return (this.getOpenSubItemsCount(this.item) * 45) + 'px';
     }
   }

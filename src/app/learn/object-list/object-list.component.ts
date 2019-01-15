@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild, HostBinding, OnDestroy } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator } from '@angular/material';
+import { Component, OnInit, ViewChild, AfterViewInit, HostBinding, OnDestroy } from '@angular/core';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, forkJoin, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -8,46 +7,16 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject } from '../../model';
 import { LearnStorageService } from '../../services';
 
-/**
- * Data source of Learn object
- */
-export class LearnObjectDataSource extends DataSource<any> {
-  constructor(private _storageService: LearnStorageService,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<LearnObject[]> {
-    const displayDataChanges: any[] = [
-      this._storageService.listObjectChange,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._storageService.Objects.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
 @Component({
   selector: 'hih-learn-object-list',
   templateUrl: './object-list.component.html',
   styleUrls: ['./object-list.component.scss'],
 })
-export class ObjectListComponent implements OnInit, OnDestroy {
+export class ObjectListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
-  dataSource: LearnObjectDataSource | undefined;
+  dataSource: MatTableDataSource<LearnObject> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isSlideMode: boolean = false;
   isLoadingResults: boolean;
@@ -65,7 +34,6 @@ export class ObjectListComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    this.dataSource = new LearnObjectDataSource(this._storageService, this.paginator);
 
     forkJoin([
       this._storageService.fetchAllCategories(),
@@ -74,12 +42,19 @@ export class ObjectListComponent implements OnInit, OnDestroy {
       // Just ensure the REQUEST has been sent
       if (x) {
         // Do NOTHING
+        this.dataSource.data = x[1];
       }
     }, (error: any) => {
       // Do nothing
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering ObjectListComponent ngAfterViewInit...');
+    }
+    this.dataSource.paginator = this.paginator;
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {

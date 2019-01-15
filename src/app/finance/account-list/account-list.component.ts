@@ -55,7 +55,9 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
     ])
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
-      this._buildDataSource();
+        if (x) {
+          this._buildDataSource();
+        }
     }, (error: HttpErrorResponse) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit but failed forkJoin: ${error.message}`);
@@ -113,12 +115,14 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private _buildDataSource(): void {
-    this.dataSource.data = this._storageService.Accounts.filter((value: Account) => {
-      if (this.selectedStatus !== undefined && value.Status !== this.selectedStatus) {
-        return false;
-      }
+    if (this._storageService.Accounts) {
+      this.dataSource.data = this._storageService.Accounts.filter((value: Account) => {
+        if (this.selectedStatus !== undefined && value.Status !== this.selectedStatus) {
+          return false;
+        }
 
-      return true;
-    });
+        return true;
+      });
+    }
   }
 }

@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild, HostBinding, OnDestroy } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator } from '@angular/material';
+import { Component, OnInit, ViewChild, AfterViewInit, HostBinding, OnDestroy } from '@angular/core';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -8,46 +7,16 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject, LearnHistory } from '../../model';
 import { LearnStorageService } from '../../services';
 
-/**
- * Data source of Learn history
- */
-export class LearnHistoryDataSource extends DataSource<any> {
-  constructor(private _storageService: LearnStorageService,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<LearnHistory[]> {
-    const displayDataChanges: any[] = [
-      this._storageService.listHistoryChange,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._storageService.Histories.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
-
 @Component({
   selector: 'hih-learn-history-list',
   templateUrl: './history-list.component.html',
   styleUrls: ['./history-list.component.scss'],
 })
-export class HistoryListComponent implements OnInit, OnDestroy {
+export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['objid', 'objname', 'usrname', 'learndate'];
-  dataSource: LearnHistoryDataSource | undefined;
+  dataSource: MatTableDataSource<LearnHistory> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isLoadingResults: boolean;
 
@@ -63,7 +32,6 @@ export class HistoryListComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
-    this.dataSource = new LearnHistoryDataSource(this._storageService, this.paginator);
 
     forkJoin([
       this._storageService.fetchAllCategories(),
@@ -73,6 +41,7 @@ export class HistoryListComponent implements OnInit, OnDestroy {
       // Just ensure the REQUEST has been sent
       if (x) {
         // Empty
+        this.dataSource.data = x[2];
       }
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
@@ -81,6 +50,12 @@ export class HistoryListComponent implements OnInit, OnDestroy {
     }, () => {
       this.isLoadingResults = false;
     });
+  }
+  ngAfterViewInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering HistoryListComponent ngAfterViewInit...');
+    }
+    this.dataSource.paginator = this.paginator;
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {

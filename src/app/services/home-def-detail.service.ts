@@ -9,6 +9,10 @@ import { HttpHeaderResponse } from '@angular/common/http/src/response';
 
 @Injectable()
 export class HomeDefDetailService {
+  private _redirURL: string;
+  // Buffer
+  private _islistLoaded: boolean;
+
   // Subject for the whole list of HomeDef
   listDataChange: BehaviorSubject<HomeDef[]> = new BehaviorSubject<HomeDef[]>([]);
   get HomeDefs(): HomeDef[] {
@@ -40,16 +44,12 @@ export class HomeDefDetailService {
   }
 
   // Redirect URL
-  private _redirURL: string;
   get RedirectURL(): string {
     return this._redirURL;
   }
   set RedirectURL(url: string) {
     this._redirURL = url;
   }
-
-  // Buffer
-  private _islistLoaded: boolean;
 
   // Event
   createEvent: EventEmitter<HomeDef | undefined> = new EventEmitter<HomeDef | undefined>(undefined);

@@ -97,6 +97,11 @@ Add it into the providers section:
 ### DateAdapter
 Add it into the providers section:
 ```typescript
+import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl, } from '@angular/material';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+```
+Add into providers section:
+```typescript
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
@@ -148,7 +153,7 @@ Just add them into declaration sections:
 
 Add it into the providers section:
 ```typescript
-{ provide: LearnStorageService, useValue: lrnStroageService },
+    { provide: LearnStorageService, useValue: lrnStroageService },
 ```
 
 ### LangaugeService

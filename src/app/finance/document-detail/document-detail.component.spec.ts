@@ -29,6 +29,7 @@ describe('DocumentDetailComponent', () => {
       'fetchAllAccounts',
       'fetchAllControlCenters',
       'fetchAllOrders',
+      'readDocument',
     ]);
     const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
     const fetchAllDocTypesSpy: any = stroageService.fetchAllDocTypes.and.returnValue(of([]));
@@ -36,6 +37,7 @@ describe('DocumentDetailComponent', () => {
     const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
     const fetchAllOrdersSpy: any = stroageService.fetchAllOrders.and.returnValue(of([]));
     const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
+    const readDocumentSpy: any = stroageService.readDocument.and.returnValue();
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     const fetchAllCurrenciesSpy: any = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome']);
@@ -43,7 +45,7 @@ describe('DocumentDetailComponent', () => {
       _id: 1,
     });
     const uiServiceStub: Partial<UIStatusService> = {};
-    const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('display', {})] as UrlSegment[]);
+    const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({

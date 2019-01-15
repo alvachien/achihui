@@ -1,4 +1,12 @@
 # Change logs
+## Version 0.8.x
+Released at 2019.6.30
+
+Bug fixing and Feature list
+- Unit tests are all available;
+- Finance: plan;
+- [?] Use ACTSLib instead of default array or other data structures;
+
 ## Version 0.7.x
 Released at 2018.12.31
 
