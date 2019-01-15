@@ -220,3 +220,7 @@ Then,
         ...,
       ],
 ```
+
+### Error: Failed: Cannot read property 'root' of undefined
+Once using ```RouterTestingModule```, you shall not use other provider for ```Router``` or other directive for ```routeLink``.
+ 
