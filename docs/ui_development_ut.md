@@ -3,14 +3,59 @@ Unit test is quite important to build a high-quality project;
 
 However, the complexity of the project will also bring efforts to maintain the unit test classes.
 
-Hereby list the useful points for consturcting a unit test:
+Hereby list the useful points for composing a unit test.
 
 ## Must Read
 Guideline is a must read, without any doubt.
 
-[Guideline from Angular](https://angular.cn/guide/testing)
+[Testing in Angular](https://angular.cn/guide/testing)
 
 ## Reuse code snippets (for HIH only)
+### HttpClient
+Just import ```HttpClientTestingModule``` is enough.
+```typescript
+import { HttpClientTestingModule } from '@angular/router/testing'
+```
+Then:
+```typescript
+    imports: [
+        HttpClientTestingModule,
+        ...
+    ]
+```
+
+### TranslateService (and Translate Pipe)
+```typescript
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+```
+Then:
+```typescript
+    imports: [
+        HttpClientTestingModule,
+        TranslateModule.forRoot({
+            loader: {
+            provide: TranslateLoader,
+            useFactory: HttpLoaderTestFactory,
+            deps: [HttpClient],
+            },
+        }),
+        ...
+    ],
+    providers: [
+        TranslateService,
+        ...
+    ]
+```
+
+Test factory function
+```typescript
+export function HttpLoaderTestFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http);
+}
+```
+
 ### Router
 ```typescript
 const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
@@ -219,4 +264,17 @@ Then,
         RouterLinkDirectiveStub,
         ...,
       ],
+```
+
+### Failed: Template parse errors: 'router-outlet' is not a known element.
+Just import the ```RouterTestingModule``` is enough.
+```typescript
+import { RouterTestingModule } from '@angular/router/testing';
+```
+Then:
+```typescript
+    imports: [
+        RouterTestingModule,
+        ...
+    ]
 ```
