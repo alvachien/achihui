@@ -177,7 +177,7 @@ Add it into the providers section:
 { provide: FinanceStorageService, useValue: stroageService },
 ```
 
-### Pipes (like uiAccountStatusFilter )
+### Pipes (like uiAccountStatusFilter)
 Just add them into declaration sections:
 ```typescript
       declarations: [
@@ -278,3 +278,6 @@ Then:
         ...
     ]
 ```
+
+### Error: Failed: Cannot read property 'root' of undefined
+Once using ```RouterTestingModule```, you shall not use other provider for ```Router``` or other directive for ```routeLink``.
