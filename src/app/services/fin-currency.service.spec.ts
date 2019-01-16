@@ -4,6 +4,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { asyncData, asyncError } from '../../testing/async-observable-helpers';
 import { BehaviorSubject } from 'rxjs';
 
+import { FakeDataHelper } from '../../testing';
 import { Currency } from '../model';
 import { FinCurrencyService } from './fin-currency.service';
 import { environment } from '../../environments/environment';
@@ -15,16 +16,19 @@ describe('FinCurrencyService', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
   const currAPIURL: any = environment.ApiUrl + '/api/FinanceCurrency';
+  let fakeData: FakeDataHelper;
 
   beforeEach(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+    fakeData.buildCurrentUser();
+    fakeData.buildCurrencies();
+
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
     const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchHomeMembers']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
-      _id: 1,
-      BaseCurrency: 'CNY',
-    });
-    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
+    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue(fakeData.chosedHome);
+    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
 
     TestBed.configureTestingModule({
       imports: [
@@ -48,74 +52,84 @@ describe('FinCurrencyService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('1. service should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  // /// FinCurrencyService method tests begin ///
-  // describe('#fetchAllCurrencies', () => {
-  //   let expectedCurrencies: Currency[];
+  /// FinCurrencyService method tests begin ///
+  describe('2. fetchAllCurrencies', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinCurrencyService);
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+    
+    it('should return expected currencies (called once)', () => {
+      expect(service.Currencies.length).toEqual(0, 'should not buffered yet');
+      service.fetchAllCurrencies().subscribe(
+        curries => {
+          expect(curries.length).toEqual(fakeData.currencies.length, 'should return expected currencies');
+          expect(service.Currencies.length).toEqual(fakeData.currencies.length, 'should have buffered');
+        },
+        fail => {}
+      );
 
-  //   beforeEach(() => {
-  //     service = TestBed.get(FinCurrencyService);
-  //     expectedCurrencies = [
-  //       { Currency: 'CUR1', Name: 'CUR1', Symbol: '$1', DisplayName: 'Curr 1' },
-  //       { Currency: 'CUR2', Name: 'CUR2', Symbol: '$2', DisplayName: 'Curr 2' },
-  //     ] as Currency[];
-  //   });
+      // Service should have made one request to GET currencies from expected URL
+      const req = httpTestingController.expectOne(currAPIURL);
+      expect(req.request.method).toEqual('GET');
 
-  //   it('should return expected currencies (called once)', () => {
-  //     service.fetchAllCurrencies().subscribe(
-  //       curries => expect(curries).toEqual(expectedCurrencies, 'should return expected currencies'),
-  //       fail
-  //     );
+      // Respond with the mock currencies
+      req.flush(fakeData.currencies);
+    });
 
-  //     // HeroService should have made one request to GET heroes from expected URL
-  //     const req = httpTestingController.expectOne(currAPIURL);
-  //     expect(req.request.method).toEqual('GET');
+    it('should be OK returning no currencies', () => {
+      expect(service.Currencies.length).toEqual(0, 'should not buffered yet');
+      service.fetchAllCurrencies().subscribe(
+        curries => {
+          expect(curries.length).toEqual(0, 'should have empty currencies array');
+          expect(service.Currencies.length).toEqual(0, 'should buffered nothing');
+        },
+        fail
+      );
 
-  //     // Respond with the mock heroes
-  //     req.flush(expectedCurrencies);
-  //   });
+      const req = httpTestingController.expectOne(currAPIURL);
+      req.flush([]); // Respond with no data
+    });
 
-  //   it('should be OK returning no currencies', () => {
-  //     service.fetchAllCurrencies().subscribe(
-  //       curries => expect(curries.length).toEqual(0, 'should have empty currencies array'),
-  //       fail
-  //     );
+    it('should return error in case error appear', () => {
+      const msg = 'Deliberate 404';
+      service.fetchAllCurrencies().subscribe(
+        curries => {
+          fail('expected to fail');
+        },
+        error => {
+          expect(error).toContain(msg);
+        }
+      );
 
-  //     const req = httpTestingController.expectOne(currAPIURL);
-  //     req.flush([]); // Respond with no heroes
-  //   });
+      const req = httpTestingController.expectOne(currAPIURL);
 
-  //   it('should turn 404 into a user-friendly error', () => {
-  //     const msg = 'Deliberate 404';
-  //     service.fetchAllCurrencies().subscribe(
-  //       curries => fail('expected to fail'),
-  //       error => expect(error.message).toContain(msg)
-  //     );
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
 
-  //     const req = httpTestingController.expectOne(currAPIURL);
+    it('should return expected currencies (called multiple times)', () => {
+      service.fetchAllCurrencies().subscribe();
+      service.fetchAllCurrencies().subscribe();
+      service.fetchAllCurrencies().subscribe(
+        curries => {
+          expect(curries.length).toEqual(fakeData.currencies.length, 'should return expected currencies');
+        },
+        fail
+      );
 
-  //     // respond with a 404 and the error message in the body
-  //     req.flush(msg, { status: 404, statusText: 'Not Found' });
-  //   });
+      const requests = httpTestingController.match(currAPIURL);
+      expect(requests.length).toEqual(1, 'shall be only 1 calls to real API!');
 
-  //   it('should return expected currencies (called multiple times)', () => {
-  //     service.fetchAllCurrencies().subscribe();
-  //     service.fetchAllCurrencies().subscribe();
-  //     service.fetchAllCurrencies().subscribe(
-  //       curries => expect(curries).toEqual(expectedCurrencies, 'should return expected currencies'),
-  //       fail
-  //     );
-
-  //     const requests = httpTestingController.match(currAPIURL);
-  //     expect(requests.length).toEqual(3, 'calls to fetchAllCurrencies()');
-
-  //     // Respond to each request with different mock hero results
-  //     requests[0].flush([]);
-  //     requests[1].flush([{ id: 1, name: 'bob' }]);
-  //     requests[2].flush(expectedCurrencies);
-  //   });
-  // });
+      // Respond to each request with different mock hero results
+      requests[0].flush(fakeData.currencies);
+    });
+  });
 });

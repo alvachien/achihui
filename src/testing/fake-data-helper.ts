@@ -1,7 +1,9 @@
 import {
   Currency, HomeDef, HomeMember, HomeMemberRelationEnum, DocumentType,
   AccountCategory, TranType, AssetCategory, Account,
+  UserAuthInfo
 } from '../app/model';
+import { User } from 'oidc-client';
 
 export class FakeDataHelper {
   private _currencies: Currency[];
@@ -11,8 +13,10 @@ export class FakeDataHelper {
   private _finTranType: TranType[];
   private _finAssetCategories: AssetCategory[];
   private _finAccounts: Account[];
+  private _currUser: UserAuthInfo;
 
   readonly userID1: string = 'abcdefg';
+  readonly userID1Sub: string = '12345abcdefg';
 
   constructor() {
     // Empty
@@ -51,6 +55,11 @@ export class FakeDataHelper {
   get finAccounts(): Account[] {
     if (this._finAccounts) {
       return this._finAccounts;
+    }
+  }
+  get currentUser(): UserAuthInfo {
+    if (this._currUser) {
+      return this._currUser;
     }
   }
 
@@ -698,5 +707,18 @@ export class FakeDataHelper {
     acnt.OwnerId = this.userID1;
     acnt.Comment = 'CreditCard Account 1';
     this._finAccounts.push(acnt);
+  }
+  public buildCurrentUser(): void {
+    this._currUser = new UserAuthInfo();
+    let usr: any = {
+      profile: {
+        name: this.userID1,
+        sub: this.userID1Sub,
+        mail: 'usr@usr.com',
+        access_token: 'access_token',
+      }
+    };
+    
+    this._currUser.setContent(usr as User);
   }
 }

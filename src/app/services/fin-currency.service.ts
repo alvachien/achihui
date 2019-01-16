@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, Currency } from '../model';
@@ -31,12 +31,12 @@ export class FinCurrencyService {
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       return this._http.get(apiurl, {
-          headers: headers,
-        })
+        headers: headers,
+      })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinCurrencyService`);
@@ -56,7 +56,17 @@ export class FinCurrencyService {
           this._islistLoaded = true;
           this.listDataChange.next(listRst);
           return listRst;
-        }));
+        }),
+          catchError((error: HttpErrorResponse) => {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinCurrencyService: ${error}`);
+            }
+
+            this._islistLoaded = false;
+            this.listDataChange.next([]);
+  
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
     } else {
       return of(this.listDataChange.value);
     }
