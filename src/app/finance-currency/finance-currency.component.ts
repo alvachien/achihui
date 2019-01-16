@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -20,7 +20,8 @@ export class FinanceCurrencyComponent implements OnInit, AfterViewInit, OnDestro
   dataSource: MatTableDataSource<Currency> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(public _currService: FinCurrencyService) {
+  constructor(public _currService: FinCurrencyService,
+    public _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent constructor...');
     }
@@ -34,7 +35,17 @@ export class FinanceCurrencyComponent implements OnInit, AfterViewInit, OnDestro
 
     this._currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Do nothing
-      this.dataSource.data = x;
+      if (x) {
+        this.dataSource.data = x;
+        this.dataSource.paginator = this.paginator;
+      }
+    }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering FinanceCurrencyComponent fetchAllCurrencies, failed ${error}...`);
+      }
+      this._snackBar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
 
@@ -42,7 +53,6 @@ export class FinanceCurrencyComponent implements OnInit, AfterViewInit, OnDestro
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngAfterViewInit...');
     }
-    this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {

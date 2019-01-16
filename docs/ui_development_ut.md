@@ -1,9 +1,11 @@
 # Unit Tests
-Unit test is quite important to build a high-quality project;
+Unit test is quite important to ensure a high-quality project, and it will bring more values in regression tests when logic are updated.
 
-However, the complexity of the project will also bring efforts to maintain the unit test classes.
+With respect to the complexity of the project, it will also bring efforts to maintain the unit test classes. 
 
-Hereby list the useful points for composing a unit test.
+Therefore, list out the reusable the code snippets for preparing the unit tests among the Services and components will benefit the development.
+
+Hereby list the useful code snippets followed by the Frequently met issues.
 
 ## Must Read
 Guideline is a must read, without any doubt.
@@ -117,6 +119,9 @@ Add it into the providers section:
 ```
 
 ### UIStatusService
+Just use UIStatusService directly because it has no dependencies.
+
+The following are outdated stub for UIStatusService.
 ```typescript
     const uiServiceStub: Partial<UIStatusService> = {};
     uiServiceStub.getUILabel = (le: any) => { return ''; };
@@ -212,7 +217,24 @@ Add the provider:
     { provide: LanguageService, useValue: langService },
 ```
 
-## FAQ
+### Material Controls
+In general, to learn how to operate Material Control, refer to [Official Github Repo](https://github.com/angular/material2/blob/master/src/lib/)
+
+#### Tab Group
+There are two ways to switch the tab:
+```typescript
+    let tabComponent: MatTabGroup = fixture.debugElement
+        .query(By.css('mat-tab-group')).componentInstance;
+    tabComponent.selectedIndex = 2;
+```
+Or,
+```typescript
+      let tabLabel = fixture.debugElement.queryAll(By.css('.mat-tab-label'))[1];
+      tabLabel.nativeElement.click();
+```
+
+
+## FMI (Frequently Met Issues)
 ### Error: Can't bind to 'ngModel' since it isn't a known property of 'mat-select'.
 It's due to the FormsModule is missing, and it's recommend to add FormsModule and ReactiveFormModule both;
 ```typescript
@@ -281,3 +303,88 @@ Then:
 
 ### Error: Failed: Cannot read property 'root' of undefined
 Once using ```RouterTestingModule```, you shall not use other provider for ```Router``` or other directive for ```routeLink``.
+
+### Asynchronous service testing
+There are several kind of methods to test it, see example [origin link](https://stackblitz.com/angular/gqeobkypklv?file=src%2Fapp%2Ftwain%2Ftwain.component.spec.ts)
+
+```typescript
+  describe('when test with asynchronous observable', () => {
+    beforeEach(() => {
+      // Simulate delayed observable values with the `asyncData()` helper
+      getQuoteSpy.and.returnValue(asyncData(testQuote));
+    });
+
+    it('should not show quote before OnInit', () => {
+      expect(quoteEl.textContent).toBe('', 'nothing displayed');
+      expect(errorMessage()).toBeNull('should not show error element');
+      expect(getQuoteSpy.calls.any()).toBe(false, 'getQuote not yet called');
+    });
+
+    it('should still not show quote after component initialized', () => {
+      fixture.detectChanges();
+      // getQuote service is async => still has not returned with quote
+      // so should show the start value, '...'
+      expect(quoteEl.textContent).toBe('...', 'should show placeholder');
+      expect(errorMessage()).toBeNull('should not show error');
+      expect(getQuoteSpy.calls.any()).toBe(true, 'getQuote called');
+    });
+
+    it('should show quote after getQuote (fakeAsync)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit()
+      expect(quoteEl.textContent).toBe('...', 'should show placeholder');
+
+      tick(); // flush the observable to get the quote
+      fixture.detectChanges(); // update view
+
+      expect(quoteEl.textContent).toBe(testQuote, 'should show quote');
+      expect(errorMessage()).toBeNull('should not show error');
+    }));
+
+    it('should show quote after getQuote (async)', async(() => {
+      fixture.detectChanges(); // ngOnInit()
+      expect(quoteEl.textContent).toBe('...', 'should show placeholder');
+
+      fixture.whenStable().then(() => { // wait for async getQuote
+        fixture.detectChanges();        // update view with quote
+        expect(quoteEl.textContent).toBe(testQuote);
+        expect(errorMessage()).toBeNull('should not show error');
+      });
+    }));
+
+
+    it('should show last quote (quote done)', (done: DoneFn) => {
+      fixture.detectChanges();
+
+      component.quote.pipe( last() ).subscribe(() => {
+        fixture.detectChanges(); // update view with quote
+        expect(quoteEl.textContent).toBe(testQuote);
+        expect(errorMessage()).toBeNull('should not show error');
+        done();
+      });
+    });
+
+    it('should show quote after getQuote (spy done)', (done: DoneFn) => {
+      fixture.detectChanges();
+
+      // the spy's most recent call returns the observable with the test quote
+      getQuoteSpy.calls.mostRecent().returnValue.subscribe(() => {
+        fixture.detectChanges(); // update view with quote
+        expect(quoteEl.textContent).toBe(testQuote);
+        expect(errorMessage()).toBeNull('should not show error');
+        done();
+      });
+    });
+
+    it('should display error when TwainService fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      getQuoteSpy.and.returnValue(asyncError<string>('TwainService test failure'));
+
+      fixture.detectChanges();
+      tick();                  // component shows error after a setTimeout()
+      fixture.detectChanges(); // update error message
+
+      expect(errorMessage()).toMatch(/test failure/, 'should display error');
+      expect(quoteEl.textContent).toBe('...', 'should show placeholder');
+    }));
+  });
+```

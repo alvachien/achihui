@@ -8,20 +8,25 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper } from '../../../testing';
 import { AccountListComponent } from './account-list.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 
 describe('AccountListComponent', () => {
   let component: AccountListComponent;
   let fixture: ComponentFixture<AccountListComponent>;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
+
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
-    const allAccountCtgySpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    const uiServiceStub: Partial<UIStatusService> = {};
+    const allAccountCtgySpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of(fakeData.finAccountCategories));
+    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of(fakeData.finAccounts));
+    stroageService.Accounts = fakeData.finAccounts;
 
     TestBed.configureTestingModule({
       imports: [
@@ -42,9 +47,9 @@ describe('AccountListComponent', () => {
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: Router, useValue: routerSpy },
         { provide: FinanceStorageService, useValue: stroageService },
-        { provide: UIStatusService, useValue: uiServiceStub },
       ],
     })
     .compileComponents();
@@ -56,7 +61,15 @@ describe('AccountListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
+  it('1. should be created', () => {
     expect(component).toBeTruthy();
+  });
+  it('2. Check data is loaded successfully', () => {
+    expect(component.dataSource.data.length).toBeGreaterThan(0);
+    expect(component.dataSource.data.length).toEqual(fakeData.finAccounts.length);
+  });
+  it('2. Check + button is work', () => {
+    expect(component.dataSource.data.length).toBeGreaterThan(0);
+    expect(component.dataSource.data.length).toEqual(fakeData.finAccounts.length);
   });
 });

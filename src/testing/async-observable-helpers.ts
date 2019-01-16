@@ -24,7 +24,6 @@ export function asyncError<T>(errorObject: any) {
   return defer(() => Promise.reject(errorObject));
 }
 
-
 /*
 Copyright 2017-2018 Google Inc. All Rights Reserved.
 Use of this source code is governed by an MIT-style license that

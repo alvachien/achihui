@@ -296,7 +296,7 @@ export class AssetCategory extends hih.BaseModel {
   get Desp(): string {
     return this._desp;
   }
-  set Comment(cmt: string) {
+  set Desp(cmt: string) {
     this._desp = cmt;
   }
 

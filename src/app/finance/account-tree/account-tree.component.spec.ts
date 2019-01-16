@@ -9,18 +9,18 @@ import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Component, Input } from '@angular/core';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper } from '../../../testing';
 import { AccountTreeComponent } from './account-tree.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 
 @Component({selector: 'hih-fin-docitem-by-acntctgy', template: ''})
-class DocItemByAcntCtgyComponent {
+class DocumentItemByAccountCategoryComponent {
   @Input() selectedCategory: any;
   @Input() selectedAccounts: any;
   @Input() selectedScope: any;
 }
 @Component({selector: 'hih-fin-docitem-by-acnt', template: ''})
-class DocItemByAcntComponent {
+class DocumentItemByAccountComponent {
   @Input() selectedAccount: any;
   @Input() selectedScope: any;
 }
@@ -30,17 +30,21 @@ describe('AccountTreeComponent', () => {
   let fixture: ComponentFixture<AccountTreeComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
+    fakeData.buildChosedHome();
+
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
-    const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
+    const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of(fakeData.finAccountCategories));
+    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of(fakeData.finAccounts));
     const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
-      _id: 1,
-    });
-    const uiServiceStub: Partial<UIStatusService> = {};
+    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue(fakeData.chosedHome);
+    stroageService.Accounts = fakeData.finAccounts;
 
     TestBed.configureTestingModule({
       imports: [
@@ -57,16 +61,16 @@ describe('AccountTreeComponent', () => {
         }),
       ],
       declarations: [
-        DocItemByAcntCtgyComponent,
-        DocItemByAcntComponent,
+        DocumentItemByAccountCategoryComponent,
+        DocumentItemByAccountComponent,
         AccountTreeComponent,
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: Router, useValue: routerSpy },
         { provide: FinanceStorageService, useValue: stroageService },
         { provide: HomeDefDetailService, useValue: homeService },
-        { provide: UIStatusService, useValue: uiServiceStub },
       ],
     })
     .compileComponents();
@@ -80,5 +84,8 @@ describe('AccountTreeComponent', () => {
 
   it('1. should create', () => {
     expect(component).toBeTruthy();
+  });
+  it('2. Check tree has been created', () => {
+    expect(component.dataSource.data.length).toBeGreaterThan(0);
   });
 });

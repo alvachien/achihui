@@ -11,31 +11,23 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper } from '../../../testing';
 import { TranTypeListComponent } from './tran-type-list.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 
 describe('TranTypeListComponent', () => {
   let component: TranTypeListComponent;
   let fixture: ComponentFixture<TranTypeListComponent>;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildFinConfigData();
+
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
-      'fetchAllAccountCategories',
-      'fetchAllDocTypes',
       'fetchAllTranTypes',
-      'fetchAllAccounts',
-      'fetchAllControlCenters',
-      'fetchAllOrders',
-      'fetchAllAssetCategories',
     ]);
-    const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    const fetchAllAssetCategoriesSpy: any = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
-    const fetchAllDocTypesSpy: any = stroageService.fetchAllDocTypes.and.returnValue(of([]));
-    const fetchAllTranTypesSpy: any = stroageService.fetchAllTranTypes.and.returnValue(of([]));
-    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    const fetchAllOrdersSpy: any = stroageService.fetchAllOrders.and.returnValue(of([]));
-    const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
+    const fetchAllTranTypesSpy: any = stroageService.fetchAllTranTypes.and.returnValue(of(fakeData.finTranTypes));
 
     TestBed.configureTestingModule({
       imports: [
@@ -73,8 +65,11 @@ describe('TranTypeListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
-    // expect(component).toBeTruthy();
-    expect(1).toBe(1);
+  it('1. should be created', () => {
+    expect(component).toBeTruthy();
+  });
+  it('1. Check data is loaded', () => {
+    expect(component.dataSource.data.length).toBeGreaterThan(0);
+    expect(component.dataSource.data.length).toEqual(fakeData.finTranTypes.length);
   });
 });

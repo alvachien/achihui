@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { UserAuthInfo } from '../model';
 
-describe('FinCurrencyService (with mocks)', () => {
+describe('FinCurrencyService', () => {
   let service: FinCurrencyService;
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
@@ -28,7 +28,7 @@ describe('FinCurrencyService (with mocks)', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        HttpClientTestingModule
+        HttpClientTestingModule,
       ],
       providers: [
         FinCurrencyService,
