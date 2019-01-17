@@ -19,32 +19,31 @@ import * as moment from 'moment';
 export class FinanceStorageService {
   // Buffer
   private _isAcntCtgyListLoaded: boolean;
+  private _listAccountCategory: AccountCategory[];
   private _isDocTypeListLoaded: boolean;
+  private _listDocType: DocumentType[];
   private _isTranTypeListLoaded: boolean;
+  private _listTranType: TranType[];
   private _isAsstCtgyListLoaded: boolean;
+  private _listAssetCategory: AssetCategory[];
   private _isAccountListLoaded: boolean;
   private _isConctrolCenterListLoaded: boolean;
   private _isOrderListLoaded: boolean;
-  // private _isDocumentListLoaded: boolean;
 
-  listAccountCategoryChange: BehaviorSubject<AccountCategory[]> = new BehaviorSubject<AccountCategory[]>([]);
   get AccountCategories(): AccountCategory[] {
-    return this.listAccountCategoryChange.value;
+    return this._listAccountCategory;
   }
 
-  listDocTypeChange: BehaviorSubject<DocumentType[]> = new BehaviorSubject<DocumentType[]>([]);
   get DocumentTypes(): DocumentType[] {
-    return this.listDocTypeChange.value;
+    return this._listDocType;
   }
 
-  listTranTypeChange: BehaviorSubject<TranType[]> = new BehaviorSubject<TranType[]>([]);
   get TranTypes(): TranType[] {
-    return this.listTranTypeChange.value;
+    return this._listTranType;
   }
 
-  listAssetCategoryChange: BehaviorSubject<AssetCategory[]> = new BehaviorSubject<AssetCategory[]>([]);
   get AssetCategories(): AssetCategory[] {
-    return this.listAssetCategoryChange.value;
+    return this._listAssetCategory;
   }
 
   listAccountChange: BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
@@ -90,8 +89,14 @@ export class FinanceStorageService {
     }
 
     this._isAcntCtgyListLoaded = false;
+    this._listAccountCategory = [];
     this._isDocTypeListLoaded = false;
+    this._listDocType = [];
     this._isTranTypeListLoaded = false;
+    this._listTranType = [];
+    this._isAsstCtgyListLoaded = false;
+    this._listAssetCategory = [];
+
     this._isAccountListLoaded = false;
     this._isConctrolCenterListLoaded = false;
     this._isOrderListLoaded = false;
@@ -119,21 +124,20 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAccountCategories in FinanceStorageService`);
           }
 
-          let listRst: AccountCategory[] = [];
+          this._listAccountCategory = [];
           const rjs: any = <any>response;
 
           if (rjs instanceof Array && rjs.length > 0) {
             for (const si of rjs) {
               const rst: AccountCategory = new AccountCategory();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listAccountCategory.push(rst);
             }
           }
 
           this._isAcntCtgyListLoaded = true;
-          this.listAccountCategoryChange.next(listRst);
 
-          return listRst;
+          return this._listAccountCategory;
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
@@ -141,12 +145,12 @@ export class FinanceStorageService {
             }
 
             this._isAcntCtgyListLoaded = false;
-            this.listAccountCategoryChange.next([]);
+            this._listAccountCategory = [];
 
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listAccountCategoryChange.value);
+      return of(this._listAccountCategory);
     }
   }
 
@@ -172,20 +176,19 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceStorageService.`);
           }
 
-          let listRst: DocumentType[] = [];
+          this._listDocType = [];
 
           const rjs: any = <any>response;
           if (rjs instanceof Array && rjs.length > 0) {
             for (const si of rjs) {
               const rst: DocumentType = new DocumentType();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listDocType.push(rst);
             }
           }
           this._isDocTypeListLoaded = true;
-          this.listDocTypeChange.next(listRst);
 
-          return listRst;
+          return this._listDocType;
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
@@ -193,12 +196,12 @@ export class FinanceStorageService {
             }
 
             this._isDocTypeListLoaded = false;
-            this.listDocTypeChange.next([]);
+            this._listDocType = [];
 
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listDocTypeChange.value);
+      return of(this._listDocType);
     }
   }
 
@@ -224,22 +227,22 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceStorageService.`);
           }
 
-          let listRst: TranType[] = [];
+          this._listTranType = [];
 
           const rjs: any = <any>response;
           if (rjs instanceof Array && rjs.length > 0) {
             for (const si of rjs) {
               const rst: TranType = new TranType();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listTranType.push(rst);
             }
           }
 
           // Prepare for the hierarchy
-          this.buildTranTypeHierarchy(listRst);
+          this.buildTranTypeHierarchy(this._listTranType);
 
           // Sort it
-          listRst.sort((a: any, b: any) => {
+          this._listTranType.sort((a: any, b: any) => {
             if (a.Expense) {
               if (b.Expense) {
                 // Both are expense
@@ -258,8 +261,8 @@ export class FinanceStorageService {
           });
 
           this._isTranTypeListLoaded = true;
-          this.listTranTypeChange.next(listRst);
-          return listRst;
+
+          return this._listTranType;
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
@@ -267,12 +270,12 @@ export class FinanceStorageService {
             }
 
             this._isTranTypeListLoaded = false;
-            this.listTranTypeChange.next([]);
+            this._listTranType = [];
 
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listTranTypeChange.value);
+      return of(this._listTranType);
     }
   }
 
@@ -297,21 +300,20 @@ export class FinanceStorageService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAssetCategories in FinanceStorageService`);
           }
 
-          let listRst: AssetCategory[] = [];
+          this._listAssetCategory = [];
           const rjs: any = <any>response;
 
           if (rjs instanceof Array && rjs.length > 0) {
             for (const si of rjs) {
               const rst: AssetCategory = new AssetCategory();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listAssetCategory.push(rst);
             }
           }
 
           this._isAsstCtgyListLoaded = true;
-          this.listAssetCategoryChange.next(listRst);
 
-          return listRst;
+          return this._listAssetCategory;
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
@@ -319,12 +321,12 @@ export class FinanceStorageService {
             }
 
             this._isAsstCtgyListLoaded = false;
-            this.listAssetCategoryChange.next([]);
+            this._listAssetCategory = [];
 
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listAssetCategoryChange.value);
+      return of(this._listAssetCategory);
     }
   }
 

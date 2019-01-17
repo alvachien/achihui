@@ -12,7 +12,7 @@ describe('LibraryStorageService', () => {
   beforeEach(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchHomeMembers']);
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers']);
     const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
       _id: 1,
       BaseCurrency: 'CNY',
@@ -25,8 +25,8 @@ describe('LibraryStorageService', () => {
       ],
       providers: [
         LibraryStorageService,
-        { provide: AuthService, userValue: authServiceStub },
-        { provide: HomeDefDetailService, userValue: homeService },
+        { provide: AuthService, useValue: authServiceStub },
+        { provide: HomeDefDetailService, useValue: homeService },
       ],
     });
   });

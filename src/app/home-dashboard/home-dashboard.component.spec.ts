@@ -22,7 +22,7 @@ describe('HomeDashboardComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
-    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchHomeMembers', 'getHomeKeyFigure']);
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers', 'getHomeKeyFigure']);
     const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
       _id: 1,
       BaseCurrency: 'CNY',

@@ -452,6 +452,17 @@ export class TagCount {
   }
 }
 
+/**
+ * App. language JSON format
+ */
+export interface AppLanguageJson {
+  lcid: number;
+  englishName: string;
+  nativeName: string;
+  isoName: string;
+  appFlag: boolean;
+}
+
 // App language: the language set which supported by current app.
 export class AppLanguage {
   private _lcid: number;
@@ -489,6 +500,24 @@ export class AppLanguage {
   }
   set AppFlag(af: boolean) {
     this._appflag = af;
+  }
+
+  public onSetData(data?: AppLanguageJson): void {
+    if (data && data.lcid) {
+      this.Lcid = +data.lcid;
+    }
+    if (data && data.englishName) {
+      this.EnglishName = data.englishName;
+    }
+    if (data && data.nativeName) {
+      this.NativeName = data.nativeName;
+    }
+    if (data && data.isoName) {
+      this.IsoName = data.isoName;
+    }
+    if (data && data.appFlag !== undefined) {
+      this.AppFlag = data.appFlag;
+    }
   }
 }
 

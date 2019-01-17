@@ -23,7 +23,7 @@ describe('DocumentItemOverviewComponent', () => {
 
   beforeEach(async(() => {
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchHomeMembers']);
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers']);
     const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
       _id: 1,
       BaseCurrency: 'CNY',

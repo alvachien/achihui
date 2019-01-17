@@ -26,7 +26,7 @@ describe('AccountExtADPComponent', () => {
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['calcADPTmpDocs']);
     const calcADPTmpDocsSpy: any = stroageService.calcADPTmpDocs.and.returnValue(of([]));
-    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome']);
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome']);
     const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
       _id: 1,
     });

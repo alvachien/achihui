@@ -9,11 +9,11 @@ import { AuthService } from './auth.service';
 @Injectable()
 export class FinCurrencyService {
   private _islistLoaded: boolean;
+  private _listData: Currency[];
 
   // Buffer in current page.
-  listDataChange: BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
   get Currencies(): Currency[] {
-    return this.listDataChange.value;
+    return this._listData;
   }
 
   constructor(private _http: HttpClient,
@@ -23,6 +23,7 @@ export class FinCurrencyService {
     }
 
     this._islistLoaded = false; // Performance improvement
+    this._listData = [];
   }
 
   public fetchAllCurrencies(forceReload?: boolean): Observable<Currency[]> {
@@ -42,20 +43,19 @@ export class FinCurrencyService {
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinCurrencyService`);
           }
 
-          let listRst: Currency[] = [];
+          this._listData = [];
           const rjs: any = <any>response;
 
           if (rjs instanceof Array && rjs.length > 0) {
             for (const si of rjs) {
               const rst: Currency = new Currency();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listData.push(rst);
             }
           }
 
           this._islistLoaded = true;
-          this.listDataChange.next(listRst);
-          return listRst;
+          return this._listData;
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
@@ -63,12 +63,12 @@ export class FinCurrencyService {
             }
 
             this._islistLoaded = false;
-            this.listDataChange.next([]);
-  
+            this._listData = [];
+
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listDataChange.value);
+      return of(this._listData);
     }
   }
 }

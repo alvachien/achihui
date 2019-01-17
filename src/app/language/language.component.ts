@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { MatPaginator, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -12,17 +12,19 @@ import { LanguageService } from '../services';
   templateUrl: './language.component.html',
   styleUrls: ['./language.component.scss'],
 })
-export class LanguageComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LanguageComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['lcid', 'isoname', 'enname', 'nvname', 'appflag'];
-  dataSource: MatTableDataSource<AppLanguage> = new MatTableDataSource();
+  dataSource: MatTableDataSource<AppLanguage>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(public _storageService: LanguageService) {
+  constructor(public _storageService: LanguageService,
+    private _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering LanguageComponent constructor...');
     }
+    this.dataSource = new MatTableDataSource();
   }
 
   ngOnInit(): void {
@@ -31,14 +33,22 @@ export class LanguageComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this._destroyed$ = new ReplaySubject(1);
 
-    this._storageService.fetchAllLanguages();
-  }
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LanguageComponent ngOnInit...');
-    }
-    this.dataSource.data = this._storageService.Languages;
-    this.dataSource.paginator = this.paginator;
+    this._storageService.fetchAllLanguages().pipe(takeUntil(this._destroyed$)).subscribe(
+      (x: AppLanguage[]) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering LanguageComponent ngOnInit, fetchAllLanguages...');
+        }
+        this.dataSource = new MatTableDataSource(x);
+        this.dataSource.paginator = this.paginator;
+      },
+      (error: any) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering LanguageComponent ngOnInit, fetchAllLanguages, failed with ${error}`);
+        }
+        this._snackBar.open(error, undefined, {
+          duration: 2000,
+        });
+      });
   }
 
   ngOnDestroy(): void {

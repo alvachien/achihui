@@ -54,7 +54,7 @@ describe('DocumentADPCreateComponent', () => {
     const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     const fetchAllCurrenciesSpy: any = currService.fetchAllCurrencies.and.returnValue(of([]));
-    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome']);
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome']);
     const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
       _id: 1,
     });

@@ -36,7 +36,7 @@ export class FinanceCurrencyComponent implements OnInit, AfterViewInit, OnDestro
     this._currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Do nothing
       if (x) {
-        this.dataSource.data = x;
+        this.dataSource = new MatTableDataSource(x);
         this.dataSource.paginator = this.paginator;
       }
     }, (error: any) => {

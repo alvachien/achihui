@@ -20,7 +20,7 @@ describe('HomeMessageComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
-    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchHomeMembers', 'fetchAllMembersInChosedHome']);
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers', 'fetchAllMembersInChosedHome']);
     const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
       _id: 1,
       BaseCurrency: 'CNY',

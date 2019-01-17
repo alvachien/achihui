@@ -1,19 +1,27 @@
 import {
   Currency, HomeDef, HomeMember, HomeMemberRelationEnum, DocumentType,
   AccountCategory, TranType, AssetCategory, Account,
-  UserAuthInfo
+  UserAuthInfo, AppLanguage, CurrencyJson, AppLanguageJson, DocumentTypeJson,
+  AccountCategoryJson, TranTypeJson, AssetCategoryJson,
 } from '../app/model';
 import { User } from 'oidc-client';
 
 export class FakeDataHelper {
   private _currencies: Currency[];
+  private _currenciesFromAPI: CurrencyJson[];
   private _chosedHome: HomeDef;
   private _finDocTypes: DocumentType[];
+  private _finDocTypesFromAPI: DocumentTypeJson[];
   private _finAccountCategories: AccountCategory[];
+  private _finAccountCategoriesFromAPI: AccountCategoryJson[];
   private _finTranType: TranType[];
+  private _finTranTypeFromAPI: TranTypeJson[];
   private _finAssetCategories: AssetCategory[];
+  private _finAssetCategoriesFromAPI: AssetCategoryJson[];
   private _finAccounts: Account[];
   private _currUser: UserAuthInfo;
+  private _appLanguages: AppLanguage[];
+  private _appLanguagesFromAPI: AppLanguageJson[];
 
   readonly userID1: string = 'abcdefg';
   readonly userID1Sub: string = '12345abcdefg';
@@ -27,6 +35,11 @@ export class FakeDataHelper {
       return this._currencies;
     }
   }
+  get currenciesFromAPI(): CurrencyJson[] {
+    if (this._currenciesFromAPI) {
+      return this._currenciesFromAPI;
+    }
+  }
   get chosedHome(): HomeDef {
     if (this._chosedHome) {
       return this._chosedHome;
@@ -37,9 +50,19 @@ export class FakeDataHelper {
       return this._finDocTypes;
     }
   }
+  get finDocTypesFromAPI(): DocumentTypeJson[] {
+    if (this._finDocTypesFromAPI) {
+      return this._finDocTypesFromAPI;
+    }
+  }
   get finAccountCategories(): AccountCategory[] {
     if (this._finAccountCategories) {
       return this._finAccountCategories;
+    }
+  }
+  get finAccountCategoriesFromAPI(): AccountCategoryJson[] {
+    if (this._finAccountCategoriesFromAPI) {
+      return this._finAccountCategoriesFromAPI;
     }
   }
   get finAssetCategories(): AssetCategory[] {
@@ -47,9 +70,19 @@ export class FakeDataHelper {
       return this._finAssetCategories;
     }
   }
+  get finAssetCategoriesFromAPI(): AssetCategoryJson[] {
+    if (this._finAssetCategoriesFromAPI) {
+      return this._finAssetCategoriesFromAPI;
+    }
+  }
   get finTranTypes(): TranType[] {
     if (this._finTranType) {
       return this._finTranType;
+    }
+  }
+  get finTranTypesFromAPI(): TranTypeJson[] {
+    if (this._finTranTypeFromAPI) {
+      return this._finTranTypeFromAPI;
     }
   }
   get finAccounts(): Account[] {
@@ -60,6 +93,16 @@ export class FakeDataHelper {
   get currentUser(): UserAuthInfo {
     if (this._currUser) {
       return this._currUser;
+    }
+  }
+  get appLanguages(): AppLanguage[] {
+    if (this._appLanguages) {
+      return this._appLanguages;
+    }
+  }
+  get appLanguagesFromAPI(): any[] {
+    if (this._appLanguagesFromAPI) {
+      return this._appLanguagesFromAPI;
     }
   }
 
@@ -78,6 +121,21 @@ export class FakeDataHelper {
     curr.DisplayName = 'US Dollar';
     curr.Currency = 'USD';
     this._currencies.push(curr);
+  }
+  public buildCurrenciesFromAPI(): void {
+    this._currenciesFromAPI = [];
+    let curr: CurrencyJson = {
+      name: 'Chinese Yuan',
+      symbol: '#',
+      curr: 'CNY',
+    };
+    this._currenciesFromAPI.push(curr);
+    let curr2: CurrencyJson = {
+      name: 'US Dollar',
+      symbol: '$',
+      curr: 'USD',
+    };
+    this._currenciesFromAPI.push(curr2);
   }
   public buildChosedHome(): void {
     this._chosedHome = new HomeDef();
@@ -716,9 +774,122 @@ export class FakeDataHelper {
         sub: this.userID1Sub,
         mail: 'usr@usr.com',
         access_token: 'access_token',
-      }
+      },
     };
-    
+
     this._currUser.setContent(usr as User);
+  }
+  public buildAppLanguage(): void {
+    this._appLanguages = [];
+    let alan: AppLanguage = new AppLanguage();
+    alan.EnglishName = 'English';
+    alan.IsoName = 'en';
+    alan.AppFlag = true;
+    alan.Lcid = 9;
+    alan.NativeName = 'English';
+    this._appLanguages.push(alan);
+    alan = new AppLanguage();
+    alan.Lcid = 4;
+    alan.IsoName = 'zh-Hans';
+    alan.EnglishName = 'Chinese (Simplified';
+    alan.NativeName = '简体中文';
+    alan.AppFlag = true;
+    this._appLanguages.push(alan);
+  }
+  public buildAppLanguageFromAPI(): void {
+    this._appLanguagesFromAPI = [];
+    let alan: AppLanguageJson = {
+      lcid: 9,
+      englishName: 'English',
+      appFlag: true,
+      nativeName: 'English',
+      isoName: 'en',
+    };
+    this._appLanguagesFromAPI.push(alan);
+    let alan2: AppLanguageJson = {
+      lcid: 4,
+      englishName: 'Chinese (Simplified)',
+      appFlag: true,
+      nativeName: '简体中文',
+      isoName: 'zh-Hans',
+    };
+    this._appLanguagesFromAPI.push(alan2);
+  }
+  public buildFinConfigDataFromAPI(): void {
+    this._finDocTypesFromAPI = [];
+    this._finAccountCategoriesFromAPI = [];
+    this._finTranTypeFromAPI = [];
+    this._finAssetCategoriesFromAPI = [];
+    // Doc. type
+    let dt1: DocumentTypeJson = {
+      id: 1,
+      name: 'Type 1',
+      comment: 'comment for type 1',
+    };
+    this._finDocTypesFromAPI.push(dt1);
+    let dt2: DocumentTypeJson = {
+      id: 2,
+      name: 'Type 2',
+      comment: 'comment for type 2',
+    };
+    this._finDocTypesFromAPI.push(dt2);
+    // Account category
+    let ac1: AccountCategoryJson = {
+      id: 1,
+      name: 'account category 1',
+      assetFlag: true,
+      comment: 'comment for category 1',
+    };
+    this._finAccountCategoriesFromAPI.push(ac1);
+    let ac2: AccountCategoryJson = {
+      id: 2,
+      name: 'account category 2',
+      assetFlag: false,
+      comment: 'comment for category 2',
+    };
+    this._finAccountCategoriesFromAPI.push(ac2);
+    // Tran type
+    let tt1: TranTypeJson = {
+      id: 1,
+      name: 'tran type 1',
+      expense: false,
+      comment: 'comment for tran type 1',
+    };
+    this._finTranTypeFromAPI.push(tt1);
+    let tt11: TranTypeJson = {
+      id: 11,
+      name: 'type 1-1',
+      expense: false,
+      parID: 1,
+      comment: 'comment for tran type 11',
+    };
+    this._finTranTypeFromAPI.push(tt11);
+    let tt2: TranTypeJson = {
+      id: 2,
+      name: 'type 2',
+      expense: true,
+      comment: 'its type 2',
+    };
+    this._finTranTypeFromAPI.push(tt2);
+    let tt21: TranTypeJson = {
+      id: 21,
+      name: 'type 2-1',
+      expense: true,
+      comment: 'type 21',
+    };
+    this._finTranTypeFromAPI.push(tt21);
+    // Asset category
+    let asc1: AssetCategoryJson = {
+      id: 1,
+      name: 'asset 1',
+      desp: 'desp of asset 1',
+    };
+    this._finAssetCategoriesFromAPI.push(asc1);
+    let asc2: AssetCategoryJson = {
+      id: 2,
+      name: 'asset 2',
+      desp: 'desp of asset 2',
+    };
+    this._finAssetCategoriesFromAPI.push(asc2);
   }
 }

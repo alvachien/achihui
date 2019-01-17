@@ -23,7 +23,7 @@ describe('OverviewComponent', () => {
     const fetchAllEventsSpy: any = storageService.fetchAllEvents.and.returnValue(of([]));
     const fetchHabitDetailWithCheckInSpy: any = storageService.fetchHabitDetailWithCheckIn.and.returnValue(of([]));
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
     const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
       _id: 1,
     });

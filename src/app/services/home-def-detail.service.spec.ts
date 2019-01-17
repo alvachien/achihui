@@ -18,7 +18,7 @@ describe('HomeDefDetailService', () => {
       ],
       providers: [
         HomeDefDetailService,
-        { provide: AuthService, userValue: authServiceStub },
+        { provide: AuthService, useValue: authServiceStub },
       ],
     });
   });
