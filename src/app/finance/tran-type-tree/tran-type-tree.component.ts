@@ -8,6 +8,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, TranType, TranTypeLevelEnum, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * Tran type data with nested structure.
@@ -42,7 +43,8 @@ export class TranTypeTreeComponent implements OnInit, OnDestroy {
   dataSource: MatTreeFlatDataSource<TranTypeTreeNode, TranTypeTreeFlatNode>;
 
   constructor(public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService) {
+    public _uiStatusService: UIStatusService,
+    private _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent constructor...');
     }
@@ -73,6 +75,9 @@ export class TranTypeTreeComponent implements OnInit, OnDestroy {
       }
     }, (error: any) => {
       // Do nothing
+      this._snackBar.open(error, undefined, {
+        duration: 2000,
+      });
     }, () => {
       this.isLoadingResults = false;
     });

@@ -45,10 +45,10 @@ describe('FinanceStorageService', () => {
 
     httpClient = TestBed.get(HttpClient);
     httpTestingController = TestBed.get(HttpTestingController);
+    service = TestBed.get(FinanceStorageService);
   });
 
   it('1. should be created via inject', () => {
-    service = TestBed.get(FinanceStorageService);
     expect(service).toBeTruthy();
   });
 
@@ -76,8 +76,10 @@ describe('FinanceStorageService', () => {
       );
 
       // Service should have made one request to GET account categories from expected URL
-      const req: any = httpTestingController.expectOne(accountCategoryAPIURL);
-      expect(req.request.method).toEqual('GET');
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock account categories
       req.flush(fakeData.finAccountCategoriesFromAPI);
@@ -95,7 +97,11 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(accountCategoryAPIURL);
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
       req.flush([]); // Respond with no data
     });
 
@@ -110,7 +116,10 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(accountCategoryAPIURL);
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+      });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -127,15 +136,18 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const requests: any = httpTestingController.match(accountCategoryAPIURL);
-      expect(requests.length).toEqual(1, 'shall be only 1 calls to real API!');
-      requests[0].flush(fakeData.finAccountCategoriesFromAPI);
+      const reqs: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+      });
+      reqs[0].flush(fakeData.finAccountCategoriesFromAPI);
       httpTestingController.verify();
 
       // Second call
       service.fetchAllAccountCategories().subscribe();
-      const requests2: any = httpTestingController.match(accountCategoryAPIURL);
-      expect(requests2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+      const req2: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+       });
+      expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
       service.fetchAllAccountCategories().subscribe(
@@ -146,8 +158,10 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const requests3: any = httpTestingController.match(accountCategoryAPIURL);
-      expect(requests3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+      const req3: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
+       });
+      expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
 
@@ -174,8 +188,10 @@ describe('FinanceStorageService', () => {
       );
 
       // Service should have made one request to GET asset categories from expected URL
-      const req: any = httpTestingController.expectOne(assetCategoryAPIURL);
-      expect(req.request.method).toEqual('GET');
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock asset categories
       req.flush(fakeData.finAssetCategoriesFromAPI);
@@ -193,7 +209,10 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(assetCategoryAPIURL);
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
       req.flush([]); // Respond with no data
     });
 
@@ -208,7 +227,10 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(assetCategoryAPIURL);
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -225,15 +247,19 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const requests: any = httpTestingController.match(assetCategoryAPIURL);
-      expect(requests.length).toEqual(1, 'shall be only 1 calls to real API!');
-      requests[0].flush(fakeData.finAssetCategoriesFromAPI);
+      const reqs: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+       });
+      expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
+      reqs[0].flush(fakeData.finAssetCategoriesFromAPI);
       httpTestingController.verify();
 
       // Second call
       service.fetchAllAssetCategories().subscribe();
-      const requests2: any = httpTestingController.match(assetCategoryAPIURL);
-      expect(requests2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+      const reqs2: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+       });
+      expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
       service.fetchAllAssetCategories().subscribe(
@@ -244,8 +270,10 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const requests3: any = httpTestingController.match(assetCategoryAPIURL);
-      expect(requests3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+      const reqs3: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
+       });
+      expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
 
@@ -272,8 +300,10 @@ describe('FinanceStorageService', () => {
       );
 
       // Service should have made one request to GET doc types from expected URL
-      const req: any = httpTestingController.expectOne(docTypeAPIURL);
-      expect(req.request.method).toEqual('GET');
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock doc types
       req.flush(fakeData.finDocTypesFromAPI);
@@ -291,7 +321,10 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(docTypeAPIURL);
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
       req.flush([]); // Respond with no data
     });
 
@@ -306,7 +339,10 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(docTypeAPIURL);
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -323,15 +359,19 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const requests: any = httpTestingController.match(docTypeAPIURL);
-      expect(requests.length).toEqual(1, 'shall be only 1 calls to real API!');
-      requests[0].flush(fakeData.finDocTypesFromAPI);
+      const reqs: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
+      reqs[0].flush(fakeData.finDocTypesFromAPI);
       httpTestingController.verify();
 
       // Second call
       service.fetchAllDocTypes().subscribe();
-      const requests2: any = httpTestingController.match(docTypeAPIURL);
-      expect(requests2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+      const reqs2: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
       service.fetchAllDocTypes().subscribe(
@@ -342,8 +382,10 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const requests3: any = httpTestingController.match(docTypeAPIURL);
-      expect(requests3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+      const reqs3: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
 
@@ -370,8 +412,10 @@ describe('FinanceStorageService', () => {
       );
 
       // Service should have made one request to GET tran types from expected URL
-      const req: any = httpTestingController.expectOne(tranTypeAPIURL);
-      expect(req.request.method).toEqual('GET');
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock tran types
       req.flush(fakeData.finTranTypesFromAPI);
@@ -389,7 +433,10 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(tranTypeAPIURL);
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
       req.flush([]); // Respond with no data
     });
 
@@ -404,7 +451,10 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(tranTypeAPIURL);
+      const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
@@ -421,15 +471,19 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const requests: any = httpTestingController.match(tranTypeAPIURL);
-      expect(requests.length).toEqual(1, 'shall be only 1 calls to real API!');
-      requests[0].flush(fakeData.finTranTypesFromAPI);
+      const reqs: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
+      reqs[0].flush(fakeData.finTranTypesFromAPI);
       httpTestingController.verify();
 
       // Second call
       service.fetchAllTranTypes().subscribe();
-      const requests2: any = httpTestingController.match(tranTypeAPIURL);
-      expect(requests2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+      const reqs2: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
       service.fetchAllTranTypes().subscribe(
@@ -440,8 +494,10 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const requests3: any = httpTestingController.match(tranTypeAPIURL);
-      expect(requests3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+      const reqs3: any = httpTestingController.match(requrl => {
+        return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
+       });
+      expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
 });

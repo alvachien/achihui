@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
+import { MatTableDataSource, MatSort, MatPaginator, MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -85,6 +85,7 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
+    private _snackBar: MatSnackBar,
     ) {
 
     this.isLoadingResults = false;
@@ -125,11 +126,18 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnInit, fetchAllTranTypes...');
       }
 
-      this.dataSource.data = x;
+      if (x) {
+        this.dataSource = new MatTableDataSource(x);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      }
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering TranTypeListComponent ngOnInit, fetchAllTranTypes, failed with ${error}`);
       }
+      this._snackBar.open(error, undefined, {
+        duration: 2000,
+      });
     }, () => {
       this.isLoadingResults = false;
     });
@@ -164,9 +172,6 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
     //     })
     //   ).subscribe(data => this.dataSource.data = data);
     // !!! Second option !!!
-
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {

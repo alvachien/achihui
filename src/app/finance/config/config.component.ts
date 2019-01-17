@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator } from '@angular/material';
 import { LogLevel, AccountCategory, AssetCategory, DocumentType } from '../../model';
 import { FinanceStorageService } from '../../services';
@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './config.component.html',
   styleUrls: ['./config.component.scss'],
 })
-export class ConfigComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ConfigComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   dataSourceAcntCtgy: MatTableDataSource<AccountCategory> = new MatTableDataSource<AccountCategory>();
   dataSourceAsstCtgy: MatTableDataSource<AssetCategory> = new MatTableDataSource<AssetCategory>();
@@ -45,9 +45,18 @@ export class ConfigComponent implements OnInit, AfterViewInit, OnDestroy {
     .pipe(takeUntil(this._destroyed$))
     .subscribe((x: any) => {
       // Bind to the tables
-      this.dataSourceAcntCtgy.data = x[0];
-      this.dataSourceDocType.data = x[1];
-      this.dataSourceAsstCtgy.data = x[2];
+      if (x instanceof Array && x.length > 0 && x[0] instanceof Array && x[0].length > 0) {
+        this.dataSourceAcntCtgy = new MatTableDataSource(x[0]);
+        this.dataSourceAcntCtgy.paginator = this.paginatorAcntCtgy;  
+      }
+      if (x instanceof Array && x.length > 1 && x[1] instanceof Array && x[1].length > 0) {
+        this.dataSourceDocType = new MatTableDataSource(x[1]);
+        this.dataSourceDocType.paginator = this.paginatorDocType;  
+      }
+      if (x instanceof Array && x.length > 2 && x[2] instanceof Array && x[2].length > 0) {
+        this.dataSourceAsstCtgy = new MatTableDataSource(x[2]);
+        this.dataSourceAsstCtgy.paginator = this.paginatorAstCtgy;  
+      }
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ConfigComponent forkJoin failed: ${error.toString()}`);
@@ -57,15 +66,6 @@ export class ConfigComponent implements OnInit, AfterViewInit, OnDestroy {
         duration: 2000,
       });
     });
-  }
-
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ConfigComponent ngAfterViewInit...');
-    }
-    this.dataSourceAcntCtgy.paginator = this.paginatorAcntCtgy;
-    this.dataSourceDocType.paginator = this.paginatorDocType;
-    this.dataSourceAsstCtgy.paginator = this.paginatorAstCtgy;
   }
 
   ngOnDestroy(): void {

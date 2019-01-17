@@ -307,84 +307,22 @@ Once using ```RouterTestingModule```, you shall not use other provider for ```Ro
 ### Asynchronous service testing
 There are several kind of methods to test it, see example [origin link](https://stackblitz.com/angular/gqeobkypklv?file=src%2Fapp%2Ftwain%2Ftwain.component.spec.ts)
 
+Refer to ```LanguageService.spec.ts``` for an resuable testing.
+
+### Using ```RouterTestingController``` handle URL with/without parameters
+To check the URL without parameters, is quite simple:
 ```typescript
-  describe('when test with asynchronous observable', () => {
-    beforeEach(() => {
-      // Simulate delayed observable values with the `asyncData()` helper
-      getQuoteSpy.and.returnValue(asyncData(testQuote));
+    const req: any = httpTestingController.expectOne(currAPIURL);
+    expect(req.request.method).toEqual('GET');
+```
+
+To check the URL with parameters, normally you get two error messages (in sequence) like:
+- Error: Expected one matching request for criteria "Match URL: http://localhost:25688/api/FinanceAccountCategory", found none.
+- Error: Expected no open requests, found 1: GET http://localhost:25688/api/FinanceAccountCategory
+
+```typescript
+    const req: any = httpTestingController.expectOne(requrl => {
+        return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
     });
-
-    it('should not show quote before OnInit', () => {
-      expect(quoteEl.textContent).toBe('', 'nothing displayed');
-      expect(errorMessage()).toBeNull('should not show error element');
-      expect(getQuoteSpy.calls.any()).toBe(false, 'getQuote not yet called');
-    });
-
-    it('should still not show quote after component initialized', () => {
-      fixture.detectChanges();
-      // getQuote service is async => still has not returned with quote
-      // so should show the start value, '...'
-      expect(quoteEl.textContent).toBe('...', 'should show placeholder');
-      expect(errorMessage()).toBeNull('should not show error');
-      expect(getQuoteSpy.calls.any()).toBe(true, 'getQuote called');
-    });
-
-    it('should show quote after getQuote (fakeAsync)', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit()
-      expect(quoteEl.textContent).toBe('...', 'should show placeholder');
-
-      tick(); // flush the observable to get the quote
-      fixture.detectChanges(); // update view
-
-      expect(quoteEl.textContent).toBe(testQuote, 'should show quote');
-      expect(errorMessage()).toBeNull('should not show error');
-    }));
-
-    it('should show quote after getQuote (async)', async(() => {
-      fixture.detectChanges(); // ngOnInit()
-      expect(quoteEl.textContent).toBe('...', 'should show placeholder');
-
-      fixture.whenStable().then(() => { // wait for async getQuote
-        fixture.detectChanges();        // update view with quote
-        expect(quoteEl.textContent).toBe(testQuote);
-        expect(errorMessage()).toBeNull('should not show error');
-      });
-    }));
-
-
-    it('should show last quote (quote done)', (done: DoneFn) => {
-      fixture.detectChanges();
-
-      component.quote.pipe( last() ).subscribe(() => {
-        fixture.detectChanges(); // update view with quote
-        expect(quoteEl.textContent).toBe(testQuote);
-        expect(errorMessage()).toBeNull('should not show error');
-        done();
-      });
-    });
-
-    it('should show quote after getQuote (spy done)', (done: DoneFn) => {
-      fixture.detectChanges();
-
-      // the spy's most recent call returns the observable with the test quote
-      getQuoteSpy.calls.mostRecent().returnValue.subscribe(() => {
-        fixture.detectChanges(); // update view with quote
-        expect(quoteEl.textContent).toBe(testQuote);
-        expect(errorMessage()).toBeNull('should not show error');
-        done();
-      });
-    });
-
-    it('should display error when TwainService fails', fakeAsync(() => {
-      // tell spy to return an async error observable
-      getQuoteSpy.and.returnValue(asyncError<string>('TwainService test failure'));
-
-      fixture.detectChanges();
-      tick();                  // component shows error after a setTimeout()
-      fixture.detectChanges(); // update error message
-
-      expect(errorMessage()).toMatch(/test failure/, 'should display error');
-      expect(quoteEl.textContent).toBe('...', 'should show placeholder');
-    }));
-  });
+    expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 ```

@@ -63,7 +63,7 @@ describe('FinanceCurrencyComponent', () => {
     expect(component.dataSource.data.length).toEqual(0);
   });
 
-  describe('faked data with async loading', () => {
+  describe('2. faked data with async loading', () => {
     beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
     });
@@ -110,7 +110,7 @@ describe('FinanceCurrencyComponent', () => {
 
   });
 
-  describe('Exception case handling (async loading)', () => {
+  describe('3. Exception case handling (async loading)', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
