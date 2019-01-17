@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
@@ -20,6 +19,7 @@ describe('FinanceCurrencyComponent', () => {
   let http: HttpTestingController;
   let fakeData: FakeDataHelper;
   let fetchAllCurrenciesSpy: any;
+
   beforeEach(async(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildCurrencies();

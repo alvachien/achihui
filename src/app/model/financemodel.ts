@@ -23,7 +23,7 @@ export enum RepaymentMethodEnum {
 /**
  * Currency definition in HIH
  */
-export interface ICurrencyJson {
+export interface CurrencyJson {
   curr: string;
   name: string;
   symbol: string;
@@ -102,12 +102,12 @@ export class Currency extends hih.BaseModel {
 /**
  * Account category in JSON format
  */
-export interface IAccountCategoryJson {
+export interface AccountCategoryJson {
   id: number;
   hid?: number;
   name: string;
   assetFlag: boolean;
-  comment: string;
+  comment?: string;
 }
 
 /**
@@ -195,6 +195,13 @@ export class AccountCategory extends hih.BaseModel {
 /**
  * Document type
  */
+export interface DocumentTypeJson {
+  hid?: number;
+  id: number;
+  name: string;
+  comment?: string;
+}
+
 export class DocumentType extends hih.BaseModel {
   private _hid: number;
   private _id: number;
@@ -267,6 +274,13 @@ export class DocumentType extends hih.BaseModel {
 /**
  * Asset category
  */
+export interface AssetCategoryJson {
+  hid?: number;
+  id: number;
+  name: string;
+  desp?: string;
+}
+
 export class AssetCategory extends hih.BaseModel {
   private _id: number;
   get ID(): number {
@@ -1407,6 +1421,15 @@ export enum TranTypeLevelEnum {
 /**
  * Tran type
  */
+export interface TranTypeJson {
+  hid?: number;
+  id: number;
+  name: string;
+  expense: boolean;
+  parID?: number;
+  comment?: string;
+}
+
 export class TranType extends hih.BaseModel {
   private _id: number;
   get Id(): number {

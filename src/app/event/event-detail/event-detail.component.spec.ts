@@ -23,7 +23,7 @@ describe('EventDetailComponent', () => {
 
   beforeEach(async(() => {
     const stgserviceStub: Partial<EventStorageService> = {};
-    const homeService: any = jasmine.createSpyObj('HomeDefService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
     const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
       _id: 1,
     });

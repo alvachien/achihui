@@ -1,19 +1,17 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, AppLanguage } from '../model';
-import { AuthService } from './auth.service';
 
 @Injectable()
 export class LanguageService {
   // Buffer
   private _islistLoaded: boolean;
-
-  listDataChange: BehaviorSubject<AppLanguage[]> = new BehaviorSubject<AppLanguage[]>([]);
+  private _listData: AppLanguage[];
   get Languages(): AppLanguage[] {
-    return this.listDataChange.value;
+    return this._listData;
   }
 
   constructor(private _http: HttpClient) {
@@ -22,9 +20,10 @@ export class LanguageService {
     }
 
     this._islistLoaded = false; // Performance improvement
+    this._listData = [];
   }
 
-  public fetchAllLanguages(): void {
+  public fetchAllLanguages(): Observable<AppLanguage[]> {
     if (!this._islistLoaded) {
       const apiurl: string = environment.ApiUrl + '/api/Language';
 
@@ -32,7 +31,7 @@ export class LanguageService {
       headers = headers.append('Content-Type', 'application/json')
                        .append('Accept', 'application/json');
 
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
         })
         .pipe(map((response: HttpResponse<any>) => {
@@ -41,39 +40,31 @@ export class LanguageService {
           }
 
           const rjs: any = <any>response;
-          let _listRst: any[] = [];
+          this._listData = [];
 
           if (rjs instanceof Array && rjs.length > 0) {
             for (const si of rjs) {
               const hd: AppLanguage = new AppLanguage();
-              hd.Lcid = +si.lcid;
-              hd.EnglishName = si.englishName;
-              hd.NativeName = si.nativeName;
-              hd.IsoName = si.isoName;
-              hd.AppFlag = si.appFlag;
-
-              _listRst.push(hd);
+              hd.onSetData(si);
+              this._listData.push(hd);
             }
           }
-
-          return _listRst;
-        })).subscribe((x: any) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllLanguages in LanguageService: ${x}`);
-          }
-
           this._islistLoaded = true;
-          let copiedData: any = x;
-          this.listDataChange.next(copiedData);
-        }, (error: any) => {
+
+          return this._listData;
+        }),
+        catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllLanguages in LanguageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllLanguages in LanguageService: ${error}`);
           }
 
           this._islistLoaded = false;
-        }, () => {
-          // Empty
-        });
+          this._listData = [];
+
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
+    } else {
+      return of(this._listData);
     }
   }
 }
