@@ -22,10 +22,10 @@ describe('RecurrEventListComponent', () => {
     const storageService: any = jasmine.createSpyObj('EventStorageService', ['fetchAllRecurEvents']);
     const fetchAllRecurEventsSpy: any = storageService.fetchAllRecurEvents.and.returnValue(of([]));
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllMembersInChosedHome']);
+    homeService.ChosedHome = {
       _id: 1,
-    });
+    };
 
     TestBed.configureTestingModule({
       imports: [

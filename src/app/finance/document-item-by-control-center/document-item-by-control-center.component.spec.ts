@@ -11,22 +11,22 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
-import { HttpLoaderTestFactory, RouterLinkDirectiveStub, } from '../../../testing';
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper } from '../../../testing';
 import { DocumentItemByControlCenterComponent } from './document-item-by-control-center.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 
 describe('DocumentItemByControlCenterComponent', () => {
   let component: DocumentItemByControlCenterComponent;
   let fixture: ComponentFixture<DocumentItemByControlCenterComponent>;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
-      _id: 1,
-      BaseCurrency: 'CNY',
-    });
-    const uiServiceStub: Partial<UIStatusService> = {};
+    const homeService: Partial<HomeDefDetailService> = {};
+    homeService.ChosedHome = fakeData.chosedHome;
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
@@ -69,13 +69,13 @@ describe('DocumentItemByControlCenterComponent', () => {
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: Router, useValue: routerSpy },
         { provide: FinanceStorageService, useValue: stroageService },
         { provide: HomeDefDetailService, useValue: homeService },
-        { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinCurrencyService, useValue: currService },
       ],
     })

@@ -354,6 +354,13 @@ export class BaseListModel<T> {
   contentList: T[];
 }
 
+export interface TagJson {
+  tagType: number;
+  tagID: number;
+  tagSubID?: number;
+  term: string;
+}
+
 // Tag
 export class Tag {
   private _tagtype: TagTypeEnum;

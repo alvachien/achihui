@@ -42,9 +42,9 @@ describe('AccountTreeComponent', () => {
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
     const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of(fakeData.finAccountCategories));
     const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of(fakeData.finAccounts));
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue(fakeData.chosedHome);
     stroageService.Accounts = fakeData.finAccounts;
+    const homeService: Partial<HomeDefDetailService> = {};
+    homeService.ChosedHome = fakeData.chosedHome;
 
     TestBed.configureTestingModule({
       imports: [

@@ -12,7 +12,7 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper } from '../../../testing';
 import { DocumentADPCreateComponent } from './document-adpcreate.component';
 import { UserAuthInfo  } from '../../model';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService,
@@ -34,8 +34,12 @@ describe('DocumentADPCreateComponent', () => {
   let fixture: ComponentFixture<DocumentADPCreateComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('createadp', {})] as UrlSegment[]);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
@@ -54,11 +58,8 @@ describe('DocumentADPCreateComponent', () => {
     const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     const fetchAllCurrenciesSpy: any = currService.fetchAllCurrencies.and.returnValue(of([]));
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
-      _id: 1,
-    });
-    const uiServiceStub: Partial<UIStatusService> = {};
+    const homeService: Partial<HomeDefDetailService> = {};
+    homeService.ChosedHome = fakeData.chosedHome;
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
 
@@ -83,13 +84,13 @@ describe('DocumentADPCreateComponent', () => {
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinCurrencyService, useValue: currService },
         { provide: FinanceStorageService, useValue: stroageService },
         { provide: HomeDefDetailService, useValue: homeService },
-        { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: Router, useValue: routerSpy },
         { provide: AuthService, useValue: authServiceStub },

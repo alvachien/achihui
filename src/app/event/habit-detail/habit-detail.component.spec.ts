@@ -23,10 +23,10 @@ describe('HabitDetailComponent', () => {
 
   beforeEach(async(() => {
     const stgserviceStub: Partial<EventStorageService> = {};
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllMembersInChosedHome']);
+    homeService.ChosedHome = {
       _id: 1,
-    });
+    };
     const chosedHomeMemSpy: any = homeService.fetchAllMembersInChosedHome.and.returnValue();
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})]);

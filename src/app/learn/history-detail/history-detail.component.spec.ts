@@ -11,21 +11,22 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, RouterLinkDirectiveStub, } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, RouterLinkDirectiveStub, FakeDataHelper } from '../../../testing';
 import { HistoryDetailComponent } from './history-detail.component';
 import { LearnStorageService, HomeDefDetailService, UIStatusService } from '../../services';
 
 describe('HistoryDetailComponent', () => {
   let component: HistoryDetailComponent;
   let fixture: ComponentFixture<HistoryDetailComponent>;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
-      _id: 1,
-      BaseCurrency: 'CNY',
-    });
+    const homeService: Partial<HomeDefDetailService> = {};
+    homeService.ChosedHome = fakeData.chosedHome;
     const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
     const lrnStroageService: any = jasmine.createSpyObj('LearnStorageService', [
       'readHistory',

@@ -14,7 +14,7 @@ import { Component, Input } from '@angular/core';
 
 import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper } from '../../../testing';
 import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 
@@ -26,8 +26,12 @@ class AccountExtAssetExComponent {
 describe('DocumentAssetSoldoutCreateComponent', () => {
   let component: DocumentAssetSoldoutCreateComponent;
   let fixture: ComponentFixture<DocumentAssetSoldoutCreateComponent>;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
@@ -46,12 +50,8 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
     const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     const fetchAllCurrenciesSpy: any = currService.fetchAllCurrencies.and.returnValue(of([]));
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
-      _id: 1,
-      BaseCurrency: 'CNY',
-    });
-    const uiServiceStub: Partial<UIStatusService> = {};
+    const homeService: Partial<HomeDefDetailService> = {};
+    homeService.ChosedHome = fakeData.chosedHome;
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
@@ -79,13 +79,13 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinCurrencyService, useValue: currService },
         { provide: FinanceStorageService, useValue: stroageService },
         { provide: HomeDefDetailService, useValue: homeService },
-        { provide: UIStatusService, useValue: uiServiceStub },
         { provide: Router, useValue: routerSpy },
       ],
     })

@@ -3,6 +3,9 @@ import {
   AccountCategory, TranType, AssetCategory, Account,
   UserAuthInfo, AppLanguage, CurrencyJson, AppLanguageJson, DocumentTypeJson,
   AccountCategoryJson, TranTypeJson, AssetCategoryJson,
+  LearnCategory, LearnCategoryJson,
+  BookCategory, BookCategoryJson,
+  Tag, TagJson, TagTypeEnum,
 } from '../app/model';
 import { User } from 'oidc-client';
 
@@ -22,6 +25,12 @@ export class FakeDataHelper {
   private _currUser: UserAuthInfo;
   private _appLanguages: AppLanguage[];
   private _appLanguagesFromAPI: AppLanguageJson[];
+  private _learnCategoriesFromAPI: LearnCategoryJson[];
+  private _learnCategories: LearnCategory[];
+  private _libBookCategories: BookCategory[];
+  private _libBookCategoriesFromAPI: BookCategoryJson[];
+  private _tags: Tag[];
+  private _tagsFromAPI: TagJson[];
 
   readonly userID1: string = 'abcdefg';
   readonly userID1Sub: string = '12345abcdefg';
@@ -85,6 +94,13 @@ export class FakeDataHelper {
       return this._finTranTypeFromAPI;
     }
   }
+  get finTranTypeTopNodeAmount(): number {
+    if (this._finTranType) {
+      return this._finTranType.filter((val: TranType) => {
+        return val.ParId === undefined;
+      }).length;
+    }
+  }
   get finAccounts(): Account[] {
     if (this._finAccounts) {
       return this._finAccounts;
@@ -103,6 +119,36 @@ export class FakeDataHelper {
   get appLanguagesFromAPI(): any[] {
     if (this._appLanguagesFromAPI) {
       return this._appLanguagesFromAPI;
+    }
+  }
+  get learnCategoriesFromAPI(): LearnCategoryJson[] {
+    if (this._learnCategoriesFromAPI) {
+      return this._learnCategoriesFromAPI;
+    }
+  }
+  get learnCategories(): LearnCategory[] {
+    if (this._learnCategories) {
+      return this._learnCategories;
+    }
+  }
+  get libBookCategories(): BookCategory[] {
+    if (this._libBookCategories) {
+      return this._libBookCategories;
+    }
+  }
+  get libBookCategoriesFromAPI(): BookCategoryJson[] {
+    if (this._libBookCategoriesFromAPI) {
+      return this._libBookCategoriesFromAPI;
+    }
+  }
+  get tags(): Tag[] {
+    if (this._tags) {
+      return this._tags;
+    }
+  }
+  get tagsFromAPI(): TagJson[] {
+    if (this._tagsFromAPI) {
+      return this._tagsFromAPI;
     }
   }
 
@@ -891,5 +937,104 @@ export class FakeDataHelper {
       desp: 'desp of asset 2',
     };
     this._finAssetCategoriesFromAPI.push(asc2);
+  }
+  public buildLearnCategoriesFromAPI(): void {
+    this._learnCategoriesFromAPI = [];
+    let c1: LearnCategoryJson = {
+      id: 1,
+      name: 'Category 1',
+      sysFlag: true,
+    };
+    this._learnCategoriesFromAPI.push(c1);
+    let c2: LearnCategoryJson = {
+      id: 2,
+      name: 'Category 2',
+      sysFlag: true,
+    };
+    this._learnCategoriesFromAPI.push(c2);
+    let c11: LearnCategoryJson = {
+      id: 11,
+      name: 'Category 1',
+      sysFlag: true,
+      parID: 1,
+    };
+    this._learnCategoriesFromAPI.push(c11);
+  }
+  public buildLearnCategories(): void {
+    this._learnCategories = [];
+    let ctgy: LearnCategory;
+    ctgy = new LearnCategory();
+    ctgy.Id = 1;
+    ctgy.Name = 'Cat. 1';
+    ctgy.SysFlag = true;
+    ctgy.Comment = 'Category 1';
+    this._learnCategories.push(ctgy);
+    ctgy = new LearnCategory();
+    ctgy.Id = 2;
+    ctgy.Name = 'Cat. 2';
+    ctgy.SysFlag = true;
+    ctgy.Comment = 'Category 2';
+    this._learnCategories.push(ctgy);
+    ctgy = new LearnCategory();
+    ctgy.Id = 11;
+    ctgy.Name = 'Cat. 1-1';
+    ctgy.ParentId = 1;
+    ctgy.SysFlag = true;
+    ctgy.Comment = 'Category 1.1';
+    this._learnCategories.push(ctgy);
+  }
+  public buildLibBookCategories(): void {
+    this._libBookCategories = [];
+    let ctgy: BookCategory;
+    ctgy = new BookCategory();
+    ctgy.ID = 1;
+    ctgy.Name = 'Category 1';
+    this._libBookCategories.push(ctgy);
+    ctgy = new BookCategory();
+    ctgy.ID = 2;
+    ctgy.Name = 'Category 2';
+    this._libBookCategories.push(ctgy);
+  }
+  public buildLibBookCategoriesFromAPI(): void {
+    this._libBookCategoriesFromAPI = [];
+    let ct1: BookCategoryJson = {
+      id: 1,
+      name: 'category 1',
+    };
+    this._libBookCategoriesFromAPI.push(ct1);
+    let ct2: BookCategoryJson = {
+      id: 2,
+      name: 'category 2',
+    };
+    this._libBookCategoriesFromAPI.push(ct2);
+  }
+  public buildTags(): void {
+    this._tags = [];
+    let ntag: Tag;
+    ntag = new Tag();
+    ntag.TagType = TagTypeEnum.LearnQuestionBank;
+    ntag.TagID = 2;
+    ntag.Term = 'Examination';
+    this._tags.push(ntag);
+    ntag = new Tag();
+    ntag.TagType = TagTypeEnum.LearnQuestionBank;
+    ntag.TagID = 5;
+    ntag.Term = 'Cloud';
+    this._tags.push(ntag);
+  }
+  public buildTagsFromAPI(): void {
+    this._tagsFromAPI = [];
+    let tag1: TagJson = {
+      tagType: 1,
+      tagID: 2,
+      term: 'Examination',
+    };
+    this._tagsFromAPI.push(tag1);
+    let tag2: TagJson = {
+      tagType: 1,
+      tagID: 5,
+      term: 'Cloud',
+    };
+    this._tagsFromAPI.push(tag2);
   }
 }

@@ -24,11 +24,11 @@ describe('TagsListComponent', () => {
   beforeEach(async(() => {
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
+    homeService.ChosedHome = {
       _id: 1,
       BaseCurrency: 'CNY',
-    });
+    };
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
 
     const tagService: any = jasmine.createSpyObj('TagsService', ['fetchAllTags']);

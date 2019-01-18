@@ -239,6 +239,14 @@ export class EnSentence extends hih.BaseModel {
   }
 }
 
+export interface LearnCategoryJson {
+  id: number;
+  parID?: number;
+  name: string;
+  comment?: string;
+  sysFlag: boolean;
+}
+
 /**
  * LearnCategory: Learn category, same as knowledge type
  */

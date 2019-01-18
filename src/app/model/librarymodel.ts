@@ -94,6 +94,14 @@ export class Location extends hih.BaseModel {
   }
 }
 
+export interface BookCategoryJson {
+  id: number;
+  hid?: number;
+  name: string;
+  parid?: number;
+  others?: string;
+}
+
 /**
  * Book Category
  */

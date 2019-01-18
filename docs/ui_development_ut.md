@@ -82,10 +82,10 @@ Add it into the providers section:
 ### HomeDefService
 ```typescript
     const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+    homeService.ChosedHome = {
       _id: 1,
       BaseCurrency: 'CNY',
-    });
+    };
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
 ```
 

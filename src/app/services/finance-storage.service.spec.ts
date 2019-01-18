@@ -76,7 +76,7 @@ describe('FinanceStorageService', () => {
       );
 
       // Service should have made one request to GET account categories from expected URL
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -97,7 +97,7 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -116,7 +116,7 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
       });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -136,7 +136,7 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const reqs: any = httpTestingController.match(requrl => {
+      const reqs: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
       });
       reqs[0].flush(fakeData.finAccountCategoriesFromAPI);
@@ -144,7 +144,7 @@ describe('FinanceStorageService', () => {
 
       // Second call
       service.fetchAllAccountCategories().subscribe();
-      const req2: any = httpTestingController.match(requrl => {
+      const req2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
        });
       expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
@@ -158,7 +158,7 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const req3: any = httpTestingController.match(requrl => {
+      const req3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
        });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
@@ -188,7 +188,7 @@ describe('FinanceStorageService', () => {
       );
 
       // Service should have made one request to GET asset categories from expected URL
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -209,7 +209,7 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -227,7 +227,7 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -247,7 +247,7 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const reqs: any = httpTestingController.match(requrl => {
+      const reqs: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
        });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
@@ -256,7 +256,7 @@ describe('FinanceStorageService', () => {
 
       // Second call
       service.fetchAllAssetCategories().subscribe();
-      const reqs2: any = httpTestingController.match(requrl => {
+      const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
        });
       expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
@@ -270,7 +270,7 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const reqs3: any = httpTestingController.match(requrl => {
+      const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
        });
       expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
@@ -300,7 +300,7 @@ describe('FinanceStorageService', () => {
       );
 
       // Service should have made one request to GET doc types from expected URL
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -321,7 +321,7 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -339,7 +339,7 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -359,7 +359,7 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const reqs: any = httpTestingController.match(requrl => {
+      const reqs: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
        });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
@@ -368,7 +368,7 @@ describe('FinanceStorageService', () => {
 
       // Second call
       service.fetchAllDocTypes().subscribe();
-      const reqs2: any = httpTestingController.match(requrl => {
+      const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
        });
       expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
@@ -382,7 +382,7 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const reqs3: any = httpTestingController.match(requrl => {
+      const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
        });
       expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
@@ -412,7 +412,7 @@ describe('FinanceStorageService', () => {
       );
 
       // Service should have made one request to GET tran types from expected URL
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -433,7 +433,7 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -451,7 +451,7 @@ describe('FinanceStorageService', () => {
         },
       );
 
-      const req: any = httpTestingController.expectOne(requrl => {
+      const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
@@ -471,7 +471,7 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const reqs: any = httpTestingController.match(requrl => {
+      const reqs: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
        });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
@@ -480,7 +480,7 @@ describe('FinanceStorageService', () => {
 
       // Second call
       service.fetchAllTranTypes().subscribe();
-      const reqs2: any = httpTestingController.match(requrl => {
+      const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
        });
       expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
@@ -494,7 +494,7 @@ describe('FinanceStorageService', () => {
           // Do nothing
         },
       );
-      const reqs3: any = httpTestingController.match(requrl => {
+      const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
        });
       expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');

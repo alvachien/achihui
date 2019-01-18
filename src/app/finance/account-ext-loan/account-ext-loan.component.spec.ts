@@ -12,7 +12,7 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
   } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
-import { HttpLoaderTestFactory, RouterLinkDirectiveStub } from '../../../testing';
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper } from '../../../testing';
 import { AccountExtLoanComponent } from './account-ext-loan.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 
@@ -21,16 +21,17 @@ describe('AccountExtLoanComponent', () => {
   let fixture: ComponentFixture<AccountExtLoanComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
     const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
     const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
-      _id: 1,
-    });
-    const uiServiceStub: Partial<UIStatusService> = {};
+    const homeService: Partial<HomeDefDetailService> = {};
+    homeService.ChosedHome = fakeData.chosedHome;
 
     TestBed.configureTestingModule({
       imports: [
@@ -56,12 +57,12 @@ describe('AccountExtLoanComponent', () => {
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinanceStorageService, useValue: stroageService },
         { provide: HomeDefDetailService, useValue: homeService },
-        { provide: UIStatusService, useValue: uiServiceStub },
       ],
     })
     .compileComponents();

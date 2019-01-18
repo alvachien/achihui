@@ -23,14 +23,12 @@ describe('DocumentItemOverviewComponent', () => {
 
   beforeEach(async(() => {
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
+    homeService.ChosedHome = {
       _id: 1,
       BaseCurrency: 'CNY',
-    });
+    };
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
-    const uiServiceStub: Partial<UIStatusService> = {};
-    uiServiceStub.getUILabel = (le: any) => { return ''; };
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
@@ -81,13 +79,13 @@ describe('DocumentItemOverviewComponent', () => {
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: Router, useValue: routerSpy },
         { provide: FinanceStorageService, useValue: stroageService },
         { provide: HomeDefDetailService, useValue: homeService },
-        { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ThemeStorage, useValue: themeStorageStub },
         { provide: FinCurrencyService, useValue: currService },
       ],

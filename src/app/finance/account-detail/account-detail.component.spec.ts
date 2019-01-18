@@ -39,15 +39,14 @@ describe('AccountDetailComponent', () => {
   beforeEach(async(() => {
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllMembersInChosedHome']);
+    homeService.ChosedHome = {
       _id: 1,
-    });
+    };
     const chosedHomeMemSpy: any = homeService.fetchAllMembersInChosedHome.and.returnValue();
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAssetCategories']);
     const allAccountCtgySpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
     const allAssetCtgySpy: any = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
-    const uiServiceStub: Partial<UIStatusService> = {};
 
     TestBed.configureTestingModule({
       imports: [
@@ -71,11 +70,11 @@ describe('AccountDetailComponent', () => {
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: FinanceStorageService, useValue: stroageService },
-        { provide: UIStatusService, uiServiceStub },
       ],
     })
     .compileComponents();

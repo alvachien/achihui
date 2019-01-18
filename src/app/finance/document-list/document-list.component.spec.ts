@@ -25,7 +25,6 @@ describe('DocumentListComponent', () => {
       'fetchAllDocuments',
     ]);
     const fetchAllDocumentsSpy: any = stroageService.fetchAllDocuments.and.returnValue(of([]));
-    const uiServiceStub: Partial<UIStatusService> = {};
 
     TestBed.configureTestingModule({
       imports: [
@@ -47,11 +46,11 @@ describe('DocumentListComponent', () => {
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinanceStorageService, useValue: stroageService },
-        { provide: UIStatusService, useValue: uiServiceStub },
         { provide: Router, useValue: routerSpy },
       ],
     })

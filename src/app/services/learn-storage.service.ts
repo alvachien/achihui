@@ -13,15 +13,15 @@ import * as moment from 'moment';
 export class LearnStorageService {
   // Buffer
   private _isCtgyListLoaded: boolean = false;
+  private _listCategory: LearnCategory[];
   private _isObjListLoaded: boolean = false;
   private _isHistListLoaded: boolean = false;
   private _isQtnBankListLoaded: boolean = false;
   private _isEnWordListLoaded: boolean = false;
   private _isEnSentListLoaded: boolean = false;
 
-  listCategoryChange: BehaviorSubject<LearnCategory[]> = new BehaviorSubject<LearnCategory[]>([]);
   get Categories(): LearnCategory[] {
-    return this.listCategoryChange.value;
+    return this._listCategory;
   }
 
   listObjectChange: BehaviorSubject<LearnObject[]> = new BehaviorSubject<LearnObject[]>([]);
@@ -73,6 +73,7 @@ export class LearnStorageService {
     }
 
     this._isCtgyListLoaded = false;
+    this._listCategory = [];
     this._isObjListLoaded = false;
     this._isHistListLoaded = false;
     this._isQtnBankListLoaded = false;
@@ -81,7 +82,7 @@ export class LearnStorageService {
   }
 
   // Categories
-  public fetchAllCategories(forceReload?: boolean): Observable<any> {
+  public fetchAllCategories(forceReload?: boolean): Observable<LearnCategory[]> {
     if (!this._isCtgyListLoaded || forceReload) {
       const apiurl: string = environment.ApiUrl + '/api/learncategory';
 
@@ -103,26 +104,25 @@ export class LearnStorageService {
           }
 
           const rjs: any = <any>response;
-          let listRst: LearnCategory[] = [];
+          this._listCategory = [];
 
           if (rjs instanceof Array && rjs.length > 0) {
             for (const si of rjs) {
               const rst: LearnCategory = new LearnCategory();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listCategory.push(rst);
             }
           }
 
           // Prepare for the hierarchy
-          this.buildLearnCategoryHierarchy(listRst);
+          this.buildLearnCategoryHierarchy(this._listCategory);
           // Sort it
-          listRst.sort((a: any, b: any) => {
+          this._listCategory.sort((a: any, b: any) => {
             return a.FullDisplayText.localeCompare(b.FullDisplayText);
           });
 
           this._isCtgyListLoaded = true;
-          this.listCategoryChange.next(listRst);
-          return listRst;
+          return this._listCategory;
         }),
         catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
@@ -131,12 +131,12 @@ export class LearnStorageService {
           }
 
           this._isCtgyListLoaded = false;
-          this.listCategoryChange.next([]);
+          this._listCategory = [];
 
           return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
     } else {
-      return of(this.listCategoryChange.value);
+      return of(this._listCategory);
     }
   }
 

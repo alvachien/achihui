@@ -15,7 +15,7 @@ import { Component, Input } from '@angular/core';
 import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { UIMode, UserAuthInfo } from '../../model';
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper } from '../../../testing';
 import { DocumentLoanCreateComponent } from './document-loan-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService,
   AuthService } from 'app/services';
@@ -32,8 +32,12 @@ class AccountExtLoanComponent {
 describe('DocumentLoanCreateComponent', () => {
   let component: DocumentLoanCreateComponent;
   let fixture: ComponentFixture<DocumentLoanCreateComponent>;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
@@ -50,12 +54,8 @@ describe('DocumentLoanCreateComponent', () => {
     const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     const fetchAllCurrenciesSpy: any = currService.fetchAllCurrencies.and.returnValue(of([]));
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
-      _id: 1,
-      BaseCurrency: 'CNY',
-    });
-    const uiServiceStub: Partial<UIStatusService> = {};
+    const homeService: Partial<HomeDefDetailService> = {};
+    homeService.ChosedHome = fakeData.chosedHome;
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('createbrwfrm', {})] as UrlSegment[]);
     const authServiceStub: Partial<AuthService> = {};
@@ -86,13 +86,13 @@ describe('DocumentLoanCreateComponent', () => {
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinCurrencyService, useValue: currService },
         { provide: FinanceStorageService, useValue: stroageService },
         { provide: HomeDefDetailService, useValue: homeService },
-        { provide: UIStatusService, useValue: uiServiceStub },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: AuthService, useValue: authServiceStub },

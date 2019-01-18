@@ -23,8 +23,8 @@ describe('FinCurrencyService', () => {
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue(fakeData.chosedHome);
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
+    homeService.ChosedHome = fakeData.chosedHome;
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
 
     TestBed.configureTestingModule({

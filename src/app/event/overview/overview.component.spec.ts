@@ -23,12 +23,9 @@ describe('OverviewComponent', () => {
     const fetchAllEventsSpy: any = storageService.fetchAllEvents.and.returnValue(of([]));
     const fetchHabitDetailWithCheckInSpy: any = storageService.fetchHabitDetailWithCheckIn.and.returnValue(of([]));
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllMembersInChosedHome']);
+    homeService.ChosedHome = {
       _id: 1,
-    });
-    const uiStatusStub: Partial<UIStatusService> = {
-      CurrentLanguage: 'en',
     };
 
     TestBed.configureTestingModule({
@@ -48,10 +45,10 @@ describe('OverviewComponent', () => {
       declarations: [ OverviewComponent ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: EventStorageService, useValue: storageService },
         { provide: Router, useValue: routerSpy },
         { provide: HomeDefDetailService, useValue: homeService },
-        { provide: UIStatusService, useValue: uiStatusStub },
       ],
     })
     .compileComponents();

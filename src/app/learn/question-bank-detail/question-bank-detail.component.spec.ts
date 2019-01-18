@@ -8,21 +8,22 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, UrlSegment, ActivatedRoute, } from '@angular/router';
 import { of } from 'rxjs';
 
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper } from '../../../testing';
 import { QuestionBankDetailComponent } from './question-bank-detail.component';
 import { LearnStorageService, HomeDefDetailService, UIStatusService } from '../../services';
 
 describe('QuestionBankDetailComponent', () => {
   let component: QuestionBankDetailComponent;
   let fixture: ComponentFixture<QuestionBankDetailComponent>;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
-      _id: 1,
-      BaseCurrency: 'CNY',
-    });
+    const homeService: Partial<HomeDefDetailService> = {};
+    homeService.ChosedHome = fakeData.chosedHome;
     const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
     const lrnStroageService: any = jasmine.createSpyObj('LearnStorageService', [
       'readEnWord',

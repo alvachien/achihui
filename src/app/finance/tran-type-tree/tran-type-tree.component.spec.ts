@@ -89,7 +89,7 @@ describe('TranTypeTreeComponent', () => {
       fixture.detectChanges();
 
       expect(component.dataSource.data.length).toBeGreaterThan(0);
-      expect(component.dataSource.data.length).toEqual(fakeData.finTranTypes.length);
+      expect(component.dataSource.data.length).toEqual(fakeData.finTranTypeTopNodeAmount);
     }));
 
     it('should show data after OnInit (async)', async(() => {
@@ -100,7 +100,7 @@ describe('TranTypeTreeComponent', () => {
         fixture.detectChanges();
 
         expect(component.dataSource.data.length).toBeGreaterThan(0);
-        expect(component.dataSource.data.length).toEqual(fakeData.finTranTypes.length);
+        expect(component.dataSource.data.length).toEqual(fakeData.finTranTypeTopNodeAmount);
       });
     }));
 
@@ -112,7 +112,7 @@ describe('TranTypeTreeComponent', () => {
         fixture.detectChanges();
 
         expect(component.dataSource.data.length).toBeGreaterThan(0);
-        expect(component.dataSource.data.length).toEqual(fakeData.finTranTypes.length);
+        expect(component.dataSource.data.length).toEqual(fakeData.finTranTypeTopNodeAmount);
         done();
       });
     });

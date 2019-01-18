@@ -12,14 +12,14 @@ import * as moment from 'moment';
 export class LibraryStorageService {
   // Buffer
   private _isBookCtgyListLoaded: boolean;
+  private _listBookCategories: BookCategory[];
   private _isMovieGenreListLoaded: boolean;
   private _isBookListLoaded: boolean;
   private _isLocationListLoaded: boolean;
   private _isMovieListLoaded: boolean;
 
-  listBookCategoryChange: BehaviorSubject<BookCategory[]> = new BehaviorSubject<BookCategory[]>([]);
   get BookCategories(): BookCategory[] {
-    return this.listBookCategoryChange.value;
+    return this._listBookCategories;
   }
   listBookChange: BehaviorSubject<Book[]> = new BehaviorSubject<Book[]>([]);
   get Books(): Book[] {
@@ -46,6 +46,7 @@ export class LibraryStorageService {
     }
 
     this._isBookCtgyListLoaded = false;
+    this._listBookCategories = [];
     this._isMovieGenreListLoaded = false;
     this._isBookListLoaded = false;
     this._isLocationListLoaded = false;
@@ -74,26 +75,26 @@ export class LibraryStorageService {
           }
 
           const rjs: any = <any>response;
-          let listRst: BookCategory[] = [];
+          this._listBookCategories = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: BookCategory = new BookCategory();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listBookCategories.push(rst);
             }
           }
 
           // Prepare for the hierarchy
-          this._buildBookCategoryHierarchy(listRst);
+          this._buildBookCategoryHierarchy(this._listBookCategories);
           // Sort it
-          listRst.sort((a: any, b: any) => {
+          this._listBookCategories.sort((a: any, b: any) => {
             return a.FullDisplayText.localeCompare(b.FullDisplayText);
           });
 
           this._isBookCtgyListLoaded = true;
-          this.listBookCategoryChange.next(listRst);
-          return listRst;
+
+          return this._listBookCategories;
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
@@ -101,12 +102,12 @@ export class LibraryStorageService {
             }
 
             this._isBookCtgyListLoaded = false;
-            this.listBookCategoryChange.next([]);
+            this._listBookCategories = [];
 
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listBookCategoryChange.value);
+      return of(this._listBookCategories);
     }
   }
 

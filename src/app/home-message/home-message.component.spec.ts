@@ -20,11 +20,11 @@ describe('HomeMessageComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async(() => {
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers', 'fetchAllMembersInChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers', 'fetchAllMembersInChosedHome']);
+    homeService.ChosedHome = {
       _id: 1,
       BaseCurrency: 'CNY',
-    });
+    };
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
     const fetchAllMembersInChosedHomeSpy: any = homeService.fetchAllMembersInChosedHome.and.returnValue();
     const authServiceStub: Partial<AuthService> = {};

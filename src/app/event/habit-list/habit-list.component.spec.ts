@@ -22,10 +22,10 @@ describe('HabitListComponent', () => {
     const storageService: any = jasmine.createSpyObj('EventStorageService', ['fetchAllHabitEvents']);
     const fetchAllEventsSpy: any = storageService.fetchAllHabitEvents.and.returnValue(of([]));
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchAllMembersInChosedHome']);
-    const chosedHomeSpy: any = homeService.ChosedHome.and.returnValue( {
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllMembersInChosedHome']);
+    homeService.ChosedHome = {
       _id: 1,
-    });
+    };
 
     TestBed.configureTestingModule({
       imports: [
