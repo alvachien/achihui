@@ -27,7 +27,7 @@ describe('LibraryStorageService', () => {
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
     const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers']);
     homeService.ChosedHome = fakeData.chosedHome;
-    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
+    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
 
     TestBed.configureTestingModule({
       imports: [
@@ -68,8 +68,8 @@ describe('LibraryStorageService', () => {
       expect(service.BookCategories.length).toEqual(0, 'should not buffered yet');
 
       service.fetchAllBookCategories().subscribe(
-        (curries: any) => {
-          expect(curries.length).toEqual(fakeData.libBookCategoriesFromAPI.length, 'should return expected book categories');
+        (ctgies: any) => {
+          expect(ctgies.length).toEqual(fakeData.libBookCategoriesFromAPI.length, 'should return expected book categories');
           expect(service.BookCategories.length).toEqual(fakeData.libBookCategoriesFromAPI.length, 'should have buffered');
         },
         (fail: any) => {
@@ -84,7 +84,7 @@ describe('LibraryStorageService', () => {
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock bookCategories
-      req.flush(fakeData.libBookCategoriesFromAPI);
+      req.flush(fakeData.libBookCategoriesFullReplyFromAPI);
     });
 
     it('should be OK returning no bookCategories', () => {
@@ -103,7 +103,7 @@ describe('LibraryStorageService', () => {
         return requrl.method === 'GET' && requrl.url === ctgyAPIURL && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
-      req.flush([]); // Respond with no data
+      req.flush({}); // Respond with no data
     });
 
     it('should return error in case error appear', () => {
@@ -140,7 +140,7 @@ describe('LibraryStorageService', () => {
         return requrl.method === 'GET' && requrl.url === ctgyAPIURL && requrl.params.has('hid');
        });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
-      reqs[0].flush(fakeData.libBookCategoriesFromAPI);
+      reqs[0].flush(fakeData.libBookCategoriesFullReplyFromAPI);
       httpTestingController.verify();
 
       // Second call

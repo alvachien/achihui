@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { MatPaginator, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -13,14 +13,15 @@ import { LearnStorageService } from '../../services';
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.scss'],
 })
-export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CategoryListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   dataSource: MatTableDataSource<LearnCategory> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isLoadingResults: boolean;
 
-  constructor(public _storageService: LearnStorageService) {
+  constructor(public _storageService: LearnStorageService,
+    private _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent constructor...');
     }
@@ -37,22 +38,20 @@ export class CategoryListComponent implements OnInit, AfterViewInit, OnDestroy {
     this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Just ensure the request has been fired
       if (x) {
-        this.dataSource.data = x;
+        this.dataSource = new MatTableDataSource(x);
+        this.dataSource.paginator = this.paginator;
       }
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering CategoryListComponent ngOnInit, fetchAllCategories, failed with ${error}`);
       }
+
+      this._snackBar.open(error, undefined, {
+        duration: 2000,
+      });
     }, () => {
       this.isLoadingResults = false;
     });
-  }
-
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent ngAfterViewInit...');
-    }
-    this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {

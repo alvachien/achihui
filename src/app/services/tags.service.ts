@@ -89,7 +89,7 @@ export class TagsService {
 
           return reqamt ? listCountRst : listRst;
         }),
-        catchError((err: any) => {
+        catchError((err: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Entering TagsService, fetchAllTags, failed with ${err}`);
           }
@@ -97,7 +97,7 @@ export class TagsService {
           // this._islistLoaded = false;
           // this.listDataChange.next([]);
 
-          return throwError(err.json());
+          return throwError(err.statusText + '; ' + err.error + '; ' + err.message);
         }));
     // } else {
     //   return Observable.of(this.listDataChange.value);

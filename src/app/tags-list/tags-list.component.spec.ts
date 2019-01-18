@@ -10,7 +10,7 @@ import { EventEmitter } from '@angular/core';
 import { ThemeStorage } from '../theme-picker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory, RouterLinkDirectiveStub } from '../../testing';
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper } from '../../testing';
 import { TagsListComponent } from './tags-list.component';
 import { AuthService, HomeDefDetailService, TagsService, UIStatusService } from '../services';
 import { UserAuthInfo } from '../model';
@@ -20,16 +20,17 @@ describe('TagsListComponent', () => {
   let fixture: ComponentFixture<TagsListComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
     const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
-    homeService.ChosedHome = {
-      _id: 1,
-      BaseCurrency: 'CNY',
-    };
-    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
+    homeService.ChosedHome = fakeData.chosedHome;
+    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
 
     const tagService: any = jasmine.createSpyObj('TagsService', ['fetchAllTags']);
     const fetchAllTagsSpy: any = tagService.fetchAllTags.and.returnValue(of([]));
@@ -73,10 +74,10 @@ describe('TagsListComponent', () => {
     component = fixture.componentInstance;
     translate = TestBed.get(TranslateService);
     http = TestBed.get(HttpTestingController);
-    fixture.detectChanges();
   });
 
-  it('should be created', () => {
+  it('1. should be created with empty data', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 });

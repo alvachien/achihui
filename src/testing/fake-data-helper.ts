@@ -141,6 +141,14 @@ export class FakeDataHelper {
       return this._libBookCategoriesFromAPI;
     }
   }
+  get libBookCategoriesFullReplyFromAPI(): any {
+    if (this._libBookCategoriesFromAPI) {
+      return {
+        totalCount: this._libBookCategoriesFromAPI.length,
+        contentList: this._libBookCategoriesFromAPI,
+      };
+    }
+  }
   get tags(): Tag[] {
     if (this._tags) {
       return this._tags;
@@ -986,55 +994,43 @@ export class FakeDataHelper {
   public buildLibBookCategories(): void {
     this._libBookCategories = [];
     let ctgy: BookCategory;
-    ctgy = new BookCategory();
-    ctgy.ID = 1;
-    ctgy.Name = 'Category 1';
-    this._libBookCategories.push(ctgy);
-    ctgy = new BookCategory();
-    ctgy.ID = 2;
-    ctgy.Name = 'Category 2';
-    this._libBookCategories.push(ctgy);
+    for(let i = 0; i < 2; i++) {
+      ctgy = new BookCategory();
+      ctgy.ID = i + 1;
+      ctgy.Name = `Category ${i+1}`;
+      this._libBookCategories.push(ctgy);  
+    }
   }
   public buildLibBookCategoriesFromAPI(): void {
     this._libBookCategoriesFromAPI = [];
-    let ct1: BookCategoryJson = {
-      id: 1,
-      name: 'category 1',
-    };
-    this._libBookCategoriesFromAPI.push(ct1);
-    let ct2: BookCategoryJson = {
-      id: 2,
-      name: 'category 2',
-    };
-    this._libBookCategoriesFromAPI.push(ct2);
+    for(let i = 0; i < 2; i++) {
+      let ct1: BookCategoryJson = {
+        id: i + 1,
+        name: `category ${i + 1}`,
+      };
+      this._libBookCategoriesFromAPI.push(ct1);
+    }
   }
   public buildTags(): void {
     this._tags = [];
     let ntag: Tag;
-    ntag = new Tag();
-    ntag.TagType = TagTypeEnum.LearnQuestionBank;
-    ntag.TagID = 2;
-    ntag.Term = 'Examination';
-    this._tags.push(ntag);
-    ntag = new Tag();
-    ntag.TagType = TagTypeEnum.LearnQuestionBank;
-    ntag.TagID = 5;
-    ntag.Term = 'Cloud';
-    this._tags.push(ntag);
+    for(let i = 0; i < 2; i++) {
+      ntag = new Tag();
+      ntag.TagType = TagTypeEnum.LearnQuestionBank;
+      ntag.TagID = i+1;
+      ntag.Term = `tag ${i}`;
+      this._tags.push(ntag);  
+    }
   }
   public buildTagsFromAPI(): void {
     this._tagsFromAPI = [];
-    let tag1: TagJson = {
-      tagType: 1,
-      tagID: 2,
-      term: 'Examination',
-    };
-    this._tagsFromAPI.push(tag1);
-    let tag2: TagJson = {
-      tagType: 1,
-      tagID: 5,
-      term: 'Cloud',
-    };
-    this._tagsFromAPI.push(tag2);
+    for(let i = 0; i < 2; i ++) {
+      let ntag: TagJson = {
+        tagType: 1,
+        tagID: i + 1,
+        term: `tag{i+1}`,
+      };
+      this._tagsFromAPI.push(ntag);
+    }
   }
 }

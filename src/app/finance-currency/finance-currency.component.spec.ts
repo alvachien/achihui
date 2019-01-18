@@ -57,7 +57,7 @@ describe('FinanceCurrencyComponent', () => {
     http = TestBed.get(HttpTestingController);
   });
 
-  it('should be created with empty data', () => {
+  it('1. should be created with empty data', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(component.dataSource.data.length).toEqual(0);
