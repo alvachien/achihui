@@ -14,7 +14,7 @@ import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '..
 import { AccountListComponent } from './account-list.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 import { Account, AccountStatusEnum } from '../../model';
-import { MatSelect } from '@angular/material';
+import { MatSelect, MatOption } from '@angular/material';
 
 describe('AccountListComponent', () => {
   let component: AccountListComponent;
@@ -193,26 +193,43 @@ describe('AccountListComponent', () => {
       tick();
       fixture.detectChanges();
       expect(component.dataSource.data.length).toBeGreaterThan(0);
+      expect(fetchAllAccountsSpy.calls.count()).toEqual(1);
 
       // Closed
-      component.selectedStatus = AccountStatusEnum.Closed;
+      let options: NodeListOf<HTMLElement>;
+      let statusoptions = fixture.nativeElement.querySelectorAll('mat-option');
+      let optidx = -1;
+      let select: MatSelect = fixture.debugElement.query(By.css('mat-select')).componentInstance;
+      select.open();
+      select.options.forEach((item: MatOption, idx: number) => {
+        if (item.value === AccountStatusEnum.Closed) {
+          optidx = idx;
+        }
+      });
+      expect(optidx).not.toEqual(-1);
+      statusoptions[optidx].click();
+      flush();
       fixture.detectChanges();
       tick();
-      fixture.detectChanges();
 
+      expect(fetchAllAccountsSpy.calls.count()).toEqual(2);
       expect(component.dataSource.data.length).toEqual(fakeData.finAccounts.filter(
         (val: Account) => {
-        if (component.selectedStatus !== undefined && val.Status !== component.selectedStatus) {
+        if (component.selectedStatus !== undefined && val.Status !== AccountStatusEnum.Closed) {
           return false;
         }
 
         return true;
       }).length);
 
-      // All
-      component.selectedStatus = undefined;
+      // Reset-all
+      select.open();
+      statusoptions[0].click();
       fixture.detectChanges();
+      flush();
       tick();
+
+      expect(fetchAllAccountsSpy.calls.count()).toEqual(3);
       expect(component.dataSource.data.length).toEqual(fakeData.finAccounts.length);
     }));
   });
