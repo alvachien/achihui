@@ -71,7 +71,7 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
         console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterContentInit, fetchAllTags...');
       }
 
-      if (!x) {
+      if (!x || (x instanceof Array && x.length <= 0)) {
         return;
       }
 
@@ -134,13 +134,11 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
-
-  // public tagClicked(clicked: CloudData): void {
-  //   console.log(clicked);
-  // }
 
   public onSearchTagTerm(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -150,11 +148,13 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
     this._tagService.fetchAllTags(false, this.tagType, this.tagTerm)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
-      this.rstSearch = [];
+        if (x) {
+          this.rstSearch = [];
 
-      for (let s1 of x) {
-        this.rstSearch.push(<Tag>s1);
-      }
+          for (let s1 of x) {
+            this.rstSearch.push(<Tag>s1);
+          }
+        }
     });
   }
 

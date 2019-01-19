@@ -31,7 +31,6 @@ import { AccountExtAssetComponent } from '../account-ext-asset';
 export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   private _readStub: Subscription;
-  private _createStub: Subscription;
   private _changeStub: Subscription;
   private routerID: number = -1; // Current object ID in routing
   private _compLoan: AccountExtLoanComponent;
@@ -211,9 +210,6 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     if (this._readStub) {
       this._readStub.unsubscribe();
     }
-    if (this._createStub) {
-      this._createStub.unsubscribe();
-    }
     if (this._changeStub) {
       this._changeStub.unsubscribe();
     }
@@ -305,65 +301,58 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private onCreateImpl(): void {
-    if (!this._createStub) {
-      this._createStub = this._storageService.createAccountEvent
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent createAccountEvent with : ${x}`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof Account) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-              duration: 3000,
-            });
-
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-
-            this.onInitCreateMode();
-            this.setStep(0);
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
-            }
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onCreateImpl, Error, Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-    }
-
     if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
       if (this._compAsset) {
         this._compAsset.generateAccountInfoForSave();
       }
     }
 
-    this._storageService.createAccount(this.detailObject);
+    this._storageService.createAccount(this.detailObject)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent createAccount succeed`);
+      }
+
+      // Show the snackbar
+      let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+        this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
+
+      let recreate: boolean = false;
+      snackbarRef.onAction().subscribe(() => {
+        recreate = true;
+
+        this.onInitCreateMode();
+        this.setStep(0);
+      });
+
+      snackbarRef.afterDismissed().subscribe(() => {
+        // Navigate to display
+        if (!recreate) {
+          this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+        }
+      });
+    }, (error: any) => {
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      }).afterClosed().subscribe((x2: any) => {
+        // Do nothing!
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onCreateImpl, Error, Message dialog result ${x2}`);
+        }
+      });
+    });
   }
 
   private onUpdateImpl(): void {

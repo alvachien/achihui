@@ -13,7 +13,7 @@
       <a mat-button routerLink="/finance/account/tree" routerLinkActive="active" matTooltip="{{'Common.HierarchyView' | translate}}">{{'Common.HierarchyView' | translate}}</a>
       <span class="toolbar-spacer"></span>
       <mat-form-field class="finaccountlist-toolbar-item">
-        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onStatusChange()" #statusselect="matSelect">
+        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onRefresh()">
           <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
           <mat-option *ngFor="let sts of arrayStatus" [value]="sts.value">
             {{sts.i18nterm | translate}}
@@ -78,7 +78,7 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onDisplayAccount(row)"></mat-row>
       </mat-table>
-      <mat-paginator #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      <mat-paginator #paginator [length]="recordAmount" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
     </div>
   </mat-card-content>

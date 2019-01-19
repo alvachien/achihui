@@ -2,6 +2,12 @@
 .chart-container {
   /*text-align: center;*/
   justify-content:space-between;
+  min-width: 300px;
+  width: 600px;
+  max-width: 98%;
+  min-height: 200px;
+  height: 480px;
+  max-height: 98%;
 }
 
 .mat-form-field {

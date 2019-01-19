@@ -14,10 +14,14 @@ import {
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
 
+// Material icons
 const materialIcons = document.createElement('link');
 materialIcons.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
 materialIcons.rel = 'stylesheet';
 document.head.appendChild(materialIcons);
+/** echarts extensions: */
+import 'echarts/theme/macarons.js';
+import 'echarts-wordcloud/index.js';
 
 // Unfortunately there's no typing for the `__karma__` variable. Just declare it as any.
 declare var __karma__: any;

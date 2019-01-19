@@ -27,6 +27,7 @@ export class FinanceStorageService {
   private _isAsstCtgyListLoaded: boolean;
   private _listAssetCategory: AssetCategory[];
   private _isAccountListLoaded: boolean;
+  private _listAccount: Account[];
   private _isConctrolCenterListLoaded: boolean;
   private _isOrderListLoaded: boolean;
 
@@ -46,9 +47,8 @@ export class FinanceStorageService {
     return this._listAssetCategory;
   }
 
-  listAccountChange: BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
   get Accounts(): Account[] {
-    return this.listAccountChange.value;
+    return this._listAccount;
   }
 
   listControlCenterChange: BehaviorSubject<ControlCenter[]> = new BehaviorSubject<ControlCenter[]>([]);
@@ -98,6 +98,8 @@ export class FinanceStorageService {
     this._listAssetCategory = [];
 
     this._isAccountListLoaded = false;
+    this._listAccount = [];
+
     this._isConctrolCenterListLoaded = false;
     this._isOrderListLoaded = false;
     // this._isDocumentListLoaded = false;
@@ -348,38 +350,35 @@ export class FinanceStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceStorageService: ${response}`);
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceStorageService.`);
           }
 
-          let listRst: Account[] = [];
+          this._listAccount = [];
           const rjs: any = <any>response;
 
           if (rjs instanceof Array && rjs.length > 0) {
             for (const si of rjs) {
               const rst: Account = new Account();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listAccount.push(rst);
             }
           }
 
           this._isAccountListLoaded = true;
-          this.listAccountChange.next(listRst);
-          return listRst;
+          return this._listAccount;
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
-              // console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccounts in FinanceStorageService: ${error}`);
               console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccounts in FinanceStorageService.`);
             }
 
             this._isAccountListLoaded = false;
-            this.listAccountChange.next([]);
+            this._listAccount = [];
 
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listAccountChange.value);
+      return of(this._listAccount);
     }
   }
 
@@ -387,7 +386,7 @@ export class FinanceStorageService {
    * Create an account
    * @param objAcnt Account to create
    */
-  public createAccount(objAcnt: Account): void {
+  public createAccount(objAcnt: Account): Observable<Account> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -396,7 +395,7 @@ export class FinanceStorageService {
     let apiurl: string = environment.ApiUrl + '/api/FinanceAccount';
 
     const jdata: string = objAcnt.writeJSONString();
-    this._http.post(apiurl, jdata, {
+    return this._http.post(apiurl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
@@ -406,29 +405,16 @@ export class FinanceStorageService {
 
         let hd: Account = new Account();
         hd.onSetData(response);
+        this._listAccount.push(hd);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createAccount in FinanceStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Accounts.slice();
-        copiedData.push(x);
-        this.listAccountChange.next(copiedData);
-
-        // Broadcast event
-        this.createAccountEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createAccount in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in createAccount in FinanceStorageService.`);
         }
 
-        // Broadcast event: failed
-        this.createAccountEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -464,13 +450,11 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in changeAccount in FinanceStorageService: ${x}`);
         }
 
-        const copiedData: any = this.Accounts.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
+        let idx: number = this._listAccount.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-          this.listAccountChange.next(copiedData);
+          this._listAccount.splice(idx, 1, x);
         }
 
         // Broadcast event
@@ -543,13 +527,11 @@ export class FinanceStorageService {
         }
 
         // Update the buffer if necessary
-        const copiedData: any = this.Accounts.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
+        let idx: number = this._listAccount.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-          this.listAccountChange.next(copiedData);
+          this._listAccount.splice(idx, 1, x);
         }
 
         // Broadcast event

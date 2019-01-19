@@ -107,7 +107,6 @@ describe('FinanceCurrencyComponent', () => {
         done();
       });
     });
-
   });
 
   describe('3. Exception case handling (async loading)', () => {

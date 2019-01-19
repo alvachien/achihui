@@ -5,6 +5,9 @@ export const typeParentSplitter: string = ' > ';
 export const idSplitChar: string = ',';
 
 export const dateSplitChar: string = '-';
+export const financeAccountCategoryCash: number = 1;
+export const financeAccountCategoryDeposit: number = 2;
+export const financeAccountCategoryCreditCard: number = 3;
 export const financeAccountCategoryAsset: number = 7;
 export const financeAccountCategoryAdvancePayment: number = 8; // Advance payment
 export const financeAccountCategoryBorrowFrom: number = 9;
@@ -235,7 +238,7 @@ export class InfoMessage {
 /**
  * Interface of Base Model Json
  */
-export interface IBaseModelJson {
+export interface BaseModelJson {
   createdAt: string;
   createdBy: string;
   updatedAt: string;

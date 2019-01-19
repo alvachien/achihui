@@ -102,7 +102,7 @@ export class Currency extends hih.BaseModel {
 /**
  * Account category in JSON format
  */
-export interface AccountCategoryJson {
+export interface AccountCategoryJson extends hih.BaseModelJson {
   id: number;
   hid?: number;
   name: string;
@@ -195,7 +195,7 @@ export class AccountCategory extends hih.BaseModel {
 /**
  * Document type
  */
-export interface DocumentTypeJson {
+export interface DocumentTypeJson extends hih.BaseModelJson {
   hid?: number;
   id: number;
   name: string;
@@ -274,7 +274,7 @@ export class DocumentType extends hih.BaseModel {
 /**
  * Asset category
  */
-export interface AssetCategoryJson {
+export interface AssetCategoryJson extends hih.BaseModelJson {
   hid?: number;
   id: number;
   name: string;
@@ -372,6 +372,23 @@ export abstract class AccountExtra {
   public onSetData(data: any): void {
     // Empty
   }
+}
+
+export interface AccountJson extends hih.BaseModelJson {
+  id: number;
+  hid: number;
+  name: string;
+  ctgyID: number;
+  ctgyName?: string;
+  comment?: string;
+  owner?: string;
+  status: number;
+  ownerDisplayAs?: string;
+
+  // Extra. info
+  extraInfo_ADP?: any;
+  extraInfo_AS?: any;
+  extraInfo_Loan?: any;
 }
 
 /**
@@ -1421,7 +1438,7 @@ export enum TranTypeLevelEnum {
 /**
  * Tran type
  */
-export interface TranTypeJson {
+export interface TranTypeJson extends hih.BaseModelJson {
   hid?: number;
   id: number;
   name: string;

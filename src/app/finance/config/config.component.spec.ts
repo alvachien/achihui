@@ -158,7 +158,6 @@ describe('ConfigComponent', () => {
       expect(component.dataSourceAcntCtgy.data.length).toBeGreaterThan(0);
       expect(component.dataSourceAcntCtgy.data.length).toEqual(fakeData.finAccountCategories.length);
 
-
       tabComponent.selectedIndex = 1;
       fixture.detectChanges();
       expect(component.dataSourceDocType.data.length).toBeGreaterThan(0);

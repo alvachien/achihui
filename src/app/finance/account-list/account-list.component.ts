@@ -8,12 +8,6 @@ import { LogLevel, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringU
 import { FinanceStorageService } from '../../services';
 import { HttpErrorResponse } from '@angular/common/http';
 
-// Account status UI, don't need expose.
-interface IAccountStatusUI {
-  name: string;
-  value?: AccountStatusEnum;
-}
-
 @Component({
   selector: 'hih-finance-account-list',
   templateUrl: './account-list.component.html',
@@ -21,12 +15,13 @@ interface IAccountStatusUI {
 })
 export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-
+ 
   displayedColumns: string[] = ['id', 'name', 'ctgy', 'status', 'comment'];
   dataSource: MatTableDataSource<Account> = new MatTableDataSource<Account>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   arrayStatus: UIDisplayString[] = [];
   selectedStatus: AccountStatusEnum = AccountStatusEnum.Normal;
+  recordAmount: number = 0;
   isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,
@@ -55,15 +50,17 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
     ])
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
-        if (x) {
-          this._buildDataSource();
+        if (x && x instanceof Array && x.length === 2) {
+          if (x[0] && x[0] instanceof Array) {
+            this._buildDataSource(x[0]);
+          }
         }
-    }, (error: HttpErrorResponse) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit but failed forkJoin: ${error.message}`);
+        console.error(`AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit but failed forkJoin: ${error.toString()}`);
       }
 
-      this._snackbar.open(error.message, undefined, {
+      this._snackbar.open(error.toString(), undefined, {
         duration: 2000,
       });
     }, () => {
@@ -82,8 +79,10 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
+    }
   }
 
   public onCreateAccount(): void {
@@ -103,26 +102,31 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public onRefresh(): void {
-    this._storageService.fetchAllAccounts(true).subscribe((x: any) => {
-      this._buildDataSource();
+    this._storageService.fetchAllAccounts(true).subscribe((x: Account[]) => {
+      if (x && x instanceof Array) {
+        this._buildDataSource(x);
+      }
+    }, (error: any) =>{
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
 
-  public onStatusChange(): void {
-    this.isLoadingResults = true;
-    this._buildDataSource();
-    this.isLoadingResults = false;
-  }
-
-  private _buildDataSource(): void {
-    if (this._storageService.Accounts) {
-      this.dataSource.data = this._storageService.Accounts.filter((value: Account) => {
+  private _buildDataSource(arAcnts: Account[]): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent _buildDataSource...');
+    }
+    if (arAcnts) {
+      this.dataSource.data = arAcnts.filter((value: Account) => {
         if (this.selectedStatus !== undefined && value.Status !== this.selectedStatus) {
           return false;
         }
 
         return true;
       });
+
+      this.recordAmount = this.dataSource.data.length;
     }
   }
 }

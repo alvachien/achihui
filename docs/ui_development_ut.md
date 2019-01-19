@@ -326,3 +326,9 @@ To check the URL with parameters, normally you get two error messages (in sequen
     });
     expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 ```
+
+### Handling parameters on spy function
+```typescript
+    fetchAllTagsSpy
+        .withArgs(true).and.returnValue(asyncData(fakeData.tagsCount));
+```

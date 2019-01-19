@@ -1,11 +1,12 @@
 import {
   Currency, HomeDef, HomeMember, HomeMemberRelationEnum, DocumentType,
-  AccountCategory, TranType, AssetCategory, Account,
+  AccountCategory, TranType, AssetCategory, Account, AccountJson,
   UserAuthInfo, AppLanguage, CurrencyJson, AppLanguageJson, DocumentTypeJson,
   AccountCategoryJson, TranTypeJson, AssetCategoryJson,
   LearnCategory, LearnCategoryJson,
   BookCategory, BookCategoryJson,
-  Tag, TagJson, TagTypeEnum,
+  Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
+  financeAccountCategoryCash, financeAccountCategoryCreditCard, financeAccountCategoryDeposit,
 } from '../app/model';
 import { User } from 'oidc-client';
 
@@ -22,6 +23,7 @@ export class FakeDataHelper {
   private _finAssetCategories: AssetCategory[];
   private _finAssetCategoriesFromAPI: AssetCategoryJson[];
   private _finAccounts: Account[];
+  private _finAccountsFromAPI: AccountJson[];
   private _currUser: UserAuthInfo;
   private _appLanguages: AppLanguage[];
   private _appLanguagesFromAPI: AppLanguageJson[];
@@ -31,6 +33,7 @@ export class FakeDataHelper {
   private _libBookCategoriesFromAPI: BookCategoryJson[];
   private _tags: Tag[];
   private _tagsFromAPI: TagJson[];
+  private _tagsCount: TagCount[];
 
   readonly userID1: string = 'abcdefg';
   readonly userID1Sub: string = '12345abcdefg';
@@ -106,6 +109,11 @@ export class FakeDataHelper {
       return this._finAccounts;
     }
   }
+  get finAccountsFromAPI(): AccountJson[] {
+    if (this._finAccountsFromAPI) {
+      return this._finAccountsFromAPI;
+    }
+  }
   get currentUser(): UserAuthInfo {
     if (this._currUser) {
       return this._currUser;
@@ -157,6 +165,11 @@ export class FakeDataHelper {
   get tagsFromAPI(): TagJson[] {
     if (this._tagsFromAPI) {
       return this._tagsFromAPI;
+    }
+  }
+  get tagsCount(): TagCount[] {
+    if (this._tagsCount) {
+      return this._tagsCount;
     }
   }
 
@@ -801,6 +814,7 @@ export class FakeDataHelper {
     acnt.Name = 'Cash 1';
     acnt.CategoryId = 1;
     acnt.OwnerId = this.userID1;
+    acnt.Status = AccountStatusEnum.Normal;
     acnt.Comment = 'Cash Account 1';
     this._finAccounts.push(acnt);
     // Deposit account 1
@@ -809,6 +823,7 @@ export class FakeDataHelper {
     acnt.Name = 'Deposit 1';
     acnt.CategoryId = 2;
     acnt.OwnerId = this.userID1;
+    acnt.Status = AccountStatusEnum.Normal;
     acnt.Comment = 'Deposit Account 1';
     this._finAccounts.push(acnt);
     // Credit card  account 1
@@ -817,8 +832,21 @@ export class FakeDataHelper {
     acnt.Name = 'CreditCard 1';
     acnt.CategoryId = 3;
     acnt.OwnerId = this.userID1;
+    acnt.Status = AccountStatusEnum.Closed;
     acnt.Comment = 'CreditCard Account 1';
     this._finAccounts.push(acnt);
+  }
+  public buildFinAccountsFromAPI(): void {
+    this._finAccountsFromAPI = [];
+    for(let i = 0; i < 2; i ++) {
+      let acntjson: any = {
+        id: i + 1,
+        name: `Account ${i+1}`,
+        ctgyID: i+1,
+        status: 0,        
+      };
+      this._finAccountsFromAPI.push(acntjson as AccountJson);
+    }
   }
   public buildCurrentUser(): void {
     this._currUser = new UserAuthInfo();
@@ -875,76 +903,43 @@ export class FakeDataHelper {
     this._finTranTypeFromAPI = [];
     this._finAssetCategoriesFromAPI = [];
     // Doc. type
-    let dt1: DocumentTypeJson = {
-      id: 1,
-      name: 'Type 1',
-      comment: 'comment for type 1',
-    };
-    this._finDocTypesFromAPI.push(dt1);
-    let dt2: DocumentTypeJson = {
-      id: 2,
-      name: 'Type 2',
-      comment: 'comment for type 2',
-    };
-    this._finDocTypesFromAPI.push(dt2);
+    for(let i = 0; i < 2; i ++) {
+      let dt1: any = {
+        id: i+1,
+        name: `Type ${i+1}`,
+        comment: `comment for type ${i+1}`,
+      };
+      this._finDocTypesFromAPI.push(dt1 as DocumentTypeJson);
+    }
     // Account category
-    let ac1: AccountCategoryJson = {
-      id: 1,
-      name: 'account category 1',
-      assetFlag: true,
-      comment: 'comment for category 1',
-    };
-    this._finAccountCategoriesFromAPI.push(ac1);
-    let ac2: AccountCategoryJson = {
-      id: 2,
-      name: 'account category 2',
-      assetFlag: false,
-      comment: 'comment for category 2',
-    };
-    this._finAccountCategoriesFromAPI.push(ac2);
+    for(let i = 0; i < 2; i ++) {
+      let ac1: any = {
+        id: i+1,
+        name: `account category ${i+1}`,
+        assetFlag: true,
+        comment: 'comment for category 1',
+      };
+      this._finAccountCategoriesFromAPI.push(ac1 as AccountCategoryJson);
+    }
     // Tran type
-    let tt1: TranTypeJson = {
-      id: 1,
-      name: 'tran type 1',
-      expense: false,
-      comment: 'comment for tran type 1',
-    };
-    this._finTranTypeFromAPI.push(tt1);
-    let tt11: TranTypeJson = {
-      id: 11,
-      name: 'type 1-1',
-      expense: false,
-      parID: 1,
-      comment: 'comment for tran type 11',
-    };
-    this._finTranTypeFromAPI.push(tt11);
-    let tt2: TranTypeJson = {
-      id: 2,
-      name: 'type 2',
-      expense: true,
-      comment: 'its type 2',
-    };
-    this._finTranTypeFromAPI.push(tt2);
-    let tt21: TranTypeJson = {
-      id: 21,
-      name: 'type 2-1',
-      expense: true,
-      comment: 'type 21',
-    };
-    this._finTranTypeFromAPI.push(tt21);
+    for(let i = 0; i < 3; i ++) {
+      let tt1: any = {
+        id: i+1,
+        name: `tran type ${i+1}`,
+        expense: false,
+        comment: 'comment for tran type 1',
+      };
+      this._finTranTypeFromAPI.push(tt1 as TranTypeJson);
+    }
     // Asset category
-    let asc1: AssetCategoryJson = {
-      id: 1,
-      name: 'asset 1',
-      desp: 'desp of asset 1',
-    };
-    this._finAssetCategoriesFromAPI.push(asc1);
-    let asc2: AssetCategoryJson = {
-      id: 2,
-      name: 'asset 2',
-      desp: 'desp of asset 2',
-    };
-    this._finAssetCategoriesFromAPI.push(asc2);
+    for(let i = 0; i < 3; i ++) {
+      let asc1: any = {
+        id: i + 1,
+        name: `asset ${i+1}`,
+        desp: 'desp of asset 1',
+      };
+      this._finAssetCategoriesFromAPI.push(asc1 as AssetCategoryJson);
+    }
   }
   public buildLearnCategoriesFromAPI(): void {
     this._learnCategoriesFromAPI = [];
@@ -1022,6 +1017,16 @@ export class FakeDataHelper {
       this._tags.push(ntag);  
     }
   }
+  public buildTagsCount(): void {
+    this._tagsCount = [];
+    let ntagcount: TagCount;
+    for(let i = 0; i < 10; i++) {
+      ntagcount = new TagCount();
+      ntagcount.Term = `tag${i+1}`;
+      ntagcount.TermCount = Math.round(100 * Math.random());
+      this._tagsCount.push(ntagcount);
+    }
+  }
   public buildTagsFromAPI(): void {
     this._tagsFromAPI = [];
     for(let i = 0; i < 2; i ++) {
@@ -1032,5 +1037,31 @@ export class FakeDataHelper {
       };
       this._tagsFromAPI.push(ntag);
     }
+  }
+  public getFinCashAccountForCreation(): Account {
+    let acnt: Account = new Account();
+    acnt.Name = 'Cash 1';
+    acnt.Status = AccountStatusEnum.Normal;
+    if (this._chosedHome) {
+      acnt.HID = this._chosedHome.ID;
+      acnt.OwnerId = this._chosedHome.Host;
+    }
+    acnt.CategoryId = financeAccountCategoryCash;
+    acnt.Comment = 'Cash 1';
+    
+    return acnt;
+  }
+  public getFinCreditcardAccountForCreation(): Account {
+    let acnt: Account = new Account();
+    acnt.Name = 'Creditcard 1';
+    acnt.Status = AccountStatusEnum.Normal;
+    if (this._chosedHome) {
+      acnt.HID = this._chosedHome.ID;
+      acnt.OwnerId = this._chosedHome.Host;
+    }
+    acnt.CategoryId = financeAccountCategoryCreditCard;
+    acnt.Comment = 'Creditcard 1';
+    
+    return acnt;
   }
 }
