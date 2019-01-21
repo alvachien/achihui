@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material';
 /**
  * Node type for Account tree
  */
-export enum AccountTreeNodeTypeEnum {
+enum AccountTreeNodeTypeEnum {
   category = 1,
   account = 2,
 }
@@ -23,7 +23,7 @@ export enum AccountTreeNodeTypeEnum {
  * Account data with nested structure.
  * Each node has a display name anda list of children.
  */
-export class AccountTreeNode {
+class AccountTreeNode {
   children: AccountTreeNode[];
   displayname: string;
   id: number;
@@ -31,7 +31,7 @@ export class AccountTreeNode {
 }
 
 /** Flat node with expandable and level information */
-export class AccountTreeFlatNode {
+class AccountTreeFlatNode {
   displayname: string;
   id: number;
   nodetype: AccountTreeNodeTypeEnum;
@@ -99,8 +99,10 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnDestroy...');
     }
 
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   onTreeNodeClicked(node: AccountTreeFlatNode): void {
@@ -222,6 +224,9 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
         this.dataSource.data = nodes;
       }, (error: any) => {
         // Do nothing
+        this._snackbar.open(error.toString(), undefined, {
+          duration: 2000,
+        });
       }, () => {
         this.isLoadingResults = false;
       });
@@ -230,7 +235,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
   private _buildAccountTree(arctgy: AccountCategory[], aracnt: Account[], level: number, ctgyid?: number): AccountTreeNode[] {
     let data: AccountTreeNode[] = [];
 
-    if (!ctgyid) {
+    if (ctgyid !== undefined && !Number.isNaN(ctgyid)) {
       arctgy.forEach((val: AccountCategory) => {
         // Root nodes!
         let node: AccountTreeNode = new AccountTreeNode();

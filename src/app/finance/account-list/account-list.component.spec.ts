@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { By} from '@angular/platform-browser';
+import { By } from '@angular/platform-browser';
 
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { AccountListComponent } from './account-list.component';
@@ -169,6 +169,7 @@ describe('AccountListComponent', () => {
       component.onChangeAccount(acnt);
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/account/edit', acnt.Id]);
     });
+
     // it('Check status changed select control', fakeAsync(() => {
     // //   let select: MatSelect = fixture.debugElement.query(By.css('mat-select')).componentInstance;
 
@@ -178,14 +179,14 @@ describe('AccountListComponent', () => {
     // //   flush();
 
     // //   // Select the option
-      
+
     // //   (overlayContainerElement.querySelectorAll('mat-option')[1] as HTMLElement).click();
     // //   fixture.detectChanges();
     // //   flush();
     // //   expect(component.selectedStatus).toBe(1);
     // }));
 
-    it('Check status changed select control', fakeAsync(() => {
+    it('Should reload data after status changed in select control', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       expect(component.dataSource.data.length).toEqual(0);
 
@@ -195,23 +196,27 @@ describe('AccountListComponent', () => {
       expect(component.dataSource.data.length).toBeGreaterThan(0);
       expect(fetchAllAccountsSpy.calls.count()).toEqual(1);
 
-      // Closed
-      let options: NodeListOf<HTMLElement>;
-      let statusoptions = fixture.nativeElement.querySelectorAll('mat-option');
-      let optidx = -1;
-      let select: MatSelect = fixture.debugElement.query(By.css('mat-select')).componentInstance;
-      select.open();
+      // Switch to Closed
+      let trigger: any = fixture.debugElement.query(By.css('.finaccountlist-toolbar-item .mat-select-trigger')).nativeElement;
+      trigger.click();
+      fixture.detectChanges();
+      flush();
+
+      let options: NodeListOf<HTMLElement> = overlayContainerElement.querySelectorAll('mat-option');
+      expect(options.length).toBeGreaterThan(0);
+      let optidx: number = -1;
+      let select: MatSelect = fixture.debugElement.query(By.css('.finaccountlist-toolbar-item mat-select')).componentInstance;
       select.options.forEach((item: MatOption, idx: number) => {
         if (item.value === AccountStatusEnum.Closed) {
           optidx = idx;
         }
       });
       expect(optidx).not.toEqual(-1);
-      statusoptions[optidx].click();
-      flush();
+      options[optidx].click();
       fixture.detectChanges();
-      tick();
-
+      trigger.click();
+      fixture.detectChanges();
+      flush();
       expect(fetchAllAccountsSpy.calls.count()).toEqual(2);
       expect(component.dataSource.data.length).toEqual(fakeData.finAccounts.filter(
         (val: Account) => {
@@ -223,13 +228,17 @@ describe('AccountListComponent', () => {
       }).length);
 
       // Reset-all
-      select.open();
-      statusoptions[0].click();
+      trigger.click();
+      fixture.detectChanges();
+      // flush();
+      options = overlayContainerElement.querySelectorAll('mat-option');
+      options[0].click();
+      fixture.detectChanges();
+      trigger.click();
       fixture.detectChanges();
       flush();
-      tick();
 
-      expect(fetchAllAccountsSpy.calls.count()).toEqual(3);
+      // expect(fetchAllAccountsSpy.calls.count()).toEqual(3);
       expect(component.dataSource.data.length).toEqual(fakeData.finAccounts.length);
     }));
   });

@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { HttpLoaderTestFactory } from '../../testing';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
+import { HttpLoaderTestFactory } from '../../testing';
 import { FooterComponent } from './footer.component';
 
 describe('FooterComponent', () => {
@@ -22,12 +22,14 @@ describe('FooterComponent', () => {
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
       declarations: [ FooterComponent ],
-      providers: [TranslateService]
+      providers: [
+        TranslateService,
+      ],
     })
     .compileComponents();
   }));
@@ -40,7 +42,7 @@ describe('FooterComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('1. should create', () => {
     expect(component).toBeTruthy();
   });
 });

@@ -838,12 +838,12 @@ export class FakeDataHelper {
   }
   public buildFinAccountsFromAPI(): void {
     this._finAccountsFromAPI = [];
-    for(let i = 0; i < 2; i ++) {
+    for (let i: number = 0; i < 2; i++) {
       let acntjson: any = {
         id: i + 1,
-        name: `Account ${i+1}`,
-        ctgyID: i+1,
-        status: 0,        
+        name: `Account ${i + 1}`,
+        ctgyID: i + 1,
+        status: 0,
       };
       this._finAccountsFromAPI.push(acntjson as AccountJson);
     }
@@ -903,39 +903,39 @@ export class FakeDataHelper {
     this._finTranTypeFromAPI = [];
     this._finAssetCategoriesFromAPI = [];
     // Doc. type
-    for(let i = 0; i < 2; i ++) {
+    for (let i: number = 0; i < 2; i++) {
       let dt1: any = {
-        id: i+1,
-        name: `Type ${i+1}`,
-        comment: `comment for type ${i+1}`,
+        id: i + 1,
+        name: `Type ${i + 1}`,
+        comment: `comment for type ${i + 1}`,
       };
       this._finDocTypesFromAPI.push(dt1 as DocumentTypeJson);
     }
     // Account category
-    for(let i = 0; i < 2; i ++) {
+    for (let i: number = 0; i < 2; i++) {
       let ac1: any = {
-        id: i+1,
-        name: `account category ${i+1}`,
+        id: i + 1,
+        name: `account category ${i + 1}`,
         assetFlag: true,
         comment: 'comment for category 1',
       };
       this._finAccountCategoriesFromAPI.push(ac1 as AccountCategoryJson);
     }
     // Tran type
-    for(let i = 0; i < 3; i ++) {
+    for (let i: number = 0; i < 3; i++) {
       let tt1: any = {
-        id: i+1,
-        name: `tran type ${i+1}`,
+        id: i + 1,
+        name: `tran type ${i + 1}`,
         expense: false,
         comment: 'comment for tran type 1',
       };
       this._finTranTypeFromAPI.push(tt1 as TranTypeJson);
     }
     // Asset category
-    for(let i = 0; i < 3; i ++) {
+    for (let i: number = 0; i < 3; i++) {
       let asc1: any = {
         id: i + 1,
-        name: `asset ${i+1}`,
+        name: `asset ${i + 1}`,
         desp: 'desp of asset 1',
       };
       this._finAssetCategoriesFromAPI.push(asc1 as AssetCategoryJson);
@@ -989,16 +989,16 @@ export class FakeDataHelper {
   public buildLibBookCategories(): void {
     this._libBookCategories = [];
     let ctgy: BookCategory;
-    for(let i = 0; i < 2; i++) {
+    for (let i: number = 0; i < 2; i++) {
       ctgy = new BookCategory();
       ctgy.ID = i + 1;
-      ctgy.Name = `Category ${i+1}`;
-      this._libBookCategories.push(ctgy);  
+      ctgy.Name = `Category ${i + 1}`;
+      this._libBookCategories.push(ctgy);
     }
   }
   public buildLibBookCategoriesFromAPI(): void {
     this._libBookCategoriesFromAPI = [];
-    for(let i = 0; i < 2; i++) {
+    for (let i: number = 0; i < 2; i++) {
       let ct1: BookCategoryJson = {
         id: i + 1,
         name: `category ${i + 1}`,
@@ -1009,27 +1009,27 @@ export class FakeDataHelper {
   public buildTags(): void {
     this._tags = [];
     let ntag: Tag;
-    for(let i = 0; i < 2; i++) {
+    for (let i: number = 0; i < 2; i++) {
       ntag = new Tag();
       ntag.TagType = TagTypeEnum.LearnQuestionBank;
-      ntag.TagID = i+1;
+      ntag.TagID = i + 1;
       ntag.Term = `tag ${i}`;
-      this._tags.push(ntag);  
+      this._tags.push(ntag);
     }
   }
   public buildTagsCount(): void {
     this._tagsCount = [];
     let ntagcount: TagCount;
-    for(let i = 0; i < 10; i++) {
+    for (let i: number = 0; i < 10; i++) {
       ntagcount = new TagCount();
-      ntagcount.Term = `tag${i+1}`;
+      ntagcount.Term = `tag${i + 1}`;
       ntagcount.TermCount = Math.round(100 * Math.random());
       this._tagsCount.push(ntagcount);
     }
   }
   public buildTagsFromAPI(): void {
     this._tagsFromAPI = [];
-    for(let i = 0; i < 2; i ++) {
+    for (let i: number = 0; i < 2; i++) {
       let ntag: TagJson = {
         tagType: 1,
         tagID: i + 1,
@@ -1048,7 +1048,7 @@ export class FakeDataHelper {
     }
     acnt.CategoryId = financeAccountCategoryCash;
     acnt.Comment = 'Cash 1';
-    
+
     return acnt;
   }
   public getFinCreditcardAccountForCreation(): Account {
@@ -1061,7 +1061,7 @@ export class FakeDataHelper {
     }
     acnt.CategoryId = financeAccountCategoryCreditCard;
     acnt.Comment = 'Creditcard 1';
-    
+
     return acnt;
   }
 }
