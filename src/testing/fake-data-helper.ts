@@ -7,6 +7,7 @@ import {
   BookCategory, BookCategoryJson,
   Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
   financeAccountCategoryCash, financeAccountCategoryCreditCard, financeAccountCategoryDeposit,
+  ControlCenter, Order,
 } from '../app/model';
 import { User } from 'oidc-client';
 
@@ -24,6 +25,8 @@ export class FakeDataHelper {
   private _finAssetCategoriesFromAPI: AssetCategoryJson[];
   private _finAccounts: Account[];
   private _finAccountsFromAPI: AccountJson[];
+  private _finControlCenters: ControlCenter[];
+  private _finOrders: Order[];
   private _currUser: UserAuthInfo;
   private _appLanguages: AppLanguage[];
   private _appLanguagesFromAPI: AppLanguageJson[];
@@ -112,6 +115,16 @@ export class FakeDataHelper {
   get finAccountsFromAPI(): AccountJson[] {
     if (this._finAccountsFromAPI) {
       return this._finAccountsFromAPI;
+    }
+  }
+  get finControlCenters(): ControlCenter[] {
+    if (this._finControlCenters) {
+      return this._finControlCenters;
+    }
+  }
+  get finOrders(): Order[] {
+    if (this._finOrders) {
+      return this._finOrders;
     }
   }
   get currentUser(): UserAuthInfo {
@@ -1063,5 +1076,25 @@ export class FakeDataHelper {
     acnt.Comment = 'Creditcard 1';
 
     return acnt;
+  }
+  public buildFinControlCenter(): void {
+    this._finControlCenters = [];
+    let ctgy: ControlCenter;
+    for (let i: number = 0; i < 2; i++) {
+      ctgy = new ControlCenter();
+      ctgy.Id = i + 1;
+      ctgy.Name = `Control Center ${i + 1}`;
+      this._finControlCenters.push(ctgy);
+    }
+  }
+  public buildFinOrders(): void {
+    this._finOrders = [];
+    let ctgy: Order;
+    for (let i: number = 0; i < 2; i++) {
+      ctgy = new Order();
+      ctgy.Id = i + 1;
+      ctgy.Name = `Order ${i + 1}`;
+      this._finOrders.push(ctgy);
+    }
   }
 }
