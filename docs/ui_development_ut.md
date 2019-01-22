@@ -328,7 +328,22 @@ To check the URL with parameters, normally you get two error messages (in sequen
 ```
 
 ### Handling parameters on spy function
+First approach:
 ```typescript
     fetchAllTagsSpy
         .withArgs(true).and.returnValue(asyncData(fakeData.tagsCount));
 ```
+Second approach:
+```typescript
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.callFake(() => {
+      console.log('Entering fakeing function 1');
+      return of([]);
+    });
+```
+
+### Important: in case stub function is not working
+Do check that 
+```typescript
+fixture.detectChanges();
+```
+is added in befreEach()!!!

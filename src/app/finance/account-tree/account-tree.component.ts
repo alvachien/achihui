@@ -91,7 +91,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
-    this._refreshTree();
+    this._refreshTree(false);
   }
 
   ngOnDestroy(): void {
@@ -211,18 +211,30 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
     return observableOf(node.children);
   }
   private _refreshTree(isReload?: boolean): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent _refreshTree...');
+    }
     this.isLoadingResults = true;
 
     forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts(isReload))
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((value: any) => {
-        // Parse the data
-        this.availableCategories = value[0];
-        this.availableAccounts = this._filterAccountsByStatus(<Account[]>value[1]);
+      .subscribe((data: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent _refreshTree, forkJoin...');
+        }
 
-        let nodes: AccountTreeNode[] = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
-        this.dataSource.data = nodes;
+        if (data instanceof Array && data.length > 0) {
+          // Parse the data
+          this.availableCategories = data[0];
+          this.availableAccounts = this._filterAccountsByStatus(<Account[]>data[1]);
+
+          let nodes: AccountTreeNode[] = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
+          this.dataSource.data = nodes;
+        }
       }, (error: any) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error('AC_HIH_UI [Error]: Entering AccountTreeComponent _refreshTree, forkJoin, failed...');
+        }
         // Do nothing
         this._snackbar.open(error.toString(), undefined, {
           duration: 2000,
@@ -235,7 +247,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
   private _buildAccountTree(arctgy: AccountCategory[], aracnt: Account[], level: number, ctgyid?: number): AccountTreeNode[] {
     let data: AccountTreeNode[] = [];
 
-    if (ctgyid !== undefined && !Number.isNaN(ctgyid)) {
+    if (ctgyid === undefined || Number.isNaN(ctgyid)) {
       arctgy.forEach((val: AccountCategory) => {
         // Root nodes!
         let node: AccountTreeNode = new AccountTreeNode();

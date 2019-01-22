@@ -15,13 +15,13 @@ import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '..
 import { AccountTreeComponent } from './account-tree.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 
-@Component({selector: 'hih-fin-docitem-by-acntctgy', template: ''})
+@Component({selector: 'hih-fin-docitem-by-acntctgy', template: '<div>By category</div>'})
 class DocumentItemByAccountCategoryComponent {
   @Input() selectedCategory: any;
   @Input() selectedAccounts: any;
   @Input() selectedScope: any;
 }
-@Component({selector: 'hih-fin-docitem-by-acnt', template: ''})
+@Component({selector: 'hih-fin-docitem-by-acnt', template: '<div>By account</div>'})
 class DocumentItemByAccountComponent {
   @Input() selectedAccount: any;
   @Input() selectedScope: any;
@@ -43,13 +43,10 @@ describe('AccountTreeComponent', () => {
     fakeData.buildChosedHome();
 
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
-    fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    stroageService.Accounts = fakeData.finAccounts;
-    const homeService: Partial<HomeDefDetailService> = {};
-    homeService.ChosedHome = fakeData.chosedHome;
-
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.withArgs(false).and.returnValue(of([]))
+                                                         .withArgs(true).and.returnValue(of([])) ;
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
@@ -73,8 +70,7 @@ describe('AccountTreeComponent', () => {
         TranslateService,
         UIStatusService,
         { provide: Router, useValue: routerSpy },
-        { provide: FinanceStorageService, useValue: stroageService },
-        { provide: HomeDefDetailService, useValue: homeService },
+        { provide: FinanceStorageService, useValue: storageService },
       ],
     })
     .compileComponents();
@@ -83,10 +79,10 @@ describe('AccountTreeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AccountTreeComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('1. should create without data', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(component.dataSource.data.length).toEqual(0);
   });
@@ -94,7 +90,8 @@ describe('AccountTreeComponent', () => {
   describe('2. faked data with async loading', () => {
     beforeEach(() => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
-      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllAccountsSpy.withArgs(false).and.returnValue(asyncData(fakeData.finAccounts))
+                         .withArgs(true).and.returnValue(asyncData(fakeData.finAccounts));
     });
 
     it('should not show data before OnInit', () => {
@@ -118,7 +115,8 @@ describe('AccountTreeComponent', () => {
 
     beforeEach(() => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
-      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllAccountsSpy.withArgs(false).and.returnValue(asyncData(fakeData.finAccounts))
+        .withArgs(true).and.returnValue(asyncData(fakeData.finAccounts));
     });
 
     beforeEach(inject([OverlayContainer],
@@ -133,7 +131,7 @@ describe('AccountTreeComponent', () => {
 
     it('should display error when Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
       expect(component.dataSource.data.length).toEqual(0);
@@ -147,4 +145,38 @@ describe('AccountTreeComponent', () => {
     }));
   });
 
+  describe('4. Should display correct panel with the tree node click', () => {
+    let treeElement: HTMLElement;
+    function getNodes(treeElement2: Element): Element[] {
+      return [].slice.call(treeElement2.querySelectorAll('.mat-tree-node, .mat-nested-tree-node'))!;
+    }
+
+    beforeEach(() => {
+      treeElement = fixture.nativeElement.querySelector('mat-tree');
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllAccountsSpy.withArgs(false).and.returnValue(asyncData(fakeData.finAccounts))
+                         .withArgs(true).and.returnValue(asyncData(fakeData.finAccounts));
+    });
+
+    it('should not show data before OnInit', () => {
+      expect(component.dataSource.data.length).toEqual(0);
+    });
+
+    xit('should show data after OnInit (fakeAsync)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit()
+      expect(component.dataSource.data.length).toEqual(0);
+
+      tick();
+      fixture.detectChanges();
+
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
+
+      // Search for the Notes
+      // (getNodes(treeElement)[0] as HTMLElement).click();
+      // // flush();
+      // fixture.detectChanges();
+      // let ctgypanel: HTMLElement = fixture.nativeElement.querySelector('hih-fin-docitem-by-acntctgy');
+      // expect(ctgypanel.hasAttribute('hidden')).toEqual(false);
+    }));
+  });
 });
