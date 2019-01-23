@@ -8,8 +8,10 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
+  MatStepperNext,
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { By } from '@angular/platform-browser';
 
 import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
@@ -127,8 +129,10 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.TranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
       // Also, the date shall be inputted
+      expect(component.TranDate).toBeTruthy();
     });
-    it('should set the accounts and others', fakeAsync(() => {
+
+    it('step 1: should have accounts and others loaded', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       expect(component.arUIAccount.length).toEqual(0);
       expect(component.arUIOrder.length).toEqual(0);
@@ -137,6 +141,75 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       expect(component.arUIAccount.length).toBeGreaterThan(0);
       expect(component.arUIOrder.length).toBeGreaterThan(0);
+    }));
+
+    it('step 1: should not allow go to second step if there are failure in first step', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+
+      expect(component._stepper.selectedIndex).toBe(0);
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.firstFormGroup.valid).toBe(false);
+      expect(component._stepper.selectedIndex).toBe(0);
+    }));
+
+    it('step 1: should go to second step if there are no failure in first step', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component.firstFormGroup.valid).toBe(true);
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('should not allow go third step if there are no items in second step', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('should  go third step if there are items are maintained in second step', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(2);
     }));
   });
 });

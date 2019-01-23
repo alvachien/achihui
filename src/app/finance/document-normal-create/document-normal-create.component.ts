@@ -17,7 +17,7 @@ import { environment } from '../../../environments/environment';
 import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  UICommonLabelEnum, IAccountCategoryFilter, momentDateFormat, ModelUtility, TranType,
+  UICommonLabelEnum, IAccountCategoryFilter, momentDateFormat, ModelUtility, TranType, Currency,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -35,6 +35,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
+  public arCurrencies: Currency[] = [];
   // Stepper
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   // Step: Generic info
@@ -128,11 +129,18 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       }
 
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arUIAccount = BuildupAccountForSelection(rst[3], rst[0]);
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilter = undefined;
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders);
+      this.arUIOrder = BuildupOrderForSelection(rst[5]);
+      // Currencies
+      this.arCurrencies = rst[6];
+    }, (error: any) => {
+      // Show the error
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
 
