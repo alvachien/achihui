@@ -4,8 +4,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import {
-  MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange, MatVerticalStepper,
+import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper,
 } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
@@ -316,6 +315,43 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     }
 
     if (event.selectedIndex === 2) {
+      if (event.previouslySelectedIndex === 1) {
+        // Step 2 > 3
+        let rst: boolean = true;
+        // Check 1: Have items
+        if (this.dataSource.data.length <= 0) {
+          rst = false;
+        }
+        // Check 2: Each item has account
+        let erridx: number = this.dataSource.data.findIndex((val: DocumentItem) => {
+          return val.AccountId === undefined;
+        });
+        if (erridx !== -1) {
+          rst = false;
+        }
+        // Check 3. Each item has tran type
+        erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+          return val.TranType === undefined;
+        });
+        if (erridx !== -1) {
+          rst = false;
+        }
+        // Check 4. Amount
+        erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+          return val.TranAmount === undefined;
+        });
+        if (erridx !== -1) {
+          rst = false;
+        }
+        if (rst === false) {
+          this._snackbar.open('No items or invalid item detected', undefined, {
+            duration: 2000,
+          }).afterDismissed().subscribe(() => {
+            this._stepper.selectedIndex = 1;
+          });
+        }
+      }
+
       // Update the confirm info.
       this.inAmount = 0;
       this.outAmount = 0;

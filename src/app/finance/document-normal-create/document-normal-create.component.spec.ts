@@ -18,6 +18,7 @@ import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPip
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData } from '../../../testing';
 import { DocumentNormalCreateComponent } from './document-normal-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
+import { DocumentItem } from 'app/model';
 
 describe('DocumentNormalCreateComponent', () => {
   let component: DocumentNormalCreateComponent;
@@ -108,7 +109,7 @@ describe('DocumentNormalCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('2. should create normal doc with faked data', () => {
+  describe('2. verify the steppers logic', () => {
     beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
@@ -174,7 +175,31 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
-    it('should not allow go third step if there are no items in second step', fakeAsync(() => {
+    it('step 2: should not allow go to third step if there are no items in second step', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // On step 1, setup the content
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // On step 2, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      flush();
+      fixture.detectChanges();
+
+      // It shall be prevented
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2: should not allowed go to third step if there are items without account', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the first step
@@ -186,12 +211,27 @@ describe('DocumentNormalCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(1);
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.TranAmount = 200;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      flush();
+      fixture.detectChanges();
+
+      // It shall not allowed
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
-    it('should  go third step if there are items are maintained in second step', fakeAsync(() => {
+    it('step 2: should not allowed go third step if there are items without tran. type', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the first step
@@ -209,7 +249,58 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      expect(component._stepper.selectedIndex).toBe(2);
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      flush();
+      fixture.detectChanges();
+
+      // It shall not allowed
+      expect(component._stepper.selectedIndex).toBe(1);
     }));
+
+    it('step 2: should not allowed go third step if there are items without amount', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      flush();
+      fixture.detectChanges();
+
+      // It shall not allowed
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    // Asset account should not allowed
+
+    // Asset account should not allowed
+
+    // ADP account should not allowed
+
+    // System tran type should not allowed
+
+    // Should not allow neither control center nor order
+
+    // Should not allow input control center and order both
+
+    // Submit should work
+
+    // Reset should work
   });
 });
