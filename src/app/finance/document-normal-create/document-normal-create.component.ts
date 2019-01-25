@@ -101,6 +101,21 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     if (erridx !== -1) {
       return false;
     }
+    // Check 5. Each item has control center or order
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return (val.ControlCenterId !== undefined && val.OrderId !== undefined)
+      || (val.ControlCenterId === undefined && val.OrderId === undefined);
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 6. Each item has description
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.Desp === undefined || val.Desp.length === 0;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
 
     return true;
   }
@@ -315,6 +330,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     // Confirm
     this.inAmount = 0;
     this.outAmount = 0;
+    // Default values apply
+    this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
+    this.firstFormGroup.get('dateControl').setValue(moment());
   }
 
   public addItemTag(row: DocumentItem, $event: MatChipInputEvent): void {

@@ -1016,6 +1016,16 @@ export class AccountExtraLoan extends AccountExtra {
   }
 }
 
+// Json format to communicate with API
+export interface ControlCenterJson extends hih.BaseModelJson {
+  hid: number;
+  id: number;
+  name: string;
+  comment?: string;
+  parID?: number;
+  owner?: string;
+}
+
 /**
  * Control center
  */
@@ -1132,6 +1142,16 @@ export class ControlCenter extends hih.BaseModel {
  */
 export interface IOrderVerifyContext {
   ControlCenters: ControlCenter[];
+}
+
+export interface OrderJson extends hih.BaseModelJson {
+  id: number;
+  hid: number;
+  name: string;
+  comment?: string;
+  validFrom: string;
+  validTo: string;
+  sRuleList: SettlementRuleJson[];
 }
 
 /**
@@ -1335,6 +1355,14 @@ export class Order extends hih.BaseModel {
       }
     }
   }
+}
+
+export interface SettlementRuleJson {
+  ruleID: number;
+  controlCenterID: number;
+  controlCenterName?: string;
+  precent: number;
+  comment?: string;
 }
 
 /**

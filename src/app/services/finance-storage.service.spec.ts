@@ -19,7 +19,9 @@ describe('FinanceStorageService', () => {
   const docTypeAPIURL: any = environment.ApiUrl + '/api/FinanceDocType';
   const tranTypeAPIURL: any = environment.ApiUrl + '/api/FinanceTranType';
   const assetCategoryAPIURL: any = environment.ApiUrl + '/api/FinanceAssetCategory';
-  const accountAPIURL: any  = environment.ApiUrl + '/api/FinanceAccount';
+  const accountAPIURL: any = environment.ApiUrl + '/api/FinanceAccount';
+  const ccAPIURL: any = environment.ApiUrl + '/api/FinanceControlCenter';
+  const orderAPIURL: any = environment.ApiUrl + '/api/FinanceOrder';
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -27,6 +29,8 @@ describe('FinanceStorageService', () => {
     fakeData.buildCurrentUser();
     fakeData.buildFinConfigDataFromAPI();
     fakeData.buildFinAccountsFromAPI();
+    fakeData.buildFinControlCenterFromAPI();
+    fakeData.buildFinOrderFromAPI();
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
@@ -55,7 +59,7 @@ describe('FinanceStorageService', () => {
   });
 
   /// FinanceStorageService method tests begin ///
-  describe('2. fetchAllAccountCategories', () => {
+  describe('fetchAllAccountCategories', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceStorageService);
     });
@@ -167,7 +171,7 @@ describe('FinanceStorageService', () => {
     });
   });
 
-  describe('3. fetchAllAssetCategories', () => {
+  describe('fetchAllAssetCategories', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceStorageService);
     });
@@ -279,7 +283,7 @@ describe('FinanceStorageService', () => {
     });
   });
 
-  describe('4. fetchAllDocTypes', () => {
+  describe('fetchAllDocTypes', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceStorageService);
     });
@@ -391,7 +395,7 @@ describe('FinanceStorageService', () => {
     });
   });
 
-  describe('5. fetchAllTranTypes', () => {
+  describe('fetchAllTranTypes', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceStorageService);
     });
@@ -503,7 +507,7 @@ describe('FinanceStorageService', () => {
     });
   });
 
-  describe('6. fetchAllAccounts', () => {
+  describe('fetchAllAccounts', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceStorageService);
     });
@@ -616,7 +620,7 @@ describe('FinanceStorageService', () => {
     });
   });
 
-  describe('7. createAccount', () => {
+  describe('createAccount', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceStorageService);
     });
@@ -700,6 +704,232 @@ describe('FinanceStorageService', () => {
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: 'Not Found' });
+    });
+  });
+
+  describe('fetchAllControlCenters', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected control centers (called once)', () => {
+      expect(service.ControlCenters.length).toEqual(0, 'should not buffered yet');
+
+      service.fetchAllControlCenters().subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(fakeData.finControlCentersFromAPI.length, 'should return expected control center');
+          expect(service.ControlCenters.length).toEqual(fakeData.finControlCentersFromAPI.length, 'should have buffered');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      // Respond with the mock cc
+      req.flush(fakeData.finControlCentersFromAPI);
+    });
+
+    it('should be OK returning no control centers', () => {
+      expect(service.ControlCenters.length).toEqual(0, 'should not buffered yet');
+      service.fetchAllControlCenters().subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(0, 'should have empty cc array');
+          expect(service.ControlCenters.length).toEqual(0, 'should buffered nothing');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      req.flush([]); // Respond with no data
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Deliberate 404';
+      service.fetchAllControlCenters().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+      });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+
+    it('should return expected control centers (called multiple times)', () => {
+      expect(service.ControlCenters.length).toEqual(0, 'should not buffered yet');
+      service.fetchAllControlCenters().subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(fakeData.finControlCentersFromAPI.length, 'should return expected cc');
+          expect(data.length).toEqual(service.ControlCenters.length, 'should have buffered');
+        },
+        (fail: any) => {
+          // Do nothing
+        },
+      );
+      const reqs: any = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+      });
+      reqs[0].flush(fakeData.finControlCentersFromAPI);
+      httpTestingController.verify();
+
+      // Second call
+      service.fetchAllControlCenters().subscribe();
+      const req2: any = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+       });
+      expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+
+      // Third call
+      service.fetchAllControlCenters().subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(fakeData.finControlCentersFromAPI.length, 'should return expected ccs');
+        },
+        (fail: any) => {
+          // Do nothing
+        },
+      );
+      const req3: any = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
+       });
+      expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+    });
+  });
+
+  describe('fetchAllOrders', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected orders (called once)', () => {
+      expect(service.Orders.length).toEqual(0, 'should not buffered yet');
+
+      service.fetchAllOrders().subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(fakeData.finOrdersFromAPI.length, 'should return expected orders');
+          expect(service.Orders.length).toEqual(fakeData.finOrdersFromAPI.length, 'should have buffered');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      // Respond with the mock cc
+      req.flush(fakeData.finOrdersFromAPI);
+    });
+
+    it('should be OK returning no order', () => {
+      expect(service.Orders.length).toEqual(0, 'should not buffered yet');
+      service.fetchAllOrders().subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(0, 'should have empty order array');
+          expect(service.Orders.length).toEqual(0, 'should buffered nothing');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      req.flush([]); // Respond with no data
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Deliberate 404';
+      service.fetchAllOrders().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+      });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      // respond with a 404 and the error message in the body
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+
+    it('should return expected control centers (called multiple times)', () => {
+      expect(service.Orders.length).toEqual(0, 'should not buffered yet');
+      service.fetchAllOrders().subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(fakeData.finOrdersFromAPI.length, 'should return expected cc');
+          expect(data.length).toEqual(service.Orders.length, 'should have buffered');
+        },
+        (fail: any) => {
+          // Do nothing
+        },
+      );
+      const reqs: any = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+      });
+      reqs[0].flush(fakeData.finOrdersFromAPI);
+      httpTestingController.verify();
+
+      // Second call
+      service.fetchAllOrders().subscribe();
+      const req2: any = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+       });
+      expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
+
+      // Third call
+      service.fetchAllOrders().subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(fakeData.finOrdersFromAPI.length, 'should return expected ccs');
+        },
+        (fail: any) => {
+          // Do nothing
+        },
+      );
+      const req3: any = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
+       });
+      expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
 });

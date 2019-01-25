@@ -341,9 +341,22 @@ Second approach:
     });
 ```
 
-### Important: in case stub function is not working
+### Trigger change detect on-demand not by default
 Do check that 
 ```typescript
 fixture.detectChanges();
 ```
 is added in befreEach()!!!
+
+
+### Read content from Input element
+To read the content:
+```typescript
+let inputEl = fixture.debugElement.query(By.css('input'));
+```
+Simulate the input
+```typescript
+inputEl.nativeElement.value = 'hello';
+// Simulate input event.
+inputEl.triggerEventHandler('input', {target: inputEl.nativeElement});
+```

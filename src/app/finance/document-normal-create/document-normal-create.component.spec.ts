@@ -16,7 +16,7 @@ import { By } from '@angular/platform-browser';
 
 import { AccountStatusFilterPipe, OrderValidFilterPipe, UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentNormalCreateComponent } from './document-normal-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { DocumentItem } from 'app/model';
@@ -110,7 +110,7 @@ describe('DocumentNormalCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('2. verify the steppers logic', () => {
+  describe('2. should prevent errors by the checking logic', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -138,7 +138,7 @@ describe('DocumentNormalCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('should set the default values: base currency, date, and so on', fakeAsync(() => {
+    it('step 1: should set the default values: base currency, date, and so on', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -206,7 +206,6 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(0);
       // On step 1, setup the content
       component.firstFormGroup.get('despControl').setValue('Test');
-      fixture.detectChanges();
       flush();
       fixture.detectChanges();
 
@@ -251,17 +250,21 @@ describe('DocumentNormalCreateComponent', () => {
       component.onCreateDocItem();
       fixture.detectChanges();
       expect(component.dataSource.data.length).toEqual(1);
+      // Add item
       let ditem: DocumentItem = component.dataSource.data[0];
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
+      ditem.Desp = 'test';
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
 
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      // It shall not allowed
+      // It shall not allow
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
@@ -282,20 +285,26 @@ describe('DocumentNormalCreateComponent', () => {
       // Setup the second step
       component.onCreateDocItem();
       fixture.detectChanges();
+      // Add item
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.AccountId = 11;
+      ditem.TranAmount = 200;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      // ditem.TranType = 2;
+      ditem.Desp = 'test';
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
 
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      // flush();
-      // fixture.detectChanges();
-
-      // It shall not allowed
+      // It shall not allow
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
-    it('step 2: should not allowed go third step if there are items without amount', fakeAsync(() => {
+    it('step 2: should not allow go third step if there are items without amount', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the first step
@@ -313,19 +322,23 @@ describe('DocumentNormalCreateComponent', () => {
       component.onCreateDocItem();
       fixture.detectChanges();
 
+      // Add item
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      // flush();
-      // fixture.detectChanges();
-
-      // It shall not allowed
+      // It shall not allow
       expect(component._stepper.selectedIndex).toBe(1);
     }));
-
-    // Asset account should not allowed
 
     // Asset account should not allowed
 
@@ -333,12 +346,455 @@ describe('DocumentNormalCreateComponent', () => {
 
     // System tran type should not allowed
 
-    // Should not allow neither control center nor order
+    // Order which not valid in this date shall not allow
 
-    // Should not allow input control center and order both
+    it('step 2: should not allow go third step if item has neither control center nor order', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
 
-    // Submit should work
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Add item
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.AccountId = 11;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      ditem.TranAmount = 200;
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // It shall not allow
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2: should not allow go third step if item has control center and order both', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Add item
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.OrderId = fakeData.finOrders[0].Id;
+      ditem.TranType = 2;
+      ditem.TranAmount = 20;
+      ditem.Desp = 'test';
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // It shall not allow
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2: should not allow go third step if item miss desp', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Add item
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.OrderId = fakeData.finOrders[0].Id;
+      ditem.TranType = 2;
+      ditem.TranAmount = 20;
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // It shall not allow
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2: should allow go third step if items are valid', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Add item
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      ditem.TranAmount = 20;
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // It shall not allowed
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
 
     // Reset should work
+  });
+
+  describe('3. Exception case handling (async loading)', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('1. should display error when currency service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Currency service failed'));
+
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(0);
+      flush();
+
+      tick();
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Currency service failed',
+        'Expected snack bar to show the error message: Currency service failed');
+    }));
+
+    it('2. should display error when accont category service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Account category service failed'));
+
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(0);
+      flush();
+
+      tick();
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Account category service failed',
+        'Expected snack bar to show the error message: Account category service failed');
+    }));
+
+    it('3. should display error when doc type service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Doc type service failed'));
+
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(0);
+      flush();
+
+      tick();
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Doc type service failed',
+        'Expected snack bar to show the error message: Doc type service failed');
+    }));
+
+    it('4. should display error when tran type service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Tran type service failed'));
+
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(0);
+      flush();
+
+      tick();
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Tran type service failed',
+        'Expected snack bar to show the error message: Tran type service failed');
+    }));
+
+    it('5. should display error when accont service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Account service failed'));
+
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(0);
+      flush();
+
+      tick();
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Account service failed',
+        'Expected snack bar to show the error message: Account service failed');
+    }));
+
+    it('6. should display error when control center service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Control center service failed'));
+
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(0);
+      flush();
+
+      tick();
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Control center service failed',
+        'Expected snack bar to show the error message: Control center service failed');
+    }));
+
+    it('7. should display error when order service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllOrdersSpy.and.returnValue(asyncError<string>('Order service failed'));
+
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(0);
+      flush();
+
+      tick();
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Order service failed',
+        'Expected snack bar to show the error message: Order service failed');
+    }));
+  });
+
+  // Add item/Remove item
+  describe('4. Items operation', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+  });
+
+  // 5. Foreign currency handling
+  // 6. Item tag
+
+  xdescribe('7. Account filter in Items step', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+  });
+
+  xdescribe('8. Order filter in Items step', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+  });
+
+  describe('9. Submit shall be work', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    it('for submit success case', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue('Test');
+      flush();
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Add item
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      ditem.TranAmount = 20;
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now go to submit
+      expect(component._stepper.selectedIndex).toBe(2);
+      // component.onSubmit();
+    }));
+  });
+
+  describe('10. Reset shall work', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    it('shall clear all items', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue('Test');
+      flush();
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Add item
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      ditem.TranAmount = 20;
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now go to submit
+      expect(component._stepper.selectedIndex).toBe(2);
+      component.onReset();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(0);
+      expect(component.dataSource.data.length).toEqual(0);
+      expect(component.firstFormGroup.get('dateControl').value).not.toBeNull();
+      expect(component.firstFormGroup.get('despControl').value).toBeFalsy();
+      expect(component.firstFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
+    }));
   });
 });

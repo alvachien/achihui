@@ -7,7 +7,7 @@ import {
   BookCategory, BookCategoryJson,
   Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
   financeAccountCategoryCash, financeAccountCategoryCreditCard, financeAccountCategoryDeposit,
-  ControlCenter, Order,
+  ControlCenter, ControlCenterJson, Order, OrderJson,
 } from '../app/model';
 import { User } from 'oidc-client';
 
@@ -26,7 +26,9 @@ export class FakeDataHelper {
   private _finAccounts: Account[];
   private _finAccountsFromAPI: AccountJson[];
   private _finControlCenters: ControlCenter[];
+  private _finControlCentersFromAPI: ControlCenterJson[];
   private _finOrders: Order[];
+  private _finOrdersFromAPI: OrderJson[];
   private _currUser: UserAuthInfo;
   private _appLanguages: AppLanguage[];
   private _appLanguagesFromAPI: AppLanguageJson[];
@@ -122,9 +124,19 @@ export class FakeDataHelper {
       return this._finControlCenters;
     }
   }
+  get finControlCentersFromAPI(): ControlCenterJson[] {
+    if (this._finControlCentersFromAPI) {
+      return this._finControlCentersFromAPI;
+    }
+  }
   get finOrders(): Order[] {
     if (this._finOrders) {
       return this._finOrders;
+    }
+  }
+  get finOrdersFromAPI(): OrderJson[] {
+    if (this._finOrdersFromAPI) {
+      return this._finOrdersFromAPI;
     }
   }
   get currentUser(): UserAuthInfo {
@@ -1083,8 +1095,20 @@ export class FakeDataHelper {
     for (let i: number = 0; i < 2; i++) {
       ctgy = new ControlCenter();
       ctgy.Id = i + 1;
+      ctgy.HID = this._chosedHome ? this._chosedHome.ID : 0;
       ctgy.Name = `Control Center ${i + 1}`;
       this._finControlCenters.push(ctgy);
+    }
+  }
+  public buildFinControlCenterFromAPI(): void {
+    this._finControlCentersFromAPI = [];
+    for (let i: number = 0; i < 2; i++) {
+      let ctgy: any = {
+        id: i + 1,
+        hid: this._chosedHome ? this._chosedHome.ID : 0,
+        name: `Category ${i + 1}`,
+      };
+      this._finControlCentersFromAPI.push(ctgy as ControlCenterJson);
     }
   }
   public buildFinOrders(): void {
@@ -1093,8 +1117,24 @@ export class FakeDataHelper {
     for (let i: number = 0; i < 2; i++) {
       ctgy = new Order();
       ctgy.Id = i + 1;
+      ctgy.HID = this._chosedHome ? this._chosedHome.ID : 0;
+      // ctgy.ValidFrom =
       ctgy.Name = `Order ${i + 1}`;
       this._finOrders.push(ctgy);
+    }
+  }
+  public buildFinOrderFromAPI(): void {
+    this._finOrdersFromAPI = [];
+    for (let i: number = 0; i < 2; i++) {
+      let ctgy: any = {
+        id: i + 1,
+        hid: this._chosedHome ? this._chosedHome.ID : 0,
+        name: `Order ${i + 1}`,
+        validFrom: '2018-01-01',
+        validTo: '2018-12-31',
+        sRuleList: [],
+      };
+      this._finOrdersFromAPI.push(ctgy as OrderJson);
     }
   }
 }

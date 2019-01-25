@@ -29,7 +29,9 @@ export class FinanceStorageService {
   private _isAccountListLoaded: boolean;
   private _listAccount: Account[];
   private _isConctrolCenterListLoaded: boolean;
+  private _listControlCenter: ControlCenter[];
   private _isOrderListLoaded: boolean;
+  private _listOrder: Order[];
 
   get AccountCategories(): AccountCategory[] {
     return this._listAccountCategory;
@@ -51,14 +53,12 @@ export class FinanceStorageService {
     return this._listAccount;
   }
 
-  listControlCenterChange: BehaviorSubject<ControlCenter[]> = new BehaviorSubject<ControlCenter[]>([]);
   get ControlCenters(): ControlCenter[] {
-    return this.listControlCenterChange.value;
+    return this._listControlCenter;
   }
 
-  listOrderChange: BehaviorSubject<Order[]> = new BehaviorSubject<Order[]>([]);
   get Orders(): Order[] {
-    return this.listOrderChange.value;
+    return this._listOrder;
   }
 
   listDocumentChange: BehaviorSubject<Document[]> = new BehaviorSubject<Document[]>([]);
@@ -101,7 +101,9 @@ export class FinanceStorageService {
     this._listAccount = [];
 
     this._isConctrolCenterListLoaded = false;
+    this._listControlCenter = [];
     this._isOrderListLoaded = false;
+    this._listOrder = [];
     // this._isDocumentListLoaded = false;
   }
 
@@ -551,7 +553,7 @@ export class FinanceStorageService {
   /**
    * Read all control centers
    */
-  public fetchAllControlCenters(forceReload?: boolean): Observable<any> {
+  public fetchAllControlCenters(forceReload?: boolean): Observable<ControlCenter[]> {
     if (!this._isConctrolCenterListLoaded || forceReload) {
       const apiurl: string = environment.ApiUrl + '/api/FinanceControlCenter';
 
@@ -570,38 +572,35 @@ export class FinanceStorageService {
         // .retry(3)
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceStorageService: ${response}`);
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceStorageService.`);
           }
 
-          let listRst: ControlCenter[] = [];
+          this._listControlCenter = [];
           const rjs: any = <any>response;
 
           if (rjs instanceof Array && rjs.length > 0) {
             for (const si of rjs) {
               const rst: ControlCenter = new ControlCenter();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listControlCenter.push(rst);
             }
           }
 
           this._isConctrolCenterListLoaded = true;
-          this.listControlCenterChange.next(listRst);
-          return listRst;
+          return this._listControlCenter;
         }),
         catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            // console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService: ${error}`);
             console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService.`);
           }
 
           this._isConctrolCenterListLoaded = false;
-          this.listControlCenterChange.next([]);
+          this._listControlCenter = [];
 
           return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
         }));
     } else {
-      return of(this.listControlCenterChange.value);
+      return of(this._listControlCenter);
     }
   }
 
@@ -635,9 +634,7 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in createControlCenter in FinanceStorageService: ${x}`);
         }
 
-        const copiedData: any = this.ControlCenters.slice();
-        copiedData.push(x);
-        this.listControlCenterChange.next(copiedData);
+        this._listControlCenter.push(x);
 
         // Broadcast event
         this.createControlCenterEvent.emit(x);
@@ -686,13 +683,11 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Fetch data success in changeControlCenter in FinanceStorageService: ${x}`);
         }
 
-        const copiedData: any = this.ControlCenters.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
+        let idx: number = this._listControlCenter.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-          this.listControlCenterChange.next(copiedData);
+          this._listControlCenter.splice(idx, 1, x);
         }
 
         // Broadcast event
@@ -741,13 +736,11 @@ export class FinanceStorageService {
         }
 
         // Update the buffer if necessary
-        const copiedData: any = this.ControlCenters.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
+        let idx: number = this._listControlCenter.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-          this.listControlCenterChange.next(copiedData);
+          this._listControlCenter.splice(idx, 1, x);
         }
 
         // Broadcast event
@@ -787,38 +780,33 @@ export class FinanceStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceStorageService: ${response}`);
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceStorageService.`);
           }
 
-          let listRst: Order[] = [];
-
+          this._listOrder = [];
           const rjs: any = <any>response;
           if (rjs instanceof Array && rjs.length > 0) {
             for (const si of rjs) {
               const rst: Order = new Order();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listOrder.push(rst);
             }
           }
           this._isOrderListLoaded = true;
-          this.listOrderChange.next(listRst);
 
-          return listRst;
+          return this._listOrder;
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
-              // console.error(`AC_HIH_UI [Error]: Failed in fetchAllOrders in FinanceStorageService: ${error}`);
               console.error(`AC_HIH_UI [Error]: Failed in fetchAllOrders in FinanceStorageService.`);
             }
 
             this._isOrderListLoaded = false;
-            this.listOrderChange.next([]);
 
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listOrderChange.value);
+      return of(this._listOrder);
     }
   }
 
@@ -853,9 +841,7 @@ export class FinanceStorageService {
         }
 
         // Add it to the buffer
-        const copiedData: any = this.Orders.slice();
-        copiedData.push(x);
-        this.listOrderChange.next(copiedData);
+        this._listOrder.push(x);
 
         // Broadcast event
         this.createOrderEvent.emit(x);
@@ -904,13 +890,11 @@ export class FinanceStorageService {
         }
 
         // Update the buffer if necessary
-        const copiedData: any = this.Orders.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
+        let idx: number = this._listOrder.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-          this.listOrderChange.next(copiedData);
+          this._listOrder.splice(idx, 1, x);
         }
 
         // Broadcast event
@@ -959,13 +943,11 @@ export class FinanceStorageService {
         }
 
         // Update the buffer if necessary
-        const copiedData: any = this.Orders.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
+        let idx: number = this._listOrder.findIndex((val: any) => {
           return val.Id === x.Id;
         });
         if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-          this.listOrderChange.next(copiedData);
+          this._listOrder.splice(idx, 1, x);
         }
 
         // Broadcast event
