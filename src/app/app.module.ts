@@ -4,6 +4,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { Routes, RouterModule } from '@angular/router';
+import { STEPPER_GLOBAL_OPTIONS, }  from '@angular/cdk/stepper';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
   } from '@angular/material';
 import { UIDependModule } from './uidepend.module';
@@ -100,7 +101,10 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
-
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: { showError: true },
+    },
     // { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCN },
     AuthService,
     AuthGuardService,

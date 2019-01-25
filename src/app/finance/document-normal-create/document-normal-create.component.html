@@ -4,7 +4,7 @@
     <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-vertical-stepper linear="true" (selectionChange)="onStepSelectionChange($event)" #stepper>
+    <mat-vertical-stepper linear (selectionChange)="onStepSelectionChange($event)" #stepper>
       <!-- Step 1: Generic info -->
       <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
@@ -49,7 +49,7 @@
       </mat-step>
 
       <!-- Step 2: Items -->
-      <mat-step>
+      <mat-step [completed]="step2Completed" errorMessage="No items or invalid item detected">
         <ng-template matStepLabel>{{'Finance.Items' | translate}}</ng-template>
         <mat-toolbar>
           <button mat-icon-button (click)="onCreateDocItem()" matTooltip="{{'Common.Create' | translate}}" #btnCrtItem>
@@ -177,6 +177,7 @@
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           </mat-table>
         </div>
+
         <div>
           <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>

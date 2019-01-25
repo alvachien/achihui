@@ -40,6 +40,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: Items
+  step2ErrorMessage: string;
   separatorKeysCodes: any[] = [ENTER, COMMA];
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
   displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
@@ -73,6 +74,35 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     if (despctrl) {
       return despctrl.value;
     }
+  }
+  get step2Completed(): boolean {
+    // Check 1: Have items
+    if (this.dataSource.data.length <= 0) {
+      return false;
+    }
+    // Check 2: Each item has account
+    let erridx: number = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.AccountId === undefined;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 3. Each item has tran type
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.TranType === undefined;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 4. Amount
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.TranAmount === undefined;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+
+    return true;
   }
 
   constructor(private _dialog: MatDialog,
@@ -109,8 +139,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       exgControl: '',
       exgpControl: '',
     });
-    // Default currency
-    this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
 
     this.dataSource.data = [];
 
@@ -135,6 +163,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       this.arUIOrder = BuildupOrderForSelection(rst[5]);
       // Currencies
       this.arCurrencies = rst[6];
+
+      // Default currency
+      this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
     }, (error: any) => {
       // Show the error
       this._snackbar.open(error.toString(), undefined, {
@@ -315,43 +346,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     }
 
     if (event.selectedIndex === 2) {
-      if (event.previouslySelectedIndex === 1) {
-        // Step 2 > 3
-        let rst: boolean = true;
-        // Check 1: Have items
-        if (this.dataSource.data.length <= 0) {
-          rst = false;
-        }
-        // Check 2: Each item has account
-        let erridx: number = this.dataSource.data.findIndex((val: DocumentItem) => {
-          return val.AccountId === undefined;
-        });
-        if (erridx !== -1) {
-          rst = false;
-        }
-        // Check 3. Each item has tran type
-        erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-          return val.TranType === undefined;
-        });
-        if (erridx !== -1) {
-          rst = false;
-        }
-        // Check 4. Amount
-        erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-          return val.TranAmount === undefined;
-        });
-        if (erridx !== -1) {
-          rst = false;
-        }
-        if (rst === false) {
-          this._snackbar.open('No items or invalid item detected', undefined, {
-            duration: 2000,
-          }).afterDismissed().subscribe(() => {
-            this._stepper.selectedIndex = 1;
-          });
-        }
-      }
-
       // Update the confirm info.
       this.inAmount = 0;
       this.outAmount = 0;
