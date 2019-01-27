@@ -11,7 +11,7 @@ export class UIAccountCtgyFilterExPipe implements PipeTransform {
   transform(allAccounts: UIAccountForSelection[], args?: IAccountCategoryFilterEx): UIAccountForSelection[] {
     return allAccounts ? allAccounts.filter((value: UIAccountForSelection) => {
       if (args !== undefined) {
-        // Included: if not in range, exit! 
+        // Included: if not in range, exit!
         if (args.includedCategories && args.includedCategories.length > 0) {
           if (args.includedCategories.findIndex((ctgyid: number) => {
             return value.CategoryId === ctgyid;
