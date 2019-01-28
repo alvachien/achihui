@@ -150,7 +150,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
     // User document amount
     this.userDocAmountChartOption = this._storageService.fetchDocPostedFrequencyPerUser().pipe(
       map((x: DocumentCreatedFrequenciesByUser[]) => {
-        if (x) {
+        if (x instanceof Array && x.length > 0) {
           return this._buildUserDocAmount(x);
         }
       }),

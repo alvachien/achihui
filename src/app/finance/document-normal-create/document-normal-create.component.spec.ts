@@ -774,19 +774,18 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Now go to submit
       component.onSubmit();
-      expect(createDocSpy).toHaveBeenCalled();
       flush();
-      tick();
       fixture.detectChanges();
+      expect(createDocSpy).toHaveBeenCalled();
 
       // Expect there is snackbar
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).not.toBeNull();
 
       // Then, after the snackbar disappear, expect navigate!
-      flush();
-      tick();
       fixture.detectChanges();
+      tick();
+
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display', fakeData.finNormalDocumentForCreate.Id]);
     }));
 
@@ -820,20 +819,21 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Now go to submit
       component.onSubmit();
-      expect(createDocSpy).toHaveBeenCalled();
       flush();
-      tick();
       fixture.detectChanges();
+      expect(createDocSpy).toHaveBeenCalled();
 
       // Expect there is snackbar
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).not.toBeNull();
 
-      // Then, after the snackbar disappear, expect navigate!
-      flush();
-      tick();
+      // Then, click the re-create button
+      let actionButton: any = overlayContainerElement.querySelector('button.mat-button') as HTMLButtonElement;
+      actionButton.click();
       fixture.detectChanges();
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display', fakeData.finNormalDocumentForCreate.Id]);
+
+      tick();
+      expect(routerSpy.navigate).not.toHaveBeenCalledWith(['/finance/document/display', fakeData.finNormalDocumentForCreate.Id]);
     }));
   });
 

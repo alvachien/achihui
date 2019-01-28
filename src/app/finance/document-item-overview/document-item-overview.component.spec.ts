@@ -97,11 +97,9 @@ describe('DocumentItemOverviewComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentItemOverviewComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should be created', () => {
-    // expect(component).toBeTruthy();
-    expect(1).toBe(1);
+  it('1. should be created', () => {
+    expect(component).toBeTruthy();
   });
 });
