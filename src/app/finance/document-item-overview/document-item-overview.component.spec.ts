@@ -27,6 +27,7 @@ describe('DocumentItemOverviewComponent', () => {
     homeService.ChosedHome = {
       _id: 1,
       BaseCurrency: 'CNY',
+      MembersInChosedHome: [],
     };
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [

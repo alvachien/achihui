@@ -47,15 +47,15 @@ export class ConfigComponent implements OnInit, OnDestroy {
       // Bind to the tables
       if (x instanceof Array && x.length > 0 && x[0] instanceof Array && x[0].length > 0) {
         this.dataSourceAcntCtgy = new MatTableDataSource(x[0]);
-        this.dataSourceAcntCtgy.paginator = this.paginatorAcntCtgy;  
+        this.dataSourceAcntCtgy.paginator = this.paginatorAcntCtgy;
       }
       if (x instanceof Array && x.length > 1 && x[1] instanceof Array && x[1].length > 0) {
         this.dataSourceDocType = new MatTableDataSource(x[1]);
-        this.dataSourceDocType.paginator = this.paginatorDocType;  
+        this.dataSourceDocType.paginator = this.paginatorDocType;
       }
       if (x instanceof Array && x.length > 2 && x[2] instanceof Array && x[2].length > 0) {
         this.dataSourceAsstCtgy = new MatTableDataSource(x[2]);
-        this.dataSourceAsstCtgy.paginator = this.paginatorAstCtgy;  
+        this.dataSourceAsstCtgy.paginator = this.paginatorAstCtgy;
       }
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
@@ -72,7 +72,10 @@ export class ConfigComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ConfigComponent ngAfterViewInit...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 }

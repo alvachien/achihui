@@ -309,7 +309,7 @@ There are several kind of methods to test it, see example [origin link](https://
 
 Refer to ```LanguageService.spec.ts``` for an resuable testing.
 
-### Using ```RouterTestingController``` handle URL with/without parameters
+### Using ```HttpTestingController``` handle URL with/without parameters
 To check the URL without parameters, is quite simple:
 ```typescript
     const req: any = httpTestingController.expectOne(currAPIURL);
@@ -359,4 +359,16 @@ Simulate the input
 inputEl.nativeElement.value = 'hello';
 // Simulate input event.
 inputEl.triggerEventHandler('input', {target: inputEl.nativeElement});
+```
+
+### Using .toHaveBeenCalledWith to check router
+You use routerSpy to hook the navigate method of Router.
+
+Then, you can use:
+```typescript
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/url1/url2']);
+```
+In case the navigate contains parameters:
+```typescript
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/account/display', acnt.Id]);
 ```

@@ -17,6 +17,7 @@ import {
   LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   UICommonLabelEnum, IAccountCategoryFilter, momentDateFormat, ModelUtility, TranType, Currency,
+  ControlCenter, Order, DocumentType, Account,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -28,13 +29,18 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 })
 export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _createSub: Subscription;
+
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   public arCurrencies: Currency[] = [];
+  public arTranType: TranType[] = [];
+  public arControlCenters: ControlCenter[] = [];
+  public arAccounts: Account[] = [];
+  public arOrders: Order[] = [];
+  public arDocTypes: DocumentType[] = [];
   // Stepper
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   // Step: Generic info
@@ -171,13 +177,21 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       }
 
       // Accounts
+      this.arAccounts = rst[3];
       this.arUIAccount = BuildupAccountForSelection(rst[3], rst[0]);
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilter = undefined;
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(rst[5]);
+      this.arOrders = rst[5];
+      this.arUIOrder = BuildupOrderForSelection(this.arOrders);
       // Currencies
       this.arCurrencies = rst[6];
+      // Tran. type
+      this.arTranType = rst[2];
+      // Control Centers
+      this.arControlCenters = rst[4];
+      // Document type
+      this.arDocTypes = rst[1];
 
       // Default currency
       this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
@@ -196,10 +210,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
-    }
-
-    if (this._createSub) {
-      this._createSub.unsubscribe();
     }
   }
 
@@ -235,12 +245,12 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
     let detailObject: Document = this._generateDocObject();
     if (!detailObject.onVerify({
-      ControlCenters: this._storageService.ControlCenters,
-      Orders: this._storageService.Orders,
-      Accounts: this._storageService.Accounts,
-      DocumentTypes: this._storageService.DocumentTypes,
-      TransactionTypes: this._storageService.TranTypes,
-      Currencies: this._currService.Currencies,
+      ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranType,
+      Currencies: this.arCurrencies,
       BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details
@@ -259,65 +269,58 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this._createSub) {
-      this._createSub = this._storageService.createDocumentEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+    this._storageService.createDocument(detailObject).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Receiving createDocument in DocumentNormalCreateComponent with : ${x}`);
+      }
+
+      // Show the snackbar
+      let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 2000,
+        });
+
+      let isrecreate: boolean = false;
+      snackbarRef.onAction().subscribe(() => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Receiving createDocumentEvent in DocumentNormalCreateComponent with : ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar onAction()`);
         }
 
-        // Navigate back to list view
-        if (x instanceof Document) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-              duration: 3000,
-            });
+        isrecreate = true;
 
-          let isrecreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar onAction()`);
-            }
+        // Re-initial the page for another create
+        this.onReset();
+      });
 
-            isrecreate = true;
+      snackbarRef.afterDismissed().subscribe(() => {
+        // Navigate to display
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar afterDismissed with ${isrecreate}`);
+        }
 
-            // Re-initial the page for another create
-            this.onReset();
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar afterDismissed with ${isrecreate}`);
-            }
-
-            if (!isrecreate) {
-              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-            }
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);
-            }
-          });
+        if (!isrecreate) {
+          this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
         }
       });
-    }
+    }, (error: any) => {
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
 
-    this._storageService.createDocument(detailObject);
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      }).afterClosed().subscribe((x2: any) => {
+        // Do nothing!
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);
+        }
+      });
+    });
   }
 
   public onReset(): void {
@@ -368,11 +371,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       this.inAmount = 0;
       this.outAmount = 0;
       this.dataSource.data.forEach((val: DocumentItem) => {
-        let ttid: number = this._storageService.TranTypes.findIndex((tt: TranType) => {
+        let ttid: number = this.arTranType.findIndex((tt: TranType) => {
           return tt.Id === val.TranType;
         });
         if (ttid !== -1) {
-          if (this._storageService.TranTypes[ttid].Expense) {
+          if (this.arTranType[ttid].Expense) {
             this.outAmount += val.TranAmount;
           } else {
             this.inAmount += val.TranAmount;

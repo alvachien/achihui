@@ -30,7 +30,6 @@ import { AccountExtLoanComponent } from '../account-ext-loan';
 })
 export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _createDocSub: Subscription;
   private loanType: number;
 
   public documentTitle: string;
@@ -174,10 +173,9 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
-    if (this._createDocSub) {
-      this._createDocSub.unsubscribe();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
     }
   }
 
@@ -250,50 +248,44 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     acntobj.ExtraInfo = this.loanAccount;
     sobj.accountVM = acntobj.writeJSONObject();
 
-    if (!this._createDocSub) {
-      this._createDocSub = this._storageService.createDocumentEvent.subscribe((x: any) => {
+    this._storageService.createLoanDocument(sobj).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument`);
+      }
+
+      // Navigate back to list view
+      // Show the snackbar
+      let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
+
+      snackbarRef.onAction().subscribe(() => {
+        this.onReset();
+      });
+
+      snackbarRef.afterDismissed().subscribe(() => {
+        this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+      });
+    }, (error: any) => {
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      }).afterClosed().subscribe((x2: any) => {
+        // Do nothing!
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createDocumentEvent`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof Document) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-              duration: 3000,
-            });
-
-          snackbarRef.onAction().subscribe(() => {
-            this.onReset();
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, Message dialog result ${x2}`);
-            }
-          });
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, Message dialog result ${x2}`);
         }
       });
-    }
-
-    this._storageService.createLoanDocument(sobj);
+    });
   }
 
   private _showErrorDialog(errormsg: string): void {

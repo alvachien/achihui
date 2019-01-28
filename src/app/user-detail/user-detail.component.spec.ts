@@ -42,7 +42,7 @@ describe('UserDetailComponent', () => {
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
-      ]
+      ],
     })
     .compileComponents();
   }));
@@ -55,7 +55,7 @@ describe('UserDetailComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('1. should create', () => {
     expect(component).toBeTruthy();
   });
 });

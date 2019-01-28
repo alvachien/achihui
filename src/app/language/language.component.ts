@@ -55,7 +55,9 @@ export class LanguageComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering LanguageComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 }

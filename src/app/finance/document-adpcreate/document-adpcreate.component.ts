@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
-import { Observable, forkJoin, merge, of, Subscription } from 'rxjs';
+import { Observable, forkJoin, merge, ReplaySubject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import {
@@ -17,6 +17,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 import * as moment from 'moment';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { AccountExtADPComponent } from '../account-ext-adp';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-document-adpcreate',
@@ -25,7 +26,7 @@ import { AccountExtADPComponent } from '../account-ext-adp';
 })
 export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   private _isADP: boolean;
-  private _createDocStub: Subscription;
+  private _destroyed$: ReplaySubject<boolean>;
 
   public curMode: UIMode = UIMode.Create;
   public accountAdvPay: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
@@ -81,6 +82,8 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
+
     this.firstFormGroup = this._formBuilder.group({
       dateControl: new FormControl({ value: moment() }, Validators.required),
       accountControl: ['', Validators.required],
@@ -101,7 +104,9 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst: any) => {
+    ])
+    .pipe(takeUntil(this._destroyed$))
+      .subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngAfterViewInit for activateRoute URL: ${rst.length}`);
       }
@@ -159,8 +164,12 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this._createDocStub) {
-      this._createDocStub.unsubscribe();
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnDestroy...');
+    }
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
     }
   }
 
@@ -216,57 +225,6 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this._createDocStub) {
-      this._createDocStub = this._storageService.createDocumentEvent.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, createDocumentEvent`);
-        }
-
-        // Navigate back to list view
-        if (x instanceof Document) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-              duration: 3000,
-            });
-
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              if (this._isADP) {
-                this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-              } else {
-                this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-              }
-            }
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, failed, Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-    }
-
     docObj.HID = this._homeService.ChosedHome.ID;
 
     // Build the JSON file to API
@@ -288,7 +246,51 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     acntobj.ExtraInfo = detailObject.AdvPayAccount;
     sobj.accountVM = acntobj.writeJSONObject();
 
-    this._storageService.createADPDocument(sobj);
+    this._storageService.createADPDocument(sobj).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, createADPDocument`);
+      }
+
+      // Show the snackbar
+      let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 3000,
+        });
+
+      let recreate: boolean = false;
+      snackbarRef.onAction().subscribe(() => {
+        recreate = true;
+      });
+
+      snackbarRef.afterDismissed().subscribe(() => {
+        // Navigate to display
+        if (!recreate) {
+          if (this._isADP) {
+            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+          } else {
+            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+          }
+        }
+      });
+    }, (error: any) => {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: error.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, failed, Message dialog result ${x2}`);
+          }
+        });
+    });
   }
 
   private _updateCurrentTitle(): void {

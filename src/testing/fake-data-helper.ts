@@ -8,6 +8,7 @@ import {
   Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
   financeAccountCategoryCash, financeAccountCategoryCreditCard, financeAccountCategoryDeposit,
   ControlCenter, ControlCenterJson, Order, OrderJson,
+  Document, DocumentItem,
 } from '../app/model';
 import { User } from 'oidc-client';
 
@@ -29,6 +30,7 @@ export class FakeDataHelper {
   private _finControlCentersFromAPI: ControlCenterJson[];
   private _finOrders: Order[];
   private _finOrdersFromAPI: OrderJson[];
+  private _finNormalDocumentForCreate: Document;
   private _currUser: UserAuthInfo;
   private _appLanguages: AppLanguage[];
   private _appLanguagesFromAPI: AppLanguageJson[];
@@ -137,6 +139,11 @@ export class FakeDataHelper {
   get finOrdersFromAPI(): OrderJson[] {
     if (this._finOrdersFromAPI) {
       return this._finOrdersFromAPI;
+    }
+  }
+  get finNormalDocumentForCreate(): Document {
+    if (this._finNormalDocumentForCreate) {
+      return this._finNormalDocumentForCreate;
     }
   }
   get currentUser(): UserAuthInfo {
@@ -1136,5 +1143,8 @@ export class FakeDataHelper {
       };
       this._finOrdersFromAPI.push(ctgy as OrderJson);
     }
+  }
+  public setFinNormalDocumentForCreate(doc: Document): void {
+    this._finNormalDocumentForCreate = doc;
   }
 }

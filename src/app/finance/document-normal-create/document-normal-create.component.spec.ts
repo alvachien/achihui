@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject, } from '@angular/core/testing';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -13,13 +14,15 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
+import * as moment from 'moment';
+import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentNormalCreateComponent } from './document-normal-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
-import { DocumentItem } from 'app/model';
+import { Document, DocumentItem, financeDocTypeNormal } from 'app/model';
 
 describe('DocumentNormalCreateComponent', () => {
   let component: DocumentNormalCreateComponent;
@@ -32,6 +35,8 @@ describe('DocumentNormalCreateComponent', () => {
   let fetchAllOrdersSpy: any;
   let fetchAllControlCentersSpy: any;
   let fetchAllCurrenciesSpy: any;
+  let createDocSpy: any;
+  let routerSpy: any;
 
   beforeEach(async(() => {
     fakeData = new FakeDataHelper();
@@ -50,6 +55,7 @@ describe('DocumentNormalCreateComponent', () => {
       'fetchAllAccounts',
       'fetchAllControlCenters',
       'fetchAllOrders',
+      'createDocument',
     ]);
     fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllDocTypesSpy = stroageService.fetchAllDocTypes.and.returnValue(of([]));
@@ -57,11 +63,12 @@ describe('DocumentNormalCreateComponent', () => {
     fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
     fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
+    createDocSpy = stroageService.createDocument.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [
@@ -84,6 +91,7 @@ describe('DocumentNormalCreateComponent', () => {
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
         DocumentNormalCreateComponent,
+        MessageDialogComponent,
       ],
       providers: [
         TranslateService,
@@ -96,8 +104,13 @@ describe('DocumentNormalCreateComponent', () => {
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: Router, useValue: routerSpy },
       ],
-    })
-    .compileComponents();
+    });
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ MessageDialogComponent ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -686,6 +699,9 @@ describe('DocumentNormalCreateComponent', () => {
   });
 
   describe('9. Submit shall be work', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
     beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
@@ -698,13 +714,42 @@ describe('DocumentNormalCreateComponent', () => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       // Order
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+
+      // Create document
+      let doc: Document = new Document();
+      doc.Id = 100;
+      doc.DocType = financeDocTypeNormal;
+      doc.Desp = 'Test';
+      doc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      doc.TranDate = moment();
+      let ditem: DocumentItem = new DocumentItem();
+      ditem.ItemId = 1;
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      ditem.TranAmount = 20;
+      doc.Items = [ditem];
+      fakeData.setFinNormalDocumentForCreate(doc);
+
+      createDocSpy.and.returnValue(asyncData(fakeData.finNormalDocumentForCreate));
     });
 
-    it('for submit success case', fakeAsync(() => {
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('should handle create success case with navigate to display', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the first step
-      component.firstFormGroup.get('despControl').setValue('Test');
+      component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
       flush();
       fixture.detectChanges();
 
@@ -718,12 +763,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
 
       // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      ditem.TranType = 2;
-      ditem.Desp = 'test';
-      ditem.TranAmount = 20;
+      let ditem: DocumentItem = fakeData.finNormalDocumentForCreate.Items[0];
       component.dataSource.data = [ditem];
       fixture.detectChanges();
 
@@ -733,8 +773,67 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
 
       // Now go to submit
-      expect(component._stepper.selectedIndex).toBe(2);
-      // component.onSubmit();
+      component.onSubmit();
+      expect(createDocSpy).toHaveBeenCalled();
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull();
+
+      // Then, after the snackbar disappear, expect navigate!
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display', fakeData.finNormalDocumentForCreate.Id]);
+    }));
+
+    it('should handle create success case with recreate', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
+      flush();
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Add item
+      let ditem: DocumentItem = fakeData.finNormalDocumentForCreate.Items[0];
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now go to submit
+      component.onSubmit();
+      expect(createDocSpy).toHaveBeenCalled();
+      flush();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull();
+
+      // Then, after the snackbar disappear, expect navigate!
+      flush();
+      tick();
+      fixture.detectChanges();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display', fakeData.finNormalDocumentForCreate.Id]);
     }));
   });
 

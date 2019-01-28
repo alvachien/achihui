@@ -67,7 +67,6 @@ export class FinanceStorageService {
   }
 
   // Events
-  createAccountEvent: EventEmitter<Account | string | undefined> = new EventEmitter(undefined);
   changeAccountEvent: EventEmitter<Account | string | undefined> = new EventEmitter(undefined);
   readAccountEvent: EventEmitter<Account | string | undefined> = new EventEmitter(undefined);
   createControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
@@ -76,8 +75,6 @@ export class FinanceStorageService {
   createOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
   changeOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
   readOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
-  createDocumentEvent: EventEmitter<Document | string | undefined> = new EventEmitter(undefined);
-  changeDocumentEvent: EventEmitter<Document | string | undefined> = new EventEmitter(undefined);
   readDocumentEvent: EventEmitter<Document | string | any | undefined> = new EventEmitter(undefined);
   deleteDocumentEvent: EventEmitter<any | undefined> = new EventEmitter(undefined);
 
@@ -1148,7 +1145,7 @@ export class FinanceStorageService {
    * Create a document
    * @param objDetail instance of document which to be created
    */
-  public createDocument(objDetail: Document): void {
+  public createDocument(objDetail: Document): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1157,9 +1154,9 @@ export class FinanceStorageService {
     let apiurl: string = environment.ApiUrl + '/api/FinanceDocument';
 
     const jdata: string = objDetail.writeJSONString();
-    this._http.post(apiurl, jdata, {
-      headers: headers,
-    })
+    return this._http.post(apiurl, jdata, {
+        headers: headers,
+      })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log('AC_HIH_UI [Debug]: Entering Map of createDocument in FinanceStorageService: ' + response);
@@ -1168,35 +1165,21 @@ export class FinanceStorageService {
         let hd: Document = new Document();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createDocument in FinanceStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Documents.slice();
-        copiedData.push(x);
-        this.listDocumentChange.next(copiedData);
-
-        // Broadcast event
-        this.createDocumentEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createDocument in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in createDocument in FinanceStorageService.`);
         }
 
-        // Broadcast event: failed
-        this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Update a normal document
    * @param objDetail instance of document which to be created
    */
-  public updateNormalDocument(objDetail: Document): void {
+  public updateNormalDocument(objDetail: Document): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1205,7 +1188,7 @@ export class FinanceStorageService {
     const apiurl: string = environment.ApiUrl + '/api/FinanceDocument/' + objDetail.Id.toString();
 
     const jdata: string = objDetail.writeJSONString();
-    this._http.put(apiurl, jdata, {
+    return this._http.put(apiurl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
@@ -1216,35 +1199,21 @@ export class FinanceStorageService {
         let hd: Document = new Document();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createDocument in FinanceStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Documents.slice();
-        copiedData.push(x);
-        this.listDocumentChange.next(copiedData);
-
-        // Broadcast event
-        this.changeDocumentEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createDocument in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in createDocument in FinanceStorageService.`);
         }
 
-        // Broadcast event: failed
-        this.changeDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Crate ADP document
    * @param jdata JSON format
    */
-  public createADPDocument(jdata: any): void {
+  public createADPDocument(jdata: any): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1252,7 +1221,7 @@ export class FinanceStorageService {
 
     let apiurl: string = environment.ApiUrl + '/api/financeadpdocument';
 
-    this._http.post(apiurl, jdata, {
+    return this._http.post(apiurl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
@@ -1263,35 +1232,21 @@ export class FinanceStorageService {
         let hd: Document = new Document();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createADPDocument in FinanceStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Documents.slice();
-        copiedData.push(x);
-        this.listDocumentChange.next(copiedData);
-
-        // Broadcast event
-        this.createDocumentEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createADPDocument in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in createADPDocument in FinanceStorageService.`);
         }
 
-        // Broadcast event: failed
-        this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Create Loan document
    * @param jdata JSON format
    */
-  public createLoanDocument(jdata: any): void {
+  public createLoanDocument(jdata: any): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1299,7 +1254,7 @@ export class FinanceStorageService {
 
     let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
 
-    this._http.post(apiurl, jdata, {
+    return this._http.post(apiurl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
@@ -1310,28 +1265,14 @@ export class FinanceStorageService {
         let hd: Document = new Document();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createLoanDocument in FinanceStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Documents.slice();
-        copiedData.push(x);
-        this.listDocumentChange.next(copiedData);
-
-        // Broadcast event
-        this.createDocumentEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createLoanDocument in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in createLoanDocument in FinanceStorageService.`);
         }
 
-        // Broadcast event: failed
-        this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -1366,15 +1307,11 @@ export class FinanceStorageService {
         // copiedData.push(x);
         // this.listDocumentChange.next(copiedData);
 
-        // // Broadcast event
-        // this.createDocumentEvent.emit(x);
       }, (error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Error occurred in updateLoanDocument in FinanceStorageService:  ${error}`);
         }
 
-        // // Broadcast event: failed
-        // this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
       }, () => {
         // Empty
       });
@@ -1441,9 +1378,15 @@ export class FinanceStorageService {
         // Broadcast event
         let hd: Document = new Document();
         hd.onSetData(response);
-        // this.createDocumentEvent.emit(hd);
 
         return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Failed in createLoanRepayDoc in FinanceStorageService.`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 
@@ -1484,7 +1427,7 @@ export class FinanceStorageService {
    * @param jdata Data for creation
    * @param isbuyin Is a buyin doc or soldout doc
    */
-  public createAssetDocument(jdata: any, isbuyin: boolean): void {
+  public createAssetDocument(jdata: any, isbuyin: boolean): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1492,7 +1435,7 @@ export class FinanceStorageService {
 
     let apiurl: string = environment.ApiUrl + (isbuyin ? '/api/FinanceAssetBuyDocument' : '/api/FinanceAssetSoldDocument');
 
-    this._http.post(apiurl, jdata, {
+    return this._http.post(apiurl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
@@ -1503,28 +1446,14 @@ export class FinanceStorageService {
         let hd: Document = new Document();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createAssetDocument in FinanceStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Documents.slice();
-        copiedData.push(x);
-        this.listDocumentChange.next(copiedData);
-
-        // Broadcast event
-        this.createDocumentEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createAssetDocument in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in createAssetDocument in FinanceStorageService.`);
         }
 
-        // Broadcast event: failed
-        this.createDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
