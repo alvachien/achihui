@@ -8,12 +8,14 @@
     "ui"
   ],
   "scripts": {
-    "e2e": "ng e2e",
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
     "lint": "ng lint",
-    "serve": "ng serve",
+    "e2e": "ng e2e",
     "reinstall": "rm -rf node_modules tmp deploy dist && npm i",
-    "postinstall": "webdriver-manager update --ignore_ssl",
-    "test": "karma start ./karma.conf.js"
+    "postinstall": "webdriver-manager update --ignore_ssl"
   },
   "engines": {
     "node": ">= 8.0.0"

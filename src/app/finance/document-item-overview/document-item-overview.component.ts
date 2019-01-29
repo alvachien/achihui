@@ -335,8 +335,10 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onTmpDocsRefresh(): void {

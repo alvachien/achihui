@@ -783,8 +783,8 @@ describe('DocumentNormalCreateComponent', () => {
       expect(messageElement.textContent).not.toBeNull();
 
       // Then, after the snackbar disappear, expect navigate!
+      tick(2000);
       fixture.detectChanges();
-      tick();
 
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display', fakeData.finNormalDocumentForCreate.Id]);
     }));
@@ -832,7 +832,8 @@ describe('DocumentNormalCreateComponent', () => {
       actionButton.click();
       fixture.detectChanges();
 
-      tick();
+      tick(2000);
+      fixture.detectChanges();
       expect(routerSpy.navigate).not.toHaveBeenCalledWith(['/finance/document/display', fakeData.finNormalDocumentForCreate.Id]);
     }));
   });
