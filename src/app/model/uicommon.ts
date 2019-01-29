@@ -1,7 +1,6 @@
 import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum, RepeatFrequencyEnum } from './common';
 import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum } from './financemodel';
 import { EnPOSEnum } from './learnmodel';
-import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * UI Status

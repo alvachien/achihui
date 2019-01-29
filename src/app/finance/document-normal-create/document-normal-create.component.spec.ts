@@ -22,7 +22,7 @@ import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentNormalCreateComponent } from './document-normal-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
-import { Document, DocumentItem, financeDocTypeNormal } from 'app/model';
+import { Document, DocumentItem, financeDocTypeNormal, UIDisplayStringUtil, UICommonLabelEnum } from 'app/model';
 
 describe('DocumentNormalCreateComponent', () => {
   let component: DocumentNormalCreateComponent;
@@ -750,7 +750,6 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
-      flush();
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -774,28 +773,32 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Now go to submit
       component.onSubmit();
-      flush();
       fixture.detectChanges();
+      tick();
       expect(createDocSpy).toHaveBeenCalled();
 
       // Expect there is snackbar
-      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container');
       expect(messageElement.textContent).not.toBeNull();
 
       // Then, after the snackbar disappear, expect navigate!
-      tick(2000);
       fixture.detectChanges();
+      tick();
+      expect(routerSpy.navigate).toContain(UIDisplayStringUtil.getUICommonLabelDisplayString(UICommonLabelEnum.DocumentPosted));
+  
+      tick(3000);
+      fixture.detectChanges();
+      tick();
+      expect(routerSpy.navigate).toHaveBeenCalled();
 
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display', fakeData.finNormalDocumentForCreate.Id]);
+      //expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/' + fakeData.finNormalDocumentForCreate.Id.toString()]);
     }));
 
     it('should handle create success case with recreate', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the first step
-      // Setup the first step
       component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
-      flush();
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -815,11 +818,11 @@ describe('DocumentNormalCreateComponent', () => {
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
+      flush();
       fixture.detectChanges();
 
       // Now go to submit
       component.onSubmit();
-      flush();
       fixture.detectChanges();
       expect(createDocSpy).toHaveBeenCalled();
 
@@ -832,9 +835,11 @@ describe('DocumentNormalCreateComponent', () => {
       actionButton.click();
       fixture.detectChanges();
 
-      tick(2000);
+      tick(3000);
       fixture.detectChanges();
-      expect(routerSpy.navigate).not.toHaveBeenCalledWith(['/finance/document/display', fakeData.finNormalDocumentForCreate.Id]);
+      tick();
+
+      expect(routerSpy.navigate).not.toHaveBeenCalledWith(['/finance/document/display/' + fakeData.finNormalDocumentForCreate.Id.toString()]);
     }));
   });
 
