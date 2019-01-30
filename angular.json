@@ -141,7 +141,8 @@
               "src/assets",
               "src/logincallback.html",
               "src/silentrenewcallback.html"
-            ]
+            ],
+            "codeCoverage": true
           }
         },
         "lint": {

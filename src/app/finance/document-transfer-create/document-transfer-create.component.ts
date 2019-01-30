@@ -8,11 +8,11 @@ import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import {
-  LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
-  UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum, financeDocTypeTransfer,
+  LogLevel, momentDateFormat, Document, DocumentItem, financeDocTypeTransfer,
   financeTranTypeTransferOut, financeTranTypeTransferIn,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  UIDisplayStringUtil, IAccountCategoryFilter, financeAccountCategoryAdvanceReceived, TranType,
+  UIDisplayStringUtil, IAccountCategoryFilter,
+  Currency, TranType, ControlCenter, Order, Account, DocumentType,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -31,6 +31,12 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
+  public arCurrencies: Currency[] = [];
+  public arTranType: TranType[] = [];
+  public arControlCenters: ControlCenter[] = [];
+  public arAccounts: Account[] = [];
+  public arOrders: Order[] = [];
+  public arDocTypes: DocumentType[] = [];
   // Stepper
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Header info
@@ -51,8 +57,6 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     if (datctrl && datctrl.value && datctrl.value.format) {
       return datctrl.value.format(momentDateFormat);
     }
-
-    return '';
   }
   get TranCurrency(): string {
     let currctrl: any = this.headerFormGroup.get('currControl');
@@ -88,7 +92,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
     this.headerFormGroup = this._formBuilder.group({
-      dateControl: new FormControl({ value: moment() }, Validators.required),
+      dateControl: [{ value: moment(), disabled: false }, Validators.required],
       despControl: ['', Validators.required],
       amountControl: ['', Validators.required],
       currControl: ['', Validators.required],
@@ -116,12 +120,29 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       this._currService.fetchAllCurrencies(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arAccounts = rst[3];
+      this.arUIAccount = BuildupAccountForSelection(rst[3], rst[0]);
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilter = undefined;
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
-      this.uiOrderFilter = undefined;
+      this.arOrders = rst[5];
+      this.arUIOrder = BuildupOrderForSelection(this.arOrders);
+      // Currencies
+      this.arCurrencies = rst[6];
+      // Tran. type
+      this.arTranType = rst[2];
+      // Control Centers
+      this.arControlCenters = rst[4];
+      // Document type
+      this.arDocTypes = rst[1];
+
+      // Default currency
+      this.headerFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
+    }, (error: any) => {
+      // Show the error
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
   ngOnDestroy(): void {
@@ -132,10 +153,6 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
-  }
-
-  canSubmit(): boolean {
-    return true;
   }
 
   onSubmit(): void {
@@ -216,6 +233,10 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     if (this._stepper) {
       this._stepper.reset();
     }
+
+    // Default values apply
+    this.headerFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
+    this.headerFormGroup.get('dateControl').setValue(moment());
   }
 
   private _generateDoc(): Document {

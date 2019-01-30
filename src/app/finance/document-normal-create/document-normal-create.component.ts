@@ -1,7 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef, ViewChild,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper,
@@ -59,8 +56,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     if (datctrl && datctrl.value && datctrl.value.format) {
       return datctrl.value.format(momentDateFormat);
     }
-
-    return '';
   }
   get TranCurrency(): string {
     let currctrl: any = this.firstFormGroup.get('currControl');
@@ -303,6 +298,10 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         }
       });
     }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering DocumentNormalDetailComponent, createDocument failed with ${error}`);
+      }
+
       // Show error message
       const dlginfo: MessageDialogInfo = {
         Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),

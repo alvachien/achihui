@@ -108,7 +108,7 @@ export class UIDisplayStringUtil {
           value: +se,
           i18nterm: UIDisplayStringUtil.getUICommonLabelDisplayString(+se),
           displaystring: '',
-        });
+        } as UIDisplayString);
       }
     }
 

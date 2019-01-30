@@ -133,6 +133,9 @@ describe('AccountListComponent', () => {
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Service failed',
         'Expected snack bar to show the error message: Service failed');
+
+      // Clear
+      flush();
     }));
   });
 

@@ -3,11 +3,11 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
   MatStepperNext,
 } from '@angular/material';
@@ -75,7 +75,7 @@ describe('DocumentNormalCreateComponent', () => {
         UIDependModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {
@@ -119,7 +119,7 @@ describe('DocumentNormalCreateComponent', () => {
   });
 
   it('1. should create without data', () => {
-    fixture.detectChanges();
+    fixture.detectChanges(); // ngOnInit
     expect(component).toBeTruthy();
   });
 
@@ -155,7 +155,7 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.TranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
@@ -169,7 +169,7 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.arUIAccount.length).toEqual(0);
       expect(component.arUIOrder.length).toEqual(0);
 
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.arUIAccount.length).toBeGreaterThan(0);
@@ -180,23 +180,40 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges(); // ngOnInit
 
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-
       expect(component._stepper.selectedIndex).toBe(0);
 
       nextButtonNativeEl.click();
       fixture.detectChanges();
-      flush();
+
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBe(false);
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
+    it('step 1: shall show exchange rate for foreign currency', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+
+      // Input foreign currency
+      component.firstFormGroup.get('currControl').setValue('USD');
+      fixture.detectChanges();
+
+      expect(fixture.debugElement.query(By.css('#exgrate'))).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
+    }));
+
     it('step 1: should go to second step if there are no failure in first step', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       component.firstFormGroup.get('despControl').setValue('Test');
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button
@@ -217,9 +234,10 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Now in step 1
       expect(component._stepper.selectedIndex).toBe(0);
+
       // On step 1, setup the content
       component.firstFormGroup.get('despControl').setValue('Test');
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -250,8 +268,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue('Test');
-      fixture.detectChanges();
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -286,8 +303,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue('Test');
-      fixture.detectChanges();
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -322,8 +338,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue('Test');
-      fixture.detectChanges();
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -366,8 +381,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue('Test');
-      fixture.detectChanges();
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -402,8 +416,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue('Test');
-      fixture.detectChanges();
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -440,8 +453,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue('Test');
-      fixture.detectChanges();
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -457,7 +469,6 @@ describe('DocumentNormalCreateComponent', () => {
       let ditem: DocumentItem = component.dataSource.data[0];
       ditem.AccountId = 11;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      ditem.OrderId = fakeData.finOrders[0].Id;
       ditem.TranType = 2;
       ditem.TranAmount = 20;
       component.dataSource.data = [ditem];
@@ -477,8 +488,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue('Test');
-      fixture.detectChanges();
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -546,13 +556,12 @@ describe('DocumentNormalCreateComponent', () => {
 
       fixture.detectChanges();
       expect(component.dataSource.data.length).toEqual(0);
-      flush();
-
-      tick();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Currency service failed',
         'Expected snack bar to show the error message: Currency service failed');
+      flush();
     }));
 
     it('2. should display error when accont category service fails', fakeAsync(() => {
@@ -561,13 +570,12 @@ describe('DocumentNormalCreateComponent', () => {
 
       fixture.detectChanges();
       expect(component.dataSource.data.length).toEqual(0);
-      flush();
-
-      tick();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Account category service failed',
         'Expected snack bar to show the error message: Account category service failed');
+      flush();
     }));
 
     it('3. should display error when doc type service fails', fakeAsync(() => {
@@ -576,13 +584,12 @@ describe('DocumentNormalCreateComponent', () => {
 
       fixture.detectChanges();
       expect(component.dataSource.data.length).toEqual(0);
-      flush();
-
-      tick();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Doc type service failed',
         'Expected snack bar to show the error message: Doc type service failed');
+      flush();
     }));
 
     it('4. should display error when tran type service fails', fakeAsync(() => {
@@ -591,13 +598,12 @@ describe('DocumentNormalCreateComponent', () => {
 
       fixture.detectChanges();
       expect(component.dataSource.data.length).toEqual(0);
-      flush();
-
-      tick();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Tran type service failed',
         'Expected snack bar to show the error message: Tran type service failed');
+      flush();
     }));
 
     it('5. should display error when accont service fails', fakeAsync(() => {
@@ -606,13 +612,12 @@ describe('DocumentNormalCreateComponent', () => {
 
       fixture.detectChanges();
       expect(component.dataSource.data.length).toEqual(0);
-      flush();
-
-      tick();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Account service failed',
         'Expected snack bar to show the error message: Account service failed');
+      flush();
     }));
 
     it('6. should display error when control center service fails', fakeAsync(() => {
@@ -621,13 +626,12 @@ describe('DocumentNormalCreateComponent', () => {
 
       fixture.detectChanges();
       expect(component.dataSource.data.length).toEqual(0);
-      flush();
-
-      tick();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Control center service failed',
         'Expected snack bar to show the error message: Control center service failed');
+      flush();
     }));
 
     it('7. should display error when order service fails', fakeAsync(() => {
@@ -636,13 +640,14 @@ describe('DocumentNormalCreateComponent', () => {
 
       fixture.detectChanges();
       expect(component.dataSource.data.length).toEqual(0);
-      flush();
+      tick(); // Complete the Observables in ngOnInit
 
-      tick();
+      // tick();
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Order service failed',
         'Expected snack bar to show the error message: Order service failed');
+      flush();
     }));
   });
 
@@ -698,7 +703,7 @@ describe('DocumentNormalCreateComponent', () => {
     });
   });
 
-  describe('9. Submit shall be work', () => {
+  describe('9. Submit and its subsequences', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -745,11 +750,61 @@ describe('DocumentNormalCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
+    it('should handle checking failed case with a popup dialog', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Add item
+      let ditem: DocumentItem = fakeData.finNormalDocumentForCreate.Items[0];
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now go to submit
+      component.arTranType = []; // Ensure check failed
+      component.onSubmit();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a pop-up dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      // And, there shall no changes in the selected tab
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      flush();
+    }));
+
     it('should handle create success case with navigate to display', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -775,6 +830,7 @@ describe('DocumentNormalCreateComponent', () => {
       component.onSubmit();
       fixture.detectChanges();
       tick();
+      fixture.detectChanges();
       expect(createDocSpy).toHaveBeenCalled();
 
       // Expect there is snackbar
@@ -782,16 +838,10 @@ describe('DocumentNormalCreateComponent', () => {
       expect(messageElement.textContent).not.toBeNull();
 
       // Then, after the snackbar disappear, expect navigate!
-      fixture.detectChanges();
-      tick();
-      expect(routerSpy.navigate).toContain(UIDisplayStringUtil.getUICommonLabelDisplayString(UICommonLabelEnum.DocumentPosted));
-  
-      tick(3000);
-      fixture.detectChanges();
-      tick();
-      expect(routerSpy.navigate).toHaveBeenCalled();
+      tick(2000);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/' + fakeData.finNormalDocumentForCreate.Id.toString()]);
 
-      //expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/' + fakeData.finNormalDocumentForCreate.Id.toString()]);
+      flush();
     }));
 
     it('should handle create success case with recreate', fakeAsync(() => {
@@ -799,6 +849,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -824,6 +875,8 @@ describe('DocumentNormalCreateComponent', () => {
       // Now go to submit
       component.onSubmit();
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
       expect(createDocSpy).toHaveBeenCalled();
 
       // Expect there is snackbar
@@ -833,13 +886,70 @@ describe('DocumentNormalCreateComponent', () => {
       // Then, click the re-create button
       let actionButton: any = overlayContainerElement.querySelector('button.mat-button') as HTMLButtonElement;
       actionButton.click();
+      tick(); // onAction has been executed
       fixture.detectChanges();
 
-      tick(3000);
+      expect(routerSpy.navigate).not.toHaveBeenCalled();
+      fixture.detectChanges();
+      // Check the reset
+      expect(component._stepper.selectedIndex).toBe(0);
+      expect(component.dataSource.data.length).toEqual(0);
+      expect(component.firstFormGroup.get('dateControl').value).not.toBeNull();
+      expect(component.firstFormGroup.get('despControl').value).toBeFalsy();
+      expect(component.firstFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
+
+      flush(); // Empty the call stack
+    }));
+
+    it('should handle create failed case with a popup dialog', fakeAsync(() => {
+      createDocSpy.and.returnValue(asyncError('Doc Created Failed!'));
+
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the first step
+      component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Add item
+      let ditem: DocumentItem = fakeData.finNormalDocumentForCreate.Items[0];
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now go to submit
+      component.onSubmit();
       fixture.detectChanges();
       tick();
+      fixture.detectChanges();
+      expect(createDocSpy).toHaveBeenCalled();
 
-      expect(routerSpy.navigate).not.toHaveBeenCalledWith(['/finance/document/display/' + fakeData.finNormalDocumentForCreate.Id.toString()]);
+      // Expect there is a pop-up dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      // And, there shall no changes in the selected tab
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      flush();
     }));
   });
 
@@ -863,7 +973,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Setup the first step
       component.firstFormGroup.get('despControl').setValue('Test');
-      flush();
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Click the next button > second step

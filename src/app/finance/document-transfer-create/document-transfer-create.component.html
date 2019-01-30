@@ -31,7 +31,7 @@
           <!-- Currency -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
-              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+              <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
                 {{cr.Symbol}} - {{cr.Name | translate}}
               </mat-option>
             </mat-select>
@@ -40,12 +40,12 @@
           <!-- Exchange rate -->
           <mat-form-field *ngIf="isForeignCurrency">
             <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-              formControlName="exgControl">
+              formControlName="exgControl" id="exgrate">
           </mat-form-field>
 
           <!-- Planned Exchange rate -->
           <div *ngIf="isForeignCurrency" class="achih-control-full-width">
-            <mat-checkbox formControlName="exgpControl" color="accent">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
+            <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
           </div>
         </form>
         <div>
@@ -69,7 +69,7 @@
 
           <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl">
-              <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+              <mat-option *ngFor="let cc of arControlCenters" [value]="cc.Id">
                 {{cc.Name}}
               </mat-option>
             </mat-select>
@@ -77,7 +77,7 @@
 
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl">
-              <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+              <mat-option *ngFor="let ord of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="ord.Id">
                 {{ord.Name}}
               </mat-option>
             </mat-select>
@@ -107,7 +107,7 @@
 
           <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl">
-              <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+              <mat-option *ngFor="let tt of arControlCenters" [value]="tt.Id">
                 {{tt.Name}}
               </mat-option>
             </mat-select>

@@ -80,7 +80,7 @@ export class UIStatusService {
   public getUILabel(le: UICommonLabelEnum): string {
     for (let lab of this.arrLabels) {
       if (lab.value === le) {
-        return lab.displaystring.length <= 0 ? lab.displaystring : lab.i18nterm;
+        return lab.displaystring ? lab.displaystring : lab.i18nterm;
       }
     }
 
