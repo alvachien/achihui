@@ -362,6 +362,27 @@ describe('DocumentTransferCreateComponent', () => {
       expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
     }));
 
+    it('step 1: shall input exchange rate for foreign currency', fakeAsync(() => {
+      expect(component.headerFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+
+      // Input foreign currency
+      component.headerFormGroup.get('currControl').setValue('USD');
+      fixture.detectChanges();
+
+      // Shall not allow go to second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(0);
+    }));
+
     it('step 1: shall go to step 2 if all key fields fulfilled', fakeAsync(() => {
       expect(component.headerFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
@@ -411,13 +432,127 @@ describe('DocumentTransferCreateComponent', () => {
 
       // However, it is invalid
       expect(component.fromFormGroup.valid).toBeFalsy();
+
+      // Click the next button, still at second step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(1);
     }));
 
     // Step 2: Asset account should not allowed
     // Step 2: ADP account should not allowed
 
-    // Step 2: should not allow go third step if item has neither control center nor order
-    // Step 2: should not allow go third step if item has control center and order both
+    it('step 2: neither control center nor order', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('despControl').setValue('test');
+      fixture.detectChanges();
+
+      expect(component.headerFormGroup.valid).toBeTruthy();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now sit in step 2
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      component.fromFormGroup.get('accountControl').setValue(1);
+      fixture.detectChanges();
+
+      // However, it is invalid
+      expect(component.fromFormGroup.valid).toBeFalsy();
+
+      // Click the next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2: control center and order both', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('despControl').setValue('test');
+      fixture.detectChanges();
+
+      expect(component.headerFormGroup.valid).toBeTruthy();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now sit in step 2
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+
+      // However, it is invalid
+      expect(component.fromFormGroup.valid).toBeFalsy();
+
+      // Click the next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 3: account is mandatory', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('despControl').setValue('test');
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now sit in step 2
+      expect(component._stepper.selectedIndex).toBe(1);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+
+      // Click the next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now in step 3
+      expect(component._stepper.selectedIndex).toBe(2);
+      expect(component.toFormGroup.valid).toBeFalsy();
+
+      // Click the next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+
     // Step 3: Account is manatory;
     // Step 3: Asset account should not allowed
     // Step 3: ADP account should not allowed

@@ -7,7 +7,7 @@
     <mat-horizontal-stepper linear="true">
 
       <!-- Header -->
-      <mat-step [stepControl]="headerFormGroup">
+      <mat-step [stepControl]="headerFormGroup" [completed]="headerStepCompleted" errorMessage="Invalid header">
         <form [formGroup]="headerFormGroup">
           <ng-template matStepLabel>{{'Finance.Header' | translate}}</ng-template>
           <!-- Tran date -->
@@ -54,7 +54,7 @@
       </mat-step>
 
       <!-- Step: From -->
-      <mat-step [stepControl]="fromFormGroup">
+      <mat-step [stepControl]="fromFormGroup"  [completed]="fromStepCompleted" errorMessage="Invalid from">
         <form [formGroup]="fromFormGroup">
           <ng-template matStepLabel>{{'Finance.TransferFrom' | translate}}</ng-template>
           <mat-form-field>
@@ -91,7 +91,7 @@
       </mat-step>
 
       <!-- Step: To -->
-      <mat-step [stepControl]="toFormGroup">
+      <mat-step [stepControl]="toFormGroup"  [completed]="toStepCompleted" errorMessage="Invalid to">
         <form [formGroup]="toFormGroup">
           <ng-template matStepLabel>{{'Finance.TransferTo' | translate}}</ng-template>
 

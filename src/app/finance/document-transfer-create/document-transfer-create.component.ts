@@ -41,10 +41,61 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Header info
   public headerFormGroup: FormGroup;
+  get headerStepCompleted(): boolean {
+    if (this.headerFormGroup && this.headerFormGroup.valid) {
+      // Ensure the exchange rate
+      if (this.isForeignCurrency) {
+        if(this.headerFormGroup.get('exgControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
   // Step: From
   public fromFormGroup: FormGroup;
+  get fromStepCompleted(): boolean {
+    if (this.fromFormGroup && this.fromFormGroup.valid) {
+      if (this.fromFormGroup.get('ccControl').value) {
+        if (this.fromFormGroup.get('orderControl').value) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        if (this.fromFormGroup.get('orderControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
   // Step: To
   public toFormGroup: FormGroup;
+  get toStepCompleted(): boolean {
+    if (this.toFormGroup && this.toFormGroup.valid) {
+      if (this.toFormGroup.get('ccControl').value) {
+        if (this.toFormGroup.get('orderControl').value) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        if (this.toFormGroup.get('orderControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
 
   get TranAmount(): number {
     let amtctrl: any = this.headerFormGroup.get('amountControl');
