@@ -31,6 +31,7 @@ export class FakeDataHelper {
   private _finOrders: Order[];
   private _finOrdersFromAPI: OrderJson[];
   private _finNormalDocumentForCreate: Document;
+  private _finTransferDocumentForCreate: Document;
   private _currUser: UserAuthInfo;
   private _appLanguages: AppLanguage[];
   private _appLanguagesFromAPI: AppLanguageJson[];
@@ -144,6 +145,11 @@ export class FakeDataHelper {
   get finNormalDocumentForCreate(): Document {
     if (this._finNormalDocumentForCreate) {
       return this._finNormalDocumentForCreate;
+    }
+  }
+  get finTransferDocumentForCreate(): Document {
+    if (this._finTransferDocumentForCreate) {
+      return this._finTransferDocumentForCreate;
     }
   }
   get currentUser(): UserAuthInfo {
@@ -1146,5 +1152,8 @@ export class FakeDataHelper {
   }
   public setFinNormalDocumentForCreate(doc: Document): void {
     this._finNormalDocumentForCreate = doc;
+  }
+  public setFinTransferDocumentForCreate(doc: Document): void {
+    this._finTransferDocumentForCreate = doc;
   }
 }

@@ -45,7 +45,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     if (this.headerFormGroup && this.headerFormGroup.valid) {
       // Ensure the exchange rate
       if (this.isForeignCurrency) {
-        if(this.headerFormGroup.get('exgControl').value) {
+        if (this.headerFormGroup.get('exgControl').value) {
           return true;
         } else {
           return false;
@@ -80,6 +80,12 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public toFormGroup: FormGroup;
   get toStepCompleted(): boolean {
     if (this.toFormGroup && this.toFormGroup.valid) {
+      // Ensure the account is different
+      if (this.toFormGroup.get('accountControl').value === this.fromFormGroup.get('accountControl').value) {
+        return false;
+      }
+
+      // Other checks
       if (this.toFormGroup.get('ccControl').value) {
         if (this.toFormGroup.get('orderControl').value) {
           return false;
@@ -211,12 +217,12 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
 
     // Check!
     if (!docObj.onVerify({
-      ControlCenters: this._storageService.ControlCenters,
-      Orders: this._storageService.Orders,
-      Accounts: this._storageService.Accounts,
-      DocumentTypes: this._storageService.DocumentTypes,
-      TransactionTypes: this._storageService.TranTypes,
-      Currencies: this._currService.Currencies,
+      ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranType,
+      Currencies: this.arCurrencies,
       BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details
@@ -235,16 +241,15 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._storageService.createDocument(docObj).subscribe((x: any) => {
+    this._storageService.createDocument(docObj).subscribe((x: Document) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent, onSubmit, createDocument`);
       }
 
-      // Navigate back to list view
       // Show the snackbar
       let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
         this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
+          duration: 2000,
         });
 
       let recreate: boolean = false;
@@ -283,6 +288,15 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public onReset(): void {
     if (this._stepper) {
       this._stepper.reset();
+    }
+    if (this.headerFormGroup) {
+      this.headerFormGroup.reset();
+    }
+    if (this.fromFormGroup) {
+      this.fromFormGroup.reset();
+    }
+    if (this.toFormGroup) {
+      this.toFormGroup.reset();
     }
 
     // Default values apply

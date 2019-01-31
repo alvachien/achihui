@@ -8,7 +8,7 @@
     <mat-vertical-stepper linear #stepper>
 
       <!-- Step 1. Generic Info -->
-      <mat-step [stepControl]="firstFormGroup">
+      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
@@ -33,7 +33,7 @@
           <!-- Tran type -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.TransactionType' | translate}}" formControlName="tranTypeControl">
-              <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
+              <mat-option *ngFor="let tt of arTranTypes" [value]="tt.Id">
                 <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
               </mat-option>
             </mat-select>
@@ -47,11 +47,22 @@
           <!-- Currency -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
-              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+              <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
                 {{cr.Symbol}} - {{cr.Name | translate}}
               </mat-option>
             </mat-select>
           </mat-form-field>
+
+          <!-- Exchange rate -->
+          <mat-form-field *ngIf="isForeignCurrency">
+            <input matInput type="text" placeholder="{{'Finance.ExchangeRate' | translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
+              formControlName="exgControl" id="exgrate">
+          </mat-form-field>
+
+          <!-- Planned Exchange rate -->
+          <div *ngIf="isForeignCurrency" class="achih-control-full-width">
+            <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
+          </div>
 
           <!-- Desp -->
           <mat-form-field>
@@ -61,7 +72,7 @@
           <!-- CC -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="srccc">
-              <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+              <mat-option *ngFor="let cc of arControlCenters" [value]="cc.Id">
                 {{cc.Name}}
               </mat-option>
             </mat-select>
@@ -82,7 +93,7 @@
       </mat-step>
 
       <!-- Step 2: Extra Info -->
-      <mat-step>
+      <mat-step [completed]="extraStepCompleted" errorMessage="Invalid extra">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
         <hih-finance-account-ext-adp [uiMode]="curMode" 
           [extObject]="accountAdvPay" 
@@ -91,10 +102,19 @@
         </hih-finance-account-ext-adp>
         <div>
           <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
-          <button mat-button color="primary" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>
       </mat-step>
 
+      <!-- Step 3: Review and Confirm -->
+      <mat-step>
+        <ng-template matStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button (click)="onReset()">{{'Common.Reset' | translate}}</button>
+          <button mat-button color="primary" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+        </div>
+      </mat-step>
     </mat-vertical-stepper>
   </mat-card-content>
 </mat-card>

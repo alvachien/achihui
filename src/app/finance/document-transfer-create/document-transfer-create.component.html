@@ -4,10 +4,10 @@
     <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-horizontal-stepper linear="true">
+    <mat-horizontal-stepper linear>
 
       <!-- Header -->
-      <mat-step [stepControl]="headerFormGroup" [completed]="headerStepCompleted" errorMessage="Invalid header">
+      <mat-step [completed]="headerStepCompleted" errorMessage="Invalid header">
         <form [formGroup]="headerFormGroup">
           <ng-template matStepLabel>{{'Finance.Header' | translate}}</ng-template>
           <!-- Tran date -->
@@ -54,7 +54,7 @@
       </mat-step>
 
       <!-- Step: From -->
-      <mat-step [stepControl]="fromFormGroup"  [completed]="fromStepCompleted" errorMessage="Invalid from">
+      <mat-step [completed]="fromStepCompleted" errorMessage="Invalid from">
         <form [formGroup]="fromFormGroup">
           <ng-template matStepLabel>{{'Finance.TransferFrom' | translate}}</ng-template>
           <mat-form-field>
@@ -91,7 +91,7 @@
       </mat-step>
 
       <!-- Step: To -->
-      <mat-step [stepControl]="toFormGroup"  [completed]="toStepCompleted" errorMessage="Invalid to">
+      <mat-step [completed]="toStepCompleted" errorMessage="Invalid to">
         <form [formGroup]="toFormGroup">
           <ng-template matStepLabel>{{'Finance.TransferTo' | translate}}</ng-template>
 
@@ -147,6 +147,5 @@
         </div>
       </mat-step>
     </mat-horizontal-stepper>
-
   </mat-card-content>
 </mat-card>

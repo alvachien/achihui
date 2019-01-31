@@ -6,7 +6,7 @@
   <mat-card-content>
     <mat-vertical-stepper linear (selectionChange)="onStepSelectionChange($event)" #stepper>
       <!-- Step 1: Generic info -->
-      <mat-step [stepControl]="firstFormGroup">
+      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 

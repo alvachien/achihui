@@ -42,6 +42,21 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
+  get firstStepCompleted(): boolean {
+    if (this.firstFormGroup && this.firstFormGroup.valid) {
+      // Ensure the exchange rate
+      if (this.isForeignCurrency) {
+        if (this.firstFormGroup.get('exgControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
   // Step: Items
   step2ErrorMessage: string;
   separatorKeysCodes: any[] = [ENTER, COMMA];
@@ -325,6 +340,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public onReset(): void {
     if (this._stepper) {
       this._stepper.reset();
+    }
+    if (this.firstFormGroup) {
+      this.firstFormGroup.reset();
     }
 
     // Clear items

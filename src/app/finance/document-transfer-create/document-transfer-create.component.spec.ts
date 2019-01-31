@@ -22,6 +22,8 @@ import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentTransferCreateComponent } from './document-transfer-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
+import { Document, DocumentItem, financeDocTypeTransfer, financeTranTypeTransferOut,
+  financeTranTypeTransferIn, } from '../../model';
 
 describe('DocumentTransferCreateComponent', () => {
   let component: DocumentTransferCreateComponent;
@@ -284,7 +286,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.TranDate).toBeTruthy();
     }));
 
-    it('step 1: should have accounts and others loaded', fakeAsync(() => {
+    it('step 1: should have accounts and orders loaded', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       expect(component.arUIAccount.length).toEqual(0);
       expect(component.arUIOrder.length).toEqual(0);
@@ -310,6 +312,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.headerFormGroup.valid).toBeFalsy();
+      expect(component.headerStepCompleted).toBeFalsy();
 
       // Click the next button - no work!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -335,6 +338,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.headerFormGroup.valid).toBeFalsy();
+      expect(component.headerStepCompleted).toBeFalsy();
 
       // Click the next button - no work!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -358,6 +362,7 @@ describe('DocumentTransferCreateComponent', () => {
       // Input foreign currency
       component.headerFormGroup.get('currControl').setValue('USD');
       fixture.detectChanges();
+
       expect(fixture.debugElement.query(By.css('#exgrate'))).toBeTruthy();
       expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
     }));
@@ -371,9 +376,14 @@ describe('DocumentTransferCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
+      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('despControl').setValue('test');
+      fixture.detectChanges();
       // Input foreign currency
       component.headerFormGroup.get('currControl').setValue('USD');
       fixture.detectChanges();
+
+      expect(component.headerStepCompleted).toBeFalsy();
 
       // Shall not allow go to second step
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -383,7 +393,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
-    it('step 1: shall go to step 2 if all key fields fulfilled', fakeAsync(() => {
+    it('step 1: shall go to step 2 for base currency case', fakeAsync(() => {
       expect(component.headerFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -397,6 +407,37 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.headerFormGroup.valid).toBeTruthy();
+      expect(component.headerStepCompleted).toBeTruthy();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 1: shall go to step 2 for foreign currency case', fakeAsync(() => {
+      expect(component.headerFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+
+      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('despControl').setValue('test');
+      fixture.detectChanges();
+
+      // Input foreign currency
+      component.headerFormGroup.get('currControl').setValue('USD');
+      component.headerFormGroup.get('exgControl').setValue(654.22);
+
+      expect(component.headerFormGroup.valid).toBeTruthy();
+      expect(component.headerStepCompleted).toBeTruthy();
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -454,23 +495,19 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('despControl').setValue('test');
       fixture.detectChanges();
 
-      expect(component.headerFormGroup.valid).toBeTruthy();
-
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      expect(component._stepper.selectedIndex).toBe(0);
-
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
       // Now sit in step 2
       expect(component._stepper.selectedIndex).toBe(1);
 
-      component.fromFormGroup.get('accountControl').setValue(1);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       fixture.detectChanges();
 
       // However, it is invalid
-      expect(component.fromFormGroup.valid).toBeFalsy();
+      expect(component.fromStepCompleted).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -489,12 +526,8 @@ describe('DocumentTransferCreateComponent', () => {
       component.headerFormGroup.get('despControl').setValue('test');
       fixture.detectChanges();
 
-      expect(component.headerFormGroup.valid).toBeTruthy();
-
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      expect(component._stepper.selectedIndex).toBe(0);
-
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -507,7 +540,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // However, it is invalid
-      expect(component.fromFormGroup.valid).toBeFalsy();
+      expect(component.fromStepCompleted).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -544,7 +577,7 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now in step 3
       expect(component._stepper.selectedIndex).toBe(2);
-      expect(component.toFormGroup.valid).toBeFalsy();
+      expect(component.toStepCompleted).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
@@ -553,10 +586,535 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(2);
     }));
 
-    // Step 3: Account is manatory;
+    it('step 3: to account shall not identical as from account', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('despControl').setValue('test');
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now sit in step 2
+      expect(component._stepper.selectedIndex).toBe(1);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+
+      // Click the next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now in step 3
+      expect(component._stepper.selectedIndex).toBe(2);
+      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      expect(component.toStepCompleted).toBeFalsy();
+
+      // Click the next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+
     // Step 3: Asset account should not allowed
     // Step 3: ADP account should not allowed
-    // Step 3: should not allow go third step if item has neither control center nor order
-    // Step 3: should not allow go third step if item has control center and order both
+
+    it('step 3: neither control center nor order', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('despControl').setValue('test');
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now sit in step 2
+      expect(component._stepper.selectedIndex).toBe(1);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+
+      // Click the next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now in step 3
+      expect(component._stepper.selectedIndex).toBe(2);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      fixture.detectChanges();
+      expect(component.toStepCompleted).toBeFalsy();
+
+      // Click the next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+
+    it('step 3: control center and order both', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      component.headerFormGroup.get('amountControl').setValue(100);
+      component.headerFormGroup.get('despControl').setValue('test');
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now sit in step 2
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+
+      // Click the next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now in step 3
+      expect(component._stepper.selectedIndex).toBe(2);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+      expect(component.toStepCompleted).toBeFalsy();
+
+      // Click the next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+  });
+
+  xdescribe('4. Account filter in from step', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+  });
+  xdescribe('5. Order filter in from step', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+  });
+  xdescribe('6. Account filter in to step', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+  });
+  xdescribe('7. Order filter in to step', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+  });
+
+  describe('8. Submit and its subsequences', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+
+      // Create document
+      let doc: Document = new Document();
+      doc.Id = 100;
+      doc.DocType = financeDocTypeTransfer;
+      doc.Desp = 'Transfer test';
+      doc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      doc.TranDate = moment();
+      let ditem1: DocumentItem = new DocumentItem();
+      ditem1.ItemId = 1;
+      ditem1.AccountId = fakeData.finAccounts[0].Id;
+      ditem1.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem1.TranType = financeTranTypeTransferOut;
+      ditem1.Desp = 'From';
+      ditem1.TranAmount = 220;
+      let ditem2: DocumentItem = new DocumentItem();
+      ditem2.ItemId = 2;
+      ditem2.AccountId = fakeData.finAccounts[1].Id;
+      ditem2.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem2.TranType = financeTranTypeTransferIn;
+      ditem2.Desp = 'To';
+      ditem2.TranAmount = 220;
+      doc.Items = [ditem1, ditem2];
+      fakeData.setFinTransferDocumentForCreate(doc);
+
+      createDocSpy.and.returnValue(asyncData(fakeData.finTransferDocumentForCreate));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('should handle checking failed case with a popup dialog', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the header step
+      component.headerFormGroup.get('despControl').setValue(fakeData.finTransferDocumentForCreate.Desp);
+      component.headerFormGroup.get('amountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].TranAmount);
+      fixture.detectChanges();
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      // Click the next button > from step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the From step
+      expect(component._stepper.selectedIndex).toBe(1);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].AccountId);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].ControlCenterId);
+      fixture.detectChanges();
+      // Then, click the next button > To step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the To step
+      expect(component._stepper.selectedIndex).toBe(2);
+      component.toFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].AccountId);
+      component.toFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].ControlCenterId);
+      fixture.detectChanges();
+      // Then, click the next button > Review step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now go to submit
+      expect(component._stepper.selectedIndex).toBe(3);
+      component.arAccounts = []; // Ensure check failed
+      component.onSubmit();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a pop-up dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      // And, there shall no changes in the selected tab
+      expect(component._stepper.selectedIndex).toBe(3);
+
+      flush();
+    }));
+
+    it('should handle create success case with navigate to display', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the header step
+      component.headerFormGroup.get('despControl').setValue(fakeData.finTransferDocumentForCreate.Desp);
+      component.headerFormGroup.get('amountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].TranAmount);
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the From step
+      expect(component._stepper.selectedIndex).toBe(1);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].AccountId);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].ControlCenterId);
+      fixture.detectChanges();
+      // Then, click the next button > To step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the To step
+      expect(component._stepper.selectedIndex).toBe(2);
+      component.toFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].AccountId);
+      component.toFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].ControlCenterId);
+      fixture.detectChanges();
+      // Then, click the next button > Review step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now go to submit
+      expect(component._stepper.selectedIndex).toBe(3);
+      component.onSubmit();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      expect(createDocSpy).toHaveBeenCalled();
+
+      // Expect there is snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container');
+      expect(messageElement.textContent).not.toBeNull();
+
+      // Then, after the snackbar disappear, expect navigate!
+      tick(2000);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/' + fakeData.finTransferDocumentForCreate.Id.toString()]);
+
+      flush();
+    }));
+
+    it('should handle create success case with recreate', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the header step
+      component.headerFormGroup.get('despControl').setValue(fakeData.finTransferDocumentForCreate.Desp);
+      component.headerFormGroup.get('amountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].TranAmount);
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the From step
+      expect(component._stepper.selectedIndex).toBe(1);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].AccountId);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].ControlCenterId);
+      fixture.detectChanges();
+      // Then, click the next button > To step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the To step
+      expect(component._stepper.selectedIndex).toBe(2);
+      component.toFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].AccountId);
+      component.toFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].ControlCenterId);
+      fixture.detectChanges();
+      // Then, click the next button > Review step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now go to submit
+      expect(component._stepper.selectedIndex).toBe(3);
+      component.onSubmit();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull();
+
+      // Then, click the re-create button
+      let actionButton: any = overlayContainerElement.querySelector('button.mat-button') as HTMLButtonElement;
+      actionButton.click();
+      tick(); // onAction has been executed
+      fixture.detectChanges();
+
+      expect(routerSpy.navigate).not.toHaveBeenCalled();
+      fixture.detectChanges();
+      // Check the reset
+      expect(component._stepper.selectedIndex).toBe(0);
+      expect(component.headerFormGroup.get('dateControl').value).not.toBeNull();
+      expect(component.headerFormGroup.get('despControl').value).toBeFalsy();
+      expect(component.headerFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
+
+      flush(); // Empty the call stack
+    }));
+
+    it('should handle create failed case with a popup dialog', fakeAsync(() => {
+      createDocSpy.and.returnValue(asyncError('Doc Created Failed!'));
+
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the header step
+      component.headerFormGroup.get('despControl').setValue(fakeData.finTransferDocumentForCreate.Desp);
+      component.headerFormGroup.get('amountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].TranAmount);
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the From step
+      expect(component._stepper.selectedIndex).toBe(1);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].AccountId);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].ControlCenterId);
+      fixture.detectChanges();
+      // Then, click the next button > To step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the To step
+      expect(component._stepper.selectedIndex).toBe(2);
+      component.toFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].AccountId);
+      component.toFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].ControlCenterId);
+      fixture.detectChanges();
+      // Then, click the next button > Review step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now go to submit
+      expect(component._stepper.selectedIndex).toBe(3);
+      component.onSubmit();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      expect(createDocSpy).toHaveBeenCalled();
+
+      // Expect there is a pop-up dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      // And, there shall no changes in the selected tab - review step
+      expect(component._stepper.selectedIndex).toBe(3);
+
+      flush();
+    }));
+  });
+
+  describe('10. Reset shall work', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    it('shall clear all items', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      // Setup the header step
+      component.headerFormGroup.get('despControl').setValue('desp');
+      component.headerFormGroup.get('amountControl').setValue(300);
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Click the next button > second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the From step
+      expect(component._stepper.selectedIndex).toBe(1);
+      component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+      // Then, click the next button > To step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Setup the To step
+      expect(component._stepper.selectedIndex).toBe(2);
+      component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+      // Then, click the next button > Review step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Now go to review step
+      expect(component._stepper.selectedIndex).toBe(3);
+      component.onReset();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(0);
+      expect(component.headerFormGroup.get('dateControl').value).not.toBeNull();
+      expect(component.headerFormGroup.get('despControl').value).toBeFalsy();
+      expect(component.headerFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
+
+      flush(); // clean
+    }));
   });
 });

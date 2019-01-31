@@ -189,6 +189,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBe(false);
+      expect(component.firstStepCompleted).toBe(false);
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
@@ -209,7 +210,55 @@ describe('DocumentNormalCreateComponent', () => {
       expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
     }));
 
-    it('step 1: should go to second step if there are no failure in first step', fakeAsync(() => {
+    it('step 1: shall input exchange rate for foreign currency', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      component.firstFormGroup.get('despControl').setValue('Test');
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+
+      // Input foreign currency
+      component.firstFormGroup.get('currControl').setValue('USD');
+      fixture.detectChanges();
+
+      expect(component.firstStepCompleted).toBeFalsy();
+
+      // Shall not allow go to second step
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(0);
+    }));
+
+    it('step 1: should go to second step for valid base currency case', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      component.firstFormGroup.get('despControl').setValue('Test');
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      component.firstFormGroup.get('currControl').setValue('USD');
+      component.firstFormGroup.get('exgControl').setValue(654.35);
+      fixture.detectChanges();
+
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+
+      expect(component.firstFormGroup.valid).toBe(true);
+      expect(component.firstStepCompleted).toBe(true);
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 1: should go to second step for valid foreign currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
       component.firstFormGroup.get('despControl').setValue('Test');
@@ -226,6 +275,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBe(true);
+      expect(component.firstStepCompleted).toBe(true);
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
@@ -668,7 +718,7 @@ describe('DocumentNormalCreateComponent', () => {
     });
   });
 
-  // 5. Foreign currency handling
+  // 5. Foreign currency handling - DONE.
   // 6. Item tag
 
   xdescribe('7. Account filter in Items step', () => {

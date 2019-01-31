@@ -2,15 +2,15 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@ang
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper } from '@angular/material';
 import { Observable, forkJoin, merge, ReplaySubject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
-  UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, RepeatFrequencyEnum,
+  UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, DocumentType,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  UIDisplayStringUtil, IAccountCategoryFilter, financeAccountCategoryAdvanceReceived, TranType,
+  Currency, ControlCenter, Order, IAccountCategoryFilter, financeAccountCategoryAdvanceReceived, TranType,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -36,10 +36,35 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   public curTitle: string;
+  public arCurrencies: Currency[] = [];
+  public arTranType: TranType[] = [];
+  public arControlCenters: ControlCenter[] = [];
+  public arAccounts: Account[] = [];
+  public arOrders: Order[] = [];
+  public arDocTypes: DocumentType[] = [];
   // Step: Generic info
   public firstFormGroup: FormGroup;
   @ViewChild(AccountExtADPComponent) ctrlAccount: AccountExtADPComponent;
+  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
 
+  get firstStepCompleted(): boolean {
+    if (this.firstFormGroup && this.firstFormGroup.valid) {
+      if (this.firstFormGroup.get('ccControl').value) {
+        if (this.firstFormGroup.get('orderControl').value) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        if (this.firstFormGroup.get('orderControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
   get TranAmount(): number {
     let amtctrl: any = this.firstFormGroup.get('amountControl');
     if (amtctrl) {
@@ -59,6 +84,29 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     if (trantypectrl && trantypectrl.value) {
       return trantypectrl.value;
     }
+  }
+  get TranCurrency(): string {
+    let currctrl: any = this.firstFormGroup.get('currControl');
+    if (currctrl) {
+      return currctrl.value;
+    }
+  }
+  get isForeignCurrency(): boolean {
+    if (this.TranCurrency && this.TranCurrency !== this._homeService.ChosedHome.BaseCurrency) {
+      return true;
+    }
+
+    return false;
+  }
+  get extraStepCompleted(): boolean {
+    if (this.ctrlAccount) {
+      this.ctrlAccount.generateAccountInfoForSave();
+      if (this.ctrlAccount.extObject.dpTmpDocs.length <= 0) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   constructor(public _storageService: FinanceStorageService,
@@ -85,11 +133,13 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this.firstFormGroup = this._formBuilder.group({
-      dateControl: new FormControl({ value: moment() }, Validators.required),
+      dateControl: [{ value: moment(), disabled: false }, Validators.required],
       accountControl: ['', Validators.required],
       tranTypeControl: ['', Validators.required],
       amountControl: ['', Validators.required],
       currControl: ['', Validators.required],
+      exgControl: [''],
+      exgpControl: [''],
       despControl: ['', Validators.required],
       ccControl: [''],
       orderControl: [''],
@@ -108,16 +158,26 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this._destroyed$))
       .subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngAfterViewInit for activateRoute URL: ${rst.length}`);
+        console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arAccounts = rst[3];
+      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilter = undefined;
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.arOrders = rst[5];
+      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
+      // Currencies
+      this.arCurrencies = rst[6];
+      // Tran. type
+      this.arTranType = rst[2];
+      // Control Centers
+      this.arControlCenters = rst[4];
+      // Document type
+      this.arDocTypes = rst[1];
 
       this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
@@ -138,27 +198,17 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
 
             // Set default currency
             this.firstFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
-            this.firstFormGroup.get('dateControl').setValue(moment());
 
             this._cdr.detectChanges();
           }
         }
-      }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit, failed to load depended objects : ${error}`);
-        }
-
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
+      });
+    }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error('AC_HIH_UI [Error]: Entering Entering DocumentAdvancepaymentDetailComponent ngOnInit, forkJoin, failed');
+      }
+      this._snackbar.open(error, undefined, {
+        duration: 2000,
       });
     });
   }
@@ -173,15 +223,11 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  canSubmit(): boolean {
-    if (this.ctrlAccount) {
-      this.ctrlAccount.generateAccountInfoForSave();
-      if (this.ctrlAccount.extObject.dpTmpDocs.length <= 0) {
-        return false;
-      }
+  onReset(): void {
+    if (this._stepper) {
+      this._stepper.reset();
     }
-
-    return true;
+    this.firstFormGroup.reset();
   }
 
   onSubmit(): void {
@@ -201,12 +247,12 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
 
     // Check!
     if (!docObj.onVerify({
-      ControlCenters: this._storageService.ControlCenters,
-      Orders: this._storageService.Orders,
-      Accounts: this._storageService.Accounts,
-      DocumentTypes: this._storageService.DocumentTypes,
-      TransactionTypes: this._storageService.TranTypes,
-      Currencies: this._currService.Currencies,
+      ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranType,
+      Currencies: this.arCurrencies,
       BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details
