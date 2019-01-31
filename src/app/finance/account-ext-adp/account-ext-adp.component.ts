@@ -15,7 +15,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './account-ext-adp.component.html',
   styleUrls: ['./account-ext-adp.component.scss'],
 })
-export class AccountExtADPComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AccountExtADPComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   private _insobj: AccountExtraAdvancePayment;
   public currentMode: string;
@@ -43,6 +43,18 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit, OnDestroy 
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
+  get canCalcTmpDocs(): boolean {
+    if (!this.isFieldChangable) {
+      return false;
+    }
+    if (!this.extObject.EndDate.isValid || !this.extObject.StartDate.isValid) {
+      return false;
+    }
+    if (!this.tranAmount) {
+      return false;
+    }
+    return true;
+  }
 
   constructor(public _storageService: FinanceStorageService,
     private _snackbar: MatSnackBar,
@@ -63,23 +75,20 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPComponent ngAfterViewInit...');
-    }
-  }
-
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountExtADPComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
+    }
   }
 
   public onGenerateTmpDocs(): void {
     let tmpDocs: TemplateDocADP[] = [];
-    if (!this.extObject.EndDate.isValid || !this.extObject.StartDate.isValid) {
+    if (!this.canCalcTmpDocs) {
       return;
     }
 
@@ -117,9 +126,6 @@ export class AccountExtADPComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
-  public initCreateMode(): void {
-    this.dataSource.data = [];
-  }
   public displayTmpdocs(): void {
     this.dataSource.data = this._insobj.dpTmpDocs;
   }

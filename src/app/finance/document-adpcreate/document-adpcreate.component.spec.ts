@@ -311,7 +311,7 @@ describe('DocumentADPCreateComponent', () => {
       expect(component.arUIOrder.length).toBeGreaterThan(0);
     }));
 
-    it('step 1: amount is mandatory', fakeAsync(() => {
+    xit('step 1: amount is mandatory', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -337,7 +337,7 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
-    it('step 1: desp is mandatory', fakeAsync(() => {
+    xit('step 1: desp is mandatory', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -363,7 +363,7 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
-    it('step 1: shall show exchange rate for foreign currency', fakeAsync(() => {
+    xit('step 1: shall show exchange rate for foreign currency', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -380,7 +380,7 @@ describe('DocumentADPCreateComponent', () => {
       expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
     }));
 
-    it('step 1: shall input exchange rate for foreign currency', fakeAsync(() => {
+    xit('step 1: shall input exchange rate for foreign currency', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -406,7 +406,7 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
-    it('step 1: shall go to step 2 for base currency case', fakeAsync(() => {
+    xit('step 1: shall go to step 2 for base currency case', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -432,7 +432,7 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
-    it('step 1: shall go to step 2 for foreign currency case', fakeAsync(() => {
+    xit('step 1: shall go to step 2 for foreign currency case', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 

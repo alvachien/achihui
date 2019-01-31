@@ -608,18 +608,11 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   set StartDate(sd: moment.Moment) {
     this._startDate = sd;
   }
-  get StartDateFormatString(): string {
-    return this._startDate.format(hih.momentDateFormat);
-  }
-
   get EndDate(): moment.Moment {
     return this._endDate;
   }
   set EndDate(ed: moment.Moment) {
     this._endDate = ed;
-  }
-  get EndDateFormatString(): string {
-    return this._endDate.format(hih.momentDateFormat);
   }
   get RefDocId(): number {
     return this._refDocId;
@@ -645,7 +638,23 @@ export class AccountExtraAdvancePayment extends AccountExtra {
     super.onInit();
 
     this._startDate = moment();
-    this._endDate = moment();
+    this._endDate = moment().add(1, 'y');
+  }
+
+  get isValid(): boolean {
+    if (!this.StartDate || !this.EndDate || !this.StartDate.isValid || !this.EndDate.isValid) {
+      return false;
+    }
+    if (this.StartDate.isSameOrAfter(this.EndDate)) {
+      return false;
+    }
+    if (this.RepeatType === undefined) {
+      return false;
+    }
+    if (!this.Comment) {
+      return false;
+    }
+    return true;
   }
 
   public clone(): AccountExtraAdvancePayment {
@@ -662,9 +671,9 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   }
 
   public isDiff(other: AccountExtraAdvancePayment): boolean {
-    if (this.Direct !== other.Direct) {
-      return true;
-    }
+    // if (this.Direct !== other.Direct) {
+    //   return true;
+    // }
     if (this.StartDate !== other.StartDate) {
       return true;
     }

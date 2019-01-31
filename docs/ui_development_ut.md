@@ -372,3 +372,30 @@ In case the navigate contains parameters:
 ```typescript
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/account/display', acnt.Id]);
 ```
+
+### Testing routerLink's target
+Using codes below:
+```typescript
+    const linkDes: any = fixture.debugElement
+        .queryAll(By.directive(RouterLinkDirectiveStub));
+
+    const routerLinks: any = linkDes.map((de: any) => de.injector.get(RouterLinkDirectiveStub));
+    expect(routerLinks.length).toBe(3, 'should have 3 routerLinks');
+    expect(routerLinks[0].linkParams).toBe('/a');
+    expect(routerLinks[1].linkParams).toBe('/b');
+    expect(routerLinks[2].linkParams).toBe('/c');
+```
+Test the link is work:
+```typescript
+  it('can click link in template', () => {
+    const heroesLinkDe = linkDes[1];   // link DebugElement
+    const heroesLink = routerLinks[1]; // link directive
+
+    expect(heroesLink.navigatedTo).toBeNull('should not have navigated yet');
+
+    heroesLinkDe.triggerEventHandler('click', null);
+    fixture.detectChanges();
+
+    expect(heroesLink.navigatedTo).toBe('/heroes');
+  });
+```

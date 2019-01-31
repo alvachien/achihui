@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -12,9 +12,10 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
-import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper } from '../../../testing';
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { AccountExtADPComponent } from './account-ext-adp.component';
 import { FinanceStorageService, HomeDefDetailService } from 'app/services';
+import { UIMode } from 'app/model';
 
 describe('AccountExtADPComponent', () => {
   let component: AccountExtADPComponent;
@@ -22,14 +23,17 @@ describe('AccountExtADPComponent', () => {
   let translate: TranslateService;
   let http: HttpTestingController;
   let fakeData: FakeDataHelper;
+  let calcADPTmpDocsSpy: any;
 
   beforeEach(async(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
+    fakeData.buildCurrentUser();
+    fakeData.buildFinConfigData();
 
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['calcADPTmpDocs']);
-    const calcADPTmpDocsSpy: any = stroageService.calcADPTmpDocs.and.returnValue(of([]));
+    calcADPTmpDocsSpy = stroageService.calcADPTmpDocs.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
 
@@ -69,19 +73,38 @@ describe('AccountExtADPComponent', () => {
     component = fixture.componentInstance;
     translate = TestBed.get(TranslateService);
     http = TestBed.get(HttpTestingController);
-    fixture.detectChanges();
 
-    // find DebugElements with an attached RouterLinkStubDirective
-    const linkDes: any = fixture.debugElement
-      .queryAll(By.directive(RouterLinkDirectiveStub));
+    // // find DebugElements with an attached RouterLinkStubDirective
+    // const linkDes: any = fixture.debugElement
+    //   .queryAll(By.directive(RouterLinkDirectiveStub));
 
-    // get attached link directive instances
-    // using each DebugElement's injector
-    const routerLinks: any = linkDes.map((de: any) => de.injector.get(RouterLinkDirectiveStub));
+    // // get attached link directive instances
+    // // using each DebugElement's injector
+    // const routerLinks: any = linkDes.map((de: any) => de.injector.get(RouterLinkDirectiveStub));
   });
 
-  it('should be created', () => {
+  it('1. should be created', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('2. create mode', () => {
+    beforeEach(() => {
+      // Before Each
+      component.uiMode = UIMode.Create;      
+    });
+
+    it('1. should display default values', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      expect(component.isFieldChangable).toEqual(true);
+      expect(component.dataSource.data.length).toEqual(0);
+      expect(component.extObject).toBeTruthy();
+      expect(component.extObject.StartDate).toBeTruthy();
+      expect(component.extObject.EndDate).toBeTruthy();
+
+      const linkDes: any = fixture.debugElement.queryAll(By.directive(RouterLinkDirectiveStub));
+      expect(linkDes.length).toEqual(0);
+    }));
   });
 
   // Example codes to test routerLink!!!
