@@ -75,12 +75,27 @@ export class Currency extends hih.BaseModel {
     if (!super.onVerify(context)) {
       return false;
     }
+    if (this._curr === undefined
+      || this._curr.length <= 0) {
+      return false;
+    }
+    if (this._name === undefined
+      || this._name.length <= 0) {
+      return false;
+    }
+    if (this._symbol === undefined
+      || this._symbol.length <= 0) {
+      return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
     let rstObj: any = super.writeJSONObject();
+    rstObj.curr = this.Currency;
+    rstObj.name = this.Name;
+    rstObj.symbol = this.Symbol;
     return rstObj;
   }
 
@@ -166,12 +181,20 @@ export class AccountCategory extends hih.BaseModel {
     if (!super.onVerify(context)) {
       return false;
     }
+    if (this._name === undefined
+      || this._name.length <= 0) {
+      return false;
+    }
 
     return true;
   }
 
   public writeJSONObject(): any {
     let rstObj: any = super.writeJSONObject();
+    rstObj.id = this.ID;
+    rstObj.name = this.Name;
+    rstObj.assetFlag = this.AssetFlag;
+    rstObj.comment = this.Comment;
     return rstObj;
   }
 
@@ -660,40 +683,14 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   public clone(): AccountExtraAdvancePayment {
     let aobj: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
     aobj.Direct = this.Direct;
-    aobj.StartDate = this.StartDate;
-    aobj.EndDate = this.EndDate;
+    aobj.StartDate = this.StartDate.clone();
+    aobj.EndDate = this.EndDate.clone();
     aobj.RepeatType = this.RepeatType;
     aobj.RefDocId = this.RefDocId;
     aobj.DeferredDays = this.DeferredDays;
     aobj.Comment = this.Comment;
 
     return aobj;
-  }
-
-  public isDiff(other: AccountExtraAdvancePayment): boolean {
-    // if (this.Direct !== other.Direct) {
-    //   return true;
-    // }
-    if (this.StartDate !== other.StartDate) {
-      return true;
-    }
-    if (this.EndDate !== other.EndDate) {
-      return true;
-    }
-    if (this.RepeatType !== other.RepeatType) {
-      return true;
-    }
-    if (this.RefDocId !== other.RefDocId) {
-      return true;
-    }
-    if (this.DeferredDays !== other.DeferredDays) {
-      return true;
-    }
-    if (this.Comment !== other.Comment) {
-      return true;
-    }
-
-    return false;
   }
 
   public writeJSONObject(): any {

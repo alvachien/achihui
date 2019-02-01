@@ -47,7 +47,7 @@ export class AccountExtADPComponent implements OnInit, OnDestroy {
     if (!this.isFieldChangable) {
       return false;
     }
-    if (!this.extObject.EndDate.isValid || !this.extObject.StartDate.isValid) {
+    if (!this.extObject.isValid) {
       return false;
     }
     if (!this.tranAmount) {
@@ -82,7 +82,7 @@ export class AccountExtADPComponent implements OnInit, OnDestroy {
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
-      this._destroyed$.complete();  
+      this._destroyed$.complete();
     }
   }
 

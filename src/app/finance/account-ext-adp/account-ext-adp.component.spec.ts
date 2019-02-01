@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject, } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -11,11 +11,13 @@ import { By } from '@angular/platform-browser';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import * as moment from 'moment';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { AccountExtADPComponent } from './account-ext-adp.component';
 import { FinanceStorageService, HomeDefDetailService } from 'app/services';
-import { UIMode } from 'app/model';
+import { UIMode, RepeatFrequencyEnum, FinanceADPCalAPIOutput } from 'app/model';
 
 describe('AccountExtADPComponent', () => {
   let component: AccountExtADPComponent;
@@ -88,9 +90,32 @@ describe('AccountExtADPComponent', () => {
   });
 
   describe('2. create mode', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
     beforeEach(() => {
       // Before Each
-      component.uiMode = UIMode.Create;      
+      component.uiMode = UIMode.Create;
+
+      let arrst: FinanceADPCalAPIOutput[] = [];
+      for (let i: number = 0; i < 10; i ++) {
+        let rst: FinanceADPCalAPIOutput = {
+          TranDate: moment(),
+          TranAmount: 10,
+          Desp: `test-${i}`,
+        };
+      }
+      calcADPTmpDocsSpy.and.returnValue(asyncData(arrst));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
     });
 
     it('1. should display default values', fakeAsync(() => {
@@ -99,11 +124,60 @@ describe('AccountExtADPComponent', () => {
       expect(component.isFieldChangable).toEqual(true);
       expect(component.dataSource.data.length).toEqual(0);
       expect(component.extObject).toBeTruthy();
-      expect(component.extObject.StartDate).toBeTruthy();
-      expect(component.extObject.EndDate).toBeTruthy();
+      expect(component.canCalcTmpDocs).toBeFalsy();
 
       const linkDes: any = fixture.debugElement.queryAll(By.directive(RouterLinkDirectiveStub));
       expect(linkDes.length).toEqual(0);
+    }));
+
+    it('2. should check the valid for calc. tmp docs', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      component.extObject.Comment = 'Test';
+      component.extObject.RepeatType = RepeatFrequencyEnum.Month;
+      component.tranAmount = 200;
+      component.tranType = 2;
+      fixture.detectChanges();
+
+      expect(component.canCalcTmpDocs).toBeTruthy();
+    }));
+
+    it('3. should generate tmp docs', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      component.extObject.Comment = 'Test';
+      component.extObject.RepeatType = RepeatFrequencyEnum.Month;
+      component.tranAmount = 200;
+      component.tranType = 2;
+      fixture.detectChanges();
+
+      component.onGenerateTmpDocs();
+      tick();
+      expect(calcADPTmpDocsSpy).toHaveBeenCalled();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
+
+      component.generateAccountInfoForSave();
+      expect(component.extObject.dpTmpDocs.length).toBeGreaterThan(0);
+    }));
+
+    it('4. shall display error for exceptions', fakeAsync(() => {
+      calcADPTmpDocsSpy.and.returnValue(asyncError('Service Error!'));
+
+      fixture.detectChanges(); // ngOnInit
+      component.extObject.Comment = 'Test';
+      component.extObject.RepeatType = RepeatFrequencyEnum.Month;
+      component.tranAmount = 200;
+      fixture.detectChanges();
+
+      component.onGenerateTmpDocs();
+      tick();
+      expect(calcADPTmpDocsSpy).toHaveBeenCalled();
+
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Service Error',
+        'Expected snack bar to show the error message: Service Error');
+      flush();
     }));
   });
 

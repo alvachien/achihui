@@ -311,7 +311,43 @@ describe('DocumentADPCreateComponent', () => {
       expect(component.arUIOrder.length).toBeGreaterThan(0);
     }));
 
-    xit('step 1: amount is mandatory', fakeAsync(() => {
+    it('step 1: account is mandatory', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+
+      // Input all fields exclude account
+      // Tran date - default
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Currency - default
+      // Exchange rate - not need
+      // CC or order
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.firstStepCompleted).toBeFalsy();
+
+      // Click the next button - no work!
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(0);
+    }));
+
+    it('step 1: amount is mandatory', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -321,7 +357,17 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
       // Input all fields exclude amount
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
       component.firstFormGroup.get('despControl').setValue('test');
+      // Currency - default
+      // Exchange rate - not need
+      // CC or order
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeFalsy();
@@ -337,7 +383,7 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
-    xit('step 1: desp is mandatory', fakeAsync(() => {
+    it('step 1: desp is mandatory', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -347,7 +393,19 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
       // Input all fields exclude desp
-      component.firstFormGroup.get('amountControl').setValue(100);
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      // component.firstFormGroup.get('despControl').setValue('test');
+      // Currency - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // CC or order
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeFalsy();
@@ -363,7 +421,121 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
-    xit('step 1: shall show exchange rate for foreign currency', fakeAsync(() => {
+    it('step 1: tran. type is mandatory', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+
+      // Input all fields exclude desp
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      // component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Currency - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // CC or order
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.firstStepCompleted).toBeFalsy();
+
+      // Click the next button - no work!
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(0);
+    }));
+
+    it('step 1: shall not allow input control center and order both', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+
+      // Input all fields
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Currency - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // CC
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.firstStepCompleted).toBeFalsy();
+
+      // Click the next button - no work!
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(0);
+    }));
+
+    it('step 1: shall not allow neither control center nor order case', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+
+      // Input all fields
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Currency - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      fixture.detectChanges();
+
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.firstStepCompleted).toBeFalsy();
+
+      // Click the next button - no work!
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(0);
+    }));
+
+    it('step 1: shall show exchange rate for foreign currency', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -380,7 +552,7 @@ describe('DocumentADPCreateComponent', () => {
       expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
     }));
 
-    xit('step 1: shall input exchange rate for foreign currency', fakeAsync(() => {
+    it('step 1: shall input exchange rate for foreign currency', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -389,8 +561,18 @@ describe('DocumentADPCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      component.firstFormGroup.get('amountControl').setValue(100);
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
       component.firstFormGroup.get('despControl').setValue('test');
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // CC or order
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
       // Input foreign currency
       component.firstFormGroup.get('currControl').setValue('USD');
@@ -406,7 +588,7 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
-    xit('step 1: shall go to step 2 for base currency case', fakeAsync(() => {
+    it('step 1: shall go to step 2 for base currency case', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -415,8 +597,18 @@ describe('DocumentADPCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      component.firstFormGroup.get('amountControl').setValue(100);
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
       component.firstFormGroup.get('despControl').setValue('test');
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // Order
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -441,9 +633,18 @@ describe('DocumentADPCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      component.firstFormGroup.get('amountControl').setValue(100);
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
       component.firstFormGroup.get('despControl').setValue('test');
-      fixture.detectChanges();
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // Order
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
 
       // Input foreign currency
       component.firstFormGroup.get('currControl').setValue('USD');

@@ -2329,6 +2329,13 @@ export class FinanceStorageService {
           }
         }
         return results;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Failed in calcADPTmpDocs in FinanceStorageService: ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 
@@ -2383,6 +2390,13 @@ export class FinanceStorageService {
           }
         }
         return results;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Failed in calcLoanTmpDocs in FinanceStorageService: ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 

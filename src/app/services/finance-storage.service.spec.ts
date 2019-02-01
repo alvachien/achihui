@@ -2,11 +2,14 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import * as moment from 'moment';
 
 import { FinanceStorageService, } from './finance-storage.service';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
-import { UserAuthInfo } from '../model';
+import { UserAuthInfo, FinanceADPCalAPIInput, FinanceLoanCalAPIInput, RepeatFrequencyEnum,
+  FinanceADPCalAPIOutput, FinanceLoanCalAPIOutput, momentDateFormat, Document, DocumentItem,
+  financeDocTypeNormal, } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 
@@ -22,6 +25,7 @@ describe('FinanceStorageService', () => {
   const accountAPIURL: any = environment.ApiUrl + '/api/FinanceAccount';
   const ccAPIURL: any = environment.ApiUrl + '/api/FinanceControlCenter';
   const orderAPIURL: any = environment.ApiUrl + '/api/FinanceOrder';
+  const documentAPIURL: any = environment.ApiUrl + '/api/FinanceDocument';
 
   beforeEach(() => {
     fakeData = new FakeDataHelper();
@@ -930,6 +934,214 @@ describe('FinanceStorageService', () => {
         return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
        });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+    });
+  });
+
+  describe('createDocument', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+
+      let doc: Document = new Document();
+      doc.Id = 100;
+      doc.DocType = financeDocTypeNormal;
+      doc.Desp = 'Test';
+      doc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      doc.TranDate = moment();
+      let ditem: DocumentItem = new DocumentItem();
+      ditem.ItemId = 1;
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      ditem.TranAmount = 20;
+      doc.Items = [ditem];
+      fakeData.setFinNormalDocumentForCreate(doc);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for normal doc', () => {
+      service.createDocument(fakeData.finNormalDocumentForCreate).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === documentAPIURL;
+       });
+
+      // Respond with the mock data
+      req.flush(fakeData.finNormalDocumentForCreate.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createDocument(fakeData.finNormalDocumentForCreate).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === documentAPIURL;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('calcADPTmpDocs', () => {
+    const calcADPTmpAPIURL: any = environment.ApiUrl + '/api/FinanceADPCalculator';
+    let inputData: FinanceADPCalAPIInput;
+    let outputData: any[];
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+      inputData =  {
+        TotalAmount: 200,
+        StartDate: moment(),
+        EndDate: moment().add(1, 'y'),
+        RptType: RepeatFrequencyEnum.Month,
+        Desp: 'test',
+      };
+      outputData = [];
+      for (let i: number = 0; i < 10; i ++) {
+        let rst: any = {
+          tranDate: moment().add(i, 'M').format(momentDateFormat),
+          tranAmount: 20,
+          desp: `test${i}`,
+        };
+        outputData.push(rst);
+      }
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected ADP temp docs', () => {
+      service.calcADPTmpDocs(inputData).subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(outputData.length, 'should return expected numbers');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === calcADPTmpAPIURL;
+       });
+
+      // Respond with the mock data
+      req.flush(outputData);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.calcADPTmpDocs(inputData).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === calcADPTmpAPIURL;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('calcLoanTmpDocs', () => {
+    const calcLoanTmpAPIURL: any = environment.ApiUrl + '/api/FinanceLoanCalculator';
+    let inputData: FinanceLoanCalAPIInput;
+    let outputData: any[];
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+
+      inputData = {
+        TotalAmount: 10000,
+        TotalMonths: 12,
+        InterestRate: 0,
+        StartDate: moment(),
+        EndDate: moment().add(1, 'y'),
+        InterestFreeLoan: true,
+        RepaymentMethod: 1,
+        FirstRepayDate: moment(),
+        RepayDayInMonth: 1,
+      };
+      outputData = [];
+      for (let i: number = 0; i < 10; i ++) {
+        let od: any = {
+          tranDate: moment().add(i, 'M'),
+          tranAmount: 100,
+          interestAmount: 0,
+        };
+        outputData.push(od);
+      }
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected result', () => {
+      service.calcLoanTmpDocs(inputData).subscribe(
+        (data: any) => {
+          expect(data.length).toEqual(outputData.length, 'should return expected data');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to POST
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === calcLoanTmpAPIURL;
+       });
+
+      // Respond with the mock data
+      req.flush(outputData);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'Error occurred';
+      service.calcLoanTmpDocs(inputData).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === calcLoanTmpAPIURL;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'Error occurred' });
     });
   });
 });
