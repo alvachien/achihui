@@ -640,13 +640,13 @@ describe('DocumentADPCreateComponent', () => {
       component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       // Order
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
 
       // Input foreign currency
       component.firstFormGroup.get('currControl').setValue('USD');
       component.firstFormGroup.get('exgControl').setValue(654.22);
+      fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
@@ -661,4 +661,37 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
     }));
   });
+
+  it('step 2: shall go to step 3 if the step2 has been fulfilled', fakeAsync(() => {
+    expect(component.firstFormGroup).toBeFalsy();
+    fixture.detectChanges(); // ngOnInit
+
+    tick(); // Complete the Observables in ngOnInit
+    fixture.detectChanges();
+
+    // Step 1.
+    expect(component._stepper.selectedIndex).toEqual(0); // At first page
+    // Tran date - default
+    // Account
+    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+    // Tran type
+    component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+    // Desp
+    component.firstFormGroup.get('despControl').setValue('test');
+    // Amount
+    component.firstFormGroup.get('amountControl').setValue(200);
+    // Exchange rate - not need
+    // Order
+    component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+    fixture.detectChanges();
+    // Click the next button
+    let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+    expect(component._stepper.selectedIndex).toBe(0);
+    nextButtonNativeEl.click();
+    fixture.detectChanges();
+
+    // Step 2.
+    expect(component._stepper.selectedIndex).toBe(1);
+
+  }));
 });
