@@ -107,13 +107,18 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   }
   get extraStepCompleted(): boolean {
     if (this.ctrlAccount) {
+      if (!this.accountAdvPay.isValid) {
+        return false;
+      }
+
       this.ctrlAccount.generateAccountInfoForSave();
       if (this.ctrlAccount.extObject.dpTmpDocs.length <= 0) {
         return false;
       }
+      return true;
     }
 
-    return true;
+    return false;
   }
 
   constructor(public _storageService: FinanceStorageService,

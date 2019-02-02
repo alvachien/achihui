@@ -662,7 +662,7 @@ describe('DocumentADPCreateComponent', () => {
     }));
   });
 
-  it('step 2: shall go to step 3 if the step2 has been fulfilled', fakeAsync(() => {
+  it('step 2: shall not go to step 3 if there are issue in extra page', fakeAsync(() => {
     expect(component.firstFormGroup).toBeFalsy();
     fixture.detectChanges(); // ngOnInit
 
@@ -692,6 +692,12 @@ describe('DocumentADPCreateComponent', () => {
 
     // Step 2.
     expect(component._stepper.selectedIndex).toBe(1);
+    expect(component.extraStepCompleted).toBeFalsy();
 
+    component.accountAdvPay.StartDate = moment().add(1, 'M');
+    component.accountAdvPay.EndDate = moment();
+    fixture.detectChanges();
+
+    expect(component.extraStepCompleted).toBeFalsy();
   }));
 });
