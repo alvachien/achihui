@@ -87,7 +87,6 @@ export class AccountExtADPComponent implements OnInit, OnDestroy {
   }
 
   public onGenerateTmpDocs(): void {
-    let tmpDocs: TemplateDocADP[] = [];
     if (!this.canCalcTmpDocs) {
       return;
     }
@@ -103,6 +102,7 @@ export class AccountExtADPComponent implements OnInit, OnDestroy {
     this._storageService.calcADPTmpDocs(datInput)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((rsts: FinanceADPCalAPIOutput[]) => {
+      let tmpDocs: TemplateDocADP[] = [];
       for (let i: number = 0; i < rsts.length; i++) {
         let item: TemplateDocADP = new TemplateDocADP();
         item.HID = this._homedefService.ChosedHome.ID;
@@ -115,12 +115,12 @@ export class AccountExtADPComponent implements OnInit, OnDestroy {
       }
 
       this.dataSource.data = tmpDocs;
-    }, (error: HttpErrorResponse) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering AccountExtADPComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${error.message}`);
+        console.error(`AC_HIH_UI [Error]: Entering AccountExtADPComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${error}`);
       }
 
-      this._snackbar.open(error.message, undefined, {
+      this._snackbar.open(error.toString(), undefined, {
         duration: 2000,
       });
     });

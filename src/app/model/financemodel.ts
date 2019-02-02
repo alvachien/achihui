@@ -36,7 +36,6 @@ export class Currency extends hih.BaseModel {
   private _curr: string;
   private _name: string;
   private _symbol: string;
-  private _displayName: string;
 
   get Currency(): string {
     return this._curr;
@@ -56,12 +55,6 @@ export class Currency extends hih.BaseModel {
   set Symbol(sy: string) {
     this._symbol = sy;
   }
-  get DisplayName(): string {
-    return this._displayName;
-  }
-  set DisplayName(dn: string) {
-    this._displayName = dn;
-  }
 
   constructor() {
     super();
@@ -69,7 +62,10 @@ export class Currency extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
-  }
+    this._curr = undefined;
+    this._name = undefined;
+    this._symbol = undefined;
+   }
 
   public onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
@@ -130,6 +126,11 @@ export interface AccountCategoryJson extends hih.BaseModelJson {
  */
 export class AccountCategory extends hih.BaseModel {
   private _id: number;
+  private _hid: number;
+  private _name: string;
+  private _assetFlag: boolean;
+  private _comment: string;
+
   get ID(): number {
     return this._id;
   }
@@ -137,7 +138,6 @@ export class AccountCategory extends hih.BaseModel {
     this._id = id;
   }
 
-  private _hid: number;
   get HID(): number {
     return this._hid;
   }
@@ -145,7 +145,6 @@ export class AccountCategory extends hih.BaseModel {
     this._hid = hid;
   }
 
-  private _name: string;
   get Name(): string {
     return this._name;
   }
@@ -153,7 +152,6 @@ export class AccountCategory extends hih.BaseModel {
     this._name = nm;
   }
 
-  private _assetFlag: boolean;
   get AssetFlag(): boolean {
     return this._assetFlag;
   }
@@ -161,7 +159,6 @@ export class AccountCategory extends hih.BaseModel {
     this._assetFlag = af;
   }
 
-  private _comment: string;
   get Comment(): string {
     return this._comment;
   }
@@ -175,6 +172,11 @@ export class AccountCategory extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
+    this._id = undefined;
+    this._hid = undefined;
+    this._name = undefined;
+    this._assetFlag = undefined;
+    this._comment = undefined;
   }
 
   public onVerify(context?: any): boolean {
@@ -192,6 +194,7 @@ export class AccountCategory extends hih.BaseModel {
   public writeJSONObject(): any {
     let rstObj: any = super.writeJSONObject();
     rstObj.id = this.ID;
+    rstObj.hid = this.HID;
     rstObj.name = this.Name;
     rstObj.assetFlag = this.AssetFlag;
     rstObj.comment = this.Comment;
@@ -202,6 +205,9 @@ export class AccountCategory extends hih.BaseModel {
     super.onSetData(data);
     if (data && data.id) {
       this.ID = +data.id;
+    }
+    if (data && data.hid) {
+      this.HID = +data.hid;
     }
     if (data && data.name) {
       this.Name = data.name;
@@ -261,10 +267,18 @@ export class DocumentType extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
+    this._hid = undefined;
+    this._id = undefined;
+    this._name = undefined;
+    this._comment = undefined;
   }
 
   public onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
+      return false;
+    }
+    if (this._name === undefined
+      || this._name.length <= 0) {
       return false;
     }
 
@@ -273,6 +287,10 @@ export class DocumentType extends hih.BaseModel {
 
   public writeJSONObject(): any {
     let rstObj: any = super.writeJSONObject();
+    rstObj.hid = this.HID;
+    rstObj.id = this.Id;
+    rstObj.name = this.Name;
+    rstObj.comment = this.Comment;
     return rstObj;
   }
 
@@ -306,6 +324,10 @@ export interface AssetCategoryJson extends hih.BaseModelJson {
 
 export class AssetCategory extends hih.BaseModel {
   private _id: number;
+  private _hid: number;
+  private _name: string;
+  private _desp: string;
+
   get ID(): number {
     return this._id;
   }
@@ -313,7 +335,6 @@ export class AssetCategory extends hih.BaseModel {
     this._id = id;
   }
 
-  private _hid: number;
   get HID(): number {
     return this._hid;
   }
@@ -321,7 +342,6 @@ export class AssetCategory extends hih.BaseModel {
     this._hid = hid;
   }
 
-  private _name: string;
   get Name(): string {
     return this._name;
   }
@@ -329,7 +349,6 @@ export class AssetCategory extends hih.BaseModel {
     this._name = nm;
   }
 
-  private _desp: string;
   get Desp(): string {
     return this._desp;
   }
@@ -343,10 +362,18 @@ export class AssetCategory extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
+    this._id = undefined;
+    this._hid = undefined;
+    this._name = undefined;
+    this._desp = undefined;
   }
 
   public onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
+      return false;
+    }
+    if (this._name === undefined
+      || this._name.length < 0) {
       return false;
     }
 
@@ -355,6 +382,10 @@ export class AssetCategory extends hih.BaseModel {
 
   public writeJSONObject(): any {
     let rstObj: any = super.writeJSONObject();
+    rstObj.id = this.ID;
+    rstObj.hid = this.HID;
+    rstObj.name = this._name;
+    rstObj.desp = this._desp;
     return rstObj;
   }
 
@@ -362,6 +393,9 @@ export class AssetCategory extends hih.BaseModel {
     super.onSetData(data);
     if (data && data.id) {
       this.ID = +data.id;
+    }
+    if (data && data.hid) {
+      this.HID = +data.hid;
     }
     if (data && data.name) {
       this._name = data.name;
@@ -479,6 +513,11 @@ export class Account extends hih.BaseModel {
 
   public onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
+      return false;
+    }
+
+    if (this._name === undefined
+      || this._name.length <= 0) {
       return false;
     }
 

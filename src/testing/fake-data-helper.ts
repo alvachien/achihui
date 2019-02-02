@@ -214,16 +214,14 @@ export class FakeDataHelper {
   public buildCurrencies(): void {
     this._currencies = [];
     let curr: Currency = new Currency();
-    curr.Name = 'CNY';
+    curr.Name = 'Chinese Yuan';
     curr.Symbol = '#';
-    curr.DisplayName = 'Chinese Yuan';
     curr.Currency = 'CNY';
     this._currencies.push(curr);
 
     curr = new Currency();
-    curr.Name = 'USD';
+    curr.Name = 'US Dollar';
     curr.Symbol = '$';
-    curr.DisplayName = 'US Dollar';
     curr.Currency = 'USD';
     this._currencies.push(curr);
   }

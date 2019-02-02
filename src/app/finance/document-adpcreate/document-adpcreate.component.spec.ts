@@ -486,7 +486,6 @@ describe('DocumentADPCreateComponent', () => {
       component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.firstStepCompleted).toBeFalsy();
 
       // Click the next button - no work!
@@ -522,7 +521,6 @@ describe('DocumentADPCreateComponent', () => {
       // Exchange rate - not need
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.firstStepCompleted).toBeFalsy();
 
       // Click the next button - no work!
@@ -624,7 +622,7 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
-    xit('step 1: shall go to step 2 for foreign currency case', fakeAsync(() => {
+    it('step 1: shall go to step 2 for foreign currency case', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 

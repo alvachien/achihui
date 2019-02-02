@@ -49,6 +49,13 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
 
   get firstStepCompleted(): boolean {
     if (this.firstFormGroup && this.firstFormGroup.valid) {
+      // Ensure the exchange rate
+      if (this.isForeignCurrency) {
+        if (!this.firstFormGroup.get('exgControl').value) {
+          return false;
+        }
+      }
+
       if (this.firstFormGroup.get('ccControl').value) {
         if (this.firstFormGroup.get('orderControl').value) {
           return false;

@@ -14,6 +14,13 @@ describe('Currency', () => {
     instance = new Currency();
   });
 
+  it('#0. onInit', () => {
+    instance.Name = 'test';
+    instance.Symbol = '$';
+    instance.onInit();
+    expect(instance.Name).toBeFalsy();
+    expect(instance.Symbol).toBeFalsy();
+  });
   it('#1. onVerify: name is must', () => {
     instance.Currency = 'USD';
     instance.Symbol = '$';
@@ -66,6 +73,14 @@ describe('AccountCategory', () => {
     instance = new AccountCategory();
   });
 
+  it('#0. onInit', () => {
+    instance.AssetFlag = true;
+    instance.Comment = 'test';
+    instance.onInit();
+    expect(instance.AssetFlag).toBeUndefined();
+    expect(instance.Comment).toBeUndefined();
+  });
+
   it('#1. onVerify: name is must', () => {
     instance.AssetFlag = true;
     instance.Comment = 'test';
@@ -105,6 +120,38 @@ describe('DocumentType', () => {
     instance = new DocumentType();
   });
 
+  it('#0. onInit', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
+    instance.onInit();
+    expect(instance.Name).toBeUndefined();
+    expect(instance.Comment).toBeUndefined();
+  });
+  it('#1. onVerify: name is must', () => {
+    instance.Comment = 'test';
+
+    expect(instance.onVerify()).toBeFalsy();
+  });
+  it('#2. onVerify: valid case', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
+
+    expect(instance.onVerify()).toBeTruthy();
+  });
+  it('#3. onSetData and writeJSONObject', () => {
+    instance.Name = 'test';
+    instance.Comment = 'test';
+
+    let jdata: DocumentTypeJson = instance.writeJSONObject();
+    expect(jdata).toBeTruthy();
+    expect(jdata.name).toEqual('test');
+    expect(jdata.comment).toEqual('test');
+
+    let instance2: DocumentType = new DocumentType();
+    instance2.onSetData(jdata);
+    expect(instance2.Name).toEqual(instance.Name);
+    expect(instance2.Comment).toEqual(instance.Comment);
+  });
 });
 
 describe('AssetCategory', () => {
@@ -114,6 +161,39 @@ describe('AssetCategory', () => {
     instance = new AssetCategory();
   });
 
+  it('#0. onInit', () => {
+    instance.Name = 'test';
+    instance.Desp = 'test';
+
+    instance.onInit();
+    expect(instance.Name).toBeUndefined();
+    expect(instance.Desp).toBeUndefined();
+  });
+  it('#1. onVerify: name is must', () => {
+    instance.Desp = 'test';
+
+    expect(instance.onVerify()).toBeFalsy();
+  });
+  it('#2. onVerify: valid case', () => {
+    instance.Name = 'test';
+    instance.Desp = 'test';
+
+    expect(instance.onVerify()).toBeTruthy();
+  });
+  it('#3. onSetData and writeJSONObject', () => {
+    instance.Name = 'test';
+    instance.Desp = 'test';
+
+    let jdata: AssetCategoryJson = instance.writeJSONObject();
+    expect(jdata).toBeTruthy();
+    expect(jdata.name).toEqual('test');
+    expect(jdata.desp).toEqual('test');
+
+    let instance2: AssetCategory = new AssetCategory();
+    instance2.onSetData(jdata);
+    expect(instance2.Name).toEqual(instance.Name);
+    expect(instance2.Desp).toEqual(instance.Desp);
+  });
 });
 
 describe('Account', () => {
@@ -123,6 +203,11 @@ describe('Account', () => {
     instance = new Account();
   });
 
+  it('#1. onVerify: name is must', () => {
+    instance.Comment = 'test';
+
+    expect(instance.onVerify()).toBeFalsy();
+  });
 });
 
 describe('AccountExtraAdvancePayment', () => {
@@ -209,7 +294,7 @@ describe('AccountExtraAdvancePayment', () => {
     instance2.onSetData(jdata);
     expect(instance2.Comment).toEqual(instance.Comment);
     expect(instance2.RepeatType).toEqual(instance.RepeatType);
-    expect(instance.StartDate.isSame(instance2.StartDate)).toBeTruthy();
-    expect(instance.EndDate.isSame(instance2.EndDate)).toBeTruthy();
+    expect(instance.StartDate.startOf('day').isSame(instance2.StartDate.startOf('day'))).toBeTruthy();
+    expect(instance.EndDate.startOf('day').isSame(instance2.EndDate.startOf('day'))).toBeTruthy();
   });
 });

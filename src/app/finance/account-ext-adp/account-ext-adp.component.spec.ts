@@ -104,6 +104,7 @@ describe('AccountExtADPComponent', () => {
           TranAmount: 10,
           Desp: `test-${i}`,
         };
+        arrst.push(rst);
       }
       calcADPTmpDocsSpy.and.returnValue(asyncData(arrst));
     });
@@ -174,6 +175,7 @@ describe('AccountExtADPComponent', () => {
       tick();
       expect(calcADPTmpDocsSpy).toHaveBeenCalled();
 
+      fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Service Error',
         'Expected snack bar to show the error message: Service Error');
