@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange, MatButton } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange, MatButton, MatVerticalStepper } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
@@ -34,6 +34,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   @ViewChild('btnCrtItem') btnCreateItem: MatButton;
+  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();

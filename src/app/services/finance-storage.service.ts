@@ -10,6 +10,7 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   ReportTrendExData, FinanceADPCalAPIInput, FinanceADPCalAPIOutput, FinanceAssetSoldoutDocumentAPI,
   FinanceAssetBuyinDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentCreatedFrequenciesByUser,
   Plan,
+  AccountExtraAdvancePayment, financeAccountCategoryAdvanceReceived, financeAccountCategoryAdvancePayment,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -1211,9 +1212,12 @@ export class FinanceStorageService {
 
   /**
    * Crate ADP document
-   * @param jdata JSON format
+   * @param docObj Instance of document
+   * @param acntExtraObject Instance of AccountExtraAdvancePayment
+   * @param isADP true for Advance payment, false for Advance received
+   * @returns An observerable of Document
    */
-  public createADPDocument(jdata: any): Observable<Document> {
+  public createADPDocument(docObj: Document, acntExtraObject: AccountExtraAdvancePayment, isADP: boolean): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1221,7 +1225,25 @@ export class FinanceStorageService {
 
     let apiurl: string = environment.ApiUrl + '/api/financeadpdocument';
 
-    return this._http.post(apiurl, jdata, {
+    let sobj: any = docObj.writeJSONObject(); // Document first
+    let acntobj: Account = new Account();
+    acntobj.HID = this._homeService.ChosedHome.ID;
+    if (isADP) {
+      acntobj.CategoryId = financeAccountCategoryAdvancePayment;
+    } else {
+      acntobj.CategoryId = financeAccountCategoryAdvanceReceived;
+    }
+    acntobj.Name = docObj.Desp;
+    acntobj.Comment = docObj.Desp;
+    acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
+    for (let tmpitem of acntExtraObject.dpTmpDocs) {
+      tmpitem.ControlCenterId = docObj.Items[0].ControlCenterId;
+      tmpitem.OrderId = docObj.Items[0].OrderId;
+    }
+    acntobj.ExtraInfo = acntExtraObject;
+    sobj.accountVM = acntobj.writeJSONObject();
+
+    return this._http.post(apiurl, sobj, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {

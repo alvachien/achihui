@@ -701,6 +701,11 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 
     this._startDate = moment();
     this._endDate = moment().add(1, 'y');
+    this._comment = undefined;
+    this.RepeatType = undefined;
+    this.dpTmpDocs = [];
+    this.DeferredDays = undefined;
+    this.Direct = undefined;
   }
 
   get isValid(): boolean {

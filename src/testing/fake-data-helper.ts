@@ -8,9 +8,11 @@ import {
   Tag, TagJson, TagTypeEnum, TagCount, AccountStatusEnum,
   financeAccountCategoryCash, financeAccountCategoryCreditCard, financeAccountCategoryDeposit,
   ControlCenter, ControlCenterJson, Order, OrderJson,
-  Document, DocumentItem,
+  Document, DocumentItem, AccountExtraAdvancePayment,
+  RepeatFrequencyEnum, TemplateDocADP, financeDocTypeAdvancePayment,
 } from '../app/model';
 import { User } from 'oidc-client';
+import * as moment from 'moment';
 
 export class FakeDataHelper {
   private _currencies: Currency[];
@@ -26,12 +28,14 @@ export class FakeDataHelper {
   private _finAssetCategoriesFromAPI: AssetCategoryJson[];
   private _finAccounts: Account[];
   private _finAccountsFromAPI: AccountJson[];
+  private _finAccountExtraAdvancePayment: AccountExtraAdvancePayment;
   private _finControlCenters: ControlCenter[];
   private _finControlCentersFromAPI: ControlCenterJson[];
   private _finOrders: Order[];
   private _finOrdersFromAPI: OrderJson[];
   private _finNormalDocumentForCreate: Document;
   private _finTransferDocumentForCreate: Document;
+  private _finADPDocumentForCreate: Document;
   private _currUser: UserAuthInfo;
   private _appLanguages: AppLanguage[];
   private _appLanguagesFromAPI: AppLanguageJson[];
@@ -122,6 +126,11 @@ export class FakeDataHelper {
       return this._finAccountsFromAPI;
     }
   }
+  get finAccountExtraAdvancePayment(): AccountExtraAdvancePayment {
+    if (this._finAccountExtraAdvancePayment) {
+      return this._finAccountExtraAdvancePayment;
+    }
+  }
   get finControlCenters(): ControlCenter[] {
     if (this._finControlCenters) {
       return this._finControlCenters;
@@ -150,6 +159,11 @@ export class FakeDataHelper {
   get finTransferDocumentForCreate(): Document {
     if (this._finTransferDocumentForCreate) {
       return this._finTransferDocumentForCreate;
+    }
+  }
+  get finADPDocumentForCreate(): Document {
+    if (this._finADPDocumentForCreate) {
+      return this._finADPDocumentForCreate;
     }
   }
   get currentUser(): UserAuthInfo {
@@ -1153,5 +1167,38 @@ export class FakeDataHelper {
   }
   public setFinTransferDocumentForCreate(doc: Document): void {
     this._finTransferDocumentForCreate = doc;
+  }
+  public buildFinADPDocumentForCreate(): void {
+    this._finADPDocumentForCreate = new Document();
+    this._finADPDocumentForCreate.Id = 100;
+    this._finADPDocumentForCreate.DocType = financeDocTypeAdvancePayment;
+    this._finADPDocumentForCreate.Desp = 'Test';
+    this._finADPDocumentForCreate.TranCurr = 'CNY';
+    this._finADPDocumentForCreate.TranDate = moment();
+    let ditem: DocumentItem = new DocumentItem();
+    ditem.ItemId = 1;
+    ditem.AccountId = 11;
+    ditem.ControlCenterId = 1;
+    ditem.TranType = 2;
+    ditem.Desp = 'test';
+    ditem.TranAmount = 20;
+    this._finADPDocumentForCreate.Items = [ditem];
+  }
+  public buildFinAccountExtraAdvancePayment(): void {
+    this._finAccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+    this._finAccountExtraAdvancePayment.Comment = 'Test';
+    this._finAccountExtraAdvancePayment.RepeatType = RepeatFrequencyEnum.Month;
+    for (let i: number = 0; i < 10; i++) {
+      let item: TemplateDocADP = new TemplateDocADP();
+      if (this._chosedHome) {
+        item.HID = this._chosedHome.ID;
+      }
+      item.DocId = i + 1;
+      item.TranType = 2;
+      item.TranDate = moment().add(i + 1, 'M');
+      item.TranAmount = 20;
+      item.Desp = `item ${i + 1}`;
+      this._finAccountExtraAdvancePayment.dpTmpDocs.push(item);
+    }
   }
 }

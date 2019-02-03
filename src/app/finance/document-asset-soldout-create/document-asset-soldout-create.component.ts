@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef,
+import { Component, OnInit, ViewChild,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -37,6 +36,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   separatorKeysCodes: any[] = [ENTER, COMMA];
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
   displayedColumns: string[] = ['ItemId', 'AccountId', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
+  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
 
   get BaseCurrency(): string {
     return this._homeService.ChosedHome.BaseCurrency;

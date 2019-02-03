@@ -18,19 +18,22 @@ import * as moment from 'moment';
 
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentADPCreateComponent } from './document-adpcreate.component';
-import { UserAuthInfo, Document  } from '../../model';
+import { UserAuthInfo, Document, RepeatFrequencyEnum, AccountExtraAdvancePayment  } from '../../model';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService,
   AuthService, } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 
-@Component({selector: 'hih-finance-account-ext-adp', template: ''})
+@Component({selector: 'hih-finance-account-ext-adp', template: '<div>test</div>'})
 class AccountExtADPComponent {
   @Input() uiMode: any;
-  @Input() extObject: any;
-  @Input() tranType: any;
-  @Input() tranAmount: any;
+  @Input() extObject: AccountExtraAdvancePayment;
+  @Input() tranType: number;
+  @Input() tranAmount: number;
   generateAccountInfoForSave(): void {
-    // Empty;
+    // Do nothing
+  }
+  onReset(): void {
+    // Do nothing
   }
 }
 
@@ -60,6 +63,7 @@ describe('DocumentADPCreateComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
+    fakeData.buildFinAccountExtraAdvancePayment();
 
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createadp', {})] as UrlSegment[]);
@@ -83,8 +87,6 @@ describe('DocumentADPCreateComponent', () => {
     fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
 
     TestBed.configureTestingModule({
       imports: [
@@ -117,7 +119,6 @@ describe('DocumentADPCreateComponent', () => {
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: Router, useValue: routerSpy },
-        { provide: AuthService, useValue: authServiceStub },
       ],
     });
 
@@ -136,6 +137,14 @@ describe('DocumentADPCreateComponent', () => {
   it('1. should create without data', () => {
     expect(component).toBeTruthy();
   });
+
+  it('1a. should create with adr', () => {
+    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createadr', {})] as UrlSegment[]);
+
+    expect(component).toBeTruthy();
+  });
+
+  // Handle url which neither adp nor adr case?
 
   describe('2. Exception case handling (async loading)', () => {
     let overlayContainer: OverlayContainer;
@@ -660,44 +669,450 @@ describe('DocumentADPCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toBe(1);
     }));
+
+    it('step 2: shall not go to step 3 if there are issue in extra page', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+  
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+  
+      // Step 1.
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // Order
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+  
+      // Step 2. 
+      expect(component._stepper.selectedIndex).toBe(1);
+      expect(component.extraStepCompleted).toBeFalsy();
+      // Ensure the date is invalid 
+      component.accountAdvPay.StartDate = moment().add(1, 'M');
+      component.accountAdvPay.EndDate = moment();
+      fixture.detectChanges();
+  
+      expect(component.extraStepCompleted).toBeFalsy();
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+  
+    it('step 2: shall not go to step 3 if there are no tmp docs', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+  
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+  
+      // Step 1.
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // Order
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+  
+      // Step 2. 
+      expect(component._stepper.selectedIndex).toBe(1);
+      expect(component.extraStepCompleted).toBeFalsy();
+      // By default, no tmp docs are generated
+      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      fixture.detectChanges();
+      expect(component.accountAdvPay.isValid).toBeTruthy();
+      expect(component.accountAdvPay.dpTmpDocs.length).toBe(0);
+  
+      expect(component.extraStepCompleted).toBeFalsy();
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));    
   });
 
-  it('step 2: shall not go to step 3 if there are issue in extra page', fakeAsync(() => {
-    expect(component.firstFormGroup).toBeFalsy();
-    fixture.detectChanges(); // ngOnInit
+  describe('4. Submit and its subsequence', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
 
-    tick(); // Complete the Observables in ngOnInit
-    fixture.detectChanges();
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
 
-    // Step 1.
-    expect(component._stepper.selectedIndex).toEqual(0); // At first page
-    // Tran date - default
-    // Account
-    component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-    // Tran type
-    component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-    // Desp
-    component.firstFormGroup.get('despControl').setValue('test');
-    // Amount
-    component.firstFormGroup.get('amountControl').setValue(200);
-    // Exchange rate - not need
-    // Order
-    component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
-    fixture.detectChanges();
-    // Click the next button
-    let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-    expect(component._stepper.selectedIndex).toBe(0);
-    nextButtonNativeEl.click();
-    fixture.detectChanges();
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
 
-    // Step 2.
-    expect(component._stepper.selectedIndex).toBe(1);
-    expect(component.extraStepCompleted).toBeFalsy();
+      createDocSpy.and.returnValue(asyncData(fakeData.finADPDocumentForCreate));
+    });
 
-    component.accountAdvPay.StartDate = moment().add(1, 'M');
-    component.accountAdvPay.EndDate = moment();
-    fixture.detectChanges();
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
 
-    expect(component.extraStepCompleted).toBeFalsy();
-  }));
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('1. shall popup a dailog for UI check failed', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+  
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+  
+      // Step 1.
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // Order
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+  
+      // Step 2. 
+      expect(component._stepper.selectedIndex).toBe(1);
+      expect(component.ctrlAccount).not.toBeUndefined();
+      expect(component.extraStepCompleted).toBeFalsy();
+      // By default, no tmp docs are generated
+      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      component.accountAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      fixture.detectChanges();
+      expect(component.accountAdvPay.isValid).toBeTruthy();
+      expect(component.accountAdvPay.dpTmpDocs.length).toBeGreaterThan(0);
+      expect(component.extraStepCompleted).toBeTruthy();
+      // Click next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Click the submit button
+      component.arAccounts = []; // Ensure doc check failed
+      component.onSubmit();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a pop-up dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      // And, there shall no changes in the selected tab
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      flush();
+    }));
+
+    it('2. shall show a snackbar for success case', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+  
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+  
+      // Step 1.
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // Order
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+  
+      // Step 2. 
+      // By default, no tmp docs are generated
+      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      component.accountAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      fixture.detectChanges();
+      // Click next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Click the submit button
+      component.onSubmit();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(createDocSpy).toHaveBeenCalled();
+
+      // Expect there is snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container');
+      expect(messageElement.textContent).not.toBeNull();
+
+      // Then, after the snackbar disappear, expect navigate!
+      tick(2000);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/' + fakeData.finADPDocumentForCreate.Id.toString()]);
+
+      flush();
+    }));
+
+    it('should handle create success case with recreate', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+  
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+  
+      // Step 1.
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // Order
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+  
+      // Step 2. 
+      // By default, no tmp docs are generated
+      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      component.accountAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      fixture.detectChanges();
+      // Click next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Click the submit button
+      component.onSubmit();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(createDocSpy).toHaveBeenCalled();
+
+      // Expect there is snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull();
+
+      // Then, click the re-create button
+      let actionButton: any = overlayContainerElement.querySelector('button.mat-button') as HTMLButtonElement;
+      actionButton.click();
+      tick(); // onAction has been executed
+      fixture.detectChanges();
+
+      expect(routerSpy.navigate).not.toHaveBeenCalled();
+      fixture.detectChanges();
+      // Check the reset
+      expect(component._stepper.selectedIndex).toBe(0);
+      expect(component.firstFormGroup.get('dateControl').value).not.toBeNull();
+      expect(component.firstFormGroup.get('despControl').value).toBeFalsy();
+      expect(component.firstFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
+
+      flush(); // Empty the call stack
+    }));
+
+    it('should handle create failed case with a popup dialog', fakeAsync(() => {
+      createDocSpy.and.returnValue(asyncError('Doc Created Failed!'));
+
+      fixture.detectChanges(); // ngOnInit
+  
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+  
+      // Step 1.
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // Order
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+  
+      // Step 2. 
+      // By default, no tmp docs are generated
+      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      component.accountAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      fixture.detectChanges();
+      // Click next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Click the submit button
+      component.onSubmit();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(createDocSpy).toHaveBeenCalled();
+
+      // Expect there is a pop-up dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      // And, there shall no changes in the selected tab - review step
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      flush();
+    }));
+  });
+
+  describe('10. Reset shall work', () => {
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    it('shall clear all items', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+  
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+  
+      // Step 1.
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      // Tran date - default
+      // Account
+      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
+      // Tran type
+      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(200);
+      // Exchange rate - not need
+      // Order
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+      // Click the next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      expect(component._stepper.selectedIndex).toBe(0);
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+  
+      // Step 2. 
+      // By default, no tmp docs are generated
+      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      component.accountAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      fixture.detectChanges();
+      // Click next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Now go to review step
+      component.onReset();
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toBe(0);
+      expect(component.firstFormGroup.get('dateControl').value).not.toBeNull();
+      expect(component.firstFormGroup.get('despControl').value).toBeFalsy();
+      expect(component.firstFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(component.accountAdvPay.isValid).toBeFalsy();
+      expect(component.accountAdvPay.dpTmpDocs.length).toEqual(0);
+
+      flush(); // clean
+    }));
+  });
 });

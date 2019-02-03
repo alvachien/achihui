@@ -44,7 +44,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   public arDocTypes: DocumentType[] = [];
   // Step: Generic info
   public firstFormGroup: FormGroup;
-  @ViewChild(AccountExtADPComponent) ctrlAccount: AccountExtADPComponent;
+  @ViewChild('accountExtraInfo') ctrlAccount: AccountExtADPComponent;
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
 
   get firstStepCompleted(): boolean {
@@ -110,14 +110,14 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       if (!this.accountAdvPay.isValid) {
         return false;
       }
-
+  
       this.ctrlAccount.generateAccountInfoForSave();
-      if (this.ctrlAccount.extObject.dpTmpDocs.length <= 0) {
+
+      if (this.accountAdvPay.dpTmpDocs.length <= 0) {
         return false;
       }
       return true;
     }
-
     return false;
   }
 
@@ -125,7 +125,6 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     private _uiStatusService: UIStatusService,
     private _activateRoute: ActivatedRoute,
     private _cdr: ChangeDetectorRef,
-    private _authService: AuthService,
     private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _homeService: HomeDefDetailService,
@@ -239,7 +238,16 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     if (this._stepper) {
       this._stepper.reset();
     }
+
+    // First step
     this.firstFormGroup.reset();
+    // Set default values
+    this.firstFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
+    this.firstFormGroup.get('dateControl').setValue(moment());
+
+    // Second step
+    this.accountAdvPay.onInit();
+    this.ctrlAccount.onReset();
   }
 
   onSubmit(): void {
@@ -255,7 +263,6 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     detailObject.AdvPayAccount = this.accountAdvPay;
 
     let docObj: Document = detailObject.generateDocument(this._isADP);
-    this.ctrlAccount.generateAccountInfoForSave();
 
     // Check!
     if (!docObj.onVerify({
@@ -285,26 +292,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
 
     docObj.HID = this._homeService.ChosedHome.ID;
 
-    // Build the JSON file to API
-    let sobj: any = docObj.writeJSONObject(); // Document first
-    let acntobj: Account = new Account();
-    acntobj.HID = this._homeService.ChosedHome.ID;
-    if (this._isADP) {
-      acntobj.CategoryId = financeAccountCategoryAdvancePayment;
-    } else {
-      acntobj.CategoryId = financeAccountCategoryAdvanceReceived;
-    }
-    acntobj.Name = docObj.Desp;
-    acntobj.Comment = docObj.Desp;
-    acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
-    for (let tmpitem of detailObject.AdvPayAccount.dpTmpDocs) {
-      tmpitem.ControlCenterId = detailObject.SourceControlCenterId;
-      tmpitem.OrderId = detailObject.SourceOrderId;
-    }
-    acntobj.ExtraInfo = detailObject.AdvPayAccount;
-    sobj.accountVM = acntobj.writeJSONObject();
-
-    this._storageService.createADPDocument(sobj).subscribe((x: any) => {
+    this._storageService.createADPDocument(docObj, detailObject.AdvPayAccount, this._isADP).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, createADPDocument`);
       }
@@ -312,7 +300,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       // Show the snackbar
       let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
         this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
+          duration: 2000,
         });
 
       let recreate: boolean = false;
@@ -323,11 +311,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       snackbarRef.afterDismissed().subscribe(() => {
         // Navigate to display
         if (!recreate) {
-          if (this._isADP) {
-            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-          } else {
-            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-          }
+          this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
         }
       });
     }, (error: any) => {

@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef, } from '@angular/core';
+import { Component, OnInit, ViewChild, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -55,6 +54,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
   dataSource: MatTableDataSource<DocItemWithBlance> = new MatTableDataSource<DocItemWithBlance>();
   displayedColumns: string[] = ['DocId', 'TranDate', 'Amount', 'Balance', 'NewBalance'];
   tranAmount: number;
+  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
 
   get TransactionAmount(): number {
     return this.tranAmount;

@@ -1,8 +1,6 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>
-      <h1>{{curTitle | translate}}</h1>
-    </mat-card-title>
+    <mat-card-title>{{curTitle | translate}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <mat-vertical-stepper linear #stepper>
@@ -95,7 +93,7 @@
       <!-- Step 2: Extra Info -->
       <mat-step [completed]="extraStepCompleted" errorMessage="Invalid extra">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
-        <hih-finance-account-ext-adp [uiMode]="curMode" 
+        <hih-finance-account-ext-adp #accountExtraInfo [uiMode]="curMode" 
           [extObject]="accountAdvPay" 
           [tranType]="TranType" 
           [tranAmount]="TranAmount">

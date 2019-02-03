@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator } from '@angular/material';
+
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, TranType,
-  AccountExtraAdvancePayment, RepeatFrequencyEnum, UIDisplayStringUtil, TemplateDocADP,
+import { LogLevel, UIMode,
+  AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
   FinanceADPCalAPIInput, FinanceADPCalAPIOutput,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
-import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-finance-account-ext-adp',
@@ -22,6 +22,7 @@ export class AccountExtADPComponent implements OnInit, OnDestroy {
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   dataSource: MatTableDataSource<TemplateDocADP> = new MatTableDataSource<TemplateDocADP>();
   displayedColumns: string[] = ['TranDate', 'TranAmount', 'Desp', 'RefDoc'];
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   @Input()
   set extObject(extdp: AccountExtraAdvancePayment) {
@@ -101,19 +102,22 @@ export class AccountExtADPComponent implements OnInit, OnDestroy {
     this._storageService.calcADPTmpDocs(datInput)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((rsts: FinanceADPCalAPIOutput[]) => {
-      let tmpDocs: TemplateDocADP[] = [];
-      for (let i: number = 0; i < rsts.length; i++) {
-        let item: TemplateDocADP = new TemplateDocADP();
-        item.HID = this._homedefService.ChosedHome.ID;
-        item.DocId = i + 1;
-        item.TranType = this.tranType;
-        item.TranDate = rsts[i].TranDate;
-        item.TranAmount = rsts[i].TranAmount;
-        item.Desp = rsts[i].Desp;
-        tmpDocs.push(item);
-      }
+      if (rsts && rsts instanceof Array && rsts.length > 0) {
+        let tmpDocs: TemplateDocADP[] = [];
+        for (let i: number = 0; i < rsts.length; i++) {
+          let item: TemplateDocADP = new TemplateDocADP();
+          item.HID = this._homedefService.ChosedHome.ID;
+          item.DocId = i + 1;
+          item.TranType = this.tranType;
+          item.TranDate = rsts[i].TranDate;
+          item.TranAmount = rsts[i].TranAmount;
+          item.Desp = rsts[i].Desp;
+          tmpDocs.push(item);
+        }
 
-      this.dataSource.data = tmpDocs;
+        this.dataSource = new MatTableDataSource(tmpDocs);
+        this.dataSource.paginator = this.paginator;
+      }
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering AccountExtADPComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${error}`);
@@ -126,10 +130,18 @@ export class AccountExtADPComponent implements OnInit, OnDestroy {
   }
 
   public displayTmpdocs(): void {
-    this.dataSource.data = this._insobj.dpTmpDocs;
+    if (this._insobj && this._insobj.dpTmpDocs && this._insobj.dpTmpDocs instanceof Array 
+      && this._insobj.dpTmpDocs.length > 0) {
+      this.dataSource = new MatTableDataSource(this._insobj.dpTmpDocs);
+      this.dataSource.paginator = this.paginator;
+    }
   }
   public generateAccountInfoForSave(): void {
     this._insobj.dpTmpDocs = [];
-    this._insobj.dpTmpDocs = this.dataSource.data;
+    this._insobj.dpTmpDocs = this.dataSource.data.slice();
+  }
+
+  public onReset(): void {
+    this.dataSource = new MatTableDataSource([]);
   }
 }

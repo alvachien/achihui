@@ -17,7 +17,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { AccountExtADPComponent } from './account-ext-adp.component';
 import { FinanceStorageService, HomeDefDetailService } from 'app/services';
-import { UIMode, RepeatFrequencyEnum, FinanceADPCalAPIOutput } from 'app/model';
+import { UIMode, RepeatFrequencyEnum, FinanceADPCalAPIOutput, AccountExtraAdvancePayment, TemplateDocADP } from 'app/model';
 
 describe('AccountExtADPComponent', () => {
   let component: AccountExtADPComponent;
@@ -32,6 +32,7 @@ describe('AccountExtADPComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
     fakeData.buildFinConfigData();
+    fakeData.buildFinAccountExtraAdvancePayment();
 
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['calcADPTmpDocs']);
@@ -92,10 +93,13 @@ describe('AccountExtADPComponent', () => {
   describe('2. create mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
+    let accountExtra: AccountExtraAdvancePayment;
 
     beforeEach(() => {
       // Before Each
       component.uiMode = UIMode.Create;
+      accountExtra = new AccountExtraAdvancePayment();
+      component.extObject = accountExtra;
 
       let arrst: FinanceADPCalAPIOutput[] = [];
       for (let i: number = 0; i < 10; i ++) {
@@ -180,6 +184,51 @@ describe('AccountExtADPComponent', () => {
       expect(messageElement.textContent).toContain('Service Error',
         'Expected snack bar to show the error message: Service Error');
       flush();
+    }));
+  });
+
+  describe('3. display mode', () => {
+    beforeEach(() => {
+      // Before Each
+      component.uiMode = UIMode.Display;
+      let fakedAccountExtra = new AccountExtraAdvancePayment();
+      fakedAccountExtra.Comment = 'Test';
+      fakedAccountExtra.RepeatType = RepeatFrequencyEnum.Month;
+      for (let i: number = 0; i < 10; i++) {
+        let item: TemplateDocADP = new TemplateDocADP();
+        item.HID = fakeData.chosedHome.ID;
+        item.DocId = i + 1;
+        item.TranType = 2;
+        item.TranDate = moment().add(i + 1, 'M');
+        item.TranAmount = 20;
+        item.Desp = `item ${i + 1}`;
+        fakedAccountExtra.dpTmpDocs.push(item);
+      }
+
+      component.extObject = fakedAccountExtra;
+    });
+
+    it('1. shall display tmp. docs', fakeAsync(() => {
+      // Shall display the tmp. docs by default
+      fixture.detectChanges(); // ngOnInit
+
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
+    }));
+  });
+
+  describe('4. change mode', () => {
+    beforeEach(() => {
+      // Before Each
+      component.uiMode = UIMode.Change;
+
+      component.extObject = fakeData.finAccountExtraAdvancePayment;
+    });
+
+    it('1. shall display tmp. docs', fakeAsync(() => {
+      // Shall display the tmp. docs by default
+      fixture.detectChanges(); // ngOnInit
+
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
     }));
   });
 
