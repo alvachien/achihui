@@ -90,6 +90,22 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   }
   get firstStepCompleted(): boolean {
     if (this.firstFormGroup && this.firstFormGroup.valid) {
+      // Ensure amount
+      if (this.BuyinAmount <= 0) {
+        return false;
+      }
+
+      // Legacy asset: Buyin date
+      if (this.IsLegacyAsset) {
+        let datBuy: any = this.firstFormGroup.get('dateControl').value;
+        if (!datBuy) {
+          return false;
+        }
+        if (datBuy.startOf('day').isSameOrAfter(moment().startOf('day'))) {
+          return false;
+        }
+      }
+
       // Ensure the exchange rate
       if (this.isForeignCurrency) {
         if (!this.firstFormGroup.get('exgControl').value) {
@@ -114,6 +130,12 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     return false;
   }
   get itemStepCompleted(): boolean {
+    if (this.IsLegacyAsset) {
+      if (this.dataSource.data.length > 0) {
+        return false;
+      }
+      return true;
+    }
     // Check 1: Have items
     if (this.dataSource.data.length <= 0) {
       return false;
@@ -180,7 +202,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
 
     this.firstFormGroup = this._formBuilder.group({
       dateControl: [{value: moment(), disabled: false}, Validators.required],
-      amountControl: [{value: 0}, Validators.required],
+      amountControl: [0, Validators.required],
       currControl: ['', Validators.required],
       exgControl: [''],
       exgpControl: [''],
@@ -272,25 +294,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    // Perform the check.
-    let msgs: InfoMessage[] = [];
-    if (!this._doCheck(msgs)) {
-      // Show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: msgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
-
-      return;
-    }
-
     // Generate the doc, and verify it
     let docobj: Document = this._generateDoc();
     if (!this.IsLegacyAsset) {
@@ -348,7 +351,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
 
       // Show success
       this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-        'OK', {
+        undefined, {
           duration: 2000,
         }).afterDismissed().subscribe(() => {
           this._router.navigate(['/finance/document/display/' + nid.toString()]);
@@ -409,81 +412,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     }
   }
 
-  private _doCheck(msgs: InfoMessage[]): boolean {
-    let chkrst: boolean = true;
-    const islegacy: boolean = this.IsLegacyAsset;
-
-    if (islegacy) {
-      let tday: moment.Moment = moment();
-      let tdaystring: string = tday.format(momentDateFormat);
-      let tday2: moment.Moment = moment(tdaystring, momentDateFormat);
-      let bdate: moment.Moment = moment(this.BuyinDate, momentDateFormat);
-
-      if (tday2.isSameOrBefore(bdate)) {
-        let msg: InfoMessage = new InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = MessageType.Error;
-        msg.MsgTitle = 'Common.InvalidDate';
-        msg.MsgContent = 'Finance.InvalidDateInLegacyAsset';
-        msgs.push(msg);
-        chkrst = false;
-      }
-
-      // Doc. item created
-      if (this.dataSource.data.length > 0) {
-        let msg: InfoMessage = new InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = MessageType.Error;
-        msg.MsgTitle = 'Finance.HasDocumentItem';
-        msg.MsgContent = 'Finance.HasDocumentItem';
-        msgs.push(msg);
-        chkrst = false;
-      }
-    } else {
-      if (this.dataSource.data.length <= 0) {
-        let msg: InfoMessage = new InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = MessageType.Error;
-        msg.MsgTitle = 'Finance.NoDocumentItem';
-        msg.MsgContent = 'Finance.NoDocumentItem';
-        msgs.push(msg);
-        chkrst = false;
-      }
-    }
-
-    let ccid: any = this.firstFormGroup.get('ccControl').value;
-    let ordid: any = this.firstFormGroup.get('orderControl').value;
-    if ((!ccid && !ordid) || (ccid && ordid)) {
-      let msg: InfoMessage = new InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = MessageType.Error;
-      msg.MsgTitle = 'Finance.EitherControlCenterOrOrder';
-      msg.MsgContent = 'Finance.EitherControlCenterOrOrder';
-      msgs.push(msg);
-      chkrst = false;
-    }
-
-    // Initialize the object
-    if (islegacy) {
-      // Do nothing here
-    } else {
-      let totalAmt: number = 0;
-      this.dataSource.data.forEach((val: DocumentItem) => {
-        totalAmt += val.TranAmount;
-      });
-      if (totalAmt !== this.BuyinAmount) {
-        let msg: InfoMessage = new InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = MessageType.Error;
-        msg.MsgTitle = 'Finance.AmountIsNotCorrect';
-        msg.MsgContent = 'Finance.AmountIsNotCorrect';
-        msgs.push(msg);
-        chkrst = false;
-      }
-    }
-
-    return chkrst;
-  }
   private _generateDoc(): Document {
     let ndoc: Document = new Document();
     ndoc.DocType = financeDocTypeAssetBuyIn;

@@ -822,6 +822,11 @@ export class AccountExtraAsset extends AccountExtra {
 
   public onInit(): void {
     super.onInit();
+    this._name = undefined;
+    this._comment = undefined;
+    this.CategoryID = undefined;
+    this.RefDocForBuy = undefined;
+    this.RefDocForSold = undefined;
   }
 
   public clone(): AccountExtraAsset {
@@ -957,16 +962,15 @@ export class AccountExtraLoan extends AccountExtra {
   constructor() {
     super();
 
-    this._startDate = moment();
-    // this._endDate = moment();
-    this._firstRepayDate = undefined;
-    this._repayDayInMonth = undefined;
+    this.onInit();
   }
 
   public onInit(): void {
     super.onInit();
 
     this._startDate = moment();
+    this._firstRepayDate = undefined;
+    this._repayDayInMonth = undefined;
   }
 
   public clone(): AccountExtraLoan {
@@ -1447,7 +1451,7 @@ export class SettlementRule {
     }
 
     // Control center
-    if (context !== undefined || context !== undefined || context.ControlCenters.length > 0) {
+    if (context !== undefined && context.ControlCenters && context.ControlCenters.length > 0) {
       if (context.ControlCenters.findIndex((value: any) => {
         return value.Id === this.ControlCenterId;
       }) !== -1) {

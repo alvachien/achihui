@@ -63,7 +63,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       'fetchAllAccounts',
       'fetchAllControlCenters',
       'fetchAllOrders',
-      'createADPDocument',
+      'createAssetSoldoutDocument',
     ]);
     fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAssetCategoriesSpy = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
@@ -72,7 +72,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
     fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
     fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
-    createDocSpy = stroageService.createADPDocument.and.returnValue(of({}));
+    createDocSpy = stroageService.createAssetSoldoutDocument.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
@@ -249,6 +249,19 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
         'Expected snack bar to show the error message: Order service failed');
       flush();
     }));
+
+    it('8. should display error when asset category service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAssetCategoriesSpy.and.returnValue(asyncError<string>('Asset category service failed'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Asset category service failed',
+        'Expected snack bar to show the error message: Asset category service failed');
+      flush();
+    }));
   });
 
   describe('3. should prevent errors by the checking logic', () => {
@@ -286,11 +299,8 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.BaseCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(component.TranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Also, the date shall be inputted
-      // expect(component.TranDate).toBeTruthy();
     }));
 
     it('step 1: should have accounts and orders loaded', fakeAsync(() => {

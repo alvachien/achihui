@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild,
-} from '@angular/core';
+import { Component, OnInit, ViewChild, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
@@ -37,6 +36,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   separatorKeysCodes: any[] = [ENTER, COMMA];
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
   displayedColumns: string[] = ['ItemId', 'AccountId', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
+  // Stepper
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   arMembersInChosedHome: HomeMember[];
   arControlCenters: ControlCenter[];
@@ -46,8 +46,18 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   arDocTypes: DocumentType[];
   arCurrencies: Currency[];
 
-  get BaseCurrency(): string {
-    return this._homeService.ChosedHome.BaseCurrency;
+  get TranCurrency(): string {
+    let currctrl: any = this.firstFormGroup.get('currControl');
+    if (currctrl) {
+      return currctrl.value;
+    }
+  }
+  get isForeignCurrency(): boolean {
+    if (this.TranCurrency && this.TranCurrency !== this._homeService.ChosedHome.BaseCurrency) {
+      return true;
+    }
+
+    return false;
   }
   get SoldoutAssetAccountID(): number {
     let acccontrol: any = this.firstFormGroup.get('accountControl');
@@ -69,6 +79,75 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
 
     return '';
   }
+  get firstStepCompleted(): boolean {
+    if (this.firstFormGroup && this.firstFormGroup.valid) {
+      // Ensure the exchange rate
+      if (this.isForeignCurrency) {
+        if (!this.firstFormGroup.get('exgControl').value) {
+          return false;
+        }
+      }
+
+      if (this.firstFormGroup.get('ccControl').value) {
+        if (this.firstFormGroup.get('orderControl').value) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        if (this.firstFormGroup.get('orderControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+  get itemStepCompleted(): boolean {
+    // Check 1: Have items
+    if (this.dataSource.data.length <= 0) {
+      return false;
+    }
+    // Check 2: Each item has account
+    let erridx: number = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.AccountId === undefined;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 3. Each item has tran type
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.TranType === undefined;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 4. Amount
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.TranAmount === undefined;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 5. Each item has control center or order
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return (val.ControlCenterId !== undefined && val.OrderId !== undefined)
+      || (val.ControlCenterId === undefined && val.OrderId === undefined);
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 6. Each item has description
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.Desp === undefined || val.Desp.length === 0;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+
+    return true;
+  }
 
   constructor(public _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
@@ -88,6 +167,18 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit`);
     }
+
+    this.firstFormGroup = this._formBuilder.group({
+      accountControl: ['', Validators.required],
+      dateControl: new FormControl({value: moment()}, Validators.required),
+      amountControl: ['', Validators.required],
+      currControl: ['', Validators.required],
+      exgControl: [''],
+      exgpControl: [''],
+      despControl: ['', Validators.required],
+      ccControl: [''],
+      orderControl: [''],
+    });
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -124,22 +215,13 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
+
+      this.firstFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
     }, (error: any) => {
       this._snackbar.open(error.toString(), undefined, {
         duration: 2000,
       });
     });
-
-    this.firstFormGroup = this._formBuilder.group({
-      accountControl: ['', Validators.required],
-      dateControl: new FormControl({value: moment()}, Validators.required),
-      amountControl: ['', Validators.required],
-      despControl: ['', Validators.required],
-      ccControl: [''],
-      orderControl: [''],
-    });
-
-    this.dataSource.data = [];
   }
 
   public onCreateDocItem(): void {
@@ -199,7 +281,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       TransactionTypes: this.arTranTypes,
       Currencies: this.arCurrencies,
       BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
-  })) {
+    })) {
       // Show a dialog for error details
       const dlginfo: MessageDialogInfo = {
         Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
@@ -220,7 +302,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     this.detailObject = new FinanceAssetSoldoutDocumentAPI();
     this.detailObject.HID = this._homeService.ChosedHome.ID;
     this.detailObject.tranDate = docobj.TranDate.format(momentDateFormat);
-    this.detailObject.tranCurr = this.BaseCurrency;
+    this.detailObject.tranCurr = this.TranCurrency;
     this.detailObject.tranAmount = this.SoldoutAmount;
     this.detailObject.desp = docobj.Desp;
     this.detailObject.assetAccountID = this.SoldoutAssetAccountID;

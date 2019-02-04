@@ -57,7 +57,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       'fetchAllAccounts',
       'fetchAllControlCenters',
       'fetchAllOrders',
-      'createADPDocument',
+      'createAssetValChgDocument',
     ]);
     fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAssetCategoriesSpy = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
@@ -66,7 +66,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
     fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
     fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
-    createDocSpy = stroageService.createADPDocument.and.returnValue(of({}));
+    createDocSpy = stroageService.createAssetValChgDocument.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};

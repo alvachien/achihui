@@ -10,6 +10,8 @@ import {
   ControlCenter, ControlCenterJson, Order, OrderJson,
   Document, DocumentItem, AccountExtraAdvancePayment,
   RepeatFrequencyEnum, TemplateDocADP, financeDocTypeAdvancePayment,
+  FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
+  momentDateFormat,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -1200,5 +1202,34 @@ export class FakeDataHelper {
       item.Desp = `item ${i + 1}`;
       this._finAccountExtraAdvancePayment.dpTmpDocs.push(item);
     }
+  }
+  public buildFinAssetBuyInDocumentForCreate(): FinanceAssetBuyinDocumentAPI {
+    let apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
+    apidetail.HID = this._chosedHome.ID;
+    apidetail.tranDate = moment().format(momentDateFormat);
+    apidetail.tranCurr = this._chosedHome.BaseCurrency;
+    apidetail.tranAmount = 100;
+    apidetail.desp = 'test';
+    apidetail.controlCenterID = 11;
+    apidetail.isLegacy = false;
+    apidetail.accountOwner = this._chosedHome.Members[0].User;
+    apidetail.accountAsset = new AccountExtraAsset();
+    apidetail.accountAsset.CategoryID = 2;
+    apidetail.accountAsset.Name = 'test';
+    apidetail.accountAsset.Comment = 'test';
+
+    return apidetail;
+  }
+  public buildFinAssetSoldoutDocumentForCreate(): FinanceAssetSoldoutDocumentAPI {
+    let detail: FinanceAssetSoldoutDocumentAPI = new FinanceAssetSoldoutDocumentAPI();
+    detail.HID = this._chosedHome.ID;
+    detail.tranDate = moment().format(momentDateFormat);
+    detail.tranCurr = this._chosedHome.BaseCurrency;
+    detail.tranAmount = 20;
+    detail.desp = 'test';
+    detail.assetAccountID = 11;
+    detail.controlCenterID = 11;
+
+    return detail;
   }
 }

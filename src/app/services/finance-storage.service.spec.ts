@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import { UserAuthInfo, FinanceADPCalAPIInput, FinanceLoanCalAPIInput, RepeatFrequencyEnum,
   FinanceADPCalAPIOutput, FinanceLoanCalAPIOutput, momentDateFormat, Document, DocumentItem,
-  financeDocTypeNormal,
+  financeDocTypeNormal, FinanceAssetBuyinDocumentAPI,
   financeDocTypeAdvancePayment, } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
@@ -1196,6 +1196,111 @@ describe('FinanceStorageService', () => {
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: 'Error occurred' });
+    });
+  });
+
+  describe('createAssetBuyinDocument', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetBuyDocument';
+    
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+
+      fakeData.buildFinAssetBuyInDocumentForCreate();
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for normal doc', () => {
+      service.createAssetBuyinDocument(fakeData.buildFinAssetBuyInDocumentForCreate()).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+       });
+
+      // Respond with the mock data
+      req.flush(100);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createAssetBuyinDocument(fakeData.buildFinAssetBuyInDocumentForCreate()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createAssetSoldoutDocument', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceAssetSoldDocument';
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+
+      fakeData.buildFinAssetSoldoutDocumentForCreate();
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for normal doc', () => {
+      service.createAssetSoldoutDocument(fakeData.buildFinAssetSoldoutDocumentForCreate()).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+       });
+
+      // Respond with the mock data
+      req.flush(100);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createAssetSoldoutDocument(fakeData.buildFinAssetSoldoutDocumentForCreate()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
 });

@@ -416,7 +416,7 @@ export class LearnHistory extends hih.BaseModel {
     }
 
     let chkrst: boolean = true;
-    if (context.arObjects && context.arObjects.length > 0) {
+    if (context && context.arObjects && context.arObjects.length > 0) {
       let bObj: boolean = false;
       for (let obj of context.arObjects) {
         if (+obj.Id === +this.ObjectId) {
@@ -443,7 +443,7 @@ export class LearnHistory extends hih.BaseModel {
       chkrst = false;
     }
 
-    if (context.arUsers && context.arUsers.length > 0) {
+    if (context && context.arUsers && context.arUsers.length > 0) {
       let bFound: boolean = false;
       for (let usr of context.arUsers) {
         if (usr.UserId === this.UserId) {

@@ -4,10 +4,11 @@
   </mat-card-header>
   <mat-card-content>
     <mat-vertical-stepper linear #stepper>
-      <mat-step [stepControl]="firstFormGroup">
+      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
+          <!-- Account -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Account' | translate}}" name="asstacnt" formControlName="accountControl"
               required>
@@ -19,21 +20,44 @@
             </mat-select>
           </mat-form-field>
 
+          <!-- Tran. date -->
           <mat-form-field>
             <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
             <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
             <mat-datepicker #dtpker></mat-datepicker>
           </mat-form-field>
 
+          <!-- Amount -->
           <mat-form-field>
             <input matInput type="number" placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
-            <span matSuffix>{{BaseCurrency}}</span>
           </mat-form-field>
 
+          <!-- Currency -->
+          <mat-form-field>
+            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
+              <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
+                {{cr.Symbol}} - {{cr.Name | translate}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Exchange rate -->
+          <mat-form-field *ngIf="isForeignCurrency">
+            <input matInput type="text" placeholder="{{'Finance.ExchangeRate' | translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
+              formControlName="exgControl" id="exgrate">
+          </mat-form-field>
+
+          <!-- Planned Exchange rate -->
+          <div *ngIf="isForeignCurrency" class="achih-control-full-width">
+            <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
+          </div>
+
+          <!-- Description -->
           <mat-form-field>
             <input matInput type="text" placeholder="{{'Common.Description' | translate}}" formControlName="despControl">
           </mat-form-field>
 
+          <!-- Control center -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="itcc">
               <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
@@ -43,6 +67,7 @@
             </mat-select>
           </mat-form-field>
 
+          <!-- Order -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl" name="srcord">
               <mat-option *ngFor="let ord of arUIOrder" [value]="ord.Id">
@@ -57,7 +82,7 @@
         </form>
       </mat-step>
 
-      <mat-step >
+      <mat-step [completed]="itemStepCompleted" errorMessage="Invalid item">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
 
         <mat-toolbar>

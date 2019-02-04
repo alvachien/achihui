@@ -90,6 +90,12 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
 
     return '';
   }
+  get firstStepCompleted(): boolean {
+    if (this.firstFormGroup && this.firstFormGroup.valid) {
+      return true;
+    }
+    return false;
+  }
 
   constructor(public _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,

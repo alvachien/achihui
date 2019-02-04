@@ -34,4 +34,23 @@ describe('Unit test for ModelUtility in Model', () => {
     let strResult2: string = ModelUtility.getYearMonthDisplayString(2018, 11);
     expect(strResult2).toBe('2018-11');
   });
+
+  it('#4. Utility.DaysBetween', () => {
+    let bgndate: Date = new Date(2019, 2, 4);
+    let enddate: Date = new Date(2019, 2, 5);
+    let ndays = ModelUtility.DaysBetween(bgndate, enddate);
+    expect(ndays).toBeTruthy();
+  });
+
+  it('#5. CheckMail', () => {
+    let str: string = 'aaa@cccc.com';
+    let nrst: boolean = ModelUtility.CheckMail(str);
+    expect(nrst).toBeTruthy();
+  });
+
+  it('#6. GetPasswordStrengthLevel', () => {
+    let str: string = 'ABCdab_123';
+    let nrst: number = ModelUtility.GetPasswordStrengthLevel(str);
+    expect(nrst).toBeTruthy();
+  });
 });
