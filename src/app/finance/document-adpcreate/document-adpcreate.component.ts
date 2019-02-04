@@ -306,6 +306,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       let recreate: boolean = false;
       snackbarRef.onAction().subscribe(() => {
         recreate = true;
+        this.onReset();
       });
 
       snackbarRef.afterDismissed().subscribe(() => {

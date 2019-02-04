@@ -54,7 +54,7 @@ describe('LearnStorageService', () => {
   });
 
   /// LearnStorageService method tests begin ///
-  describe('2. fetchAllCategories', () => {
+  describe('fetchAllCategories', () => {
     beforeEach(() => {
       service = TestBed.get(LearnStorageService);
     });

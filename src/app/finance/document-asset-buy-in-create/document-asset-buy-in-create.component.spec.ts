@@ -249,6 +249,19 @@ describe('DocumentAssetBuyInCreateComponent', () => {
         'Expected snack bar to show the error message: Order service failed');
       flush();
     }));
+
+    it('8. should display error when asset category service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAssetCategoriesSpy.and.returnValue(asyncError<string>('Asset category service failed'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Asset category service failed',
+        'Expected snack bar to show the error message: Asset category service failed');
+      flush();
+    }));
   });
 
   describe('3. should prevent errors by the checking logic', () => {
@@ -257,6 +270,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
 
     beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAssetCategoriesSpy.and.returnValue(asyncData(fakeData.finAssetCategories));
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
@@ -286,11 +300,11 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.BaseCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(component.TranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
       // Also, the date shall be inputted
-      // expect(component.TranDate).toBeTruthy();
+      expect(component.BuyinDate).toBeTruthy();
     }));
 
     it('step 1: should have accounts and orders loaded', fakeAsync(() => {

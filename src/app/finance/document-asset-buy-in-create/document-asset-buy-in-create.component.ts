@@ -10,6 +10,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, fin
   AccountExtraAsset, UICommonLabelEnum, ModelUtility,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilter, momentDateFormat, InfoMessage, MessageType, financeDocTypeAssetBuyIn, FinanceAssetBuyinDocumentAPI,
+  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -39,10 +40,15 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
   separatorKeysCodes: any[] = [ENTER, COMMA];
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
   displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
+  // Buffered variables
+  arMembersInChosedHome: HomeMember[];
+  arControlCenters: ControlCenter[];
+  arOrders: Order[];
+  arTranTypes: TranType[];
+  arAccounts: Account[];
+  arDocTypes: DocumentType[];
+  arCurrencies: Currency[];
 
-  get BaseCurrency(): string {
-    return this._homedefService.ChosedHome.BaseCurrency;
-  }
   get BuyinAmount(): number {
     let amtctrl: any = this.firstFormGroup.get('amountControl');
     if (amtctrl) {
@@ -69,6 +75,88 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
       return legctrl.value;
     }
   }
+  get TranCurrency(): string {
+    let currctrl: any = this.firstFormGroup.get('currControl');
+    if (currctrl) {
+      return currctrl.value;
+    }
+  }
+  get isForeignCurrency(): boolean {
+    if (this.TranCurrency && this.TranCurrency !== this._homedefService.ChosedHome.BaseCurrency) {
+      return true;
+    }
+
+    return false;
+  }
+  get firstStepCompleted(): boolean {
+    if (this.firstFormGroup && this.firstFormGroup.valid) {
+      // Ensure the exchange rate
+      if (this.isForeignCurrency) {
+        if (!this.firstFormGroup.get('exgControl').value) {
+          return false;
+        }
+      }
+
+      if (this.firstFormGroup.get('ccControl').value) {
+        if (this.firstFormGroup.get('orderControl').value) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        if (this.firstFormGroup.get('orderControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+  get itemStepCompleted(): boolean {
+    // Check 1: Have items
+    if (this.dataSource.data.length <= 0) {
+      return false;
+    }
+    // Check 2: Each item has account
+    let erridx: number = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.AccountId === undefined;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 3. Each item has tran type
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.TranType === undefined;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 4. Amount
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.TranAmount === undefined;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 5. Each item has control center or order
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return (val.ControlCenterId !== undefined && val.OrderId !== undefined)
+      || (val.ControlCenterId === undefined && val.OrderId === undefined);
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+    // Check 6. Each item has description
+    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
+      return val.Desp === undefined || val.Desp.length === 0;
+    });
+    if (erridx !== -1) {
+      return false;
+    }
+
+    return true;
+  }
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -82,12 +170,29 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent constructor...');
     }
     this.assetAccount = new AccountExtraAsset();
+    this.arMembersInChosedHome = this._homedefService.ChosedHome.Members.slice();
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit...');
     }
+
+    this.firstFormGroup = this._formBuilder.group({
+      dateControl: [{value: moment(), disabled: false}, Validators.required],
+      amountControl: [{value: 0}, Validators.required],
+      currControl: ['', Validators.required],
+      exgControl: [''],
+      exgpControl: [''],
+      despControl: ['', Validators.required],
+      assetGroup: this._formBuilder.group(getAccountExtAssetFormGroup()),
+      ownerControl: ['', Validators.required],
+      legacyControl: '',
+      ccControl: '',
+      orderControl: '',
+    });
+
+    this.dataSource.data = [];
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -103,43 +208,30 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
+      this.arDocTypes = rst[2];
+      this.arTranTypes = rst[3];
+      this.arAccounts = rst[4];
+      this.arControlCenters = rst[5];
+      this.arOrders = rst[6];
+      this.arCurrencies = rst[7];
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilter = undefined;
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
+
+      this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering DocumentAssetBuyInCreateComponent's ngOninit, failed to load depended objects : ${error}`);
       }
 
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
       });
     });
-
-    this.firstFormGroup = this._formBuilder.group({
-      dateControl: [{value: moment(), disabled: false}, Validators.required],
-      amountControl: [{value: 0}, Validators.required],
-      despControl: ['', Validators.required],
-      assetGroup: this._formBuilder.group(getAccountExtAssetFormGroup()),
-      ownerControl: ['', Validators.required],
-      legacyControl: '',
-      ccControl: '',
-      orderControl: '',
-    });
-
-    this.dataSource.data = [];
   }
 
   public onCreateDocItem(): void {
@@ -203,12 +295,12 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     let docobj: Document = this._generateDoc();
     if (!this.IsLegacyAsset) {
       if (!docobj.onVerify({
-        ControlCenters: this._storageService.ControlCenters,
-        Orders: this._storageService.Orders,
-        Accounts: this._storageService.Accounts,
-        DocumentTypes: this._storageService.DocumentTypes,
-        TransactionTypes: this._storageService.TranTypes,
-        Currencies: this._currService.Currencies,
+        ControlCenters: this.arControlCenters,
+        Orders: this.arOrders,
+        Accounts: this.arAccounts,
+        DocumentTypes: this.arDocTypes,
+        TransactionTypes: this.arTranTypes,
+        Currencies: this.arCurrencies,
         BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
       })) {
         // Show a dialog for error details
@@ -232,7 +324,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
     let apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
     apidetail.HID = this._homedefService.ChosedHome.ID;
     apidetail.tranDate = this.BuyinDate;
-    apidetail.tranCurr = this.BaseCurrency;
+    apidetail.tranCurr = this.TranCurrency;
     apidetail.tranAmount = this.BuyinAmount;
     apidetail.desp = docobj.Desp;
     apidetail.controlCenterID = this.firstFormGroup.get('ccControl').value;

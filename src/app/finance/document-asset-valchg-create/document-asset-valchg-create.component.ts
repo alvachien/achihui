@@ -13,6 +13,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, fin
   IAccountCategoryFilterEx, momentDateFormat, DocumentItemWithBalance,
   InfoMessage, MessageType, financeDocTypeAssetValChg, financeTranTypeAssetValueIncrease,
   financeTranTypeAssetValueDecrease, FinanceAssetValChgDocumentAPI,
+  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -55,6 +56,13 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
   displayedColumns: string[] = ['DocId', 'TranDate', 'Amount', 'Balance', 'NewBalance'];
   tranAmount: number;
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
+  arMembersInChosedHome: HomeMember[];
+  arControlCenters: ControlCenter[];
+  arOrders: Order[];
+  arTranTypes: TranType[];
+  arAccounts: Account[];
+  arDocTypes: DocumentType[];
+  arCurrencies: Currency[];
 
   get TransactionAmount(): number {
     return this.tranAmount;
@@ -95,10 +103,23 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent constructor`);
     }
 
-    this.dataSource.data = [];
+    this.arMembersInChosedHome = this._homeService.ChosedHome.Members.slice();
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit`);
+    }
+
+    this.firstFormGroup = this._formBuilder.group({
+      accountControl: ['', Validators.required],
+      dateControl: new FormControl({ value: moment() }, Validators.required),
+      amountControl: ['', Validators.required],
+      despControl: ['', Validators.required],
+      ccControl: [''],
+      orderControl: [''],
+    });
+
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAssetCategories(),
@@ -112,6 +133,13 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit, forkJoin, result length: ${rst.length}`);
       }
+
+      this.arDocTypes = rst[2];
+      this.arTranTypes = rst[3];
+      this.arAccounts = rst[4];
+      this.arControlCenters = rst[5];
+      this.arOrders = rst[6];
+      this.arCurrencies = rst[7];
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
@@ -127,15 +155,10 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
-    });
-
-    this.firstFormGroup = this._formBuilder.group({
-      accountControl: ['', Validators.required],
-      dateControl: new FormControl({ value: moment() }, Validators.required),
-      amountControl: ['', Validators.required],
-      despControl: ['', Validators.required],
-      ccControl: [''],
-      orderControl: [''],
+    }, (error: any) => {
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
 
@@ -162,14 +185,14 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     // Generate the doc, and verify it
     let docobj: Document = this._generateDoc();
     if (!docobj.onVerify({
-      ControlCenters: this._storageService.ControlCenters,
-      Orders: this._storageService.Orders,
-      Accounts: this._storageService.Accounts,
-      DocumentTypes: this._storageService.DocumentTypes,
-      TransactionTypes: this._storageService.TranTypes,
-      Currencies: this._currService.Currencies,
+      ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranTypes,
+      Currencies: this.arCurrencies,
       BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
-    })) {
+  })) {
       // Show a dialog for error details
       const dlginfo: MessageDialogInfo = {
         Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),

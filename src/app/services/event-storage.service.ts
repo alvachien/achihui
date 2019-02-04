@@ -19,6 +19,7 @@ export class EventStorageService {
    * Get All events
    * @param top Amount of records to fetch
    * @param skip Skip the records
+   * @returns Observable of Event
    */
   public fetchAllEvents(top: number, skip: number, skipfinished?: boolean,
     dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {

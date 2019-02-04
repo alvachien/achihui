@@ -7,17 +7,22 @@ import { EventStorageService } from './event-storage.service';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import { UserAuthInfo } from '../model';
+import { FakeDataHelper } from '../../testing';
 
 describe('EventStorageService', () => {
+  let fakeData: FakeDataHelper;
+  let service: EventStorageService;
+
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+    fakeData.buildCurrentUser();
+    
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
     const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
-    homeService.ChosedHome = {
-      _id: 1,
-      BaseCurrency: 'CNY',
-    };
-    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
+    homeService.ChosedHome = fakeData.chosedHome;
+    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
 
     TestBed.configureTestingModule({
       imports: [
@@ -31,7 +36,7 @@ describe('EventStorageService', () => {
     });
   }));
 
-  it('should be created', inject([EventStorageService], (service: EventStorageService) => {
+  it('1. should be created', inject([EventStorageService], (service: EventStorageService) => {
     expect(service).toBeTruthy();
   }));
 });

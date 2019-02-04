@@ -11,6 +11,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, fin
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilterEx, financeTranTypeAssetSoldoutIncome, momentDateFormat, ModelUtility,
   InfoMessage, MessageType, financeDocTypeAssetSoldOut, financeTranTypeAssetSoldout, FinanceAssetSoldoutDocumentAPI,
+  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -37,6 +38,13 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
   displayedColumns: string[] = ['ItemId', 'AccountId', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
+  arMembersInChosedHome: HomeMember[];
+  arControlCenters: ControlCenter[];
+  arOrders: Order[];
+  arTranTypes: TranType[];
+  arAccounts: Account[];
+  arDocTypes: DocumentType[];
+  arCurrencies: Currency[];
 
   get BaseCurrency(): string {
     return this._homeService.ChosedHome.BaseCurrency;
@@ -73,9 +81,14 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor`);
     }
+    this.arMembersInChosedHome = this._homeService.ChosedHome.Members.slice();
   }
 
   ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit`);
+    }
+
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAssetCategories(),
@@ -89,6 +102,13 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit for forkJoin, result length: ${rst.length}`);
       }
+
+      this.arDocTypes = rst[2];
+      this.arTranTypes = rst[3];
+      this.arAccounts = rst[4];
+      this.arControlCenters = rst[5];
+      this.arOrders = rst[6];
+      this.arCurrencies = rst[7];
 
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
@@ -104,6 +124,10 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
       this.uiOrderFilter = undefined;
+    }, (error: any) => {
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
 
     this.firstFormGroup = this._formBuilder.group({
@@ -168,14 +192,14 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     // Generate the doc, and verify it
     let docobj: Document = this._generateDoc();
     if (!docobj.onVerify({
-      ControlCenters: this._storageService.ControlCenters,
-      Orders: this._storageService.Orders,
-      Accounts: this._storageService.Accounts,
-      DocumentTypes: this._storageService.DocumentTypes,
-      TransactionTypes: this._storageService.TranTypes,
-      Currencies: this._currService.Currencies,
+      ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranTypes,
+      Currencies: this.arCurrencies,
       BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
-    })) {
+  })) {
       // Show a dialog for error details
       const dlginfo: MessageDialogInfo = {
         Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
