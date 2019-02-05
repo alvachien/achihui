@@ -1035,11 +1035,9 @@ describe('DocumentADPCreateComponent', () => {
       // Expect there is a pop-up dialog
       expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
       // Since there is only one button
-      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      (overlayContainerElement.querySelector('button.message-dialog-button-ok') as HTMLElement).click();
       fixture.detectChanges();
       flush();
-
-      // expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
 
       // And, there shall no changes in the selected tab - review step
       expect(component._stepper.selectedIndex).toBe(2);

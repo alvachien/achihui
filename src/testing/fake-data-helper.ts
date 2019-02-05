@@ -12,6 +12,7 @@ import {
   RepeatFrequencyEnum, TemplateDocADP, financeDocTypeAdvancePayment,
   FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
   momentDateFormat,
+  financeAccountCategoryAsset,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -886,6 +887,17 @@ export class FakeDataHelper {
     acnt.OwnerId = this.userID1;
     acnt.Status = AccountStatusEnum.Closed;
     acnt.Comment = 'CreditCard Account 1';
+    this._finAccounts.push(acnt);
+    // Asset
+    acnt = new Account();
+    acnt.Id = 21;
+    acnt.Name = 'Asset 1';
+    acnt.CategoryId = financeAccountCategoryAsset;
+    acnt.Status = AccountStatusEnum.Normal;
+    let asset: AccountExtraAsset = new AccountExtraAsset();
+    asset.Name = 'Asset Test';
+    asset.CategoryID = 1;
+    acnt.ExtraInfo = asset;
     this._finAccounts.push(acnt);
   }
   public buildFinAccountsFromAPI(): void {

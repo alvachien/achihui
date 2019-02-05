@@ -647,8 +647,8 @@ export interface IAccountCategoryFilter {
  * Category filter for Account
  */
 export interface IAccountCategoryFilterEx {
-  includedCategories: number[];
-  excludedCategories: number[];
+  includedCategories?: number[];
+  excludedCategories?: number[];
 }
 
 /**

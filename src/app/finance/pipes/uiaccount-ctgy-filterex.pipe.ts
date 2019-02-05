@@ -1,7 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { UIAccountForSelection, financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
-  financeAccountCategoryLendTo, financeAccountCategoryAsset, IAccountCategoryFilterEx,
-} from '../../model';
+import { UIAccountForSelection, IAccountCategoryFilterEx, } from '../../model';
 
 @Pipe({
   name: 'uiAccountCtgyFilterEx',

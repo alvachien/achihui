@@ -14,19 +14,19 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <div *ngIf="IsOnlyOKButton">
-    <button mat-button [matDialogClose]="true" tabindex="1">{{'Common.OK' | translate}}</button>
+    <button mat-button class="message-dialog-button-ok" [matDialogClose]="true" tabindex="1">{{'Common.OK' | translate}}</button>
   </div>
   <div *ngIf="IsYesNoButton">
-    <button mat-button [matDialogClose]="true" tabindex="1">{{'Common.Yes' | translate}}</button>
-    <button mat-button [matDialogClose]="false" tabindex="2">{{'Common.No' | translate}}</button>
+    <button mat-button class="message-dialog-button-yes" [matDialogClose]="true" tabindex="1">{{'Common.Yes' | translate}}</button>
+    <button mat-button class="message-dialog-button-no" [matDialogClose]="false" tabindex="2">{{'Common.No' | translate}}</button>
   </div>
   <div *ngIf="IsOKCancelButton">
-    <button mat-button [matDialogClose]="true" tabindex="1">{{'Common.OK' | translate}}</button>
-    <button mat-button [matDialogClose]="false" tabindex="2">{{'Common.Cancel' | translate}}</button>
+    <button mat-button class="message-dialog-button-ok" [matDialogClose]="true" tabindex="1">{{'Common.OK' | translate}}</button>
+    <button mat-button class="message-dialog-button-cancel" [matDialogClose]="false" tabindex="2">{{'Common.Cancel' | translate}}</button>
   </div>
   <div *ngIf="IsYesNoCancelButton">
-    <button mat-button [matDialogClose]="true" tabindex="1">{{'Common.Yes' | translate}}</button>
-    <button mat-button [matDialogClose]="false" tabindex="2">{{'Common.No' | translate}}</button>
-    <button mat-button tabindex="3">{{'Common.Cancel' | translate}}</button>
+    <button mat-button class="message-dialog-button-yes" [matDialogClose]="true" tabindex="1">{{'Common.Yes' | translate}}</button>
+    <button mat-button class="message-dialog-button-no" [matDialogClose]="false" tabindex="2">{{'Common.No' | translate}}</button>
+    <button mat-button class="message-dialog-button-cancel" tabindex="3">{{'Common.Cancel' | translate}}</button>
   </div>
 </mat-dialog-actions>

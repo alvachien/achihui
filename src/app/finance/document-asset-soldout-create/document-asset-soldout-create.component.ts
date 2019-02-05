@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper, MatSnackBarConfig } from '@angular/material';
 import { Observable, forkJoin, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -81,6 +81,11 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   }
   get firstStepCompleted(): boolean {
     if (this.firstFormGroup && this.firstFormGroup.valid) {
+      // Ensure the amount
+      if (this.SoldoutAmount <= 0) {
+        return false;
+      }
+
       // Ensure the exchange rate
       if (this.isForeignCurrency) {
         if (!this.firstFormGroup.get('exgControl').value) {
@@ -145,6 +150,21 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     if (erridx !== -1) {
       return false;
     }
+    // Check 7. Ensure the amount is equals to soldout
+    let totalAmt: number = 0;
+    this.dataSource.data.forEach((val: DocumentItem) => {
+      let bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
+        return valtt.Id === val.TranType;
+      }).Expense;
+      if (bExpense) {
+        totalAmt -= val.TranAmount;
+      } else {
+        totalAmt += val.TranAmount;
+      }
+    });
+    if (totalAmt !== this.SoldoutAmount) {
+      return false;
+    }
 
     return true;
   }
@@ -170,8 +190,8 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
 
     this.firstFormGroup = this._formBuilder.group({
       accountControl: ['', Validators.required],
-      dateControl: new FormControl({value: moment()}, Validators.required),
-      amountControl: ['', Validators.required],
+      dateControl: [{value: moment(), disabled: false}, Validators.required],
+      amountControl: [0, Validators.required],
       currControl: ['', Validators.required],
       exgControl: [''],
       exgpControl: [''],
@@ -202,7 +222,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       this.arCurrencies = rst[7];
 
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilterEx = {
         includedCategories: [ financeAccountCategoryAsset ],
@@ -213,7 +233,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
         excludedCategories: [ financeAccountCategoryAsset ],
       };
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
 
       this.firstFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
@@ -252,25 +272,6 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
   }
 
   onSubmit(): void {
-    // Perform the check.
-    let msgs: InfoMessage[] = [];
-    if (!this._doCheck(msgs)) {
-      // Show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: msgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
-
-      return;
-    }
-
     // Generate the doc, and verify it
     let docobj: Document = this._generateDoc();
     if (!docobj.onVerify({
@@ -319,12 +320,15 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       }
 
       // Show success
-      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-          'OK', {
-            duration: 2000,
-          }).afterDismissed().subscribe(() => {
-            this._router.navigate(['/finance/document/display/' + nid.toString()]);
-          });
+      let config: MatSnackBarConfig = new MatSnackBarConfig();
+      config.duration = 2000;
+      let snackref: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        undefined, config);
+      
+      snackref.afterDismissed().subscribe(() => {
+        console.log('test');
+        this._router.navigate(['/finance/document/display/' + nid.toString()]);
+      });
     }, (err: string) => {
       // Handle the error
       if (environment.LoggingLevel >= LogLevel.Error) {
@@ -391,47 +395,5 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
     });
 
     return ndoc;
-  }
-  private _doCheck(msgs: InfoMessage[]): boolean {
-    let chkrst: boolean = true;
-
-    if (this.dataSource.data.length <= 0) {
-      let msg: InfoMessage = new InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = MessageType.Error;
-      msg.MsgTitle = 'Finance.NoDocumentItem';
-      msg.MsgContent = 'Finance.NoDocumentItem';
-      msgs.push(msg);
-      chkrst = false;
-    }
-
-    let ccid: any = this.firstFormGroup.get('ccControl').value;
-    let ordid: any = this.firstFormGroup.get('orderControl').value;
-    if ((!ccid && !ordid) || (ccid && ordid)) {
-      let msg: InfoMessage = new InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = MessageType.Error;
-      msg.MsgTitle = 'Finance.EitherControlCenterOrOrder';
-      msg.MsgContent = 'Finance.EitherControlCenterOrOrder';
-      msgs.push(msg);
-      chkrst = false;
-    }
-
-    // Initialize the object
-    let totalAmt: number = 0;
-    this.dataSource.data.forEach((val: DocumentItem) => {
-      totalAmt += val.TranAmount;
-    });
-    if (totalAmt !== this.SoldoutAmount) {
-      let msg: InfoMessage = new InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = MessageType.Error;
-      msg.MsgTitle = 'Finance.AmountIsNotCorrect';
-      msg.MsgContent = 'Finance.AmountIsNotCorrect';
-      msgs.push(msg);
-      chkrst = false;
-    }
-
-    return chkrst;
   }
 }
