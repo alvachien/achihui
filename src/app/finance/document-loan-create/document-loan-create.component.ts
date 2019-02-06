@@ -1,7 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, EventEmitter,
-  Input, Output, ViewContainerRef, ViewChild, ChangeDetectorRef,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
@@ -11,9 +8,8 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeBorrowFrom,
-  financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo, financeDocTypeLendTo, TemplateDocLoan, UIFinLoanDocument,
+import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeBorrowFrom,
+  financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo, financeDocTypeLendTo,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, IAccountCategoryFilter, AccountExtraLoan,
   momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom,

@@ -58,7 +58,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     return false;
   }
   // Step: Items
-  step2ErrorMessage: string;
   separatorKeysCodes: any[] = [ENTER, COMMA];
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
   displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];

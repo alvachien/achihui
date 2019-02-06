@@ -22,7 +22,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   private _createSub: Subscription;
   private _changeSub: Subscription;
-  private _readSub: Subscription;
+
   public currentMode: string;
   public detailObject: Order | undefined;
   public uiMode: UIMode = UIMode.Create;
@@ -82,27 +82,27 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            if (!this._readSub) {
-              this._readSub = this._storageService.readOrderEvent.subscribe((x2: any) => {
-                if (x2 instanceof Order) {
-                  if (environment.LoggingLevel >= LogLevel.Debug) {
-                    console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOninit, succeed to readOrder : ${x2}`);
-                  }
-
-                  this.detailObject = x2;
-                  this.dataSource.data = this.detailObject.SRules;
-                  // this.ruleOperEvent.emit(); // Reload the rules
-                } else {
-                  if (environment.LoggingLevel >= LogLevel.Error) {
-                    console.error(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, failed to readOrder : ${x2}`);
-                  }
-
-                  this.detailObject = new Order();
+            this._storageService.readOrder(this.routerID)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe((x2: Order) => {
+                if (environment.LoggingLevel >= LogLevel.Debug) {
+                  console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOninit, succeed to readOrder : ${x2}`);
                 }
-              });
-            }
 
-            this._storageService.readOrder(this.routerID);
+                this.detailObject = x2;
+                this.dataSource.data = this.detailObject.SRules;
+              }, (error: any) => {
+                if (environment.LoggingLevel >= LogLevel.Error) {
+                  console.error(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, failed to readOrder : ${error}`);
+                }
+
+                this._snackbar.open(error.toString(), undefined, {
+                  duration: 2000,
+                })
+                this.detailObject = new Order();
+              }, () => {
+                // Nothing
+              });
           }
         }
       }, (error: any) => {
@@ -125,10 +125,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
-    if (this._readSub) {
-      this._readSub.unsubscribe();
+
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
     }
     if (this._createSub) {
       this._createSub.unsubscribe();

@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
+  MatStepperNext,
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -35,6 +36,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
   let fetchAllControlCentersSpy: any;
   let fetchAllCurrenciesSpy: any;
   let createDocSpy: any;
+  let getDocItemSpy: any;
   let routerSpy: any;
   let activatedRouteStub: any;
 
@@ -58,6 +60,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       'fetchAllControlCenters',
       'fetchAllOrders',
       'createAssetValChgDocument',
+      'getDocumentItemByAccount',
     ]);
     fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAssetCategoriesSpy = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
@@ -67,8 +70,9 @@ describe('DocumentAssetValChgCreateComponent', () => {
     fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
     createDocSpy = stroageService.createAssetValChgDocument.and.returnValue(of({}));
+    getDocItemSpy = stroageService.getDocumentItemByAccount.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
-    fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
+    fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of({}));
     const homeService: Partial<HomeDefDetailService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
 
@@ -280,11 +284,11 @@ describe('DocumentAssetValChgCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.BaseCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(component.TranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
       // Also, the date shall be inputted
-      // expect(component.TranDate).toBeTruthy();
+      expect(component.TransactionDate).toBeTruthy();
     }));
 
     it('step 1: should have accounts and orders loaded', fakeAsync(() => {
@@ -298,5 +302,502 @@ describe('DocumentAssetValChgCreateComponent', () => {
       expect(component.arUIAccount.length).toBeGreaterThan(0);
       expect(component.arUIOrder.length).toBeGreaterThan(0);
     }));
-  }); 
+
+    it('step 1: asset account is mandatory', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      // component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      // Exchange rate 
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.firstStepCompleted).toBeFalsy();
+      // Click on the Next button
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges(); 
+      expect(component._stepper.selectedIndex).toBe(0);
+    }));
+
+    it('step 1: amount is mandatory', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      // component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      // Exchange rate 
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeFalsy();
+      // Click on the Next button
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges(); 
+      expect(component._stepper.selectedIndex).toBe(0);     
+    }));
+
+    it('step 1: desp is mandatory', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      // Exchange rate 
+      // Exchange rate plan
+      // Desp
+      // component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.firstStepCompleted).toBeFalsy();
+      // Click on the Next button
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges(); 
+      expect(component._stepper.selectedIndex).toBe(0);     
+    }));
+
+    it('step 1: prevent the case that neither cc nor order', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      // Exchange rate 
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      // component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeFalsy();
+      // Click on the Next button
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges(); 
+      expect(component._stepper.selectedIndex).toBe(0);     
+    }));
+
+    it('step 1: prevent the case that both cc and order', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      // Exchange rate 
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeFalsy();
+      // Click on the Next button
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges(); 
+      expect(component._stepper.selectedIndex).toBe(0);     
+    }));
+
+    it('step 1: exchange rate is mandatory in foreign currency', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      component.firstFormGroup.get('currControl').setValue('USD');
+      // Exchange rate
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      fixture.detectChanges();
+      expect(component.isForeignCurrency).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('#exgrate'))).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      if (!component.firstFormGroup.valid) {
+        console.log(component.firstFormGroup);
+      }
+      expect(component.firstStepCompleted).toBeFalsy();
+      // Click on the Next button
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges(); 
+      expect(component._stepper.selectedIndex).toBe(0);     
+    }));
+
+    it('step 1. shall go to step 2 in base currency case', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      // Exchange rate 
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeTruthy();
+      // Click next button
+      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      flush();
+      fixture.detectChanges();
+      expect(getDocItemSpy).toHaveBeenCalled();
+    }));
+    
+    it('step 1. shall go to step 2 in foreign currency case', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      component.firstFormGroup.get('currControl').setValue('USD');
+      // Exchange rate 
+      component.firstFormGroup.get('exgControl').setValue(643.12);
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeTruthy();
+      // Click next button
+      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2. shall list out the previous docs (base currency case)', fakeAsync(() => {
+      getDocItemSpy.and.returnValue(asyncData(
+        {
+          contentList:[{
+            tranType_Exp:false,
+            tranCurr: 'CNY',
+            tranAmount_Org: 6178.00,
+            tranAmount_LC:6178.00,
+            balance:6178.00,
+            accountName: 'SONY RX100 V',            
+            tranDate: '2017-10-07',
+            docDesp: 'SONY RX100 V',
+            docID:357,
+            itemID: 2,
+            accountID:21,
+            tranType:1,
+            tranAmount:6178.00,
+            useCurr2:false,
+            controlCenterID:9,
+            orderID:0,
+            desp: 'SONY RX100 V',
+            tagTerms:[],
+          }],
+          totalCount:1,
+        }
+      ));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      // Exchange rate 
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeTruthy();
+      // Click next button
+      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      flush();
+      fixture.detectChanges();
+      expect(getDocItemSpy).toHaveBeenCalled();
+      expect(component.dataSource.data.length).toBe(2);
+    }));
+
+    // Exception handling if failed to fetch previous docs
+  });
+
+  describe('4. onSubmit and its subsequence', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+
+      getDocItemSpy.and.returnValue(asyncData(
+        {
+          contentList:[{
+            tranType_Exp:false,
+            tranCurr: 'CNY',
+            tranAmount_Org: 6178.00,
+            tranAmount_LC:6178.00,
+            balance:6178.00,
+            accountName: 'SONY RX100 V',            
+            tranDate: '2017-10-07',
+            docDesp: 'SONY RX100 V',
+            docID:357,
+            itemID: 2,
+            accountID:21,
+            tranType:1,
+            tranAmount:6178.00,
+            useCurr2:false,
+            controlCenterID:9,
+            orderID:0,
+            desp: 'SONY RX100 V',
+            tagTerms:[],
+          }],
+          totalCount:1,
+        }
+      ));
+
+      createDocSpy.and.returnValue(asyncData(110));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('should show a popup dialog for checking failed case (base currency)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      // Exchange rate 
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeTruthy();
+      // Click next button
+      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      flush();
+      fixture.detectChanges();
+
+      component.arAccounts = []; // Ensure checking failed!
+      component.onSubmit();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      tick();
+      fixture.detectChanges();
+
+      flush();
+    }));
+
+    it('should handle create success case with navigate to display (base currency)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      // Exchange rate 
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeTruthy();
+      // Click next button
+      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      flush();
+      fixture.detectChanges();
+
+      component.onSubmit();
+      expect(createDocSpy).toHaveBeenCalled();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container');
+      expect(messageElement.textContent).not.toBeNull();
+
+      // Then, after the snackbar disappear, expect navigate!
+      fixture.detectChanges();
+      tick(3000);
+      fixture.detectChanges();
+      flush();
+      tick();
+      expect(routerSpy.navigate).toHaveBeenCalled();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/110']);
+
+      flush();
+    }));
+
+    it('should handle fail case with a popup dialog (base currency)', fakeAsync(() => {
+      createDocSpy.and.returnValue(asyncError('Doc Created Failed!'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Asset account
+      component.firstFormGroup.get('accountControl').setValue(21);
+      // Tran date - default
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency - default
+      // Exchange rate 
+      // Exchange rate plan
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('test');
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeTruthy();
+      // Click next button
+      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      flush();
+      fixture.detectChanges();
+
+      component.onSubmit();
+      expect(createDocSpy).toHaveBeenCalled();
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is a pop-up dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button.message-dialog-button-ok') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      // And, there shall no changes in the selected tab - review step
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      flush();
+    }));
+  });
 });

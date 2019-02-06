@@ -62,20 +62,12 @@ export class FinanceStorageService {
     return this._listOrder;
   }
 
-  listDocumentChange: BehaviorSubject<Document[]> = new BehaviorSubject<Document[]>([]);
-  get Documents(): Document[] {
-    return this.listDocumentChange.value;
-  }
-
   // Events
   changeAccountEvent: EventEmitter<Account | string | undefined> = new EventEmitter(undefined);
-  readAccountEvent: EventEmitter<Account | string | undefined> = new EventEmitter(undefined);
   createControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
   changeControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
-  readControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
   createOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
   changeOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
-  readOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
   readDocumentEvent: EventEmitter<Document | string | any | undefined> = new EventEmitter(undefined);
   deleteDocumentEvent: EventEmitter<any | undefined> = new EventEmitter(undefined);
 
@@ -499,7 +491,7 @@ export class FinanceStorageService {
    * Read an account
    * @param acntid ID of the account to read
    */
-  public readAccount(acntid: number): void {
+  public readAccount(acntid: number): Observable<Account> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -508,7 +500,7 @@ export class FinanceStorageService {
     let apiurl: string = environment.ApiUrl + '/api/FinanceAccount/' + acntid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.get(apiurl, {
+    return this._http.get(apiurl, {
       headers: headers,
       params: params,
     })
@@ -519,33 +511,26 @@ export class FinanceStorageService {
 
         let hd: Account = new Account();
         hd.onSetData(response);
-        return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in readAccount in FinanceStorageService: ${x}`);
-        }
 
         // Update the buffer if necessary
         let idx: number = this._listAccount.findIndex((val: any) => {
-          return val.Id === x.Id;
+          return val.Id === hd.Id;
         });
         if (idx !== -1) {
-          this._listAccount.splice(idx, 1, x);
+          this._listAccount.splice(idx, 1, hd);
+        } else {
+          this._listAccount.push(hd);
         }
 
-        // Broadcast event
-        this.readAccountEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in readAccount in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in FinanceStorageService's readAccount.`);
         }
 
-        // Broadcast event: failed
-        this.readAccountEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -706,7 +691,7 @@ export class FinanceStorageService {
    * Read control center
    * @param ccid ID of the control center
    */
-  public readControlCenter(ccid: number): void {
+  public readControlCenter(ccid: number): Observable<ControlCenter> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -715,7 +700,7 @@ export class FinanceStorageService {
     let apiurl: string = environment.ApiUrl + '/api/FinanceControlCenter/' + ccid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.get(apiurl, {
+    return this._http.get(apiurl, {
       headers: headers,
       params: params,
     })
@@ -726,33 +711,25 @@ export class FinanceStorageService {
 
         let hd: ControlCenter = new ControlCenter();
         hd.onSetData(response);
-        return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in readControlCenter in FinanceStorageService: ${x}`);
-        }
-
         // Update the buffer if necessary
         let idx: number = this._listControlCenter.findIndex((val: any) => {
-          return val.Id === x.Id;
+          return val.Id === hd.Id;
         });
         if (idx !== -1) {
-          this._listControlCenter.splice(idx, 1, x);
+          this._listControlCenter.splice(idx, 1, hd);
+        } else {
+          this._listControlCenter.push(hd);
         }
 
-        // Broadcast event
-        this.readControlCenterEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in readControlCenter in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in FinanceStorageService's readControlCenter.`);
         }
 
-        // Broadcast event: failed
-        this.readControlCenterEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -913,7 +890,7 @@ export class FinanceStorageService {
    * Read the order from API
    * @param ordid Id of Order
    */
-  public readOrder(ordid: number): void {
+  public readOrder(ordid: number): Observable<Order> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -922,7 +899,7 @@ export class FinanceStorageService {
     let apiurl: string = environment.ApiUrl + '/api/FinanceOrder/' + ordid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.get(apiurl, {
+    return this._http.get(apiurl, {
       headers: headers,
       params: params,
     })
@@ -933,33 +910,26 @@ export class FinanceStorageService {
 
         let hd: Order = new Order();
         hd.onSetData(response);
-        return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in readOrder in FinanceStorageService: ${x}`);
-        }
 
         // Update the buffer if necessary
         let idx: number = this._listOrder.findIndex((val: any) => {
-          return val.Id === x.Id;
+          return val.Id === hd.Id;
         });
         if (idx !== -1) {
-          this._listOrder.splice(idx, 1, x);
+          this._listOrder.splice(idx, 1, hd);
+        } else {
+          this._listOrder.push(hd);
         }
-
-        // Broadcast event
-        this.readOrderEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+        
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in readOrder in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in FinanceStorageService's readOrder.`);
         }
 
-        // Broadcast event: failed
-        this.readOrderEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -1443,40 +1413,6 @@ export class FinanceStorageService {
   //       return <any>response;
   //     }));
   // }
-
-  /**
-   * Create asset document
-   * @param jdata Data for creation
-   * @param isbuyin Is a buyin doc or soldout doc
-   */
-  public createAssetDocument(jdata: any, isbuyin: boolean): Observable<Document> {
-    let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json')
-      .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-    let apiurl: string = environment.ApiUrl + (isbuyin ? '/api/FinanceAssetBuyDocument' : '/api/FinanceAssetSoldDocument');
-
-    return this._http.post(apiurl, jdata, {
-      headers: headers,
-    })
-      .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Entering Map of createAssetDocument in FinanceStorageService: ' + response);
-        }
-
-        let hd: Document = new Document();
-        hd.onSetData(response);
-        return hd;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Failed in createAssetDocument in FinanceStorageService.`);
-        }
-
-        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-      }));
-  }
 
   /**
    * Create asset document

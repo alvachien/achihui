@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange, MatButton, MatVerticalStepper } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { forkJoin } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
@@ -23,7 +23,8 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   templateUrl: './document-asset-buy-in-create.component.html',
   styleUrls: ['./document-asset-buy-in-create.component.scss'],
 })
-export class DocumentAssetBuyInCreateComponent implements OnInit {
+export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   public assetAccount: AccountExtraAsset;
@@ -200,6 +201,8 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
       console.log('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit...');
     }
 
+    this._destroyed$ = new ReplaySubject(1);
+
     this.firstFormGroup = this._formBuilder.group({
       dateControl: [{value: moment(), disabled: false}, Validators.required],
       amountControl: [0, Validators.required],
@@ -225,7 +228,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
@@ -254,6 +257,13 @@ export class DocumentAssetBuyInCreateComponent implements OnInit {
         duration: 2000,
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
+    }
   }
 
   public onCreateDocItem(): void {

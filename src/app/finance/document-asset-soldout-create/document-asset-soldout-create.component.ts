@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper, MatSnackBarConfig } from '@angular/material';
-import { Observable, forkJoin, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
@@ -22,7 +22,8 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   templateUrl: './document-asset-soldout-create.component.html',
   styleUrls: ['./document-asset-soldout-create.component.scss'],
 })
-export class DocumentAssetSoldoutCreateComponent implements OnInit {
+export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
   public detailObject: FinanceAssetSoldoutDocumentAPI;
   // Step: Generic info
   public firstFormGroup: FormGroup;
@@ -188,6 +189,8 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit`);
     }
 
+    this._destroyed$ = new ReplaySubject(1);
+
     this.firstFormGroup = this._formBuilder.group({
       accountControl: ['', Validators.required],
       dateControl: [{value: moment(), disabled: false}, Validators.required],
@@ -209,7 +212,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit for forkJoin, result length: ${rst.length}`);
       }
@@ -242,6 +245,13 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
         duration: 2000,
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
+    }
   }
 
   public onCreateDocItem(): void {
@@ -321,7 +331,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
 
       // Show success
       this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-        'create', {
+        undefined, {
           duration: 2000,
         }).afterDismissed().subscribe(() => {
         console.log('test2');
@@ -376,6 +386,12 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
 
     if (index >= 0) {
       row.Tags.splice(index, 1);
+    }
+  }
+
+  public onReset(): void {
+    if (this._stepper) {
+      this._stepper.reset();
     }
   }
 

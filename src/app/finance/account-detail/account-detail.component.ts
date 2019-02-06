@@ -30,7 +30,6 @@ import { AccountExtAssetComponent } from '../account-ext-asset';
 })
 export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _readStub: Subscription;
   private _changeStub: Subscription;
   private routerID: number = -1; // Current object ID in routing
   private _compLoan: AccountExtLoanComponent;
@@ -130,38 +129,25 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            if (!this._readStub) {
-              this._readStub = this._storageService.readAccountEvent
+            this._storageService.readAccount(this.routerID)
               .pipe(takeUntil(this._destroyed$))
               .subscribe((x3: any) => {
-                if (x3 instanceof Account) {
-                  if (environment.LoggingLevel >= LogLevel.Debug) {
-                    console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOninit, readAccount: ${x3}`);
-                  }
-                  this.detailObject = x3;
-
-                  // if (this.uiMode === UIMode.Change) {
-                  //   if (this.detailObject.CategoryId === financeAccountCategoryAsset
-                  //   || this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
-                  //   || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom
-                  //   || this.detailObject.CategoryId === financeAccountCategoryLendTo) {
-                  //     this.uiMode = UIMode.Display; // Not support for those accounts yet
-                  //   }
-                  // }
-                } else {
-                  if (environment.LoggingLevel >= LogLevel.Error) {
-                    console.error(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${x3}`);
-                  }
-
-                  this._snackbar.open(x3, undefined, {
-                    duration: 2000,
-                  });
-                  this.detailObject = new Account();
+                if (environment.LoggingLevel >= LogLevel.Debug) {
+                  console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOninit, readAccount: ${x3}`);
                 }
-              });
-            }
+                this.detailObject = x3;
+              }, (error: any) => {
+                if (environment.LoggingLevel >= LogLevel.Error) {
+                  console.error(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`);
+                }
 
-            this._storageService.readAccount(this.routerID);
+                this._snackbar.open(error.toString(), undefined, {
+                  duration: 2000,
+                });
+                this.detailObject = new Account();
+              }, () => {
+                // Nothing
+              });
           }
         }
       }, (error: any) => {
@@ -207,9 +193,6 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     this._destroyed$.next(true);
     this._destroyed$.complete();
 
-    if (this._readStub) {
-      this._readStub.unsubscribe();
-    }
     if (this._changeStub) {
       this._changeStub.unsubscribe();
     }

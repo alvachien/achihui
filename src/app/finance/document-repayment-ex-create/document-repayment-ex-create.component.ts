@@ -1,7 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ViewChild,
-  Input, Output, ViewContainerRef,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ViewChild, } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
@@ -12,11 +9,10 @@ import * as moment from 'moment';
 import { SelectionModel } from '@angular/cdk/collections';
 
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
+import { LogLevel, Account, Document, DocumentItem, ControlCenter, Order, TranType,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  UICommonLabelEnum, IAccountCategoryFilter, financeDocTypeRepay, financeTranTypeRepaymentOut, financeTranTypeInterestOut,
-  financeAccountCategoryBorrowFrom, financeTranTypeRepaymentIn, financeTranTypeInterestIn, ModelUtility, momentDateFormat,
+  UICommonLabelEnum, Currency, financeDocTypeRepay, financeTranTypeRepaymentOut, financeTranTypeInterestOut,
+  financeAccountCategoryBorrowFrom, financeTranTypeRepaymentIn, financeTranTypeInterestIn, momentDateFormat,
   AccountExtraLoan, TemplateDocLoan, financeAccountCategoryAsset, financeAccountCategoryLendTo,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
@@ -37,7 +33,6 @@ class PayingAccountInfo {
 })
 export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _readAccountSub: Subscription;
 
   public arUIAccount: UIAccountForSelection[] = [];
   public arUILoanAccount: UIAccountForSelection[] = [];
@@ -59,14 +54,19 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
   // Step: Paying accounts
   dataSourcePayingAccount: MatTableDataSource<PayingAccountInfo>;
   displayedPayingAccountColumns: string[] = ['accountid', 'amount'];
+  // Variables
+  arControlCenters: ControlCenter[];
+  arOrders: Order[];
+  arTranTypes: TranType[];
+  arAccounts: Account[];
+  arDocTypes: DocumentType[];
+  arCurrencies: Currency[];
 
   get tranDate(): string {
     let datctrl: any = this.firstFormGroup.get('dateControl');
     if (datctrl && datctrl.value && datctrl.value.format) {
       return datctrl.value.format(momentDateFormat);
     }
-
-    return '';
   }
   get tranCurrency(): string {
     let currctrl: any = this.firstFormGroup.get('currControl');
@@ -85,6 +85,51 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
     if (this.selectionTmpDoc.selected.length === 1) {
       return this.selectionTmpDoc.selected[0];
     }
+  }
+  get firstStepCompleted(): boolean {
+    if (this.firstFormGroup && this.firstFormGroup.valid) {
+      // Ensure the exchange rate
+      if (this.isForeignCurrency) {
+        if (this.firstFormGroup.get('exgControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
+  get loanStepCompleted(): boolean {
+    // Check the selected
+    const numSelected: number = this.selectionTmpDoc.selected.length;
+
+    if (numSelected !== 1) {
+      return false;
+    }
+    return true;
+  }
+  get payingStepCompleted(): boolean {
+    if (this.dataSourcePayingAccount.data.length <= 0) {
+      return false;
+    }
+
+    // Ensure the paying amount equals to the total amount
+    let payedamount: number = 0;
+    let chkedrst: boolean = true;
+    this.dataSourcePayingAccount.data.forEach((trow: PayingAccountInfo) => {
+      if (trow.amount <= 0) {
+        chkedrst = false;
+      } else {
+        payedamount = +(payedamount + trow.amount).toFixed(2);
+      }
+    });
+
+    if (chkedrst) {
+      chkedrst = (payedamount === this.totalAmount);
+    }
+    return chkedrst;
   }
 
   constructor(private _dialog: MatDialog,
@@ -116,6 +161,8 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
       dateControl: [{ value: moment(), disabled: false }, Validators.required],
       accountControl: ['', Validators.required],
       currControl: ['', Validators.required],
+      exgControl: [''],
+      exgpControl: [''],
       despControl: '',
     });
 
@@ -162,6 +209,10 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
         // Read the account out
         this._readLoanAccount(this._uiStatusService.currentTemplateLoanDoc.AccountId);
       }
+    }, (error: any) =>{
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
 
@@ -169,10 +220,9 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
-    if (this._readAccountSub) {
-      this._readAccountSub.unsubscribe();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
     }
   }
 
@@ -328,7 +378,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
         // Show the snackbar
         let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
+            duration: 2000,
           });
 
         let isrecreate: boolean = false;
@@ -420,8 +470,9 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
       console.log(`AC_HIH_UI [Debug]: Entering _readLoanAccount in DocumentRepaymentExCreateComponent`);
     }
 
-    if (!this._readAccountSub) {
-      this._readAccountSub = this._storageService.readAccountEvent.subscribe((x: Account) => {
+    this._storageService.readAccount(nAcntID)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: Account) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent, success in readAccountEvent`);
         }
@@ -463,10 +514,14 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
           // Clear it
           this._uiStatusService.currentTemplateLoanDoc = undefined;
         }
+      }, (error: any) => {
+        // Show error
+        this._snackbar.open(error.toString, undefined, {
+          duration: 2000,
+        });
+      }, () => {
+        // DO nothing
       });
-    }
-
-    this._storageService.readAccount(nAcntID);
   }
 
   private _generateDocument(): Document {

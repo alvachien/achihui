@@ -1,6 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, ViewChild,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -11,8 +9,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument,
+import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   UIMode, getUIModeString, financeDocTypeCurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate,
   IAccountCategoryFilter, momentDateFormat, financeTranTypeTransferIn, financeTranTypeTransferOut,

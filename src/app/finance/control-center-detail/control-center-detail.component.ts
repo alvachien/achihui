@@ -19,7 +19,6 @@ import { takeUntil } from 'rxjs/Operators';
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   private _listReadStub: Subscription;
-  private _readStub: Subscription;
   private _createStub: Subscription;
   private _changeStub: Subscription;
 
@@ -85,29 +84,23 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          if (!this._readStub) {
-            this._readStub = this.storageService.readControlCenterEvent
-              .pipe(takeUntil(this._destroyed$))
-              .subscribe((x2: any) => {
-              if (x2 instanceof ControlCenter) {
-                if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, readControlCenterEvent.`);
-                }
-                this.detailObject = x2;
-              } else {
-                if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenterEvent failed: ${x2}`);
-                }
-                this._snackbar.open(x2.toString(), undefined, {
-                  duration: 2000
-                });
-
-                this.detailObject = new ControlCenter();
+          this.storageService.readControlCenter(this.routerID)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((x2: any) => {
+              if (environment.LoggingLevel >= LogLevel.Debug) {
+                console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, readControlCenter.`);
               }
-            });
-          }
+              this.detailObject = x2;
+            }, (error: any) => {
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${error}`);
+              }
+              this._snackbar.open(error.toString(), undefined, {
+                duration: 2000
+              });
 
-          this.storageService.readControlCenter(this.routerID);
+              this.detailObject = new ControlCenter();
+          });
         }
       }
     }, (error: any) => {
@@ -120,14 +113,13 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
+    }
 
     if (this._listReadStub) {
       this._listReadStub.unsubscribe();
-    }
-    if (this._readStub) {
-      this._readStub.unsubscribe();
     }
     if (this._createStub) {
       this._createStub.unsubscribe();

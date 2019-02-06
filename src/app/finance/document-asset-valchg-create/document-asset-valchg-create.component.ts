@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper } from '@angular/material';
-import { Observable, forkJoin, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator, MatVerticalStepper } from '@angular/material';
+import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { environment } from '../../../environments/environment';
@@ -41,7 +41,8 @@ class DocItemWithBlance {
   templateUrl: './document-asset-valchg-create.component.html',
   styleUrls: ['./document-asset-valchg-create.component.scss'],
 })
-export class DocumentAssetValChgCreateComponent implements OnInit {
+export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean>;
   public detailObject: FinanceAssetValChgDocumentAPI;
   // Step: Generic info
   public firstFormGroup: FormGroup;
@@ -56,6 +57,8 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
   displayedColumns: string[] = ['DocId', 'TranDate', 'Amount', 'Balance', 'NewBalance'];
   tranAmount: number;
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  // Variables
   arMembersInChosedHome: HomeMember[];
   arControlCenters: ControlCenter[];
   arOrders: Order[];
@@ -67,8 +70,18 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
   get TransactionAmount(): number {
     return this.tranAmount;
   }
-  get BaseCurrency(): string {
-    return this._homeService.ChosedHome.BaseCurrency;
+  get TranCurrency(): string {
+    let currctrl: any = this.firstFormGroup.get('currControl');
+    if (currctrl) {
+      return currctrl.value;
+    }
+  }
+  get isForeignCurrency(): boolean {
+    if (this.TranCurrency && this.TranCurrency !== this._homeService.ChosedHome.BaseCurrency) {
+      return true;
+    }
+
+    return false;
   }
   get TargetAssetAccountID(): number {
     let acccontrol: any = this.firstFormGroup.get('accountControl');
@@ -92,7 +105,32 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
   }
   get firstStepCompleted(): boolean {
     if (this.firstFormGroup && this.firstFormGroup.valid) {
-      return true;
+      // Ensure the amount
+      let amt: any = this.firstFormGroup.get('amountControl').value;
+      if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
+        return false;
+      }
+
+      // Ensure the exchange rate
+      if (this.isForeignCurrency) {
+        if (!this.firstFormGroup.get('exgControl').value) {
+          return false;
+        }
+      }
+
+      if (this.firstFormGroup.get('ccControl').value) {
+        if (this.firstFormGroup.get('orderControl').value) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        if (this.firstFormGroup.get('orderControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      }
     }
     return false;
   }
@@ -117,10 +155,15 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit`);
     }
 
+    this._destroyed$ = new ReplaySubject(1);
+
     this.firstFormGroup = this._formBuilder.group({
       accountControl: ['', Validators.required],
-      dateControl: new FormControl({ value: moment() }, Validators.required),
-      amountControl: ['', Validators.required],
+      dateControl: [{value: moment(), disabled: false}, Validators.required],
+      amountControl: [0, Validators.required],
+      currControl: ['', Validators.required],
+      exgControl: [''],
+      exgpControl: [''],
       despControl: ['', Validators.required],
       ccControl: [''],
       orderControl: [''],
@@ -135,7 +178,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       this._storageService.fetchAllControlCenters(),
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
-    ]).subscribe((rst: any) => {
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit, forkJoin, result length: ${rst.length}`);
       }
@@ -161,6 +204,9 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
+
+      // Currency
+      this.firstFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
     }, (error: any) => {
       this._snackbar.open(error.toString(), undefined, {
         duration: 2000,
@@ -168,26 +214,14 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
-    // Perform the check.
-    let msgs: InfoMessage[] = [];
-    if (!this._doCheck(msgs)) {
-      // Show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: msgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
-
-      return;
+  ngOnDestroy(): void {
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
     }
+  }
 
+  onSubmit(): void {
     // Generate the doc, and verify it
     let docobj: Document = this._generateDoc();
     if (!docobj.onVerify({
@@ -219,7 +253,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     this.detailObject = new FinanceAssetValChgDocumentAPI();
     this.detailObject.HID = this._homeService.ChosedHome.ID;
     this.detailObject.tranDate = docobj.TranDate.format(momentDateFormat);
-    this.detailObject.tranCurr = this.BaseCurrency;
+    this.detailObject.tranCurr = this.TranCurrency;
     this.detailObject.desp = docobj.Desp;
     this.detailObject.assetAccountID = this.TargetAssetAccountID;
     this.detailObject.controlCenterID = this.firstFormGroup.get('ccControl').value;
@@ -236,7 +270,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
 
       // Show success
       this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-        'OK', {
+        undefined, {
           duration: 2000,
         }).afterDismissed().subscribe(() => {
           this._router.navigate(['/finance/document/display/' + nid.toString()]);
@@ -316,8 +350,15 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
           }
         }
 
-        this.dataSource.data = items;
+        this.dataSource = new MatTableDataSource(items);
+        this.dataSource.paginator = this.paginator;
       });
+    }
+  }
+
+  public onReset(): void {
+    if (this._stepper) {
+      this._stepper.reset();
     }
   }
 
@@ -345,22 +386,5 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
     ndoc.Items.push(ndocitem);
 
     return ndoc;
-  }
-  private _doCheck(msgs: InfoMessage[]): boolean {
-    let chkrst: boolean = true;
-
-    let ccid: any = this.firstFormGroup.get('ccControl').value;
-    let ordid: any = this.firstFormGroup.get('orderControl').value;
-    if ((!ccid && !ordid) || (ccid && ordid)) {
-      let msg: InfoMessage = new InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = MessageType.Error;
-      msg.MsgTitle = 'Finance.EitherControlCenterOrOrder';
-      msg.MsgContent = 'Finance.EitherControlCenterOrOrder';
-      msgs.push(msg);
-      chkrst = false;
-    }
-
-    return chkrst;
   }
 }

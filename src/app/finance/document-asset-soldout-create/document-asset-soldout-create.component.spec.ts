@@ -334,10 +334,10 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click on the Next button
-      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1: amount is mandatory', fakeAsync(() => {
@@ -362,7 +362,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click on the Next button
-      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges(); 
       expect(component._stepper.selectedIndex).toBe(0);     
@@ -390,7 +390,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click on the Next button
-      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges(); 
       expect(component._stepper.selectedIndex).toBe(0);     
@@ -418,7 +418,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click on the Next button
-      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges(); 
       expect(component._stepper.selectedIndex).toBe(0);     
@@ -447,7 +447,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click on the Next button
-      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges(); 
       expect(component._stepper.selectedIndex).toBe(0);     
@@ -482,7 +482,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       }
       expect(component.firstStepCompleted).toBeFalsy();
       // Click on the Next button
-      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges(); 
       expect(component._stepper.selectedIndex).toBe(0);     
@@ -1117,18 +1117,20 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Now go to submit
       component.arAccounts = []; // Ensure check failed!!
       component.onSubmit();
+      tick();
       fixture.detectChanges();
 
       // Expect there is dialog
       expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
       // Since there is only one button
       (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      tick();
       fixture.detectChanges();
 
       flush();
     }));
 
-    it('should handle create success case with navigate to display', fakeAsync(() => {
+    it('should handle create success case with navigate to display (base currency)', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -1201,7 +1203,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       flush();
     }));
 
-    it('should handle create failed case with a popup dialog', fakeAsync(() => {
+    it('should handle create failed case with a popup dialog (base currency)', fakeAsync(() => {
       createDocSpy.and.returnValue(asyncError('Doc Created Failed!'));
 
       fixture.detectChanges(); // ngOnInit

@@ -11,8 +11,7 @@ import {
   Document, DocumentItem, AccountExtraAdvancePayment,
   RepeatFrequencyEnum, TemplateDocADP, financeDocTypeAdvancePayment,
   FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
-  momentDateFormat,
-  financeAccountCategoryAsset,
+  momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -1243,5 +1242,20 @@ export class FakeDataHelper {
     detail.controlCenterID = 11;
 
     return detail;
+  }
+  public buildFinAssetValueChangeDocumentForCreate(): FinanceAssetValChgDocumentAPI {
+    let detailObject: FinanceAssetValChgDocumentAPI = new FinanceAssetValChgDocumentAPI();
+    detailObject.HID = this._chosedHome.ID;
+    detailObject.tranDate = moment().format(momentDateFormat);
+    detailObject.tranCurr = this._chosedHome.BaseCurrency;;
+    detailObject.desp = 'test';
+    detailObject.assetAccountID = 21;
+    detailObject.controlCenterID = 11;
+    // detailObject.orderID = this.firstFormGroup.get('orderControl').value;
+    // docobj.Items.forEach((val: DocumentItem) => {
+    //   this.detailObject.items.push(val.writeJSONObject());
+    // });
+
+    return detailObject;
   }
 }
