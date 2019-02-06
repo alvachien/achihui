@@ -6,7 +6,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
   MatStepperNext, } from '@angular/material';
@@ -84,7 +84,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
         UIDependModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {
@@ -1212,6 +1212,78 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
+    it('should show a popup dialog if checking failed', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date
+      // Amount
+      component.firstFormGroup.get('amountControl').setValue(100);
+      // Currency
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      // Asset
+      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
+      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
+      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      // Owner
+      component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
+      // Legacy
+      // Control center
+      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeTruthy();
+      // Click next button
+      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      expect(component.dataSource.data.length).toEqual(0);
+      expect(component.itemStepCompleted).toBeFalsy();
+
+      // Setup the second step
+      component.onCreateDocItem();
+      fixture.detectChanges();
+
+      // Add item
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      ditem.TranAmount = 20;
+      component.dataSource.data = [ditem];
+      fixture.detectChanges();
+
+      expect(component.itemStepCompleted).toBeTruthy();
+      // Then, click the next button > third step
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // It shall not allowed
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Now go to submit
+      component.arAccounts = []; // Ensure check failed!!
+      component.onSubmit();
+      fixture.detectChanges();
+
+      // Expect there is dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      
+      flush();
+    }));
+
     it('should handle create success case with navigate to display', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -1288,6 +1360,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
 
       flush();
     }));
+
     it('should handle create fail case with a popup dialog', fakeAsync(() => {
       createDocSpy.and.returnValue(asyncError('Doc Created Failed!'));
 

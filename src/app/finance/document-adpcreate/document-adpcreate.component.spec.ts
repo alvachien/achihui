@@ -7,7 +7,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of, BehaviorSubject } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Component, Input } from '@angular/core';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
   MatStepperNext, } from '@angular/material';
@@ -94,7 +94,7 @@ describe('DocumentADPCreateComponent', () => {
         UIDependModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {
@@ -838,8 +838,6 @@ describe('DocumentADPCreateComponent', () => {
       // Click the submit button
       component.arAccounts = []; // Ensure doc check failed
       component.onSubmit();
-      fixture.detectChanges();
-      tick();
       fixture.detectChanges();
 
       // Expect there is a pop-up dialog

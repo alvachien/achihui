@@ -320,13 +320,11 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit {
       }
 
       // Show success
-      let config: MatSnackBarConfig = new MatSnackBarConfig();
-      config.duration = 2000;
-      let snackref: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-        undefined, config);
-      
-      snackref.afterDismissed().subscribe(() => {
-        console.log('test');
+      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        'create', {
+          duration: 2000,
+        }).afterDismissed().subscribe(() => {
+        console.log('test2');
         this._router.navigate(['/finance/document/display/' + nid.toString()]);
       });
     }, (err: string) => {

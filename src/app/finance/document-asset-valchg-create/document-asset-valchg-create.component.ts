@@ -148,7 +148,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       this.arCurrencies = rst[7];
 
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilterEx = {
         includedCategories: [financeAccountCategoryAsset],
@@ -159,7 +159,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
         excludedCategories: [financeAccountCategoryAsset],
       };
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
     }, (error: any) => {
       this._snackbar.open(error.toString(), undefined, {
@@ -198,7 +198,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit {
       TransactionTypes: this.arTranTypes,
       Currencies: this.arCurrencies,
       BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
-  })) {
+    })) {
       // Show a dialog for error details
       const dlginfo: MessageDialogInfo = {
         Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),

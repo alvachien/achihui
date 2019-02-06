@@ -399,3 +399,11 @@ Test the link is work:
     expect(heroesLink.navigatedTo).toBe('/heroes');
   });
 ```
+
+### Using NoopAnimationsModule in testing instead of BrowserAnimationsModule
+Due to the fact that the animation will start the timer in another thread, the fakeAsync() not working well for SnackBar case.
+Therefore, use NoopAnimationsModule will help.
+
+```typescript
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+```
