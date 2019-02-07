@@ -1367,7 +1367,6 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Entering createLoanRepayDoc in FinanceStorageService: ${response}`);
         }
 
-        // Broadcast event
         let hd: Document = new Document();
         hd.onSetData(response);
 

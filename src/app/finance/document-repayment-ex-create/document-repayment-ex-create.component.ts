@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ViewChild, }
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource, MatHorizontalStepper } from '@angular/material';
+import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource, MatHorizontalStepper, MatPaginator } from '@angular/material';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -13,7 +13,7 @@ import { LogLevel, Account, Document, DocumentItem, ControlCenter, Order, TranTy
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   UICommonLabelEnum, Currency, financeDocTypeRepay, financeTranTypeRepaymentOut, financeTranTypeInterestOut,
   financeAccountCategoryBorrowFrom, financeTranTypeRepaymentIn, financeTranTypeInterestIn, momentDateFormat,
-  AccountExtraLoan, TemplateDocLoan, financeAccountCategoryAsset, financeAccountCategoryLendTo,
+  AccountExtraLoan, TemplateDocLoan, financeAccountCategoryAsset, financeAccountCategoryLendTo, DocumentType,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -54,6 +54,8 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
   // Step: Paying accounts
   dataSourcePayingAccount: MatTableDataSource<PayingAccountInfo>;
   displayedPayingAccountColumns: string[] = ['accountid', 'amount'];
+  // Paginator
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   // Variables
   arControlCenters: ControlCenter[];
   arOrders: Order[];
@@ -108,6 +110,12 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
     if (numSelected !== 1) {
       return false;
     }
+    const selectedrow: TemplateDocLoan = this.selectionTmpDoc.selected[0];
+    this.totalAmount = +(selectedrow.TranAmount + (selectedrow.InterestAmount ? selectedrow.InterestAmount : 0)).toFixed(2);
+    if (!this.totalAmount) {
+      return false;
+    }
+
     return true;
   }
   get payingStepCompleted(): boolean {
@@ -119,7 +127,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
     let payedamount: number = 0;
     let chkedrst: boolean = true;
     this.dataSourcePayingAccount.data.forEach((trow: PayingAccountInfo) => {
-      if (trow.amount <= 0) {
+      if (trow.amount === undefined || trow.amount <= 0) {
         chkedrst = false;
       } else {
         payedamount = +(payedamount + trow.amount).toFixed(2);
@@ -163,7 +171,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
       currControl: ['', Validators.required],
       exgControl: [''],
       exgpControl: [''],
-      despControl: '',
+      despControl: ['', Validators.required],
     });
 
     forkJoin([
@@ -178,12 +186,18 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
+      this.arDocTypes = rst[1];
+      this.arTranTypes = rst[2];
+      this.arAccounts = rst[3];
+      this.arControlCenters = rst[4];
+      this.arOrders = rst[5];
+      this.arCurrencies = rst[6];
 
       // Currency
       this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
 
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
       this.arUILoanAccount = this.arUIAccount.filter((val: UIAccountForSelection) => {
         return val.CategoryId === financeAccountCategoryBorrowFrom
           || val.CategoryId === financeAccountCategoryLendTo;
@@ -196,7 +210,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
         );
 
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
 
       if (this._uiStatusService.currentTemplateLoanDoc) {
@@ -231,99 +245,14 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
       console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent onStepSelectionChange with idex = ${event.selectedIndex}`);
     }
 
-    if (event.previouslySelectedIndex === 0 && event.selectedIndex === 1) {
+    if (event.selectedIndex === 1) {
       // First step > Second step
       let selectedAcnt: UIAccountForSelection = this.firstFormGroup.get('accountControl').value;
-      if (!this.loanAccount) {
-        if (selectedAcnt) {
+      if (selectedAcnt !== undefined
+        && (this.loanAccount === undefined 
+        || (this.loanAccount !== undefined && this.loanAccount.Id !== selectedAcnt.Id))) {
           // Read it
           this._readLoanAccount(selectedAcnt.Id);
-        }
-      } else {
-        // Check whether the loan account has been changed
-        if (selectedAcnt && this.loanAccount.Id !== selectedAcnt.Id) {
-          // Read it
-          this._readLoanAccount(selectedAcnt.Id);
-        }
-      }
-    } else if (event.previouslySelectedIndex === 1 && event.selectedIndex === 2) {
-      // Second step > Third step
-
-      // Check the selected
-      const numSelected: number = this.selectionTmpDoc.selected.length;
-
-      if (numSelected !== 1) {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: 'Select one and only one template loan',
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Change it back
-          this._stepper.selectedIndex = event.previouslySelectedIndex;
-        });
-      } else {
-        const selectedrow: TemplateDocLoan = this.selectionTmpDoc.selected[0];
-        this.totalAmount = +(selectedrow.TranAmount + (selectedrow.InterestAmount ? selectedrow.InterestAmount : 0)).toFixed(2);
-
-        if (!this.totalAmount) {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: 'Total amount is zero which is invalid',
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Change it back
-            this._stepper.selectedIndex = event.previouslySelectedIndex;
-          });
-        }
-      }
-    } else if (event.previouslySelectedIndex === 2 && event.selectedIndex === 3) {
-      // Third step > Fourth step
-
-      // Ensure the paying amount equals to the total amount
-      let payedamount: number = 0;
-      let chkedrst: boolean = true;
-      this.dataSourcePayingAccount.data.forEach((trow: PayingAccountInfo) => {
-        if (trow.amount <= 0) {
-          chkedrst = false;
-        } else {
-          payedamount = +(payedamount + trow.amount).toFixed(2);
-        }
-      });
-
-      if (chkedrst) {
-        chkedrst = (payedamount === this.totalAmount);
-      }
-
-      if (!chkedrst) {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: 'Payed amount not equal to total amount',
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Change it back
-          this._stepper.selectedIndex = event.previouslySelectedIndex;
-        });
       }
     }
   }
@@ -349,12 +278,12 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
 
     // Check!
     if (!docObj.onVerify({
-      ControlCenters: this._storageService.ControlCenters,
-      Orders: this._storageService.Orders,
-      Accounts: this._storageService.Accounts,
-      DocumentTypes: this._storageService.DocumentTypes,
-      TransactionTypes: this._storageService.TranTypes,
-      Currencies: this._currService.Currencies,
+      ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranTypes,
+      Currencies: this.arCurrencies,
       BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details
@@ -388,6 +317,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
           }
 
           isrecreate = true;
+          this.onReset();
         });
 
         snackbarRef.afterDismissed().subscribe(() => {
@@ -474,7 +404,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: Account) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent, success in readAccountEvent`);
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent, readAccount succeed.`);
         }
 
         this.loanAccount = x;
@@ -486,7 +416,9 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
             arItems.push(tmpdoc);
           }
         });
-        this.dataSource.data = arItems;
+
+        this.dataSource = new MatTableDataSource(arItems);
+        this.dataSource.paginator = this.paginator;
 
         // Set the selected items
         if (this._uiStatusService.currentTemplateLoanDoc) {
@@ -516,7 +448,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
         }
       }, (error: any) => {
         // Show error
-        this._snackbar.open(error.toString, undefined, {
+        this._snackbar.open(error.toString(), undefined, {
           duration: 2000,
         });
       }, () => {
@@ -534,8 +466,8 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
     docObj.TranCurr = this.tranCurrency;
     docObj.Desp = this.firstFormGroup.get('despControl').value;
     if (this.isForeignCurrency) {
-      // docObj.ExgRate = this.firstFormGroup.get('exgControl').value;
-      // docObj.ExgRate_Plan = this.firstFormGroup.get('exgpControl').value;
+      docObj.ExgRate = this.firstFormGroup.get('exgControl').value;
+      docObj.ExgRate_Plan = this.firstFormGroup.get('exgpControl').value;
     }
 
     // Items

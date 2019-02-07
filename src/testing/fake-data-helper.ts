@@ -11,7 +11,7 @@ import {
   Document, DocumentItem, AccountExtraAdvancePayment,
   RepeatFrequencyEnum, TemplateDocADP, financeDocTypeAdvancePayment,
   FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
-  momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI,
+  momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom, AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -897,6 +897,61 @@ export class FakeDataHelper {
     asset.Name = 'Asset Test';
     asset.CategoryID = 1;
     acnt.ExtraInfo = asset;
+    this._finAccounts.push(acnt);
+    // Borrow from
+    acnt = new Account();
+    acnt.Id = 22;
+    acnt.Name = 'Borrow from 1';
+    acnt.CategoryId = financeAccountCategoryBorrowFrom;
+    acnt.Status = AccountStatusEnum.Normal;
+    let brwInfo: AccountExtraLoan = new AccountExtraLoan();
+    brwInfo.Comment = 'Borrow test';
+    brwInfo.PayingAccount = 11;
+    brwInfo.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+    brwInfo.TotalMonths = 12;
+    brwInfo.annualRate = 0.0435;
+    brwInfo.startDate = moment().subtract(1, 'M').startOf('day');
+    brwInfo.endDate = brwInfo.startDate.add(1, 'y');
+    brwInfo.loanTmpDocs = [];
+    for(let i: number = 0; i < 12; i++) {
+      let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+      tmpdoc.DocId = i + 1;
+      tmpdoc.TranAmount = 8333.34;
+      tmpdoc.InterestAmount = 362.50;
+      tmpdoc.Desp = `test${i+1}`;
+      tmpdoc.TranType = 28;
+      tmpdoc.TranDate = brwInfo.startDate.add(i + 1, 'M');
+      tmpdoc.ControlCenterId = 1;
+      brwInfo.loanTmpDocs.push(tmpdoc);
+    }
+    acnt.ExtraInfo = brwInfo;
+    this._finAccounts.push(acnt);
+    // Lend to
+    acnt = new Account();
+    acnt.Id = 23;
+    acnt.Name = 'Lend to 1';
+    acnt.CategoryId = financeAccountCategoryLendTo;
+    acnt.Status = AccountStatusEnum.Normal;
+    let lendto: AccountExtraLoan = new AccountExtraLoan();
+    lendto.Comment = 'Lend test';
+    lendto.PayingAccount = 11;
+    lendto.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+    lendto.TotalMonths = 12;
+    lendto.annualRate = 0.0435;
+    lendto.startDate = moment().subtract(1, 'M').startOf('day');
+    lendto.endDate = brwInfo.startDate.add(1, 'y');
+    for(let i: number = 0; i < 5; i++) {
+      let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
+      tmpdoc.DocId = i + 1;
+      tmpdoc.TranAmount = 8333.34;
+      tmpdoc.InterestAmount = 362.50;
+      tmpdoc.Desp = `test${i+1}`;
+      tmpdoc.TranType = 28;
+      tmpdoc.TranDate = lendto.startDate.add(i + 1, 'M');
+      tmpdoc.ControlCenterId = 1;
+      lendto.loanTmpDocs.push(tmpdoc);
+    }
+    acnt.ExtraInfo = lendto;
     this._finAccounts.push(acnt);
   }
   public buildFinAccountsFromAPI(): void {
