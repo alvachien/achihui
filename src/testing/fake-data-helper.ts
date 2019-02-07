@@ -922,6 +922,7 @@ export class FakeDataHelper {
       tmpdoc.TranType = 28;
       tmpdoc.TranDate = brwInfo.startDate.add(i + 1, 'M');
       tmpdoc.ControlCenterId = 1;
+      tmpdoc.AccountId = 22;
       brwInfo.loanTmpDocs.push(tmpdoc);
     }
     acnt.ExtraInfo = brwInfo;
@@ -949,6 +950,7 @@ export class FakeDataHelper {
       tmpdoc.TranType = 28;
       tmpdoc.TranDate = lendto.startDate.add(i + 1, 'M');
       tmpdoc.ControlCenterId = 1;
+      tmpdoc.AccountId = 23;
       lendto.loanTmpDocs.push(tmpdoc);
     }
     acnt.ExtraInfo = lendto;
