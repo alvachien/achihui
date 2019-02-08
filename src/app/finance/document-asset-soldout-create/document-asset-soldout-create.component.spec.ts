@@ -323,7 +323,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -336,7 +336,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
+      fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
@@ -351,7 +351,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       // component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -364,8 +364,8 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1: desp is mandatory', fakeAsync(() => {
@@ -379,7 +379,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       // component.firstFormGroup.get('despControl').setValue('test');
@@ -392,8 +392,8 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1: prevent the case that neither cc nor order', fakeAsync(() => {
@@ -407,7 +407,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -420,8 +420,8 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1: prevent the case that both cc and order', fakeAsync(() => {
@@ -435,7 +435,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -449,8 +449,8 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1: exchange rate is mandatory in foreign currency', fakeAsync(() => {
@@ -484,8 +484,8 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1. shall go to step 2 in base currency case', fakeAsync(() => {
@@ -499,7 +499,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -509,12 +509,12 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
     }));
-    
+
     it('step 1. shall go to step 2 in foreign currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -527,7 +527,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
       component.firstFormGroup.get('currControl').setValue('USD');
-      // Exchange rate 
+      // Exchange rate
       component.firstFormGroup.get('exgControl').setValue(643.12);
       // Exchange rate plan
       // Desp
@@ -539,7 +539,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -556,7 +556,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -566,7 +566,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -587,7 +587,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -597,7 +597,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -638,7 +638,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -648,7 +648,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -691,7 +691,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -701,7 +701,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -752,7 +752,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -762,7 +762,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -805,7 +805,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -815,7 +815,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -860,7 +860,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -870,7 +870,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -913,7 +913,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -923,7 +923,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -989,7 +989,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -999,7 +999,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -1074,7 +1074,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -1084,7 +1084,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -1141,7 +1141,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -1151,7 +1151,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -1216,7 +1216,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -1226,7 +1226,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);

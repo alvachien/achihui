@@ -347,7 +347,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
@@ -379,7 +379,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
@@ -411,7 +411,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
@@ -443,7 +443,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
@@ -475,7 +475,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeFalsy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
@@ -507,7 +507,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
@@ -540,7 +540,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
@@ -576,7 +576,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
@@ -610,7 +610,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
@@ -642,7 +642,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -651,7 +651,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.dataSource.data.length).toEqual(0);
       expect(component.itemStepCompleted).toBeFalsy();
     }));
-    
+
     it('step 1. shall go to step 2 in foreign currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -681,7 +681,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -690,7 +690,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.dataSource.data.length).toEqual(0);
       expect(component.itemStepCompleted).toBeFalsy();
     }));
-    
+
     it('step 2. items is required for non-legacy case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -717,7 +717,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -726,7 +726,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.dataSource.data.length).toEqual(0);
       expect(component.itemStepCompleted).toBeFalsy();
     }));
-    
+
     it('step 2. items is not required for legacy case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -755,7 +755,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -764,7 +764,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.dataSource.data.length).toEqual(0);
       expect(component.itemStepCompleted).toBeTruthy();
     }));
-    
+
     it('step 2 (non-legacy): should not allow go to third step if there are items without account', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -791,7 +791,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -847,7 +847,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -905,7 +905,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -971,7 +971,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -1029,7 +1029,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -1089,7 +1089,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -1147,7 +1147,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -1238,7 +1238,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -1271,7 +1271,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(2);
 
       // Now go to submit
-      component.arAccounts = []; // Ensure check failed!!
+      component.arTranTypes = []; // Ensure check failed!!
       component.onSubmit();
       fixture.detectChanges();
 
@@ -1280,7 +1280,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Since there is only one button
       (overlayContainerElement.querySelector('button') as HTMLElement).click();
       fixture.detectChanges();
-      
+
       flush();
     }));
 
@@ -1310,7 +1310,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -1389,7 +1389,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);

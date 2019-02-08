@@ -260,7 +260,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
     let overlayContainerElement: HTMLElement;
     let loanAccount: UIAccountForSelection;
 
-    beforeEach(() => {      
+    beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
@@ -903,7 +903,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
       fixture.detectChanges();
       // Assign values to the paying account info
       let arPayAcnt: any[] = component.dataSourcePayingAccount.data.slice();
-      // arPayAcnt[0].accountID = 11; 
+      // arPayAcnt[0].accountID = 11;
       arPayAcnt[0].amount = 10;
       component.dataSourcePayingAccount.data = arPayAcnt;
       fixture.detectChanges();
@@ -964,7 +964,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
       fixture.detectChanges();
       // Assign values to the paying account info
       let arPayAcnt: any[] = component.dataSourcePayingAccount.data.slice();
-      arPayAcnt[0].accountID = 11; 
+      arPayAcnt[0].accountID = 11;
       // arPayAcnt[0].amount = 10;
       component.dataSourcePayingAccount.data = arPayAcnt;
       fixture.detectChanges();
@@ -1025,7 +1025,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
       fixture.detectChanges();
       // Assign values to the paying account info
       let arPayAcnt: any[] = component.dataSourcePayingAccount.data.slice();
-      arPayAcnt[0].accountID = 11; 
+      arPayAcnt[0].accountID = 11;
       arPayAcnt[0].amount = 10;
       component.dataSourcePayingAccount.data = arPayAcnt;
       fixture.detectChanges();
@@ -1086,7 +1086,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
       fixture.detectChanges();
       // Assign values to the paying account info
       let arPayAcnt: any[] = component.dataSourcePayingAccount.data.slice();
-      arPayAcnt[0].accountID = 11; 
+      arPayAcnt[0].accountID = 11;
       arPayAcnt[0].amount = component.totalAmount;
       component.dataSourcePayingAccount.data = arPayAcnt;
       fixture.detectChanges();
@@ -1105,7 +1105,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
     let overlayContainerElement: HTMLElement;
     let loanAccount: UIAccountForSelection;
 
-    beforeEach(() => {      
+    beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
@@ -1185,7 +1185,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
       fixture.detectChanges();
       // Assign values to the paying account info
       let arPayAcnt: any[] = component.dataSourcePayingAccount.data.slice();
-      arPayAcnt[0].accountID = 11; 
+      arPayAcnt[0].accountID = 11;
       arPayAcnt[0].amount = component.totalAmount;
       component.dataSourcePayingAccount.data = arPayAcnt;
       fixture.detectChanges();
@@ -1267,7 +1267,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
       fixture.detectChanges();
       // Assign values to the paying account info
       let arPayAcnt: any[] = component.dataSourcePayingAccount.data.slice();
-      arPayAcnt[0].accountID = 11; 
+      arPayAcnt[0].accountID = 11;
       arPayAcnt[0].amount = component.totalAmount;
       component.dataSourcePayingAccount.data = arPayAcnt;
       fixture.detectChanges();
@@ -1346,7 +1346,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
       fixture.detectChanges();
       // Assign values to the paying account info
       let arPayAcnt: any[] = component.dataSourcePayingAccount.data.slice();
-      arPayAcnt[0].accountID = 11; 
+      arPayAcnt[0].accountID = 11;
       arPayAcnt[0].amount = component.totalAmount;
       component.dataSourcePayingAccount.data = arPayAcnt;
       fixture.detectChanges();
@@ -1386,7 +1386,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
     let loanAccount: UIAccountForSelection;
     let uiService: UIStatusService;
 
-    beforeEach(() => {      
+    beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
@@ -1442,7 +1442,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
     let overlayContainerElement: HTMLElement;
     let loanAccount: UIAccountForSelection;
 
-    beforeEach(() => {      
+    beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
@@ -1518,7 +1518,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
       fixture.detectChanges();
       // Assign values to the paying account info
       let arPayAcnt: any[] = component.dataSourcePayingAccount.data.slice();
-      arPayAcnt[0].accountID = 11; 
+      arPayAcnt[0].accountID = 11;
       arPayAcnt[0].amount = component.totalAmount;
       component.dataSourcePayingAccount.data = arPayAcnt;
       fixture.detectChanges();

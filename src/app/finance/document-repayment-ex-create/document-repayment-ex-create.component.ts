@@ -223,7 +223,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
         // Read the account out
         this._readLoanAccount(this._uiStatusService.currentTemplateLoanDoc.AccountId);
       }
-    }, (error: any) =>{
+    }, (error: any) => {
       this._snackbar.open(error.toString(), undefined, {
         duration: 2000,
       });
@@ -236,7 +236,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);
-      this._destroyed$.complete();  
+      this._destroyed$.complete();
     }
   }
 
@@ -249,7 +249,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
       // First step > Second step
       let selectedAcnt: UIAccountForSelection = this.firstFormGroup.get('accountControl').value;
       if (selectedAcnt !== undefined
-        && (this.loanAccount === undefined 
+        && (this.loanAccount === undefined
         || (this.loanAccount !== undefined && this.loanAccount.Id !== selectedAcnt.Id))) {
           // Read it
           this._readLoanAccount(selectedAcnt.Id);

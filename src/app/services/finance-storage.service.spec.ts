@@ -1201,7 +1201,7 @@ describe('FinanceStorageService', () => {
 
   describe('createAssetBuyinDocument', () => {
     let apiurl: string = environment.ApiUrl + '/api/FinanceAssetBuyDocument';
-    
+
     beforeEach(() => {
       service = TestBed.get(FinanceStorageService);
     });

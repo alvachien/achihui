@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
   FinCurrencyService, UIStatusService, } from '../services';
 import { Router } from '@angular/router';
-import { ObservableMedia, MediaChange } from '@angular/flex-layout';
+import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import * as moment from 'moment';
 import { Observable, Subject, BehaviorSubject, forkJoin, ReplaySubject, merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -47,7 +47,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     private _lrnstorageService: LearnStorageService,
     private _finstorageService: FinanceStorageService,
     public _uistatusService: UIStatusService,
-    private media: ObservableMedia,
+    private media: MediaObserver,
     private _themeStorage: ThemeStorage,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -93,7 +93,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       this.onFinanceScopeChanged();
     });
 
-    this.media.asObservable()
+    this.media.media$
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((change: MediaChange) => {
         this._changeGraphSize();

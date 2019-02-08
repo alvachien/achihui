@@ -130,7 +130,7 @@ export class AccountExtADPComponent implements OnInit, OnDestroy {
   }
 
   public displayTmpdocs(): void {
-    if (this._insobj && this._insobj.dpTmpDocs && this._insobj.dpTmpDocs instanceof Array 
+    if (this._insobj && this._insobj.dpTmpDocs && this._insobj.dpTmpDocs instanceof Array
       && this._insobj.dpTmpDocs.length > 0) {
       this.dataSource = new MatTableDataSource(this._insobj.dpTmpDocs);
       this.dataSource.paginator = this.paginator;

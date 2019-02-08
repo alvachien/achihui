@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraLoan, UIAccountForSelection,
@@ -6,7 +6,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, Acc
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, take } from 'rxjs/operators';
-import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator } from '@angular/material';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
@@ -14,7 +14,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   templateUrl: './account-ext-loan.component.html',
   styleUrls: ['./account-ext-loan.component.scss'],
 })
-export class AccountExtLoanComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AccountExtLoanComponent implements OnInit, OnDestroy {
   private _insobj: AccountExtraLoan;
   private _destroyed$: ReplaySubject<boolean>;
   public currentMode: string;
@@ -24,6 +24,7 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit, OnDestroy
   dataSource: MatTableDataSource<TemplateDocLoan> = new MatTableDataSource<TemplateDocLoan>();
   displayedColumns: string[] = ['TranDate', 'TranAmount', 'InterestAmount', 'Desp', 'RefDoc'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   @Input() set extObject(ins: AccountExtraLoan) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -45,10 +46,34 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit, OnDestroy
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
+  get canGenerateTmpDocs(): boolean {
+    if (!this.isFieldChangable) {
+      return false;
+    }
+
+    if (!this.extObject.RepayMethod) {
+      return false;
+    }
+
+    if (this.extObject.TotalMonths <= 0) {
+      return false;
+    }
+
+    if (this.uiMode === UIMode.Create) {
+      // Check!
+      if (!this.tranAmount) {
+        return false;
+      }
+    } else if (this.uiMode === UIMode.Change) {
+      // Todo.
+    }
+    return true;
+  }
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
+    private _snackbar: MatSnackBar,
     private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent constructor`);
@@ -75,17 +100,19 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit, OnDestroy
     )
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
-    });
+        this.arUIAccount = BuildupAccountForSelection(x[1], x[0]);
+      }, (error: any) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering AccountExtADPComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${error}`);
+        }
+
+        this._snackbar.open(error.toString(), undefined, {
+          duration: 2000,
+        });
+      });
 
     if (this._insobj.loanTmpDocs.length > 0) {
-      this.dataSource.data = this._insobj.loanTmpDocs;
-    }
-  }
-
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent ngAfterViewInit`);
+      this.displayTmpdocs();
     }
   }
 
@@ -93,36 +120,22 @@ export class AccountExtLoanComponent implements OnInit, AfterViewInit, OnDestroy
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent ngOnDestroy`);
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
-  public initCreateMode(): void {
-    this.dataSource.data = [];
-  }
   public displayTmpdocs(): void {
-    this.dataSource.data = this._insobj.loanTmpDocs;
+    this.dataSource = new MatTableDataSource(this._insobj.loanTmpDocs);
+    this.dataSource.paginator = this.paginator;
   }
+
   public onGenerateTmpDocs(): void {
-    // Do some basic check
-    if (!this.extObject.RepayMethod) {
-      return;
-    }
-
-    if (this.uiMode === UIMode.Create || this.uiMode === UIMode.Change) {
-      // It is valid
-    } else {
-      // Invalid
-      return;
-    }
-
     let tmpdocs: TemplateDocLoan[] = [];
 
     if (this.uiMode === UIMode.Create) {
-      if (!this.tranAmount) {
-        return;
-      }
-
       // Call the API for Loan template docs.
       let di: FinanceLoanCalAPIInput = {
         TotalAmount: this.tranAmount,

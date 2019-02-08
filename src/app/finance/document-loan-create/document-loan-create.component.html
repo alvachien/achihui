@@ -4,9 +4,9 @@
     <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-horizontal-stepper linear="true" (selectionChange)="onStepSelectionChange($event)">
+    <mat-horizontal-stepper linear #stepper (selectionChange)="onStepSelectionChange($event)">
       <!-- Step: Generic Info -->
-      <mat-step [stepControl]="firstFormGroup">
+      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
@@ -32,7 +32,7 @@
           <!-- Currency -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
-              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+              <mat-option *ngFor="let cr of this.arCurrencies" [value]="cr.Currency">
                 {{cr.Symbol}} - {{cr.Name | translate}}
               </mat-option>
             </mat-select>
@@ -52,7 +52,7 @@
           <!-- CC -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl">
-              <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+              <mat-option *ngFor="let cc of this.arControlCenters" [value]="cc.Id">
                 {{cc.Name}}
               </mat-option>
             </mat-select>
@@ -74,7 +74,7 @@
       </mat-step>
 
       <!-- Step: Extra Info -->
-      <mat-step>
+      <mat-step [completed]="extraStepCompleted" errorMessage="Invalid extra. info">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
 
         <div class="achih-control-full-width">

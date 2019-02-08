@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterContentInit, AfterViewInit, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource, MatTable, } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ObservableMedia, MediaChange } from '@angular/flex-layout';
+import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject, ReplaySubject, BehaviorSubject, merge, of, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -69,12 +69,11 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
 
   chartTheme: string;
 
-  constructor(
-    private _tranService: TranslateService,
+  constructor(private _tranService: TranslateService,
     private _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
     private _themeStorage: ThemeStorage,
-    private media: ObservableMedia) {
+    private media: MediaObserver) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ReportComponent constructor...');
     }
@@ -116,7 +115,7 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
       }
     });
 
-    this.media.asObservable()
+    this.media.media$
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((change: MediaChange) => {
         this.changeGraphSize();

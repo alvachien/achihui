@@ -1,5 +1,5 @@
 import { UIAccountCtgyFilterExPipe } from './uiaccount-ctgy-filterex.pipe';
-import { UIAccountForSelection, financeAccountCategoryCash, financeAccountCategoryCreditCard, 
+import { UIAccountForSelection, financeAccountCategoryCash, financeAccountCategoryCreditCard,
   financeAccountCategoryDeposit, financeAccountCategoryAdvancePayment, financeAccountCategoryAdvanceReceived,
   financeAccountCategoryAsset, financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo } from '../../model';
 
@@ -87,8 +87,8 @@ describe('UIAccountCtgyFilterExPipe', () => {
       excludedCategories: [
       ],
     });
-    expect(rstAccounts.length).toEqual(1);
-    expect(rstAccounts[0].Name).toContain('Cash');
+    expect(rstAccounts.length).toBeGreaterThan(1);
+    // expect(rstAccounts[0].Name).toContain('Cash');
   });
   it('3. include nothing, exclude cash account', () => {
     let rstAccounts: UIAccountForSelection[] = pipe.transform(allAccounts, {
@@ -113,7 +113,7 @@ describe('UIAccountCtgyFilterExPipe', () => {
         financeAccountCategoryAdvanceReceived,
         financeAccountCategoryAsset,
         financeAccountCategoryBorrowFrom,
-        financeAccountCategoryLendTo
+        financeAccountCategoryLendTo,
       ],
     });
     expect(rstAccounts.length).toBeGreaterThan(1);

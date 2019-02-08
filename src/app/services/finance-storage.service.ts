@@ -920,7 +920,7 @@ export class FinanceStorageService {
         } else {
           this._listOrder.push(hd);
         }
-        
+
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {

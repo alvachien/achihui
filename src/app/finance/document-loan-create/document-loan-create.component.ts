@@ -8,10 +8,10 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeBorrowFrom,
-  financeAccountCategoryBorrowFrom, financeAccountCategoryLendTo, financeDocTypeLendTo,
+import { LogLevel, Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,
+  ControlCenter, Order, TranType, financeDocTypeLendTo,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  FinanceLoanCalAPIInput, FinanceLoanCalAPIOutput, IAccountCategoryFilter, AccountExtraLoan,
+  FinanceLoanCalAPIInput, DocumentType, IAccountCategoryFilter, AccountExtraLoan,
   momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
@@ -41,6 +41,13 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   // Step: Extra Info
   public loanAccount: AccountExtraLoan;
   @ViewChild(AccountExtLoanComponent) ctrlAccount: AccountExtLoanComponent;
+  // Variables
+  arControlCenters: ControlCenter[];
+  arOrders: Order[];
+  arTranTypes: TranType[];
+  arAccounts: Account[];
+  arDocTypes: DocumentType[];
+  arCurrencies: Currency[];
 
   get tranAmount(): number {
     let amtctrl: any = this.firstFormGroup.get('amountControl');
@@ -62,6 +69,13 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       return currctrl.value;
     }
   }
+  get isForeignCurrency(): boolean {
+    if (this.tranCurrency && this.tranCurrency !== this._homedefService.ChosedHome.BaseCurrency) {
+      return true;
+    }
+
+    return false;
+  }
   get controlCenterID(): number {
     let ccctrl: any = this.firstFormGroup.get('ccControl');
     if (ccctrl) {
@@ -73,6 +87,24 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     if (orderctrl) {
       return orderctrl.value;
     }
+  }
+  get firstStepCompleted(): boolean {
+    if (this.firstFormGroup && this.firstFormGroup.valid) {
+      // Ensure the exchange rate
+      if (this.isForeignCurrency) {
+        if (this.firstFormGroup.get('exgControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
+  get extraStepCompleted(): boolean {
+    return false;
   }
 
   constructor(private _dialog: MatDialog,
@@ -103,6 +135,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       despControl: ['', Validators.required],
       amountControl: ['', Validators.required],
       currControl: ['', Validators.required],
+      exgControl: [''],
+      exgpControl: [''],
       accountControl: ['', Validators.required],
       ccControl: [''],
       orderControl: [''],
@@ -121,12 +155,22 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
+      this.arDocTypes = rst[1];
+      this.arTranTypes = rst[2];
+      this.arAccounts = rst[3];
+      this.arControlCenters = rst[4];
+      this.arOrders = rst[5];
+      this.arCurrencies = rst[6];
+
+      // Currency
+      this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
+
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilter = undefined;
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
 
       this._activateRoute.url.subscribe((x: any) => {
@@ -209,12 +253,12 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
     // Check!
     if (!docObj.onVerify({
-      ControlCenters: this._storageService.ControlCenters,
-      Orders: this._storageService.Orders,
-      Accounts: this._storageService.Accounts,
-      DocumentTypes: this._storageService.DocumentTypes,
-      TransactionTypes: this._storageService.TranTypes,
-      Currencies: this._currService.Currencies,
+      ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranTypes,
+      Currencies: this.arCurrencies,
       BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details

@@ -191,7 +191,7 @@ describe('AccountExtADPComponent', () => {
     beforeEach(() => {
       // Before Each
       component.uiMode = UIMode.Display;
-      let fakedAccountExtra = new AccountExtraAdvancePayment();
+      let fakedAccountExtra: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
       fakedAccountExtra.Comment = 'Test';
       fakedAccountExtra.RepeatType = RepeatFrequencyEnum.Month;
       for (let i: number = 0; i < 10; i++) {

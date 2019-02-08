@@ -262,7 +262,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this._destroyed$) {
       this._destroyed$.next(true);
-      this._destroyed$.complete();  
+      this._destroyed$.complete();
     }
   }
 
