@@ -9,9 +9,9 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIFinCurrencyExchangeDocument,
+import { LogLevel, Document, DocumentItem, DocumentType, TranType, Currency, Account,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  UIMode, getUIModeString, financeDocTypeCurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate,
+  ControlCenter, Order, financeDocTypeCurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate,
   IAccountCategoryFilter, momentDateFormat, financeTranTypeTransferIn, financeTranTypeTransferOut,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
@@ -46,14 +46,19 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     'ExchangeRate', 'PropExchangeRate', 'Currency2', 'ExchangeRate2', 'PropExchangeRate2',
   ];
   selection: any = new SelectionModel<DocumentWithPlanExgRate>(true, []);
+  // Variables
+  arControlCenters: ControlCenter[];
+  arOrders: Order[];
+  arTranTypes: TranType[];
+  arAccounts: Account[];
+  arDocTypes: DocumentType[];
+  arCurrencies: Currency[];
 
-  get tranDateString(): string {
+  get tranDate(): any {
     let datctrl: any = this.firstFormGroup.get('dateControl');
-    if (datctrl && datctrl.value && datctrl.value.format) {
-      return datctrl.value.format(momentDateFormat);
+    if (datctrl && datctrl.value) {
+      return datctrl.value;
     }
-
-    return '';
   }
   get sourceCurrency(): string {
     let currctrl: any = this.fromFormGroup.get('currControl');
@@ -77,6 +82,68 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
   }
   get isForeignTargetCurrency(): boolean {
     if (this.targetCurrency && this.targetCurrency !== this._homedefService.ChosedHome.BaseCurrency) {
+      return true;
+    }
+
+    return false;
+  }
+  get firstStepCompleted(): boolean {
+    if (this.firstFormGroup && this.firstFormGroup.valid) {
+      return true;
+    }
+    return false;
+  }
+  get fromStepCompleted(): boolean {
+    if (this.fromFormGroup && this.fromFormGroup.valid) {
+      // Foreign currency
+      if (this.isForeignSourceCurrency) {
+        if (!this.fromFormGroup.get('exgControl').value) {
+          return false;
+        }
+      }
+
+      if (this.fromFormGroup.get('ccControl').value) {
+        if (this.fromFormGroup.get('orderControl').value) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        if (this.fromFormGroup.get('orderControl').value) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+
+    return false;
+  }
+  get toStepCompleted(): boolean {
+    if (this.toFormGroup && this.toFormGroup.valid) {
+      // Foreign currency
+      if (this.isForeignTargetCurrency) {
+        if (!this.toFormGroup.get('exgControl').value) {
+          return false;
+        }
+      }
+
+      if (this.toFormGroup.get('ccControl').value) {
+        if (this.toFormGroup.get('orderControl').value) {
+          return false;
+        }
+      } else {
+        if (this.toFormGroup.get('orderControl').value) {
+          // return true;
+        } else {
+          return false;
+        }
+      }
+
+      if (this.targetCurrency && this.sourceCurrency && this.targetCurrency === this.sourceCurrency) {
+        return false;
+      }
+
       return true;
     }
 
@@ -125,7 +192,6 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
       ccControl: [''],
       orderControl: [''],
     });
-    this.dataSource.data = [];
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -142,13 +208,24 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnInit, forkJoin: ${rst.length}`);
       }
 
+      this.arDocTypes = rst[1];
+      this.arTranTypes = rst[2];
+      this.arAccounts = rst[3];
+      this.arControlCenters = rst[4];
+      this.arOrders = rst[5];
+      this.arCurrencies = rst[6];
+
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilter = undefined;
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders, true);
+      this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
+    }, (error: any) => {
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
 
@@ -191,7 +268,9 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
         arrqt.push(this._storageService.fetchPreviousDocWithPlanExgRate(this.targetCurrency));
       }
 
-      forkJoin(arrqt).subscribe((x: any) => {
+      forkJoin(arrqt)
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           for (let it of x) {
             if (it && it instanceof Array && it.length > 0) {
@@ -223,12 +302,12 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
 
     // Check!
     if (!docObj.onVerify({
-      ControlCenters: this._storageService.ControlCenters,
-      Orders: this._storageService.Orders,
-      Accounts: this._storageService.Accounts,
-      DocumentTypes: this._storageService.DocumentTypes,
-      TransactionTypes: this._storageService.TranTypes,
-      Currencies: this._currService.Currencies,
+      ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranTypes,
+      Currencies: this.arCurrencies,
       BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details

@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, inject, tick, flush, } from '@angular/core/testing';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -8,23 +9,44 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
-} from '@angular/material';
+  MatStepperNext, } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { By } from '@angular/platform-browser';
+import * as moment from 'moment';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
-import { HttpLoaderTestFactory, FakeDataHelper } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentExchangeCreateComponent } from './document-exchange-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
+import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 
 describe('DocumentExchangeCreateComponent', () => {
   let component: DocumentExchangeCreateComponent;
   let fixture: ComponentFixture<DocumentExchangeCreateComponent>;
   let fakeData: FakeDataHelper;
+  let fetchAllAccountCategoriesSpy: any;
+  let fetchAllDocTypesSpy: any;
+  let fetchAllTranTypesSpy: any;
+  let fetchAllAccountsSpy: any;
+  let fetchAllOrdersSpy: any;
+  let fetchAllControlCentersSpy: any;
+  let createDocumentSpy: any;
+  let fetchPreviousDocSpy: any;
+  let updatePreviousDocSpy: any;
+  let fetchAllCurrenciesSpy: any;
+  let routerSpy: any;
 
   beforeEach(async(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
+    fakeData.buildCurrentUser();
+    fakeData.buildCurrencies();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
+    fakeData.buildFinControlCenter();
+    fakeData.buildFinOrders();
 
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
@@ -33,18 +55,24 @@ describe('DocumentExchangeCreateComponent', () => {
       'fetchAllAccounts',
       'fetchAllControlCenters',
       'fetchAllOrders',
+      'createDocument',
+      'fetchPreviousDocWithPlanExgRate',
+      'updatePreviousDocWithPlanExgRate',
     ]);
-    const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    const fetchAllDocTypesSpy: any = stroageService.fetchAllDocTypes.and.returnValue(of([]));
-    const fetchAllTranTypesSpy: any = stroageService.fetchAllTranTypes.and.returnValue(of([]));
-    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    const fetchAllOrdersSpy: any = stroageService.fetchAllOrders.and.returnValue(of([]));
-    const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllDocTypesSpy = stroageService.fetchAllDocTypes.and.returnValue(of([]));
+    fetchAllTranTypesSpy = stroageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
+    fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
+    createDocumentSpy = stroageService.createDocument.and.returnValue(of({}));
+    fetchPreviousDocSpy = stroageService.fetchPreviousDocWithPlanExgRate.and.returnValue(of([]));
+    updatePreviousDocSpy = stroageService.fetchPreviousDocWithPlanExgRate.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
-    const fetchAllCurrenciesSpy: any = currService.fetchAllCurrencies.and.returnValue(of([]));
+    fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [
@@ -67,6 +95,7 @@ describe('DocumentExchangeCreateComponent', () => {
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
         DocumentExchangeCreateComponent,
+        MessageDialogComponent,
       ],
       providers: [
         TranslateService,
@@ -79,17 +108,1244 @@ describe('DocumentExchangeCreateComponent', () => {
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: Router, useValue: routerSpy },
       ],
-    })
-    .compileComponents();
+    });
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ MessageDialogComponent ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentExchangeCreateComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('1. should create without data', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  describe('2. Exception case handling (async loading)', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('1. should display error when currency service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Currency service failed'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Currency service failed',
+        'Expected snack bar to show the error message: Currency service failed');
+      flush();
+    }));
+
+    it('2. should display error when accont category service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Account category service failed'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Account category service failed',
+        'Expected snack bar to show the error message: Account category service failed');
+      flush();
+    }));
+
+    it('3. should display error when doc type service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Doc type service failed'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Doc type service failed',
+        'Expected snack bar to show the error message: Doc type service failed');
+      flush();
+    }));
+
+    it('4. should display error when tran type service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Tran type service failed'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Tran type service failed',
+        'Expected snack bar to show the error message: Tran type service failed');
+      flush();
+    }));
+
+    it('5. should display error when accont service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Account service failed'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Account service failed',
+        'Expected snack bar to show the error message: Account service failed');
+      flush();
+    }));
+
+    it('6. should display error when control center service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Control center service failed'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Control center service failed',
+        'Expected snack bar to show the error message: Control center service failed');
+      flush();
+    }));
+
+    it('7. should display error when order service fails', fakeAsync(() => {
+      // tell spy to return an async error observable
+      fetchAllOrdersSpy.and.returnValue(asyncError<string>('Order service failed'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('Order service failed',
+        'Expected snack bar to show the error message: Order service failed');
+      flush();
+    }));    
+  });
+
+  describe('3. should prevent errors by the checking logic', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+
+      // Accounts
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Order
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('step 1: should set the default values: date, and so on', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+
+      // Also, the date shall be inputted
+      expect(component.tranDate).toBeTruthy();
+    }));
+
+    it('step 1: should have accounts and orders loaded', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      expect(component.arUIAccount.length).toEqual(0);
+      expect(component.arUIOrder.length).toEqual(0);
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component.arUIAccount.length).toBeGreaterThan(0);
+      expect(component.arUIOrder.length).toBeGreaterThan(0);
+      expect(component.firstFormGroup.get('dateControl').value).toBeTruthy();
+    }));
+
+    it('step 1. desp is a must', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      // component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.firstStepCompleted).toBeFalsy();
+
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
+    }));
+
+    it('step 2. account is a must', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      // component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeFalsy();
+      expect(component.fromStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2. amount is a must', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      // component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeFalsy();
+      expect(component.fromStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2. currency is a must', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      // component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeFalsy();
+      expect(component.fromStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2. prevent the case that neither control center nor order', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      // component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2. prevent the case that both control center and order', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2. exchange rate is mandatory for foreign currency case', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue('USD');
+      // Exg rate
+      // Control Center
+      // component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeFalsy();
+
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+    }));
+
+    it('step 2. allow go to step 3 in valid case (base currency)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      // component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+
+    it('step 2. allow go to step 3 in valid case (foreign currency)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue('USD');
+      // Exg rate
+      component.fromFormGroup.get('exgControl').setValue(632.23);
+      // Control Center
+      // component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+
+    it('step 3. account is must', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      // component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.toFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeFalsy();
+      expect(component.toStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+    it('step 3. amount is must', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      // component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.toFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeFalsy();
+      expect(component.toStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+    it('step 3. currency is must', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      // component.toFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeFalsy();
+      expect(component.toStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+    it('step 3. prevent the case that neither cc nor order', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.toFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      // component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeTruthy();
+      expect(component.toStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+    it('step 3. prevent the case that both cc and order', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.toFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeTruthy();
+      expect(component.toStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+
+    it('step 3. exchange rate is a must for foreign currency', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.toFormGroup.get('currControl').setValue('USD');
+      // Exg rate
+      // Control Center
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeTruthy();
+      expect(component.toStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+
+    it('step 3. currencies shall be different (step 2 and step 3 both base currency)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.toFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeTruthy();
+      expect(component.toStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+
+    it('step 3. currencies shall be different (step 2 and step 3 both foreign currency)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue('USD');
+      // Exg rate
+      component.fromFormGroup.get('exgControl').setValue(623.23);
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.toFormGroup.get('currControl').setValue('USD');
+      // Exg rate
+      component.toFormGroup.get('exgControl').setValue(623.34);
+      // Control Center
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeTruthy();
+      expect(component.toStepCompleted).toBeFalsy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+    }));
+
+    it('step 3. shall go to step 4 in valid case (2 is base currency, 3 is foreign currency)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.toFormGroup.get('currControl').setValue('USD');
+      // Exg rate
+      component.toFormGroup.get('exgControl').setValue(634.45);
+      // Control Center
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeTruthy();
+      expect(component.toStepCompleted).toBeTruthy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(3);
+    }));
+
+    it('step 3. shall go to step 4 in valid case (2 is foreign currency, 3 is base currency)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue('USD');
+      // Exg rate
+      component.fromFormGroup.get('exgControl').setValue(623.34);
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.toFormGroup.get('currControl').setValue(fakeData.chosedHome.BaseCurrency);
+      // Exg rate
+      // component.toFormGroup.get('exgControl').setValue(634.45);
+      // Control Center
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeTruthy();
+      expect(component.toStepCompleted).toBeTruthy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(3);
+    }));
+
+    it('step 3. shall go to step 4 in valid case (2 is foreign currency, 3 is another foreign currency)', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // Step 1.
+      // Tran. date - default
+      // Desp
+      component.firstFormGroup.get('despControl').setValue('Test');
+      fixture.detectChanges();
+      // Click next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(1);
+
+      // Step 2.
+      // Account
+      component.fromFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.fromFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.fromFormGroup.get('currControl').setValue('USD');
+      // Exg rate
+      component.fromFormGroup.get('exgControl').setValue(623.34);
+      // Control Center
+      component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.fromFormGroup.valid).toBeTruthy();
+      expect(component.fromStepCompleted).toBeTruthy();
+      
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      // Step 3.
+      // Account
+      component.toFormGroup.get('accountControl').setValue(11);
+      // Amount
+      component.toFormGroup.get('amountControl').setValue(100);
+      // Currency
+      component.toFormGroup.get('currControl').setValue('EUR');
+      // Exg rate
+      component.toFormGroup.get('exgControl').setValue(1000.11);
+      // Control Center
+      component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      // Order
+      // component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
+      // Update UI
+      fixture.detectChanges();
+
+      expect(component.toFormGroup.valid).toBeTruthy();
+      expect(component.toStepCompleted).toBeTruthy();
+      // Click on next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(3);
+    }));
   });
 });

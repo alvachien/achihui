@@ -4,9 +4,9 @@
     <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-horizontal-stepper linear="true" (selectionChange)="onStepSelectionChange($event)">
+    <mat-horizontal-stepper linear (selectionChange)="onStepSelectionChange($event)">
       <!-- Step: Generic info -->
-      <mat-step [stepControl]="firstFormGroup">
+      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
@@ -30,7 +30,7 @@
       </mat-step>
 
       <!-- Step: From -->
-      <mat-step [stepControl]="fromFormGroup">
+      <mat-step [completed]="fromStepCompleted" errorMessage="Invalid from">
         <form [formGroup]="fromFormGroup">
           <ng-template matStepLabel>{{'Finance.TransferFrom' | translate}}</ng-template>
 
@@ -64,7 +64,7 @@
 
           <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl">
-              <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+              <mat-option *ngFor="let cc of arControlCenters" [value]="cc.Id">
                 {{cc.Name}}
               </mat-option>
             </mat-select>
@@ -72,7 +72,7 @@
 
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl">
-              <mat-option *ngFor="let ord of _storageService.Orders | uiOrderValidFilter: uiOrderFilter" [value]="ord.Id">
+              <mat-option *ngFor="let ord of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="ord.Id">
                 {{ord.Name}}
               </mat-option>
             </mat-select>
@@ -86,7 +86,7 @@
       </mat-step>
 
       <!-- Step: To -->
-      <mat-step [stepControl]="toFormGroup">
+      <mat-step [completed]="toStepCompleted" errorMessage="Invalid header">
         <form [formGroup]="toFormGroup">
           <ng-template matStepLabel>{{'Finance.TransferTo' | translate}}</ng-template>
 
@@ -107,7 +107,7 @@
 
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
-              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+              <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
                 {{cr.Symbol}} - {{cr.Name | translate}}
               </mat-option>
             </mat-select>
@@ -121,7 +121,7 @@
           <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl">
               <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-              <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+              <mat-option *ngFor="let cc of arControlCenters" [value]="cc.Id">
                 {{cc.Name}}
               </mat-option>
             </mat-select>

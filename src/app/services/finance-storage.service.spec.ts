@@ -1608,4 +1608,112 @@ describe('FinanceStorageService', () => {
       req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
+
+  describe('fetchPreviousDocWithPlanExgRate', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for success case', () => {
+      service.fetchPreviousDocWithPlanExgRate(new Document(), 22, 1).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl
+          && requrl.params.has('hid')
+          && requrl.params.has('loanAccountID');
+       });
+
+      // Respond with the mock data
+      req.flush(100);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.fetchPreviousDocWithPlanExgRate(new Document(), 22, 1).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl
+          && requrl.params.has('hid')
+          && requrl.params.has('loanAccountID');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('updatePreviousDocWithPlanExgRate', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for success case', () => {
+      service.updatePreviousDocWithPlanExgRate(new Document(), 22, 1).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl
+          && requrl.params.has('hid')
+          && requrl.params.has('loanAccountID');
+       });
+
+      // Respond with the mock data
+      req.flush(100);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.updatePreviousDocWithPlanExgRate(new Document(), 22, 1).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === apiurl
+          && requrl.params.has('hid')
+          && requrl.params.has('loanAccountID');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
 });

@@ -94,7 +94,6 @@ export class FinanceStorageService {
     this._listControlCenter = [];
     this._isOrderListLoaded = false;
     this._listOrder = [];
-    // this._isDocumentListLoaded = false;
   }
 
   // Account categories
@@ -1765,7 +1764,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate/';
+    let apiurl: string = environment.ApiUrl + '/api/FinanceDocWithPlanExgRate';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('tgtcurr', tgtcurr);

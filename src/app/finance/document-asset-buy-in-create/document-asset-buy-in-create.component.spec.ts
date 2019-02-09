@@ -1274,6 +1274,8 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       component.arTranTypes = []; // Ensure check failed!!
       component.onSubmit();
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
       // Expect there is dialog
       expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
