@@ -2,7 +2,7 @@
   <!-- Start Date -->
   <mat-form-field>
     <input matInput [ngModel]="extObject?.startDate" (ngModelChange)="extObject.startDate=$event" [matDatepicker]="startdpicker" 
-      placeholder="{{'Common.StartDate' | translate}}" [disabled]="!isFieldChangable">
+      placeholder="{{'Common.StartDate' | translate}}" [disabled]="!isFieldChangable" name="startDate">
     <mat-datepicker-toggle matSuffix [for]="startdpicker"></mat-datepicker-toggle>
     <mat-datepicker #startdpicker></mat-datepicker>
   </mat-form-field>
@@ -10,7 +10,7 @@
   <!-- End Date -->
   <mat-form-field>
     <input matInput [ngModel]="extObject?.endDate" (ngModelChange)="extObject.endDate=$event" [matDatepicker]="enddpicker" 
-      placeholder="{{'Common.EndDate' | translate}}" [disabled]="!isFieldChangable">
+      placeholder="{{'Common.EndDate' | translate}}" [disabled]="!isFieldChangable" name="endDate">
     <mat-datepicker-toggle matSuffix [for]="enddpicker"></mat-datepicker-toggle>
     <mat-datepicker #enddpicker></mat-datepicker>
   </mat-form-field>
@@ -18,7 +18,7 @@
   <!-- Total months -->
   <mat-form-field>
     <input matInput type="number" [disabled]="!isFieldChangable" placeholder="{{'Finance.NumberOfPeriods' | translate}}" 
-      [ngModel]="extObject?.TotalMonths" (ngModelChange)="extObject.TotalMonths=$event"
+      [ngModel]="extObject?.TotalMonths" (ngModelChange)="extObject.TotalMonths=$event" required
       name="totmonth">
   </mat-form-field>
 
@@ -32,13 +32,15 @@
   <!-- First repay date -->
   <mat-form-field *ngIf="isCreateMode">
     <input matInput [ngModel]="extObject?.FirstRepayDate" (ngModelChange)="extObject.FirstRepayDate=$event" [matDatepicker]="firstrpdatedpicker" 
-      placeholder="{{'Finance.FirstRepayDate' | translate}}" [disabled]="!isFieldChangable">
+      placeholder="{{'Finance.FirstRepayDate' | translate}}" [disabled]="!isFieldChangable"
+      name="firstRepayDate">
     <mat-datepicker-toggle matSuffix [for]="firstrpdatedpicker"></mat-datepicker-toggle>
     <mat-datepicker #firstrpdatedpicker></mat-datepicker>
   </mat-form-field>
   
   <!-- Interest free -->
   <mat-checkbox [ngModel]="extObject?.InterestFree" (ngModelChange)="extObject.InterestFree=$event" 
+    name="interestFree"
     [disabled]="!isFieldChangable">{{'Finance.InterestFreeLoan' | translate}}</mat-checkbox>
 
   <!-- Annual Rate -->
@@ -52,7 +54,7 @@
   <mat-form-field>
     <mat-select placeholder="{{'Finance.RepaymentMethod' | translate}}" [disabled]="!isFieldChangable" 
       [ngModel]="extObject?.RepayMethod" (ngModelChange)="extObject.RepayMethod=$event"
-      name="paymet">
+      name="paymethod">
       <mat-option *ngFor="let rt of _uiStatusService.RepaymentMethods" [value]="rt.value">
         {{rt.i18nterm | translate}}
       </mat-option>

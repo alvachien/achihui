@@ -46,14 +46,12 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     if (this.firstFormGroup && this.firstFormGroup.valid) {
       // Ensure the exchange rate
       if (this.isForeignCurrency) {
-        if (this.firstFormGroup.get('exgControl').value) {
-          return true;
-        } else {
+        if (!this.firstFormGroup.get('exgControl').value) {
           return false;
         }
-      } else {
-        return true;
       }
+      
+      return true;
     }
     return false;
   }

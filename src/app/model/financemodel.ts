@@ -959,6 +959,23 @@ export class AccountExtraLoan extends AccountExtra {
     this._repayDayInMonth = rdim;
   }
 
+  get isValid(): boolean {
+    if (this.startDate === undefined) {
+      return false;
+    }
+    if (this.RepayMethod === undefined) {
+      return false;
+    }
+    if (this.TotalMonths === undefined || this.TotalMonths <= 0) {
+      return false;
+    }
+    if (this.loanTmpDocs.length <= 0) {
+      return false;
+    }
+
+    return true;
+  }
+
   constructor() {
     super();
 

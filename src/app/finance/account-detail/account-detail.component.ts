@@ -389,7 +389,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     if (this.detailObject.CategoryId === financeAccountCategoryLendTo
       || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom) {
       if (this._compLoan) {
-        this._compLoan.generateAccountInfoForSave();
+        // this._compLoan.generateAccountInfoForSave();
       }
     }
     if (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment

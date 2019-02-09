@@ -4,7 +4,7 @@
     <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-horizontal-stepper linear #stepper (selectionChange)="onStepSelectionChange($event)">
+    <mat-horizontal-stepper linear #stepper>
       <!-- Step: Generic Info -->
       <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
         <form [formGroup]="firstFormGroup">
@@ -37,7 +37,18 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-  
+
+          <!-- Exchange rate -->
+          <mat-form-field *ngIf="isForeignCurrency">
+            <input matInput type="number" placeholder="{{'Finance.ExchangeRate' | translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
+              formControlName="exgControl" id="exgrate">
+          </mat-form-field>
+
+          <!-- Planned Exchange rate -->
+          <div *ngIf="isForeignCurrency" class="achih-control-full-width">
+            <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
+          </div>
+    
           <!-- Account -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Account' | translate}}" formControlName="accountControl">

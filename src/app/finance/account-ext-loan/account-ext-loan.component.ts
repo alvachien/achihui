@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild } from '@angular/core';
-import { environment } from '../../../environments/environment';
-import { HttpErrorResponse } from '@angular/common/http';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraLoan, UIAccountForSelection,
-  IAccountCategoryFilter, BuildupAccountForSelection, TemplateDocLoan, FinanceLoanCalAPIInput, UICommonLabelEnum } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, take } from 'rxjs/operators';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator } from '@angular/material';
+
+import { environment } from '../../../environments/environment';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { LogLevel, Document, DocumentItem, UIMode, AccountExtraLoan, UIAccountForSelection,
+  IAccountCategoryFilter, BuildupAccountForSelection, TemplateDocLoan, FinanceLoanCalAPIInput, UICommonLabelEnum } from '../../model';
+import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 
 @Component({
   selector: 'hih-finance-account-ext-loan',
@@ -47,16 +47,26 @@ export class AccountExtLoanComponent implements OnInit, OnDestroy {
     return this.uiMode === UIMode.Create;
   }
   get canGenerateTmpDocs(): boolean {
+    // Ensure it is changable
     if (!this.isFieldChangable) {
       return false;
     }
 
+    // Repayment method
     if (!this.extObject.RepayMethod) {
       return false;
     }
 
+    // Total months
     if (this.extObject.TotalMonths <= 0) {
       return false;
+    }
+
+    // Interest rate
+    if (!this.extObject.InterestFree) {
+      if (!this.extObject.annualRate || this.extObject.annualRate < 0) {
+        return false;
+      }
     }
 
     if (this.uiMode === UIMode.Create) {
@@ -65,7 +75,7 @@ export class AccountExtLoanComponent implements OnInit, OnDestroy {
         return false;
       }
     } else if (this.uiMode === UIMode.Change) {
-      // Todo.
+      // Check something?
     }
     return true;
   }
@@ -172,16 +182,16 @@ export class AccountExtLoanComponent implements OnInit, OnDestroy {
             + ' / ' + x.length.toString();
           tmpdocs.push(tmpdoc);
         }
-
-        this.dataSource.data = tmpdocs;
-      }, (error: HttpErrorResponse) => {
+        this._insobj.loanTmpDocs = tmpdocs.slice();
+        this.displayTmpdocs();
+      }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering onSync, failed to calculate the template docs : ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering AccountExtLoanComponent onGenerateTmpDocs, failed with: ${error}`);
         }
 
         const dlginfo: MessageDialogInfo = {
           Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error ? error.message : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           Button: MessageDialogButtonEnum.onlyok,
         };
 
@@ -245,15 +255,16 @@ export class AccountExtLoanComponent implements OnInit, OnDestroy {
           arKeepItems.push(tmpdoc);
         }
 
-        this.dataSource.data = arKeepItems;
-      }, (error: HttpErrorResponse) => {
+        this._insobj.loanTmpDocs = arKeepItems.slice();
+        this.displayTmpdocs();
+      }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering onSync, failed to calculate the template docs : ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering AccountExtLoanComponent onGenerateTmpDocs, failed with: ${error}`);
         }
 
         const dlginfo: MessageDialogInfo = {
           Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error ? error.message : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
           Button: MessageDialogButtonEnum.onlyok,
         };
 
@@ -264,10 +275,5 @@ export class AccountExtLoanComponent implements OnInit, OnDestroy {
         });
       });
     }
-  }
-
-  public generateAccountInfoForSave(): void {
-    this._insobj.loanTmpDocs = [];
-    this._insobj.loanTmpDocs = this.dataSource.data;
   }
 }

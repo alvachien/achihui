@@ -16,7 +16,6 @@ import { LogLevel, Account, Document, DocumentItem, Currency, financeDocTypeBorr
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { HttpErrorResponse } from '@angular/common/http';
 import { AccountExtLoanComponent } from '../account-ext-loan';
 
 @Component({
@@ -92,18 +91,32 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     if (this.firstFormGroup && this.firstFormGroup.valid) {
       // Ensure the exchange rate
       if (this.isForeignCurrency) {
-        if (this.firstFormGroup.get('exgControl').value) {
+        if (!this.firstFormGroup.get('exgControl').value) {
+          return false;
+        }
+      }
+
+      if (this.firstFormGroup.get('ccControl').value) {
+        if (this.firstFormGroup.get('orderControl').value) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        if (this.firstFormGroup.get('orderControl').value) {
           return true;
         } else {
           return false;
         }
-      } else {
-        return true;
       }
     }
     return false;
   }
   get extraStepCompleted(): boolean {
+    if (this.loanAccount.isValid) {
+      return true;
+    }
+
     return false;
   }
 
@@ -190,21 +203,13 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
         this._cdr.detectChanges();
       });
-    }, (error: HttpErrorResponse) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${error}`);
       }
 
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error ? error.message : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
       });
     });
   }
@@ -219,37 +224,21 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onStepSelectionChange(event: StepperSelectionEvent): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent onStepSelectionChange where index = ${event.selectedIndex}`);
-    }
-
-    if (event.selectedIndex === 2) {
-      // For confirm
-      if (this.ctrlAccount) {
-        this.ctrlAccount.generateAccountInfoForSave();
-      }
-    }
-  }
-
   onReset(): void {
-    this._stepper.reset();
+    if (this._stepper) {
+      this._stepper.reset();
+    }
+    this.loanAccount = new AccountExtraLoan();
+    this.firstFormGroup.reset();
+    // Date
+    this.firstFormGroup.get('dateControl').setValue(moment());
+    // Currency
+    this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
   }
 
   onSubmit(): void {
     // Do the real submit
     let docObj: Document = this._generateDocument();
-    // Check on template docs
-    if (!this.loanAccount.RepayMethod) {
-      this._showErrorDialog('No repayment method!');
-      return;
-    }
-    for (let tdoc of this.ctrlAccount.extObject.loanTmpDocs) {
-      if (!tdoc.TranAmount) {
-        this._showErrorDialog('No tran. amount');
-        return;
-      }
-    }
 
     // Check!
     if (!docObj.onVerify({
@@ -277,8 +266,6 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Build the JSON file to API
-    let sobj: any = docObj.writeJSONObject(); // Document first
     let acntobj: Account = new Account();
     acntobj.HID = this._homedefService.ChosedHome.ID;
     acntobj.CategoryId = this.loanType;
@@ -286,26 +273,29 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     acntobj.Comment = docObj.Desp;
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
     acntobj.ExtraInfo = this.loanAccount;
-    sobj.accountVM = acntobj.writeJSONObject();
 
-    this._storageService.createLoanDocument(sobj).subscribe((x: any) => {
+    this._storageService.createLoanDocument(docObj, acntobj).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument`);
       }
 
       // Navigate back to list view
       // Show the snackbar
+      let recreate: boolean = false;
       let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
         this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
+          duration: 2000,
         });
 
       snackbarRef.onAction().subscribe(() => {
+        recreate = true;
         this.onReset();
       });
 
       snackbarRef.afterDismissed().subscribe(() => {
-        this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+        if (!recreate) {
+          this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
+        }
       });
     }, (error: any) => {
       // Show error message
@@ -326,23 +316,6 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         }
       });
     });
-  }
-
-  private _showErrorDialog(errormsg: string): void {
-    // Show a dialog for error details
-    const dlginfo: MessageDialogInfo = {
-      Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-      Content: errormsg,
-      Button: MessageDialogButtonEnum.onlyok,
-    };
-
-    this._dialog.open(MessageDialogComponent, {
-      disableClose: false,
-      width: '500px',
-      data: dlginfo,
-    });
-
-    return;
   }
 
   private _generateDocument(): Document {

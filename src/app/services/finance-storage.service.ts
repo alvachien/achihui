@@ -1238,7 +1238,7 @@ export class FinanceStorageService {
    * Create Loan document
    * @param jdata JSON format
    */
-  public createLoanDocument(jdata: any): Observable<Document> {
+  public createLoanDocument(docObj: Document, acntObj: Account): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1246,7 +1246,10 @@ export class FinanceStorageService {
 
     let apiurl: string = environment.ApiUrl + '/api/financeloandocument';
 
-    return this._http.post(apiurl, jdata, {
+    let sobj: any = docObj.writeJSONObject(); // Document first
+    sobj.accountVM = acntObj.writeJSONObject();
+
+    return this._http.post(apiurl, sobj, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
