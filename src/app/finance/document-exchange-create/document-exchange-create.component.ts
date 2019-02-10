@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper, MatPaginator } from '@angular/material';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -41,11 +41,12 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
   public toFormGroup: FormGroup;
   // Step: Prev. doc items
   separatorKeysCodes: any[] = [ENTER, COMMA];
-  dataSource: MatTableDataSource<DocumentWithPlanExgRate> = new MatTableDataSource<DocumentWithPlanExgRate>();
+  dataSource: MatTableDataSource<DocumentWithPlanExgRate> = new MatTableDataSource([]);
   displayedColumns: string[] = ['select', 'DocID', 'DocType', 'TranDate', 'Desp', 'Currency',
     'ExchangeRate', 'PropExchangeRate', 'Currency2', 'ExchangeRate2', 'PropExchangeRate2',
   ];
   selection: any = new SelectionModel<DocumentWithPlanExgRate>(true, []);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   // Variables
   arControlCenters: ControlCenter[];
   arOrders: Order[];
@@ -121,7 +122,13 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
   }
   get toStepCompleted(): boolean {
     if (this.toFormGroup && this.toFormGroup.valid) {
-      // Foreign currency
+      // Foreign currency check - only one foreign currency is allowed
+      if (this.isForeignSourceCurrency) {
+        if (this.isForeignTargetCurrency) {
+          return false;
+        }
+      }
+      // Foreign currency check - exchange rate
       if (this.isForeignTargetCurrency) {
         if (!this.toFormGroup.get('exgControl').value) {
           return false;
@@ -148,6 +155,9 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     }
 
     return false;
+  }
+  get prvdocStepCompleted(): boolean {
+    return true;
   }
 
   constructor(private _dialog: MatDialog,
@@ -258,34 +268,35 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
       console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentExchangeCreateComponent: ${event.selectedIndex}`);
     }
 
-    // Perform checks
     if (event.selectedIndex === 3) {
-      let arrqt: any[] = [];
-      let arprvdocs: any[] = [];
-      if (this.isForeignSourceCurrency) {
-        arrqt.push(this._storageService.fetchPreviousDocWithPlanExgRate(this.sourceCurrency));
-      } else if (this.isForeignTargetCurrency) {
-        arrqt.push(this._storageService.fetchPreviousDocWithPlanExgRate(this.targetCurrency));
-      }
-
-      forkJoin(arrqt)
+      this._storageService.fetchPreviousDocWithPlanExgRate(
+        this.isForeignSourceCurrency ? this.sourceCurrency : this.targetCurrency)
         .pipe(takeUntil(this._destroyed$))
-        .subscribe((x: any) => {
-        if (x instanceof Array && x.length > 0) {
-          for (let it of x) {
-            if (it && it instanceof Array && it.length > 0) {
-              for (let itdtl of it) {
-                if (itdtl) {
-                  let pvdoc: DocumentWithPlanExgRate = new DocumentWithPlanExgRate();
-                  pvdoc.onSetData(itdtl);
-                  arprvdocs.push(pvdoc);
-                }
-              }
-            }
+        .subscribe((x: DocumentWithPlanExgRate[]) => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onStepSelectionChange, fetchPreviousDocWithPlanExgRate`);
           }
 
-          this.dataSource.data = arprvdocs;
-        }
+          if (x.length > 0) {
+            this.dataSource = new MatTableDataSource(x);
+            this.dataSource.paginator = this.paginator;
+          } else {
+            this.dataSource = new MatTableDataSource([]);
+            this.dataSource.paginator = this.paginator;
+          }
+        }, (error: any) => {
+          // Show a dialog for error details
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: error.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          });
       });
     }
   }
@@ -335,8 +346,8 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
       // Navigate back to list view
       let cobj: DocumentWithPlanExgRateForUpdate = new DocumentWithPlanExgRateForUpdate();
       cobj.hid = this._homedefService.ChosedHome.ID;
-      if (this.selection.length > 0) {
-        for (let pd of this.selection) {
+      if (this.selection.selected.length > 0) {
+        for (let pd of this.selection.selected) {
           if (pd) {
             cobj.docIDs.push(pd.DocID);
           }
@@ -353,62 +364,67 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
         }
 
         this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe((rst: any) => {
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-              duration: 3000,
-            });
-
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            this.onReset();
-          });
-
-          snackbarRef.afterDismissed().subscribe(() => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, updatePreviousDocWithPlanExgRate`);
+          }
+          this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+            undefined, {
+              duration: 2000,
+            }).afterDismissed().subscribe(() => {
             // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
-            }
+            this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
           });
         }, (error: any) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Entering DocumentExchangeCreateComponent, onSubmit, failed, Message dialog result ${error}`);
+            console.error(`AC_HIH_UI [Error]: Entering DocumentExchangeCreateComponent, onSubmit, failed with updatePreviousDocWithPlanExgRate ${error}`);
           }
 
-          // Show something?
-          this._snackbar.open('Document Posted but previous doc failed to update', 'OK', {
-            duration: 3000,
-          }).afterDismissed().subscribe(() => {
-            // Navigate to display
+          // Show dialog
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: error.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          }).afterClosed().subscribe((x2: any) => {
             this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
           });
         });
       } else {
         // Show the snackbar
-        this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'OK', {
-          duration: 3000,
+        this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), undefined, {
+          duration: 2000,
         }).afterDismissed().subscribe(() => {
           // Navigate to display
           this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
         });
       }
     }, (error: any) => {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering DocumentExchangeCreateComponent, onSubmit, failed with createDocument ${error}`);
+      }
 
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, Message dialog result ${x2}`);
-          }
-        });
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      }).afterClosed().subscribe((x2: any) => {
+        // Do nothing!
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, Message dialog result ${x2}`);
+        }
+      });
     });
   }
 

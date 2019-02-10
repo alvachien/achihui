@@ -1,22 +1,23 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse, } from '@angular/common/http';
+import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
+import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, HomeMsg, HomeKeyFigure } from '../model';
 import { AuthService } from './auth.service';
-import { HttpHeaderResponse } from '@angular/common/http/src/response';
+import { HomeMessageComponent } from 'app/home-message';
 
 @Injectable()
 export class HomeDefDetailService {
   private _redirURL: string;
+
   // Buffer
   private _islistLoaded: boolean;
+  private _listHomeDefList: HomeDef[];
+  private _isMemberInChosedHomeLoaded: boolean;
 
-  // Subject for the whole list of HomeDef
-  listDataChange: BehaviorSubject<HomeDef[]> = new BehaviorSubject<HomeDef[]>([]);
   get HomeDefs(): HomeDef[] {
-    return this.listDataChange.value;
+    return this._listHomeDefList;
   }
 
   // Subject for the selected HomeDef
@@ -31,16 +32,12 @@ export class HomeDefDetailService {
 
     if (hd) {
       this.curHomeSelected.next(hd);
-      this.fetchAllMembersInChosedHome();
-    } else {
-      this.curHomeMembers.next([]);
     }
   }
 
   // Subject for the home meber of selected HomeDef
-  curHomeMembers: BehaviorSubject<HomeMember[]> = new BehaviorSubject<HomeMember[]>([]);
   get MembersInChosedHome(): HomeMember[] {
-    return this.curHomeMembers.value;
+    return this.ChosedHome.Members;
   }
 
   // Redirect URL
@@ -54,7 +51,6 @@ export class HomeDefDetailService {
   // Event
   createEvent: EventEmitter<HomeDef | undefined> = new EventEmitter<HomeDef | undefined>(undefined);
   readHomeDefEvent: EventEmitter<HomeDef | undefined> = new EventEmitter<HomeDef | undefined>(undefined);
-  readHomeMembersEvent: EventEmitter<HomeMember[] | undefined> = new EventEmitter<HomeMember[] | undefined>(undefined);
 
   // Properties
   keyFigure: HomeKeyFigure;
@@ -66,12 +62,14 @@ export class HomeDefDetailService {
     }
 
     this._islistLoaded = false; // Performance improvement
+    this._isMemberInChosedHomeLoaded = false;
+    this._listHomeDefList = [];
   }
 
   /**
    * Read all home defs in the system which current user can view
    */
-  public fetchAllHomeDef(forceReload?: boolean): void {
+  public fetchAllHomeDef(forceReload?: boolean): Observable<HomeDef[]> {
     if (!this._islistLoaded || forceReload) {
       const apiurl: string = environment.ApiUrl + '/api/homedef';
 
@@ -80,47 +78,41 @@ export class HomeDefDetailService {
                        .append('Accept', 'application/json')
                        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHomeDef in HomeDefDetailService: ${response}`);
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHomeDef in HomeDefDetailService.`);
+            console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, fetchAllHomeDef, map.`);
           }
 
+          this._islistLoaded = true;
+          this._listHomeDefList = [];
           const rjs: any = <any>response;
-          let listResult: any[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const hd: HomeDef = new HomeDef();
               hd.parseJSONData(si);
-              listResult.push(hd);
+              this._listHomeDefList.push(hd);
             }
           }
 
-          return listResult;
-        })).subscribe((x: any) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllHomeDef in HomeDefDetailService: ${x}`);
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllHomeDef in HomeDefDetailService.`);
-          }
-
-          this._islistLoaded = true;
-          let copiedData: any = x;
-          this.listDataChange.next(copiedData);
-        }, (error: any) => {
+          return this._listHomeDefList;
+        }),
+        catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            // console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllHomeDef in HomeDefDetailService: ${error}`);
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchAllHomeDef in HomeDefDetailService.`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccountCategories in FinanceStorageService: ${error}`);
           }
 
           this._islistLoaded = false;
-        }, () => {
-          // Empty
-        });
-    }
+          this._listHomeDefList = [];
+
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
+      } else {
+        return of(this._listHomeDefList);
+      }  
   }
 
   /**
@@ -196,7 +188,7 @@ export class HomeDefDetailService {
 
         const copiedData: any = this.HomeDefs.slice();
         copiedData.push(x);
-        this.listDataChange.next(copiedData);
+        // this.listDataChange.next(copiedData);
 
         // Broadcast event
         this.createEvent.emit(x);
@@ -215,8 +207,12 @@ export class HomeDefDetailService {
   /**
    * Fetch all members in the chosed home
    */
-  public fetchAllMembersInChosedHome(): void {
-    if (this.ChosedHome) {
+  public fetchAllMembersInChosedHome(forceReload?: boolean): Observable<HomeMember[]> {
+    if (!this.ChosedHome) {
+      return throwError('Home is not chosed yet');
+    }
+
+    if (!this._isMemberInChosedHomeLoaded || forceReload) {
       const apiurl: string = environment.ApiUrl + '/api/homemember';
 
       let headers: HttpHeaders = new HttpHeaders();
@@ -226,96 +222,42 @@ export class HomeDefDetailService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this.ChosedHome.ID.toString());
-      this._http.get(apiurl, {
+      return this._http.get(apiurl, {
           headers: headers,
           params: params,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefDetailService: ${response}`);
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefDetailService.`);
           }
 
           const rjs: any = <any>response;
-          let listResult: any[] = [];
+          let arMembers: HomeMember[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const hd: HomeMember = new HomeMember();
               hd.parseJSONData(si);
-              listResult.push(hd);
+              arMembers.push(hd);
             }
           }
 
-          return listResult;
-        })).subscribe((x: any) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchAllMembersInChosedHome in HomeDefDetailService.`);
-          }
+          this.ChosedHome.setMembers(arMembers);
+          this._isMemberInChosedHomeLoaded = true;
 
-          let copiedData: any = x;
-          this.curHomeMembers.next(copiedData);
-        }, (error: any) => {
+          return arMembers;
+        }),
+        catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: HomeDefDetailService, fetchAllMembersInChosedHome, failed with ${error}`);
-          }
-        }, () => {
-          // Empty
-        });
-    }
-  }
-
-  /**
-   * Fetch all members for specified homedef
-   */
-  public fetchHomeMembers(hid: number): void {
-    if (!this.curHomeSelected) {
-      const apiurl: string = environment.ApiUrl + '/api/homemember';
-
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-                       .append('Accept', 'application/json')
-                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', hid.toString());
-      this._http.get(apiurl, {
-          headers: headers,
-          params: params,
-        })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchHomeMembers in HomeDefDetailService: ${response}`);
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchHomeMembers in HomeDefDetailService.`);
+            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccountCategories in FinanceStorageService: ${error}`);
           }
 
-          const rjs: any = <any>response;
-          let listResult: HomeMember[] = [];
+          this._isMemberInChosedHomeLoaded = false;
 
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
-              const hd: HomeMember = new HomeMember();
-              hd.parseJSONData(si);
-              listResult.push(hd);
-            }
-          }
-
-          return listResult;
-        })).subscribe((x: any) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Succeed in fetchHomeMembers in HomeDefDetailService: ${x}`);
-            console.log(`AC_HIH_UI [Debug]: Succeed in fetchHomeMembers in HomeDefDetailService.`);
-          }
-
-          this.readHomeMembersEvent.emit(x);
-        }, (error: any) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            // console.log(`AC_HIH_UI [Error]: Error occurred in fetchHomeMembers in HomeDefDetailService: ${error}`);
-            console.log(`AC_HIH_UI [Error]: Error occurred in fetchHomeMembers in HomeDefDetailService.`);
-          }
-          this.readHomeMembersEvent.emit(undefined);
-        }, () => {
-          // Empty
-        });
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
+    } else {
+      return of(this.ChosedHome.Members);
     }
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatTable } from '@angular/material';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, of, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -37,13 +37,17 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
+
+    
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if(this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
+    }
   }
 
   public onCreateHome(): void {

@@ -155,6 +155,9 @@ export class HomeDef {
   get Members(): HomeMember[] {
     return this._listMembers;
   }
+  public setMembers(members: HomeMember[]): void {
+    this._listMembers = members.slice();
+  }
 
   constructor() {
     this._listMembers = [];

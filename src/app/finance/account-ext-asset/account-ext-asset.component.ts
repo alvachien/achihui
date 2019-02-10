@@ -26,7 +26,7 @@ export class AccountExtAssetComponent implements OnInit, OnDestroy {
     return this.uiMode === UIMode.Create;
   }
   get BaseCurrency(): string {
-    return this._homeService.curHomeSelected.value.BaseCurrency;
+    return this._homeService.ChosedHome.BaseCurrency;
   }
 
   constructor(public _storageService: FinanceStorageService,

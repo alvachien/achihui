@@ -67,8 +67,6 @@ export class AppComponent implements OnInit {
               this.isLoggedIn = x.isAuthorized;
               if (this.isLoggedIn) {
                 this.titleLogin = x.getUserName();
-
-                this._homeDefService.fetchAllHomeDef();
               }
             });
           }, (error: any) => {

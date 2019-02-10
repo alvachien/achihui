@@ -96,4 +96,7 @@ describe('DocumentDetailComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
+
+  // Exchange rate document!
+  // Transfer document
 });

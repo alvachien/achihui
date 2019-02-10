@@ -1,6 +1,5 @@
-import { Component, OnInit, EventEmitter, ViewChild, ElementRef, AfterContentInit, OnDestroy } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material';
+import { Component, OnInit, EventEmitter, ViewChild, AfterContentInit, OnDestroy } from '@angular/core';
+import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -8,44 +7,13 @@ import * as moment from 'moment';
 import { EChartOption } from 'echarts';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Account, DocumentItemWithBalance, TranTypeReport, TemplateDocBase,
-  TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, isOverviewDateInScope,
-  UIOrderForSelection, UIAccountForSelection, BuildupAccountForSelection, BuildupOrderForSelection, financeAccountCategoryBorrowFrom,
+import { LogLevel, Account, TemplateDocBase,
+  TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, financeAccountCategoryBorrowFrom,
   financeTranTypeRepaymentOut, financeTranTypeRepaymentIn, ReportTrendExTypeEnum, ReportTrendExData, momentDateFormat,
-  DocumentCreatedFrequenciesByUser, HomeMember, } from '../../model';
+  DocumentCreatedFrequenciesByUser, HomeMember, TranType, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ThemeStorage } from '../../theme-picker/theme-storage/theme-storage';
-
-/**
- * Data source of ADP & Loan docs
- */
-export class TmpDocStillOpenDataSource extends DataSource<any> {
-  constructor(private _parentComponent: DocumentItemOverviewComponent,
-    private _paginator: MatPaginator) {
-    super();
-  }
-
-  /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<TemplateDocBase[]> {
-    const displayDataChanges: any[] = [
-      this._parentComponent.tmpDocEvent,
-      this._paginator.page,
-    ];
-
-    return merge(...displayDataChanges).pipe(map(() => {
-      const data: any = this._parentComponent.tmpDocs.slice();
-
-      // Grab the page's slice of data.
-      const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
-    }));
-  }
-
-  disconnect(): void {
-    // Empty
-  }
-}
 
 @Component({
   selector: 'hih-fin-document-item-overview',
@@ -58,24 +26,25 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
   private labelOutgo: string;
 
   displayedTmpDocColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
-  dataSourceTmpDoc: TmpDocStillOpenDataSource | undefined;
-  tmpDocEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
-  tmpDocs: TemplateDocBase[] = [];
+  dataSourceTmpDoc: MatTableDataSource<TemplateDocBase> = new MatTableDataSource([]);
   @ViewChild('paginatorTmpDoc') paginatorTmpDoc: MatPaginator;
   selectedTmpScope: OverviewScopeEnum;
   weeklyTrendChartOption: Observable<EChartOption>;
   dailyTrendChartOption: Observable<EChartOption>;
   userDocAmountChartOption: Observable<EChartOption>;
-
+  // Variables
   chartTheme: string;
+  arTranTypes: TranType[];
+  arAccounts: Account[];
 
   constructor(
     private _snackbar: MatSnackBar,
     private _router: Router,
+    private _themeStorage: ThemeStorage,
+    private _dialog: MatDialog,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
-    private _themeStorage: ThemeStorage,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent constructor...');
@@ -112,16 +81,20 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
       }
     });
 
-    this.dataSourceTmpDoc = new TmpDocStillOpenDataSource(this, this.paginatorTmpDoc);
-    this._homedefService.fetchHomeMembers(this._homedefService.ChosedHome.ID);
-
     forkJoin([
       this._storageService.fetchAllAccounts(),
       this._storageService.fetchAllDocTypes(),
       this._storageService.fetchAllTranTypes(),
-    ]).subscribe((x: any) => {
+    ]).subscribe((rst: any) => {
+      this.arAccounts = rst[0];
+      this.arTranTypes = rst[2];
+
       // Refresh the template documents
       this.onTmpDocsRefresh();
+    }, (error: any) => {
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
 
@@ -346,21 +319,17 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
     forkJoin([
       this._storageService.getADPTmpDocs(bgn, end),
       this._storageService.getLoanTmpDocs(bgn, end),
-    ]).subscribe((x: any) => {
-      this.tmpDocs = [];
+    ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      let tmpDocs: any[] = [];
 
       if (x[0] instanceof Array && x[0].length > 0) {
-        for (let dta of x[0]) {
-          let adpdoc: TemplateDocADP = new TemplateDocADP();
-          adpdoc.onSetData(dta);
-          this.tmpDocs.push(adpdoc);
-        }
+        // ADP
+        tmpDocs.push(...x[0]);
       }
       if (x[1] instanceof Array && x[1].length > 0) {
         for (let dta of x[1]) {
-          let loandoc: TemplateDocLoan = new TemplateDocLoan();
-          loandoc.onSetData(dta);
-          let loanacntidx: number = this._storageService.Accounts.findIndex((val: Account) => {
+          let loandoc: TemplateDocLoan = dta as TemplateDocLoan;
+          let loanacntidx: number = this.arAccounts.findIndex((val: Account) => {
             return val.Id === loandoc.AccountId;
           });
           if (loanacntidx !== -1) {
@@ -370,17 +339,28 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
               loandoc.TranType = financeTranTypeRepaymentIn;
             }
           }
-          this.tmpDocs.push(loandoc);
+          tmpDocs.push(loandoc);
         }
       }
 
       // Sort it by date
-      this.tmpDocs.sort((a: any, b: any) => {
-        if (a.TranDate.isSame(b.TranDate)) { return 0; }
-        if (a.TranDate.isBefore(b.TranDate)) { return -1; } else { return 1; }
+      tmpDocs.sort((a: TemplateDocBase, b: TemplateDocBase) => {
+        if (a.TranDate.startOf('day').isSame(b.TranDate.startOf('day'))) { return 0; }
+        if (a.TranDate.startOf('day').isBefore(b.TranDate.startOf('day'))) { return -1; } else { return 1; }
       });
 
-      this.tmpDocEvent.emit();
+      if (tmpDocs.length > 0) {
+        this.dataSourceTmpDoc = new MatTableDataSource(tmpDocs);
+        this.dataSourceTmpDoc.paginator = this.paginatorTmpDoc;
+      } else {
+        this.dataSourceTmpDoc = new MatTableDataSource([]);
+        this.dataSourceTmpDoc.paginator = this.paginatorTmpDoc;
+      }
+    }, (error: any) => {
+      // Error occurred
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
 

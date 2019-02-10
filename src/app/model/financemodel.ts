@@ -2583,6 +2583,16 @@ export class Plan extends hih.BaseModel {
     this._description = desp;
   }
 
+  constructor() {
+    super();
+    this.onInit();
+  }
+  public onInit() {
+    super.onInit();
+
+    this._startDate = moment().startOf('day');
+    this._targetDate = moment().add(1, 'y').startOf('day');
+  }
   public onVerify(context?: any): boolean {
     if (!super.onVerify(context)) {
       return false;
@@ -3027,8 +3037,6 @@ export class DocumentItemWithBalance {
  * Document with exchange rate as planned
  */
 export class DocumentWithPlanExgRate {
-  public Selected: boolean;
-
   public HID: number;
   public DocID: number;
   public DocType: number;
@@ -3082,6 +3090,7 @@ export class DocumentWithPlanExgRate {
   }
 }
 
+// Update document's exchange rate
 export class DocumentWithPlanExgRateForUpdate {
   public hid: number;
   public targetCurrency: string;

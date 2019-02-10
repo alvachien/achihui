@@ -740,11 +740,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       expect(messageElement.textContent).not.toBeNull();
 
       // Then, after the snackbar disappear, expect navigate!
-      fixture.detectChanges();
-      tick(3000);
-      fixture.detectChanges();
-      flush();
-      tick();
+      tick(2000);
       expect(routerSpy.navigate).toHaveBeenCalled();
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/110']);
 

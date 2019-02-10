@@ -9,12 +9,13 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
   ReportTrendExData, FinanceADPCalAPIInput, FinanceADPCalAPIOutput, FinanceAssetSoldoutDocumentAPI,
   FinanceAssetBuyinDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentCreatedFrequenciesByUser,
-  Plan,
+  Plan, DocumentWithPlanExgRate,
   AccountExtraAdvancePayment, financeAccountCategoryAdvanceReceived, financeAccountCategoryAdvancePayment,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import * as moment from 'moment';
+import { Template } from '@angular/compiler/src/render3/r3_ast';
 
 @Injectable()
 export class FinanceStorageService {
@@ -165,7 +166,6 @@ export class FinanceStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceStorageService: ${response}`);
             console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceStorageService.`);
           }
 
@@ -1314,7 +1314,7 @@ export class FinanceStorageService {
   /**
    * Get Loan tmp docs: for document item overview page
    */
-  public getLoanTmpDocs(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+  public getLoanTmpDocs(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<TemplateDocLoan[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1336,11 +1336,25 @@ export class FinanceStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering getLoanTmpDocs in FinanceStorageService`);
+          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService, getLoanTmpDocs`);
         }
 
-        return <any>response;
-      }));
+        let docLoan: TemplateDocLoan[] = [];
+        if (response instanceof Array && response.length > 0) {
+          response.forEach((val: any) => {
+            let ldoc: TemplateDocLoan = new TemplateDocLoan();
+            ldoc.onSetData(val);
+            docLoan.push(ldoc);
+          });
+        }
+
+        return docLoan;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   // Create a repayment document on a loan
@@ -1382,38 +1396,6 @@ export class FinanceStorageService {
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
-
-  //
-  // Comment it out because the logic behind is not working any more after the remodeling of the loan document
-  // Use createLoanRepayDoc instead
-  //
-  // /**
-  //  * Post the template doc
-  //  * @param doc Tmplate doc
-  //  */
-  // public doPostLoanTmpDoc(doc: TemplateDocLoan): Observable<any> {
-  //   let headers: HttpHeaders = new HttpHeaders();
-  //   headers = headers.append('Content-Type', 'application/json')
-  //     .append('Accept', 'application/json')
-  //     .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-  //   let apiurl: string = environment.ApiUrl + '/api/FinanceLoanTmpDoc';
-  //   let params: HttpParams = new HttpParams();
-  //   params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-  //   params = params.append('docid', doc.DocId.toString());
-
-  //   return this._http.post(apiurl, undefined, {
-  //     headers: headers,
-  //     params: params,
-  //   })
-  //     .pipe(map((response: HttpResponse<any>) => {
-  //       if (environment.LoggingLevel >= LogLevel.Debug) {
-  //         console.log(`AC_HIH_UI [Debug]: Entering doPostLoanTmpDoc in FinanceStorageService: ${response}`);
-  //       }
-
-  //       return <any>response;
-  //     }));
-  // }
 
   /**
    * Create asset document
@@ -1586,7 +1568,12 @@ export class FinanceStorageService {
         // let hd: Document = new Document();
         // hd.onSetData(response);
         return response;
-      }));
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
@@ -1618,7 +1605,12 @@ export class FinanceStorageService {
         // let hd: Document = new Document();
         // hd.onSetData(response);
         return response;
-      }));
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
@@ -1647,7 +1639,12 @@ export class FinanceStorageService {
         // let hd: Document = new Document();
         // hd.onSetData(response);
         return response;
-      }));
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
@@ -1696,7 +1693,7 @@ export class FinanceStorageService {
   /**
    * Get ADP tmp docs: for document item overview page
    */
-  public getADPTmpDocs(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+  public getADPTmpDocs(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<TemplateDocADP[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1718,12 +1715,25 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering getADPTmpDocs in FinanceStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering getADPTmpDocs in FinanceStorageService.`);
+          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService, getADPTmpDocs.`);
         }
 
-        return <any>response;
-      }));
+        let docADP: TemplateDocADP[] = [];
+        if (response instanceof Array && response.length > 0) {
+          response.forEach((val: any) => {
+            let adoc: TemplateDocADP = new TemplateDocADP();
+            adoc.onSetData(val);
+            docADP.push(adoc);
+          });
+        }
+
+        return docADP;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
@@ -1751,14 +1761,19 @@ export class FinanceStorageService {
         }
 
         return <any>response;
-      }));
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
    * Fetch previous doc with planned exchange rate
    * @param tgtcurr Target currency
    */
-  public fetchPreviousDocWithPlanExgRate(tgtcurr: string): Observable<any> {
+  public fetchPreviousDocWithPlanExgRate(tgtcurr: string): Observable<DocumentWithPlanExgRate[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1775,11 +1790,27 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering fetchPreviousDocWithPlanExgRate in FinanceStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering fetchPreviousDocWithPlanExgRate in FinanceStorageService`);
         }
 
-        return response;
-      }));
+        let ardocs: DocumentWithPlanExgRate[] = [];
+        if (response instanceof Array && response.length > 0) {
+          for (let it of response) {
+            if (it) {
+              let pvdoc: DocumentWithPlanExgRate = new DocumentWithPlanExgRate();
+              pvdoc.onSetData(it);
+              ardocs.push(pvdoc);
+            }
+          }
+        }
+
+        return ardocs;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
@@ -1800,11 +1831,17 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService`);
         }
 
-        return response;
-      }));
+        // It's an empty Ok();
+        return true;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
@@ -2150,7 +2187,6 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering fetchReportTrendData in FinanceStorageService: ${response}`);
           console.log(`AC_HIH_UI [Debug]: Entering fetchReportTrendData in FinanceStorageService.`);
         }
 
@@ -2166,7 +2202,12 @@ export class FinanceStorageService {
         }
 
         return rst;
-      }));
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
@@ -2238,7 +2279,12 @@ export class FinanceStorageService {
       }
 
       return rst;
-    }));
+    }),
+    catchError((errresp: HttpErrorResponse) => {
+      const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+      return throwError(errmsg);
+    }),
+    );
   }
 
   /**
