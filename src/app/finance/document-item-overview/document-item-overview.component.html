@@ -108,7 +108,7 @@
                   <mat-row *matRowDef="let row; columns: displayedTmpDocColumns;"></mat-row>
                 </mat-table>
                 
-                <mat-paginator #paginatorTmpDoc [length]="tmpDocs.length" [pageIndex]="0" [pageSize]="4" [pageSizeOptions]="[4, 8, 20, 40]">
+                <mat-paginator #paginatorTmpDoc [pageIndex]="0" [pageSize]="4" [pageSizeOptions]="[4, 8, 20, 40]">
                 </mat-paginator>
               </div>
             </mat-card-content>

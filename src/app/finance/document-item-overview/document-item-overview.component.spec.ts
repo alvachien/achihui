@@ -19,17 +19,15 @@ import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '..
 import { DocumentItemOverviewComponent } from './document-item-overview.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { ThemeStorage } from 'app/theme-picker';
+import { TemplateDocADP, Account, AccountExtraAdvancePayment, AccountExtraLoan,
+  DocumentCreatedFrequenciesByUser, } from '../../model';
 
 describe('DocumentItemOverviewComponent', () => {
   let component: DocumentItemOverviewComponent;
   let fixture: ComponentFixture<DocumentItemOverviewComponent>;
-  // let fetchAllAccountCategoriesSpy: any;
-  // let fetchAllAssetCategoriesSpy: any;
   let fetchAllDocTypesSpy: any;
   let fetchAllTranTypesSpy: any;
   let fetchAllAccountsSpy: any;
-  // let fetchAllOrdersSpy: any;
-  // let fetchAllControlCentersSpy: any;
   let fetchDocPostedFrequencyPerUserSpy: any;
   let fetchReportTrendDataSpy: any;
   let getADPTmpDocsSpy: any;
@@ -50,25 +48,17 @@ describe('DocumentItemOverviewComponent', () => {
     const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
     homeService.ChosedHome = fakeData.chosedHome;
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
-      // 'fetchAllAccountCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
       'fetchAllAccounts',
-      // 'fetchAllControlCenters',
-      // 'fetchAllOrders',
-      // 'fetchAllAssetCategories',
       'fetchDocPostedFrequencyPerUser',
       'fetchReportTrendData',
       'getADPTmpDocs',
       'getLoanTmpDocs',
     ]);
-    // fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    // fetchAllAssetCategoriesSpy = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
     fetchAllDocTypesSpy = stroageService.fetchAllDocTypes.and.returnValue(of([]));
     fetchAllTranTypesSpy = stroageService.fetchAllTranTypes.and.returnValue(of([]));
     fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    // fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
-    // fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchDocPostedFrequencyPerUserSpy = stroageService.fetchDocPostedFrequencyPerUser.and.returnValue(of([]));
     fetchReportTrendDataSpy = stroageService.fetchReportTrendData.and.returnValue(of([]));
     getADPTmpDocsSpy = stroageService.getADPTmpDocs.and.returnValue(of([]));
@@ -127,7 +117,6 @@ describe('DocumentItemOverviewComponent', () => {
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
-      // fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
 
@@ -155,6 +144,10 @@ describe('DocumentItemOverviewComponent', () => {
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Doc type service failed',
         'Expected snack bar to show the error message: Doc type service failed');
+
+      expect(getADPTmpDocsSpy).not.toHaveBeenCalled();
+      expect(getLoanTmpDocsSpy).not.toHaveBeenCalled();
+
       flush();
     }));
 
@@ -168,6 +161,9 @@ describe('DocumentItemOverviewComponent', () => {
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Tran type service failed',
         'Expected snack bar to show the error message: Tran type service failed');
+
+      expect(getADPTmpDocsSpy).not.toHaveBeenCalled();
+      expect(getLoanTmpDocsSpy).not.toHaveBeenCalled();
       flush();
     }));
 
@@ -181,39 +177,125 @@ describe('DocumentItemOverviewComponent', () => {
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Account service failed',
         'Expected snack bar to show the error message: Account service failed');
+
+      expect(getADPTmpDocsSpy).not.toHaveBeenCalled();
+      expect(getLoanTmpDocsSpy).not.toHaveBeenCalled();
       flush();
     }));
 
-    it('4. should display error when getADPTmpDocs service fails', fakeAsync(() => {
+    // it('4. should display error when getADPTmpDocs service fails', fakeAsync(() => {
+    //   // tell spy to return an async error observable
+    //   getADPTmpDocsSpy.and.returnValue(asyncError<string>('getADPTmpDocs service failed'));
+
+    //   fixture.detectChanges(); // ngOnInit
+    //   tick(); // Complete the Observables in ngAfterViewInit
+    //   fixture.detectChanges();
+    //   tick(); // For tmp docs
+    //   fixture.detectChanges();
+    //   tick(); // For user doc amount;
+
+    //   let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+    //   expect(messageElement.textContent).toContain('getADPTmpDocs service failed',
+    //     'Expected snack bar to show the error message: getADPTmpDocs service failed');
+
+    //   expect(getADPTmpDocsSpy).toHaveBeenCalled();
+    //   expect(getLoanTmpDocsSpy).toHaveBeenCalled();
+
+    //   flush();
+    // }));
+
+    // it('5. should display error when getLoanTmpDocs service fails', fakeAsync(() => {
+    //   // tell spy to return an async error observable
+    //   getLoanTmpDocsSpy.and.returnValue(asyncError<string>('getLoanTmpDocs service failed'));
+
+    //   fixture.detectChanges(); // ngOnInit
+    //   tick(); // Complete the Observables in ngAfterViewInit
+    //   fixture.detectChanges();
+    //   tick(); // For tmp docs
+    //   fixture.detectChanges();
+
+    //   let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+    //   expect(messageElement.textContent).toContain('getLoanTmpDocs service failed',
+    //     'Expected snack bar to show the error message: getLoanTmpDocs service failed');
+
+    //   expect(getADPTmpDocsSpy).toHaveBeenCalled();
+    //   expect(getLoanTmpDocsSpy).toHaveBeenCalled();
+    //   flush();
+    // }));
+  });
+
+  describe('3. grid should work', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+
+      // ADP tmp.
+      let adpacntext: AccountExtraAdvancePayment = fakeData.finAccounts.find((vl: Account) => { return vl.Id === 24; })
+        .ExtraInfo as AccountExtraAdvancePayment;
+      getADPTmpDocsSpy.and.returnValue(asyncData(adpacntext.dpTmpDocs));
+
+      // Loan tmp.
+      let loanacntext: AccountExtraLoan = fakeData.finAccounts.find((vl: Account) => { return vl.Id === 22; })
+        .ExtraInfo as AccountExtraLoan;
+      getLoanTmpDocsSpy.and.returnValue(asyncData(loanacntext.loanTmpDocs));
+
+      // User doc amount
+      let arUserData: DocumentCreatedFrequenciesByUser[] = [];
+      for (let i: number = 0; i < 3; i++) {
+        let docUser: DocumentCreatedFrequenciesByUser = new DocumentCreatedFrequenciesByUser();
+        docUser.userID = 'aaa';
+        docUser.year = moment().year();
+        // docUser.month = moment().month();
+        docUser.amountOfDocuments = 2 * i + 1;
+        arUserData.push(docUser);
+
+        docUser = new DocumentCreatedFrequenciesByUser();
+        docUser.userID = 'bbb';
+        docUser.year = moment().year();
+        // docUser.month = moment().month();
+        docUser.amountOfDocuments = 3 * i + 1;
+        arUserData.push(docUser);
+      }
+      fetchDocPostedFrequencyPerUserSpy.and.returnValue(asyncData(arUserData));
+
+      // Trend data
+      fetchReportTrendDataSpy.and.callFake(() => {
+
+      });
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('1. grid Todo shall work fine', fakeAsync(() => {
       // tell spy to return an async error observable
       getADPTmpDocsSpy.and.returnValue(asyncError<string>('getADPTmpDocs service failed'));
 
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
+      tick(); // Complete the Observables in ngAfterViewInit
       fixture.detectChanges();
-      tick(); // For tmp docs
-      fixture.detectChanges();
-      
+
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('getADPTmpDocs service failed',
         'Expected snack bar to show the error message: getADPTmpDocs service failed');
+
+      expect(getADPTmpDocsSpy).toHaveBeenCalled();
+      expect(getLoanTmpDocsSpy).toHaveBeenCalled();
+      expect(fetchDocPostedFrequencyPerUserSpy).toHaveBeenCalled();
+
       flush();
     }));
 
-    it('5. should display error when getLoanTmpDocs service fails', fakeAsync(() => {
-      // tell spy to return an async error observable
-      getLoanTmpDocsSpy.and.returnValue(asyncError<string>('getLoanTmpDocs service failed'));
-
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-      tick(); // For tmp docs
-      fixture.detectChanges();
-
-      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
-      expect(messageElement.textContent).toContain('getLoanTmpDocs service failed',
-        'Expected snack bar to show the error message: getLoanTmpDocs service failed');
-      flush();
-    }));
   });
 });

@@ -11,7 +11,9 @@ import {
   Document, DocumentItem, AccountExtraAdvancePayment,
   RepeatFrequencyEnum, TemplateDocADP, financeDocTypeAdvancePayment,
   FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
-  momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom, AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
+  momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom,
+  AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
+  financeAccountCategoryAdvancePayment,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -913,12 +915,12 @@ export class FakeDataHelper {
     brwInfo.startDate = moment().subtract(1, 'M').startOf('day');
     brwInfo.endDate = brwInfo.startDate.add(1, 'y');
     brwInfo.loanTmpDocs = [];
-    for(let i: number = 0; i < 12; i++) {
+    for (let i: number = 0; i < 12; i++) {
       let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
       tmpdoc.TranAmount = 8333.34;
       tmpdoc.InterestAmount = 362.50;
-      tmpdoc.Desp = `test${i+1}`;
+      tmpdoc.Desp = `test${i + 1}`;
       tmpdoc.TranType = 28;
       tmpdoc.TranDate = brwInfo.startDate.add(i + 1, 'M');
       tmpdoc.ControlCenterId = 1;
@@ -941,12 +943,12 @@ export class FakeDataHelper {
     lendto.annualRate = 0.0435;
     lendto.startDate = moment().subtract(1, 'M').startOf('day');
     lendto.endDate = brwInfo.startDate.add(1, 'y');
-    for(let i: number = 0; i < 5; i++) {
+    for (let i: number = 0; i < 5; i++) {
       let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
       tmpdoc.TranAmount = 8333.34;
       tmpdoc.InterestAmount = 362.50;
-      tmpdoc.Desp = `test${i+1}`;
+      tmpdoc.Desp = `test${i + 1}`;
       tmpdoc.TranType = 28;
       tmpdoc.TranDate = lendto.startDate.add(i + 1, 'M');
       tmpdoc.ControlCenterId = 1;
@@ -954,6 +956,30 @@ export class FakeDataHelper {
       lendto.loanTmpDocs.push(tmpdoc);
     }
     acnt.ExtraInfo = lendto;
+    this._finAccounts.push(acnt);
+    // ADP
+    acnt = new Account();
+    acnt.Id = 24;
+    acnt.Name = 'ADP test 1';
+    acnt.CategoryId = financeAccountCategoryAdvancePayment;
+    acnt.Status = AccountStatusEnum.Normal;
+    let extadp: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+    extadp.Comment = 'ADP Test 1';
+    extadp.RepeatType = RepeatFrequencyEnum.Month;
+    for (let i: number = 0; i < 10; i++) {
+      let item: TemplateDocADP = new TemplateDocADP();
+      if (this._chosedHome) {
+        item.HID = this._chosedHome.ID;
+      }
+      item.DocId = i + 1;
+      item.TranType = 2;
+      item.TranDate = moment().add(i + 1, 'M');
+      item.TranAmount = 20;
+      item.Desp = `item ${i + 1}`;
+      item.AccountId = 24;
+      extadp.dpTmpDocs.push(item);
+    }
+    acnt.ExtraInfo = extadp;
     this._finAccounts.push(acnt);
   }
   public buildFinAccountsFromAPI(): void {
@@ -1268,6 +1294,7 @@ export class FakeDataHelper {
       item.TranDate = moment().add(i + 1, 'M');
       item.TranAmount = 20;
       item.Desp = `item ${i + 1}`;
+      item.AccountId = 24;
       this._finAccountExtraAdvancePayment.dpTmpDocs.push(item);
     }
   }
@@ -1304,7 +1331,7 @@ export class FakeDataHelper {
     let detailObject: FinanceAssetValChgDocumentAPI = new FinanceAssetValChgDocumentAPI();
     detailObject.HID = this._chosedHome.ID;
     detailObject.tranDate = moment().format(momentDateFormat);
-    detailObject.tranCurr = this._chosedHome.BaseCurrency;;
+    detailObject.tranCurr = this._chosedHome.BaseCurrency;
     detailObject.desp = 'test';
     detailObject.assetAccountID = 21;
     detailObject.controlCenterID = 11;

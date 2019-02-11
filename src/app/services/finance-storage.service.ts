@@ -2156,6 +2156,7 @@ export class FinanceStorageService {
 
   /**
    * Fetch trend data of Finance Report
+   * @param trendtype Trend type
    * @param exctran Exclude the transfer
    * @param dtbgn Begin date
    * @param dtend End date
