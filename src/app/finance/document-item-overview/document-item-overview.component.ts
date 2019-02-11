@@ -142,7 +142,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
             return val.Id === loandoc.AccountId;
           });
           if (loanacntidx !== -1) {
-            if (this._storageService.Accounts[loanacntidx].CategoryId === financeAccountCategoryBorrowFrom) {
+            if (this.arAccounts[loanacntidx].CategoryId === financeAccountCategoryBorrowFrom) {
               loandoc.TranType = financeTranTypeRepaymentOut;
             } else {
               loandoc.TranType = financeTranTypeRepaymentIn;

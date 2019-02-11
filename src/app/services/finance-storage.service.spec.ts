@@ -1899,9 +1899,9 @@ describe('FinanceStorageService', () => {
 
       // Respond with the mock data
       req.flush(`[
-        {"tranDate":null,"tranWeek":5,"tranMonth":null,"tranYear":2019,"expense":true,"tranAmount":-854.3500000},
-        {"tranDate":null,"tranWeek":6,"tranMonth":null,"tranYear":2019,"expense":false,"tranAmount":17600.0000000},
-        {"tranDate":null,"tranWeek":6,"tranMonth":null,"tranYear":2019,"expense":true,"tranAmount":-14807.5300000},
+        {"tranDate":null,"tranWeek":5,"tranMonth":null,"tranYear":2019,"expense":true,"tranAmount":-854.35},
+        {"tranDate":null,"tranWeek":6,"tranMonth":null,"tranYear":2019,"expense":false,"tranAmount":17600.00},
+        {"tranDate":null,"tranWeek":6,"tranMonth":null,"tranYear":2019,"expense":true,"tranAmount":-14807.53},
       ]`);
     });
 

@@ -20,7 +20,7 @@ import { DocumentItemOverviewComponent } from './document-item-overview.componen
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { ThemeStorage } from 'app/theme-picker';
 import { TemplateDocADP, Account, AccountExtraAdvancePayment, AccountExtraLoan,
-  DocumentCreatedFrequenciesByUser, } from '../../model';
+  DocumentCreatedFrequenciesByUser, ReportTrendExTypeEnum, ReportTrendExData, } from '../../model';
 
 describe('DocumentItemOverviewComponent', () => {
   let component: DocumentItemOverviewComponent;
@@ -45,8 +45,10 @@ describe('DocumentItemOverviewComponent', () => {
     fakeData.buildFinAccounts();
 
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
-    homeService.ChosedHome = fakeData.chosedHome;
+    const homeService: Partial<HomeDefDetailService>= {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+    };
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -182,46 +184,6 @@ describe('DocumentItemOverviewComponent', () => {
       expect(getLoanTmpDocsSpy).not.toHaveBeenCalled();
       flush();
     }));
-
-    // it('4. should display error when getADPTmpDocs service fails', fakeAsync(() => {
-    //   // tell spy to return an async error observable
-    //   getADPTmpDocsSpy.and.returnValue(asyncError<string>('getADPTmpDocs service failed'));
-
-    //   fixture.detectChanges(); // ngOnInit
-    //   tick(); // Complete the Observables in ngAfterViewInit
-    //   fixture.detectChanges();
-    //   tick(); // For tmp docs
-    //   fixture.detectChanges();
-    //   tick(); // For user doc amount;
-
-    //   let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
-    //   expect(messageElement.textContent).toContain('getADPTmpDocs service failed',
-    //     'Expected snack bar to show the error message: getADPTmpDocs service failed');
-
-    //   expect(getADPTmpDocsSpy).toHaveBeenCalled();
-    //   expect(getLoanTmpDocsSpy).toHaveBeenCalled();
-
-    //   flush();
-    // }));
-
-    // it('5. should display error when getLoanTmpDocs service fails', fakeAsync(() => {
-    //   // tell spy to return an async error observable
-    //   getLoanTmpDocsSpy.and.returnValue(asyncError<string>('getLoanTmpDocs service failed'));
-
-    //   fixture.detectChanges(); // ngOnInit
-    //   tick(); // Complete the Observables in ngAfterViewInit
-    //   fixture.detectChanges();
-    //   tick(); // For tmp docs
-    //   fixture.detectChanges();
-
-    //   let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
-    //   expect(messageElement.textContent).toContain('getLoanTmpDocs service failed',
-    //     'Expected snack bar to show the error message: getLoanTmpDocs service failed');
-
-    //   expect(getADPTmpDocsSpy).toHaveBeenCalled();
-    //   expect(getLoanTmpDocsSpy).toHaveBeenCalled();
-    //   flush();
-    // }));
   });
 
   describe('3. grid should work', () => {
@@ -263,8 +225,38 @@ describe('DocumentItemOverviewComponent', () => {
       fetchDocPostedFrequencyPerUserSpy.and.returnValue(asyncData(arUserData));
 
       // Trend data
-      fetchReportTrendDataSpy.and.callFake(() => {
+      fetchReportTrendDataSpy.and.callFake((trendtype: ReportTrendExTypeEnum, exctran?: boolean,
+        dtbgn?: moment.Moment, dtend?: moment.Moment) => {
+          let ardata: ReportTrendExData[] = [];
+        if (trendtype === ReportTrendExTypeEnum.Daily) {
+          let rst: ReportTrendExData = new ReportTrendExData();
+          rst.onSetData({"tranDate":"2019-02-05","expense":false,"tranAmount":17600.0});
+          ardata.push(rst);
+          rst = new ReportTrendExData();
+          rst.onSetData({"tranDate":"2019-02-01","expense":true,"tranAmount":-279.00});
+          ardata.push(rst);
+          rst = new ReportTrendExData();
+          rst.onSetData({"tranDate":"2019-02-02","expense":true,"tranAmount":-575.35});
+          ardata.push(rst);
+          rst = new ReportTrendExData();
+          rst.onSetData({"tranDate":"2019-02-05","expense":true,"tranAmount":-14590.00});
+          ardata.push(rst);
+          rst = new ReportTrendExData();
+          rst.onSetData({"tranDate":"2019-02-09","expense":true,"tranAmount":-217.53});
+          ardata.push(rst);
+        } else if(trendtype === ReportTrendExTypeEnum.Weekly) {
+          let rst: ReportTrendExData = new ReportTrendExData();
+          rst.onSetData({"tranWeek":5,"tranYear":2019,"expense":true,"tranAmount":-854.35});
+          ardata.push(rst);
+          rst = new ReportTrendExData();
+          rst.onSetData({"tranWeek":6,"tranYear":2019,"expense":false,"tranAmount":17600.00});
+          ardata.push(rst);
+          rst = new ReportTrendExData();
+          rst.onSetData({"tranWeek":6,"tranYear":2019,"expense":true,"tranAmount":-14807.53});
+          ardata.push(rst);
+        }
 
+        return asyncData(ardata);
       });
     });
 
@@ -279,23 +271,43 @@ describe('DocumentItemOverviewComponent', () => {
     });
 
     it('1. grid Todo shall work fine', fakeAsync(() => {
-      // tell spy to return an async error observable
-      getADPTmpDocsSpy.and.returnValue(asyncError<string>('getADPTmpDocs service failed'));
-
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngAfterViewInit
       fixture.detectChanges();
-
-      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
-      expect(messageElement.textContent).toContain('getADPTmpDocs service failed',
-        'Expected snack bar to show the error message: getADPTmpDocs service failed');
 
       expect(getADPTmpDocsSpy).toHaveBeenCalled();
       expect(getLoanTmpDocsSpy).toHaveBeenCalled();
       expect(fetchDocPostedFrequencyPerUserSpy).toHaveBeenCalled();
 
+      tick(); // For charts
+      fixture.detectChanges();
+      expect(fetchDocPostedFrequencyPerUserSpy).toHaveBeenCalled();
+      expect(fetchReportTrendDataSpy).toHaveBeenCalled();
+
       flush();
     }));
 
+    // it('2. shall handle the fetchDocPostedFrequencyPerUser fails case', fakeAsync(() => {
+    //   fetchDocPostedFrequencyPerUserSpy.and.returnValue(asyncError('server 500 failed'));
+
+    //   fixture.detectChanges(); // ngOnInit
+    //   tick(); // Complete the Observables in ngAfterViewInit
+    //   fixture.detectChanges();
+
+    //   expect(getADPTmpDocsSpy).toHaveBeenCalled();
+    //   expect(getLoanTmpDocsSpy).toHaveBeenCalled();
+    //   expect(fetchDocPostedFrequencyPerUserSpy).toHaveBeenCalled();
+
+    //   tick(); // For charts
+    //   fixture.detectChanges();
+    //   expect(fetchDocPostedFrequencyPerUserSpy).toHaveBeenCalled();
+    //   expect(fetchReportTrendDataSpy).toHaveBeenCalled();
+      
+    //   let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+    //   expect(messageElement.textContent).toContain('server 500 failed',
+    //     'Expected snack bar to show the error message: server 500 failed');
+
+    //   flush();
+    // }));
   });
 });
