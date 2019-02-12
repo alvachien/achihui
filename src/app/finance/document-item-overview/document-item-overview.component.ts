@@ -37,8 +37,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
   arTranTypes: TranType[];
   arAccounts: Account[];
 
-  constructor(
-    private _snackbar: MatSnackBar,
+  constructor(private _snackbar: MatSnackBar,
     private _router: Router,
     private _themeStorage: ThemeStorage,
     private _dialog: MatDialog,

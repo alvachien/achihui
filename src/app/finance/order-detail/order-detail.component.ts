@@ -4,9 +4,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper, } from '@angular/material';
 import { Observable, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Order, SettlementRule, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
+import { LogLevel, Order, SettlementRule, UIMode, getUIModeString, UICommonLabelEnum, ControlCenter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -23,6 +24,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   public currentMode: string;
   public detailObject: Order | undefined;
   public uiMode: UIMode = UIMode.Create;
+  public arControlCenters: ControlCenter[] = [];
   // Stepper
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Generic info
@@ -51,6 +53,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
+    private _formBuilder: FormBuilder,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
@@ -69,10 +72,19 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
+    this.firstFormGroup = this._formBuilder.group({
+      nameControl: ['', Validators.required],
+      validFromControl: [{ value: moment(), disabled: false }, Validators.required],
+      validToControl: [{ value: moment().add(1, 'M'), disabled: false }, Validators.required],
+      cmtControl: '',
+    });
+
     this._storageService.fetchAllControlCenters().pipe(takeUntil(this._destroyed$)).subscribe((cc: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters`);
       }
+
+      this.arControlCenters = cc;
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters, activateRoute: ${x}`);
@@ -117,18 +129,19 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           }
         }
       }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOnInit, failed with activateRoute URL : ${error}`);
-        }
+        // Shall never happen
         this.uiMode = UIMode.Invalid;
       }, () => {
         // Empty
       });
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters, failed with: ${error}`);
+        console.error(`AC_HIH_UI [Error]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters, failed`);
       }
       this.uiMode = UIMode.Invalid;
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
     });
   }
 
@@ -223,50 +236,50 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
     this.detailObject.HID = this._homedefService.ChosedHome.ID;
     this._storageService.createOrder(this.detailObject).subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder, createOrderEvent`);
-        }
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder, createOrderEvent`);
+      }
 
-        // Navigate back to list view
-        if (x instanceof Order) {
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-              duration: 3000,
-            });
-
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-
-            this.onInitCreateMode();
+      // Navigate back to list view
+      if (x instanceof Order) {
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
           });
 
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
-            }
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder, Message dialog result ${x2}`);
-            }
-          });
-      });
-    }
+          this.onInitCreateMode();
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
+          }
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder, Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
   }
 
   private onChangeOrder(): void {
@@ -293,45 +306,41 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this._changeSub) {
-      this._changeSub = this._storageService.changeOrderEvent.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder, changeOrderEvent`);
-        }
+    this._storageService.changeOrder(this.detailObject).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder, changeOrderEvent`);
+      }
 
-        // Navigate back to list view
-        if (x instanceof Order) {
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
-            'OK', {
-              duration: 3000,
-            });
-
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
+      // Navigate back to list view
+      if (x instanceof Order) {
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
+          'OK', {
+            duration: 3000,
           });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder, failed, Message dialog result ${x2}`);
-            }
-          });
-        }
-      });
-    }
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
 
-    this._storageService.changeOrder(this.detailObject);
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder, failed, Message dialog result ${x2}`);
+          }
+        });
+      }
+    });
   }
 }

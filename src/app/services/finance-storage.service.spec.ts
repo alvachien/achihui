@@ -1528,7 +1528,7 @@ describe('FinanceStorageService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'POST' && requrl.url === orderAPIURL && requrl.params.has('hid');
+        return requrl.method === 'POST' && requrl.url === orderAPIURL;
        });
 
       // Respond with the mock data
@@ -1547,7 +1547,7 @@ describe('FinanceStorageService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'POST' && requrl.url === orderAPIURL && requrl.params.has('hid');
+        return requrl.method === 'POST' && requrl.url === orderAPIURL;
       });
 
       // respond with a 500 and the error message in the body
