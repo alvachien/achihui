@@ -10,8 +10,7 @@ import * as moment from 'moment';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   UICommonLabelEnum, IAccountCategoryFilter, momentDateFormat, ModelUtility, TranType, Currency,
   ControlCenter, Order, DocumentType, Account,
@@ -50,7 +49,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
           return false;
         }
       }
-      
+
       return true;
     }
     return false;

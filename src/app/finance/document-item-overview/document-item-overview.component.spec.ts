@@ -7,7 +7,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
+import {
+  MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { EventEmitter } from '@angular/core';
@@ -20,7 +21,8 @@ import { DocumentItemOverviewComponent } from './document-item-overview.componen
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { ThemeStorage } from 'app/theme-picker';
 import { TemplateDocADP, Account, AccountExtraAdvancePayment, AccountExtraLoan,
-  DocumentCreatedFrequenciesByUser, ReportTrendExTypeEnum, ReportTrendExData, } from '../../model';
+  DocumentCreatedFrequenciesByUser, ReportTrendExTypeEnum, ReportTrendExData, Document,
+} from '../../model';
 
 describe('DocumentItemOverviewComponent', () => {
   let component: DocumentItemOverviewComponent;
@@ -33,6 +35,7 @@ describe('DocumentItemOverviewComponent', () => {
   let getADPTmpDocsSpy: any;
   let getLoanTmpDocsSpy: any;
   let fetchAllCurrenciesSpy: any;
+  let doPostADPTmpDocSpy: any;
   let fakeData: FakeDataHelper;
   let routerSpy: any;
 
@@ -45,7 +48,7 @@ describe('DocumentItemOverviewComponent', () => {
     fakeData.buildFinAccounts();
 
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: Partial<HomeDefDetailService>= {
+    const homeService: Partial<HomeDefDetailService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
@@ -57,6 +60,7 @@ describe('DocumentItemOverviewComponent', () => {
       'fetchReportTrendData',
       'getADPTmpDocs',
       'getLoanTmpDocs',
+      'doPostADPTmpDoc',
     ]);
     fetchAllDocTypesSpy = stroageService.fetchAllDocTypes.and.returnValue(of([]));
     fetchAllTranTypesSpy = stroageService.fetchAllTranTypes.and.returnValue(of([]));
@@ -65,6 +69,7 @@ describe('DocumentItemOverviewComponent', () => {
     fetchReportTrendDataSpy = stroageService.fetchReportTrendData.and.returnValue(of([]));
     getADPTmpDocsSpy = stroageService.getADPTmpDocs.and.returnValue(of([]));
     getLoanTmpDocsSpy = stroageService.getLoanTmpDocs.and.returnValue(of([]));
+    doPostADPTmpDocSpy = stroageService.doPostADPTmpDoc.and.returnValue(of({}));
     const themeStorageStub: Partial<ThemeStorage> = {};
     themeStorageStub.getStoredTheme = () => { return undefined; };
     themeStorageStub.onThemeUpdate = new EventEmitter<any>();
@@ -128,9 +133,9 @@ describe('DocumentItemOverviewComponent', () => {
 
     beforeEach(inject([OverlayContainer],
       (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
+        overlayContainer = oc;
+        overlayContainerElement = oc.getContainerElement();
+      }));
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -186,7 +191,7 @@ describe('DocumentItemOverviewComponent', () => {
     }));
   });
 
-  describe('3. grid should work', () => {
+  describe('3. grid and menu should work', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -227,44 +232,49 @@ describe('DocumentItemOverviewComponent', () => {
       // Trend data
       fetchReportTrendDataSpy.and.callFake((trendtype: ReportTrendExTypeEnum, exctran?: boolean,
         dtbgn?: moment.Moment, dtend?: moment.Moment) => {
-          let ardata: ReportTrendExData[] = [];
+        let ardata: ReportTrendExData[] = [];
         if (trendtype === ReportTrendExTypeEnum.Daily) {
           let rst: ReportTrendExData = new ReportTrendExData();
-          rst.onSetData({"tranDate":"2019-02-05","expense":false,"tranAmount":17600.0});
+          rst.onSetData({ 'tranDate': '2019-02-05', 'expense': false, 'tranAmount': 17600.0 });
           ardata.push(rst);
           rst = new ReportTrendExData();
-          rst.onSetData({"tranDate":"2019-02-01","expense":true,"tranAmount":-279.00});
+          rst.onSetData({ 'tranDate': '2019-02-01', 'expense': true, 'tranAmount': -279.00 });
           ardata.push(rst);
           rst = new ReportTrendExData();
-          rst.onSetData({"tranDate":"2019-02-02","expense":true,"tranAmount":-575.35});
+          rst.onSetData({ 'tranDate': '2019-02-02', 'expense': true, 'tranAmount': -575.35 });
           ardata.push(rst);
           rst = new ReportTrendExData();
-          rst.onSetData({"tranDate":"2019-02-05","expense":true,"tranAmount":-14590.00});
+          rst.onSetData({ 'tranDate': '2019-02-05', 'expense': true, 'tranAmount': -14590.00 });
           ardata.push(rst);
           rst = new ReportTrendExData();
-          rst.onSetData({"tranDate":"2019-02-09","expense":true,"tranAmount":-217.53});
+          rst.onSetData({ 'tranDate': '2019-02-09', 'expense': true, 'tranAmount': -217.53 });
           ardata.push(rst);
-        } else if(trendtype === ReportTrendExTypeEnum.Weekly) {
+        } else if (trendtype === ReportTrendExTypeEnum.Weekly) {
           let rst: ReportTrendExData = new ReportTrendExData();
-          rst.onSetData({"tranWeek":5,"tranYear":2019,"expense":true,"tranAmount":-854.35});
+          rst.onSetData({ 'tranWeek': 5, 'tranYear': 2019, 'expense': true, 'tranAmount': -854.35 });
           ardata.push(rst);
           rst = new ReportTrendExData();
-          rst.onSetData({"tranWeek":6,"tranYear":2019,"expense":false,"tranAmount":17600.00});
+          rst.onSetData({ 'tranWeek': 6, 'tranYear': 2019, 'expense': false, 'tranAmount': 17600.00 });
           ardata.push(rst);
           rst = new ReportTrendExData();
-          rst.onSetData({"tranWeek":6,"tranYear":2019,"expense":true,"tranAmount":-14807.53});
+          rst.onSetData({ 'tranWeek': 6, 'tranYear': 2019, 'expense': true, 'tranAmount': -14807.53 });
           ardata.push(rst);
         }
 
         return asyncData(ardata);
       });
+
+      // doPostADPTmpDocSpy
+      let ndoc: Document = new Document();
+      ndoc.Id = 100;
+      doPostADPTmpDocSpy.and.returnValue(asyncData(ndoc));
     });
 
     beforeEach(inject([OverlayContainer],
       (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
+        overlayContainer = oc;
+        overlayContainerElement = oc.getContainerElement();
+      }));
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -272,7 +282,7 @@ describe('DocumentItemOverviewComponent', () => {
 
     it('1. grid Todo shall work fine', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngAfterViewInit
+      tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(getADPTmpDocsSpy).toHaveBeenCalled();
@@ -284,7 +294,162 @@ describe('DocumentItemOverviewComponent', () => {
       expect(fetchDocPostedFrequencyPerUserSpy).toHaveBeenCalled();
       expect(fetchReportTrendDataSpy).toHaveBeenCalled();
 
+      expect(component.dataSourceTmpDoc.data.length).toBeGreaterThan(0);
+
       flush();
+    }));
+
+    it('2. menu shall work', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      tick(); // For charts
+      fixture.detectChanges();
+
+      // Menus
+      component.onCreateNormalDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createnormal']);
+
+      component.onCreateTransferDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createtransfer']);
+
+      component.onCreateADPDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createadp']);
+
+      component.onCreateADRDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createadr']);
+
+      component.onCreateExgDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createexg']);
+
+      component.onCreateAssetBuyInDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createassetbuy']);
+
+      component.onCreateAssetSoldOutDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createassetsold']);
+
+      component.onCreateBorrowFromDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createbrwfrm']);
+
+      component.onCreateLendToDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createlendto']);
+
+      component.onCreateRepayDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createrepayex']);
+
+      component.onCreateAssetValChgDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createassetvalchg']);
+
+      component.onOpenPlanList();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/plan']);
+
+      component.onCreatePlan();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/plan/create']);
+
+      flush();
+    }));
+
+    it('3. onPostTmpDocument shall work for Loan temp doc', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      tick(); // For charts
+      fixture.detectChanges();
+
+      let loanacntext: AccountExtraLoan = fakeData.finAccounts.find((vl: Account) => { return vl.Id === 22; })
+        .ExtraInfo as AccountExtraLoan;
+      component.onPostTmpDocument(loanacntext.loanTmpDocs[0]);
+
+      expect(doPostADPTmpDocSpy).not.toHaveBeenCalled();
+      // Shall do the navigation
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createrepayex']);
+    }));
+
+    it('4. onPostTmpDocument shall work for ADP temp doc - no click on snackbar', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      tick(); // For charts
+      fixture.detectChanges();
+
+      let adpacntext: AccountExtraAdvancePayment = fakeData.finAccounts.find((vl: Account) => { return vl.Id === 24; })
+        .ExtraInfo as AccountExtraAdvancePayment;
+      component.onPostTmpDocument(adpacntext.dpTmpDocs[0]);
+
+      expect(doPostADPTmpDocSpy).toHaveBeenCalled();
+      tick(); // Makt the data return
+      fixture.detectChanges();
+
+      // Expect there is a snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull();
+
+      // Let it dismiss automatically
+      tick(2000);
+      fixture.detectChanges();
+
+      expect(getADPTmpDocsSpy).toHaveBeenCalledTimes(2);
+      expect(getLoanTmpDocsSpy).toHaveBeenCalledTimes(2);
+
+      tick();
+      fixture.detectChanges();
+      flush();
+    }));
+
+    it('5. onPostTmpDocument shall work for ADP temp doc - click open in snackbar', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      tick(); // For charts
+      fixture.detectChanges();
+
+      let adpacntext: AccountExtraAdvancePayment = fakeData.finAccounts.find((vl: Account) => { return vl.Id === 24; })
+        .ExtraInfo as AccountExtraAdvancePayment;
+      component.onPostTmpDocument(adpacntext.dpTmpDocs[0]);
+
+      expect(doPostADPTmpDocSpy).toHaveBeenCalled();
+      tick(); // Makt the data return
+      fixture.detectChanges();
+
+      // Expect there is a snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull();
+
+      // Then, click the open button
+      let actionButton: any = overlayContainerElement.querySelector('button.mat-button') as HTMLButtonElement;
+      actionButton.click();
+      fixture.detectChanges();
+
+      expect(getADPTmpDocsSpy).toHaveBeenCalledTimes(1);
+      expect(getLoanTmpDocsSpy).toHaveBeenCalledTimes(1);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/100']);
+
+      // flush();
+    }));
+
+    it('6. onPostTmpDocument shall handle exception for ADP temp doc fail case', fakeAsync(() => {
+      doPostADPTmpDocSpy.and.returnValue(asyncError('server failed with 500'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      tick(); // For charts
+      fixture.detectChanges();
+
+      let adpacntext: AccountExtraAdvancePayment = fakeData.finAccounts.find((vl: Account) => { return vl.Id === 24; })
+        .ExtraInfo as AccountExtraAdvancePayment;
+      component.onPostTmpDocument(adpacntext.dpTmpDocs[0]);
+
+      expect(doPostADPTmpDocSpy).toHaveBeenCalled();
+      tick(); // Makt the exception
+      fixture.detectChanges();
+
+      // Expect there is a snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).toContain('server failed with 500',
+        'Expected snack bar to show the error message: server failed with 500');
+
+      // flush();
     }));
 
     // it('2. shall handle the fetchDocPostedFrequencyPerUser fails case', fakeAsync(() => {
@@ -302,7 +467,7 @@ describe('DocumentItemOverviewComponent', () => {
     //   fixture.detectChanges();
     //   expect(fetchDocPostedFrequencyPerUserSpy).toHaveBeenCalled();
     //   expect(fetchReportTrendDataSpy).toHaveBeenCalled();
-      
+
     //   let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
     //   expect(messageElement.textContent).toContain('server 500 failed',
     //     'Expected snack bar to show the error message: server 500 failed');

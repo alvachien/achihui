@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Account, TemplateDocBase,
   TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, financeAccountCategoryBorrowFrom,
   financeTranTypeRepaymentOut, financeTranTypeRepaymentIn, ReportTrendExTypeEnum, ReportTrendExData, momentDateFormat,
-  DocumentCreatedFrequenciesByUser, HomeMember, TranType, } from '../../model';
+  DocumentCreatedFrequenciesByUser, HomeMember, TranType, Document, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ThemeStorage } from '../../theme-picker/theme-storage/theme-storage';
@@ -176,32 +176,41 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
   public onPostTmpDocument(doc: any): void {
     if (doc instanceof TemplateDocADP) {
       // Do the ADP posting!
-      this._storageService.doPostADPTmpDoc(doc).subscribe((x: any) => {
+      this._storageService.doPostADPTmpDoc(doc).subscribe((x: Document) => {
         // Show the posted document - after the snackbar!
         let snackBarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted), 'Open', {
-          duration: 3000,
+          duration: 2000,
+        });
+
+        let docopen: boolean = false;
+
+        // Click to open
+        snackBarRef.onAction().subscribe(() => {
+          docopen = true;
+
+          // Navigate to display
+          this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
         });
 
         // Closed
         snackBarRef.afterDismissed().subscribe(() => {
           // Need refresh the list
-          this.onTmpDocsRefresh();
-        });
-
-        // Click to open
-        snackBarRef.onAction().subscribe(() => {
-          // Navigate to display
-          this._router.navigate(['/finance/document/display/' + x.id]);
+          if (!docopen) {
+            this.onTmpDocsRefresh();
+          }
         });
       }, (error: any) => {
         // Show error dialog!
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering DocumentItemOverviewComponent onPostTmpDocument, failed with ${error}`);
         }
+        this._snackbar.open(error.toString(), undefined, {
+          duration: 2000,
+        });
       });
     } else if (doc instanceof TemplateDocLoan) {
       this._uiStatusService.currentTemplateLoanDoc = doc;
-      this._router.navigate(['/finance/document/createrepayex/']);
+      this._router.navigate(['/finance/document/createrepayex']);
     }
   }
 

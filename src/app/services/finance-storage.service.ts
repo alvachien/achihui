@@ -788,7 +788,7 @@ export class FinanceStorageService {
    * Create an order
    * @param ord Order instance to create
    */
-  public createOrder(objDetail: Order): void {
+  public createOrder(objDetail: Order): Observable<Order> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -797,45 +797,35 @@ export class FinanceStorageService {
     let apiurl: string = environment.ApiUrl + '/api/FinanceOrder';
 
     const jdata: string = objDetail.writeJSONString();
-    this._http.post(apiurl, jdata, {
+    return this._http.post(apiurl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Entering Map of createOrder in FinanceStorageService: ' + response);
+          console.log('AC_HIH_UI [Debug]: Entering FinanceStorageService, createOrder map.');
         }
 
         let hd: Order = new Order();
-        hd.onSetData(response);
+        hd.onSetData(<any>response);
+
+        // Buffer it
+        this._listOrder.push(hd);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createOrder in FinanceStorageService: ${x}`);
-        }
-
-        // Add it to the buffer
-        this._listOrder.push(x);
-
-        // Broadcast event
-        this.createOrderEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createOrder in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in FinanceStorageService's createOrder.`);
         }
 
-        // Broadcast event: failed
-        this.createOrderEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Change an order
    * @param ord Order instance to change
    */
-  public changeOrder(objDetail: Order): void {
+  public changeOrder(objDetail: Order): Observable<Order> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -845,7 +835,7 @@ export class FinanceStorageService {
     const jdata: string = objDetail.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.put(apiurl, jdata, {
+    return this._http.put(apiurl, jdata, {
       headers: headers,
       params: params,
     })
@@ -856,33 +846,25 @@ export class FinanceStorageService {
 
         let hd: Order = new Order();
         hd.onSetData(response);
-        return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in changeOrder in FinanceStorageService: ${x}`);
-        }
 
-        // Update the buffer if necessary
         let idx: number = this._listOrder.findIndex((val: any) => {
-          return val.Id === x.Id;
+          return val.Id === hd.Id;
         });
         if (idx !== -1) {
-          this._listOrder.splice(idx, 1, x);
+          this._listOrder.splice(idx, 1, hd);
+        } else {
+          this._listOrder.push(hd);
         }
 
-        // Broadcast event
-        this.changeOrderEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in changeOrder in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in FinanceStorageService's createOrder.`);
         }
 
-        // Broadcast event: failed
-        this.changeOrderEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -1740,7 +1722,7 @@ export class FinanceStorageService {
    * Post the template doc
    * @param doc Tmplate doc
    */
-  public doPostADPTmpDoc(doc: TemplateDocADP): Observable<any> {
+  public doPostADPTmpDoc(doc: TemplateDocADP): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1760,7 +1742,9 @@ export class FinanceStorageService {
           console.log(`AC_HIH_UI [Debug]: Entering doPostADPTmpDoc in FinanceStorageService`);
         }
 
-        return <any>response;
+        let ndoc: Document = new Document();
+        ndoc.onSetData(<any>response);
+        return ndoc;
       }),
       catchError((errresp: HttpErrorResponse) => {
         const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;

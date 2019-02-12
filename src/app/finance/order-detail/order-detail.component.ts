@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper, } from '@angular/material';
 import { Observable, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -20,20 +19,32 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
   private routerID: number = -1; // Current object ID in routing
   private _destroyed$: ReplaySubject<boolean>;
-  private _createSub: Subscription;
-  private _changeSub: Subscription;
 
   public currentMode: string;
   public detailObject: Order | undefined;
   public uiMode: UIMode = UIMode.Create;
-  public step: number = 0;
+  // Stepper
+  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
+  // Step: Generic info
+  public firstFormGroup: FormGroup;
+  get firstStepCompleted(): boolean {
+    if (this.firstFormGroup && this.firstFormGroup.valid) {
+      return true;
+    }
+    return false;
+  }
+  // Step: S. rules
+  get ruleStepCompleted(): boolean {
+    return false;
+  }
+
   get SRules(): SettlementRule[] {
     return this.detailObject.SRules;
   }
 
   displayedColumns: string[] = ['rid', 'ccid', 'precent', 'comment'];
   dataSource: MatTableDataSource<SettlementRule> = new MatTableDataSource();
-  // ruleOperEvent: EventEmitter<undefined> = new EventEmitter<undefined>(undefined);
+
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
@@ -98,7 +109,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
                 this._snackbar.open(error.toString(), undefined, {
                   duration: 2000,
-                })
+                });
                 this.detailObject = new Order();
               }, () => {
                 // Nothing
@@ -128,47 +139,14 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
-      this._destroyed$.complete();  
+      this._destroyed$.complete();
     }
-    if (this._createSub) {
-      this._createSub.unsubscribe();
-    }
-    if (this._changeSub) {
-      this._changeSub.unsubscribe();
-    }
-  }
-
-  public setStep(index: number): void {
-    this.step = index;
-  }
-
-  public nextStep(): void {
-    this.step++;
-  }
-
-  public prevStep(): void {
-    this.step--;
-  }
-
-  public canSubmit(): boolean {
-    if (!this.isFieldChangable) {
-      return false;
-    }
-
-    // Check name
-    if (this.detailObject.Name.trim().length <= 0) {
-      return false;
-    }
-
-    return true;
   }
 
   public onCreateRule(): void {
     let srule: SettlementRule = new SettlementRule();
     srule.RuleId = this.getNextRuleID();
     this.detailObject.SRules.push(srule);
-
-    // this.ruleOperEvent.emit();
   }
 
   public onDeleteRule(rule: any): void {
@@ -181,7 +159,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     }
 
     this.detailObject.SRules.splice(idx);
-    // this.ruleOperEvent.emit();
   }
 
   public onSubmit(): void {
@@ -244,8 +221,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this._createSub) {
-      this._createSub = this._storageService.createOrderEvent.subscribe((x: any) => {
+    this.detailObject.HID = this._homedefService.ChosedHome.ID;
+    this._storageService.createOrder(this.detailObject).subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder, createOrderEvent`);
         }
@@ -262,8 +239,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             recreate = true;
 
             this.onInitCreateMode();
-            this.setStep(0);
-            // this._router.navigate(['/finance/order/create']);
           });
 
           snackbarRef.afterDismissed().subscribe(() => {
@@ -290,12 +265,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
               console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder, Message dialog result ${x2}`);
             }
           });
-        }
       });
     }
-
-    this.detailObject.HID = this._homedefService.ChosedHome.ID;
-    this._storageService.createOrder(this.detailObject);
   }
 
   private onChangeOrder(): void {

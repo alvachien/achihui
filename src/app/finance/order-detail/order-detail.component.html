@@ -4,60 +4,52 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-accordion class="example-headers-align">
-      <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{'Common.GenericInfo' | translate}}
-          </mat-panel-title>
-          <mat-panel-description>
-            {{'Common.GenericInfo' | translate}}
-            <mat-icon>account_circle</mat-icon>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
+    <mat-horizontal-stepper linear>
+      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
-        <mat-form-field>
-          <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name" name="name"
-            #name maxlength="30">
-          <mat-hint align="end">{{name.value.length}} / 30</mat-hint>
-        </mat-form-field>
+          <!-- Name -->
+          <mat-form-field>
+            <input matInput type="text" placeholder="{{'Common.Name' | translate}}" formControlName="nameControl"
+              required #ordname maxlength="30">
+            <mat-hint align="end">{{ordname.value.length}} / 45</mat-hint>
+          </mat-form-field>
 
-        <mat-form-field>
-          <input matInput [(ngModel)]="detailObject.ValidFrom" [disabled]="!isFieldChangable" [matDatepicker]="vfmpicker" placeholder="{{'Common.ValidFrom' | translate}}">
-          <mat-datepicker-toggle matSuffix [for]="vfmpicker"></mat-datepicker-toggle>
-          <mat-datepicker #vfmpicker></mat-datepicker>
-        </mat-form-field>
+          <!-- Valid from -->
+          <mat-form-field>
+            <input matInput [matDatepicker]="vfmpicker" placeholder="{{'Common.ValidFrom' | translate}}"
+              formControlName="validFromControl">
+            <mat-datepicker-toggle matSuffix [for]="vfmpicker"></mat-datepicker-toggle>
+            <mat-datepicker #vfmpicker></mat-datepicker>
+          </mat-form-field>
 
-        <mat-form-field>
-          <input matInput [(ngModel)]="detailObject.ValidTo" [disabled]="!isFieldChangable" [matDatepicker]="vtopicker" placeholder="{{'Common.ValidTo' | translate}}">
-          <mat-datepicker-toggle matSuffix [for]="vtopicker"></mat-datepicker-toggle>
-          <mat-datepicker #vtopicker></mat-datepicker>
-        </mat-form-field>
-      
-        <mat-form-field>
-          <input matInput type="text" placeholder="{{'Common.Comment' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Comment" name="cmt"
-            #comment maxlength="45">
-          <mat-hint align="end">{{comment.value.length}} / 45</mat-hint>
-        </mat-form-field>
-  
-        <mat-action-row>
-          <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
-        </mat-action-row>
-      </mat-expansion-panel>
+          <!-- Valid to -->
+          <mat-form-field>
+            <input matInput [matDatepicker]="vtopicker" placeholder="{{'Common.ValidTo' | translate}}"
+              formControlName="validToControl">
+            <mat-datepicker-toggle matSuffix [for]="vtopicker"></mat-datepicker-toggle>
+            <mat-datepicker #vtopicker></mat-datepicker>
+          </mat-form-field>
 
-      <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{'Finance.SettlementRule' | translate}}
-          </mat-panel-title>
-          <mat-panel-description>
-            {{'Finance.SettlementRule' | translate}}
-            <mat-icon>format_list_numbered</mat-icon>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
+          <!-- Comment -->
+          <mat-form-field>
+            <input matInput type="text" placeholder="{{'Common.Comment' | translate}}" formControlName="cmtControl"
+              #comment maxlength="45">
+            <mat-hint align="end">{{comment.value.length}} / 45</mat-hint>
+          </mat-form-field>
+        </form>
+        <div>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
+      </mat-step>
 
+      <mat-step [completed]="ruleStepCompleted" errorMessage="Invalid rule">
+        <ng-template matStepLabel>{{'Finance.SettlementRule' | translate}}</ng-template>
         <mat-toolbar>
-          <button mat-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onCreateRule()"><mat-icon mat-icon-button>add</mat-icon></button>
+          <button mat-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onCreateRule()">
+            <mat-icon mat-icon-button>add</mat-icon>
+          </button>
         </mat-toolbar>
 
         <div class="table-container mat-elevation-z8">
@@ -66,11 +58,13 @@
             <ng-container matColumnDef="rid">
               <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <button mat-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteRule(row)"><mat-icon class="example-icon">delete</mat-icon></button>
+                <button mat-icon-button color="primary" [disabled]="!isFieldChangable" (click)="onDeleteRule(row)">
+                  <mat-icon class="example-icon">delete</mat-icon>
+                </button>
                 {{ row.RuleId }}
               </mat-cell>
             </ng-container>
-    
+
             <!-- CC Column -->
             <ng-container matColumnDef="ccid">
               <mat-header-cell *matHeaderCellDef>{{'Finance.ControlCenter' | translate}}</mat-header-cell>
@@ -80,7 +74,7 @@
                     <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
                       {{tt.Name}}
                     </mat-option>
-                </mat-select>
+                  </mat-select>
                 </mat-form-field>
               </mat-cell>
             </ng-container>
@@ -88,14 +82,14 @@
             <!-- Present Column -->
             <ng-container matColumnDef="precent">
               <mat-header-cell *matHeaderCellDef>{{'Common.Precent' |translate}} (%)</mat-header-cell>
-              <mat-cell *matCellDef="let row"> 
+              <mat-cell *matCellDef="let row">
                 <mat-form-field>
                   <input matInput type="number" required placeholder="{{'Common.Precent' |translate}} (%)"
                     [readonly]="!isFieldChangable" [(ngModel)]="row.Precent" name="rulepr">
-                </mat-form-field>                 
+                </mat-form-field>
               </mat-cell>
             </ng-container>
-            
+
             <!-- Comment Column -->
             <ng-container matColumnDef="comment">
               <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
@@ -103,44 +97,34 @@
                 <mat-form-field>
                   <input matInput type="text" placeholder="{{'Common.Comment' | translate}}"
                     [readonly]="!isFieldChangable" [(ngModel)]="row.Comment" name="rulecmt">
-                </mat-form-field>                   
+                </mat-form-field>
               </mat-cell>
             </ng-container>
-    
+
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           </mat-table>
         </div>
-  
-        <mat-action-row>
-          <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-          <button mat-button color="primary" (click)="nextStep()">{{'Common.NextButton' | translate}}</button>
-        </mat-action-row>
-      </mat-expansion-panel>
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+        </div>
+      </mat-step>
 
-      <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{'Common.ReviewForSubmit' | translate}}
-          </mat-panel-title>
-          <mat-panel-description>
-            {{'Common.ReviewForSubmit' | translate}}
-            <mat-icon>playlist_add_check</mat-icon>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
+      <mat-step>
+        <ng-template matStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
         <div class="mat-typography achih-control-full-width">
           <h2>{{'Common.Name' | translate}}: {{detailObject.Name}}</h2>
           <h3>{{'Common.ValidFrom' | translate}}: {{detailObject.ValidFromFormatString}}</h3>
           <h3>{{'Common.ValidTo' | translate}}: {{detailObject.ValidToFormatString}}</h3>
         </div>
-
-        <mat-action-row>
-          <button mat-button color="warn" (click)="prevStep()">{{'Common.PreviousButton' | translate}}</button>
-          <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-    </mat-accordion>
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button (click)="onReset()">{{'Common.Reset' | translate}}</button>
+          <button mat-button (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
   </mat-card-content>
 
   <mat-card-actions>
