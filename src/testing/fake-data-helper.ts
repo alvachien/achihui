@@ -14,6 +14,7 @@ import {
   momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom,
   AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
   financeAccountCategoryAdvancePayment,
+  SettlementRule,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -1241,6 +1242,14 @@ export class FakeDataHelper {
       ctgy.HID = this._chosedHome ? this._chosedHome.ID : 0;
       // ctgy.ValidFrom =
       ctgy.Name = `Order ${i + 1}`;
+      // S. rules
+      if (i === 0) {
+        let srule: SettlementRule = new SettlementRule();
+        srule.RuleId = 1;
+        srule.ControlCenterId = this.finControlCenters[0].Id;
+        srule.Precent = 100;
+        ctgy.SRules.push(srule);
+      }
       this._finOrders.push(ctgy);
     }
   }

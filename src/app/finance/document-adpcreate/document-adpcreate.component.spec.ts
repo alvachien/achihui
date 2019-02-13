@@ -140,7 +140,7 @@ describe('DocumentADPCreateComponent', () => {
   });
 
   it('1a. should create with adr', () => {
-    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createadr', {})] as UrlSegment[]);
+    activatedRouteStub.setURL([new UrlSegment('createadr', {})] as UrlSegment[]);
 
     expect(component).toBeTruthy();
   });

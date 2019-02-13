@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterContentInit, AfterViewInit, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterContentInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource, MatTable, } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
@@ -24,8 +24,6 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
   private ngUnsubscribe$: ReplaySubject<boolean>;
 
   // Account
-  // @ViewChild('chartAccountIncoming') chartAccountIncoming: ElementRef;
-  // @ViewChild('chartAccountOutgoing') chartAccountOutgoing: ElementRef;
   accountIncomingChartOption: Observable<EChartOption>;
   accountOutgoingChartOption: Observable<EChartOption>;
 
@@ -36,7 +34,6 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
   overviewChartOptions: Observable<EChartOption>;
 
   // B.S.
-  // @ViewChild('chartAcntCtgy') chartAcntCtgy: ElementRef;
   acntCtgyChartOption: Observable<EChartOption>;
   displayedBSColumns: string[] = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
   dataSourceBS: MatTableDataSource<BalanceSheetReport> = new MatTableDataSource();
@@ -167,8 +164,10 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
       console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngOnDestroy...');
     }
 
-    this.ngUnsubscribe$.next(true);
-    this.ngUnsubscribe$.complete();
+    if (this.ngUnsubscribe$) {
+      this.ngUnsubscribe$.next(true);
+      this.ngUnsubscribe$.complete();
+    }
   }
 
   public onMOMScopeChanged(): void {

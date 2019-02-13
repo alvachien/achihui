@@ -582,9 +582,19 @@ describe('OrderDetailComponent', () => {
 
       flush();
     }));
+    it('backtoList shall work', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      component.onBackToList();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/order/']);
+
+      flush();
+    }));
   });
 
-  describe('3. Display mode: checking data loading', () => {
+  describe('4. Display mode: checking data loading', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let currentOrder: Order;
@@ -596,10 +606,6 @@ describe('OrderDetailComponent', () => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       // Create order
       readOrderSpy.and.returnValue(asyncData(currentOrder));
-
-      // Change the URL
-      // let activatedRoute: any = fixture.debugElement.injector.get(ActivatedRoute) as any;
-      // activatedRoute.setURL([new UrlSegment('display', { id : currentOrder.Id.toString() })] as UrlSegment[]);
     });
 
     beforeEach(inject([OverlayContainer, ActivatedRoute],
@@ -608,14 +614,14 @@ describe('OrderDetailComponent', () => {
       overlayContainerElement = oc.getContainerElement();
 
       // Change the URL
-      actRoute = new ActivatedRouteUrlStub([new UrlSegment('display', { id : currentOrder.Id.toString() })] as UrlSegment[]);
+      actRoute.setURL([new UrlSegment('display', {}), new UrlSegment(currentOrder.Id.toString(), {})] as UrlSegment[]);
     }));
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('step 1: should set thevalues: date, and so on', fakeAsync(() => {
+    it('should set the values: date, and so on', fakeAsync(() => {
 
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -630,6 +636,187 @@ describe('OrderDetailComponent', () => {
       expect(component.firstFormGroup.get('validToControl').value).toBeTruthy();
       expect(component.orderName).toEqual(currentOrder.Name);
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
+
+      // It shall allow go to step 2
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(1);
+
+      // It shall allow go to step 3
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(2);
+
+      flush();
+    }));
+  });
+
+  describe('5. Edit mode: checking data loading', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+    let currentOrder: Order;
+
+    beforeEach(() => {
+      currentOrder = fakeData.finOrders[0];
+
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Create order
+      readOrderSpy.and.returnValue(asyncData(currentOrder));
+    });
+
+    beforeEach(inject([OverlayContainer, ActivatedRoute],
+      (oc: OverlayContainer, actRoute: any) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+
+      // Change the URL
+      actRoute.setURL([new UrlSegment('edit', {}), new UrlSegment(currentOrder.Id.toString(), {})] as UrlSegment[]);
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('should set the values: date, and so on', fakeAsync(() => {
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      tick(); // For readOrder;
+      fixture.detectChanges();
+
+      expect(component.isFieldChangable).toBeTruthy();
+      expect(readOrderSpy).toHaveBeenCalled();
+
+      expect(component.firstFormGroup.get('validFromControl').value).toBeTruthy();
+      expect(component.firstFormGroup.get('validToControl').value).toBeTruthy();
+      expect(component.orderName).toEqual(currentOrder.Name);
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
+
+      // It shall allow go to step 2
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(1);
+
+      // It shall allow go to step 3
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(2);
+
+      flush();
+    }));
+
+    it('submit should work', fakeAsync(() => {
+      changeOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      tick(); // For readOrder;
+      fixture.detectChanges();
+
+      expect(component.isFieldChangable).toBeTruthy();
+      expect(readOrderSpy).toHaveBeenCalled();
+
+      // Step 1.
+      expect(component.firstFormGroup.get('validFromControl').value).toBeTruthy();
+      expect(component.firstFormGroup.get('validToControl').value).toBeTruthy();
+      expect(component.orderName).toEqual(currentOrder.Name);
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      component.firstFormGroup.get('cmtControl').setValue('test 2');
+      fixture.detectChanges();
+      expect(component.firstStepCompleted).toBeTruthy();
+      // Next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2
+      expect(component._stepper.selectedIndex).toEqual(1);
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
+      expect(component.ruleStepCompleted).toBeTruthy();
+      // Next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 3
+      expect(component._stepper.selectedIndex).toEqual(2);
+      component.onSubmit();
+      expect(changeOrderSpy).toHaveBeenCalled();
+      tick();
+      fixture.detectChanges();
+
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull();
+
+      tick(2000);
+      fixture.detectChanges();
+      // There shall be a navigation
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/order/display/' + fakeData.finOrders[0].Id.toString()]);
+
+      flush();
+    }));
+
+    it('should handle submit failed case', fakeAsync(() => {
+      changeOrderSpy.and.returnValue(asyncError('server 500'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      tick(); // For readOrder;
+      fixture.detectChanges();
+
+      expect(component.isFieldChangable).toBeTruthy();
+      expect(readOrderSpy).toHaveBeenCalled();
+
+      // Step 1.
+      expect(component.firstFormGroup.get('validFromControl').value).toBeTruthy();
+      expect(component.firstFormGroup.get('validToControl').value).toBeTruthy();
+      expect(component.orderName).toEqual(currentOrder.Name);
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      component.firstFormGroup.get('cmtControl').setValue('test 2');
+      fixture.detectChanges();
+      expect(component.firstStepCompleted).toBeTruthy();
+      // Next button
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 2
+      expect(component._stepper.selectedIndex).toEqual(1);
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
+      expect(component.ruleStepCompleted).toBeTruthy();
+      // Next button
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Step 3
+      expect(component._stepper.selectedIndex).toEqual(2);
+      component.onSubmit();
+      expect(changeOrderSpy).toHaveBeenCalled();
+      tick();
+      fixture.detectChanges();
+
+      // Error dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      // And, there shall no changes in the selected tab
+      expect(component._stepper.selectedIndex).toBe(2);
 
       flush();
     }));

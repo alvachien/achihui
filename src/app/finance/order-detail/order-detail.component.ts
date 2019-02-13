@@ -31,10 +31,12 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   // Step: Generic info
   public firstFormGroup: FormGroup;
   get firstStepCompleted(): boolean {
-    if (this.firstFormGroup && this.firstFormGroup.valid) {
-      return true;
+    if (this.isFieldChangable) {
+      if (!(this.firstFormGroup && this.firstFormGroup.valid)) {
+        return false;
+      }
     }
-    return false;
+    return true;
   }
   get orderName(): string {
     return this.firstFormGroup.get('nameControl').value;
@@ -47,23 +49,25 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   }
   // Step: S. rules
   get ruleStepCompleted(): boolean {
-    if (this.dataSource.data.length <= 0) {
-      return false;
-    }
-
     let brst: boolean = true;
-    let totalPr: number = 0;
-    for (let i: number = 0; i < this.dataSource.data.length; i++) {
-      if (!this.dataSource.data[i].ControlCenterId) {
+    if (this.isFieldChangable) {
+      if (this.dataSource.data.length <= 0) {
         return false;
       }
-      if (this.dataSource.data[i].Precent === undefined
-        || this.dataSource.data[i].Precent <= 0) {
-        return false;
+  
+      let totalPr: number = 0;
+      for (let i: number = 0; i < this.dataSource.data.length; i++) {
+        if (!this.dataSource.data[i].ControlCenterId) {
+          return false;
+        }
+        if (this.dataSource.data[i].Precent === undefined
+          || this.dataSource.data[i].Precent <= 0) {
+          return false;
+        }
+        totalPr += this.dataSource.data[i].Precent;
       }
-      totalPr += this.dataSource.data[i].Precent;
+      brst = totalPr === 100;
     }
-    brst = totalPr === 100;
 
     return brst;
   }
@@ -340,32 +344,28 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder, changeOrderEvent`);
       }
-
-      // Navigate back to list view
-      if (x instanceof Order) {
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
-          undefined, {
-            duration: 2000,
-          });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
+      let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
+        undefined, {
+          duration: 2000,
         });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
 
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
-      }
+      snackbarRef.afterDismissed().subscribe(() => {
+        // Navigate to display
+        this._router.navigate(['/finance/order/display/' + x.Id.toString()]);
+      });
+    }, (error: any) => {
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     });
   }
 

@@ -316,7 +316,7 @@ describe('DocumentLoanCreateComponent', () => {
     }));
 
     it('step 1: should have accounts and others loaded (createlendto)', fakeAsync(() => {
-      activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createlendto', {})] as UrlSegment[]);
+      activatedRouteStub.setURL([new UrlSegment('createlendto', {})] as UrlSegment[]);
 
       fixture.detectChanges(); // ngOnInit
       expect(component.arUIAccount.length).toEqual(0);

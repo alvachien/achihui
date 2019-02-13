@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -6,10 +6,10 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Component, Input } from '@angular/core';
 
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { AccountDetailComponent } from './account-detail.component';
 import { UIMode } from '../../model';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
@@ -35,24 +35,34 @@ describe('AccountDetailComponent', () => {
   let fixture: ComponentFixture<AccountDetailComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
+  let fakeData: FakeDataHelper;
+  let routerSpy: any;
+  let activatedRouteStub: any;
+  let fetchAllAccountCtgySpy: any;
+  let fetchAllAssetCtgySpy: any;
 
   beforeEach(async(() => {
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllMembersInChosedHome']);
-    homeService.ChosedHome = {
-      _id: 1,
-    };
-    const chosedHomeMemSpy: any = homeService.fetchAllMembersInChosedHome.and.returnValue();
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+    fakeData.buildCurrentUser();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
+
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
+    const homeService: Partial<HomeDefDetailService> = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+    }
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAssetCategories']);
-    const allAccountCtgySpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    const allAssetCtgySpy: any = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
+    fetchAllAccountCtgySpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAssetCtgySpy = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
 
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
         FormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {

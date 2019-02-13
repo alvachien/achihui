@@ -1,5 +1,5 @@
 import { UrlSegment, } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, BehaviorSubject } from 'rxjs';
 
 /**
  * An ActivateRoute test double with a `url` observable.
@@ -8,10 +8,12 @@ import { ReplaySubject } from 'rxjs';
 export class ActivatedRouteUrlStub {
   // Use a ReplaySubject to share previous values with subscribers
   // and pump new values into the `url` observable
-  private subject: any = new ReplaySubject<UrlSegment[]>();
+  private subject: BehaviorSubject<UrlSegment[]>;
 
   /** The mock url observable */
-  readonly url: any = this.subject.asObservable();
+  get url(): any {
+    return this.subject.asObservable();
+  }
 
   constructor(initialUrls?: UrlSegment[]) {
     this.setURL(initialUrls);
@@ -19,6 +21,6 @@ export class ActivatedRouteUrlStub {
 
   /** Set the url observables's next value */
   setURL(url?: UrlSegment[]): void {
-    this.subject.next(url);
+    this.subject = new BehaviorSubject<UrlSegment[]>(url);
   }
 }
