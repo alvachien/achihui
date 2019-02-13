@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed, fakeAsync, inject, tick, flush, } from '@angular/core/testing';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -14,9 +15,11 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
+import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { OrderDetailComponent } from './order-detail.component';
-import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
+import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
+import { Order } from '../../model';
 
 describe('OrderDetailComponent', () => {
   let component: OrderDetailComponent;
@@ -27,6 +30,7 @@ describe('OrderDetailComponent', () => {
   let createOrderSpy: any;
   let changeOrderSpy: any;
   let routerSpy: any;
+  let activatedRouteStub: any;
 
   beforeEach(async(() => {
     fakeData = new FakeDataHelper();
@@ -34,6 +38,7 @@ describe('OrderDetailComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
+    fakeData.buildFinOrders();
 
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllControlCenters',
@@ -52,7 +57,7 @@ describe('OrderDetailComponent', () => {
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
+    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
       imports: [
@@ -71,6 +76,7 @@ describe('OrderDetailComponent', () => {
       ],
       declarations: [
         OrderDetailComponent,
+        MessageDialogComponent,
       ],
       providers: [
         TranslateService,
@@ -83,8 +89,13 @@ describe('OrderDetailComponent', () => {
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
       ],
-    })
-    .compileComponents();
+    });
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ MessageDialogComponent ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -95,7 +106,7 @@ describe('OrderDetailComponent', () => {
   it('1. should be created without data', () => {
     expect(component).toBeTruthy();
   });
-  
+
   describe('2. Exception case handling (async loading)', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
@@ -131,13 +142,15 @@ describe('OrderDetailComponent', () => {
     }));
   });
 
-  describe('3. Create mode: should prevent errors by the checking logic', () => {
+  describe('3. Create mode: checking logic and submit', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
     beforeEach(() => {
       // CC
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Create order
+      createOrderSpy.and.returnValue(asyncData(fakeData.finOrders[0]));
     });
 
     beforeEach(inject([OverlayContainer],
@@ -156,6 +169,7 @@ describe('OrderDetailComponent', () => {
 
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
+      expect(component.isFieldChangable).toBeTruthy();
 
       expect(component.firstFormGroup.get('validFromControl').value).toBeTruthy();
       expect(component.firstFormGroup.get('validToControl').value).toBeTruthy();
@@ -163,7 +177,6 @@ describe('OrderDetailComponent', () => {
 
       expect(component.firstStepCompleted).toBeFalsy();
     }));
-
     it('step 1: name is a must', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
@@ -195,14 +208,430 @@ describe('OrderDetailComponent', () => {
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      expect(component._stepper.selectedIndex).toEqual(0); // At first step
 
       // Click the next button - no work!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      expect(component._stepper.selectedIndex).toEqual(1); // At first page
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+    }));
+    it('step 2: rules is mandatory', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // First step
+      component.firstFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Second step
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+      expect(component.ruleStepCompleted).toBeFalsy();
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+    }));
+    it('step 2: prevent the case that rule without control center', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // First step
+      component.firstFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Second step
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+      expect(component.dataSource.data.length).toEqual(0);
+      component.onCreateRule();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(1);
+      component.dataSource.data[0].Precent = 100;
+      fixture.detectChanges();
+
+      expect(component.ruleStepCompleted).toBeFalsy();
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+    }));
+    it('step 2: prevent the case that rule without precent', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // First step
+      component.firstFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Second step
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+      expect(component.dataSource.data.length).toEqual(0);
+      component.onCreateRule();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(1);
+      component.dataSource.data[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+      // component.dataSource.data[0].Precent = 100;
+      fixture.detectChanges();
+
+      expect(component.ruleStepCompleted).toBeFalsy();
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+    }));
+    it('step 2: prevent the case that precent is less than zero', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // First step
+      component.firstFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Second step
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+      expect(component.dataSource.data.length).toEqual(0);
+      component.onCreateRule();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(1);
+      component.dataSource.data[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.dataSource.data[0].Precent = -1;
+      fixture.detectChanges();
+
+      expect(component.ruleStepCompleted).toBeFalsy();
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+    }));
+    it('step 2: prevent the case that precent sum up is less than 100', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // First step
+      component.firstFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Second step
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+      expect(component.dataSource.data.length).toEqual(0);
+      component.onCreateRule();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(1);
+      component.dataSource.data[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.dataSource.data[0].Precent = 90;
+      fixture.detectChanges();
+
+      expect(component.ruleStepCompleted).toBeFalsy();
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(1);
+    }));
+    it('step 2: shall go to step 3 for valid cases', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // First step
+      component.firstFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Second step
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+      expect(component.dataSource.data.length).toEqual(0);
+      component.onCreateRule();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(1);
+      component.dataSource.data[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.dataSource.data[0].Precent = 100;
+      fixture.detectChanges();
+
+      expect(component.ruleStepCompleted).toBeTruthy();
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(2);
+    }));
+    it('step 3: check fail case', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // First step
+      component.firstFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Second step
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+      expect(component.dataSource.data.length).toEqual(0);
+      component.onCreateRule();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(1);
+      component.dataSource.data[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.dataSource.data[0].Precent = 100;
+      fixture.detectChanges();
+
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Third step
+      expect(component._stepper.selectedIndex).toEqual(2);
+      component.dataSource.data[0].Precent = 90; // Ensure check failed
+      component.onSubmit();
+      expect(createOrderSpy).not.toHaveBeenCalled();
+
+      // Error dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      tick();
+      fixture.detectChanges();
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      // And, there shall no changes in the selected tab
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      flush();
+    }));
+    it('step 3: submit success and navigation', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // First step
+      component.firstFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Second step
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+      expect(component.dataSource.data.length).toEqual(0);
+      component.onCreateRule();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(1);
+      component.dataSource.data[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.dataSource.data[0].Precent = 100;
+      fixture.detectChanges();
+
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Third step
+      expect(component._stepper.selectedIndex).toEqual(2);
+      component.onSubmit();
+      expect(createOrderSpy).toHaveBeenCalled();
+
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull();
+
+      tick(2000);
+      fixture.detectChanges();
+      // There shall be a navigation
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/order/display/' + fakeData.finOrders[0].Id.toString()]);
+
+      flush();
+    }));
+    it('step 3: submit success and re-create', fakeAsync(() => {
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // First step
+      component.firstFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Second step
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+      expect(component.dataSource.data.length).toEqual(0);
+      component.onCreateRule();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(1);
+      component.dataSource.data[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.dataSource.data[0].Precent = 100;
+      fixture.detectChanges();
+
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Third step
+      expect(component._stepper.selectedIndex).toEqual(2);
+      component.onSubmit();
+      expect(createOrderSpy).toHaveBeenCalled();
+
+      tick();
+      fixture.detectChanges();
+
+      // Expect there is snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull();
+      // Only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+
+      // There shall be a navigation
+      expect(routerSpy.navigate).not.toHaveBeenCalled();
+      expect(component._stepper.selectedIndex).toEqual(0); // Reset
+      expect(component.firstFormGroup.get('validFromControl').value).toBeTruthy();
+      expect(component.firstFormGroup.get('validToControl').value).toBeTruthy();
+
+      flush();
+    }));
+    it('step 3: submit fail case', fakeAsync(() => {
+      createOrderSpy.and.returnValue(asyncError('500 error!'));
+
+      expect(component.firstFormGroup).toBeFalsy();
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      // First step
+      component.firstFormGroup.get('nameControl').setValue('test');
+      fixture.detectChanges();
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Second step
+      expect(component._stepper.selectedIndex).toEqual(1); // At second step
+      expect(component.dataSource.data.length).toEqual(0);
+      component.onCreateRule();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(1);
+      component.dataSource.data[0].ControlCenterId = fakeData.finControlCenters[0].Id;
+      component.dataSource.data[0].Precent = 100;
+      fixture.detectChanges();
+
+      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
+      nextButtonNativeEl.click();
+      fixture.detectChanges();
+
+      // Third step
+      expect(component._stepper.selectedIndex).toEqual(2);
+      component.onSubmit();
+      tick();
+      fixture.detectChanges();
+
+      // Error dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      // And, there shall no changes in the selected tab
+      expect(component._stepper.selectedIndex).toBe(2);
+
+      flush();
+    }));
+  });
+
+  describe('3. Display mode: checking data loading', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+    let currentOrder: Order;
+
+    beforeEach(() => {
+      currentOrder = fakeData.finOrders[0];
+
+      // CC
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      // Create order
+      readOrderSpy.and.returnValue(asyncData(currentOrder));
+
+      // Change the URL
+      // let activatedRoute: any = fixture.debugElement.injector.get(ActivatedRoute) as any;
+      // activatedRoute.setURL([new UrlSegment('display', { id : currentOrder.Id.toString() })] as UrlSegment[]);
+    });
+
+    beforeEach(inject([OverlayContainer, ActivatedRoute],
+      (oc: OverlayContainer, actRoute: any) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+
+      // Change the URL
+      actRoute = new ActivatedRouteUrlStub([new UrlSegment('display', { id : currentOrder.Id.toString() })] as UrlSegment[]);
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('step 1: should set thevalues: date, and so on', fakeAsync(() => {
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+      tick(); // For readOrder;
+      fixture.detectChanges();
+
+      expect(component.isFieldChangable).toBeFalsy();
+      expect(readOrderSpy).toHaveBeenCalled();
+
+      expect(component.firstFormGroup.get('validFromControl').value).toBeTruthy();
+      expect(component.firstFormGroup.get('validToControl').value).toBeTruthy();
+      expect(component.orderName).toEqual(currentOrder.Name);
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+
+      flush();
     }));
   });
 });

@@ -71,15 +71,15 @@ describe('HomeDefDetailService', () => {
        });
 
       // Respond with the mock data
-      req.flush(`{
-        "contentList":[{
-          "members":[],
-          "id":11,"name":"test","details":"test.","host":"aaa","baseCurrency":"CNY",
-          "creatorDisplayAs":"aaa","createdBy":"aaa",
-          "createdAt":"2017-10-01","updatedBy":null,"updatedAt":"0001-01-01",
+      req.flush({
+        'contentList': [{
+          'members': [],
+          'id': 11, 'name': 'test', 'details': 'test.', 'host': 'aaa', 'baseCurrency': 'CNY',
+          'creatorDisplayAs': 'aaa', 'createdBy': 'aaa',
+          'createdAt': '2017-10-01',
         }],
-        "totalCount":1,
-      }`);
+        'totalCount': 1,
+      });
     });
 
     it('should return error in case error appear', () => {
@@ -119,15 +119,15 @@ describe('HomeDefDetailService', () => {
        });
 
       // Respond with the mock data
-      req.flush(`{
-        "contentList":[{
-          "members":[],
-          "id":11,"name":"test","details":"test.","host":"aaa","baseCurrency":"CNY",
-          "creatorDisplayAs":"aaa","createdBy":"aaa",
-          "createdAt":"2017-10-01","updatedBy":null,"updatedAt":"0001-01-01",
+      req.flush({
+        'contentList': [{
+          'members': [],
+          'id': 11, 'name': 'test', 'details': 'test.', 'host': 'aaa', 'baseCurrency': 'CNY',
+          'creatorDisplayAs': 'aaa', 'createdBy': 'aaa',
+          'createdAt': '2017-10-01',
         }],
-        "totalCount":1,
-      }`);
+        'totalCount': 1,
+      });
 
       service.fetchAllHomeDef().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
@@ -152,9 +152,11 @@ describe('HomeDefDetailService', () => {
     });
 
     it('should return data for success case', () => {
+      expect(service.MembersInChosedHome.length).toEqual(0);
       service.fetchAllMembersInChosedHome().subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
+          expect(service.MembersInChosedHome.length).toEqual(2);
         },
         (fail: any) => {
           // Empty
@@ -167,13 +169,13 @@ describe('HomeDefDetailService', () => {
        });
 
       // Respond with the mock data
-      req.flush(`{
-        "contentList":[
-          {"homeID":11,"user":"aa","displayAs":"aa","relation":0,"createdBy":"aa","createdAt":"2017-10-01","updatedBy":null,"updatedAt":"0001-01-01"},
-          {"homeID":11,"user":"bb","displayAs":"bb","relation":1,"createdBy":"aa","createdAt":"2017-10-01","updatedBy":null,"updatedAt":"0001-01-01"},
+      req.flush({
+        'contentList': [
+          {'homeID': 11, 'user': 'aa', 'displayAs': 'aa', 'relation': 0, 'createdBy': 'aa', 'createdAt': '2017-10-01'},
+          {'homeID': 11, 'user': 'bb', 'displayAs': 'bb', 'relation': 1, 'createdBy': 'aa', 'createdAt': '2017-10-01'},
         ],
-        "totalCount":2,
-      }`);
+        'totalCount': 2,
+      });
     });
 
     it('should return error in case error appear', () => {
@@ -197,6 +199,6 @@ describe('HomeDefDetailService', () => {
   });
 
   // HomeKeyFigure
-  // `{"totalAsset":10000000000.99,"totalLiability":-1.98,"totalAssetUnderMyName":12121212.02,"totalLiabilityUnderMyName":-111.69,
-  // "totalUnreadMessage":0,"myUnCompletedEvents":70,"myCompletedEvents":10}
+  // `{'totalAsset':10000000000.99,'totalLiability':-1.98,'totalAssetUnderMyName':12121212.02,'totalLiabilityUnderMyName':-111.69,
+  // 'totalUnreadMessage':0,'myUnCompletedEvents':70,'myCompletedEvents':10}
 });

@@ -114,14 +114,14 @@
       <mat-step>
         <ng-template matStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
         <div class="mat-typography achih-control-full-width">
-          <h2>{{'Common.Name' | translate}}: {{detailObject.Name}}</h2>
-          <h3>{{'Common.ValidFrom' | translate}}: {{detailObject.ValidFromFormatString}}</h3>
-          <h3>{{'Common.ValidTo' | translate}}: {{detailObject.ValidToFormatString}}</h3>
+          <h2>{{'Common.Name' | translate}}: {{orderName}}</h2>
+          <h3>{{'Common.ValidFrom' | translate}}: {{orderValidFromString}}</h3>
+          <h3>{{'Common.ValidTo' | translate}}: {{orderValidToString}}</h3>
         </div>
         <div>
           <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
           <button mat-button (click)="onReset()">{{'Common.Reset' | translate}}</button>
-          <button mat-button (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+          <button mat-button *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
         </div>
       </mat-step>
     </mat-horizontal-stepper>

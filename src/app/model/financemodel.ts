@@ -1328,7 +1328,7 @@ export class Order extends hih.BaseModel {
       chkrst = false;
     }
     // Valid to > valid from
-    if (this.ValidTo > this.ValidFrom) {
+    if (this.ValidTo.startOf('day').isAfter(this.ValidFrom.startOf('day'))) {
       // Allowed
     } else {
       let msg: hih.InfoMessage = new hih.InfoMessage();

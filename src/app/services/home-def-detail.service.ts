@@ -112,7 +112,7 @@ export class HomeDefDetailService {
         }));
       } else {
         return of(this._listHomeDefList);
-      }  
+      }
   }
 
   /**
