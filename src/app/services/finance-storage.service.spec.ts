@@ -10,7 +10,7 @@ import { HomeDefDetailService } from './home-def-detail.service';
 import { UserAuthInfo, FinanceADPCalAPIInput, FinanceLoanCalAPIInput, RepeatFrequencyEnum,
   FinanceADPCalAPIOutput, FinanceLoanCalAPIOutput, momentDateFormat, Document, DocumentItem,
   financeDocTypeNormal, DocumentWithPlanExgRateForUpdate, ReportTrendExTypeEnum,
-  Account, TemplateDocADP, Order, } from '../model';
+  Account, TemplateDocADP, Order, AccountStatusEnum, } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 
@@ -40,9 +40,10 @@ describe('FinanceStorageService', () => {
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
-    homeService.ChosedHome = fakeData.chosedHome;
-    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
+    const homeService: Partial<HomeDefDetailService> = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+    };
 
     TestBed.configureTestingModule({
       imports: [
@@ -690,7 +691,7 @@ describe('FinanceStorageService', () => {
       });
 
       // respond with a 404 and the error message in the body
-      req.flush(msg, { status: 404, statusText: 'Not Found' });
+      req.flush(msg, { status: 404, statusText: msg });
     });
 
     it('should return error for 500 error', () => {
@@ -709,7 +710,115 @@ describe('FinanceStorageService', () => {
       });
 
       // respond with a 500 and the error message in the body
-      req.flush(msg, { status: 500, statusText: 'Not Found' });
+      req.flush(msg, { status: 500, statusText: msg });
+    });
+  });
+
+  describe('changeAccount', () => {
+    let currentAccount: Account;
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+
+      fakeData.buildFinAccounts();
+      currentAccount = fakeData.finAccounts[0];
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should be OK for change account', () => {
+      expect(service.Accounts.length).toEqual(0, 'should not buffered yet');
+
+      service.changeAccount(currentAccount).subscribe(
+        (acnt: any) => {
+          expect(service.Accounts.length).toEqual(1, 'should has buffered nothing');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === accountAPIURL + '/' + currentAccount.Id.toString();
+       });
+
+      req.flush(currentAccount); // Respond with data
+    });
+
+    it('should return error for 500 error', () => {
+      const msg: string = '500: Internal error';
+      service.changeAccount(currentAccount).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === accountAPIURL + '/' + currentAccount.Id.toString();
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: msg });
+    });
+  });
+
+  describe('updateAccountStatus', () => {
+    let currentAccount: Account;
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+
+      fakeData.buildFinAccounts();
+      currentAccount = fakeData.finAccounts[0];
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should be OK for update account', () => {
+      expect(service.Accounts.length).toEqual(0, 'should not buffered yet');
+
+      service.updateAccountStatus(currentAccount.Id, AccountStatusEnum.Closed).subscribe(
+        (acnt: any) => {
+          expect(service.Accounts.length).toEqual(1, 'should has buffered nothing');
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === accountAPIURL + '/' + currentAccount.Id.toString();
+       });
+
+      req.flush(currentAccount); // Respond with data
+    });
+
+    it('should return error for 500 error', () => {
+      const msg: string = '500: Internal error';
+      service.updateAccountStatus(currentAccount.Id, AccountStatusEnum.Closed).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PATCH' && requrl.url === accountAPIURL + '/' + currentAccount.Id.toString();
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: msg });
     });
   });
 

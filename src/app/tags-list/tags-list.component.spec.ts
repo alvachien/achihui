@@ -35,9 +35,6 @@ describe('TagsListComponent', () => {
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
-    homeService.ChosedHome = fakeData.chosedHome;
-    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
 
     const tagService: any = jasmine.createSpyObj('TagsService', ['fetchAllTags']);
     fetchAllTagsSpy = tagService.fetchAllTags.and.returnValue(of([]));

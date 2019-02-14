@@ -80,6 +80,9 @@ Add it into the providers section:
 ```
 
 ### HomeDefService
+The method fetchHomeMembers has been retired.
+
+So before:
 ```typescript
     const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers']);
     homeService.ChosedHome = {
@@ -88,6 +91,14 @@ Add it into the providers section:
     };
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
 ```
+After:
+```typescript
+    const homeService: Partial<HomeDefDetailService> = {
+        ChosedHome: fakeData.chosedHome,
+        MembersInChosedHome: fakeData.chosedHome.Members,
+    };
+```
+
 
 Add it into the providers section:
 ```typescript

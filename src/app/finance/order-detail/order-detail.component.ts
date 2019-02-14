@@ -54,7 +54,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
       if (this.dataSource.data.length <= 0) {
         return false;
       }
-  
+
       let totalPr: number = 0;
       for (let i: number = 0; i < this.dataSource.data.length; i++) {
         if (!this.dataSource.data[i].ControlCenterId) {
@@ -141,6 +141,11 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
                 this.firstFormGroup.get('validToControl').setValue(x2.ValidTo);
                 if (x2.Comment) {
                   this.firstFormGroup.get('cmtControl').setValue(x2.Comment);
+                }
+
+                // Disable the form
+                if (this.uiMode === UIMode.Display) {
+                  this.firstFormGroup.disable();
                 }
 
                 this.dataSource.data = x2.SRules;

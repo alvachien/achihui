@@ -64,7 +64,6 @@ export class FinanceStorageService {
   }
 
   // Events
-  changeAccountEvent: EventEmitter<Account | string | undefined> = new EventEmitter(undefined);
   createControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
   changeControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
   createOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
@@ -412,7 +411,7 @@ export class FinanceStorageService {
    * Change an account
    * @param objAcnt Instance of Account to change
    */
-  public changeAccount(objAcnt: Account): void {
+  public changeAccount(objAcnt: Account): Observable<Account> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -423,7 +422,7 @@ export class FinanceStorageService {
     const jdata: string = objAcnt.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.put(apiurl, jdata, {
+    return this._http.put(apiurl, jdata, {
       headers: headers,
       params: params,
     })
@@ -434,32 +433,26 @@ export class FinanceStorageService {
 
         let hd: Account = new Account();
         hd.onSetData(response);
-        return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in changeAccount in FinanceStorageService: ${x}`);
-        }
 
+        // Update the buffer
         let idx: number = this._listAccount.findIndex((val: any) => {
-          return val.Id === x.Id;
+          return val.Id === hd.Id;
         });
         if (idx !== -1) {
-          this._listAccount.splice(idx, 1, x);
+          this._listAccount.splice(idx, 1, hd);
+        } else {
+          this._listAccount.push(hd);
         }
 
-        // Broadcast event
-        this.changeAccountEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in changeAccount in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in changeAccount in FinanceStorageService.`);
         }
 
-        // Broadcast event: failed
-        this.changeAccountEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -478,12 +471,35 @@ export class FinanceStorageService {
         'value': (<number>nstatus).toString(),
       },
     ];
+
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.patch(apiurl, jdata, {
         headers: headers,
         params: params,
-      });
+      }).pipe(map((response: HttpResponse<any>) => {
+        let hd: Account = new Account();
+        hd.onSetData(<any>response);
+
+        // Update the buffer
+        let idx: number = this._listAccount.findIndex((val: any) => {
+          return val.Id === hd.Id;
+        });
+        if (idx !== -1) {
+          this._listAccount.splice(idx, 1, hd);
+        } else {
+          this._listAccount.push(hd);
+        }
+
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Failed in changeAccount in FinanceStorageService.`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**

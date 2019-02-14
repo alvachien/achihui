@@ -24,9 +24,10 @@ describe('LearnStorageService', () => {
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['ChosedHome', 'fetchHomeMembers']);
-    homeService.ChosedHome = fakeData.chosedHome;
-    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
+    const homeService: Partial<HomeDefDetailService> = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
+    };
 
     TestBed.configureTestingModule({
       imports: [

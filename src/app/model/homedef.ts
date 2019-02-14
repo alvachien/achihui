@@ -115,6 +115,10 @@ export class HomeDef {
   private _creatorDisplayAs: string; // Only for creation mode!
   private _listMembers: HomeMember[];
 
+  constructor() {
+    this._listMembers = [];
+  }
+
   get ID(): number {
     return this._id;
   }
@@ -157,10 +161,6 @@ export class HomeDef {
   }
   public setMembers(members: HomeMember[]): void {
     this._listMembers = members.slice();
-  }
-
-  constructor() {
-    this._listMembers = [];
   }
 
   public parseJSONData(data: HomeDefJson): void {

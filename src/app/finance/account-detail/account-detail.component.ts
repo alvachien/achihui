@@ -1,22 +1,17 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ViewChildren,
-  Input, Output, ViewContainerRef, QueryList,
-} from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChildren, QueryList, ViewChild, } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatSelectChange } from '@angular/material';
+import { MatDialog, MatSnackBar, MatSelectChange, MatHorizontalStepper } from '@angular/material';
 import { Observable, forkJoin, Subscription, ReplaySubject, } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset,
+import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset,
   financeAccountCategoryAdvancePayment, financeAccountCategoryBorrowFrom,
   financeAccountCategoryLendTo, UICommonLabelEnum,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
   AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory,
-  financeAccountCategoryInsurance,
-} from '../../model';
+  financeAccountCategoryInsurance, AccountExtra, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { AccountExtLoanComponent } from '../account-ext-loan';
@@ -30,50 +25,70 @@ import { AccountExtAssetComponent } from '../account-ext-asset';
 })
 export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _changeStub: Subscription;
   private routerID: number = -1; // Current object ID in routing
   private _compLoan: AccountExtLoanComponent;
   private _compADP: AccountExtADPComponent;
   private _compAsset: AccountExtAssetComponent;
 
   public currentMode: string;
-  public detailObject: Account = undefined;
   public uiMode: UIMode = UIMode.Create;
-  public step: number = 0;
   arrayStatus: UIDisplayString[] = [];
+  extObject: AccountExtra;
 
   // Solution coming from: https://expertcodeblog.wordpress.com/2018/01/12/angular-resolve-error-viewchild-annotation-returns-undefined/
   @ViewChildren(AccountExtLoanComponent) childrenLoan: QueryList<AccountExtLoanComponent>;
   @ViewChildren(AccountExtADPComponent) childrenADP: QueryList<AccountExtADPComponent>;
   @ViewChildren(AccountExtAssetComponent) childrenAsset: QueryList<AccountExtAssetComponent>;
+  // Stepper
+  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
+  // Step: Generic info
+  public firstFormGroup: FormGroup;
+  get firstStepCompleted(): boolean {
+    if (this.isFieldChangable) {
+      if (!(this.firstFormGroup && this.firstFormGroup.valid)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+  // Step: Extra
+  get extraStepCompleted(): boolean {
+    if (this.isFieldChangable) {
+      // Check the extra part
+    }
+    return true;
+  }
+  // Step: Status
+  public statusFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
-  get isChangeMode(): boolean {
-    return this.uiMode === UIMode.Change;
-  }
   get isCreateMode(): boolean {
     return this.uiMode === UIMode.Create;
   }
+  get currentCategory(): number {
+    return this.firstFormGroup.get('ctgyControl').value;
+  }
   get isAssetAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryAsset)) {
+    if (this.currentCategory === financeAccountCategoryAsset) {
       return true;
     }
 
     return false;
   }
   get isADPAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
-      || this.detailObject.CategoryId === financeAccountCategoryAdvanceReceived)) {
+    if (this.currentCategory === financeAccountCategoryAdvancePayment
+      || this.currentCategory === financeAccountCategoryAdvanceReceived) {
       return true;
     }
 
     return false;
   }
   get isLoanAccount(): boolean {
-    if (this.detailObject !== undefined && (this.detailObject.CategoryId === financeAccountCategoryBorrowFrom
-      || this.detailObject.CategoryId === financeAccountCategoryLendTo)) {
+    if (this.currentCategory === financeAccountCategoryBorrowFrom
+      || this.currentCategory === financeAccountCategoryLendTo) {
       return true;
     }
 
@@ -84,13 +99,13 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _formBuilder: FormBuilder,
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor...');
     }
-    this.detailObject = new Account();
 
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
   }
@@ -101,6 +116,17 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
+    // Create controls
+    this.firstFormGroup = this._formBuilder.group({
+      nameControl: ['', Validators.required],
+      ctgyControl: ['', Validators.required],
+      ownerControl: '',
+      cmtControl: '',
+    });
+    this.statusFormGroup = this._formBuilder.group({
+      statusControl: [{value: AccountStatusEnum.Normal, disable: true}, Validators.required],
+    });
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -116,7 +142,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
-            this.onInitCreateMode();
+            this.uiMode = UIMode.Create;
           } else if (x[0].path === 'edit') {
             this.routerID = +x[1].path;
 
@@ -131,11 +157,11 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this._storageService.readAccount(this.routerID)
               .pipe(takeUntil(this._destroyed$))
-              .subscribe((x3: any) => {
+              .subscribe((x3: Account) => {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOninit, readAccount: ${x3}`);
                 }
-                this.detailObject = x3;
+                this._displayAccountContent(x3);
               }, (error: any) => {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`);
@@ -144,22 +170,20 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
                 this._snackbar.open(error.toString(), undefined, {
                   duration: 2000,
                 });
-                this.detailObject = new Account();
+                this.uiMode = UIMode.Invalid;
               }, () => {
                 // Nothing
               });
           }
         }
-      }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${error.toString()}`);
-        }
+      });
+    }, (error: any) => {
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${error.toString()}`);
+      }
 
-        this._snackbar.open(error.toString(), undefined, {
-          duration: 2000,
-        });
-      }, () => {
-        // Empty
+      this._snackbar.open(error.toString(), undefined, {
+        duration: 2000,
       });
     });
   }
@@ -190,24 +214,10 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngOnDestroy(): void {
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
-
-    if (this._changeStub) {
-      this._changeStub.unsubscribe();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
     }
-  }
-
-  public setStep(index: number): void {
-    this.step = index;
-  }
-
-  public nextStep(): void {
-    this.step++;
-  }
-
-  public prevStep(): void {
-    this.step--;
   }
 
   public isCategoryDisabled(ctgy: AccountCategory): boolean {
@@ -226,46 +236,32 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
     return false;
   }
-  public canSubmit(): boolean {
-    return true;
-  }
-
-  public canCloseAccount(): boolean {
-    if (this.detailObject === undefined
-      || this.detailObject.Status !== AccountStatusEnum.Normal) {
-      return false;
-    }
-    return true;
-  }
 
   public onCategorySelectionChange($event: MatSelectChange): void {
     let newctgy: number = +$event.value;
     if (newctgy === financeAccountCategoryAsset) {
-      this.detailObject.ExtraInfo = new AccountExtraAsset();
+      this.extObject = new AccountExtraAsset();
     } else if (newctgy === financeAccountCategoryAdvancePayment || newctgy === financeAccountCategoryAdvanceReceived) {
-      this.detailObject.ExtraInfo = new AccountExtraAdvancePayment();
+      this.extObject = new AccountExtraAdvancePayment();
     } else if (newctgy === financeAccountCategoryBorrowFrom || newctgy === financeAccountCategoryLendTo) {
-      this.detailObject.ExtraInfo = new AccountExtraLoan();
+      this.extObject = new AccountExtraLoan();
     }
   }
 
   public onCloseAccount(): void {
     // Close the account
-    this._storageService.updateAccountStatus(this.detailObject.Id, AccountStatusEnum.Closed).subscribe((x: any) => {
-      // It has been updated successfully
-      // Navigate to current account again
+    this._storageService.updateAccountStatus(this.routerID, AccountStatusEnum.Closed).subscribe((x: any) => {
+      // It has been updated successfully, then navigate to current account again
         this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
-    }, (error: HttpErrorResponse) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering AccountDetailComponent onCloseAccount, updateAccountStatus failed: ${error.message}`);
       }
 
       // Show the snabckbar
-      this._snackbar.open(error.message, undefined, {
+      this._snackbar.open(error.toString(), undefined, {
         duration: 2000,
       });
-    }, () => {
-      // Do nothing
     });
   }
 
@@ -277,22 +273,18 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  private onInitCreateMode(): void {
-    this.detailObject = new Account();
-    this.uiMode = UIMode.Create;
-    this.detailObject.HID = this._homedefService.ChosedHome.ID;
+  public onReset(): void {
+    if (this._stepper) {
+      this._stepper.reset();
+    }
   }
 
   private onCreateImpl(): void {
-    if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
-      if (this._compAsset) {
-        this._compAsset.generateAccountInfoForSave();
-      }
-    }
+    let acntObj: Account = this._generateAccount();
 
-    this._storageService.createAccount(this.detailObject)
+    this._storageService.createAccount(acntObj)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((x: any) => {
+      .subscribe((x: Account) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent createAccount succeed`);
       }
@@ -307,8 +299,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       snackbarRef.onAction().subscribe(() => {
         recreate = true;
 
-        this.onInitCreateMode();
-        this.setStep(0);
+        this.onReset();
       });
 
       snackbarRef.afterDismissed().subscribe(() => {
@@ -329,81 +320,74 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         disableClose: false,
         width: '500px',
         data: dlginfo,
-      }).afterClosed().subscribe((x2: any) => {
-        // Do nothing!
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onCreateImpl, Error, Message dialog result ${x2}`);
-        }
       });
     });
   }
 
   private onUpdateImpl(): void {
-    if (!this._changeStub) {
-      this._changeStub = this._storageService.changeAccountEvent
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onUpdateImpl, changeAccountEvent with : ${x}`);
-        }
+    let acntObj: Account = this._generateAccount();
+    this._storageService.changeAccount(acntObj)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onUpdateImpl, changeAccountEvent with : ${x}`);
+      }
 
-        // Navigate back to list view
-        if (x instanceof Account) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
-            'OK', {
-              duration: 3000,
-            });
-
-          snackbarRef.onAction().subscribe(() => {
-            this.onInitCreateMode();
-            this.setStep(0);
+      // Navigate back to display
+      if (x instanceof Account) {
+        // Show the snackbar
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
+          undefined, {
+            duration: 2000,
           });
 
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onUpdateImpl, changeAccountEvent, failed, dialog result ${x2}`);
-            }
-          });
-        }
-      });
-    }
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        });
+      }
+    });
+  }
 
-    if (this.detailObject.CategoryId === financeAccountCategoryLendTo
-      || this.detailObject.CategoryId === financeAccountCategoryBorrowFrom) {
-      if (this._compLoan) {
-        // this._compLoan.generateAccountInfoForSave();
-      }
+  private _displayAccountContent(objAcnt: Account): void {
+    this.firstFormGroup.get('nameControl').setValue(objAcnt.Name);
+    this.firstFormGroup.get('ctgyControl').setValue(objAcnt.CategoryId);
+    if (objAcnt.OwnerId) {
+      this.firstFormGroup.get('ownerControl').setValue(objAcnt.OwnerId);
     }
-    if (this.detailObject.CategoryId === financeAccountCategoryAdvancePayment
-      || this.detailObject.CategoryId === financeAccountCategoryAdvanceReceived) {
-      if (this._compADP) {
-        this._compADP.generateAccountInfoForSave();
-      }
+    if (objAcnt.Comment) {
+      this.firstFormGroup.get('cmtControl').setValue(objAcnt.Comment);
     }
-    if (this.detailObject.CategoryId === financeAccountCategoryAsset) {
-      if (this._compAsset) {
-        this._compAsset.generateAccountInfoForSave();
-      }
-    }
+    this.statusFormGroup.get('statusControl').setValue(objAcnt.Status);
 
-    this._storageService.changeAccount(this.detailObject);
+    if (!this.isFieldChangable) {
+      this.firstFormGroup.disable();
+    } else {
+      this.firstFormGroup.enable();
+    }
+  }
+
+  private _generateAccount(): Account {
+    let acntObj: Account = new Account();
+    acntObj.Name = this.firstFormGroup.get('nameControl').value;
+    acntObj.CategoryId = this.currentCategory;
+    acntObj.OwnerId = this.firstFormGroup.get('ownerControl').value;
+    acntObj.Comment = this.firstFormGroup.get('cmtControl').value;
+    acntObj.Status = this.statusFormGroup.get('statusControl').value;
+
+    return acntObj;
   }
 }
