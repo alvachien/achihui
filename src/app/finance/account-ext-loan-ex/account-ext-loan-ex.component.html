@@ -1,0 +1,161 @@
+<ng-container class="achih-control-full-width" [formGroup]="controlContainer.control">
+  <!-- Start Date -->
+  <mat-form-field>
+    <input matInput [ngModel]="extObject?.startDate" (ngModelChange)="extObject.startDate=$event" [matDatepicker]="startdpicker" 
+      placeholder="{{'Common.StartDate' | translate}}" [disabled]="!isFieldChangable" name="startDate">
+    <mat-datepicker-toggle matSuffix [for]="startdpicker"></mat-datepicker-toggle>
+    <mat-datepicker #startdpicker></mat-datepicker>
+  </mat-form-field>
+
+  <!-- End Date -->
+  <mat-form-field>
+    <input matInput [ngModel]="extObject?.endDate" (ngModelChange)="extObject.endDate=$event" [matDatepicker]="enddpicker" 
+      placeholder="{{'Common.EndDate' | translate}}" [disabled]="!isFieldChangable" name="endDate">
+    <mat-datepicker-toggle matSuffix [for]="enddpicker"></mat-datepicker-toggle>
+    <mat-datepicker #enddpicker></mat-datepicker>
+  </mat-form-field>
+
+  <!-- Total months -->
+  <mat-form-field>
+    <input matInput type="number" [disabled]="!isFieldChangable" placeholder="{{'Finance.NumberOfPeriods' | translate}}" 
+      [ngModel]="extObject?.TotalMonths" (ngModelChange)="extObject.TotalMonths=$event" required
+      name="totmonth">
+  </mat-form-field>
+
+  <!-- Repay day -->
+  <mat-form-field *ngIf="isCreateMode">
+    <input matInput type="number" [disabled]="!isFieldChangable" placeholder="{{'Finance.RepayDayInMonth' | translate}}" 
+      [ngModel]="extObject?.RepayDayInMonth" (ngModelChange)="extObject.RepayDayInMonth=$event"
+      name="repayday">
+  </mat-form-field>
+
+  <!-- First repay date -->
+  <mat-form-field *ngIf="isCreateMode">
+    <input matInput [ngModel]="extObject?.FirstRepayDate" (ngModelChange)="extObject.FirstRepayDate=$event" [matDatepicker]="firstrpdatedpicker" 
+      placeholder="{{'Finance.FirstRepayDate' | translate}}" [disabled]="!isFieldChangable"
+      name="firstRepayDate">
+    <mat-datepicker-toggle matSuffix [for]="firstrpdatedpicker"></mat-datepicker-toggle>
+    <mat-datepicker #firstrpdatedpicker></mat-datepicker>
+  </mat-form-field>
+  
+  <!-- Interest free -->
+  <mat-checkbox [ngModel]="extObject?.InterestFree" (ngModelChange)="extObject.InterestFree=$event" 
+    name="interestFree"
+    [disabled]="!isFieldChangable">{{'Finance.InterestFreeLoan' | translate}}</mat-checkbox>
+
+  <!-- Annual Rate -->
+  <mat-form-field>
+    <input matInput type="number" [disabled]="!isFieldChangable || extObject.InterestFree" placeholder="{{'Finance.AnnualRate' | translate}}" 
+      [ngModel]="extObject?.annualRate" (ngModelChange)="extObject.annualRate=$event"
+      name="annualRate">
+  </mat-form-field>
+
+  <!-- Repay. method -->
+  <mat-form-field>
+    <mat-select placeholder="{{'Finance.RepaymentMethod' | translate}}" [disabled]="!isFieldChangable" 
+      [ngModel]="extObject?.RepayMethod" (ngModelChange)="extObject.RepayMethod=$event"
+      name="paymethod">
+      <mat-option *ngFor="let rt of _uiStatusService.RepaymentMethods" [value]="rt.value">
+        {{rt.i18nterm | translate}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Account -->
+  <mat-form-field>
+    <mat-select placeholder="{{'Finance.PayingAccount' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="extObject.PayingAccount"
+      name="payacnt">
+      <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter" [value]="acnt.Id">
+        <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}} ({{acnt.CategoryName | translate}})</span>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Partner -->
+  <mat-form-field>
+    <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Finance.TradingPartner' | translate}}" 
+      [ngModel]="extObject?.Partner" (ngModelChange)="extObject.Partner=$event"
+      name="ptner">
+  </mat-form-field>
+  
+  <!-- Comment -->
+  <mat-form-field>
+    <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}" 
+      [ngModel]="extObject?.Comment" (ngModelChange)="extObject.Comment=$event"
+      name="cmt">
+  </mat-form-field>
+
+  <!-- Ref doc. ID -->
+  <div class="achih-control-full-width" *ngIf="extObject.RefDocId">
+    <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
+    <a routerLink='/finance/document/display/{{extObject.RefDocId}}' style="margin: 5px;" routerLinkActive="active">{{extObject?.RefDocId}}</a>
+  </div>
+
+  <mat-toolbar>
+    <button mat-icon-button (click)="onGenerateTmpDocs()" [disabled]="canGenerateTmpDocs" matTooltip="{{'Finance.GenerateTmpDocs' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
+  </mat-toolbar>
+  
+  <div class="table-container mat-elevation-z8">
+    <mat-table #table [dataSource]="dataSource">
+      <!-- TranDate Column -->
+      <ng-container matColumnDef="TranDate">
+        <mat-header-cell *matHeaderCellDef>{{'Finance.TransactionDate' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-form-field>
+            <input matInput [(ngModel)]="row.TranDate" [matDatepicker]="tmpdpicker" 
+              placeholder="{{'Common.Date' | translate}}" [disabled]="!isFieldChangable">
+            <mat-datepicker-toggle matSuffix [for]="tmpdpicker"></mat-datepicker-toggle>
+            <mat-datepicker #tmpdpicker></mat-datepicker>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Amount Column -->
+      <ng-container matColumnDef="TranAmount">
+        <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-form-field>
+            <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.TranAmount"
+              name="tmpamt">
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Interest Column -->
+      <ng-container matColumnDef="InterestAmount">
+        <mat-header-cell *matHeaderCellDef>{{'Finance.Interest' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-form-field>
+            <input matInput type="number" required placeholder="{{'Finance.Amount' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.InterestAmount"
+              name="tmpamt">
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      
+      <!-- Desp Column -->
+      <ng-container matColumnDef="Desp">
+        <mat-header-cell *matHeaderCellDef> {{'Common.Comment' | translate}} </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <mat-form-field>
+            <input matInput type="text" required placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="row.Desp"
+              name="tmpdesp" #tmpdesp maxlength="44">
+            <mat-hint align="end">{{tmpdesp.value.length}} / 45</mat-hint>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      
+      <!-- RefDoc Column -->
+      <ng-container matColumnDef="RefDoc">
+        <mat-header-cell *matHeaderCellDef>{{'Finance.RefDoc' | translate}}</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <a routerLink='/finance/document/display/{{row.RefDocId}}' routerLinkActive="active" *ngIf="row.RefDocId">{{row.RefDocId}}</a>
+        </mat-cell>
+      </ng-container>
+      
+      <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columnsToDisplay;"></mat-row>
+    </mat-table>
+    <mat-paginator #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+  </div>
+</ng-container>

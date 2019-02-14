@@ -39,6 +39,8 @@ import { DocumentADPCreateComponent } from './document-adpcreate';
 import { AccountExtAssetComponent } from './account-ext-asset';
 import { AccountExtADPComponent } from './account-ext-adp';
 import { AccountExtLoanComponent } from './account-ext-loan';
+import { AccountExtLoanExComponent } from './account-ext-loan-ex';
+import { AccountExtADPExComponent } from './account-ext-adpex';
 import { AccountTreeComponent } from './account-tree';
 import { DocumentItemByAccountComponent } from './document-item-by-account';
 import { DocumentItemByAccountCategoryComponent } from './document-item-by-account-category';
@@ -111,6 +113,8 @@ import { PlanListComponent } from './plan-list';
     PlanDetailComponent,
     PlanListComponent,
     DocumentRepaymentExCreateComponent,
+    AccountExtLoanExComponent,
+    AccountExtADPExComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
