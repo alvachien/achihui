@@ -96,7 +96,7 @@
     "no-invalid-this": true,
     "no-magic-numbers": false, //TODO_LINT (we should lint for this)
     "no-namespace": true,
-    "no-null-keyword": true,
+    "no-null-keyword": false, // null is acceptable, 2019.2.16
     "no-reference": true,
     "no-require-imports": true,
     "no-shadowed-variable": true,

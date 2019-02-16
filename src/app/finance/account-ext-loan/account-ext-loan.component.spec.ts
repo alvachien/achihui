@@ -215,12 +215,12 @@ describe('AccountExtLoanComponent', () => {
 
     it('4. should generate template docs in valid case', fakeAsync(() => {
       let tmpdocs: TemplateDocLoan[] = [];
-      for(let i: number = 0; i < 12; i++) {
+      for (let i: number = 0; i < 12; i++) {
         let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
         tmpdoc.DocId = i + 1;
         tmpdoc.TranAmount = 8333.34;
         tmpdoc.InterestAmount = 362.50;
-        tmpdoc.Desp = `test${i+1}`;
+        tmpdoc.Desp = `test${i + 1}`;
         tmpdoc.TranType = 28;
         tmpdoc.TranDate = moment().add(i + 1, 'M');
         tmpdoc.ControlCenterId = 1;
@@ -228,7 +228,7 @@ describe('AccountExtLoanComponent', () => {
         tmpdocs.push(tmpdoc);
       }
       calcLoanTmpDocsSpy.and.returnValue(asyncData(tmpdocs));
-  
+
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -251,7 +251,7 @@ describe('AccountExtLoanComponent', () => {
 
     it('5. should popup dialog in case template docs failed in generation', fakeAsync(() => {
       calcLoanTmpDocsSpy.and.returnValue(asyncError('Server 500 Error'));
-  
+
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -364,12 +364,12 @@ describe('AccountExtLoanComponent', () => {
 
     it('2. should overwrite template docs in valid case', fakeAsync(() => {
       let tmpdocs: TemplateDocLoan[] = [];
-      for(let i: number = 0; i < 12; i++) {
+      for (let i: number = 0; i < 12; i++) {
         let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
         tmpdoc.DocId = i + 1;
         tmpdoc.TranAmount = 8333.34;
         tmpdoc.InterestAmount = 362.50;
-        tmpdoc.Desp = `test${i+1}`;
+        tmpdoc.Desp = `test${i + 1}`;
         tmpdoc.TranType = 28;
         tmpdoc.TranDate = moment().add(i + 1, 'M');
         tmpdoc.ControlCenterId = 1;
@@ -377,7 +377,7 @@ describe('AccountExtLoanComponent', () => {
         tmpdocs.push(tmpdoc);
       }
       calcLoanTmpDocsSpy.and.returnValue(asyncData(tmpdocs));
-  
+
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -394,7 +394,7 @@ describe('AccountExtLoanComponent', () => {
 
     it('5. should popup dialog in case template docs failed in generation', fakeAsync(() => {
       calcLoanTmpDocsSpy.and.returnValue(asyncError('Server 500 Error'));
-  
+
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
