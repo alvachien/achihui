@@ -46,10 +46,19 @@
 
       <mat-step [completed]="extraStepCompleted" errorMessage="Invalid extra info">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
+        <form [formGroup]="extraFormGroup">
+
+        </form>
+        <div class="achih-control-full-width" *ngIf="isADPAccount">
+          <hih-finance-account-ext-adpex [uiMode]="uiMode"></hih-finance-account-ext-adpex>
+        </div>
+        <div class="achih-control-full-width" *ngIf="isAssetAccount">
+          <hih-finance-account-ext-asset-ex [uiMode]="uiMode"></hih-finance-account-ext-asset-ex>
+        </div>
+        <div class="achih-control-full-width" *ngIf="isLoanAccount">
+          <hih-finance-account-ext-loan-ex [uiMode]="uiMode" [extObject]="extObject"></hih-finance-account-ext-loan-ex>
+        </div>
         <div class="achih-control-full-width">
-          <hih-finance-account-ext-adp *ngIf="isADPAccount" [uiMode]="uiMode" [extObject]="extObject"></hih-finance-account-ext-adp>
-          <hih-finance-account-ext-asset *ngIf="isAssetAccount" [uiMode]="uiMode" [extObject]="extObject"></hih-finance-account-ext-asset>
-          <hih-finance-account-ext-loan *ngIf="isLoanAccount" [uiMode]="uiMode" [extObject]="extObject"></hih-finance-account-ext-loan>
           <div *ngIf="!isAssetAccount && !isADPAccount && !isLoanAccount">{{'Finance.NoExtraInfo' | translate}}</div>
         </div>
         <div>

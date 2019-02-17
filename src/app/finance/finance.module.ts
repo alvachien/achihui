@@ -36,9 +36,6 @@ import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-cr
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create';
 import { DocumentRepaymentExCreateComponent } from './document-repayment-ex-create';
 import { DocumentADPCreateComponent } from './document-adpcreate';
-import { AccountExtAssetComponent } from './account-ext-asset';
-import { AccountExtADPComponent } from './account-ext-adp';
-import { AccountExtLoanComponent } from './account-ext-loan';
 import { AccountExtLoanExComponent } from './account-ext-loan-ex';
 import { AccountExtADPExComponent } from './account-ext-adpex';
 import { AccountTreeComponent } from './account-tree';
@@ -88,9 +85,6 @@ import { PlanListComponent } from './plan-list';
     DocumentAssetBuyInCreateComponent,
     DocumentAssetSoldoutCreateComponent,
     DocumentAssetValChgCreateComponent,
-    AccountExtAssetComponent,
-    AccountExtADPComponent,
-    AccountExtLoanComponent,
     AccountTreeComponent,
     DocumentItemByAccountComponent,
     DocumentItemByAccountCategoryComponent,

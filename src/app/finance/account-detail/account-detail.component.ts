@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChildren, QueryList, ViewChild, } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, QueryList, ViewChild, } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatSelectChange, MatHorizontalStepper } from '@angular/material';
@@ -14,9 +14,6 @@ import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset
   financeAccountCategoryInsurance, AccountExtra, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { AccountExtLoanComponent } from '../account-ext-loan';
-import { AccountExtADPComponent } from '../account-ext-adp';
-import { AccountExtAssetComponent } from '../account-ext-asset';
 
 @Component({
   selector: 'hih-finance-account-detail',
@@ -26,19 +23,12 @@ import { AccountExtAssetComponent } from '../account-ext-asset';
 export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   private routerID: number = -1; // Current object ID in routing
-  private _compLoan: AccountExtLoanComponent;
-  private _compADP: AccountExtADPComponent;
-  private _compAsset: AccountExtAssetComponent;
 
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   arrayStatus: UIDisplayString[] = [];
   extObject: AccountExtra;
 
-  // Solution coming from: https://expertcodeblog.wordpress.com/2018/01/12/angular-resolve-error-viewchild-annotation-returns-undefined/
-  @ViewChildren(AccountExtLoanComponent) childrenLoan: QueryList<AccountExtLoanComponent>;
-  @ViewChildren(AccountExtADPComponent) childrenADP: QueryList<AccountExtADPComponent>;
-  @ViewChildren(AccountExtAssetComponent) childrenAsset: QueryList<AccountExtAssetComponent>;
   // Stepper
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Generic info
@@ -192,25 +182,6 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent ngAfterViewInit...');
     }
-
-    this.childrenLoan.changes
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((comps: QueryList<AccountExtLoanComponent>) => {
-      // Now you can access to the child component
-      this._compLoan = comps.first;
-    });
-    this.childrenADP.changes
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((comps: QueryList<AccountExtADPComponent>) => {
-      // Now you can access to the child component
-      this._compADP = comps.first;
-    });
-    this.childrenAsset.changes
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((comps: QueryList<AccountExtAssetComponent>) => {
-      // Now you can access to the child component
-      this._compAsset = comps.first;
-    });
   }
 
   ngOnDestroy(): void {

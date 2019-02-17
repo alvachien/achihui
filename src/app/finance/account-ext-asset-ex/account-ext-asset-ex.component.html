@@ -1,9 +1,9 @@
-<ng-container class="achih-control-full-width" [formGroup]="controlContainer.control">
+<ng-container class="achih-control-full-width" [formGroup]="assetInfoForm">
   <mat-form-field>
     <mat-select placeholder="{{'Common.Category' | translate}}"
       formControlName="ctgyControl"
       name="asstctgy" class="achih-control-full-width">
-      <mat-option *ngFor="let rt of _storageService.AssetCategories" [value]="rt.ID">
+      <mat-option *ngFor="let rt of arAssetCategories" [value]="rt.ID">
         {{rt.Name | translate}}
       </mat-option>
     </mat-select>

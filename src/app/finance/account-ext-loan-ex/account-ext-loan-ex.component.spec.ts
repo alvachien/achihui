@@ -4,7 +4,7 @@ import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
@@ -57,6 +57,7 @@ describe('AccountExtLoanExComponent', () => {
       imports: [
         UIDependModule,
         FormsModule,
+        ReactiveFormsModule,
         NoopAnimationsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
