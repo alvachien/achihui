@@ -49,6 +49,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     }
     return true;
   }
+  public extraFormGroup: FormGroup;
   // Step: Status
   public statusFormGroup: FormGroup;
 
@@ -113,6 +114,11 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       ctgyControl: ['', Validators.required],
       ownerControl: '',
       cmtControl: '',
+    });
+    this.extraFormGroup = this._formBuilder.group({
+      extADPControl: '',
+      extAssetControl: '',
+      extLoanControl: '',
     });
     this.statusFormGroup = this._formBuilder.group({
       statusControl: [{value: AccountStatusEnum.Normal, disable: true}, Validators.required],

@@ -47,20 +47,19 @@
       <mat-step [completed]="extraStepCompleted" errorMessage="Invalid extra info">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
         <form [formGroup]="extraFormGroup">
-
+          <div class="achih-control-full-width" *ngIf="isADPAccount">
+            <hih-finance-account-ext-adpex formControlName="extADPControl"></hih-finance-account-ext-adpex>
+          </div>
+          <div class="achih-control-full-width" *ngIf="isAssetAccount">
+            <hih-finance-account-ext-asset-ex formControlName="extAssetControl"></hih-finance-account-ext-asset-ex>
+          </div>
+          <div class="achih-control-full-width" *ngIf="isLoanAccount">
+            <hih-finance-account-ext-loan-ex formControlName="extLoanControl"></hih-finance-account-ext-loan-ex>
+          </div>
+          <div class="achih-control-full-width">
+            <div *ngIf="!isAssetAccount && !isADPAccount && !isLoanAccount">{{'Finance.NoExtraInfo' | translate}}</div>
+          </div>  
         </form>
-        <div class="achih-control-full-width" *ngIf="isADPAccount">
-          <hih-finance-account-ext-adpex [uiMode]="uiMode"></hih-finance-account-ext-adpex>
-        </div>
-        <div class="achih-control-full-width" *ngIf="isAssetAccount">
-          <hih-finance-account-ext-asset-ex [uiMode]="uiMode"></hih-finance-account-ext-asset-ex>
-        </div>
-        <div class="achih-control-full-width" *ngIf="isLoanAccount">
-          <hih-finance-account-ext-loan-ex [uiMode]="uiMode" [extObject]="extObject"></hih-finance-account-ext-loan-ex>
-        </div>
-        <div class="achih-control-full-width">
-          <div *ngIf="!isAssetAccount && !isADPAccount && !isLoanAccount">{{'Finance.NoExtraInfo' | translate}}</div>
-        </div>
         <div>
           <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
@@ -69,7 +68,6 @@
       
       <mat-step>
         <ng-template matStepLabel>{{'Common.Status' | translate}}</ng-template>
-
         <form [formGroup]="statusFormGroup">
           <mat-form-field>        
             <mat-select placeholder="{{'Common.Status' | translate}}" formControlName="statusControl">
