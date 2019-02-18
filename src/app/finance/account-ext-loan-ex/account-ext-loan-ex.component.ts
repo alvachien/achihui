@@ -30,7 +30,9 @@ import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '..
 })
 export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy  {
   private _destroyed$: ReplaySubject<boolean>;
-  private _insobj: AccountExtraLoan;
+  private _isChangable: boolean;
+  private _onTouched: () => void;
+  private _onChange: (val: any) => void;
 
   public currentMode: string;
   public arUIAccount: UIAccountForSelection[] = [];
@@ -54,14 +56,22 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
     cmtControl: new FormControl(''),
   });
 
-  @Input() set extObject(ins: AccountExtraLoan) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent extObject's setter`);
-    }
-    this._insobj = ins;
-  }
   get extObject(): AccountExtraLoan {
-    return this._insobj;
+    let insObj: AccountExtraLoan = new AccountExtraLoan();
+    insObj.startDate = this.loanInfoForm.get('startDateControl').value;
+    insObj.endDate = this.loanInfoForm.get('endDateControl').value;
+    insObj.TotalMonths = this.loanInfoForm.get('totalMonthControl').value;
+    insObj.RepayDayInMonth = this.loanInfoForm.get('repayDayControl').value;
+    insObj.FirstRepayDate = this.loanInfoForm.get('firstRepayDateControl').value;
+    insObj.InterestFree = this.loanInfoForm.get('interestFreeControl').value;
+    insObj.annualRate = this.loanInfoForm.get('annualRateControl').value;
+    insObj.RepayDayInMonth = this.loanInfoForm.get('repayMethodControl').value;
+    insObj.PayingAccount = this.loanInfoForm.get('payingAccountControl').value;
+    insObj.Partner = this.loanInfoForm.get('partnerControl').value;
+    insObj.Comment = this.loanInfoForm.get('cmtControl').value;
+    insObj.loanTmpDocs = this.dataSource.data.slice();
+
+    return insObj;
   }
   @Input() uiMode: UIMode;
   @Input() tranAmount: number;
@@ -69,10 +79,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
   @Input() orderID?: number;
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
-  }
-  get isCreateMode(): boolean {
-    return this.uiMode === UIMode.Create;
+    return this._isChangable;
   }
   get canGenerateTmpDocs(): boolean {
     // Ensure it is changable
@@ -116,7 +123,6 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent constructor`);
     }
-    this._insobj = new AccountExtraLoan();
   }
 
   ngOnInit(): void {
@@ -125,6 +131,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
     this.uiAccountStatusFilter = undefined;
     this.uiAccountCtgyFilter = {
       skipADP: true,
@@ -148,10 +155,6 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
           duration: 2000,
         });
       });
-
-    if (this._insobj.loanTmpDocs.length > 0) {
-      this.displayTmpdocs();
-    }
   }
 
   ngOnDestroy(): void {
@@ -163,11 +166,6 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
-  }
-
-  public displayTmpdocs(): void {
-    this.dataSource = new MatTableDataSource(this._insobj.loanTmpDocs);
-    this.dataSource.paginator = this.paginator;
   }
 
   public onGenerateTmpDocs(): void {
@@ -305,10 +303,6 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
     }
   }
 
-  public onTouched: () => void = () => {
-    // Dummay codes
-  }
-
   writeValue(val: any): void {
     if (val) {
       this.loanInfoForm.setValue(val, { emitEvent: false });
@@ -318,7 +312,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
     this.loanInfoForm.valueChanges.subscribe(fn);
   }
   registerOnTouched(fn: any): void {
-    this.onTouched = fn;
+    this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
     isDisabled ? this.loanInfoForm.disable() : this.loanInfoForm.enable();

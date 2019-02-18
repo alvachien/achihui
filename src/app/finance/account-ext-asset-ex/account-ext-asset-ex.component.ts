@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
@@ -10,14 +10,6 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, Acc
   RepeatFrequencyEnum, UIDisplayStringUtil,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
-
-export function getAccountExtAssetFormGroup(): any {
-  return {
-    ctgyControl: ['', Validators.required],
-    nameControl: ['', Validators.required],
-    commentControl: '',
-  };
-}
 
 @Component({
   selector: 'hih-account-ext-asset-ex',
@@ -37,12 +29,33 @@ export function getAccountExtAssetFormGroup(): any {
 })
 export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
+  private _isChangable: boolean;
+  private _refBuyDocID?: number;
+  private _refSoldDocID?: number;
+  private _onTouched: () => void;
+  private _onChange: (val: any) => void;
 
   public assetInfoForm: FormGroup = new FormGroup({
     ctgyControl: new FormControl('', [Validators.required]),
     nameControl: new FormControl('', [Validators.required, Validators.maxLength(50)]),
     commentControl: new FormControl('', Validators.maxLength(100)),
   });
+  get extObject(): AccountExtraAsset {
+    let insObj: AccountExtraAsset = new AccountExtraAsset();
+    insObj.CategoryID = this.assetInfoForm.get('ctgyControl').value;
+    insObj.Name = this.assetInfoForm.get('nameControl').value;
+    insObj.Comment = this.assetInfoForm.get('commentControl').value;
+    if (this._refBuyDocID) {
+      insObj.RefDocForBuy = this._refBuyDocID;
+    }
+    if (this._refSoldDocID) {
+      insObj.RefDocForSold = this._refSoldDocID;
+    }
+    return insObj;
+  }
+  get isFieldChangable(): boolean {
+    return this._isChangable;
+  }
 
   constructor(public _storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -50,9 +63,26 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
     }
   }
 
-  ngOnInit() {
+  @HostListener('change') onChange(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit`);
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent onChange...');
+    }
+    if (this._onChange) {
+      this._onChange(this.extObject);
+    }
+  }
+  @HostListener('blur') onTouched(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent onTouched...');
+    }
+    if (this._onTouched) {
+      this._onTouched();
+    }
+  }
+
+  ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent ngOnInit`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -60,7 +90,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanComponent ngOnDestroy`);
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent ngOnDestroy`);
     }
 
     if (this._destroyed$) {
@@ -68,26 +98,61 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
       this._destroyed$.complete();
     }
   }
-  public onTouched: () => void = () => {
-    // Dummay codes
-  }
 
-  writeValue(val: any): void {
+  writeValue(val: AccountExtraAsset): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent writeValue: ${val}`);
+    }
     if (val) {
-      this.assetInfoForm.setValue(val, { emitEvent: false });
+      this.assetInfoForm.get('ctgyControl').setValue(val.CategoryID);
+      this.assetInfoForm.get('nameControl').setValue(val.Name);
+      this.assetInfoForm.get('commentControl').setValue(val.Comment);
+      if (val.RefDocForBuy) {
+        this._refBuyDocID = val.RefDocForBuy;
+      } else {
+        this._refBuyDocID = undefined;
+      }
+      if (val.RefDocForSold) {
+        this._refSoldDocID = val.RefDocForSold;
+      } else {
+        this._refSoldDocID = undefined;
+      }
+    } else {
+      this._refBuyDocID = undefined;
+      this._refSoldDocID = undefined;
     }
   }
+
   registerOnChange(fn: any): void {
-    this.assetInfoForm.valueChanges.subscribe(fn);
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent registerOnChange...');
+    }
+    this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
-    this.onTouched = fn;
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent registerOnTouched...');
+    }
+    this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
-    isDisabled ? this.assetInfoForm.disable() : this.assetInfoForm.enable();
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent setDisabledState...');
+    }
+    if (isDisabled) {
+      this.assetInfoForm.disable();
+      this._isChangable = false;
+    } else {
+      this.assetInfoForm.enable();
+      this._isChangable = true;
+    }
   }
 
   validate(c: AbstractControl): ValidationErrors | null {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent validate...');
+    }
+
     if (this.assetInfoForm.valid) {
       // Beside the basic form valid, it need more checks
 

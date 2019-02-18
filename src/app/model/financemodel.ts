@@ -2451,7 +2451,20 @@ export abstract class TemplateDocBase extends hih.BaseModel {
  * Tempalte doc for Advance payment
  */
 export class TemplateDocADP extends TemplateDocBase {
-  // Nothing
+  public onVerify(context?: any): boolean {
+    if (!super.onVerify(context)) {
+      return false;
+    }
+
+    if (this._totalAmount <= 0) {
+      return false;
+    }
+    if (this._desp.length <= 0) {
+      return false;
+    }
+
+    return true;
+  }
 }
 
 /**

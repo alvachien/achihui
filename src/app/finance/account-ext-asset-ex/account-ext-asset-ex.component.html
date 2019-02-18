@@ -1,4 +1,5 @@
 <ng-container class="achih-control-full-width" [formGroup]="assetInfoForm">
+  <!-- Category -->
   <mat-form-field>
     <mat-select placeholder="{{'Common.Category' | translate}}"
       formControlName="ctgyControl"
@@ -9,6 +10,7 @@
     </mat-select>
   </mat-form-field>
 
+  <!-- Name -->
   <mat-form-field>
     <input matInput type="text" placeholder="{{'Common.Name' | translate}}" 
       formControlName="nameControl"
@@ -16,6 +18,7 @@
       <mat-hint align="end">{{assetname.value.length}} / 50</mat-hint>
   </mat-form-field>
 
+  <!-- Comment -->
   <mat-form-field>
     <input matInput type="text" placeholder="{{'Common.Comment' | translate}}" 
       formControlName="commentControl"

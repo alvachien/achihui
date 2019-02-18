@@ -27,23 +27,23 @@
     </mat-form-field>
 
     <!-- <mat-form-field>
-    <input matInput type="number" [disabled]="!isFieldChangable" placeholder="Deferred days" [(ngModel)]="detailObject.AdvPayAccount.DeferredDays"
-      name="dfrrdays" #dfrrdays="ngModel">
+    <input matInput type="number" placeholder="Deferred days" formControlName="dfrDayControl"
+      name="dfrrdays">
     </mat-form-field> -->
 
     <!-- Comment -->
     <mat-form-field>
-      <input matInput type="text" [disabled]="!isFieldChangable" placeholder="{{'Common.Comment' | translate}}"
-        formControlName="cmtControl" name="advacntcmt" #advacntcmt="ngModel">
+      <input matInput type="text" placeholder="{{'Common.Comment' | translate}}"
+        formControlName="cmtControl">
     </mat-form-field>
-
-    <!-- Ref doc. ID -->
-    <div class="achih-control-full-width" *ngIf="extObject.RefDocId">
-      <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
-      <a routerLink='/finance/document/display/{{extObject.RefDocId}}' style="margin: 5px;"
-        routerLinkActive="active">{{extObject?.RefDocId}}</a>
-    </div>    
   </div>
+
+  <!-- Ref doc. ID -->
+  <div class="achih-control-full-width" *ngIf="refDocId">
+    <mat-label>{{'Finance.RefDoc' | translate}}</mat-label>
+    <a routerLink='/finance/document/display/{{refDocId}}' style="margin: 5px;"
+      routerLinkActive="active">{{refDocId}}</a>
+  </div>    
 
   <mat-toolbar>
     <button mat-icon-button (click)="onGenerateTmpDocs()" [disabled]="!isFieldChangable"

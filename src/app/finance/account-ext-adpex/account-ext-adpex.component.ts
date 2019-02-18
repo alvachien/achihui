@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
@@ -11,7 +11,7 @@ import { LogLevel, UIMode, AccountExtraAdvancePayment, UIDisplayStringUtil, Temp
   FinanceADPCalAPIInput, FinanceADPCalAPIOutput,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService } from '../../services';
-  
+
 @Component({
   selector: 'hih-finance-account-ext-adpex',
   templateUrl: './account-ext-adpex.component.html',
@@ -30,13 +30,16 @@ import { HomeDefDetailService, FinanceStorageService } from '../../services';
 })
 export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _insobj: AccountExtraAdvancePayment;
+  private _isChangable: boolean;
+  private _onChange: (val: any) => void;
+  private _onTouched: () => void;
 
   public currentMode: string;
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   dataSource: MatTableDataSource<TemplateDocADP> = new MatTableDataSource<TemplateDocADP>();
   displayedColumns: string[] = ['TranDate', 'TranAmount', 'Desp', 'RefDoc'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  refDocId?: number;
 
   public adpInfoForm: FormGroup = new FormGroup({
     startDateControl: new FormControl(moment(), [Validators.required]),
@@ -45,25 +48,25 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
     cmtControl: new FormControl('', Validators.maxLength(30)),
   });
 
-  @Input()
-  set extObject(extdp: AccountExtraAdvancePayment) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtADPExComponent extObject's setter`);
-    }
-    this._insobj = extdp;
-  }
-  get extObject(): AccountExtraAdvancePayment {
-    return this._insobj;
-  }
-  @Input() uiMode: UIMode;
   @Input() tranAmount: number;
   @Input() tranType: number;
 
-  get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  get extObject(): AccountExtraAdvancePayment {
+    let insObj: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+    insObj.StartDate = this.adpInfoForm.get('startDateControl').value;
+    insObj.EndDate = this.adpInfoForm.get('endDateControl').value;
+    insObj.RepeatType = this.adpInfoForm.get('frqControl').value;
+    insObj.Comment = this.adpInfoForm.get('cmtControl').value;
+    if (this.refDocId) {
+      insObj.RefDocId = this.refDocId;
+    }
+
+    insObj.dpTmpDocs = this.dataSource.data.slice();
+
+    return insObj;
   }
-  get isCreateMode(): boolean {
-    return this.uiMode === UIMode.Create;
+  get isFieldChangable(): boolean {
+    return this._isChangable;
   }
   get canCalcTmpDocs(): boolean {
     if (!this.isFieldChangable) {
@@ -86,14 +89,28 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
     }
   }
 
+  @HostListener('change') onChange(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onChange...');
+    }
+    if (this._onChange) {
+      this._onChange(this.extObject);
+    }
+  }
+  @HostListener('blur') onTouched(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onTouched...');
+    }
+    if (this._onTouched) {
+      this._onTouched();
+    }
+  }
+
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
-    if (this._insobj && this._insobj.dpTmpDocs.length > 0) {
-      this.displayTmpdocs();
-    }
   }
 
   ngOnDestroy(): void {
@@ -138,6 +155,9 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
 
         this.dataSource = new MatTableDataSource(tmpDocs);
         this.dataSource.paginator = this.paginator;
+
+        // Trigger the change.
+        this.onChange();
       }
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
@@ -150,48 +170,88 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
     });
   }
 
-  public displayTmpdocs(): void {
-    if (this._insobj && this._insobj.dpTmpDocs && this._insobj.dpTmpDocs instanceof Array
-      && this._insobj.dpTmpDocs.length > 0) {
-      this.dataSource = new MatTableDataSource(this._insobj.dpTmpDocs);
-      this.dataSource.paginator = this.paginator;
-    }
-  }
-  public generateAccountInfoForSave(): void {
-    this._insobj.dpTmpDocs = [];
-    this._insobj.dpTmpDocs = this.dataSource.data.slice();
-  }
-
   public onReset(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onReset...');
+    }
+    this.adpInfoForm.reset();
     this.dataSource = new MatTableDataSource([]);
+    this.dataSource.paginator = this.paginator;
   }
 
-  public onTouched: () => void = () => {
-    // Dummay codes
-  }
-
-  writeValue(val: any): void {
+  writeValue(val: AccountExtraAdvancePayment): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent writeValue...');
+    }
     if (val) {
-      this.adpInfoForm.setValue(val, { emitEvent: false });
+      this.adpInfoForm.get('startDateControl').setValue(val.StartDate);
+      this.adpInfoForm.get('endDateControl').setValue(val.EndDate);
+      this.adpInfoForm.get('frqControl').setValue(val.RepeatType);
+      this.adpInfoForm.get('cmtControl').setValue(val.Comment);
+
+      this.dataSource = new MatTableDataSource(val.dpTmpDocs);
+      if (this.paginator) {
+        this.dataSource.paginator = this.paginator;
+      }
+
+      if (val.RefDocId) {
+        this.refDocId = val.RefDocId;
+      } else {
+        this.refDocId = undefined;
+      }
+    } else {
+      this.refDocId = undefined;
     }
   }
   registerOnChange(fn: any): void {
-    this.adpInfoForm.valueChanges.subscribe(fn);
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnChange...');
+    }
+    this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
-    this.onTouched = fn;
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnTouched...');
+    }
+    this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
-    isDisabled ? this.adpInfoForm.disable() : this.adpInfoForm.enable();
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent setDisabledState...');
+    }
+
+    if (isDisabled) {
+      this.adpInfoForm.disable();
+      this._isChangable = false;
+    } else {
+      this.adpInfoForm.enable();
+      this._isChangable = true;
+    }
   }
 
   validate(c: AbstractControl): ValidationErrors | null {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent validate...');
+    }
+
     if (this.adpInfoForm.valid) {
       // Beside the basic form valid, it need more checks
+      if (!this.canCalcTmpDocs) {
+        return { invalidForm: {valid: false, message: 'Cannot calculate tmp docs'} };
+      }
+      if (this.dataSource.data.length <= 0) {
+        return { invalidForm: {valid: false, message: 'Lack of tmp docs'} };
+      }
+
+      this.dataSource.data.forEach((tmpdoc: TemplateDocADP) => {
+        if (!tmpdoc.onVerify()) {
+          return { invalidForm: {valid: false, message: 'tmp doc is invalid'} };
+        }
+      });
 
       return null;
     }
 
-    return { invalidForm: {valid: false, message: 'Loan fields are invalid'} };
+    return { invalidForm: {valid: false, message: 'Advance payment fields are invalid'} };
   }
 }
