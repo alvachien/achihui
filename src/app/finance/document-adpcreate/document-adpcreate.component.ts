@@ -16,7 +16,7 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStat
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { AccountExtADPComponent } from '../account-ext-adp';
+import { AccountExtADPExComponent } from '../account-ext-adpex';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -44,7 +44,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   public arDocTypes: DocumentType[] = [];
   // Step: Generic info
   public firstFormGroup: FormGroup;
-  @ViewChild('accountExtraInfo') ctrlAccount: AccountExtADPComponent;
+  @ViewChild('accountExtraInfo') ctrlAccount: AccountExtADPExComponent;
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
 
   get firstStepCompleted(): boolean {
@@ -110,8 +110,8 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       if (!this.accountAdvPay.isValid) {
         return false;
       }
-  
-      this.ctrlAccount.generateAccountInfoForSave();
+
+      // this.ctrlAccount.generateAccountInfoForSave();
 
       if (this.accountAdvPay.dpTmpDocs.length <= 0) {
         return false;

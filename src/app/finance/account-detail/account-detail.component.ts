@@ -34,22 +34,54 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   // Step: Generic info
   public firstFormGroup: FormGroup;
   get firstStepCompleted(): boolean {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent firstStepCompleted...');
+    }
     if (this.isFieldChangable) {
       if (!(this.firstFormGroup && this.firstFormGroup.valid)) {
         return false;
       }
+
+      if (this.isCategoryDisabled(this.currentCategory)) {
+        return false;
+      }
     }
 
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent firstStepCompleted: !!!NOW TRUE!!!');
+    }
     return true;
   }
   // Step: Extra
   get extraStepCompleted(): boolean {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent extraStepCompleted...');
+    }
     if (this.isFieldChangable) {
       // Check the extra part
+      if (this.isADPAccount) {
+        if (!(this.extraADPFormGroup && this.extraADPFormGroup.valid)) {
+          return false;
+        }
+      } else if (this.isLoanAccount) {
+        if (!(this.extraLoanFormGroup && this.extraLoanFormGroup.valid)) {
+          return false;
+        }
+      } else if (this.isAssetAccount) {
+        if (!(this.extraAssetFormGroup && this.extraAssetFormGroup.valid)) {
+          return false;
+        }
+      }
+    }
+
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent extraStepCompleted: !!!NOW TRUE!!!');
     }
     return true;
   }
-  public extraFormGroup: FormGroup;
+  public extraADPFormGroup: FormGroup;
+  public extraAssetFormGroup: FormGroup;
+  public extraLoanFormGroup: FormGroup;
   // Step: Status
   public statusFormGroup: FormGroup;
 
@@ -115,9 +147,13 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       ownerControl: '',
       cmtControl: '',
     });
-    this.extraFormGroup = this._formBuilder.group({
+    this.extraADPFormGroup = this._formBuilder.group({
       extADPControl: '',
+    });
+    this.extraAssetFormGroup = this._formBuilder.group({
       extAssetControl: '',
+    });
+    this.extraLoanFormGroup = this._formBuilder.group({
       extLoanControl: '',
     });
     this.statusFormGroup = this._formBuilder.group({
@@ -197,14 +233,14 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  public isCategoryDisabled(ctgy: AccountCategory): boolean {
+  public isCategoryDisabled(ctgyid: number): boolean {
     if (this.uiMode === UIMode.Create) {
-      if (ctgy.ID === financeAccountCategoryAsset
-        || ctgy.ID === financeAccountCategoryBorrowFrom
-        || ctgy.ID === financeAccountCategoryLendTo
-        || ctgy.ID === financeAccountCategoryAdvancePayment
-        || ctgy.ID === financeAccountCategoryAdvanceReceived
-        || ctgy.ID === financeAccountCategoryInsurance) {
+      if (ctgyid === financeAccountCategoryAsset
+        || ctgyid === financeAccountCategoryBorrowFrom
+        || ctgyid === financeAccountCategoryLendTo
+        || ctgyid === financeAccountCategoryAdvancePayment
+        || ctgyid === financeAccountCategoryAdvanceReceived
+        || ctgyid === financeAccountCategoryInsurance) {
         return true;
       }
 

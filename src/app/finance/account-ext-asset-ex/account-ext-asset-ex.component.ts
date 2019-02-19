@@ -12,7 +12,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, Acc
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 
 @Component({
-  selector: 'hih-account-ext-asset-ex',
+  selector: 'hih-finance-account-ext-asset-ex',
   templateUrl: './account-ext-asset-ex.component.html',
   styleUrls: ['./account-ext-asset-ex.component.scss'],
   providers: [
@@ -34,6 +34,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
   private _refSoldDocID?: number;
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
+  private _instanceObject: AccountExtraAsset = new AccountExtraAsset();
 
   public assetInfoForm: FormGroup = new FormGroup({
     ctgyControl: new FormControl('', [Validators.required]),
@@ -41,17 +42,16 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
     commentControl: new FormControl('', Validators.maxLength(100)),
   });
   get extObject(): AccountExtraAsset {
-    let insObj: AccountExtraAsset = new AccountExtraAsset();
-    insObj.CategoryID = this.assetInfoForm.get('ctgyControl').value;
-    insObj.Name = this.assetInfoForm.get('nameControl').value;
-    insObj.Comment = this.assetInfoForm.get('commentControl').value;
+    this._instanceObject.CategoryID = this.assetInfoForm.get('ctgyControl').value;
+    this._instanceObject.Name = this.assetInfoForm.get('nameControl').value;
+    this._instanceObject.Comment = this.assetInfoForm.get('commentControl').value;
     if (this._refBuyDocID) {
-      insObj.RefDocForBuy = this._refBuyDocID;
+      this._instanceObject.RefDocForBuy = this._refBuyDocID;
     }
     if (this._refSoldDocID) {
-      insObj.RefDocForSold = this._refSoldDocID;
+      this._instanceObject.RefDocForSold = this._refSoldDocID;
     }
-    return insObj;
+    return this._instanceObject;
   }
   get isFieldChangable(): boolean {
     return this._isChangable;

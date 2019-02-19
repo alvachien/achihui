@@ -7,33 +7,24 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Component, Input } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
-import { MatStepperNext } from '@angular/material';
+import { MatStepperNext, } from '@angular/material';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { AccountDetailComponent } from './account-detail.component';
-import { UIMode, financeAccountCategoryCash } from '../../model';
+import { AccountExtADPExComponent } from '../account-ext-adpex';
+import { AccountExtAssetExComponent } from '../account-ext-asset-ex';
+import { AccountExtLoanExComponent } from '../account-ext-loan-ex';
+import { UIMode, financeAccountCategoryCash, financeAccountCategoryAdvancePayment } from '../../model';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
-
-@Component({selector: 'hih-finance-account-ext-adp', template: ''})
-class AccountExtADPComponent {
-  @Input() uiMode: UIMode;
-  @Input() extObject: any;
-}
-@Component({selector: 'hih-finance-account-ext-asset', template: ''})
-class AccountExtAssetComponent {
-  @Input() uiMode: UIMode;
-  @Input() extObject: any;
-}
-@Component({selector: 'hih-finance-account-ext-loan', template: ''})
-class AccountExtLoanComponent {
-  @Input() uiMode: UIMode;
-  @Input() extObject: any;
-}
+import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
+  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 
 describe('AccountDetailComponent', () => {
   let component: AccountDetailComponent;
@@ -45,6 +36,8 @@ describe('AccountDetailComponent', () => {
   let activatedRouteStub: any;
   let fetchAllAccountCategoriesSpy: any;
   let fetchAllAssetCtgySpy: any;
+  let fetchAllAccountsSpy: any;
+  let readAccountSpy: any;
 
   beforeEach(async(() => {
     fakeData = new FakeDataHelper();
@@ -59,9 +52,16 @@ describe('AccountDetailComponent', () => {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAssetCategories']);
-    fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllAssetCtgySpy = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
+      'fetchAllAccountCategories',
+      'fetchAllAssetCategories',
+      'fetchAllAccounts',
+      'readAccount',
+    ]);
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAssetCtgySpy = storageService.fetchAllAssetCategories.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    readAccountSpy = storageService.readAccount.and.returnValue(of({}));
 
     TestBed.configureTestingModule({
       imports: [
@@ -69,7 +69,9 @@ describe('AccountDetailComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
+        RouterTestingModule,
         HttpClientTestingModule,
+        MatMomentDateModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -79,9 +81,13 @@ describe('AccountDetailComponent', () => {
         }),
       ],
       declarations: [
-        AccountExtADPComponent,
-        AccountExtAssetComponent,
-        AccountExtLoanComponent,
+        UIAccountStatusFilterPipe,
+        UIAccountCtgyFilterPipe,
+        UIAccountCtgyFilterExPipe,
+        UIOrderValidFilterPipe,
+        AccountExtADPExComponent,
+        AccountExtAssetExComponent,
+        AccountExtLoanExComponent,
         AccountDetailComponent,
         MessageDialogComponent,
       ],
@@ -91,7 +97,7 @@ describe('AccountDetailComponent', () => {
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: HomeDefDetailService, useValue: homeService },
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
       ],
     });
 
@@ -167,6 +173,7 @@ describe('AccountDetailComponent', () => {
     beforeEach(() => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllAssetCtgySpy.and.returnValue(asyncData(fakeData.finAssetCategories));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
     });
 
     beforeEach(inject([OverlayContainer],
@@ -228,6 +235,35 @@ describe('AccountDetailComponent', () => {
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
     }));
+    it('step 1: category - Advance payment is not supported', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      console.log('Start the check1');
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+      // Name
+      component.firstFormGroup.get('nameControl').setValue('test');
+      // Category
+      component.firstFormGroup.get('ctgyControl').setValue(financeAccountCategoryAdvancePayment);
+      // Owner
+      component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
+      // Comment
+      component.firstFormGroup.get('cmtControl').setValue('test');
+      fixture.detectChanges();
+
+      console.log('Start the check2');
+      expect(component.firstFormGroup.valid).toBeTruthy();
+      expect(component.firstStepCompleted).toBeFalsy();
+
+      console.log('Try to click the button');
+      // let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      // nextButtonNativeEl.click();
+      // fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(0); // At first page
+    }));
+
     it('step 1: shall go to step 2 in valid case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 

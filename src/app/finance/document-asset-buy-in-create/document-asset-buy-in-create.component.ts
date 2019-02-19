@@ -14,7 +14,6 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, fin
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { getAccountExtAssetFormGroup } from '../account-ext-asset-ex';
 import * as moment from 'moment';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
@@ -210,7 +209,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
       exgControl: [''],
       exgpControl: [''],
       despControl: ['', Validators.required],
-      assetGroup: this._formBuilder.group(getAccountExtAssetFormGroup()),
+      assetAccountControl: ['', Validators.required],
       ownerControl: ['', Validators.required],
       legacyControl: '',
       ccControl: '',

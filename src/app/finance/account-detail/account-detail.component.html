@@ -4,7 +4,8 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-horizontal-stepper linear>
+    <mat-horizontal-stepper linear="true">
+      <!-- First step: Generic info -->
       <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
         <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
@@ -18,7 +19,7 @@
           <mat-form-field>
             <mat-select placeholder="{{'Common.Category' | translate}}" formControlName="ctgyControl" name="ctgy"
               (selectionChange)="onCategorySelectionChange($event)">
-              <mat-option *ngFor="let ctgy of arAccountCategories" [value]="ctgy.ID" [disabled]="isCategoryDisabled(ctgy)">
+              <mat-option *ngFor="let ctgy of arAccountCategories" [value]="ctgy.ID" [disabled]="isCategoryDisabled(ctgy.ID)">
                 {{ctgy.Name | translate}} 
               </mat-option>
             </mat-select>
@@ -44,28 +45,28 @@
         </div>
       </mat-step>
 
+      <!-- Extra step -->
       <mat-step [completed]="extraStepCompleted" errorMessage="Invalid extra info">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
-        <form [formGroup]="extraFormGroup">
-          <div class="achih-control-full-width" *ngIf="isADPAccount">
-            <hih-finance-account-ext-adpex formControlName="extADPControl"></hih-finance-account-ext-adpex>
-          </div>
-          <div class="achih-control-full-width" *ngIf="isAssetAccount">
-            <hih-finance-account-ext-asset-ex formControlName="extAssetControl"></hih-finance-account-ext-asset-ex>
-          </div>
-          <div class="achih-control-full-width" *ngIf="isLoanAccount">
-            <hih-finance-account-ext-loan-ex formControlName="extLoanControl"></hih-finance-account-ext-loan-ex>
-          </div>
-          <div class="achih-control-full-width">
-            <div *ngIf="!isAssetAccount && !isADPAccount && !isLoanAccount">{{'Finance.NoExtraInfo' | translate}}</div>
-          </div>  
+        <form [formGroup]="extraADPFormGroup" class="achih-control-full-width" *ngIf="isADPAccount">
+          <hih-finance-account-ext-adpex formControlName="extADPControl"></hih-finance-account-ext-adpex>
         </form>
+        <form [formGroup]="extraAssetFormGroup" class="achih-control-full-width" *ngIf="isAssetAccount">
+          <hih-finance-account-ext-asset-ex formControlName="extADPControl"></hih-finance-account-ext-asset-ex>
+        </form>
+        <form [formGroup]="extraLoanFormGroup" class="achih-control-full-width" *ngIf="isLoanAccount">
+          <hih-finance-account-ext-loan-ex formControlName="extLoanControl"></hih-finance-account-ext-loan-ex>
+        </form>
+        <div class="achih-control-full-width" *ngIf="!isAssetAccount && !isADPAccount && !isLoanAccount">
+          <div >{{'Finance.NoExtraInfo' | translate}}</div>
+        </div>
         <div>
           <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>
       </mat-step>
       
+      <!-- Status -->
       <mat-step>
         <ng-template matStepLabel>{{'Common.Status' | translate}}</ng-template>
         <form [formGroup]="statusFormGroup">

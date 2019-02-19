@@ -16,7 +16,7 @@ import { LogLevel, Account, Document, DocumentItem, Currency, financeDocTypeBorr
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { AccountExtLoanComponent } from '../account-ext-loan';
+import { AccountExtLoanExComponent } from '../account-ext-loan-ex';
 
 @Component({
   selector: 'hih-document-loan-create',
@@ -39,7 +39,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   public firstFormGroup: FormGroup;
   // Step: Extra Info
   public loanAccount: AccountExtraLoan;
-  @ViewChild(AccountExtLoanComponent) ctrlAccount: AccountExtLoanComponent;
+  @ViewChild(AccountExtLoanExComponent) ctrlAccount: AccountExtLoanExComponent;
   // Variables
   arControlCenters: ControlCenter[];
   arOrders: Order[];

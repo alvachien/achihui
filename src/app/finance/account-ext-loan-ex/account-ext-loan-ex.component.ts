@@ -13,7 +13,7 @@ import { LogLevel, Document, DocumentItem, UIMode, AccountExtraLoan, UIAccountFo
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 
 @Component({
-  selector: 'hih-account-ext-loan-ex',
+  selector: 'hih-finance-account-ext-loan-ex',
   templateUrl: './account-ext-loan-ex.component.html',
   styleUrls: ['./account-ext-loan-ex.component.scss'],
   providers: [
@@ -33,6 +33,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
   private _isChangable: boolean;
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
+  private _instanceObject: AccountExtraLoan = new AccountExtraLoan();
 
   public currentMode: string;
   public arUIAccount: UIAccountForSelection[] = [];
@@ -57,21 +58,22 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
   });
 
   get extObject(): AccountExtraLoan {
-    let insObj: AccountExtraLoan = new AccountExtraLoan();
-    insObj.startDate = this.loanInfoForm.get('startDateControl').value;
-    insObj.endDate = this.loanInfoForm.get('endDateControl').value;
-    insObj.TotalMonths = this.loanInfoForm.get('totalMonthControl').value;
-    insObj.RepayDayInMonth = this.loanInfoForm.get('repayDayControl').value;
-    insObj.FirstRepayDate = this.loanInfoForm.get('firstRepayDateControl').value;
-    insObj.InterestFree = this.loanInfoForm.get('interestFreeControl').value;
-    insObj.annualRate = this.loanInfoForm.get('annualRateControl').value;
-    insObj.RepayMethod = this.loanInfoForm.get('repayMethodControl').value;
-    insObj.PayingAccount = this.loanInfoForm.get('payingAccountControl').value;
-    insObj.Partner = this.loanInfoForm.get('partnerControl').value;
-    insObj.Comment = this.loanInfoForm.get('cmtControl').value;
-    insObj.loanTmpDocs = this.dataSource.data.slice();
+    this._instanceObject.startDate = this.loanInfoForm.get('startDateControl').value;
+    this._instanceObject.endDate = this.loanInfoForm.get('endDateControl').value;
+    this._instanceObject.TotalMonths = this.loanInfoForm.get('totalMonthControl').value;
+    this._instanceObject.RepayDayInMonth = this.loanInfoForm.get('repayDayControl').value;
+    this._instanceObject.FirstRepayDate = this.loanInfoForm.get('firstRepayDateControl').value;
+    this._instanceObject.InterestFree = this.loanInfoForm.get('interestFreeControl').value;
+    this._instanceObject.annualRate = this.loanInfoForm.get('annualRateControl').value;
+    this._instanceObject.RepayMethod = this.loanInfoForm.get('repayMethodControl').value;
+    this._instanceObject.PayingAccount = this.loanInfoForm.get('payingAccountControl').value;
+    this._instanceObject.Partner = this.loanInfoForm.get('partnerControl').value;
+    this._instanceObject.Comment = this.loanInfoForm.get('cmtControl').value;
 
-    return insObj;
+    this._instanceObject.loanTmpDocs = [];
+    this._instanceObject.loanTmpDocs = this.dataSource.data.slice();
+
+    return this._instanceObject;
   }
   @Input() tranAmount: number;
   @Input() controlCenterID?: number;

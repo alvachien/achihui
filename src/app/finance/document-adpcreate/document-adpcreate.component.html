@@ -93,11 +93,13 @@
       <!-- Step 2: Extra Info -->
       <mat-step [completed]="extraStepCompleted" errorMessage="Invalid extra">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
-        <hih-finance-account-ext-adp #accountExtraInfo [uiMode]="curMode" 
-          [extObject]="accountAdvPay" 
-          [tranType]="TranType" 
-          [tranAmount]="TranAmount">
-        </hih-finance-account-ext-adp>
+        <form formGroup="extraFormGroup">
+          <hih-finance-account-ext-adpex #accountExtraInfo
+            formControlName="adpAccountControl"
+            [tranType]="TranType" 
+            [tranAmount]="TranAmount">
+          </hih-finance-account-ext-adpex>
+        </form>
         <div>
           <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>

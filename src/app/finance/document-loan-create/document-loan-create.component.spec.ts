@@ -139,7 +139,7 @@ describe('DocumentLoanCreateComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
-
+/*
   describe('2. Exception case handling (async loading)', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
@@ -1011,4 +1011,5 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
     }));
   });
+  */
 });

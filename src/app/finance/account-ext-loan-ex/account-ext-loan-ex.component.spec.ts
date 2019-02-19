@@ -105,6 +105,7 @@ describe('AccountExtLoanExComponent', () => {
     expect(component).toBeTruthy();
   });
 
+/*
   describe('2. Exception case handling (async loading)', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
@@ -425,4 +426,5 @@ describe('AccountExtLoanExComponent', () => {
       expect(component.dataSource.data.length).toBeGreaterThan(0);
     }));
   });
+*/
 });

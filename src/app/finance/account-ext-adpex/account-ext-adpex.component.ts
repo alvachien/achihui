@@ -33,6 +33,7 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
   private _isChangable: boolean;
   private _onChange: (val: any) => void;
   private _onTouched: () => void;
+  private _instanceObject: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
 
   public currentMode: string;
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
@@ -52,18 +53,18 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
   @Input() tranType: number;
 
   get extObject(): AccountExtraAdvancePayment {
-    let insObj: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    insObj.StartDate = this.adpInfoForm.get('startDateControl').value;
-    insObj.EndDate = this.adpInfoForm.get('endDateControl').value;
-    insObj.RepeatType = this.adpInfoForm.get('frqControl').value;
-    insObj.Comment = this.adpInfoForm.get('cmtControl').value;
+    this._instanceObject.StartDate = this.adpInfoForm.get('startDateControl').value;
+    this._instanceObject.EndDate = this.adpInfoForm.get('endDateControl').value;
+    this._instanceObject.RepeatType = this.adpInfoForm.get('frqControl').value;
+    this._instanceObject.Comment = this.adpInfoForm.get('cmtControl').value;
     if (this.refDocId) {
-      insObj.RefDocId = this.refDocId;
+      this._instanceObject.RefDocId = this.refDocId;
     }
 
-    insObj.dpTmpDocs = this.dataSource.data.slice();
+    this._instanceObject.dpTmpDocs = [];
+    this._instanceObject.dpTmpDocs = this.dataSource.data.slice();
 
-    return insObj;
+    return this._instanceObject;
   }
   get isFieldChangable(): boolean {
     return this._isChangable;
