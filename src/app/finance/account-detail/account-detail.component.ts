@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, QueryList, ViewChild, } from '@angular/core';
+import { Component, OnInit, OnDestroy, QueryList, ViewChild, } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatSelectChange, MatHorizontalStepper } from '@angular/material';
@@ -20,7 +20,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   templateUrl: './account-detail.component.html',
   styleUrls: ['./account-detail.component.scss'],
 })
-export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AccountDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   private routerID: number = -1; // Current object ID in routing
 
@@ -34,9 +34,6 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   // Step: Generic info
   public firstFormGroup: FormGroup;
   get firstStepCompleted(): boolean {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent firstStepCompleted...');
-    }
     if (this.isFieldChangable) {
       if (!(this.firstFormGroup && this.firstFormGroup.valid)) {
         return false;
@@ -47,17 +44,15 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     }
 
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent firstStepCompleted: !!!NOW TRUE!!!');
-    }
     return true;
   }
   // Step: Extra
   get extraStepCompleted(): boolean {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent extraStepCompleted...');
-    }
     if (this.isFieldChangable) {
+      if (!this.firstStepCompleted) {
+        return false;
+      }
+
       // Check the extra part
       if (this.isADPAccount) {
         if (!(this.extraADPFormGroup && this.extraADPFormGroup.valid)) {
@@ -72,10 +67,6 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
           return false;
         }
       }
-    }
-
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent extraStepCompleted: !!!NOW TRUE!!!');
     }
     return true;
   }
@@ -220,12 +211,6 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent ngAfterViewInit...');
-    }
-  }
-
   ngOnDestroy(): void {
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -248,17 +233,6 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     return false;
-  }
-
-  public onCategorySelectionChange($event: MatSelectChange): void {
-    let newctgy: number = +$event.value;
-    if (newctgy === financeAccountCategoryAsset) {
-      this.extObject = new AccountExtraAsset();
-    } else if (newctgy === financeAccountCategoryAdvancePayment || newctgy === financeAccountCategoryAdvanceReceived) {
-      this.extObject = new AccountExtraAdvancePayment();
-    } else if (newctgy === financeAccountCategoryBorrowFrom || newctgy === financeAccountCategoryLendTo) {
-      this.extObject = new AccountExtraLoan();
-    }
   }
 
   public onCloseAccount(): void {
@@ -290,6 +264,8 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     if (this._stepper) {
       this._stepper.reset();
     }
+    this.firstFormGroup.reset();
+    this.statusFormGroup.get('statusControl').setValue(AccountStatusEnum.Normal);
   }
 
   private onCreateImpl(): void {
@@ -305,7 +281,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       // Show the snackbar
       let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
         this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-          duration: 3000,
+          duration: 2000,
         });
 
       let recreate: boolean = false;
@@ -376,6 +352,8 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private _displayAccountContent(objAcnt: Account): void {
+    // Step 0.
+    this.firstFormGroup.reset();
     this.firstFormGroup.get('nameControl').setValue(objAcnt.Name);
     this.firstFormGroup.get('ctgyControl').setValue(objAcnt.CategoryId);
     if (objAcnt.OwnerId) {
@@ -384,13 +362,36 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     if (objAcnt.Comment) {
       this.firstFormGroup.get('cmtControl').setValue(objAcnt.Comment);
     }
-    this.statusFormGroup.get('statusControl').setValue(objAcnt.Status);
-
     if (!this.isFieldChangable) {
       this.firstFormGroup.disable();
     } else {
       this.firstFormGroup.enable();
     }
+    // Step 1.
+    if (this.isADPAccount) {
+      this.extraADPFormGroup.get('extADPControl').setValue(objAcnt.ExtraInfo as AccountExtraAdvancePayment);
+      if (!this.isFieldChangable) {
+        this.extraADPFormGroup.disable();
+      } else {
+        this.extraADPFormGroup.enable();
+      }
+    } else if (this.isAssetAccount) {
+      this.extraAssetFormGroup.get('extAssetControl').setValue(objAcnt.ExtraInfo as AccountExtraAsset);
+      if (!this.isFieldChangable) {
+        this.extraAssetFormGroup.disable();
+      } else {
+        this.extraAssetFormGroup.enable();
+      }
+    } else if (this.isLoanAccount) {
+      this.extraLoanFormGroup.get('extLoanControl').setValue(objAcnt.ExtraInfo as AccountExtraLoan);
+      if (!this.isFieldChangable) {
+        this.extraLoanFormGroup.disable();
+      } else {
+        this.extraLoanFormGroup.enable();
+      }
+    }
+    // Step 2.
+    this.statusFormGroup.get('statusControl').setValue(objAcnt.Status);
   }
 
   private _generateAccount(): Account {
@@ -399,6 +400,16 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     acntObj.CategoryId = this.currentCategory;
     acntObj.OwnerId = this.firstFormGroup.get('ownerControl').value;
     acntObj.Comment = this.firstFormGroup.get('cmtControl').value;
+    if (this.isADPAccount) {
+      // ADP
+      acntObj.ExtraInfo = this.extraADPFormGroup.get('extADPControl').value;
+    } else if (this.isAssetAccount) {
+      // Asset
+      acntObj.ExtraInfo = this.extraAssetFormGroup.get('extAssetControl').value;
+    } else if (this.isLoanAccount) {
+      // Loan
+      acntObj.ExtraInfo = this.extraLoanFormGroup.get('extLoanControl').value;
+    }
     acntObj.Status = this.statusFormGroup.get('statusControl').value;
 
     return acntObj;

@@ -17,8 +17,7 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-select placeholder="{{'Common.Category' | translate}}" formControlName="ctgyControl" name="ctgy"
-              (selectionChange)="onCategorySelectionChange($event)">
+            <mat-select placeholder="{{'Common.Category' | translate}}" formControlName="ctgyControl" name="ctgy">
               <mat-option *ngFor="let ctgy of arAccountCategories" [value]="ctgy.ID" [disabled]="isCategoryDisabled(ctgy.ID)">
                 {{ctgy.Name | translate}} 
               </mat-option>
@@ -52,12 +51,12 @@
           <hih-finance-account-ext-adpex formControlName="extADPControl"></hih-finance-account-ext-adpex>
         </form>
         <form [formGroup]="extraAssetFormGroup" class="achih-control-full-width" *ngIf="isAssetAccount">
-          <hih-finance-account-ext-asset-ex formControlName="extADPControl"></hih-finance-account-ext-asset-ex>
+          <hih-finance-account-ext-asset-ex formControlName="extAssetControl"></hih-finance-account-ext-asset-ex>
         </form>
         <form [formGroup]="extraLoanFormGroup" class="achih-control-full-width" *ngIf="isLoanAccount">
           <hih-finance-account-ext-loan-ex formControlName="extLoanControl"></hih-finance-account-ext-loan-ex>
         </form>
-        <div class="achih-control-full-width" *ngIf="!isAssetAccount && !isADPAccount && !isLoanAccount">
+        <div class="achih-control-full-width extraNone" *ngIf="!isAssetAccount && !isADPAccount && !isLoanAccount">
           <div >{{'Finance.NoExtraInfo' | translate}}</div>
         </div>
         <div>
@@ -79,6 +78,11 @@
             </mat-select>
           </mat-form-field>
         </form>
+        <div>
+          <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+          <button mat-button *ngIf="isFieldChangable" (click)="onReset()">{{'Common.Reset' | translate}}</button>
+          <button mat-button *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+        </div>
       </mat-step>
     </mat-horizontal-stepper>
   </mat-card-content>
