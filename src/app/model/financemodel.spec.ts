@@ -439,8 +439,8 @@ describe('Order', () => {
     expect(instance2).toBeTruthy();
   });
   it ('#4. onVerify', () => {
-    instance.ValidFrom = undefined;
-    instance.ValidTo = undefined;
+    instance.ValidFrom = moment();
+    instance.ValidTo = moment().add(1, 'y');
     instance.SRules.push(new SettlementRule());
     let rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();

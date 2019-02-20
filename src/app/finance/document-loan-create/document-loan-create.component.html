@@ -88,7 +88,7 @@
       <mat-step [completed]="extraStepCompleted" errorMessage="Invalid extra. info">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
 
-        <form formGroup="extraFormGroup">
+        <form [formGroup]="extraFormGroup">
           <div class="achih-control-full-width">
             <hih-finance-account-ext-loan-ex [tranAmount]="tranAmount" [controlCenterID]="controlCenterID" [orderID]="orderID"
               formControlName="loanAccountControl">

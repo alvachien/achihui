@@ -424,6 +424,7 @@ describe('DocumentItemOverviewComponent', () => {
       expect(getLoanTmpDocsSpy).toHaveBeenCalledTimes(1);
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/100']);
 
+      tick();
       // flush();
     }));
 
@@ -449,6 +450,7 @@ describe('DocumentItemOverviewComponent', () => {
       expect(messageElement.textContent).toContain('server failed with 500',
         'Expected snack bar to show the error message: server failed with 500');
 
+      tick();
       // flush();
     }));
 

@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, AccountExtraAsset,
-  RepeatFrequencyEnum, UIDisplayStringUtil,
+  RepeatFrequencyEnum, UIDisplayStringUtil, AssetCategory,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 
@@ -36,6 +36,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
   private _onChange: (val: any) => void;
   private _instanceObject: AccountExtraAsset = new AccountExtraAsset();
 
+  public arAssetCategories: AssetCategory[];
   public assetInfoForm: FormGroup = new FormGroup({
     ctgyControl: new FormControl('', [Validators.required]),
     nameControl: new FormControl('', [Validators.required, Validators.maxLength(50)]),
@@ -57,7 +58,8 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
     return this._isChangable;
   }
 
-  constructor(public _storageService: FinanceStorageService) {
+  constructor(public _storageService: FinanceStorageService,
+    private _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent constructor`);
     }
@@ -86,6 +88,14 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
+    this._storageService.fetchAllAssetCategories().pipe(takeUntil(this._destroyed$)).subscribe((ar: AssetCategory[]) => {
+      this.arAssetCategories = ar;
+    }, (error: any) => {
+      this._snackBar.open(error.toString(), undefined, {
+        duration: 2000,
+      });
+    })
   }
 
   ngOnDestroy(): void {

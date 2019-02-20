@@ -64,10 +64,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     return '';
   }
   get BuyinAssetName(): string {
-    let namectrl: any = this.firstFormGroup.get('assetGroup').get('nameControl');
-    if (namectrl) {
-      return namectrl.value;
-    }
+    return this.firstFormGroup.get('assetAccountControl').value.Name;
   }
   get IsLegacyAsset(): boolean {
     let legctrl: any = this.firstFormGroup.get('legacyControl');
@@ -343,10 +340,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     apidetail.orderID = this.firstFormGroup.get('orderControl').value;
     apidetail.isLegacy = this.IsLegacyAsset;
     apidetail.accountOwner = this.firstFormGroup.get('ownerControl').value;
-    apidetail.accountAsset = new AccountExtraAsset();
-    apidetail.accountAsset.CategoryID = this.firstFormGroup.get('assetGroup').get('ctgyControl').value;
-    apidetail.accountAsset.Name = this.firstFormGroup.get('assetGroup').get('nameControl').value;
-    apidetail.accountAsset.Comment = this.firstFormGroup.get('assetGroup').get('commentControl').value;
+    apidetail.accountAsset = this.firstFormGroup.get('assetAccountControl').value;
 
     docobj.Items.forEach((val: DocumentItem) => {
       apidetail.items.push(val);

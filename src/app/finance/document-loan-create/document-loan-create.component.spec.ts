@@ -7,6 +7,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of, BehaviorSubject } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
   MatStepperNext, } from '@angular/material';
@@ -24,15 +25,7 @@ import { DocumentLoanCreateComponent } from './document-loan-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService,
   AuthService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
-
-@Component({selector: 'hih-finance-account-ext-loan', template: ''})
-class AccountExtLoanComponent {
-  @Input() uiMode: UIMode;
-  @Input() extObject: any;
-  @Input() tranAmount: any;
-  @Input() controlCenterID: any;
-  @Input() orderID: any;
-}
+import { AccountExtLoanExComponent } from '../account-ext-loan-ex';
 
 describe('DocumentLoanCreateComponent', () => {
   let component: DocumentLoanCreateComponent;
@@ -90,6 +83,7 @@ describe('DocumentLoanCreateComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
+        RouterTestingModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {
@@ -104,7 +98,7 @@ describe('DocumentLoanCreateComponent', () => {
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
-        AccountExtLoanComponent,
+        AccountExtLoanExComponent,
         DocumentLoanCreateComponent,
         MessageDialogComponent,
       ],
@@ -139,7 +133,7 @@ describe('DocumentLoanCreateComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
-/*
+
   describe('2. Exception case handling (async loading)', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
@@ -666,7 +660,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 2.
       // Input nothing!
-      expect(component.loanAccount.isValid).toBeFalsy();
+      expect(component.extraFormGroup.valid).toBeFalsy();
       expect(component.extraStepCompleted).toBeFalsy();
 
       // Click the next button
@@ -708,11 +702,13 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      component.loanAccount = fakeData.finAccounts.find((val: Account) => {
+      let loanAccount: AccountExtraLoan = fakeData.finAccounts.find((val: Account) => {
         return val.Id === 22;
       }).ExtraInfo as AccountExtraLoan;
+      component.extraFormGroup.get('loanAccountControl').setValue(loanAccount);
+      component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
       fixture.detectChanges();
-      expect(component.loanAccount.isValid).toBeTruthy();
+      expect(component.extraFormGroup.valid).toBeTruthy();
       expect(component.extraStepCompleted).toBeTruthy();
 
       // Click the next button
@@ -787,11 +783,13 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      component.loanAccount = fakeData.finAccounts.find((val: Account) => {
+      let loanAccount: AccountExtraLoan = fakeData.finAccounts.find((val: Account) => {
         return val.Id === 22;
       }).ExtraInfo as AccountExtraLoan;
+      component.extraFormGroup.get('loanAccountControl').setValue(loanAccount);
+      component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
       fixture.detectChanges();
-      expect(component.loanAccount.isValid).toBeTruthy();
+      expect(component.extraFormGroup.valid).toBeTruthy();
       expect(component.extraStepCompleted).toBeTruthy();
 
       // Click the next button
@@ -806,9 +804,12 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
       // Since there is only one button
-      (overlayContainerElement.querySelector('button') as HTMLElement).click();
-      fixture.detectChanges();
-      flush();
+      let btnElement: HTMLElement = overlayContainerElement.querySelector('button') as HTMLElement;
+      if (btnElement) {
+        btnElement.click();
+        fixture.detectChanges();
+        flush();
+      }
     }));
 
     it('shall work in success case', fakeAsync(() => {
@@ -843,11 +844,13 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      component.loanAccount = fakeData.finAccounts.find((val: Account) => {
+      let loanAccount: AccountExtraLoan = fakeData.finAccounts.find((val: Account) => {
         return val.Id === 22;
       }).ExtraInfo as AccountExtraLoan;
+      component.extraFormGroup.get('loanAccountControl').setValue(loanAccount);
+      component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
       fixture.detectChanges();
-      expect(component.loanAccount.isValid).toBeTruthy();
+      expect(component.extraFormGroup.valid).toBeTruthy();
       expect(component.extraStepCompleted).toBeTruthy();
 
       // Click the next button
@@ -906,11 +909,13 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      component.loanAccount = fakeData.finAccounts.find((val: Account) => {
+      let loanAccount: AccountExtraLoan = fakeData.finAccounts.find((val: Account) => {
         return val.Id === 22;
       }).ExtraInfo as AccountExtraLoan;
+      component.extraFormGroup.get('loanAccountControl').setValue(loanAccount);
+      component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
       fixture.detectChanges();
-      expect(component.loanAccount.isValid).toBeTruthy();
+      expect(component.extraFormGroup.valid).toBeTruthy();
       expect(component.extraStepCompleted).toBeTruthy();
 
       // Click the next button
@@ -980,11 +985,13 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      component.loanAccount = fakeData.finAccounts.find((val: Account) => {
+      let loanAccount: AccountExtraLoan = fakeData.finAccounts.find((val: Account) => {
         return val.Id === 22;
       }).ExtraInfo as AccountExtraLoan;
+      component.extraFormGroup.get('loanAccountControl').setValue(loanAccount);
+      component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
       fixture.detectChanges();
-      expect(component.loanAccount.isValid).toBeTruthy();
+      expect(component.extraFormGroup.valid).toBeTruthy();
       expect(component.extraStepCompleted).toBeTruthy();
 
       // Click the next button
@@ -1011,5 +1018,4 @@ describe('DocumentLoanCreateComponent', () => {
       flush();
     }));
   });
-  */
 });

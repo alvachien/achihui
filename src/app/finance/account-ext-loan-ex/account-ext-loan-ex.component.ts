@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, OnDestroy, ViewChild, HostListener, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { forkJoin, ReplaySubject } from 'rxjs';
@@ -119,6 +119,23 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
     private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent constructor`);
+    }
+  }
+
+  @HostListener('change') onChange(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent onChange...');
+    }
+    if (this._onChange) {
+      this._onChange(this.extObject);
+    }
+  }
+  @HostListener('blur') onTouched(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent onTouched...');
+    }
+    if (this._onTouched) {
+      this._onTouched();
     }
   }
 

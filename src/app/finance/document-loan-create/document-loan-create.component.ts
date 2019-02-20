@@ -38,8 +38,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: Extra Info
-  public loanAccount: AccountExtraLoan;
-  @ViewChild(AccountExtLoanExComponent) ctrlAccount: AccountExtLoanExComponent;
+  public extraFormGroup: FormGroup;
   // Variables
   arControlCenters: ControlCenter[];
   arOrders: Order[];
@@ -113,7 +112,11 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     return false;
   }
   get extraStepCompleted(): boolean {
-    if (this.loanAccount.isValid) {
+    if (!this.firstStepCompleted) {
+      return false;
+    }
+
+    if (this.extraFormGroup && this.extraFormGroup.valid) {
       return true;
     }
 
@@ -134,7 +137,6 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent constructor...');
     }
-    this.loanAccount = new AccountExtraLoan();
   }
 
   ngOnInit(): void {
@@ -153,6 +155,9 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       accountControl: ['', Validators.required],
       ccControl: [''],
       orderControl: [''],
+    });
+    this.extraFormGroup = this._formBuilder.group({
+      loanAccountControl: ['', Validators.required],
     });
 
     forkJoin([
@@ -228,8 +233,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     if (this._stepper) {
       this._stepper.reset();
     }
-    this.loanAccount = new AccountExtraLoan();
     this.firstFormGroup.reset();
+    this.extraFormGroup.reset();
     // Date
     this.firstFormGroup.get('dateControl').setValue(moment());
     // Currency
@@ -272,7 +277,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
     acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
-    acntobj.ExtraInfo = this.loanAccount;
+    acntobj.ExtraInfo = this.extraFormGroup.get('loanAccountControl').value as AccountExtraLoan;
 
     this._storageService.createLoanDocument(docObj, acntobj).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -309,11 +314,6 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         disableClose: false,
         width: '500px',
         data: dlginfo,
-      }).afterClosed().subscribe((x2: any) => {
-        // Do nothing!
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, Message dialog result ${x2}`);
-        }
       });
     });
   }

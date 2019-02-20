@@ -22,7 +22,7 @@ import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '..
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
-import { DocumentItem } from '../../model';
+import { DocumentItem, AccountExtraAsset, } from '../../model';
 import { AccountExtAssetExComponent } from '../account-ext-asset-ex';
 
 describe('DocumentAssetBuyInCreateComponent', () => {
@@ -330,9 +330,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -362,9 +365,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       // component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -394,9 +400,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      // component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      // extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -426,9 +435,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      // component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      // extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -458,9 +470,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       // component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -490,9 +505,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -522,9 +540,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -556,9 +577,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -592,9 +616,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -625,9 +652,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -664,9 +694,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -700,9 +733,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -737,9 +773,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -774,9 +813,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -830,9 +872,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -888,9 +933,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -954,9 +1002,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -1012,9 +1063,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -1072,9 +1126,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -1130,9 +1187,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -1221,9 +1281,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -1295,9 +1358,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy
@@ -1374,9 +1440,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Desp
       component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
-      component.firstFormGroup.get('assetGroup').get('ctgyControl').setValue(fakeData.finAssetCategories[0].ID);
-      component.firstFormGroup.get('assetGroup').get('nameControl').setValue('Asset1');
-      component.firstFormGroup.get('assetGroup').get('commentControl').setValue('test comment');
+      let extAsset: AccountExtraAsset = new AccountExtraAsset();
+      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
+      extAsset.Name = 'Asset 1';
+      extAsset.Comment = 'test Comment';
+      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
+      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
       // Owner
       component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
       // Legacy

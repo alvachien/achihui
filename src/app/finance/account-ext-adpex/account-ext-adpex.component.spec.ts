@@ -93,17 +93,14 @@ describe('AccountExtADPExComponent', () => {
     expect(component).toBeTruthy();
   });
 
-/*
-  describe('2. create mode', () => {
+  describe('2. enable mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let accountExtra: AccountExtraAdvancePayment;
 
     beforeEach(() => {
       // Before Each
-      component.uiMode = UIMode.Create;
       accountExtra = new AccountExtraAdvancePayment();
-      component.extObject = accountExtra;
 
       let arrst: FinanceADPCalAPIOutput[] = [];
       for (let i: number = 0; i < 10; i ++) {
@@ -132,7 +129,6 @@ describe('AccountExtADPExComponent', () => {
 
       expect(component.isFieldChangable).toEqual(true);
       expect(component.dataSource.data.length).toEqual(0);
-      expect(component.extObject).toBeTruthy();
       expect(component.canCalcTmpDocs).toBeFalsy();
 
       const linkDes: any = fixture.debugElement.queryAll(By.directive(RouterLinkDirectiveStub));
@@ -142,8 +138,11 @@ describe('AccountExtADPExComponent', () => {
     it('2. should check the valid for calc. tmp docs', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
-      component.extObject.Comment = 'Test';
-      component.extObject.RepeatType = RepeatFrequencyEnum.Month;
+      let accountExtra2: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      accountExtra2.Comment = 'Test';
+      accountExtra2.RepeatType = RepeatFrequencyEnum.Month;
+      component.writeValue(accountExtra2);
+      component.onChange();
       component.tranAmount = 200;
       component.tranType = 2;
       fixture.detectChanges();
@@ -154,8 +153,11 @@ describe('AccountExtADPExComponent', () => {
     it('3. should generate tmp docs', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
 
-      component.extObject.Comment = 'Test';
-      component.extObject.RepeatType = RepeatFrequencyEnum.Month;
+      let accountExtra2: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      accountExtra2.Comment = 'Test';
+      accountExtra2.RepeatType = RepeatFrequencyEnum.Month;
+      component.writeValue(accountExtra2);
+      component.onChange();
       component.tranAmount = 200;
       component.tranType = 2;
       fixture.detectChanges();
@@ -166,16 +168,17 @@ describe('AccountExtADPExComponent', () => {
       fixture.detectChanges();
       expect(component.dataSource.data.length).toBeGreaterThan(0);
 
-      component.generateAccountInfoForSave();
       expect(component.extObject.dpTmpDocs.length).toBeGreaterThan(0);
     }));
 
     it('4. shall display error for exceptions', fakeAsync(() => {
       calcADPTmpDocsSpy.and.returnValue(asyncError('Service Error!'));
 
-      fixture.detectChanges(); // ngOnInit
-      component.extObject.Comment = 'Test';
-      component.extObject.RepeatType = RepeatFrequencyEnum.Month;
+      let accountExtra2: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      accountExtra2.Comment = 'Test';
+      accountExtra2.RepeatType = RepeatFrequencyEnum.Month;
+      component.writeValue(accountExtra2);
+      component.onChange();
       component.tranAmount = 200;
       fixture.detectChanges();
 
@@ -191,10 +194,9 @@ describe('AccountExtADPExComponent', () => {
     }));
   });
 
-  describe('3. display mode', () => {
+  describe('3. disable mode', () => {
     beforeEach(() => {
       // Before Each
-      component.uiMode = UIMode.Display;
       let fakedAccountExtra: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
       fakedAccountExtra.Comment = 'Test';
       fakedAccountExtra.RepeatType = RepeatFrequencyEnum.Month;
@@ -209,23 +211,8 @@ describe('AccountExtADPExComponent', () => {
         fakedAccountExtra.dpTmpDocs.push(item);
       }
 
-      component.extObject = fakedAccountExtra;
-    });
-
-    it('1. shall display tmp. docs', fakeAsync(() => {
-      // Shall display the tmp. docs by default
-      fixture.detectChanges(); // ngOnInit
-
-      expect(component.dataSource.data.length).toBeGreaterThan(0);
-    }));
-  });
-
-  describe('4. change mode', () => {
-    beforeEach(() => {
-      // Before Each
-      component.uiMode = UIMode.Change;
-
-      component.extObject = fakeData.finAccountExtraAdvancePayment;
+      component.writeValue(fakedAccountExtra);
+      component.setDisabledState(true);
     });
 
     it('1. shall display tmp. docs', fakeAsync(() => {
@@ -255,5 +242,4 @@ describe('AccountExtADPExComponent', () => {
 
   //   expect(heroesLink.navigatedTo).toBe('/heroes');
   // });
-*/
 });

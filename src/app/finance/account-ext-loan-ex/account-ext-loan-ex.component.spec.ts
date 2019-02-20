@@ -105,7 +105,6 @@ describe('AccountExtLoanExComponent', () => {
     expect(component).toBeTruthy();
   });
 
-/*
   describe('2. Exception case handling (async loading)', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
@@ -153,7 +152,7 @@ describe('AccountExtLoanExComponent', () => {
     }));
   });
 
-  describe('3. Create Mode', () => {
+  describe('3. Enable Mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -163,7 +162,6 @@ describe('AccountExtLoanExComponent', () => {
       // Accounts
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
 
-      component.uiMode = UIMode.Create;
       component.tranAmount = 100;
       component.controlCenterID = fakeData.finControlCenters[0].Id;
     });
@@ -183,7 +181,6 @@ describe('AccountExtLoanExComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.isCreateMode).toBeTruthy();
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.dataSource.data.length).toEqual(0);
       expect(component.extObject).toBeTruthy();
@@ -208,9 +205,12 @@ describe('AccountExtLoanExComponent', () => {
       fixture.detectChanges();
 
       // Repayment method
-      component.extObject.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
-      // component.extObject.annualRate = 0.04;
-      component.extObject.InterestFree = false;
+      let loanAcnt: AccountExtraLoan = new AccountExtraLoan();
+      loanAcnt.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+      // loanAcnt.annualRate = 0.04;
+      loanAcnt.InterestFree = false;
+      component.writeValue(loanAcnt);
+      component.onChange();
       fixture.detectChanges();
       expect(component.canGenerateTmpDocs).toBeFalsy();
     }));
@@ -236,10 +236,13 @@ describe('AccountExtLoanExComponent', () => {
       fixture.detectChanges();
 
       // Repayment method
-      component.extObject.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
-      component.extObject.annualRate = 0.04;
-      component.extObject.InterestFree = false;
-      component.extObject.TotalMonths = 36;
+      let loanAcnt: AccountExtraLoan = new AccountExtraLoan();
+      loanAcnt.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+      loanAcnt.annualRate = 0.04;
+      loanAcnt.InterestFree = false;
+      loanAcnt.TotalMonths = 36;
+      component.writeValue(loanAcnt);
+      component.onChange();
       fixture.detectChanges();
       expect(component.canGenerateTmpDocs).toBeTruthy();
 
@@ -259,10 +262,13 @@ describe('AccountExtLoanExComponent', () => {
       fixture.detectChanges();
 
       // Repayment method
-      component.extObject.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
-      component.extObject.annualRate = 0.04;
-      component.extObject.InterestFree = false;
-      component.extObject.TotalMonths = 36;
+      let loanAcnt: AccountExtraLoan = new AccountExtraLoan();
+      loanAcnt.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
+      loanAcnt.annualRate = 0.04;
+      loanAcnt.InterestFree = false;
+      loanAcnt.TotalMonths = 36;
+      component.writeValue(loanAcnt);
+      component.onChange();
       fixture.detectChanges();
       expect(component.canGenerateTmpDocs).toBeTruthy();
 
@@ -283,7 +289,7 @@ describe('AccountExtLoanExComponent', () => {
     }));
   });
 
-  describe('4. display mode', () => {
+  describe('4. disable mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -293,12 +299,12 @@ describe('AccountExtLoanExComponent', () => {
       // Accounts
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
 
-      component.uiMode = UIMode.Display;
       component.tranAmount = 100;
       component.controlCenterID = fakeData.finControlCenters[0].Id;
-      component.extObject = fakeData.finAccounts.find((val: Account) => {
+      component.writeValue(fakeData.finAccounts.find((val: Account) => {
         return val.Id === 22;
-      }).ExtraInfo as AccountExtraLoan;
+      }).ExtraInfo as AccountExtraLoan);
+      component.setDisabledState(true);
     });
 
     beforeEach(inject([OverlayContainer],
@@ -316,7 +322,6 @@ describe('AccountExtLoanExComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.isCreateMode).toBeFalsy();
       expect(component.isFieldChangable).toBeFalsy();
       expect(component.dataSource.data.length).toBeGreaterThan(0);
       expect(component.extObject).toBeTruthy();
@@ -324,107 +329,4 @@ describe('AccountExtLoanExComponent', () => {
       expect(component.canGenerateTmpDocs).toBeFalsy();
     }));
   });
-
-  describe('3. Change Mode', () => {
-    let overlayContainer: OverlayContainer;
-    let overlayContainerElement: HTMLElement;
-
-    beforeEach(() => {
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
-
-      // Accounts
-      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
-
-      component.uiMode = UIMode.Change;
-      component.tranAmount = 100;
-      component.extObject = fakeData.finAccounts.find((val: Account) => {
-        return val.Id === 22;
-      }).ExtraInfo as AccountExtraLoan;
-    });
-
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
-      overlayContainer = oc;
-      overlayContainerElement = oc.getContainerElement();
-    }));
-
-    afterEach(() => {
-      overlayContainer.ngOnDestroy();
-    });
-
-    it('1. default values', fakeAsync(() => {
-      fixture.detectChanges();
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component.isCreateMode).toBeFalsy();
-      expect(component.isFieldChangable).toBeTruthy();
-      expect(component.dataSource.data.length).toBeGreaterThan(0);
-      expect(component.extObject).toBeTruthy();
-      expect(component.extObject.startDate).toBeTruthy();
-    }));
-
-    it('2. should overwrite template docs in valid case', fakeAsync(() => {
-      let tmpdocs: TemplateDocLoan[] = [];
-      for (let i: number = 0; i < 12; i++) {
-        let tmpdoc: TemplateDocLoan = new TemplateDocLoan();
-        tmpdoc.DocId = i + 1;
-        tmpdoc.TranAmount = 8333.34;
-        tmpdoc.InterestAmount = 362.50;
-        tmpdoc.Desp = `test${i + 1}`;
-        tmpdoc.TranType = 28;
-        tmpdoc.TranDate = moment().add(i + 1, 'M');
-        tmpdoc.ControlCenterId = 1;
-        tmpdoc.AccountId = 22;
-        tmpdocs.push(tmpdoc);
-      }
-      calcLoanTmpDocsSpy.and.returnValue(asyncData(tmpdocs));
-
-      fixture.detectChanges();
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component.canGenerateTmpDocs).toBeTruthy();
-
-      component.onGenerateTmpDocs();
-      expect(calcLoanTmpDocsSpy).toHaveBeenCalled();
-
-      tick(); // Let's flush the data
-      fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(12);
-    }));
-
-    it('5. should popup dialog in case template docs failed in generation', fakeAsync(() => {
-      calcLoanTmpDocsSpy.and.returnValue(asyncError('Server 500 Error'));
-
-      fixture.detectChanges();
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Repayment method
-      component.extObject.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
-      component.extObject.annualRate = 0.04;
-      component.extObject.InterestFree = false;
-      component.extObject.TotalMonths = 36;
-      fixture.detectChanges();
-      expect(component.canGenerateTmpDocs).toBeTruthy();
-
-      component.onGenerateTmpDocs();
-      expect(calcLoanTmpDocsSpy).toHaveBeenCalled();
-
-      tick(); // Let's flush the data
-      fixture.detectChanges();
-
-      // Expect there is a pop-up dialog
-      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
-      // Since there is only one button
-      (overlayContainerElement.querySelector('button') as HTMLElement).click();
-      fixture.detectChanges();
-      flush();
-
-      // Template docs are keep unchanged
-      expect(component.dataSource.data.length).toBeGreaterThan(0);
-    }));
-  });
-*/
 });

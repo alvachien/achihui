@@ -152,7 +152,7 @@ describe('HomeDefDetailService', () => {
     });
 
     it('should return data for success case', () => {
-      expect(service.MembersInChosedHome.length).toEqual(0);
+      expect(service.MembersInChosedHome.length).toEqual(1);
       service.fetchAllMembersInChosedHome().subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
