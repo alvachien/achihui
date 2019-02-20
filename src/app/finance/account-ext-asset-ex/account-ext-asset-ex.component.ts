@@ -29,7 +29,7 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from 
 })
 export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _isChangable: boolean;
+  private _isChangable: boolean = true; // Default is changable
   private _refBuyDocID?: number;
   private _refSoldDocID?: number;
   private _onTouched: () => void;

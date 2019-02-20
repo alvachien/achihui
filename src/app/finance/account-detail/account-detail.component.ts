@@ -321,33 +321,29 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onUpdateImpl, changeAccountEvent with : ${x}`);
       }
-
-      // Navigate back to display
-      if (x instanceof Account) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
-          undefined, {
-            duration: 2000,
-          });
-
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+      // Show the snackbar
+      let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
+        undefined, {
+          duration: 2000,
         });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
 
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
-      }
+      snackbarRef.afterDismissed().subscribe(() => {
+        // Navigate to display
+        this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+      });
+    }, (error: any) => {
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     });
   }
 

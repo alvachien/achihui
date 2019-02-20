@@ -10,13 +10,11 @@ import {
   LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
   UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, DocumentType,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  Currency, ControlCenter, Order, IAccountCategoryFilter, financeAccountCategoryAdvanceReceived, TranType,
+  Currency, ControlCenter, Order, IAccountCategoryFilter, financeAccountCategoryAdvanceReceived, TranType, AccountExtra,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
-import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { AccountExtADPExComponent } from '../account-ext-adpex';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -29,7 +27,6 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   public curMode: UIMode = UIMode.Create;
-  public accountAdvPay: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -44,7 +41,8 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   public arDocTypes: DocumentType[] = [];
   // Step: Generic info
   public firstFormGroup: FormGroup;
-  @ViewChild('accountExtraInfo') ctrlAccount: AccountExtADPExComponent;
+  // Step: Extra
+  public extraFormGroup: FormGroup;
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
 
   get firstStepCompleted(): boolean {
@@ -106,16 +104,10 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     return false;
   }
   get extraStepCompleted(): boolean {
-    if (this.ctrlAccount) {
-      if (!this.accountAdvPay.isValid) {
-        return false;
-      }
-
-      // this.ctrlAccount.generateAccountInfoForSave();
-
-      if (this.accountAdvPay.dpTmpDocs.length <= 0) {
-        return false;
-      }
+    if (!this.firstStepCompleted) {
+      return false;
+    }
+    if (this.extraFormGroup && this.extraFormGroup.valid) {
       return true;
     }
     return false;
@@ -154,6 +146,9 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       despControl: ['', Validators.required],
       ccControl: [''],
       orderControl: [''],
+    });
+    this.extraFormGroup = this._formBuilder.group({
+      adpAccountControl: ['', Validators.required],
     });
 
     // Fetch the data
@@ -246,8 +241,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     this.firstFormGroup.get('dateControl').setValue(moment());
 
     // Second step
-    this.accountAdvPay.onInit();
-    this.ctrlAccount.onReset();
+    this.extraFormGroup.reset();
   }
 
   onSubmit(): void {
@@ -260,9 +254,10 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     detailObject.TranAmount = this.TranAmount;
     detailObject.TranCurr = this.firstFormGroup.get('currControl').value;
     detailObject.TranDate = moment(this.TranDate, momentDateFormat);
-    detailObject.AdvPayAccount = this.accountAdvPay;
+    detailObject.AdvPayAccount = this.extraFormGroup.get('adpAccountControl').value as AccountExtraAdvancePayment;
 
     let docObj: Document = detailObject.generateDocument(this._isADP);
+    docObj.HID = this._homeService.ChosedHome.ID;
 
     // Check!
     if (!docObj.onVerify({
@@ -290,8 +285,6 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    docObj.HID = this._homeService.ChosedHome.ID;
-
     this._storageService.createADPDocument(docObj, detailObject.AdvPayAccount, this._isADP).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, createADPDocument`);
@@ -316,23 +309,20 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
         }
       });
     }, (error: any) => {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
 
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, failed, Message dialog result ${x2}`);
-          }
-        });
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+
+      return;
     });
   }
 

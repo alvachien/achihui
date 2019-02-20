@@ -13,6 +13,7 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import * as moment from 'moment';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { AccountExtADPExComponent } from './account-ext-adpex.component';
@@ -47,6 +48,7 @@ describe('AccountExtADPExComponent', () => {
         ReactiveFormsModule,
         BrowserAnimationsModule,
         HttpClientTestingModule,
+        RouterTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

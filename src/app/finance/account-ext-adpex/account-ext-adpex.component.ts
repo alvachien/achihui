@@ -30,7 +30,7 @@ import { HomeDefDetailService, FinanceStorageService } from '../../services';
 })
 export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _isChangable: boolean;
+  private _isChangable: boolean = true; // Default is changable
   private _onChange: (val: any) => void;
   private _onTouched: () => void;
   private _instanceObject: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();

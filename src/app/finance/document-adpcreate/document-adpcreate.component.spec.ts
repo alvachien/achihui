@@ -4,6 +4,7 @@ import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of, BehaviorSubject } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
@@ -22,20 +23,7 @@ import { UserAuthInfo, Document, RepeatFrequencyEnum, AccountExtraAdvancePayment
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService,
   AuthService, } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
-
-@Component({selector: 'hih-finance-account-ext-adp', template: '<div>test</div>'})
-class AccountExtADPComponent {
-  @Input() uiMode: any;
-  @Input() extObject: AccountExtraAdvancePayment;
-  @Input() tranType: number;
-  @Input() tranAmount: number;
-  generateAccountInfoForSave(): void {
-    // Do nothing
-  }
-  onReset(): void {
-    // Do nothing
-  }
-}
+import { AccountExtADPExComponent } from '../account-ext-adpex';
 
 describe('DocumentADPCreateComponent', () => {
   let component: DocumentADPCreateComponent;
@@ -96,6 +84,7 @@ describe('DocumentADPCreateComponent', () => {
         ReactiveFormsModule,
         NoopAnimationsModule,
         HttpClientTestingModule,
+        RouterTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -105,7 +94,7 @@ describe('DocumentADPCreateComponent', () => {
         }),
       ],
       declarations: [
-        AccountExtADPComponent,
+        AccountExtADPExComponent,
         DocumentADPCreateComponent,
         MessageDialogComponent,
       ],
@@ -138,7 +127,7 @@ describe('DocumentADPCreateComponent', () => {
   it('1. should create without data', () => {
     expect(component).toBeTruthy();
   });
-/*
+
   it('1a. should create with adr', () => {
     activatedRouteStub.setURL([new UrlSegment('createadr', {})] as UrlSegment[]);
 
@@ -703,8 +692,8 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
       expect(component.extraStepCompleted).toBeFalsy();
       // Ensure the date is invalid
-      component.accountAdvPay.StartDate = moment().add(1, 'M');
-      component.accountAdvPay.EndDate = moment();
+      // component.accountAdvPay.StartDate = moment().add(1, 'M');
+      // component.accountAdvPay.EndDate = moment();
       fixture.detectChanges();
 
       expect(component.extraStepCompleted).toBeFalsy();
@@ -746,11 +735,11 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
       expect(component.extraStepCompleted).toBeFalsy();
       // By default, no tmp docs are generated
-      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
-      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      // component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      // component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
       fixture.detectChanges();
-      expect(component.accountAdvPay.isValid).toBeTruthy();
-      expect(component.accountAdvPay.dpTmpDocs.length).toBe(0);
+      // expect(component.accountAdvPay.isValid).toBeTruthy();
+      // expect(component.accountAdvPay.dpTmpDocs.length).toBe(0);
 
       expect(component.extraStepCompleted).toBeFalsy();
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -819,15 +808,15 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 2.
       expect(component._stepper.selectedIndex).toBe(1);
-      expect(component.ctrlAccount).not.toBeUndefined();
       expect(component.extraStepCompleted).toBeFalsy();
       // By default, no tmp docs are generated
-      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
-      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
-      component.accountAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      let acntAdvPay: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      acntAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      acntAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      acntAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      component.extraFormGroup.get('adpAccountControl').setValue(acntAdvPay);
+      component.extraFormGroup.get('adpAccountControl').updateValueAndValidity({onlySelf: false, emitEvent: true});
       fixture.detectChanges();
-      expect(component.accountAdvPay.isValid).toBeTruthy();
-      expect(component.accountAdvPay.dpTmpDocs.length).toBeGreaterThan(0);
       expect(component.extraStepCompleted).toBeTruthy();
       // Click next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -838,14 +827,18 @@ describe('DocumentADPCreateComponent', () => {
       // Click the submit button
       component.arAccounts = []; // Ensure doc check failed
       component.onSubmit();
+      tick();
       fixture.detectChanges();
 
       // Expect there is a pop-up dialog
       expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
       // Since there is only one button
-      (overlayContainerElement.querySelector('button') as HTMLElement).click();
-      fixture.detectChanges();
-      flush();
+      let btnElement: any = overlayContainerElement.querySelector('button') as HTMLElement;
+      if (btnElement) {
+        btnElement.click();
+        fixture.detectChanges();
+        flush();
+      }
 
       // expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
 
@@ -884,9 +877,12 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 2.
       // By default, no tmp docs are generated
-      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
-      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
-      component.accountAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      let acntAdvPay: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      acntAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      acntAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      acntAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      component.extraFormGroup.get('adpAccountControl').setValue(acntAdvPay);
+      component.extraFormGroup.get('adpAccountControl').updateValueAndValidity({onlySelf: false, emitEvent: true});
       fixture.detectChanges();
       // Click next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -942,9 +938,12 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 2.
       // By default, no tmp docs are generated
-      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
-      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
-      component.accountAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      let acntAdvPay: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      acntAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      acntAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      acntAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      component.extraFormGroup.get('adpAccountControl').setValue(acntAdvPay);
+      component.extraFormGroup.get('adpAccountControl').updateValueAndValidity({onlySelf: false, emitEvent: true});
       fixture.detectChanges();
       // Click next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1012,9 +1011,12 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 2.
       // By default, no tmp docs are generated
-      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
-      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
-      component.accountAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      let acntAdvPay: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      acntAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      acntAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      acntAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      component.extraFormGroup.get('adpAccountControl').setValue(acntAdvPay);
+      component.extraFormGroup.get('adpAccountControl').updateValueAndValidity({onlySelf: false, emitEvent: true});
       fixture.detectChanges();
       // Click next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1088,9 +1090,12 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 2.
       // By default, no tmp docs are generated
-      component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
-      component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
-      component.accountAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      let acntAdvPay: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
+      acntAdvPay.RepeatType = RepeatFrequencyEnum.Week;
+      acntAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
+      acntAdvPay.dpTmpDocs = fakeData.finAccountExtraAdvancePayment.dpTmpDocs.slice();
+      component.extraFormGroup.get('adpAccountControl').setValue(acntAdvPay);
+      component.extraFormGroup.get('adpAccountControl').updateValueAndValidity({onlySelf: false, emitEvent: true});
       fixture.detectChanges();
       // Click next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1106,11 +1111,9 @@ describe('DocumentADPCreateComponent', () => {
       expect(component.firstFormGroup.get('dateControl').value).not.toBeNull();
       expect(component.firstFormGroup.get('despControl').value).toBeFalsy();
       expect(component.firstFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
-      expect(component.accountAdvPay.isValid).toBeFalsy();
-      expect(component.accountAdvPay.dpTmpDocs.length).toEqual(0);
+      expect(component.extraFormGroup.valid).toBeFalsy();
 
       flush(); // clean
     }));
   });
-  */
 });

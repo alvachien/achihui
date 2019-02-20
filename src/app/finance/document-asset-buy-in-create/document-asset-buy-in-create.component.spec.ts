@@ -23,11 +23,7 @@ import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-creat
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 import { DocumentItem } from '../../model';
-
-@Component({selector: 'hih-account-ext-asset-ex', template: ''})
-class AccountExtAssetExComponent {
-  formGroupName: any;
-}
+import { AccountExtAssetExComponent } from '../account-ext-asset-ex';
 
 describe('DocumentAssetBuyInCreateComponent', () => {
   let component: DocumentAssetBuyInCreateComponent;
@@ -131,7 +127,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
   it('1. should create without data', () => {
     expect(component).toBeTruthy();
   });
-/*
+
   describe('2. Exception case handling (async loading)', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
@@ -1443,5 +1439,4 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       flush();
     }));
   });
-  */
 });
