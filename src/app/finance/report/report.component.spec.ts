@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, flush, fakeAsync, inject, } from '@angular/core/testing';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
@@ -13,7 +13,7 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { EventEmitter } from '@angular/core';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError, } from '../../../testing';
 import { ReportComponent } from './report.component';
 import { ThemeStorage } from '../../theme-picker';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
@@ -21,6 +21,7 @@ import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurren
 describe('ReportComponent', () => {
   let component: ReportComponent;
   let fixture: ComponentFixture<ReportComponent>;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
     const themeStorageStub: Partial<ThemeStorage> = {};

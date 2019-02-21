@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'hih-home-def',
-  templateUrl: './home-def.component.html',
+  template: '<router-outlet></router-outlet>',
   styleUrls: ['./home-def.component.scss'],
 })
 export class HomeDefComponent {

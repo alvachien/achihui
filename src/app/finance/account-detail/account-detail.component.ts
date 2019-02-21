@@ -239,7 +239,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     // Close the account
     this._storageService.updateAccountStatus(this.routerID, AccountStatusEnum.Closed).subscribe((x: any) => {
       // It has been updated successfully, then navigate to current account again
-        this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
+      this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering AccountDetailComponent onCloseAccount, updateAccountStatus failed: ${error.message}`);

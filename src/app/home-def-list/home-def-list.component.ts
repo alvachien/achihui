@@ -3,6 +3,7 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, of, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../environments/environment';
 import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson } from '../model';
 import { HomeDefDetailService } from '../services';
@@ -15,10 +16,10 @@ import { HomeDefDetailService } from '../services';
 export class HomeDefListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
+  isLoadingResults: boolean;
   displayedColumns: string[] = ['id', 'name', 'host', 'currency', 'details'];
   dataSource: MatTableDataSource<HomeDef> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  isLoadingResults: boolean;
 
   get IsCurrentHomeChosed(): boolean {
     return this._homedefService.ChosedHome !== undefined;
@@ -37,16 +38,16 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
-
-    
+    this._fetchData();
   }
+
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...');
     }
-    if(this._destroyed$) {
+    if (this._destroyed$) {
       this._destroyed$.next(true);
-      this._destroyed$.complete();  
+      this._destroyed$.complete();
     }
   }
 
@@ -80,6 +81,21 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   public onRefresh(): void {
-    this._homedefService.fetchAllHomeDef(true);
+    this._fetchData(true);
+  }
+
+  private _fetchData(forceLoad?: boolean): void {
+    this.isLoadingResults = true;
+
+    this._homedefService.fetchAllHomeDef(forceLoad)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((arHomeDef: HomeDef[]) => {
+        this.dataSource = new MatTableDataSource(arHomeDef);
+        this.dataSource.paginator = this.paginator;
+      }, (error: any) => {
+        // TBD.
+      }, () => {
+        this.isLoadingResults = false;
+      });
   }
 }

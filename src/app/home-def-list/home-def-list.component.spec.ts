@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, inject, flush, tick, } from '@angular/core/testing';
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory } from '../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError, } from '../../testing';
 import { HomeDefListComponent } from './home-def-list.component';
 import { HomeDefDetailService } from '../services';
 
@@ -17,15 +17,19 @@ describe('HomeDefListComponent', () => {
   let fixture: ComponentFixture<HomeDefListComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
+  let fakeData: FakeDataHelper;
+  let fetchAllHomeDefSpy: any;
+  let routerSpy: any;
 
   beforeEach(async(() => {
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
-    homeService.ChosedHome = {
-      _id: 1,
-      BaseCurrency: 'CNY',
-    };
-    const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue([]);
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+
+    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllHomeDef']);
+    fetchAllHomeDefSpy.and.returnValue(of([]));
+    homeService.ChosedHome = fakeData.chosedHome;
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [
@@ -62,7 +66,7 @@ describe('HomeDefListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
+  it('1. should be created without data', () => {
     expect(component).toBeTruthy();
   });
 });
