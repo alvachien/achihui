@@ -1,4 +1,5 @@
 import { async, ComponentFixture, fakeAsync, TestBed, tick, inject, flush } from '@angular/core/testing';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -11,6 +12,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../testing';
 import { FinanceCurrencyComponent } from './finance-currency.component';
 import { FinCurrencyService } from '../services';
+import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
 
 describe('FinanceCurrencyComponent', () => {
   let component: FinanceCurrencyComponent;
@@ -122,6 +124,10 @@ describe('FinanceCurrencyComponent', () => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
     }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
 
     it('should display error when Service fails', fakeAsync(() => {
       // tell spy to return an async error observable

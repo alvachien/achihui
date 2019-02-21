@@ -23,6 +23,7 @@ export class FakeDataHelper {
   private _currencies: Currency[];
   private _currenciesFromAPI: CurrencyJson[];
   private _chosedHome: HomeDef;
+  private _homeDefs: HomeDef[];
   private _finDocTypes: DocumentType[];
   private _finDocTypesFromAPI: DocumentTypeJson[];
   private _finAccountCategories: AccountCategory[];
@@ -67,6 +68,11 @@ export class FakeDataHelper {
   get currenciesFromAPI(): CurrencyJson[] {
     if (this._currenciesFromAPI) {
       return this._currenciesFromAPI;
+    }
+  }
+  get HomeDefs(): HomeDef[] {
+    if (this._homeDefs) {
+      return this._homeDefs;
     }
   }
   get chosedHome(): HomeDef {
@@ -234,7 +240,7 @@ export class FakeDataHelper {
     this._currencies = [];
     let curr: Currency = new Currency();
     curr.Name = 'Chinese Yuan';
-    curr.Symbol = '#';
+    curr.Symbol = '￥';
     curr.Currency = 'CNY';
     this._currencies.push(curr);
 
@@ -271,6 +277,19 @@ export class FakeDataHelper {
     hmem.User = this._chosedHome.Host;
     hmem.Relation = HomeMemberRelationEnum.Self;
     this._chosedHome.Members.push(hmem);
+  }
+  public buildHomeDefs(): void {
+    this._homeDefs = [];
+    if (this._chosedHome) {
+      this._homeDefs.push(this._chosedHome);
+    }
+    let def: HomeDef = new HomeDef();
+    def.ID = 3;
+    def.Name = 'Second Home for UT';
+    def.BaseCurrency = 'USD';
+    def.CreatorDisplayAs = 'Creator';
+    def.Host = this.userID1;
+    this._homeDefs.push(def);
   }
   public buildFinConfigData(): void {
     // Doc type

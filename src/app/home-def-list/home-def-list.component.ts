@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, of, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson } from '../model';
-import { HomeDefDetailService } from '../services';
+import { LogLevel, HomeDef, UICommonLabelEnum, } from '../model';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../message-dialog';
+import { HomeDefDetailService, UIStatusService, } from '../services';
 
 @Component({
   selector: 'hih-home-def-list',
@@ -26,6 +27,8 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   constructor(public _homedefService: HomeDefDetailService,
+    private _uiService: UIStatusService,
+    private _dialog: MatDialog,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...');
@@ -93,7 +96,18 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
         this.dataSource = new MatTableDataSource(arHomeDef);
         this.dataSource.paginator = this.paginator;
       }, (error: any) => {
-        // TBD.
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
+          Content: error.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        });
       }, () => {
         this.isLoadingResults = false;
       });
