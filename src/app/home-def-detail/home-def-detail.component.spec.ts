@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, inject, flush, tick, } from '@angular/core/testing';
 import { UIDependModule } from '../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub } from '../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../testing';
 import { HomeDefDetailComponent } from './home-def-detail.component';
 import { AuthService, FinCurrencyService, HomeDefDetailService, } from '../services';
 import { UserAuthInfo } from '../model';
@@ -18,8 +18,13 @@ describe('HomeDefDetailComponent', () => {
   let fixture: ComponentFixture<HomeDefDetailComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);

@@ -23,7 +23,10 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   get IsCurrentHomeChosed(): boolean {
-    return this._homedefService.ChosedHome !== undefined;
+    if (this._homedefService.ChosedHome) {
+      return true;
+    }
+    return false;
   }
 
   constructor(public _homedefService: HomeDefDetailService,

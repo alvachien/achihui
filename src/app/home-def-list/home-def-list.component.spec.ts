@@ -110,14 +110,10 @@ describe('HomeDefListComponent', () => {
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/homedef/create']);
     }));
 
-    it('should select the home if no home chosed yet', fakeAsync(() => {
-      homeService.ChosedHome = undefined;
-
+    it('should choose the home successfully', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       tick(); // Complete the observables in ngOnInit
       fixture.detectChanges();
-
-      expect(component.IsCurrentHomeChosed).toBeFalsy();
 
       // Simulate the row click
       component.onChooseHome(component.dataSource.data[0]);
