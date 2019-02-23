@@ -99,7 +99,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
         this.dataSource = new MatTableDataSource(arHomeDef);
         this.dataSource.paginator = this.paginator;
       }, (error: any) => {
-        // Show error message
+        // Show error dialog
         const dlginfo: MessageDialogInfo = {
           Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
           Content: error.toString(),

@@ -77,6 +77,9 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     }
     this.ngUnsubscribe$ = new ReplaySubject(1);
     this._themeStorage.onThemeUpdate.pipe(takeUntil(this.ngUnsubscribe$)).subscribe((val: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log('AC_HIH_UI [Debug]: Entering HomeDashboardComponent ngOnInit, onThemeUpdate...');
+      }
       if (val.isDark) {
         this.chartTheme = 'dark';
       } else {
@@ -91,6 +94,8 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     this._finstorageService.fetchAllTranTypes().pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: any) => {
       this.listTranType = x;
       this.onFinanceScopeChanged();
+    }, (error: any) => {
+      // Error occurred
     });
 
     this.media.media$
@@ -105,8 +110,10 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       console.log('AC_HIH_UI [Debug]: Entering ngOnDestroy of HomeDashboardComponent...');
     }
 
-    this.ngUnsubscribe$.next(true);
-    this.ngUnsubscribe$.complete();
+    if (this.ngUnsubscribe$) {
+      this.ngUnsubscribe$.next(true);
+      this.ngUnsubscribe$.complete();
+    }
   }
 
   public onNvgToEventList(): void {
@@ -125,6 +132,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedLearnScope);
 
     this._lrnstorageService.getHistoryReportByUser(bgn, end)
+      .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((x: any) => {
 
         this.dataLrnUser = [];
@@ -188,7 +196,8 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   public onFinanceScopeChanged(): void {
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedFinanceScope);
 
-    this._finstorageService.getReportTranType(bgn, end).subscribe(([val1, val2]: any[]) => {
+    this._finstorageService.getReportTranType(bgn, end).pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe(([val1, val2]: any[]) => {
       this.mapFinTTIn = <Map<number, UINameValuePair<number>>>val1;
       this.mapFinTTOut = <Map<number, UINameValuePair<number>>>val2;
 
@@ -338,7 +347,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   }
 
   private _getHomeKeyFigure(): void {
-    this._homeDefService.getHomeKeyFigure().subscribe((x: HomeKeyFigure) => {
+    this._homeDefService.getHomeKeyFigure().pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: HomeKeyFigure) => {
       this.eventChartOption = of([]).pipe(
         (map(() => {
           const legends: any[] = ['Completed', 'Todo'];

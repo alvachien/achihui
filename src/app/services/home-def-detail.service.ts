@@ -5,7 +5,6 @@ import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, HomeMsg, HomeKeyFigure } from '../model';
 import { AuthService } from './auth.service';
-import { HomeMessageComponent } from 'app/home-message';
 
 @Injectable()
 export class HomeDefDetailService {
@@ -47,10 +46,6 @@ export class HomeDefDetailService {
   set RedirectURL(url: string) {
     this._redirURL = url;
   }
-
-  // Event
-  createEvent: EventEmitter<HomeDef | undefined> = new EventEmitter<HomeDef | undefined>(undefined);
-  readHomeDefEvent: EventEmitter<HomeDef | undefined> = new EventEmitter<HomeDef | undefined>(undefined);
 
   // Properties
   keyFigure: HomeKeyFigure;
@@ -102,7 +97,7 @@ export class HomeDefDetailService {
         }),
         catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccountCategories in FinanceStorageService: ${error}`);
+            console.error(`AC_HIH_UI [Error]: Entering HomeDefDetailService, fetchAllHomeDef, Failed: ${error}`);
           }
 
           this._islistLoaded = false;
@@ -118,7 +113,7 @@ export class HomeDefDetailService {
   /**
    * Read a specified home defs
    */
-  public readHomeDef(hid: number): void {
+  public readHomeDef(hid: number): Observable<HomeDef> {
     const apiurl: string = environment.ApiUrl + '/api/homedef/' + hid.toString();
 
     let headers: HttpHeaders = new HttpHeaders();
@@ -126,41 +121,41 @@ export class HomeDefDetailService {
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    this._http.get(apiurl, { headers: headers, })
+    return this._http.get(apiurl, { headers: headers, })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering map in ReadHomeDef in HomeDefDetailService`);
+          console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, readHomeDef, map`);
         }
-
-        const rjs: any = <any>response;
-        let listResult: any[] = [];
 
         const hd: HomeDef = new HomeDef();
-        hd.parseJSONData(rjs);
-        listResult.push(hd);
+        hd.parseJSONData(<any>response);
+
+        // Buffer it
+        let nidx: number = this._listHomeDefList.findIndex((val: HomeDef) => {
+          return val.ID === hd.ID;
+        });
+        if (nidx === -1) {
+          this._listHomeDefList.push(hd);
+        } else {
+          this._listHomeDefList.splice(nidx, 1, hd);
+        }
+
         return hd;
-      })).subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Succeed in ReadHomeDef in HomeDefDetailService: ${x}`);
-        }
-
-        this.readHomeDefEvent.emit(x);
-      }, (error: any) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in ReadHomeDef in HomeDefDetailService: ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering HomeDefDetailService, readHomeDef, Failed ${error}`);
         }
 
-        this.readHomeDefEvent.emit(undefined);
-      }, () => {
-        // Empty
-      });
-  }
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+}
 
   /**
    * Create a home def
    * @param objhd Home def to be created
    */
-  public createHomeDef(objhd: HomeDef): void {
+  public createHomeDef(objhd: HomeDef): Observable<HomeDef> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
@@ -169,39 +164,28 @@ export class HomeDefDetailService {
 
     const data: HomeDefJson = objhd.generateJSONData(true);
     const jdata: any = JSON && JSON.stringify(data);
-    this._http.post(apiurl, jdata, {
+    return this._http.post(apiurl, jdata, {
         headers: headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, createHomeDef, map.`);
         }
 
         let hd: HomeDef = new HomeDef();
         hd.parseJSONData(<any>response);
+
+        this._listHomeDefList.push(hd);
+
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createHomeDef in HomeDefDetailService: ${x}`);
-        }
-
-        const copiedData: any = this.HomeDefs.slice();
-        copiedData.push(x);
-        // this.listDataChange.next(copiedData);
-
-        // Broadcast event
-        this.createEvent.emit(x);
-      }, (error: any) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in createHomeDef in HomeDefDetailService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering HomeDefDetailService, createHomeDef, Failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.createEvent.emit(undefined);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -385,10 +369,20 @@ export class HomeDefDetailService {
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     return this._http.get<any>(requestUrl, {headers: headers, })
-      .pipe(map((x: any) => {
+      .pipe(map((x: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, getHomeKeyFigure, map.`);
+        }
         this.keyFigure = new HomeKeyFigure();
-        this.keyFigure.onSetData(x);
+        this.keyFigure.onSetData(<any>x);
         return this.keyFigure;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering HomeDefDetailService, getHomeKeyFigure, Failed: ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 }

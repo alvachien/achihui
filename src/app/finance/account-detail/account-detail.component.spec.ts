@@ -178,7 +178,7 @@ describe('AccountDetailComponent', () => {
     }));
   });
 
-  describe('Create mode', () => {
+  describe('3. Create mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -589,7 +589,7 @@ describe('AccountDetailComponent', () => {
     }));
   });
 
-  describe('Display mode', () => {
+  describe('4. Display mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -799,7 +799,7 @@ describe('AccountDetailComponent', () => {
     }));
   });
 
-  describe('Change mode', () => {
+  describe('5. Change mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 

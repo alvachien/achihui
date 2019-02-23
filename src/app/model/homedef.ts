@@ -163,6 +163,23 @@ export class HomeDef {
     this._listMembers = members.slice();
   }
 
+  get isValid(): boolean {
+    if (!this.Name) {
+      return false;
+    }
+    if (!this.Host) {
+      return false;
+    }
+    if (!this.CreatorDisplayAs) {
+      return false;
+    }
+    if (!this.BaseCurrency) {
+      return false;
+    }
+
+    return true;
+  }
+
   public parseJSONData(data: HomeDefJson): void {
     this._id = data.id;
     this._name = data.name;
