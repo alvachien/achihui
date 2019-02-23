@@ -589,11 +589,17 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByUser in LearnStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByUser in LearnStorageService.`);
+          console.log(`AC_HIH_UI [Debug]: Entering LearnStorageService getHistoryReportByUser.`);
         }
 
         return <any>response;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering HomeDefDetailService, getHistoryReportByUser, Failed: ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 
@@ -622,11 +628,17 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByCategory in LearnStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering getHistoryReportByCategory in LearnStorageService.`);
+          console.log(`AC_HIH_UI [Debug]: Entering LearnStorageService, getHistoryReportByCategory.`);
         }
 
         return <any>response;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering HomeDefDetailService, getHistoryReportByCategory, Failed: ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 

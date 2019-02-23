@@ -59,6 +59,7 @@ describe('LearnStorageService', () => {
     beforeEach(() => {
       service = TestBed.get(LearnStorageService);
     });
+
     afterEach(() => {
       // After every test, assert that there are no more pending requests.
       httpTestingController.verify();
@@ -163,6 +164,118 @@ describe('LearnStorageService', () => {
         return requrl.method === 'GET' && requrl.url === ctgyAPIURL && requrl.params.has('hid');
        });
       expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
+    });
+  });
+
+  describe('getHistoryReportByUser', () => {
+    let apiurl: string = environment.ApiUrl + '/api/LearnReportUserDate';
+
+    beforeEach(() => {
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected data', () => {
+      service.getHistoryReportByUser().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      // Respond with the mock categories
+      req.flush([
+        {displayAs: 'a', learnCount: 3},
+        {displayAs: 'b', learnCount: 4},
+      ]);
+    });
+
+    it('should handle failed data', () => {
+      const msg: string = 'server failed';
+      service.getHistoryReportByUser().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('getHistoryReportByCategory', () => {
+    let apiurl: string = environment.ApiUrl + '/api/LearnReportCtgyDate';
+
+    beforeEach(() => {
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return expected data', () => {
+      service.getHistoryReportByCategory().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      // Respond with the mock categories
+      req.flush([
+        {category: 'a', learnCount: 3},
+        {category: 'b', learnCount: 4},
+      ]);
+    });
+
+    it('should handle failed data', () => {
+      const msg: string = 'server failed';
+      service.getHistoryReportByCategory().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+       });
+      expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
 });

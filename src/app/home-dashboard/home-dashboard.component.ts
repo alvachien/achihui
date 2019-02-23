@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService, HomeDefDetailService, LearnStorageService, FinanceStorageService,
   FinCurrencyService, UIStatusService, } from '../services';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import * as moment from 'moment';
 import { Observable, Subject, BehaviorSubject, forkJoin, ReplaySubject, merge, of } from 'rxjs';
@@ -10,10 +11,10 @@ import { EChartOption } from 'echarts';
 
 import { environment } from '../../environments/environment';
 import { LogLevel, TranTypeReport, OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum,
-  UINameValuePair, TranTypeLevelEnum,
-  TranType, financeTranTypeTransferIn, financeTranTypeTransferOut, HomeKeyFigure,
+  UINameValuePair, TranTypeLevelEnum, TranType, financeTranTypeTransferIn, financeTranTypeTransferOut, HomeKeyFigure,
 } from '../model';
 import { ThemeStorage } from '../theme-picker/theme-storage/theme-storage';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../message-dialog';
 
 @Component({
   selector: 'hih-home-dashboard',
@@ -26,7 +27,6 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   selectedFinanceScope: OverviewScopeEnum;
   selectedLearnScope: OverviewScopeEnum;
 
-  dataLrnUser: any[] = [];
   selectedTranTypeLevel: TranTypeLevelEnum;
   excludeTransfer: boolean;
   dataFinTTIn: any[] = [];
@@ -44,9 +44,10 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     public _homeDefService: HomeDefDetailService,
+    public _uistatusService: UIStatusService,
     private _lrnstorageService: LearnStorageService,
     private _finstorageService: FinanceStorageService,
-    public _uistatusService: UIStatusService,
+    private _dialog: MatDialog,
     private media: MediaObserver,
     private _themeStorage: ThemeStorage,
     private _router: Router) {
@@ -134,13 +135,14 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     this._lrnstorageService.getHistoryReportByUser(bgn, end)
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((x: any) => {
+        console.log('getHistoryReportByUser succeeeeeeed');
 
-        this.dataLrnUser = [];
+        let dataLrnUser: any[] = [];
 
         if (x instanceof Array && x.length > 0) {
           // User
           for (let data of x) {
-            this.dataLrnUser.push({
+            dataLrnUser.push({
               name: data.displayAs,
               value: data.learnCount,
             });
@@ -150,7 +152,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
         this.learnChartOption = of([]).pipe(
           map(() => {
             const xAxisData: any[] = [];
-            this.dataLrnUser.forEach((val: any) => {
+            dataLrnUser.forEach((val: any) => {
               xAxisData.push(val.name);
             });
             return {
@@ -178,7 +180,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
               series: [{
                 name: '',
                 type: 'bar',
-                data: this.dataLrnUser,
+                data: dataLrnUser,
                 animationDelay: (idx: any) => {
                   return idx * 10;
                 },
@@ -198,20 +200,22 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
     this._finstorageService.getReportTranType(bgn, end).pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe(([val1, val2]: any[]) => {
+      console.log('getReportTranType succeeeeeeed');
+
       this.mapFinTTIn = <Map<number, UINameValuePair<number>>>val1;
       this.mapFinTTOut = <Map<number, UINameValuePair<number>>>val2;
 
-      this.onFinanceTranTypeChartRedraw();
+      this._onFinanceTranTypeChartRedraw();
     });
   }
 
   public onFinanceExcludeTransfer(): void {
     this.excludeTransfer = !this.excludeTransfer;
 
-    this.onFinanceTranTypeChartRedraw();
+    this._onFinanceTranTypeChartRedraw();
   }
 
-  public onFinanceTranTypeChartRedraw(): void {
+  private _onFinanceTranTypeChartRedraw(): void {
     if (this.mapFinTTIn !== undefined || this.mapFinTTOut !== undefined) {
       this.dataFinTTIn = [];
       this.dataFinTTOut = [];
@@ -339,15 +343,10 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onChartIncomeClick($event: any): void {
-    // Do nothing but navigation
-  }
-  public onChartOutgoingClick($event: any): void {
-    // Do nothing but navigation
-  }
-
   private _getHomeKeyFigure(): void {
     this._homeDefService.getHomeKeyFigure().pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: HomeKeyFigure) => {
+      console.log('_getHomeKeyFigure succeeeeeed');
+
       this.eventChartOption = of([]).pipe(
         (map(() => {
           const legends: any[] = ['Completed', 'Todo'];

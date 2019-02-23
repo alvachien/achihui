@@ -8,11 +8,13 @@ import { of } from 'rxjs';
 import { EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../testing';
 import { ThemeStorage } from '../theme-picker';
 import { HomeDashboardComponent } from './home-dashboard.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, LearnStorageService } from '../services';
+import { HomeKeyFigure } from 'app/model';
 
 describe('HomeDashboardComponent', () => {
   let component: HomeDashboardComponent;
@@ -89,5 +91,49 @@ describe('HomeDashboardComponent', () => {
 
   it('1. should be created without data', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('2. should work with data', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      let userLearnReport: any[] = [
+        {displayAs: 'a', learnCount: 3},
+        {displayAs: 'b', learnCount: 4},
+      ];
+      getHistoryReportByUserSpy.and.returnValue(asyncData(userLearnReport));
+      let objFigure: HomeKeyFigure = new HomeKeyFigure();
+      objFigure.onSetData({
+        totalAsset: 100,
+        totalLiability: 90,
+        totalAssetUnderMyName: 50,
+        totalLiabilityUnderMyName: 40,
+        totalUnreadMessage: 1,
+        myUnCompletedEvents: 0,
+        myCompletedEvents: 2,
+      });
+      getHomeKeyFigureSpy.and.returnValue(asyncData(objFigure));
+      getReportTranTypeSpy.and.returnValue(asyncData([]));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('it shall display the base currency', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the observables
+      fixture.detectChanges();
+  
+      expect(component.baseCurr).not.toBeFalsy();
+    }));
   });
 });
