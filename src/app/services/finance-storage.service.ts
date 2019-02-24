@@ -9,13 +9,12 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   GeneralFilterItem, DocumentItemWithBalance, DocumentItem, BaseListModel, ReportTrendExTypeEnum,
   ReportTrendExData, FinanceADPCalAPIInput, FinanceADPCalAPIOutput, FinanceAssetSoldoutDocumentAPI,
   FinanceAssetBuyinDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentCreatedFrequenciesByUser,
-  Plan, DocumentWithPlanExgRate,
+  Plan, DocumentWithPlanExgRate, BalanceSheetReport, ControlCenterReport, OrderReport,
   AccountExtraAdvancePayment, financeAccountCategoryAdvanceReceived, financeAccountCategoryAdvancePayment,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import * as moment from 'moment';
-import { Template } from '@angular/compiler/src/render3/r3_ast';
 
 @Injectable()
 export class FinanceStorageService {
@@ -1882,7 +1881,12 @@ export class FinanceStorageService {
         }
 
         return response;
-      }));
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
@@ -1923,7 +1927,12 @@ export class FinanceStorageService {
       }
 
       return response;
-    }));
+    }),
+    catchError((errresp: HttpErrorResponse) => {
+      const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+      return throwError(errmsg);
+    }),
+    );
   }
 
   /**
@@ -1958,13 +1967,18 @@ export class FinanceStorageService {
         }
 
         return response;
-      }));
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
    * Get Balance sheet report
    */
-  public getReportBS(): Observable<any> {
+  public getReportBS(): Observable<BalanceSheetReport[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1980,17 +1994,31 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering getReportBS in FinanceStorageService.`);
+          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportBS.`);
         }
 
-        return response;
-      }));
+        let reportdata: BalanceSheetReport[] = [];
+        if (response instanceof Array && response.length > 0) {
+          for (let bs of response) {
+            let rbs: BalanceSheetReport = new BalanceSheetReport();
+            rbs.onSetData(bs);
+            reportdata.push(rbs);
+          }
+        }
+
+        return reportdata;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
    * Get Control center report
    */
-  public getReportCC(): Observable<any> {
+  public getReportCC(): Observable<ControlCenterReport[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -2006,17 +2034,31 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering getReportCC in FinanceStorageService.`);
+          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportCC.`);
         }
 
-        return response;
-      }));
+        let reportdata: ControlCenterReport[] = [];
+        if (response instanceof Array && response.length > 0) {
+          for (let bs of response) {
+            let rbs: ControlCenterReport = new ControlCenterReport();
+            rbs.onSetData(bs);
+            reportdata.push(rbs);
+          }
+        }
+
+        return reportdata;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
    * Get Order report
    */
-  public getReportOrder(): Observable<any> {
+  public getReportOrder(): Observable<OrderReport[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -2032,11 +2074,25 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering getReportBS in FinanceStorageService.`);
+          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportBS.`);
         }
 
-        return response;
-      }));
+        let reportdata: OrderReport[] = [];
+        if (response instanceof Array && response.length > 0) {
+          for (let bs of response) {
+            let rbs: OrderReport = new OrderReport();
+            rbs.onSetData(bs);
+            reportdata.push(rbs);
+          }
+        }
+
+        return reportdata;
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
@@ -2104,13 +2160,18 @@ export class FinanceStorageService {
         }
 
         return [mapIn, mapOut];
-      }));
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
    * Get Month on Month report
    */
-  public getReportMonthOnMonth(exctran?: boolean, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+  public getReportMonthOnMonth(exctran?: boolean, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<MonthOnMonthReport[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -2140,7 +2201,7 @@ export class FinanceStorageService {
         }
 
         // Do the grouping here.
-        let rst: any[] = [];
+        let rst: MonthOnMonthReport[] = [];
 
         if (response instanceof Array && response.length > 0) {
           for (let tt of response) {
@@ -2151,7 +2212,12 @@ export class FinanceStorageService {
         }
 
         return rst;
-      }));
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**
@@ -2249,7 +2315,12 @@ export class FinanceStorageService {
         totalCount: x.totalCount,
         items: arrst,
       };
-    }));
+    }),
+    catchError((errresp: HttpErrorResponse) => {
+      const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+      return throwError(errmsg);
+    }),
+    );
   }
 
   /**

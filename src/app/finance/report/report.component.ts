@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterContentInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource, MatTable, } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MediaObserver, MediaChange } from '@angular/flex-layout';
@@ -10,6 +10,7 @@ import { EChartOption } from 'echarts';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, BalanceSheetReport, ControlCenterReport, OrderReport, OverviewScopeEnum,
   getOverviewScopeRange, UICommonLabelEnum, ModelUtility, UIDisplayString, AccountCategory,
+  ControlCenter, Order,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -20,7 +21,7 @@ import { ThemeStorage } from '../../theme-picker/theme-storage/theme-storage';
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.scss'],
 })
-export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit, OnDestroy {
+export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
   private ngUnsubscribe$: ReplaySubject<boolean>;
 
   // Account
@@ -63,6 +64,10 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
   dataOrderDebit: any[] = [];
   dataOrderCredit: any[] = [];
   arAccountCtgy: any[] = [];
+  arAccounts: Account[] = [];
+  arAccountCategories: AccountCategory[] = [];
+  arControlCenters: ControlCenter[] = [];
+  arOrders: Order[] = [];
 
   chartTheme: string;
 
@@ -121,41 +126,33 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
     this.changeGraphSize();
   }
 
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngAfterViewInit...');
-    }
-    this.dataSourceBS.paginator = this.paginatorBS;
-    this.dataSourceCC.paginator = this.paginatorCC;
-    this.dataSourceOrder.paginator = this.paginatorOrder;
-  }
-
   ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngAfterContentInit...');
     }
 
-    this._storageService.fetchAllAccountCategories().pipe(takeUntil(this.ngUnsubscribe$)).subscribe((arctgy: AccountCategory[]) => {
-      if (arctgy && arctgy instanceof Array && arctgy.length > 0) {
-        let arstrings: string[] = [];
-        for (let lab of arctgy) {
-          arstrings.push(lab.Name);
-          this.arAccountCtgy.push(lab);
-        }
+    this._storageService.fetchAllAccountCategories().pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe((arctgy: AccountCategory[]) => {
+      this.arAccountCategories = arctgy.slice();
 
-        this._tranService.get(arstrings).pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: any) => {
-          for (let attr in x) {
-            for (let lab of this.arAccountCtgy) {
-              if (lab.Name === attr) {
-                lab.DisplayName = x[attr];
-              }
+      let arstrings: string[] = [];
+      for (let lab of arctgy) {
+        arstrings.push(lab.Name);
+        this.arAccountCtgy.push(lab);
+      }
+
+      this._tranService.get(arstrings).pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: any) => {
+        for (let attr in x) {
+          for (let lab of this.arAccountCtgy) {
+            if (lab.Name === attr) {
+              lab.DisplayName = x[attr];
             }
           }
+        }
 
-          // Fetch data
-          this._fetchData();
-        });
-      }
+        // Fetch data
+        this._fetchData();
+      });
     });
   }
 
@@ -276,11 +273,8 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
       }),
     );
   }
-  private refreshOrderReportData(data: any): void {
-    for (let bs of data) {
-      let rbs: OrderReport = new OrderReport();
-      rbs.onSetData(bs);
-
+  private refreshOrderReportData(data: OrderReport[]): void {
+    for (let rbs of data) {
       if (rbs.DebitBalance) {
         this.dataOrderDebit.push({
           name: rbs.OrderName,
@@ -294,19 +288,16 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
           value: rbs.CreditBalance,
         });
       }
-
-      // this.ReportOrder.push(rbs);
     }
+
+    this.dataSourceOrder = new MatTableDataSource(data);
+    this.dataSourceOrder.paginator = this.paginatorOrder;
   }
-  private refreshControlCenterReportData(data: any): void {
+  private refreshControlCenterReportData(data: ControlCenterReport[]): void {
     this.dataCCDebit = [];
     this.dataCCCredit = [];
-    // this.ReportCC = [];
 
-    for (let bs of data) {
-      let rbs: ControlCenterReport = new ControlCenterReport();
-      rbs.onSetData(bs);
-
+    for (let rbs of data) {
       if (rbs.DebitBalance) {
         this.dataCCDebit.push({
           name: rbs.ControlCenterName,
@@ -320,21 +311,18 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
           value: rbs.CreditBalance,
         });
       }
-
-      // this.ReportCC.push(rbs);
     }
+
+    this.dataSourceCC = new MatTableDataSource(data);
+    this.dataSourceCC.paginator = this.paginatorCC;
   }
-  private refreshBalanceSheetReportData(data: any): void {
-    // this.ReportBS = [];
+  private refreshBalanceSheetReportData(data: BalanceSheetReport[]): void {
     this.dataBSCategoryDebit = [];
     this.dataBSCategoryCredit = [];
     this.datAccountAsset = [];
     this.datAccountLiability = [];
 
-    for (let bs of data) {
-      let rbs: BalanceSheetReport = new BalanceSheetReport();
-      rbs.onSetData(bs);
-
+    for (let rbs of data) {
       if (rbs.DebitBalance) {
         let ctgyExist: boolean = false;
         for (let cd of this.dataBSCategoryDebit) {
@@ -416,9 +404,10 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
           }
         }
       }
-
-      // this.ReportBS.push(rbs);
     }
+
+    this.dataSourceBS = new MatTableDataSource(data);
+    this.dataSourceBS.paginator = this.paginatorBS;
   }
 
   private changeGraphSize(): void {
@@ -447,6 +436,10 @@ export class ReportComponent implements OnInit, AfterContentInit, AfterViewInit,
       this._storageService.getReportOrder(),
       this._storageService.getReportMonthOnMonth(this.momExcludeTransfer, bgn, end),
     ]).pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: any) => {
+      this.arAccounts = x[0];
+      this.arControlCenters = x[1];
+      this.arOrders = x[2];
+
       let idxbs: number = 3;
       let idxcc: number = 4;
       let idxorder: number = 5;

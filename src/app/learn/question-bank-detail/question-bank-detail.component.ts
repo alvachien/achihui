@@ -2,8 +2,7 @@ import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource } from '@angular/material';
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, QuestionBankItem, QuestionBankSubItem, UIMode, getUIModeString,
+import { LogLevel, QuestionBankItem, QuestionBankSubItem, UIMode, getUIModeString,
   QuestionBankTypeEnum, UICommonLabelEnum,
 } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
@@ -103,8 +102,11 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
+
     if (this._readSub) {
       this._readSub.unsubscribe();
     }

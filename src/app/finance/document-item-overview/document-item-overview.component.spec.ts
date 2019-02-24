@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject, } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject, flushMicrotasks, } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -418,6 +418,7 @@ describe('DocumentItemOverviewComponent', () => {
       // Then, click the open button
       let actionButton: any = overlayContainerElement.querySelector('button.mat-button') as HTMLButtonElement;
       actionButton.click();
+      tick();
       fixture.detectChanges();
 
       expect(getADPTmpDocsSpy).toHaveBeenCalledTimes(1);
@@ -425,6 +426,11 @@ describe('DocumentItemOverviewComponent', () => {
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/100']);
 
       tick();
+      fixture.detectChanges();
+      // flush();
+      // flushMicrotasks();
+      // flush();
+      // tick();
       // flush();
     }));
 

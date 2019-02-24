@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
+import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { OverviewScopeEnum, QuestionBankTypeEnum, TagTypeEnum, UICommonLabelEnum,
-  UIDisplayString, UIDisplayStringUtil, TemplateDocLoan } from '../model';
+  UIDisplayString, UIDisplayStringUtil, TemplateDocLoan, QuestionBase, } from '../model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
@@ -85,6 +86,21 @@ export class UIStatusService {
     }
 
     return '';
+  }
+
+  /**
+   * Generate form group for Questions
+   * @param questions Questions
+   */
+  public generateLearnQuestionFormGroup(questions: QuestionBase<any>[]): FormGroup {
+    let group: any = {};
+
+    questions.forEach((question: any) => {
+      group[question.key] = question.required ? new FormControl(question.value || '', Validators.required)
+                                              : new FormControl(question.value || '');
+    });
+
+    return new FormGroup(group);
   }
 
   private onLanguageChanged(): void {

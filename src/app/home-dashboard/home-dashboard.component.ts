@@ -205,17 +205,17 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       this.mapFinTTIn = <Map<number, UINameValuePair<number>>>val1;
       this.mapFinTTOut = <Map<number, UINameValuePair<number>>>val2;
 
-      this._onFinanceTranTypeChartRedraw();
+      this.onFinanceTranTypeChartRedraw();
     });
   }
 
   public onFinanceExcludeTransfer(): void {
     this.excludeTransfer = !this.excludeTransfer;
 
-    this._onFinanceTranTypeChartRedraw();
+    this.onFinanceTranTypeChartRedraw();
   }
 
-  private _onFinanceTranTypeChartRedraw(): void {
+  public onFinanceTranTypeChartRedraw(): void {
     if (this.mapFinTTIn !== undefined || this.mapFinTTOut !== undefined) {
       this.dataFinTTIn = [];
       this.dataFinTTOut = [];

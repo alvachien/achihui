@@ -14,7 +14,7 @@ import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '..
 import { ThemeStorage } from '../theme-picker';
 import { HomeDashboardComponent } from './home-dashboard.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, LearnStorageService } from '../services';
-import { HomeKeyFigure } from 'app/model';
+import { HomeKeyFigure, UINameValuePair, TranTypeLevelEnum, } from 'app/model';
 
 describe('HomeDashboardComponent', () => {
   let component: HomeDashboardComponent;
@@ -99,11 +99,13 @@ describe('HomeDashboardComponent', () => {
 
     beforeEach(() => {
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      // Learn report
       let userLearnReport: any[] = [
         {displayAs: 'a', learnCount: 3},
         {displayAs: 'b', learnCount: 4},
       ];
       getHistoryReportByUserSpy.and.returnValue(asyncData(userLearnReport));
+      // Key figures
       let objFigure: HomeKeyFigure = new HomeKeyFigure();
       objFigure.onSetData({
         totalAsset: 100,
@@ -115,7 +117,21 @@ describe('HomeDashboardComponent', () => {
         myCompletedEvents: 2,
       });
       getHomeKeyFigureSpy.and.returnValue(asyncData(objFigure));
-      getReportTranTypeSpy.and.returnValue(asyncData([]));
+      // Finance report by tran. type
+      let mapIn: Map<number, UINameValuePair<number>> = new Map<number, UINameValuePair<number>>();
+      let mapOut: Map<number, UINameValuePair<number>> = new Map<number, UINameValuePair<number>>();
+      mapIn.set(1, { name: '起始资金', value: 8800});
+      mapIn.set(33, { name: '红包收入', value: 8800});
+      mapOut.set(9, {name: '生活类开支', value: 2200});
+      mapOut.set(22, {name: '停车费', value: 80});
+      mapOut.set(27, {name: '固定电话/宽带', value: 199});
+      mapOut.set(32, {name: '红包支出', value: 7000});
+      mapOut.set(46, {name: '早中晚餐', value: 700});
+      mapOut.set(48, {name: '孝敬家长', value: 2000});
+      mapOut.set(59, {name: '培训进修', value: 1382.88});
+      mapOut.set(66, {name: '大家电类', value: 1799});
+      mapOut.set(88, {name: '预付款支出', value: 8800});
+      getReportTranTypeSpy.and.returnValue(asyncData([mapIn, mapOut]));
     });
 
     beforeEach(inject([OverlayContainer],
@@ -128,12 +144,54 @@ describe('HomeDashboardComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it('it shall display the base currency', fakeAsync(() => {
+    it('it shall load the data successfully', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // complete the observables
       fixture.detectChanges();
-  
-      expect(component.baseCurr).not.toBeFalsy();
+
+      expect(component.baseCurr).toEqual(fakeData.chosedHome.BaseCurrency);
+
+      expect(component.mapFinTTIn).not.toBeFalsy();
+      expect(component.mapFinTTOut).not.toBeFalsy();
+
+      // Navigation to event list
+      component.onNvgToEventList();
+      fixture.detectChanges();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/event/general']);
+
+      // Navigation to message
+      component.onNvgToMsgList();
+      fixture.detectChanges();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/homemsg']);
+    }));
+
+    it('it shall refelect the tran type level', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the observables
+      fixture.detectChanges();
+
+      expect(component.mapFinTTIn).not.toBeFalsy();
+      expect(component.mapFinTTOut).not.toBeFalsy();
+
+      component.selectedTranTypeLevel = TranTypeLevelEnum.FirstLevel;
+      component.onFinanceTranTypeChartRedraw();
+
+      expect(component.mapFinTTIn).not.toBeFalsy();
+      expect(component.mapFinTTOut).not.toBeFalsy();
+    }));
+
+    it('it shall refelect exclude transfer', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the observables
+      fixture.detectChanges();
+
+      expect(component.mapFinTTIn).not.toBeFalsy();
+      expect(component.mapFinTTOut).not.toBeFalsy();
+
+      component.onFinanceExcludeTransfer();
+
+      expect(component.mapFinTTIn).not.toBeFalsy();
+      expect(component.mapFinTTOut).not.toBeFalsy();
     }));
   });
 });

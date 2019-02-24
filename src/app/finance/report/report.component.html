@@ -79,7 +79,7 @@
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
                   <mat-select disabled [(ngModel)]="row.AccountId" name="acnt">
-                    <mat-option *ngFor="let acnt of _storageService.Accounts" [value]="acnt.Id">
+                    <mat-option *ngFor="let acnt of arAccounts" [value]="acnt.Id">
                       {{acnt.Name}}
                     </mat-option>
                   </mat-select>
@@ -93,7 +93,7 @@
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
                   <mat-select disabled [(ngModel)]="row.AccountCategoryId" name="ctgy">
-                    <mat-option *ngFor="let ctgy of _storageService.AccountCategories" [value]="ctgy.ID">
+                    <mat-option *ngFor="let ctgy of arAccountCategories" [value]="ctgy.ID">
                       {{ctgy.Name | translate}}
                     </mat-option>
                   </mat-select>
@@ -175,7 +175,7 @@
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
                   <mat-select disabled [(ngModel)]="row.ControlCenterId" name="acnt">
-                    <mat-option *ngFor="let cc of _storageService.ControlCenters" [value]="cc.Id">
+                    <mat-option *ngFor="let cc of arControlCenters" [value]="cc.Id">
                       {{cc.Name}}
                     </mat-option>
                   </mat-select>
@@ -261,7 +261,7 @@
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
                   <mat-select disabled [(ngModel)]="row.OrderId" name="acnt">
-                    <mat-option *ngFor="let ord of _storageService.Orders" [value]="ord.Id">
+                    <mat-option *ngFor="let ord of arOrders" [value]="ord.Id">
                       {{ord.Name}}
                     </mat-option>
                   </mat-select>

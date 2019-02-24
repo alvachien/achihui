@@ -1973,16 +1973,16 @@ describe('FinanceStorageService', () => {
 
       // Respond with the mock data
       req.flush(`[
-        {"hid":1,"docID":649,"refDocID":null,"accountID":81,"tranDate":"2019-02-26","tranType":59,"tranAmount":240.00,"controlCenterID":13,
-        "orderID":null,"desp":"安安钢琴课-2019上半年 | 8 / 25","createdBy":"aaa","createdAt":"2019-01-08","updatedBy":null,"updatedAt":"0001-01-01"},
-        {"hid":1,"docID":582,"refDocID":null,"accountID":79,"tranDate":"2019-02-23","tranType":59,"tranAmount":117.82,"controlCenterID":12,
-        "orderID":null,"desp":"多多2019羽毛球课48节(寒暑假除外) | 8 / 55","createdBy":"aaa","createdAt":"2018-12-27","updatedBy":null,"updatedAt":"0001-01-01"},
-        {"hid":1,"docID":493,"refDocID":null,"accountID":66,"tranDate":"2019-02-23","tranType":59,"tranAmount":217.53,"controlCenterID":13,
-        "orderID":null,"desp":"安安吉的堡2018.9-2019.8报名 | 24 / 49","createdBy":"aaa","createdAt":"2018-10-07","updatedBy":null,"updatedAt":"0001-01-01"},
-        {"hid":1,"docID":552,"refDocID":null,"accountID":76,"tranDate":"2019-02-23","tranType":59,"tranAmount":240.00,"controlCenterID":12,
-        "orderID":null,"desp":"多多钢琴课 | 17 / 25","createdBy":"aaa","createdAt":"2018-11-04","updatedBy":null,"updatedAt":"0001-01-01"},
-        {"hid":1,"docID":263,"refDocID":null,"accountID":26,"tranDate":"2019-02-19","tranType":59,"tranAmount":350.00,"controlCenterID":10,
-        "orderID":null,"desp":"买课 | 71/72","createdBy":"aaa","createdAt":"2017-10-10","updatedBy":null,"updatedAt":"0001-01-01"},
+        {'hid':1, 'docID':649, 'refDocID':null, 'accountID':81, 'tranDate':'2019-02-26', 'tranType':59, 'tranAmount':240.00, 'controlCenterID':13,
+        'orderID':null, 'desp':'安安钢琴课-2019上半年 | 8 / 25', 'createdBy':'aaa', 'createdAt':'2019-01-08', 'updatedBy':null, 'updatedAt':'0001-01-01'},
+        {'hid':1, 'docID':582, 'refDocID':null, 'accountID':79, 'tranDate':'2019-02-23', 'tranType':59, 'tranAmount':117.82, 'controlCenterID':12,
+        'orderID':null, 'desp':'多多2019羽毛球课48节(寒暑假除外) | 8 / 55', 'createdBy':'aaa', 'createdAt':'2018-12-27', 'updatedBy':null, 'updatedAt':'0001-01-01'},
+        {'hid':1, 'docID':493, 'refDocID':null, 'accountID':66, 'tranDate':'2019-02-23', 'tranType':59, 'tranAmount':217.53, 'controlCenterID':13,
+        'orderID':null, 'desp':'安安吉的堡2018.9-2019.8报名 | 24 / 49', 'createdBy':'aaa', 'createdAt':'2018-10-07', 'updatedBy':null, 'updatedAt':'0001-01-01'},
+        {'hid':1, 'docID':552, 'refDocID':null, 'accountID':76, 'tranDate':'2019-02-23', 'tranType':59, 'tranAmount':240.00, 'controlCenterID':12,
+        'orderID':null, 'desp':'多多钢琴课 | 17 / 25', 'createdBy':'aaa', 'createdAt':'2018-11-04', 'updatedBy':null, 'updatedAt':'0001-01-01'},
+        {'hid':1, 'docID':263, 'refDocID':null, 'accountID':26, 'tranDate':'2019-02-19', 'tranType':59, 'tranAmount':350.00, 'controlCenterID':10,
+        'orderID':null, 'desp':'买课 | 71/72', 'createdBy':'aaa', 'createdAt':'2017-10-10', 'updatedBy':null, 'updatedAt':'0001-01-01'},
       ]`);
     });
 
@@ -2034,9 +2034,9 @@ describe('FinanceStorageService', () => {
        });
 
       // Respond with the mock data
-      req.flush(`[{"hid":1,"docID":397,"refDocID":null,"accountID":58,"tranDate":"2019-02-22","tranAmount":3653.63,"interestAmount":9782.60,
-        "controlCenterID":8,"orderID":null,"desp":"201807昌邑路房产商业贷款 | 6 / 360","createdBy":"aaa",
-        "createdAt":"2018-09-07","updatedBy":null,"updatedAt":"0001-01-01"}]`);
+      req.flush(`[{'hid':1, 'docID':397, 'refDocID':null, 'accountID':58, 'tranDate':'2019-02-22', 'tranAmount':3653.63, 'interestAmount':9782.60,
+        'controlCenterID':8, 'orderID':null, 'desp':'201807昌邑路房产商业贷款 | 6 / 360', 'createdBy':'aaa',
+        'createdAt':'2018-09-07', 'updatedBy':null, 'updatedAt':'0001-01-01'}]`);
     });
 
     it('should return error in case error appear', () => {
@@ -2075,6 +2075,7 @@ describe('FinanceStorageService', () => {
       service.fetchReportTrendData(ReportTrendExTypeEnum.Daily).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
+          expect(data.length).toEqual(5);
         },
         (fail: any) => {
           // Empty
@@ -2087,19 +2088,51 @@ describe('FinanceStorageService', () => {
        });
 
       // Respond with the mock data
-      req.flush(`[
-        {"tranDate":"2019-02-05","tranWeek":null,"tranMonth":null,"tranYear":null,"expense":false,"tranAmount":17600.0000000},
-        {"tranDate":"2019-02-01","tranWeek":null,"tranMonth":null,"tranYear":null,"expense":true,"tranAmount":-279.0000000},
-        {"tranDate":"2019-02-02","tranWeek":null,"tranMonth":null,"tranYear":null,"expense":true,"tranAmount":-575.3500000},
-        {"tranDate":"2019-02-05","tranWeek":null,"tranMonth":null,"tranYear":null,"expense":true,"tranAmount":-14590.0000000},
-        {"tranDate":"2019-02-09","tranWeek":null,"tranMonth":null,"tranYear":null,"expense":true,"tranAmount":-217.5300000},
-      ]`);
+      req.flush([
+        {'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': false, 'tranAmount': 17600.0},
+        {'tranDate': '2019-02-01', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -279.00},
+        {'tranDate': '2019-02-02', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -575.35},
+        {'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -14590.00},
+        {'tranDate': '2019-02-09', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -217.53},
+      ]);
+    });
+
+    it('should return data with all parameters for success case - daily', () => {
+      service.fetchReportTrendData(ReportTrendExTypeEnum.Daily, true, moment(), moment().add(1, 'y')).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(data.length).toEqual(5);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl
+          && requrl.params.has('hid')
+          && requrl.params.has('exctran')
+          && requrl.params.has('dtbgn')
+          && requrl.params.has('dtend')
+          ;
+       });
+
+      // Respond with the mock data
+      req.flush([
+        {'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': false, 'tranAmount': 17600.0},
+        {'tranDate': '2019-02-01', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -279.00},
+        {'tranDate': '2019-02-02', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -575.35},
+        {'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -14590.00},
+        {'tranDate': '2019-02-09', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -217.53},
+      ]);
     });
 
     it('should return data for success case - weekly', () => {
       service.fetchReportTrendData(ReportTrendExTypeEnum.Weekly).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
+          expect(data.length).toEqual(3);
         },
         (fail: any) => {
           // Empty
@@ -2112,11 +2145,11 @@ describe('FinanceStorageService', () => {
        });
 
       // Respond with the mock data
-      req.flush(`[
-        {"tranDate":null,"tranWeek":5,"tranMonth":null,"tranYear":2019,"expense":true,"tranAmount":-854.35},
-        {"tranDate":null,"tranWeek":6,"tranMonth":null,"tranYear":2019,"expense":false,"tranAmount":17600.00},
-        {"tranDate":null,"tranWeek":6,"tranMonth":null,"tranYear":2019,"expense":true,"tranAmount":-14807.53},
-      ]`);
+      req.flush([
+        {'tranDate': null, 'tranWeek': 5, 'tranMonth': null, 'tranYear': 2019, 'expense': true, 'tranAmount': -854.35},
+        {'tranDate': null, 'tranWeek': 6, 'tranMonth': null, 'tranYear': 2019, 'expense': false, 'tranAmount': 17600.00},
+        {'tranDate': null, 'tranWeek': 6, 'tranMonth': null, 'tranYear': 2019, 'expense': true, 'tranAmount': -14807.53},
+      ]);
     });
 
     it('should return error in case error appear', () => {
@@ -2168,12 +2201,12 @@ describe('FinanceStorageService', () => {
 
       // Respond with the mock data
       req.flush(`[
-        {"userID":"e8d92277-a682-4328-ba92-27b6e9627012","year":2019,"month":null,"week":"2","amountOfDocuments":9},
-        {"userID":"e8d92277-a682-4328-ba92-27b6e9627012","year":2019,"month":null,"week":"3","amountOfDocuments":13},
-        {"userID":"fd9698cd-e211-4461-a51b-b123d61c8343","year":2019,"month":null,"week":"3","amountOfDocuments":5},
-        {"userID":"e8d92277-a682-4328-ba92-27b6e9627012","year":2019,"month":null,"week":"4","amountOfDocuments":1},
-        {"userID":"fd9698cd-e211-4461-a51b-b123d61c8343","year":2019,"month":null,"week":"5","amountOfDocuments":4},
-        {"userID":"e8d92277-a682-4328-ba92-27b6e9627012","year":2019,"month":null,"week":"6","amountOfDocuments":11},
+        {'userID':'e8d92277-a682-4328-ba92-27b6e9627012', 'year':2019, 'month':null, 'week':'2', 'amountOfDocuments':9},
+        {'userID':'e8d92277-a682-4328-ba92-27b6e9627012', 'year':2019, 'month':null, 'week':'3', 'amountOfDocuments':13},
+        {'userID':'fd9698cd-e211-4461-a51b-b123d61c8343', 'year':2019, 'month':null, 'week':'3', 'amountOfDocuments':5},
+        {'userID':'e8d92277-a682-4328-ba92-27b6e9627012', 'year':2019, 'month':null, 'week':'4', 'amountOfDocuments':1},
+        {'userID':'fd9698cd-e211-4461-a51b-b123d61c8343', 'year':2019, 'month':null, 'week':'5', 'amountOfDocuments':4},
+        {'userID':'e8d92277-a682-4328-ba92-27b6e9627012', 'year':2019, 'month':null, 'week':'6', 'amountOfDocuments':11},
       ]`);
     });
 
@@ -2242,6 +2275,338 @@ describe('FinanceStorageService', () => {
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === apiurl
           && requrl.params.has('hid') && requrl.params.has('docid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('getReportTranType', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTranType';
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data without parameters for success case', () => {
+      service.getReportTranType().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(data.length).toEqual(2);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      req.flush([{'tranType': 1, 'tranDate': '2019-02-05', 'name':'起始资金', 'expenseFlag': false, 'tranAmount': 8800.00},
+        {'tranType': 9, 'tranDate': '2019-02-05', 'name': '生活类开支', 'expenseFlag': true, 'tranAmount': -2200.00},
+        {'tranType': 59, 'tranDate': '2019-02-09', 'name': '培训进修', 'expenseFlag': true, 'tranAmount': -217.53},
+        {'tranType': 66, 'tranDate': '2019-02-20', 'name': '大家电类', 'expenseFlag': true, 'tranAmount': -1799.00},
+        {'tranType': 88, 'tranDate': '2019-02-05', 'name': '预付款支出', 'expenseFlag': true, 'tranAmount': -8800.00}]);
+    });
+
+    it('should return data with parameters for success case', () => {
+      service.getReportTranType(moment(), moment().add(1, 'y')).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(data.length).toEqual(2);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl
+          && requrl.params.has('hid')
+          && requrl.params.has('dtbgn')
+          && requrl.params.has('dtend');
+       });
+
+      // Respond with the mock data
+      req.flush([{'tranType': 1, 'tranDate': '2019-02-05', 'name':'起始资金', 'expenseFlag': false, 'tranAmount': 8800.00},
+        {'tranType': 9, 'tranDate': '2019-02-05', 'name': '生活类开支', 'expenseFlag': true, 'tranAmount': -2200.00},
+        {'tranType': 59, 'tranDate': '2019-02-09', 'name': '培训进修', 'expenseFlag': true, 'tranAmount': -217.53},
+        {'tranType': 66, 'tranDate': '2019-02-20', 'name': '大家电类', 'expenseFlag': true, 'tranAmount': -1799.00},
+        {'tranType': 88, 'tranDate': '2019-02-05', 'name': '预付款支出', 'expenseFlag': true, 'tranAmount': -8800.00}]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.getReportTranType().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('getReportBS', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportBS';
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.getReportBS().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(data.length).toEqual(2);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      req.flush([{'accountID': 4, 'accountName': 'cash1', 'accountCategoryID': 1, 
+        'accountCategoryName': 'Sys.AcntCty.Cash', 'debitBalance': 67973.86, 'creditBalance': 117976.61, 'balance': -50002.75},
+      {'accountID': 5, 'accountName': 'cash2', 'accountCategoryID': 1, 'accountCategoryName': 'Sys.AcntCty.Cash',
+      'debitBalance': 605692.00, 'creditBalance': 95509.18, 'balance': 510182.82}]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.getReportBS().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('getReportCC', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportCC';
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.getReportCC().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(data.length).toEqual(2);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      req.flush([
+        {'controlCenterID': 6, 'controlCenterName': 'cc1', 
+        'debitBalance': 35223.00, 'creditBalance': 147407.33, 'balance': -112184.33},
+        {'controlCenterID': 7, 'controlCenterName': 'cc2',
+        'debitBalance': 0.00, 'creditBalance': 33747.50, 'balance': -33747.50},
+      ]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.getReportCC().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('getReportOrder', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportOrder';
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.getReportOrder().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(data.length).toEqual(2);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      req.flush([
+        {'orderID': 5, 'orderName': 'order1', 'validFrom': '2015-03-02', 'validTo': '2015-05-29',
+        'debitBalance': 0.00, 'creditBalance': 0.00, 'balance': 0.00},
+        {'orderID': 6, 'orderName': 'order2', 'validFrom': '2015-03-02', 'validTo': '2015-04-30',
+        'debitBalance': 0.00, 'creditBalance': 1570.00, 'balance': -1570.00}
+      ]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.getReportOrder().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('getReportMonthOnMonth', () => {
+    let apiurl: string = environment.ApiUrl + '/api/FinanceReportTrend';
+
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data without parameter for success case', () => {
+      service.getReportMonthOnMonth().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(data.length).toEqual(2);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      req.flush([{'year': 2019, 'month': 1, 'expense': false, 'tranAmount': 26377.11},
+      {'year': 2019, 'month': 1, 'expense': true, 'tranAmount': -47009.24},
+      ]);
+    });
+
+    it('should return data with parameters for success case', () => {
+      service.getReportMonthOnMonth(true, moment(), moment().add(1, 'y')).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(data.length).toEqual(2);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl
+          && requrl.params.has('hid')
+          && requrl.params.has('exctran')
+          && requrl.params.has('dtbgn')
+          && requrl.params.has('dtend');
+       });
+
+      // Respond with the mock data
+      req.flush([{'year': 2019, 'month': 1, 'expense': false, 'tranAmount': 26377.11},
+      {'year': 2019, 'month': 1, 'expense': true, 'tranAmount': -47009.24},
+      ]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.getReportMonthOnMonth().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
       });
 
       // respond with a 500 and the error message in the body
