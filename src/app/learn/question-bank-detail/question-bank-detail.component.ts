@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormGroup, FormBuilder, Validators, FormControl, } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatChipInputEvent, MatTableDataSource } from '@angular/material';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, QuestionBankItem, QuestionBankSubItem, UIMode, getUIModeString,
   QuestionBankTypeEnum, UICommonLabelEnum,
@@ -20,26 +22,32 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
 
   private routerID: number = -1; // Current object ID in routing
   private _destroyed$: ReplaySubject<boolean>;
-  private _createSub: Subscription;
-  private _changeSub: Subscription;
-  private _readSub: Subscription;
+
+  public detailForm: FormGroup = new FormGroup({
+    typeControl: new FormControl('', [Validators.required]),
+    questionControl: new FormControl('', [Validators.required, Validators.maxLength(200)]),
+    briefAnswerControl: new FormControl('', [Validators.required, Validators.maxLength(200)]),
+  });
   public currentMode: string;
-  public detailObject: QuestionBankItem | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
   addOnBlur: boolean = true;
   displayedSubColumns: string[] = ['subitem', 'details', 'others'];
   public dataSourceSub: MatTableDataSource<QuestionBankSubItem> = new MatTableDataSource<QuestionBankSubItem>();
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
+  arTags: string[] = [];
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
+    private _formBuilder: FormBuilder,
     public _homedefService: HomeDefDetailService,
     public _uiService: UIStatusService,
     public _storageService: LearnStorageService) {
-    this.detailObject = new QuestionBankItem();
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log('AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent constructor...');
+    }
   }
 
   ngOnInit(): void {
@@ -57,7 +65,7 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
 
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.onInitCreateMode();
+          this.uiMode = UIMode.Create;
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
@@ -70,24 +78,18 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          if (!this._readSub) {
-            this._readSub = this._storageService.readQuestionEvent.subscribe((y: any) => {
-              if (y instanceof QuestionBankItem) {
-                if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngOnInit in QuestionBankDetailComponent, readQuestionEvent : ${y}`);
-                }
-                this.detailObject = y;
-                this.dataSourceSub.data = this.detailObject.SubItems;
-              } else {
-                if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering ngOnInit in QuestionBankDetailComponent, failed to readQuestionEvent : ${y}`);
-                }
-                this.detailObject = new QuestionBankItem();
-              }
-            });
-          }
-
-          this._storageService.readQuestionBank(this.routerID);
+          this._storageService.readQuestionBank(this.routerID).subscribe((y: QuestionBankItem) => {
+            this.detailForm.get('typeControl').setValue(y.QBType);
+            this.detailForm.get('questionControl').setValue(y.Question);
+            this.detailForm.get('briefAnswerControl').setValue(y.BriefAnswer);
+            this.dataSourceSub.data = y.SubItems.slice();
+            this.arTags = y.Tags;
+            if (this.uiMode === UIMode.Display) {
+              this.detailForm.disable();
+            } else {
+              this.detailForm.enable();
+            }
+          });
         }
       }
     }, (error: any) => {
@@ -106,52 +108,21 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
-
-    if (this._readSub) {
-      this._readSub.unsubscribe();
-    }
-    if (this._createSub) {
-      this._createSub.unsubscribe();
-    }
-    if (this._changeSub) {
-      this._changeSub.unsubscribe();
-    }
   }
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
+  get isSelectionType(): boolean {
+    return this.detailForm.get('typeControl').value === 2;
+  }
 
   public canSubmit(): boolean {
-    if (!this.isFieldChangable) {
-      return false;
-    }
-
     // UI mode check
     if (this.uiMode === UIMode.Change || this.uiMode === UIMode.Create) {
-      // Empty
+      return this.detailForm.valid;
     } else {
       return false;
-    }
-
-    if (!this.detailObject) {
-      return false;
-    }
-
-    // Question
-    if (!this.detailObject.Question) {
-      return false;
-    }
-
-    // Brief answer
-    if (!this.detailObject.BriefAnswer) {
-      return false;
-    }
-
-    if (this.detailObject.QBType === QuestionBankTypeEnum.MultipleChoice) {
-      if (this.dataSourceSub.data.length <= 1) {
-        return false;
-      }
     }
 
     return true;
@@ -163,7 +134,7 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
 
     // Add new Tag
     if ((value || '').trim()) {
-      this.detailObject.Tags.push(value.trim());
+      this.arTags.push(value.trim());
     }
 
     // Reset the input value
@@ -173,10 +144,10 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
   }
 
   public removeTag(tag: any): void {
-    let index: number = this.detailObject.Tags.indexOf(tag);
+    let index: number = this.arTags.indexOf(tag);
 
     if (index >= 0) {
-      this.detailObject.Tags.splice(index, 1);
+      this.arTags.splice(index, 1);
     }
   }
 
@@ -200,108 +171,110 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
   }
 
   private onInitCreateMode(): void {
-    this.detailObject = new QuestionBankItem();
     this.uiMode = UIMode.Create;
-    this.detailObject.HID = this._homedefService.ChosedHome.ID;
   }
 
   private onQtnBankCreate(): void {
-    if (!this._createSub) {
-      this._createSub = this._storageService.createQuestionEvent.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent`);
-        }
+    let detailObject: QuestionBankItem = this._generateItem();
 
-        // Navigate back to list view
-        if (x instanceof QuestionBankItem) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-            this._uiService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-              duration: 3000,
-            });
+    this._storageService.createQuestionBankItem(detailObject).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent`);
+      }
 
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-            this.onInitCreateMode();
-            // this._router.navigate(['/learn/questionbank/create']);
+      // Navigate back to list view
+      if (x instanceof QuestionBankItem) {
+        // Show the snackbar
+        let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+          this._uiService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
           });
 
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
-            }
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
+          this.onInitCreateMode();
+          // this._router.navigate(['/learn/questionbank/create']);
+        });
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent, failed ${x2}`);
-            }
-          });
-        }
-      });
-    }
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
+          }
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
 
-    this.detailObject.HID = this._homedefService.ChosedHome.ID;
-    this.detailObject.SubItems = this.dataSourceSub.data;
-    this._storageService.createQuestionBankItem(this.detailObject);
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent, failed ${x2}`);
+          }
+        });
+      }
+    });
   }
 
   private onQtnBankUpdate(): void {
-    if (!this._changeSub) {
-      this._changeSub = this._storageService.updateQuestionEvent.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent`);
-        }
+    let detailObject: QuestionBankItem = this._generateItem();
 
-        // Navigate back to list view
-        if (x instanceof QuestionBankItem) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
-            duration: 1000,
-          });
+    this._storageService.updateQuestionBankItem(detailObject).subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent`);
+      }
 
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+      // Navigate back to list view
+      if (x instanceof QuestionBankItem) {
+        // Show the snackbar
+        let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
+          duration: 1000,
+        });
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent, failed ${x2}`);
-            }
-          });
-        }
-      });
-    }
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
+        });
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
 
-    this.detailObject.SubItems = [];
-    this.detailObject.SubItems = this.dataSourceSub.data;
-    this._storageService.updateQuestionBankItem(this.detailObject);
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent, failed ${x2}`);
+          }
+        });
+      }
+    });
+  }
+
+  private _generateItem(): QuestionBankItem {
+    let detail: QuestionBankItem = new QuestionBankItem();
+    detail.HID = this._homedefService.ChosedHome.ID;
+    detail.QBType = this.detailForm.get('typeControl').value;
+    detail.Question = this.detailForm.get('questionControl').value;
+    detail.BriefAnswer = this.detailForm.get('briefAnswerControl').value;
+    detail.SubItems = this.dataSourceSub.data.slice();
+    detail.Tags = this.arTags;
+
+    return detail;
   }
 }

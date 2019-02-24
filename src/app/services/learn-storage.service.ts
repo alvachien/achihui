@@ -16,9 +16,13 @@ export class LearnStorageService {
   private _listCategory: LearnCategory[];
   private _isObjListLoaded: boolean = false;
   private _isHistListLoaded: boolean = false;
-  private _isQtnBankListLoaded: boolean = false;
   private _isEnWordListLoaded: boolean = false;
   private _isEnSentListLoaded: boolean = false;
+
+  // URLs
+  readonly objecturl: string = environment.ApiUrl + '/api/learnobject';
+  readonly historyurl: string = environment.ApiUrl + '/api/learnhistory';
+  readonly questionurl: string = environment.ApiUrl + '/api/LearnQuestionBank';
 
   get Categories(): LearnCategory[] {
     return this._listCategory;
@@ -32,11 +36,6 @@ export class LearnStorageService {
   listHistoryChange: BehaviorSubject<LearnHistory[]> = new BehaviorSubject<LearnHistory[]>([]);
   get Histories(): LearnHistory[] {
     return this.listHistoryChange.value;
-  }
-
-  listQtnBankChange: BehaviorSubject<QuestionBankItem[]> = new BehaviorSubject<QuestionBankItem[]>([]);
-  get QuestionBanks(): QuestionBankItem[] {
-    return this.listQtnBankChange.value;
   }
 
   listEnWordChange: BehaviorSubject<EnWord[]> = new BehaviorSubject<EnWord[]>([]);
@@ -56,10 +55,6 @@ export class LearnStorageService {
   deleteObjectEvent: EventEmitter<string | undefined> = new EventEmitter(undefined);
   createHistoryEvent: EventEmitter<LearnHistory | string | undefined> = new EventEmitter(undefined);
   readHistoryEvent: EventEmitter<LearnHistory | string | undefined> = new EventEmitter(undefined);
-  createQuestionEvent: EventEmitter<QuestionBankItem | string | undefined> = new EventEmitter(undefined);
-  updateQuestionEvent: EventEmitter<QuestionBankItem | string | undefined> = new EventEmitter(undefined);
-  deleteQuestionEvent: EventEmitter<string | undefined> = new EventEmitter(undefined);
-  readQuestionEvent: EventEmitter<QuestionBankItem | string | undefined> = new EventEmitter(undefined);
   createEnWordEvent: EventEmitter<EnWord | string | undefined> = new EventEmitter(undefined);
   readEnWordEvent: EventEmitter<EnWord | string | undefined> = new EventEmitter(undefined);
   createEnSentenceEvent: EventEmitter<EnSentence | string | undefined> = new EventEmitter(undefined);
@@ -76,7 +71,6 @@ export class LearnStorageService {
     this._listCategory = [];
     this._isObjListLoaded = false;
     this._isHistListLoaded = false;
-    this._isQtnBankListLoaded = false;
     this._isEnWordListLoaded = false;
     this._isEnSentListLoaded = false;
   }
@@ -143,8 +137,6 @@ export class LearnStorageService {
   // Object
   public fetchAllObjects(forceReload?: boolean, ctgyID?: number): Observable<any> {
     if (!this._isObjListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/learnobject';
-
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
@@ -156,7 +148,7 @@ export class LearnStorageService {
         params = params.append('ctgyid', ctgyID.toString());
       }
 
-      return this._http.get(apiurl, {
+      return this._http.get(this.objecturl, {
           headers: headers,
           params: params,
         })
@@ -201,16 +193,14 @@ export class LearnStorageService {
    * Create an object
    * @param obj Object to create
    */
-  public createObject(obj: LearnObject): void {
+  public createObject(obj: LearnObject): Observable<LearnObject> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnObject';
-
     const jdata: string = obj.writeJSONString();
-    this._http.post(apiurl, jdata, {
+    return this._http.post(this.objecturl, jdata, {
         headers: headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
@@ -221,191 +211,116 @@ export class LearnStorageService {
         let hd: LearnObject = new LearnObject();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createObject in LearnStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Objects.slice();
-        copiedData.push(x);
-        this.listObjectChange.next(copiedData);
-
-        // Broadcast event
-        this.createObjectEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createObject in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService createObject, failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.createObjectEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Update an object
    * @param obj Object to create
    */
-  public updateObject(obj: LearnObject): void {
+  public updateObject(obj: LearnObject): Observable<LearnObject> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnObject/' + obj.Id.toString();
+    let apiurl: string = this.objecturl + '/' + obj.Id.toString();
 
     const jdata: string = obj.writeJSONString();
-    this._http.put(apiurl, jdata, {
+    return this._http.put(apiurl, jdata, {
         headers: headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Map of updateObject in LearnStorageService' + response);
+          console.log('AC_HIH_UI [Debug]: Entering LearnStorageService updateObject');
         }
 
         let hd: LearnObject = new LearnObject();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in updateObject in LearnStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Objects.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
-          return val.Id === x.Id;
-        });
-        if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-        } else {
-          copiedData.push(x);
-        }
-        this.listObjectChange.next(copiedData);
-
-        // Broadcast event
-        this.updateObjectEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in updateObject in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService updateObject, failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.updateObjectEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Delete an object
    * @param obj Object to create
    */
-  public deleteObject(oid: number): void {
+  public deleteObject(oid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnObject/' + oid.toString();
+    let apiurl: string = this.objecturl + '/' + oid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.delete(apiurl, {
+    return this._http.delete(apiurl, {
         headers: headers,
         params: params,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Map of deleteObject in LearnStorageService' + response);
+          console.log('AC_HIH_UI [Debug]: Entering LearnStorageService, deleteObject, map' + response);
         }
 
         return <any>response;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteObject in LearnStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Objects.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
-          return val.Id === oid;
-        });
-        if (idx !== -1) {
-          copiedData.splice(idx, 1);
-          this.listObjectChange.next(copiedData);
-        }
-
-        // Broadcast event
-        this.deleteObjectEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in deleteObject in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService readObject, failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.deleteObjectEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Read an object
    * @param objid ID of the object to read
    */
-  public readObject(objid: number): void {
+  public readObject(objid: number): Observable<LearnObject> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnObject/' + objid.toString();
+    let apiurl: string = this.objecturl + '/' + objid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.get(apiurl, {
+    return this._http.get(apiurl, {
         headers: headers,
         params: params,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readObject in LearnStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering LearnStorageService readObject`);
         }
 
         let hd: LearnObject = new LearnObject();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in readObject in LearnStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Objects.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
-          return val.Id === x.Id;
-        });
-        if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-        } else {
-          copiedData.push(x);
-        }
-        this.listObjectChange.next(copiedData);
-
-        // Broadcast event
-        this.readObjectEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in readObject in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService readObject, failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.readObjectEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -414,8 +329,6 @@ export class LearnStorageService {
    */
   public fetchAllHistories(forceReload?: boolean): Observable<LearnHistory[]> {
     if (!this._isHistListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/learnhistory';
-
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
                 .append('Accept', 'application/json')
@@ -423,7 +336,7 @@ export class LearnStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
+      return this._http.get(this.historyurl, {
           headers: headers,
           params: params,
         })
@@ -473,10 +386,8 @@ export class LearnStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnHistory';
-
     const jdata: string = hist.writeJSONString();
-    this._http.post(apiurl, jdata, {
+    this._http.post(this.historyurl, jdata, {
         headers: headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
@@ -521,7 +432,7 @@ export class LearnStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnHistory/' + histid;
+    let apiurl: string = this.historyurl + '/' + histid;
     this._http.get(apiurl, {
         headers: headers,
       })
@@ -644,73 +555,58 @@ export class LearnStorageService {
 
   /**
    * Fetch all question bank
-   * @param forceReload Force to reload
    */
-  public fetchAllQuestionBankItem(forceReload?: boolean): Observable<QuestionBankItem[]> {
-    if (!this._isQtnBankListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/LearnQuestionBank';
+  public fetchAllQuestionBankItem(): Observable<QuestionBankItem[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+              .append('Accept', 'application/json')
+              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.get(this.questionurl, {
+        headers: headers,
+        params: params,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllQuestionBankItem in LearnStorageService.`);
+        }
 
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
-          headers: headers,
-          params: params,
-        })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllQuestionBankItem in LearnStorageService: ${response}`);
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllQuestionBankItem in LearnStorageService.`);
+        const rjs: any = <any>response;
+        let listRst: any[] = [];
+
+        if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+          for (const si of rjs.contentList) {
+            const rst: QuestionBankItem = new QuestionBankItem();
+            rst.onSetData(si);
+            listRst.push(rst);
           }
+        }
 
-          const rjs: any = <any>response;
-          let listRst: any[] = [];
+        return listRst;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService fetchAllQuestionBankItem, failed: ${error}`);
+        }
 
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
-              const rst: QuestionBankItem = new QuestionBankItem();
-              rst.onSetData(si);
-              listRst.push(rst);
-            }
-          }
-
-          this._isQtnBankListLoaded = true;
-          this.listQtnBankChange.next(listRst);
-          return listRst;
-        }),
-        catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllQuestionBankItem in LearnStorageService: ${error}`);
-          }
-
-          this._isQtnBankListLoaded = true;
-          this.listQtnBankChange.next([]);
-
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));
-    } else {
-      return of(this.listQtnBankChange.value);
-    }
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Create an item of Question Bank
    * @param item Question bank item to create
    */
-  public createQuestionBankItem(item: QuestionBankItem): void {
+  public createQuestionBankItem(item: QuestionBankItem): Observable<QuestionBankItem> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnQuestionBank';
-
     const jdata: string = item.writeJSONString();
-    this._http.post(apiurl, jdata, {
+    return this._http.post(this.questionurl, jdata, {
         headers: headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
@@ -721,44 +617,30 @@ export class LearnStorageService {
         let hd: QuestionBankItem = new QuestionBankItem();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createQuestionBankItem in LearnStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.QuestionBanks.slice();
-        copiedData.push(x);
-        this.listQtnBankChange.next(copiedData);
-
-        // Broadcast event
-        this.createQuestionEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createQuestionBankItem in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService, createQuestionBankItem, failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.createQuestionEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Update an item of Question Bank
    * @param item Question bank item to change
    */
-  public updateQuestionBankItem(item: QuestionBankItem): void {
+  public updateQuestionBankItem(item: QuestionBankItem): Observable<QuestionBankItem> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnQuestionBank/' + item.ID.toString();
+    let apiurl: string = this.questionurl + '/' + item.ID.toString();
 
     const jdata: string = item.writeJSONString();
-    this._http.put(apiurl, jdata, {
+    return this._http.put(apiurl, jdata, {
         headers: headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
@@ -769,141 +651,83 @@ export class LearnStorageService {
         let hd: QuestionBankItem = new QuestionBankItem();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in updateQuestionBankItem in LearnStorageService: ${x}`);
-        }
-
-        // Update it in the buffer
-        const copiedData: any = this.QuestionBanks.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
-          return val.ID === x.ID;
-        });
-        if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-          this.listQtnBankChange.next(copiedData);
-        }
-
-        // Broadcast event
-        this.updateQuestionEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in updateQuestionBankItem in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService, updateQuestionBankItem, failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.updateQuestionEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Delete an item of Question Bank
    * @param itemid Question bank item's ID'
    */
-  public deleteQuestionBankItem(item: QuestionBankItem): void {
+  public deleteQuestionBankItem(item: QuestionBankItem): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnQuestionBank/' + item.ID.toString();
+    let apiurl: string = this.questionurl + '/' + item.ID.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.delete(apiurl, {
+
+    return this._http.delete(apiurl, {
         headers: headers,
         params: params,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.log('AC_HIH_UI [Debug]: Entering LearnStorageService, deleteQuestionBankItem');
         }
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteQuestionBankItem in LearnStorageService: ${x}`);
-        }
-
-        // Remove it from the buffer
-        const copiedData: any = this.QuestionBanks.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
-          return val.ID === item.ID;
-        });
-        if (idx !== -1) {
-          copiedData.splice(idx);
-          this.listQtnBankChange.next(copiedData);
-        }
-
-        // Broadcast event
-        this.deleteQuestionEvent.emit();
-      }, (error: HttpErrorResponse) => {
+        return true;
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in deleteQuestionBankItem in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService, deleteQuestionBankItem, failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.deleteQuestionEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Read an item of question bank
    * @param itemid ID of question bank item
    */
-  public readQuestionBank(itemid: number): void {
+  public readQuestionBank(itemid: number): Observable<QuestionBankItem> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/LearnQuestionBank/' + itemid.toString();
+    let apiurl: string = this.questionurl + '/' + itemid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.get(apiurl, {
+
+    return this._http.get(apiurl, {
         headers: headers,
         params: params,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readQuestionBank in LearnStorageService: ${response}`);
+          console.log(`AC_HIH_UI [Debug]: Entering LearnStorageService readQuestionBank`);
         }
 
         let hd: QuestionBankItem = new QuestionBankItem();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in readQuestionBank in LearnStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.QuestionBanks.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
-          return val.ID === x.ID;
-        });
-        if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-        } else {
-          copiedData.push(x);
-        }
-        this.listQtnBankChange.next(copiedData);
-
-        // Broadcast event
-        this.readQuestionEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in readQuestionBank in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService, readQuestionBank, failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.readQuestionEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**

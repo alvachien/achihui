@@ -81,7 +81,7 @@ export class QuestionBankListComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   public onDeleteQuestion(qst: QuestionBankItem): void {
-    this._storageService.deleteQuestionEvent.pipe(takeUntil(this._destroyed$)).subscribe(() => {
+    this._storageService.deleteQuestionBankItem(qst).pipe(takeUntil(this._destroyed$)).subscribe(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering QuestionBankListComponent, onDeleteQuestion`);
       }
@@ -94,12 +94,10 @@ export class QuestionBankListComponent implements OnInit, AfterViewInit, OnDestr
     }, () => {
       // Empty
     });
-
-    this._storageService.deleteQuestionBankItem(qst);
   }
 
   public onRefresh(): void {
-    this._storageService.fetchAllQuestionBankItem(true).subscribe((x: any) => {
+    this._storageService.fetchAllQuestionBankItem().subscribe((x: any) => {
       // Do nothing
     });
   }

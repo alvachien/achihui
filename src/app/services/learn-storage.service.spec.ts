@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
+import { QuestionBankItem, QuestionBankTypeEnum, LearnObject } from '../model';
 
 describe('LearnStorageService', () => {
   let httpTestingController: HttpTestingController;
@@ -21,6 +22,7 @@ describe('LearnStorageService', () => {
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
     fakeData.buildLearnCategoriesFromAPI();
+    fakeData.buildLearnCategories();
 
     const authServiceStub: Partial<AuthService> = {};
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
@@ -42,7 +44,6 @@ describe('LearnStorageService', () => {
 
     httpClient = TestBed.get(HttpClient);
     httpTestingController = TestBed.get(HttpTestingController);
-    service = TestBed.get(LearnStorageService);
   });
   afterEach(() => {
     // After every test, assert that there are no more pending requests.
@@ -273,6 +274,536 @@ describe('LearnStorageService', () => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
        });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createQuestionBankItem', () => {
+    let item: QuestionBankItem;
+
+    beforeEach(() => {
+      item = new QuestionBankItem();
+      item.QBType = QuestionBankTypeEnum.EssayQuestion;
+      item.Question = 'question 1';
+      item.BriefAnswer = 'brief 1';
+
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.createQuestionBankItem(item).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.questionurl;
+       });
+
+      // Respond with the mock data
+      req.flush(item.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.createQuestionBankItem(item).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.questionurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('updateQuestionBankItem', () => {
+    let item: QuestionBankItem;
+
+    beforeEach(() => {
+      item = new QuestionBankItem();
+      item.ID = 2;
+      item.QBType = QuestionBankTypeEnum.EssayQuestion;
+      item.Question = 'question 1';
+      item.BriefAnswer = 'brief 1';
+
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.updateQuestionBankItem(item).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === service.questionurl + '/2';
+       });
+
+      // Respond with the mock data
+      req.flush(item.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.updateQuestionBankItem(item).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === service.questionurl + '/2';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('deleteQuestionBankItem', () => {
+    let item: QuestionBankItem;
+
+    beforeEach(() => {
+      item = new QuestionBankItem();
+      item.ID = 2;
+      item.QBType = QuestionBankTypeEnum.EssayQuestion;
+      item.Question = 'question 1';
+      item.BriefAnswer = 'brief 1';
+
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.deleteQuestionBankItem(item).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === service.questionurl + '/2';
+       });
+
+      // Respond with the mock data
+      req.flush('', { status: 200, statusText: 'OK' });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.deleteQuestionBankItem(item).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === service.questionurl + '/2';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('readQuestionBank', () => {
+    let item: QuestionBankItem;
+
+    beforeEach(() => {
+      item = new QuestionBankItem();
+      item.ID = 2;
+      item.QBType = QuestionBankTypeEnum.EssayQuestion;
+      item.Question = 'question 1';
+      item.BriefAnswer = 'brief 1';
+
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.readQuestionBank(2).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.questionurl + '/2';
+       });
+
+      // Respond with the mock data
+      req.flush(item.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.readQuestionBank(2).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.questionurl + '/2';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('fetchAllQuestionBankItem', () => {
+    beforeEach(() => {
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.fetchAllQuestionBankItem().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.questionurl
+          && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      let item1: QuestionBankItem;
+      item1 = new QuestionBankItem();
+      item1.ID = 2;
+      item1.QBType = QuestionBankTypeEnum.EssayQuestion;
+      item1.Question = 'question 1';
+      item1.BriefAnswer = 'brief 1';
+      let item2: QuestionBankItem;
+      item2 = new QuestionBankItem();
+      item2.ID = 3;
+      item2.QBType = QuestionBankTypeEnum.EssayQuestion;
+      item2.Question = 'question 2';
+      item2.BriefAnswer = 'brief 2';
+
+      req.flush({
+        totalCount: 2,
+        contentList: [item1.writeJSONObject(), item2.writeJSONObject()],
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.fetchAllQuestionBankItem().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.questionurl
+          && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createObject', () => {
+    let item: LearnObject;
+
+    beforeEach(() => {
+      item = new LearnObject();
+      item.Name = 'object 1';
+      item.CategoryId = fakeData.learnCategories[0].Id;
+      item.Content = 'test';
+
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.createObject(item).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.objecturl;
+       });
+
+      // Respond with the mock data
+      req.flush(item.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.createObject(item).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.objecturl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('updateObject', () => {
+    let item: LearnObject;
+
+    beforeEach(() => {
+      item = new LearnObject();
+      item.Id = 2;
+      item.Name = 'object 1';
+      item.CategoryId = fakeData.learnCategories[0].Id;
+      item.Content = 'test';
+
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.updateObject(item).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === service.objecturl + '/2';
+       });
+
+      // Respond with the mock data
+      req.flush(item.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.updateObject(item).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === service.objecturl + '/2';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('deleteObject', () => {
+    let item: LearnObject;
+
+    beforeEach(() => {
+      item = new LearnObject();
+      item.Id = 2;
+      item.Name = 'object 1';
+      item.CategoryId = fakeData.learnCategories[0].Id;
+      item.Content = 'test';
+
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.deleteObject(2).subscribe(
+        (data: any) => {
+          // expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === service.objecturl + '/2';
+       });
+
+      // Respond with the mock data
+      req.flush('', { status: 200, statusText: 'OK' });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.deleteObject(2).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE' && requrl.url === service.objecturl + '/2';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('readObject', () => {
+    let item: LearnObject;
+
+    beforeEach(() => {
+      item = new LearnObject();
+      item.Id = 2;
+      item.Name = 'object 1';
+      item.CategoryId = fakeData.learnCategories[0].Id;
+      item.Content = 'test';
+
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.readObject(2).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.objecturl + '/2';
+       });
+
+      // Respond with the mock data
+      req.flush(item.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.readObject(2).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.objecturl + '/2';
+      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: 'server failed' });

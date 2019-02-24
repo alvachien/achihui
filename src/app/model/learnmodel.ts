@@ -555,6 +555,7 @@ export class LearnAward extends hih.BaseModel {
 /**
  * Question bank item: Question bank item
  */
+/*
 export class QuestionBase<T> extends hih.BaseModel {
   value: T;
   key: string;
@@ -601,6 +602,7 @@ export class DropdownQuestion extends QuestionBase<string> {
     this.options = options['options'] || [];
   }
 }
+*/
 
 export class QuestionBankItem extends hih.BaseModel {
   public HID: number;

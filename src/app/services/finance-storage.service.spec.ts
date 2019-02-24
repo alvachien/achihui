@@ -2311,7 +2311,7 @@ describe('FinanceStorageService', () => {
        });
 
       // Respond with the mock data
-      req.flush([{'tranType': 1, 'tranDate': '2019-02-05', 'name':'起始资金', 'expenseFlag': false, 'tranAmount': 8800.00},
+      req.flush([{'tranType': 1, 'tranDate': '2019-02-05', 'name': '起始资金', 'expenseFlag': false, 'tranAmount': 8800.00},
         {'tranType': 9, 'tranDate': '2019-02-05', 'name': '生活类开支', 'expenseFlag': true, 'tranAmount': -2200.00},
         {'tranType': 59, 'tranDate': '2019-02-09', 'name': '培训进修', 'expenseFlag': true, 'tranAmount': -217.53},
         {'tranType': 66, 'tranDate': '2019-02-20', 'name': '大家电类', 'expenseFlag': true, 'tranAmount': -1799.00},
@@ -2338,7 +2338,7 @@ describe('FinanceStorageService', () => {
        });
 
       // Respond with the mock data
-      req.flush([{'tranType': 1, 'tranDate': '2019-02-05', 'name':'起始资金', 'expenseFlag': false, 'tranAmount': 8800.00},
+      req.flush([{'tranType': 1, 'tranDate': '2019-02-05', 'name': '起始资金', 'expenseFlag': false, 'tranAmount': 8800.00},
         {'tranType': 9, 'tranDate': '2019-02-05', 'name': '生活类开支', 'expenseFlag': true, 'tranAmount': -2200.00},
         {'tranType': 59, 'tranDate': '2019-02-09', 'name': '培训进修', 'expenseFlag': true, 'tranAmount': -217.53},
         {'tranType': 66, 'tranDate': '2019-02-20', 'name': '大家电类', 'expenseFlag': true, 'tranAmount': -1799.00},
@@ -2394,7 +2394,7 @@ describe('FinanceStorageService', () => {
        });
 
       // Respond with the mock data
-      req.flush([{'accountID': 4, 'accountName': 'cash1', 'accountCategoryID': 1, 
+      req.flush([{'accountID': 4, 'accountName': 'cash1', 'accountCategoryID': 1,
         'accountCategoryName': 'Sys.AcntCty.Cash', 'debitBalance': 67973.86, 'creditBalance': 117976.61, 'balance': -50002.75},
       {'accountID': 5, 'accountName': 'cash2', 'accountCategoryID': 1, 'accountCategoryName': 'Sys.AcntCty.Cash',
       'debitBalance': 605692.00, 'creditBalance': 95509.18, 'balance': 510182.82}]);
@@ -2450,7 +2450,7 @@ describe('FinanceStorageService', () => {
 
       // Respond with the mock data
       req.flush([
-        {'controlCenterID': 6, 'controlCenterName': 'cc1', 
+        {'controlCenterID': 6, 'controlCenterName': 'cc1',
         'debitBalance': 35223.00, 'creditBalance': 147407.33, 'balance': -112184.33},
         {'controlCenterID': 7, 'controlCenterName': 'cc2',
         'debitBalance': 0.00, 'creditBalance': 33747.50, 'balance': -33747.50},
@@ -2510,7 +2510,7 @@ describe('FinanceStorageService', () => {
         {'orderID': 5, 'orderName': 'order1', 'validFrom': '2015-03-02', 'validTo': '2015-05-29',
         'debitBalance': 0.00, 'creditBalance': 0.00, 'balance': 0.00},
         {'orderID': 6, 'orderName': 'order2', 'validFrom': '2015-03-02', 'validTo': '2015-04-30',
-        'debitBalance': 0.00, 'creditBalance': 1570.00, 'balance': -1570.00}
+        'debitBalance': 0.00, 'creditBalance': 1570.00, 'balance': -1570.00},
       ]);
     });
 
