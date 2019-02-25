@@ -78,7 +78,8 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readQuestionBank(this.routerID).subscribe((y: QuestionBankItem) => {
+          this._storageService.readQuestionBank(this.routerID).pipe(takeUntil(this._destroyed$))
+            .subscribe((y: QuestionBankItem) => {
             this.detailForm.get('typeControl').setValue(y.QBType);
             this.detailForm.get('questionControl').setValue(y.Question);
             this.detailForm.get('briefAnswerControl').setValue(y.BriefAnswer);
@@ -92,12 +93,6 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
           });
         }
       }
-    }, (error: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ngOnInit in QuestionBankDetailComponent with activateRoute URL: ${error}`);
-      }
-    }, () => {
-      // Empty
     });
   }
   ngOnDestroy(): void {
@@ -120,7 +115,15 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
   public canSubmit(): boolean {
     // UI mode check
     if (this.uiMode === UIMode.Change || this.uiMode === UIMode.Create) {
-      return this.detailForm.valid;
+      if (!this.detailForm.valid) {
+        return false;
+      }
+
+      if (this.isSelectionType) {
+        if (this.dataSourceSub.data.length <= 0) {
+          return false;
+        }
+      }
     } else {
       return false;
     }
@@ -172,97 +175,81 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
 
   private onInitCreateMode(): void {
     this.uiMode = UIMode.Create;
+    this.detailForm.reset();
   }
 
   private onQtnBankCreate(): void {
     let detailObject: QuestionBankItem = this._generateItem();
 
-    this._storageService.createQuestionBankItem(detailObject).subscribe((x: any) => {
+    this._storageService.createQuestionBankItem(detailObject).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent`);
       }
 
-      // Navigate back to list view
-      if (x instanceof QuestionBankItem) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-          this._uiService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
-          });
-
-        let recreate: boolean = false;
-        snackbarRef.onAction().subscribe(() => {
-          recreate = true;
-          this.onInitCreateMode();
-          // this._router.navigate(['/learn/questionbank/create']);
+      // Show the snackbar
+      let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+        this._uiService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+          duration: 2000,
         });
 
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          if (!recreate) {
-            this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
-          }
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
+      let recreate: boolean = false;
+      snackbarRef.onAction().subscribe(() => {
+        recreate = true;
+        this.onInitCreateMode();
+      });
 
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankCreate, createQuestionEvent, failed ${x2}`);
-          }
-        });
-      }
+      snackbarRef.afterDismissed().subscribe(() => {
+        // Navigate to display
+        if (!recreate) {
+          this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
+        }
+      });
+    }, (error: any) => {
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     });
   }
 
   private onQtnBankUpdate(): void {
     let detailObject: QuestionBankItem = this._generateItem();
 
-    this._storageService.updateQuestionBankItem(detailObject).subscribe((x: any) => {
+    this._storageService.updateQuestionBankItem(detailObject).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent`);
       }
 
-      // Navigate back to list view
-      if (x instanceof QuestionBankItem) {
-        // Show the snackbar
-        let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
-          duration: 1000,
-        });
+      // Show the snackbar
+      let snackbarRef: any = this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
+        duration: 2000,
+      });
 
-        snackbarRef.afterDismissed().subscribe(() => {
-          // Navigate to display
-          this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
-        });
-      } else {
-        // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
+      snackbarRef.afterDismissed().subscribe(() => {
+        // Navigate to display
+        this._router.navigate(['/learn/questionbank/display/' + x.ID.toString()]);
+      });
+    }, (error: any) => {
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
 
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent, onQtnBankUpdate, updateQuestionEvent, failed ${x2}`);
-          }
-        });
-      }
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     });
   }
 

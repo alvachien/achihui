@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, MatDialog, MatTableDataSource } from '@angular/material';
 
@@ -14,14 +14,13 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
   templateUrl: './question-bank-list.component.html',
   styleUrls: ['./question-bank-list.component.scss'],
 })
-export class QuestionBankListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class QuestionBankListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'type', 'question', 'briefawr' ];
   dataSource: MatTableDataSource<QuestionBankItem> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   allTags: string[] = [];
-  isSlideMode: boolean = false;
   isLoadingResults: boolean;
 
   constructor(public _storageService: LearnStorageService,
@@ -30,7 +29,6 @@ export class QuestionBankListComponent implements OnInit, AfterViewInit, OnDestr
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent constructor...');
     }
-    this.isSlideMode = false;
     this.isLoadingResults = false;
   }
 
@@ -39,33 +37,17 @@ export class QuestionBankListComponent implements OnInit, AfterViewInit, OnDestr
       console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
-    this.isLoadingResults = true;
 
-    forkJoin([
-      this._storageService.fetchAllQuestionBankItem(),
-    ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-      // DO nothing
-      if (x) {
-        this.dataSource.data = x;
-      }
-    }, (error: any) => {
-      // Do nothing
-    }, () => {
-      this.isLoadingResults = false;
-    });
-  }
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent ngAfterViewInit...');
-    }
-    this.dataSource.paginator = this.paginator;
+    this.onRefresh();
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onCreateQuestion(): void {
@@ -97,16 +79,14 @@ export class QuestionBankListComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   public onRefresh(): void {
-    this._storageService.fetchAllQuestionBankItem().subscribe((x: any) => {
-      // Do nothing
+    this.isLoadingResults = true;
+    this._storageService.fetchAllQuestionBankItem()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((items: QuestionBankItem[]) => {
+      this.dataSource = new MatTableDataSource(items);
+      this.dataSource.paginator = this.paginator;
+    }, (error: any) => {
+      // TBD.
     });
-  }
-
-  public onToggleSlide(): void {
-    if (!this.isSlideMode) {
-      this.isSlideMode = true;
-    } else {
-      this.isSlideMode = false;
-    }
   }
 }

@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterContentInit, EventEmitter,
-  Input, Output, ViewContainerRef,
-} from '@angular/core';
+  Input, Output, ViewContainerRef, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ReplaySubject, Subscription } from 'rxjs';
