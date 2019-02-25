@@ -13,14 +13,17 @@
     <mat-form-field>
       <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId"
         name="ctgy">
-        <mat-option *ngFor="let ctgy of _storageService.Categories" [value]="ctgy.Id">
+        <mat-option *ngFor="let ctgy of arCategories" [value]="ctgy.Id">
           ({{ctgy.Id}}) {{ctgy.FullDisplayText}}
         </mat-option>
       </mat-select>
     </mat-form-field>
   
     <div class="achih-control-full-width">
-      <textarea id="{{elementId}}" [readonly]="!isFieldChangable" name="content"></textarea>
+      <editor [(ngModel)]="detailObject.Content"
+      inline="true"
+      plugins="link"
+      ></editor>
     </div>
 
   </mat-card-content>

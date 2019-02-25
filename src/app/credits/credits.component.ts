@@ -28,7 +28,7 @@ export class CreditsComponent {
       url: 'https://fullcalendar.io/',
     }, {
       name: 'TinyMCE',
-      url: 'https://www.tinymce.com/',
+      url: 'https://www.tinymce.cloud/',
     }, {
       name: 'Moment.js',
       url: 'https://momentjs.com/',

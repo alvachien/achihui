@@ -6,29 +6,24 @@ import { ReplaySubject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, LearnObject, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
+import { LogLevel, LearnObject, UIMode, getUIModeString, UICommonLabelEnum, LearnCategory } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-declare var tinymce: any;
 
 @Component({
   selector: 'hih-learn-object-detail',
   templateUrl: './object-detail.component.html',
   styleUrls: ['./object-detail.component.scss'],
 })
-export class ObjectDetailComponent implements OnInit, AfterContentInit, OnDestroy {
+export class ObjectDetailComponent implements OnInit, OnDestroy {
 
-  private routerID: number = -1; // Current object ID in routing
-  private editor: any;
   private _destroyed$: ReplaySubject<boolean>;
-  private _createSub: Subscription;
-  private _changeSub: Subscription;
+  private routerID: number = -1; // Current object ID in routing
 
   public currentMode: string;
   public detailObject: LearnObject | undefined = undefined;
   public uiMode: UIMode = UIMode.Create;
-  elementId: String;
-  @Output() onEditorKeyup: EventEmitter<any> = new EventEmitter<any>();
+  public arCategories: LearnCategory[] = [];
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -42,7 +37,6 @@ export class ObjectDetailComponent implements OnInit, AfterContentInit, OnDestro
     }
 
     this.detailObject = new LearnObject();
-    this.elementId = 'tinymce' + Math.round(100 * Math.random()).toString();
   }
 
   ngOnInit(): void {
@@ -51,41 +45,9 @@ export class ObjectDetailComponent implements OnInit, AfterContentInit, OnDestro
     }
 
     this._destroyed$ = new ReplaySubject(1);
-  }
-
-  ngAfterContentInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LearnObjectDetail ngAfterContentInit');
-    }
-
-    try {
-      tinymce.init({
-        selector: '#' + this.elementId,
-        schema: 'html5',
-        height: 500,
-        menubar: false,
-        toolbar: 'fontselect fontsizeselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify'
-          + ' | bullist numlist outdent indent | link forecolor backcolor | removeformat',
-        plugins: 'advlist autolink link image lists charmap print preview',
-        skin_url: '../../../assets/tinymceskins/lightgray',
-        setup: (editor: any) => {
-          this.editor = editor;
-
-          editor.on('keyup change', () => {
-            const content: any = editor.getContent();
-            this.onEditorKeyup.emit(content);
-          });
-        },
-      });
-    } catch (err) {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ObjectDetailComponent, ngAfterViewInit, failed with: ${err ? err.toString() : ''}`);
-      }
-
-      return;
-    }
 
     this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x1: any) => {
+      this.arCategories = x1;
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -119,14 +81,6 @@ export class ObjectDetailComponent implements OnInit, AfterContentInit, OnDestro
                 }
                 this.detailObject = new LearnObject();
               }
-
-              // Set the content
-              tinymce.activeEditor.setContent(this.detailObject.Content);
-              if (this.uiMode === UIMode.Display) {
-                tinymce.activeEditor.setMode('readonly');
-              } else if (this.uiMode === UIMode.Create || this.uiMode === UIMode.Change) {
-                tinymce.activeEditor.setMode('design');
-              }
             });
 
             this._storageService.readObject(this.routerID);
@@ -149,20 +103,9 @@ export class ObjectDetailComponent implements OnInit, AfterContentInit, OnDestro
       console.log('AC_HIH_UI [Debug]: Entering ObjectDetailComponent, ngOnDestroy');
     }
 
-    try {
-      tinymce.remove(this.editor);
-    } catch (err) {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ObjectDetailComponent, ngOnDestroy, failed with: ${err ? err.toString() : ''}`);
-      }
-    }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
-    if (this._createSub) {
-      this._createSub.unsubscribe();
-    }
-    if (this._changeSub) {
-      this._changeSub.unsubscribe();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
     }
   }
 
@@ -203,106 +146,95 @@ export class ObjectDetailComponent implements OnInit, AfterContentInit, OnDestro
   }
 
   private onCreateObject(): void {
-    if (!this._createSub) {
-      this._createSub = this._storageService.createObjectEvent
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((x: any) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent`);
-          }
+    this._storageService.createObject(this.detailObject).pipe(takeUntil(this._destroyed$))
+    .subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent`);
+      }
 
-          // Navigate back to list view
-          if (x instanceof LearnObject) {
-            // Show the snackbar
-            let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-              this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-                duration: 3000,
-              });
+      // Navigate back to list view
+      if (x instanceof LearnObject) {
+        // Show the snackbar
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
+          });
 
-            let recreate: boolean = false;
-            snackbarRef.onAction().subscribe(() => {
-              recreate = true;
-              this.onInitCreateMode();
-              // this._router.navigate(['/learn/object/create']);
-            });
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
+          this.onInitCreateMode();
+          // this._router.navigate(['/learn/object/create']);
+        });
 
-            snackbarRef.afterDismissed().subscribe(() => {
-              // Navigate to display
-              if (!recreate) {
-                this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
-              }
-            });
-          } else {
-            // Show error message
-            const dlginfo: MessageDialogInfo = {
-              Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-              Content: x.toString(),
-              Button: MessageDialogButtonEnum.onlyok,
-            };
-
-            this._dialog.open(MessageDialogComponent, {
-              disableClose: false,
-              width: '500px',
-              data: dlginfo,
-            }).afterClosed().subscribe((x2: any) => {
-              // Do nothing!
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent, failed: ${x2}`);
-              }
-            });
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
           }
         });
-    }
+      } else {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
 
-    this.detailObject.Content = tinymce.activeEditor.getContent();
-    this._storageService.createObject(this.detailObject);
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent, failed: ${x2}`);
+          }
+        });
+      }
+    });
+
   }
 
   private onUpdateObject(): void {
-    if (!this._changeSub) {
-      this._changeSub = this._storageService.updateObjectEvent
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((x: any) => {
+    // Update mode
+    this._storageService.updateObject(this.detailObject).pipe(takeUntil(this._destroyed$))
+    .subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent`);
+      }
+
+      // Navigate back to list view
+      if (x instanceof LearnObject) {
+        // Show the snackbar
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
+          undefined, {
+            duration: 3000,
+          });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
+        });
+      } else {
+        // Show error message with dialog
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: x.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        }).afterClosed().subscribe((x2: any) => {
+          // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent`);
-          }
-
-          // Navigate back to list view
-          if (x instanceof LearnObject) {
-            // Show the snackbar
-            let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
-              undefined, {
-                duration: 3000,
-              });
-
-            snackbarRef.afterDismissed().subscribe(() => {
-              // Navigate to display
-              this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
-            });
-          } else {
-            // Show error message with dialog
-            const dlginfo: MessageDialogInfo = {
-              Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-              Content: x.toString(),
-              Button: MessageDialogButtonEnum.onlyok,
-            };
-
-            this._dialog.open(MessageDialogComponent, {
-              disableClose: false,
-              width: '500px',
-              data: dlginfo,
-            }).afterClosed().subscribe((x2: any) => {
-              // Do nothing!
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent, failed: ${x2}`);
-              }
-            });
+            console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent, failed: ${x2}`);
           }
         });
-    }
-
-    // Update mode
-    this.detailObject.Content = tinymce.activeEditor.getContent();
-    this._storageService.updateObject(this.detailObject);
+      }
+    });
   }
 }

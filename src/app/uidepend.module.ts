@@ -2,8 +2,7 @@ import { NgModule, ModuleWithProviders, Optional, SkipSelf } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
-import {
-  MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatPaginatorModule,
+import { MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatPaginatorModule,
   MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatBadgeModule,
   MatDialogModule, MatDividerModule, MatGridListModule, MatIconModule, MatInputModule,
   MatListModule, MatMenuModule, MatProgressBarModule, MatProgressSpinnerModule,
@@ -16,6 +15,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { SplitAreaDirective, SplitHandleDirective, SplitDirective } from './directives';
 import { OperatorFilterPipe, } from './pipes';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
 @NgModule({
   imports: [
@@ -56,6 +56,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     MatTooltipModule,
     MatTreeModule,
     NgxEchartsModule,
+    EditorModule,
   ],
   declarations: [
     TinyMceDirective,
@@ -104,6 +105,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NgxEchartsModule,
     TinyMceDirective,
     FlexLayoutModule,
+    EditorModule,
 
     SplitAreaDirective,
     SplitHandleDirective,

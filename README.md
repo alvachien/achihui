@@ -55,7 +55,7 @@ This project also require the following components:
 * [Material](https://github.com/angular/material2)
 * [Ngx-translate](https://github.com/ngx-translate/core)
 * [Oidc-Client](https://github.com/IdentityModel/oidc-client-js)
-* [TinyMce](https://www.tinymce.com/)
+* [TinyMce](https://www.tinymce.cloud/)
 * [Moment.js](https://momentjs.com/)
 * [FullCalendar](https://fullcalendar.io/)
 * [ECharts](http://echarts.baidu.com/)

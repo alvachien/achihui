@@ -33,22 +33,27 @@
             ],
             "styles": [
               "node_modules/fullcalendar/dist/fullcalendar.min.css",
+              "node_modules/tinymce/skins/content/default/content.min.css",
+              "node_modules/tinymce/ui/oxide/content.min.css",
+              "node_modules/tinymce/ui/oxide/content.inline.min.css",
+              "node_modules/tinymce/ui/oxide/skin.min.css",
+              "node_modules/tinymce/ui/oxide/skin.mobile.min.css",
               "src/styles.scss"
             ],
             "scripts": [
               "node_modules/fullcalendar/dist/fullcalendar.min.js",
               "node_modules/tinymce/tinymce.min.js",
-              "node_modules/tinymce/themes/modern/theme.min.js",
-              "node_modules/tinymce/plugins/link/plugin.min.js",
-              "node_modules/tinymce/plugins/paste/plugin.min.js",
-              "node_modules/tinymce/plugins/table/plugin.min.js",
+              "node_modules/tinymce/themes/silver/theme.min.js",
               "node_modules/tinymce/plugins/advlist/plugin.min.js",
               "node_modules/tinymce/plugins/autolink/plugin.min.js",
+              "node_modules/tinymce/plugins/code/plugin.min.js",
+              "node_modules/tinymce/plugins/colorpicker/plugin.min.js",
+              "node_modules/tinymce/plugins/fullscreen/plugin.min.js",
               "node_modules/tinymce/plugins/image/plugin.min.js",
-              "node_modules/tinymce/plugins/lists/plugin.min.js",
-              "node_modules/tinymce/plugins/charmap/plugin.min.js",
+              "node_modules/tinymce/plugins/link/plugin.min.js",
+              "node_modules/tinymce/plugins/table/plugin.min.js",
               "node_modules/tinymce/plugins/print/plugin.min.js",
-              "node_modules/tinymce/plugins/preview/plugin.min.js"
+              "node_modules/tinymce/plugins/searchreplace/plugin.min.js"
             ]
           },
           "configurations": {
@@ -119,21 +124,26 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
               "node_modules/fullcalendar/dist/fullcalendar.min.js",
-              "node_modules/tinymce/tinymce.js",
-              "node_modules/tinymce/themes/modern/theme.js",
-              "node_modules/tinymce/plugins/link/plugin.js",
-              "node_modules/tinymce/plugins/paste/plugin.js",
-              "node_modules/tinymce/plugins/table/plugin.js",
-              "node_modules/tinymce/plugins/advlist/plugin.js",
-              "node_modules/tinymce/plugins/autolink/plugin.js",
-              "node_modules/tinymce/plugins/image/plugin.js",
-              "node_modules/tinymce/plugins/lists/plugin.js",
-              "node_modules/tinymce/plugins/charmap/plugin.js",
-              "node_modules/tinymce/plugins/print/plugin.js",
-              "node_modules/tinymce/plugins/preview/plugin.js"
+              "node_modules/tinymce/tinymce.min.js",
+              "node_modules/tinymce/themes/silver/theme.min.js",
+              "node_modules/tinymce/plugins/advlist/plugin.min.js",
+              "node_modules/tinymce/plugins/autolink/plugin.min.js",
+              "node_modules/tinymce/plugins/code/plugin.min.js",
+              "node_modules/tinymce/plugins/colorpicker/plugin.min.js",
+              "node_modules/tinymce/plugins/fullscreen/plugin.min.js",
+              "node_modules/tinymce/plugins/image/plugin.min.js",
+              "node_modules/tinymce/plugins/link/plugin.min.js",
+              "node_modules/tinymce/plugins/table/plugin.min.js",
+              "node_modules/tinymce/plugins/print/plugin.min.js",
+              "node_modules/tinymce/plugins/searchreplace/plugin.min.js"
             ],
             "styles": [
-              "node_modules/fullcalendar/dist/fullcalendar.css",
+              "node_modules/fullcalendar/dist/fullcalendar.min.css",
+              "node_modules/tinymce/skins/content/default/content.min.css",
+              "node_modules/tinymce/ui/oxide/content.min.css",
+              "node_modules/tinymce/ui/oxide/content.inline.min.css",
+              "node_modules/tinymce/ui/oxide/skin.min.css",
+              "node_modules/tinymce/ui/oxide/skin.mobile.min.css",
               "src/styles.scss"
             ],
             "assets": [

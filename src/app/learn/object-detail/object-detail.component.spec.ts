@@ -16,19 +16,24 @@ describe('ObjectDetailComponent', () => {
   let component: ObjectDetailComponent;
   let fixture: ComponentFixture<ObjectDetailComponent>;
   let fakeData: FakeDataHelper;
+  let fetchAllCategoriesSpy: any;
+  let routerSpy: any;
+  let activatedRouteStub: any;
 
   beforeEach(async(() => {
     fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
+    fakeData.buildLearnCategories();
 
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const homeService: Partial<HomeDefDetailService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
+    activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
     const lrnStroageService: any = jasmine.createSpyObj('LearnStorageService', [
       'fetchAllCategories',
     ]);
-    const fetchAllCategoriesSpy: any = lrnStroageService.fetchAllCategories.and.returnValue(of([]));
+    fetchAllCategoriesSpy = lrnStroageService.fetchAllCategories.and.returnValue(of([]));
 
     TestBed.configureTestingModule({
       imports: [
@@ -63,10 +68,9 @@ describe('ObjectDetailComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ObjectDetailComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should be created', () => {
+  it('1. should be created without data', () => {
     expect(component).toBeTruthy();
   });
 });
