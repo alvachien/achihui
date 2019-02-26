@@ -10,7 +10,6 @@ import { MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatPagin
   MatSlideToggleModule, MatSnackBarModule, MatTableModule, MatTabsModule, MatToolbarModule,
   MatTooltipModule, MatFormFieldModule, MatExpansionModule, MatStepperModule, MatTreeModule,
 } from '@angular/material';
-import { TinyMceDirective } from './directives/tinymce.directive';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SplitAreaDirective, SplitHandleDirective, SplitDirective } from './directives';
 import { OperatorFilterPipe, } from './pipes';
@@ -59,7 +58,6 @@ import { EditorModule } from '@tinymce/tinymce-angular';
     EditorModule,
   ],
   declarations: [
-    TinyMceDirective,
     SplitAreaDirective,
     SplitHandleDirective,
     SplitDirective,
@@ -103,7 +101,6 @@ import { EditorModule } from '@tinymce/tinymce-angular';
     MatTooltipModule,
     MatTreeModule,
     NgxEchartsModule,
-    TinyMceDirective,
     FlexLayoutModule,
     EditorModule,
 

@@ -34,10 +34,10 @@
             "styles": [
               "node_modules/fullcalendar/dist/fullcalendar.min.css",
               "node_modules/tinymce/skins/content/default/content.min.css",
-              "node_modules/tinymce/ui/oxide/content.min.css",
-              "node_modules/tinymce/ui/oxide/content.inline.min.css",
-              "node_modules/tinymce/ui/oxide/skin.min.css",
-              "node_modules/tinymce/ui/oxide/skin.mobile.min.css",
+              "node_modules/tinymce/skins/ui/oxide/content.min.css",
+              "node_modules/tinymce/skins/ui/oxide/content.inline.min.css",
+              "node_modules/tinymce/skins/ui/oxide/skin.min.css",
+              "node_modules/tinymce/skins/ui/oxide/skin.mobile.min.css",
               "src/styles.scss"
             ],
             "scripts": [
@@ -140,10 +140,10 @@
             "styles": [
               "node_modules/fullcalendar/dist/fullcalendar.min.css",
               "node_modules/tinymce/skins/content/default/content.min.css",
-              "node_modules/tinymce/ui/oxide/content.min.css",
-              "node_modules/tinymce/ui/oxide/content.inline.min.css",
-              "node_modules/tinymce/ui/oxide/skin.min.css",
-              "node_modules/tinymce/ui/oxide/skin.mobile.min.css",
+              "node_modules/tinymce/skins/ui/oxide/content.min.css",
+              "node_modules/tinymce/skins/ui/oxide/content.inline.min.css",
+              "node_modules/tinymce/skins/ui/oxide/skin.min.css",
+              "node_modules/tinymce/skins/ui/oxide/skin.mobile.min.css",
               "src/styles.scss"
             ],
             "assets": [

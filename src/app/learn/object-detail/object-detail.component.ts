@@ -1,6 +1,9 @@
-import { Component, OnInit, OnDestroy, AfterContentInit, EventEmitter,
-  Input, Output, ViewContainerRef, } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, AfterContentInit, EventEmitter,
+  Input, Output, ViewContainerRef,
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormGroup, FormBuilder, Validators, FormControl, } from '@angular/forms';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ReplaySubject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -19,11 +22,25 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
 
   private _destroyed$: ReplaySubject<boolean>;
   private routerID: number = -1; // Current object ID in routing
+  private uiMode: UIMode = UIMode.Create;
 
   public currentMode: string;
-  public detailObject: LearnObject | undefined = undefined;
-  public uiMode: UIMode = UIMode.Create;
   public arCategories: LearnCategory[] = [];
+  public detailForm: FormGroup = new FormGroup({
+    nameControl: new FormControl('', [Validators.required, Validators.maxLength(45)]),
+    ctgyControl: new FormControl('', [Validators.required]),
+    contentControl: new FormControl('', [Validators.required]),
+  });
+  public tinyMceSettings: any = {
+    skin_url: '/assets/tinymceskins/ui/oxide',
+    content_css: '/assets/tinymceskins/content/default/content.min.css',
+    // theme_url: '/mytheme/mytheme.js',
+    inline: false,
+    statusbar: false,
+    browser_spellcheck: true,
+    height: 500,
+    plugins: 'fullscreen',
+  };
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -35,8 +52,6 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering ObjectDetailComponent constructor...');
     }
-
-    this.detailObject = new LearnObject();
   }
 
   ngOnInit(): void {
@@ -48,15 +63,16 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
 
     this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x1: any) => {
       this.arCategories = x1;
+
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngAfterViewInit for activateRoute URL: ${x}`);
+          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
 
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
-            this.onInitCreateMode();
+            this.uiMode = UIMode.Create;
           } else if (x[0].path === 'edit') {
             this.routerID = +x[1].path;
 
@@ -69,32 +85,55 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readObjectEvent.subscribe((x2: any) => {
-              if (x2 instanceof LearnObject) {
-                if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngAfterViewInit in ObjectDetailComponent, succeed to readControlCenterEvent : ${x2}`);
-                }
-                this.detailObject = x2;
-              } else {
-                if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering ngAfterViewInit in ObjectDetailComponent, failed to readControlCenterEvent : ${x2}`);
-                }
-                this.detailObject = new LearnObject();
+            this._storageService.readObject(this.routerID).subscribe((x2: any) => {
+              if (environment.LoggingLevel >= LogLevel.Debug) {
+                console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit readObject`);
               }
-            });
+              this.detailForm.get('nameControl').setValue(x2.Name);
+              this.detailForm.get('ctgyControl').setValue(x2.CategoryId);
+              this.detailForm.get('contentControl').setValue(x2.Content);
+              if (this.uiMode === UIMode.Display) {
+                this.detailForm.disable();
+              } else {
+                this.detailForm.enable();
+              }
+            }, (error: any) => {
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Error]: Entering ObjectDetailComponent ngOnInit readObject failed: ${error}`);
+              }
+              // Show error message
+              const dlginfo: MessageDialogInfo = {
+                Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+                Content: error.toString(),
+                Button: MessageDialogButtonEnum.onlyok,
+              };
 
-            this._storageService.readObject(this.routerID);
+              this._dialog.open(MessageDialogComponent, {
+                disableClose: false,
+                width: '500px',
+                data: dlginfo,
+              });
+            });
           }
         }
-      }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering ObjectDetailComponent, ngOnInit failed with activateRoute URL: ${error}`);
-        }
-      }, () => {
-        // Empty
       });
     }, (error: any) => {
-      // Empty
+      if (environment.LoggingLevel >= LogLevel.Error) {
+        console.error(`AC_HIH_UI [Error]: Entering ObjectDetailComponent ngOnInit, fetchAllCategories failed: ${error}`);
+      }
+
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     });
   }
 
@@ -118,8 +157,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // Name
-    if (this.detailObject.Name.trim().length <= 0) {
+    if (!this.detailForm.valid) {
       return false;
     }
 
@@ -127,6 +165,10 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
+    if (!this.canSubmit()) {
+      return;
+    }
+
     if (this.uiMode === UIMode.Create) {
       this.onCreateObject();
     } else if (this.uiMode === UIMode.Change) {
@@ -140,24 +182,30 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
   }
 
   private onInitCreateMode(): void {
-    this.detailObject = new LearnObject();
     this.uiMode = UIMode.Create;
-    this.detailObject.HID = this._homedefService.ChosedHome.ID;
+    this.detailForm.reset();
   }
 
+  private _generateObject(): LearnObject {
+    let obj: LearnObject = new LearnObject();
+    obj.Name = this.detailForm.get('nameControl').value;
+    obj.CategoryId = this.detailForm.get('ctgyControl').value;
+    obj.Content = this.detailForm.get('contentControl').value;
+    return obj;
+  }
   private onCreateObject(): void {
-    this._storageService.createObject(this.detailObject).pipe(takeUntil(this._destroyed$))
-    .subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent`);
-      }
+    let detailObject: LearnObject = this._generateObject();
+    this._storageService.createObject(detailObject)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent`);
+        }
 
-      // Navigate back to list view
-      if (x instanceof LearnObject) {
         // Show the snackbar
         let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
           this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-            duration: 3000,
+            duration: 2000,
           });
 
         let recreate: boolean = false;
@@ -173,11 +221,11 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
             this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
           }
         });
-      } else {
+      }, (error: any) => {
         // Show error message
         const dlginfo: MessageDialogInfo = {
           Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
+          Content: error.toString(),
           Button: MessageDialogButtonEnum.onlyok,
         };
 
@@ -185,42 +233,35 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent, failed: ${x2}`);
-          }
         });
-      }
-    });
-
+      });
   }
 
   private onUpdateObject(): void {
     // Update mode
-    this._storageService.updateObject(this.detailObject).pipe(takeUntil(this._destroyed$))
-    .subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent`);
-      }
+    let detailObject: LearnObject = this._generateObject();
+    this._storageService.updateObject(detailObject)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent`);
+        }
 
-      // Navigate back to list view
-      if (x instanceof LearnObject) {
         // Show the snackbar
         let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
           undefined, {
-            duration: 3000,
+            duration: 2000,
           });
 
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           this._router.navigate(['/learn/object/display/' + x.Id.toString()]);
         });
-      } else {
+      }, (error: any) => {
         // Show error message with dialog
         const dlginfo: MessageDialogInfo = {
           Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: x.toString(),
+          Content: error.toString(),
           Button: MessageDialogButtonEnum.onlyok,
         };
 
@@ -228,13 +269,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
           disableClose: false,
           width: '500px',
           data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent, failed: ${x2}`);
-          }
         });
-      }
-    });
+      });
   }
 }

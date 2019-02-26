@@ -65,23 +65,3 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  * Hammerjs
  */
 import 'hammerjs/hammer';
-
-// Import TinyMCE
-import tinymce from 'tinymce/tinymce';
-
-// A theme is also required
-import 'tinymce/themes/silver';
-
-// Any plugins you want to use has to be imported
-import 'tinymce/plugins/advlist';
-import 'tinymce/plugins/code';
-import 'tinymce/plugins/colorpicker';
-import 'tinymce/plugins/contextmenu';
-import 'tinymce/plugins/fullpage';
-import 'tinymce/plugins/fullscreen';
-import 'tinymce/plugins/image';
-import 'tinymce/plugins/imagetools';
-import 'tinymce/plugins/link';
-import 'tinymce/plugins/noneditable';
-import 'tinymce/plugins/paste';
-import 'tinymce/plugins/table';

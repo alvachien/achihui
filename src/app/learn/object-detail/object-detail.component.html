@@ -4,31 +4,29 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-form-field>
-      <input matInput type="text" placeholder="{{'Common.Name' |translate}}" [readonly]="!isFieldChangable" [(ngModel)]="detailObject.Name"
-        name="name" #objname maxlength="45">
-      <mat-hint align="end">{{objname.value.length}} / 45</mat-hint>
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-select placeholder="{{'Common.Category' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.CategoryId"
-        name="ctgy">
-        <mat-option *ngFor="let ctgy of arCategories" [value]="ctgy.Id">
-          ({{ctgy.Id}}) {{ctgy.FullDisplayText}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <form [formGroup]="detailForm">
+      <mat-form-field>
+        <input matInput type="text" placeholder="{{'Common.Name' |translate}}" 
+          formControlName="nameControl" #objname maxlength="45">
+        <mat-hint align="end">{{objname.value.length}} / 45</mat-hint>
+      </mat-form-field>
   
-    <div class="achih-control-full-width">
-      <editor [(ngModel)]="detailObject.Content"
-      inline="true"
-      plugins="link"
-      ></editor>
-    </div>
-
+      <mat-form-field>
+        <mat-select placeholder="{{'Common.Category' | translate}}" 
+          formControlName="ctgyControl" name="ctgy">
+          <mat-option *ngFor="let ctgy of arCategories" [value]="ctgy.Id">
+            ({{ctgy.Id}}) {{ctgy.FullDisplayText}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <div class="achih-control-full-width">
+        <editor formControlName="contentControl" [init]="tinyMceSettings"></editor>
+      </div>
+    </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
+    <button mat-button color="primary" *ngIf="isFieldChangable" [disabled]="!canSubmit()" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
     <button mat-button color="warn" (click)="onCancel()">{{'Common.BackToList' | translate}}</button>
   </mat-card-actions>
 </mat-card>

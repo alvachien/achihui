@@ -49,10 +49,6 @@ export class LearnStorageService {
   }
 
   // Events
-  createObjectEvent: EventEmitter<LearnObject | string | undefined> = new EventEmitter(undefined);
-  updateObjectEvent: EventEmitter<LearnObject | string | undefined> = new EventEmitter(undefined);
-  readObjectEvent: EventEmitter<LearnObject | string | undefined> = new EventEmitter(undefined);
-  deleteObjectEvent: EventEmitter<string | undefined> = new EventEmitter(undefined);
   createHistoryEvent: EventEmitter<LearnHistory | string | undefined> = new EventEmitter(undefined);
   readHistoryEvent: EventEmitter<LearnHistory | string | undefined> = new EventEmitter(undefined);
   createEnWordEvent: EventEmitter<EnWord | string | undefined> = new EventEmitter(undefined);

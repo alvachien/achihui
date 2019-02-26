@@ -95,6 +95,7 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering QuestionBankDetailComponent ngOnDestroy...');
