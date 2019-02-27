@@ -92,7 +92,7 @@
           <mat-cell *matCellDef="let row">
             <mat-form-field>
               <mat-select disabled [(ngModel)]="row.TranType" name="ittt">
-                <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
+                <mat-option *ngFor="let tt of arTranTypes" [value]="tt.Id">
                   <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
                 </mat-option>
               </mat-select>

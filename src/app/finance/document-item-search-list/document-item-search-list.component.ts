@@ -1,16 +1,15 @@
 import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter, OnDestroy } from '@angular/core';
-import {
-  GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil,
-  DocumentItem, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection,
-  GeneralFilterValueType, LogLevel,
-} from '../../model';
+import { MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { environment, } from '../../../environments/environment';
-import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { AuthService, FinanceStorageService } from '../../services';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
 import * as moment from 'moment';
+
+import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDisplayStringUtil,
+  DocumentItem, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection,
+  GeneralFilterValueType, LogLevel, TranType, UICommonLabelEnum, } from '../../model';
+import { environment, } from '../../../environments/environment';
+import { AuthService, FinanceStorageService, UIStatusService } from '../../services';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
   selector: 'hih-fin-document-item-search-list',
@@ -26,13 +25,16 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
   displayedColumns: string[] = ['AccountId', 'DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
   arUIAccount: UIAccountForSelection[] = [];
+  arTranTypes: TranType[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isLoadingResults: boolean = false;
   resultsLength: number;
-  public subjFilters: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  public subjFilters: BehaviorSubject<GeneralFilterItem[]> = new BehaviorSubject([]);
 
-  constructor(private _storageService: FinanceStorageService) {
+  constructor(private _storageService: FinanceStorageService,
+    private _uiStatusService: UIStatusService,
+    private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent constructor...');
     }
@@ -42,31 +44,31 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
     this.allFields = [{
       displayas: 'Finance.TransactionType',
       value: 'TRANTYPE',
-      valueType: 1,
+      valueType: GeneralFilterValueType.number, // 1
     }, {
       displayas: 'Finance.IsExpense',
       value: 'TRANTYPE_EXP',
-      valueType: 4,
+      valueType: GeneralFilterValueType.boolean, // 4
     }, {
       displayas: 'Finance.Currency',
       value: 'TRANCURR',
-      valueType: 2,
+      valueType: GeneralFilterValueType.string, // 2
     }, {
       displayas: 'Finance.Account',
       value: 'ACCOUNTID',
-      valueType: 1,
+      valueType: GeneralFilterValueType.number, // 1
     }, {
       displayas: 'Finance.ControlCenter',
       value: 'CONTROLCENTERID',
-      valueType: 1,
+      valueType: GeneralFilterValueType.number, // 1
     }, {
       displayas: 'Finance.Order',
       value: 'ORDERID',
-      valueType: 1,
+      valueType: GeneralFilterValueType.number, // 1
     }, {
       displayas: 'Finance.TransactionDate',
       value: 'TRANDATE',
-      valueType: 3,
+      valueType: GeneralFilterValueType.date, // 3
     },
     ];
   }
@@ -83,8 +85,23 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
     ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      // Tran type
+      this.arTranTypes = x[2];
 
       this.onAddFilter();
+    }, (error: any) => {
+      // Error occurred, show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     });
   }
 
@@ -138,8 +155,10 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onAddFilter(): void {
@@ -160,9 +179,12 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
   }
   public onSearch(): void {
     // Do the translate first
-    let arRealFilter: any[] = [];
+    let arRealFilter: GeneralFilterItem[] = [];
     this.filters.forEach((value: GeneralFilterItem) => {
-      let val: any = {};
+      if (!value.valueType || !value.fieldName) {
+        return;
+      }
+      let val: GeneralFilterItem = new GeneralFilterItem();
       val.valueType = +value.valueType;
       switch (value.valueType) {
         case GeneralFilterValueType.boolean: {

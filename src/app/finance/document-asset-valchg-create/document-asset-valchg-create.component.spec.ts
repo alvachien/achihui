@@ -314,7 +314,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -327,7 +327,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
+      fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
@@ -342,7 +342,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Amount
       // component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -355,8 +355,8 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1: desp is mandatory', fakeAsync(() => {
@@ -370,7 +370,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       // component.firstFormGroup.get('despControl').setValue('test');
@@ -383,8 +383,8 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1: prevent the case that neither cc nor order', fakeAsync(() => {
@@ -398,7 +398,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -411,8 +411,8 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1: prevent the case that both cc and order', fakeAsync(() => {
@@ -426,7 +426,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -440,8 +440,8 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1: exchange rate is mandatory in foreign currency', fakeAsync(() => {
@@ -475,8 +475,8 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
-      fixture.detectChanges(); 
-      expect(component._stepper.selectedIndex).toBe(0);     
+      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1. shall go to step 2 in base currency case', fakeAsync(() => {
@@ -490,7 +490,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -500,7 +500,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -509,7 +509,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       fixture.detectChanges();
       expect(getDocItemSpy).toHaveBeenCalled();
     }));
-    
+
     it('step 1. shall go to step 2 in foreign currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
@@ -522,7 +522,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
       component.firstFormGroup.get('currControl').setValue('USD');
-      // Exchange rate 
+      // Exchange rate
       component.firstFormGroup.get('exgControl').setValue(643.12);
       // Exchange rate plan
       // Desp
@@ -534,7 +534,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -543,28 +543,28 @@ describe('DocumentAssetValChgCreateComponent', () => {
     it('step 2. shall list out the previous docs (base currency case)', fakeAsync(() => {
       getDocItemSpy.and.returnValue(asyncData(
         {
-          contentList:[{
-            tranType_Exp:false,
+          contentList: [{
+            tranType_Exp: false,
             tranCurr: 'CNY',
             tranAmount_Org: 6178.00,
-            tranAmount_LC:6178.00,
-            balance:6178.00,
-            accountName: 'SONY RX100 V',            
+            tranAmount_LC: 6178.00,
+            balance: 6178.00,
+            accountName: 'SONY RX100 V',
             tranDate: '2017-10-07',
             docDesp: 'SONY RX100 V',
-            docID:357,
+            docID: 357,
             itemID: 2,
-            accountID:21,
-            tranType:1,
-            tranAmount:6178.00,
-            useCurr2:false,
-            controlCenterID:9,
-            orderID:0,
+            accountID: 21,
+            tranType: 1,
+            tranAmount: 6178.00,
+            useCurr2: false,
+            controlCenterID: 9,
+            orderID: 0,
             desp: 'SONY RX100 V',
-            tagTerms:[],
+            tagTerms: [],
           }],
-          totalCount:1,
-        }
+          totalCount: 1,
+        },
       ));
 
       fixture.detectChanges(); // ngOnInit
@@ -577,7 +577,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -587,7 +587,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -620,28 +620,28 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       getDocItemSpy.and.returnValue(asyncData(
         {
-          contentList:[{
-            tranType_Exp:false,
+          contentList: [{
+            tranType_Exp: false,
             tranCurr: 'CNY',
             tranAmount_Org: 6178.00,
-            tranAmount_LC:6178.00,
-            balance:6178.00,
-            accountName: 'SONY RX100 V',            
+            tranAmount_LC: 6178.00,
+            balance: 6178.00,
+            accountName: 'SONY RX100 V',
             tranDate: '2017-10-07',
             docDesp: 'SONY RX100 V',
-            docID:357,
+            docID: 357,
             itemID: 2,
-            accountID:21,
-            tranType:1,
-            tranAmount:6178.00,
-            useCurr2:false,
-            controlCenterID:9,
-            orderID:0,
+            accountID: 21,
+            tranType: 1,
+            tranAmount: 6178.00,
+            useCurr2: false,
+            controlCenterID: 9,
+            orderID: 0,
             desp: 'SONY RX100 V',
-            tagTerms:[],
+            tagTerms: [],
           }],
-          totalCount:1,
-        }
+          totalCount: 1,
+        },
       ));
 
       createDocSpy.and.returnValue(asyncData(110));
@@ -668,7 +668,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -678,7 +678,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -712,7 +712,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -722,7 +722,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
@@ -760,7 +760,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
       // Currency - default
-      // Exchange rate 
+      // Exchange rate
       // Exchange rate plan
       // Desp
       component.firstFormGroup.get('despControl').setValue('test');
@@ -770,7 +770,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       expect(component.firstFormGroup.valid).toBeTruthy();
       expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
-      let nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
+      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
       expect(component._stepper.selectedIndex).toBe(1);
