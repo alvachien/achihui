@@ -10,7 +10,8 @@ import { HomeDefDetailService } from './home-def-detail.service';
 import { UserAuthInfo, FinanceADPCalAPIInput, FinanceLoanCalAPIInput, RepeatFrequencyEnum,
   FinanceADPCalAPIOutput, FinanceLoanCalAPIOutput, momentDateFormat, Document, DocumentItem,
   financeDocTypeNormal, DocumentWithPlanExgRateForUpdate, ReportTrendExTypeEnum,
-  Account, TemplateDocADP, Order, AccountStatusEnum, } from '../model';
+  Account, TemplateDocADP, Order, AccountStatusEnum, GeneralFilterItem, GeneralFilterValueType,
+  GeneralFilterOperatorEnum, } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 
@@ -2624,8 +2625,14 @@ describe('FinanceStorageService', () => {
 
   describe('searchDocItem', () => {
     let apiurl: string = environment.ApiUrl + '/api/FinanceDocItemSearch';
+    let arItem: GeneralFilterItem[] = [];
 
     beforeEach(() => {
+      let item: GeneralFilterItem = new GeneralFilterItem();
+      item.fieldName = 'test';
+      item.operator = GeneralFilterOperatorEnum.Equal;
+      item.valueType = GeneralFilterValueType.string;
+      arItem.push(item);
       service = TestBed.get(FinanceStorageService);
     });
 
@@ -2635,10 +2642,9 @@ describe('FinanceStorageService', () => {
     });
 
     it('should return data for success case', () => {
-      service.searchDocItem().subscribe(
+      service.searchDocItem(arItem, 100, 10).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
-          expect(data.length).toEqual(2);
         },
         (fail: any) => {
           // Empty
@@ -2647,19 +2653,25 @@ describe('FinanceStorageService', () => {
 
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+        return requrl.method === 'POST' && requrl.url === apiurl && requrl.params.has('hid');
        });
 
       // Respond with the mock data
-      req.flush([{'accountID': 4, 'accountName': 'cash1', 'accountCategoryID': 1,
-        'accountCategoryName': 'Sys.AcntCty.Cash', 'debitBalance': 67973.86, 'creditBalance': 117976.61, 'balance': -50002.75},
-      {'accountID': 5, 'accountName': 'cash2', 'accountCategoryID': 1, 'accountCategoryName': 'Sys.AcntCty.Cash',
-      'debitBalance': 605692.00, 'creditBalance': 95509.18, 'balance': 510182.82}]);
+      req.flush({
+        'contentList': [
+          {'docID': 473, 'itemID': 2, 'hid': 0, 'tranDate': '2017-12-02', 'docDesp': '美元兑换', 'accountID': 4,
+          'tranType': 37, 'tranTypeName': '转账收入', 'tranType_Exp': false, 'useCurr2': true, 'tranCurr': 'USD',
+          'tranAmount': 1000.00, 'tranAmount_Org': 1000.00, 'tranAmount_LC': 6632.00, 'controlCenterID': 0,
+          'orderID': 12, 'desp': '美元兑换'},
+          {'docID': 474, 'itemID': 1, 'hid': 0, 'tranDate': '2017-12-04', 'docDesp': '12.4在美国开支', 'accountID': 4,
+          'tranType': 46, 'tranTypeName': '早中晚餐', 'tranType_Exp': true, 'useCurr2': false, 'tranCurr': 'USD',
+          'tranAmount': -6.55, 'tranAmount_Org': 6.55, 'tranAmount_LC': -43.434, 'controlCenterID': 0, 'orderID': 12,
+          'desp': 'Walmart买面包和橙子'}], 'totalCount': 17});
     });
 
     it('should return error in case error appear', () => {
       const msg: string = 'server failed';
-      service.getReportBS().subscribe(
+      service.searchDocItem(arItem).subscribe(
         (data: any) => {
           fail('expected to fail');
         },
@@ -2669,7 +2681,7 @@ describe('FinanceStorageService', () => {
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
+        return requrl.method === 'POST' && requrl.url === apiurl && requrl.params.has('hid');
       });
 
       // respond with a 500 and the error message in the body

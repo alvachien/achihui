@@ -18,7 +18,7 @@ import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncDa
 import { DocumentItemSearchListComponent } from './document-item-search-list.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
-import { DocumentItem } from '../../model';
+import { DocumentItem, DocumentItemWithBalance, GeneralFilterValueType } from '../../model';
 
 describe('DocumentItemSearchListComponent', () => {
   let component: DocumentItemSearchListComponent;
@@ -99,7 +99,7 @@ describe('DocumentItemSearchListComponent', () => {
   describe('search out the document items', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
-    let listFIDocItems: DocumentItem[];
+    let listFIDocItems: DocumentItemWithBalance[];
 
     beforeEach(() => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
@@ -107,14 +107,22 @@ describe('DocumentItemSearchListComponent', () => {
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
 
       listFIDocItems = [];
-      let item: DocumentItem = new DocumentItem();
+      let item: DocumentItemWithBalance = new DocumentItemWithBalance();
+      item.DocId = 111;
       item.ItemId = 1;
       item.AccountId = fakeData.finAccounts[0].Id;
       item.TranAmount = 100;
+      item.TranAmount_LC = 100;
+      item.TranAmount_Org = 100;
+      item.TranCurr = fakeData.chosedHome.BaseCurrency;
       item.ControlCenterId = 11;
       item.Desp = 'Item 1';
       listFIDocItems.push(item);
-      searchDocItemSpy.and.returnValue(asyncData(listFIDocItems));
+      let rst: any = {
+        totalCount: 2,
+        items: listFIDocItems,
+      };
+      searchDocItemSpy.and.returnValue(asyncData(rst));
     });
 
     beforeEach(inject([OverlayContainer],
@@ -230,7 +238,50 @@ describe('DocumentItemSearchListComponent', () => {
       component.onFieldSelectionChanged(component.filters[0]);
       expect(component.filters[0].valueType).toEqual(4);
     }));
-    it('should change the operators dynamically', fakeAsync(() => {
+    it('should display the doc item if search successfully', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component.filters.length).toEqual(1);
+
+      // Change the field name - number
+      component.filters[0].fieldName = component.allFields.find((val: any) => {
+        return val.valueType === 1; // number;
+      }).value;
+      component.onFieldSelectionChanged(component.filters[0]);
+      component.filters[0].lowValue = 1;
+
+      component.onAddFilter();
+      component.filters[1].fieldName = component.allFields.find((val: any) => {
+        return val.valueType === GeneralFilterValueType.string; // string;
+      }).value;
+      component.onFieldSelectionChanged(component.filters[1]);
+      component.filters[1].lowValue = 'aaa';
+
+      component.onAddFilter();
+      component.filters[2].fieldName = component.allFields.find((val: any) => {
+        return val.valueType === GeneralFilterValueType.date; // date;
+      }).value;
+      component.onFieldSelectionChanged(component.filters[2]);
+      component.filters[2].lowValue = '2019-02-28';
+
+      component.onAddFilter();
+      component.filters[3].fieldName = component.allFields.find((val: any) => {
+        return val.valueType === GeneralFilterValueType.boolean; // boolean;
+      }).value;
+      component.onFieldSelectionChanged(component.filters[3]);
+      component.filters[3].lowValue = true;
+
+      component.onSearch();
+      expect(searchDocItemSpy).toHaveBeenCalled();
+      tick();
+      fixture.detectChanges();
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
+    }));
+    it('should display nothing if search failed', fakeAsync(() => {
+      searchDocItemSpy.and.returnValue(asyncError('500 error'));
+
       fixture.detectChanges(); // ngOnInit
       tick(); // complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -248,6 +299,7 @@ describe('DocumentItemSearchListComponent', () => {
       expect(searchDocItemSpy).toHaveBeenCalled();
       tick();
       fixture.detectChanges();
+      expect(component.dataSource.data.length).toEqual(0);
     }));
   });
 });

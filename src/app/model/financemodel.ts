@@ -2978,7 +2978,7 @@ export class DocumentItemWithBalance {
     this._tranDate = td;
   }
   get TranDateFormatString(): string {
-    return this._tranDate.format(hih.momentDateFormat);
+    return this._tranDate ? this._tranDate.format(hih.momentDateFormat) : null;
   }
 
   public onSetData(data: any): void {

@@ -3,6 +3,7 @@ import { MatPaginator, MatDialog, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange,
   financeDocTypeTransfer, financeDocTypeAdvancePayment, OverviewScopeEnum, getOverviewScopeRange,
@@ -46,7 +47,6 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
 
     this._destroyed$ = new ReplaySubject(1);
     this.selectedDocScope = OverviewScopeEnum.CurrentMonth;
-    this.isLoadingResults = true;
   }
 
   ngAfterContentInit(): void {
@@ -60,6 +60,7 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
         startWith({}),
         switchMap(() => {
           let { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
+          this.isLoadingResults = true;
           return this._storageService!.fetchAllDocuments(bgn, end, this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize);
         }),
         map((revdata: any) => {
@@ -104,8 +105,10 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
+    }
   }
 
   public onRefreshList(): void {
@@ -149,7 +152,6 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
   public onCreateRepayDocument(): void {
     this._router.navigate(['/finance/document/createrepayex']);
   }
-
   public onDisplayDocument(doc: Document): void {
     this._router.navigate(['/finance/document/display', doc.Id]);
   }
