@@ -22,13 +22,13 @@ export class LocationListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(public _storageService: LibraryStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LocationListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering LocationListComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LocationListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering LocationListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -36,14 +36,14 @@ export class LocationListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LocationListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering LocationListComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LocationListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering LocationListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

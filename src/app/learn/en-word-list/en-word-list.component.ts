@@ -29,7 +29,7 @@ export class EnWordListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnWordListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnWordListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -51,14 +51,14 @@ export class EnWordListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnWordListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnWordListComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnWordListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnWordListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

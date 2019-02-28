@@ -124,7 +124,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
 
   @HostListener('change') onChange(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent onChange...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent onChange...');
     }
     if (this._onChange) {
       this._onChange(this.extObject);
@@ -132,7 +132,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
   }
   @HostListener('blur') onTouched(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent onTouched...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent onTouched...');
     }
     if (this._onTouched) {
       this._onTouched();

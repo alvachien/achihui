@@ -138,13 +138,13 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -204,7 +204,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

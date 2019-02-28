@@ -108,7 +108,7 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -123,7 +123,7 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isLoadingResults = true;
     this._storageService.fetchAllTranTypes().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnInit, fetchAllTranTypes...');
+        console.debug('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnInit, fetchAllTranTypes...');
       }
 
       if (x) {
@@ -145,7 +145,7 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngAfterViewInit...');
     }
     // !!! Second option !!!
     // this.ttDatabase = new TranTypeListDao(this._storageService);
@@ -176,7 +176,7 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering TranTypeListComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

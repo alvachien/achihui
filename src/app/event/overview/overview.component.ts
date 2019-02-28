@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { UIStatusService, EventStorageService } from '../../services';
 import { LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN,
   GeneralEvent, momentDateFormat, HabitEventDetailWithCheckInStatistics,
@@ -15,7 +15,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
 })
-export class OverviewComponent implements OnInit, AfterViewInit {
+export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   @ViewChild('fcal') elemcalendar: ElementRef;
   ctrlCalendar: Calendar;
@@ -37,7 +37,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OverviewComponent ngOnInit ...');
+      console.debug('AC_HIH_UI [Debug]: Entering OverviewComponent ngOnInit ...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -45,7 +45,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OverviewComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering OverviewComponent ngAfterViewInit...');
     }
 
     let that: any = this;
@@ -75,7 +75,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
               for (let ci of data.contentList) {
                 let gevnt: GeneralEvent = new GeneralEvent();
                 gevnt.onSetData(ci);
-  
+
                 let evnt: any = {
                   title: gevnt.Name,
                   start: gevnt.StartTimeFormatString,
@@ -86,9 +86,9 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                   color: 'yellow',
                   textColor: 'black',
                 };
-  
+
                 arevents.push(evnt);
-              }  
+              }
             }
             successCallback(arevents);
           });
@@ -106,7 +106,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
               for (let ci2 of data) {
                 let hevnt: HabitEventDetailWithCheckInStatistics = new HabitEventDetailWithCheckInStatistics();
                 hevnt.onSetData(ci2);
-  
+
                 let evnt: any = {
                   title: hevnt.name,
                   start: hevnt.StartDateFormatString,
@@ -145,7 +145,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OverviewComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering OverviewComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
@@ -153,13 +153,13 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
   public onNavigateToGeneralEvent(id: number): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OverviewComponent onNavigateToGeneralEvent...');
+      console.debug('AC_HIH_UI [Debug]: Entering OverviewComponent onNavigateToGeneralEvent...');
     }
     this._router.navigate(['/event/general/display/' + id.toString()]);
   }
   public onNavigateToHabitEvent(id: number): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OverviewComponent onNavigateToHabitEvent...');
+      console.debug('AC_HIH_UI [Debug]: Entering OverviewComponent onNavigateToHabitEvent...');
     }
     this._router.navigate(['/event/habit/display/' + id.toString()]);
   }

@@ -46,7 +46,7 @@ export class TranTypeTreeComponent implements OnInit, OnDestroy {
     public _uiStatusService: UIStatusService,
     private _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent constructor...');
     }
 
     this.isLoadingResults = false;
@@ -59,14 +59,14 @@ export class TranTypeTreeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
     this._storageService.fetchAllTranTypes().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnInit, fetchAllTranTypes...');
+        console.debug('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnInit, fetchAllTranTypes...');
       }
 
       if (x) {
@@ -85,7 +85,7 @@ export class TranTypeTreeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering TranTypeTreeComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

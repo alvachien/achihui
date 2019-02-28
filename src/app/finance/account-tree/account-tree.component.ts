@@ -66,7 +66,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
     private _snackbar: MatSnackBar,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent constructor...');
     }
 
     this.isLoadingResults = false;
@@ -87,7 +87,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -96,7 +96,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnDestroy...');
     }
 
     if (this._destroyed$) {
@@ -107,7 +107,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
 
   onTreeNodeClicked(node: AccountTreeFlatNode): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent onTreeNodeClicked...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent onTreeNodeClicked...');
     }
 
     this.curNode = node;
@@ -137,7 +137,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
 
   public onAccountStatusChange(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent onAccountStatusChange...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent onAccountStatusChange...');
     }
 
     this.isLoadingResults = true;
@@ -147,7 +147,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent onAccountStatusChange, fetchAllAccounts...');
+        console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent onAccountStatusChange, fetchAllAccounts...');
       }
 
       this.availableCategories = this._storageService.AccountCategories;
@@ -212,7 +212,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
   }
   private _refreshTree(isReload?: boolean): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent _refreshTree...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent _refreshTree...');
     }
     this.isLoadingResults = true;
 
@@ -220,7 +220,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((data: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Entering AccountTreeComponent _refreshTree, forkJoin...');
+          console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent _refreshTree, forkJoin...');
         }
 
         if (data instanceof Array && data.length > 0) {

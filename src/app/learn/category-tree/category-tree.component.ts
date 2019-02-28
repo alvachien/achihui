@@ -43,7 +43,7 @@ export class CategoryTreeComponent implements OnInit, OnDestroy {
 
   constructor(public _storageService: LearnStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering CategoryTreeComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering CategoryTreeComponent constructor...');
     }
 
     this.isLoadingResults = false;
@@ -56,7 +56,7 @@ export class CategoryTreeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering CategoryTreeComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering CategoryTreeComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -76,7 +76,7 @@ export class CategoryTreeComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering CategoryTreeComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering CategoryTreeComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

@@ -27,7 +27,7 @@ export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HistoryListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering HistoryListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -53,13 +53,13 @@ export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HistoryListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering HistoryListComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HistoryListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering HistoryListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

@@ -45,7 +45,7 @@ export class ControlCenterTreeComponent implements OnInit, OnDestroy {
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent constructor...');
     }
 
     this.isLoadingResults = false;
@@ -59,7 +59,7 @@ export class ControlCenterTreeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -67,7 +67,7 @@ export class ControlCenterTreeComponent implements OnInit, OnDestroy {
     this._storageService.fetchAllControlCenters()
       .subscribe((value: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent ngOnInit, fetchAllControlCenters...');
+          console.debug('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent ngOnInit, fetchAllControlCenters...');
         }
 
         if (this._storageService.ControlCenters) {

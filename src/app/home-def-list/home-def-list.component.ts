@@ -34,14 +34,14 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...');
     }
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
     this._fetchData();
@@ -49,7 +49,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

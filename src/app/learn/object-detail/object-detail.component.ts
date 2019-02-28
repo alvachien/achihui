@@ -50,13 +50,13 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectDetailComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -139,7 +139,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectDetailComponent, ngOnDestroy');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectDetailComponent, ngOnDestroy');
     }
 
     if (this._destroyed$) {

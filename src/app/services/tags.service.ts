@@ -20,7 +20,7 @@ export class TagsService {
     private _homeService: HomeDefDetailService,
     private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TagsService constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering TagsService constructor...');
     }
 
     // this._islistLoaded = false; // Performance improvement

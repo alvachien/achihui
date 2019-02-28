@@ -54,13 +54,13 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
 
@@ -75,7 +75,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
    */
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent ngAfterViewInit...');
     }
 
     // this.dataSource.paginator = this.paginator;
@@ -119,7 +119,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

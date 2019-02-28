@@ -36,7 +36,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     private _snackBar: MatSnackBar,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EventDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering EventDetailComponent constructor...');
     }
 
     this.onInitCreateMode();
@@ -45,7 +45,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -88,7 +88,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
             // Show a snackbar for it
             this._snackBar.open(error.message, undefined, {
-              duration: 2000
+              duration: 2000,
             });
           });
         }
@@ -104,10 +104,12 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering EventDetailComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onCancel(): void {

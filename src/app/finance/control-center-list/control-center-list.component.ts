@@ -27,14 +27,14 @@ export class ControlCenterListComponent implements OnInit, AfterViewInit, OnDest
     private _uiStatusService: UIStatusService,
     private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent constructor...');
     }
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -42,7 +42,7 @@ export class ControlCenterListComponent implements OnInit, AfterViewInit, OnDest
     this._storageService.fetchAllControlCenters().subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...');
+        console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...');
       }
       this.dataSource.data = x;
     }, (error: any) => {
@@ -54,14 +54,14 @@ export class ControlCenterListComponent implements OnInit, AfterViewInit, OnDest
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
@@ -108,7 +108,7 @@ export class ControlCenterListComponent implements OnInit, AfterViewInit, OnDest
     this._storageService.fetchAllControlCenters(true).subscribe((x: any) => {
       // Just ensure the REQUEST has been sent
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering ControlCenterListComponent OnRefresh, fetchAllControlCenters...');
+        console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent OnRefresh, fetchAllControlCenters...');
       }
     }, (error: any) => {
       // Do nothing

@@ -77,7 +77,7 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
     private _themeStorage: ThemeStorage,
     private media: MediaObserver) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ReportComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering ReportComponent constructor...');
     }
 
     this.selectedMOMScope = OverviewScopeEnum.CurrentYear;
@@ -105,7 +105,7 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ReportComponent ngOnInit...');
     }
 
     this.ngUnsubscribe$ = new ReplaySubject(1);
@@ -128,7 +128,7 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngAfterContentInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ReportComponent ngAfterContentInit...');
     }
 
     this._storageService.fetchAllAccountCategories().pipe(takeUntil(this.ngUnsubscribe$))
@@ -158,7 +158,7 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ReportComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering ReportComponent ngOnDestroy...');
     }
 
     if (this.ngUnsubscribe$) {
@@ -169,7 +169,7 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
 
   public onMOMScopeChanged(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ReportComponent onMOMScopeChanged...');
+      console.debug('AC_HIH_UI [Debug]: Entering ReportComponent onMOMScopeChanged...');
     }
 
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedMOMScope);

@@ -21,13 +21,13 @@ export class BookCategoryListComponent implements OnInit, AfterViewInit, OnDestr
 
   constructor(public _storageService: LibraryStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookCategoryListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookCategoryListComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookCategoryListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookCategoryListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -36,7 +36,7 @@ export class BookCategoryListComponent implements OnInit, AfterViewInit, OnDestr
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering BookCategoryListComponent ngOnInit fetchAllBookCategories...');
+        console.debug('AC_HIH_UI [Debug]: Entering BookCategoryListComponent ngOnInit fetchAllBookCategories...');
       }
       if (x) {
         this.dataSource.data = x;
@@ -46,14 +46,14 @@ export class BookCategoryListComponent implements OnInit, AfterViewInit, OnDestr
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookCategoryListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookCategoryListComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookCategoryListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookCategoryListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

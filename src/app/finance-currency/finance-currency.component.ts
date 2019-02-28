@@ -23,13 +23,13 @@ export class FinanceCurrencyComponent implements OnInit, AfterViewInit, OnDestro
   constructor(public _currService: FinCurrencyService,
     public _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
 
@@ -51,13 +51,13 @@ export class FinanceCurrencyComponent implements OnInit, AfterViewInit, OnDestro
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngAfterViewInit...');
     }
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnDestroy...');
     }
 
     if (this._destroyed$) {

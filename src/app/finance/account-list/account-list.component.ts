@@ -15,7 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
- 
+
   displayedColumns: string[] = ['id', 'name', 'ctgy', 'status', 'comment'];
   dataSource: MatTableDataSource<Account> = new MatTableDataSource<Account>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -28,7 +28,7 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
     private _snackbar: MatSnackBar,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountListComponent constructor...');
     }
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
     this.selectedStatus = AccountStatusEnum.Normal;
@@ -38,7 +38,7 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -70,18 +70,18 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountListComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);
-      this._destroyed$.complete();  
+      this._destroyed$.complete();
     }
   }
 
@@ -106,7 +106,7 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
       if (x && x instanceof Array) {
         this._buildDataSource(x);
       }
-    }, (error: any) =>{
+    }, (error: any) => {
       this._snackbar.open(error.toString(), undefined, {
         duration: 2000,
       });
@@ -115,7 +115,7 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _buildDataSource(arAcnts: Account[]): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountListComponent _buildDataSource...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountListComponent _buildDataSource...');
     }
     if (arAcnts) {
       this.dataSource.data = arAcnts.filter((value: Account) => {

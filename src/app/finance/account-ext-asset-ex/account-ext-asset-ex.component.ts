@@ -67,7 +67,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
 
   @HostListener('change') onChange(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent onChange...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent onChange...');
     }
     if (this._onChange) {
       this._onChange(this.extObject);
@@ -75,7 +75,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
   }
   @HostListener('blur') onTouched(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent onTouched...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent onTouched...');
     }
     if (this._onTouched) {
       this._onTouched();
@@ -95,7 +95,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
       this._snackBar.open(error.toString(), undefined, {
         duration: 2000,
       });
-    })
+    });
   }
 
   ngOnDestroy(): void {
@@ -135,19 +135,19 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
 
   registerOnChange(fn: any): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent registerOnChange...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent registerOnChange...');
     }
     this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent registerOnTouched...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent registerOnTouched...');
     }
     this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent setDisabledState...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent setDisabledState...');
     }
     if (isDisabled) {
       this.assetInfoForm.disable();
@@ -160,7 +160,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
 
   validate(c: AbstractControl): ValidationErrors | null {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent validate...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent validate...');
     }
 
     if (this.assetInfoForm.valid) {

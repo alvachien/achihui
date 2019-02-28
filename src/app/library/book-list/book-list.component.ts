@@ -22,13 +22,13 @@ export class BookListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(public _storageService: LibraryStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookListComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -46,14 +46,14 @@ export class BookListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookListComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

@@ -23,14 +23,14 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   constructor(public _storageService: LearnStorageService,
     private _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering CategoryListComponent constructor...');
     }
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering CategoryListComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
     this.isLoadingResults = true;
@@ -56,7 +56,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering CategoryListComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

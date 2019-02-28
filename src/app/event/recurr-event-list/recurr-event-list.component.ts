@@ -58,7 +58,7 @@ export class RecurrEventListComponent implements OnInit, AfterContentInit, OnDes
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
@@ -85,7 +85,7 @@ export class RecurrEventListComponent implements OnInit, AfterContentInit, OnDes
       }
 
       this._snackbar.open(error.message, undefined, {
-        duration: 2000
+        duration: 2000,
       });
     });
   }
@@ -144,7 +144,7 @@ export class RecurrEventListComponent implements OnInit, AfterContentInit, OnDes
       }
 
       this._snackbar.open(error.message, undefined, {
-        duration: 2000
+        duration: 2000,
       });
     });
   }

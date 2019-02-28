@@ -27,14 +27,14 @@ export class QuestionBankListComponent implements OnInit, OnDestroy {
     public _uiService: UIStatusService,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering QuestionBankListComponent constructor...');
     }
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering QuestionBankListComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
 
@@ -42,7 +42,7 @@ export class QuestionBankListComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering QuestionBankListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering QuestionBankListComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

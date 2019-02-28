@@ -42,7 +42,7 @@ export class LibraryStorageService {
     private _authService: AuthService,
     private _homeService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LibraryStorageService constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering LibraryStorageService constructor...');
     }
 
     this._isBookCtgyListLoaded = false;

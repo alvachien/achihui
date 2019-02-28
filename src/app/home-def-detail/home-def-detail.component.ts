@@ -138,7 +138,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering FinanceCurrencyComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

@@ -149,7 +149,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
     public _currService: FinCurrencyService,
     private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent constructor...');
     }
 
     this.dataSource = new MatTableDataSource();
@@ -159,7 +159,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -232,7 +232,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

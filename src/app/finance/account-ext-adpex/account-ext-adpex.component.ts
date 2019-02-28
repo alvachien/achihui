@@ -86,13 +86,13 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
     private _snackbar: MatSnackBar,
     private _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...');
     }
   }
 
   @HostListener('change') onChange(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onChange...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onChange...');
     }
     if (this._onChange) {
       this._onChange(this.extObject);
@@ -100,7 +100,7 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
   }
   @HostListener('blur') onTouched(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onTouched...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onTouched...');
     }
     if (this._onTouched) {
       this._onTouched();
@@ -109,14 +109,14 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnDestroy...');
     }
 
     if (this._destroyed$) {
@@ -173,7 +173,7 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
 
   public onReset(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onReset...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onReset...');
     }
     this.adpInfoForm.reset();
     this.dataSource = new MatTableDataSource([]);
@@ -182,7 +182,7 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
 
   writeValue(val: AccountExtraAdvancePayment): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent writeValue...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent writeValue...');
     }
     if (val) {
       this.adpInfoForm.get('startDateControl').setValue(val.StartDate);
@@ -206,19 +206,19 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
   }
   registerOnChange(fn: any): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnChange...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnChange...');
     }
     this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnTouched...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnTouched...');
     }
     this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent setDisabledState...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent setDisabledState...');
     }
 
     if (isDisabled) {
@@ -232,7 +232,7 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
 
   validate(c: AbstractControl): ValidationErrors | null {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent validate...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent validate...');
     }
 
     if (this.adpInfoForm.valid) {

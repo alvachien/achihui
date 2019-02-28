@@ -35,7 +35,7 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
     private _snackBar: MatSnackBar,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent constructor...');
     }
 
     this.onInitCreateMode();
@@ -44,7 +44,7 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -86,8 +86,8 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
             }
 
             this._snackBar.open(error.message, undefined, {
-              duration: 2000
-            });      
+              duration: 2000,
+            });
           });
         }
       }
@@ -97,8 +97,8 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
       }
 
       this._snackBar.open(error.toString(), undefined, {
-        duration: 2000
-      });      
+        duration: 2000,
+      });
     }, () => {
       // Empty
     });
@@ -106,7 +106,7 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
@@ -129,7 +129,7 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
       }
 
       this._snackBar.open(error.message, undefined, {
-        duration: 2000
+        duration: 2000,
       });
     });
   }
@@ -159,7 +159,7 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
       }
 
       this._snackBar.open(error.message, undefined, {
-        duration: 2000
+        duration: 2000,
       });
     });
   }

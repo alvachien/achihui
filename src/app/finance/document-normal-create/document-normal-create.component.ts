@@ -141,7 +141,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...');
     }
 
     // For creation, the order shall be valid?!
@@ -153,7 +153,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -211,7 +211,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -246,7 +246,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   public onSubmit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSubmit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSubmit...');
     }
 
     let detailObject: Document = this._generateDocObject();

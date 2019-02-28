@@ -85,13 +85,13 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OrderDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering OrderDetailComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -181,7 +181,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnDestroy...');
     }
 
     if (this._destroyed$) {
@@ -224,7 +224,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   }
   public onSubmit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OrderDetailComponent onSubmit...');
+      console.debug('AC_HIH_UI [Debug]: Entering OrderDetailComponent onSubmit...');
     }
     if (this.uiMode === UIMode.Create) {
       this.onCreateOrder();
@@ -254,7 +254,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
   private onCreateOrder(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OrderDetailComponent onCreateOrder...');
+      console.debug('AC_HIH_UI [Debug]: Entering OrderDetailComponent onCreateOrder...');
     }
 
     let objOrder: Order = this._generateOrder();
@@ -320,7 +320,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
   private onChangeOrder(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OrderDetailComponent onChangeOrder...');
+      console.debug('AC_HIH_UI [Debug]: Entering OrderDetailComponent onChangeOrder...');
     }
 
     let ordObj: Order = this._generateOrder();

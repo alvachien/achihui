@@ -46,7 +46,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent constructor...');
     }
 
     this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
@@ -67,7 +67,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -86,7 +86,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
       this._storageService.fetchAllTranTypes(),
     ]).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngAfterContentInit, forkJoin...');
+        console.debug('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngAfterContentInit, forkJoin...');
       }
       this.arAccounts = rst[0];
       this.arTranTypes = rst[2];
@@ -108,13 +108,13 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
 
   ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngAfterContentInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngAfterContentInit...');
     }
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

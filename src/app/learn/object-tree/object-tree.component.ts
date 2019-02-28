@@ -25,7 +25,7 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
 
   constructor(public _storageService: LearnStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectTreeComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectTreeComponent constructor...');
     }
 
     this.isLoadingResults = false;
@@ -38,7 +38,7 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectTreeComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectTreeComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -56,7 +56,7 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectTreeComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectTreeComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

@@ -26,13 +26,13 @@ export class ConfigComponent implements OnInit, OnDestroy {
   constructor(public _storageService: FinanceStorageService,
     private _snackbar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ConfigComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering ConfigComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ConfigComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ConfigComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -70,7 +70,7 @@ export class ConfigComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ConfigComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ConfigComponent ngAfterViewInit...');
     }
 
     if (this._destroyed$) {

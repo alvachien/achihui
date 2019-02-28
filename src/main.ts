@@ -16,7 +16,7 @@ if (environment.production) {
 platformBrowserDynamic().bootstrapModule(AppModule)
   .then((success: any) => {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Bootstrap success');
+      console.debug('AC_HIH_UI [Debug]: Bootstrap success');
     }
   })
   .catch((err: any) => {

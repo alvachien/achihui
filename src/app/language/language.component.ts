@@ -22,21 +22,21 @@ export class LanguageComponent implements OnInit, OnDestroy {
   constructor(public _storageService: LanguageService,
     private _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LanguageComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering LanguageComponent constructor...');
     }
     this.dataSource = new MatTableDataSource();
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LanguageComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering LanguageComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
 
     this._storageService.fetchAllLanguages().pipe(takeUntil(this._destroyed$)).subscribe(
       (x: AppLanguage[]) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Entering LanguageComponent ngOnInit, fetchAllLanguages...');
+          console.debug('AC_HIH_UI [Debug]: Entering LanguageComponent ngOnInit, fetchAllLanguages...');
         }
         this.dataSource = new MatTableDataSource(x);
         this.dataSource.paginator = this.paginator;
@@ -53,7 +53,7 @@ export class LanguageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LanguageComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering LanguageComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

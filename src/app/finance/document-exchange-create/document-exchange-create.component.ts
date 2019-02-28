@@ -169,13 +169,13 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     public _currService: FinCurrencyService,
     private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -241,7 +241,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -376,7 +376,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
           });
         }, (error: any) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Entering DocumentExchangeCreateComponent, onSubmit, failed with updatePreviousDocWithPlanExgRate ${error}`);
+            console.error(`AC_HIH_UI [Error]: Entering DocumentExchangeCreateComponent, onSubmit, updatePreviousDocWithPlanExgRate failed ${error}`);
           }
 
           // Show dialog

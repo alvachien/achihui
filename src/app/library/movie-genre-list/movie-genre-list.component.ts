@@ -68,7 +68,7 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

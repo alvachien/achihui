@@ -64,14 +64,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...');
     }
     this.detailObject = new Document();
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...');
     }
 
     this.destroyed$ = new ReplaySubject(1);
@@ -119,7 +119,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocumentEvent.pipe(takeUntil(this.destroyed$)).subscribe((x2: any) => {
+            this._storageService.readDocument(this.routerID).pipe(takeUntil(this.destroyed$)).subscribe((x2: any) => {
               if (x2 instanceof Document) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
@@ -135,8 +135,6 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 this.detailObject = new Document();
               }
             });
-
-            this._storageService.readDocument(this.routerID);
           }
         } else {
           this.uiMode = UIMode.Invalid;

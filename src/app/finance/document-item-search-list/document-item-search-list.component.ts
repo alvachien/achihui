@@ -36,7 +36,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
     private _uiStatusService: UIStatusService,
     private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent constructor...');
     }
 
     this.resultsLength = 0;
@@ -75,7 +75,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
     forkJoin([
@@ -111,7 +111,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
    */
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngAfterViewInit...');
     }
 
     // this.dataSource.paginator = this.paginator;
@@ -153,7 +153,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

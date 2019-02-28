@@ -118,7 +118,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor...');
     }
 
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
@@ -126,7 +126,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);

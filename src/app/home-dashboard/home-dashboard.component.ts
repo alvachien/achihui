@@ -52,7 +52,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     private _themeStorage: ThemeStorage,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeDashboardComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering HomeDashboardComponent constructor...');
     }
 
     this.selectedLearnScope = OverviewScopeEnum.CurrentYear;
@@ -74,12 +74,12 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeDashboardComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering HomeDashboardComponent ngOnInit...');
     }
     this.ngUnsubscribe$ = new ReplaySubject(1);
     this._themeStorage.onThemeUpdate.pipe(takeUntil(this.ngUnsubscribe$)).subscribe((val: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering HomeDashboardComponent ngOnInit, onThemeUpdate...');
+        console.debug('AC_HIH_UI [Debug]: Entering HomeDashboardComponent ngOnInit, onThemeUpdate...');
       }
       if (val.isDark) {
         this.chartTheme = 'dark';
@@ -108,7 +108,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ngOnDestroy of HomeDashboardComponent...');
+      console.debug('AC_HIH_UI [Debug]: Entering ngOnDestroy of HomeDashboardComponent...');
     }
 
     if (this.ngUnsubscribe$) {
@@ -127,7 +127,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
   public onLearnScopeChanged(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering onLearnScopeChanged of HomeDashboardComponent...');
+      console.debug('AC_HIH_UI [Debug]: Entering onLearnScopeChanged of HomeDashboardComponent...');
     }
 
     let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(this.selectedLearnScope);

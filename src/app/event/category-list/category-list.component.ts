@@ -19,7 +19,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: EventStorageService,
-    private _router: Router) { 
+    private _router: Router) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent constructor...');
       }
@@ -41,7 +41,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.log('AC_HIH_UI [Debug]: Entering CategoryListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 }

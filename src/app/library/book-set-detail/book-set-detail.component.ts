@@ -15,20 +15,20 @@ export class BookSetDetailComponent implements OnInit, OnDestroy {
 
   constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookSetDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookSetDetailComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookSetDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookSetDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering BookSetDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering BookSetDetailComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

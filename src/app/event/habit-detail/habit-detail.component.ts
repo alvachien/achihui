@@ -43,7 +43,7 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
     private _snackBar: MatSnackBar,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HabitDetailComponent constructor ...');
+      console.debug('AC_HIH_UI [Debug]: Entering HabitDetailComponent constructor ...');
     }
 
     this.onInitCreateMode();
@@ -52,7 +52,7 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -91,10 +91,10 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
             if (environment.LoggingLevel >= LogLevel.Error) {
               console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed to readHabitEvent: ${error.message}`);
             }
-      
+
             this._snackBar.open(error.message, undefined, {
-              duration: 2000
-            });        
+              duration: 2000,
+            });
           });
         }
       }
@@ -103,8 +103,8 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
         console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed: ${error}`);
       }
       this._snackBar.open(error.toString(), undefined, {
-        duration: 2000
-      });        
+        duration: 2000,
+      });
     }, () => {
       // Empty
     });
@@ -112,10 +112,12 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onCancel(): void {
@@ -147,7 +149,7 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
       }
 
       this._snackBar.open(error.message, undefined, {
-        duration: 2000
+        duration: 2000,
       });
     });
   }
@@ -179,7 +181,7 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
       }
 
       this._snackBar.open(error.message, undefined, {
-        duration: 2000
+        duration: 2000,
       });
     });
   }

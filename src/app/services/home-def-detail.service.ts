@@ -53,7 +53,7 @@ export class HomeDefDetailService {
   constructor(private _http: HttpClient,
     private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeDefDetailService constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering HomeDefDetailService constructor...');
     }
 
     this._islistLoaded = false; // Performance improvement
@@ -280,7 +280,7 @@ export class HomeDefDetailService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.debug('AC_HIH_UI [Debug]:' + response);
         }
 
         let hd: HomeMsg = new HomeMsg();
@@ -313,7 +313,7 @@ export class HomeDefDetailService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.debug('AC_HIH_UI [Debug]:' + response);
         }
 
         let hd: HomeMsg = new HomeMsg();
@@ -346,7 +346,7 @@ export class HomeDefDetailService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.debug('AC_HIH_UI [Debug]:' + response);
         }
 
         let hd: HomeMsg = new HomeMsg();

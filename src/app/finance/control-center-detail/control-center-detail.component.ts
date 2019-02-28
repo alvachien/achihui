@@ -40,7 +40,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     public homedefService: HomeDefDetailService,
     public storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...');
     }
 
     this.detailObject = new ControlCenter();
@@ -48,7 +48,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
 
@@ -56,7 +56,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((cclist: ControlCenter[]) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...');
+        console.debug('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...');
       }
 
       // Load all control centers.
@@ -96,7 +96,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                 console.error(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${error}`);
               }
               this._snackbar.open(error.toString(), undefined, {
-                duration: 2000
+                duration: 2000,
               });
 
               this.detailObject = new ControlCenter();
@@ -115,7 +115,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this._destroyed$) {
       this._destroyed$.next(true);
-      this._destroyed$.complete();  
+      this._destroyed$.complete();
     }
 
     if (this._listReadStub) {

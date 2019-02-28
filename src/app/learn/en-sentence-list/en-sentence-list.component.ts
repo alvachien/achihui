@@ -24,14 +24,14 @@ export class EnSentenceListComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(public _storageService: LearnStorageService,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnSentenceListComponent constructor...');
     }
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -54,14 +54,14 @@ export class EnSentenceListComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnSentenceListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

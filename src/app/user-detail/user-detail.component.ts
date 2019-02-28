@@ -18,18 +18,18 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
   constructor(private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering UserDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering UserDetailComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering UserDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering UserDetailComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
     this._authService.authSubject.pipe(takeUntil(this._destroyed$)).subscribe((x: UserAuthInfo) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering UserDetailComponent ngOnInit, authContent...');
+        console.debug('AC_HIH_UI [Debug]: Entering UserDetailComponent ngOnInit, authContent...');
       }
       this.usrObject = x;
     }, (error: any) => {
@@ -43,7 +43,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering UserDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering UserDetailComponent ngOnDestroy...');
     }
 
     if (this._destroyed$) {

@@ -36,14 +36,14 @@ export class EnSentenceDetailComponent implements OnInit, OnDestroy {
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent constructor...');
     }
     this.detailObject = new EnSentence();
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -98,7 +98,7 @@ export class EnSentenceDetailComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

@@ -135,13 +135,13 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     public _currService: FinCurrencyService,
     private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -221,7 +221,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

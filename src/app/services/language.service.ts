@@ -16,7 +16,7 @@ export class LanguageService {
 
   constructor(private _http: HttpClient) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LanguageService constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering LanguageService constructor...');
     }
 
     this._islistLoaded = false; // Performance improvement

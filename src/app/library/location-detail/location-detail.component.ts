@@ -8,27 +8,27 @@ import { LogLevel } from '../../model';
 @Component({
   selector: 'hih-lib-location-detail',
   templateUrl: './location-detail.component.html',
-  styleUrls: ['./location-detail.component.scss']
+  styleUrls: ['./location-detail.component.scss'],
 })
 export class LocationDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering TagsListComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

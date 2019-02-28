@@ -8,7 +8,8 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange,
   financeDocTypeTransfer, financeDocTypeAdvancePayment, OverviewScopeEnum, getOverviewScopeRange,
   financeDocTypeAssetBuyIn, financeDocTypeAssetSoldOut,
-  financeDocTypeBorrowFrom, UICommonLabelEnum, financeDocTypeLendTo, financeDocTypeRepay, financeDocTypeAdvanceReceived, } from '../../model';
+  financeDocTypeBorrowFrom, UICommonLabelEnum, financeDocTypeLendTo, financeDocTypeRepay, financeDocTypeAdvanceReceived,
+  BaseListModel, } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -34,7 +35,7 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
     private _router: Router,
     private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...');
     }
     this.isLoadingResults = false;
     this.totalDocumentCount = 0;
@@ -42,7 +43,7 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -51,7 +52,7 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
 
   ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngAfterContentInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentListComponent ngAfterContentInit...');
     }
 
     merge(this.paginator.page, this._docScopeEvent)
@@ -63,7 +64,8 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
           this.isLoadingResults = true;
           return this._storageService!.fetchAllDocuments(bgn, end, this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize);
         }),
-        map((revdata: any) => {
+        map((revdata: BaseListModel<Document>) => {
+          console.error('entering map');
           if (revdata) {
             if (revdata.totalCount) {
               this.totalDocumentCount = +revdata.totalCount;
@@ -79,6 +81,7 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
           return [];
         }),
         catchError((error: any) => {
+          console.error('real error');
           const dlginfo: MessageDialogInfo = {
             Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
             Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
@@ -103,11 +106,11 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);
-      this._destroyed$.complete();  
+      this._destroyed$.complete();
     }
   }
 

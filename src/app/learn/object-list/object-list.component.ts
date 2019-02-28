@@ -29,7 +29,7 @@ export class ObjectListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
 
@@ -52,13 +52,13 @@ export class ObjectListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectListComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

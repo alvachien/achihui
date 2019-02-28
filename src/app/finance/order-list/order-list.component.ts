@@ -29,14 +29,14 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
     private _uiStatusService: UIStatusService,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OrderListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering OrderListComponent constructor...');
     }
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -45,7 +45,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this._storageService.fetchAllOrders().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnInit, fetchAllOrders.');
+        console.debug('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnInit, fetchAllOrders.');
       }
 
       this._buildDataSource();
@@ -60,14 +60,14 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OrderListComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering OrderListComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

@@ -13,7 +13,7 @@ export class CanDeactivateGuardService implements CanDeactivate<CanComponentDeac
 
   canDeactivate(component: CanComponentDeactivate): Observable<boolean> | Promise<boolean> | boolean {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering canDeactivate of CanDeactivateGuard');
+      console.debug('AC_HIH_UI [Debug]: Entering canDeactivate of CanDeactivateGuard');
     }
     return component.canDeactivate ? component.canDeactivate() : true;
   }

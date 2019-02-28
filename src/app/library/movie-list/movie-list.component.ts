@@ -10,25 +10,25 @@ import { LogLevel } from '../../model';
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.scss'],
 })
-export class MovieListComponent implements OnInit {
+export class MovieListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering MovieListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering MovieListComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering MovieListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering MovieListComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
   }
-  
+
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering MovieListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering MovieListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

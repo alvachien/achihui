@@ -24,14 +24,14 @@ export class PlanListComponent implements OnInit, OnDestroy {
   constructor(private _router: Router,
     private _storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering PlanListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering PlanListComponent constructor...');
     }
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering PlanListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering PlanListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -46,7 +46,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering PlanListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering PlanListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

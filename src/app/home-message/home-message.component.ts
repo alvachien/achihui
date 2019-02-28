@@ -28,7 +28,7 @@ export class HomeMessageComponent implements OnInit, AfterContentInit, OnDestroy
     private _authService: AuthService,
     public _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering HomeMessageComponent constructor...');
     }
     this.isLoadingResults = true;
     this.sentBox = false;
@@ -41,7 +41,7 @@ export class HomeMessageComponent implements OnInit, AfterContentInit, OnDestroy
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering HomeMessageComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -50,14 +50,14 @@ export class HomeMessageComponent implements OnInit, AfterContentInit, OnDestroy
 
   ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent AfterContentInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering HomeMessageComponent AfterContentInit...');
     }
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HomeMessageComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering HomeMessageComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

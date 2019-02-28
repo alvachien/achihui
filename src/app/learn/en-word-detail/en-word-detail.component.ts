@@ -41,7 +41,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnWordDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnWordDetailComponent constructor...');
     }
     this.detailObject = new EnWord();
     this.dataSource = new MatTableDataSource(this.detailObject.Explains);
@@ -49,7 +49,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -113,7 +113,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnDestroy...');
     }
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -121,7 +121,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

@@ -30,7 +30,7 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
     private _snackbar: MatSnackBar,
     public _uiService: UIStatusService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering TagsListComponent constructor...');
     }
 
     this.tagType = TagTypeEnum.LearnQuestionBank;
@@ -48,7 +48,7 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -63,12 +63,12 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterContentInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterContentInit...');
     }
 
     this._tagService.fetchAllTags(true).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterContentInit, fetchAllTags...');
+        console.debug('AC_HIH_UI [Debug]: Entering TagsListComponent ngAfterContentInit, fetchAllTags...');
       }
 
       if (!x || (x instanceof Array && x.length <= 0)) {
@@ -132,7 +132,7 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering TagsListComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -142,7 +142,7 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
 
   public onSearchTagTerm(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering TagsListComponent onSearchTagTerm...');
+      console.debug('AC_HIH_UI [Debug]: Entering TagsListComponent onSearchTagTerm...');
     }
 
     this._tagService.fetchAllTags(false, this.tagType, this.tagTerm)

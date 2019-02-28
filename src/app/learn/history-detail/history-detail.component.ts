@@ -38,7 +38,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HistoryDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering HistoryDetailComponent constructor...');
     }
 
     this.detailObject = new LearnHistory();
@@ -46,7 +46,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HistoryDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering HistoryDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -114,7 +114,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HistroryDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering HistroryDetailComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

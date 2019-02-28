@@ -94,7 +94,7 @@ export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering EventListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering EventListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

@@ -60,7 +60,7 @@ export class LearnStorageService {
     private _authService: AuthService,
     private _homeService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering LearnStorageService constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering LearnStorageService constructor...');
     }
 
     this._isCtgyListLoaded = false;
@@ -201,7 +201,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.debug('AC_HIH_UI [Debug]:' + response);
         }
 
         let hd: LearnObject = new LearnObject();
@@ -235,7 +235,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Entering LearnStorageService updateObject');
+          console.debug('AC_HIH_UI [Debug]: Entering LearnStorageService updateObject');
         }
 
         let hd: LearnObject = new LearnObject();
@@ -270,7 +270,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Entering LearnStorageService, deleteObject, map' + response);
+          console.debug('AC_HIH_UI [Debug]: Entering LearnStorageService, deleteObject, map' + response);
         }
 
         return <any>response;
@@ -388,7 +388,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.debug('AC_HIH_UI [Debug]:' + response);
         }
 
         let hd: LearnHistory = new LearnHistory();
@@ -607,7 +607,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.debug('AC_HIH_UI [Debug]:' + response);
         }
 
         let hd: QuestionBankItem = new QuestionBankItem();
@@ -641,7 +641,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.debug('AC_HIH_UI [Debug]:' + response);
         }
 
         let hd: QuestionBankItem = new QuestionBankItem();
@@ -677,7 +677,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]: Entering LearnStorageService, deleteQuestionBankItem');
+          console.debug('AC_HIH_UI [Debug]: Entering LearnStorageService, deleteQuestionBankItem');
         }
         return true;
       }),
@@ -798,7 +798,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.debug('AC_HIH_UI [Debug]:' + response);
         }
 
         let hd: EnWord = new EnWord();
@@ -945,7 +945,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log('AC_HIH_UI [Debug]:' + response);
+          console.debug('AC_HIH_UI [Debug]:' + response);
         }
 
         let hd: EnSentence = new EnSentence();

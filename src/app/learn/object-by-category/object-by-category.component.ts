@@ -47,13 +47,13 @@ export class ObjectByCategoryComponent implements OnInit, AfterViewInit, OnDestr
 
   constructor(public _storageService: LearnStorageService) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent constructor...');
+        console.debug('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent constructor...');
       }
      }
 
    ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -65,13 +65,13 @@ export class ObjectByCategoryComponent implements OnInit, AfterViewInit, OnDestr
    */
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent ngAfterViewInit...');
     }
     this.dataSource.paginator = this.paginator;
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

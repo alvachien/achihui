@@ -63,7 +63,7 @@ export class HabitListComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering HabitListComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering HabitListComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
@@ -101,7 +101,7 @@ export class HabitListComponent implements OnInit, AfterContentInit, OnDestroy {
           console.error(`AC_HIH_UI [Error]: Enter HabitListComponent onCheckin, but failed with checkInHabitEvent: ${error.message}`);
         }
         this._snackBar.open(error.message, undefined, {
-          duration: 2000
+          duration: 2000,
         });
       });
     }

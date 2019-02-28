@@ -15,20 +15,20 @@ export class MovieGenreDetailComponent implements OnInit, OnDestroy {
 
   constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering MovieGenreDetailComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering MovieGenreDetailComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering MovieGenreDetailComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering MovieGenreDetailComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering MovieGenreDetailComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering MovieGenreDetailComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();

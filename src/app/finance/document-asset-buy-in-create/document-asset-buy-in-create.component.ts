@@ -186,7 +186,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent constructor...');
     }
     this.assetAccount = new AccountExtraAsset();
     this.arMembersInChosedHome = this._homedefService.ChosedHome.Members.slice();
@@ -194,7 +194,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);

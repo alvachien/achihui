@@ -54,13 +54,13 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
     public _uiStatusService: UIStatusService,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent constructor...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent constructor...');
     }
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -75,7 +75,7 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
    */
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent ngAfterViewInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent ngAfterViewInit...');
     }
 
     // this.dataSource.paginator = this.paginator;
@@ -118,7 +118,7 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent ngOnDestroy...');
     }
     this._destroyed$.next(true);
     this._destroyed$.complete();
