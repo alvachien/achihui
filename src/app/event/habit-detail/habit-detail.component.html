@@ -11,22 +11,22 @@
     <form [formGroup]="detailForm">
       <!-- Name -->
       <mat-form-field>
-        <input matInput type="text" placeholder="{{'Common.Name' | translate}}" [readonly]="!isFieldChangable"
-          [(ngModel)]="detailObject.Name" name="name" #eventname maxlength="50">
+        <input matInput type="text" placeholder="{{'Common.Name' | translate}}" 
+          formControlName="nameControl" #eventname maxlength="50">
         <mat-hint align="end">{{eventname.value.length}} / 50</mat-hint>
       </mat-form-field>
 
       <!-- Start Date -->
       <mat-form-field>
-        <input matInput [(ngModel)]="detailObject.StartDate" [matDatepicker]="startdpicker"
-          [disabled]="!isFieldChangable" placeholder="{{'Common.StartDate' | translate}}">
+        <input matInput formControlName="startDateControl" [matDatepicker]="startdpicker"
+          placeholder="{{'Common.StartDate' | translate}}">
         <mat-datepicker-toggle matSuffix [for]="startdpicker"></mat-datepicker-toggle>
         <mat-datepicker #startdpicker></mat-datepicker>
       </mat-form-field>
 
       <!-- End Date -->
       <mat-form-field>
-        <input matInput [(ngModel)]="detailObject!.EndDate" [matDatepicker]="enddpicker" [disabled]="!isFieldChangable"
+        <input matInput formControlName="endDateControl" [matDatepicker]="enddpicker"
           placeholder="{{'Common.EndDate' | translate}}">
         <mat-datepicker-toggle matSuffix [for]="enddpicker"></mat-datepicker-toggle>
         <mat-datepicker #enddpicker></mat-datepicker>
@@ -34,8 +34,8 @@
 
       <!-- Frequency -->
       <mat-form-field>
-        <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}" [disabled]="!isFieldChangable"
-          [ngModel]="detailObject!.repeatType" (ngModelChange)="detailObject.repeatType=$event" name="rpttype">
+        <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}"
+          formControlName="rptTypeControl">
           <mat-option *ngFor="let rt of arFrequencies" [value]="rt.value">
             {{rt.i18nterm | translate}}
           </mat-option>
@@ -44,20 +44,20 @@
 
       <!-- Count -->
       <mat-form-field>
-        <input matInput type="number" placeholder="{{'Common.Count' | translate}}" [readonly]="!isFieldChangable"
-          [(ngModel)]="detailObject.count" name="cnt" #eventcnt>
+        <input matInput type="number" placeholder="{{'Common.Count' | translate}}"
+          formControlName="countControl">
       </mat-form-field>
 
       <!-- Content -->
       <mat-form-field>
-        <textarea matInput type="text" placeholder="{{'Common.Content' | translate}}" [readonly]="!isFieldChangable"
-          [(ngModel)]="detailObject.content" name="content" #eventcontent></textarea>
+        <textarea matInput type="text" placeholder="{{'Common.Content' | translate}}"
+          formControlName="contentControl"></textarea>
       </mat-form-field>
 
       <!-- Assignee -->
       <mat-form-field>
-        <mat-select placeholder="{{'Common.Assignee' | translate}}" [(ngModel)]="detailObject.assignee"
-          [disabled]="!isFieldChangable" name="assgnee">
+        <mat-select placeholder="{{'Common.Assignee' | translate}}"
+          formControlName="assigneeControl">
           <mat-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
             {{mem.DisplayAs}} - {{ mem.User }}
           </mat-option>
@@ -68,6 +68,10 @@
     <mat-tab-group>
       <!-- Details -->
       <mat-tab label="{{'Common.Detail' | translate}}">
+        <mat-toolbar color="accent" class="mt-2">
+          <button mat-button color="primary" *ngIf="isFieldChangable"
+            (click)="onGenerateDetails()">{{'Common.Simulate' | translate}}</button>
+        </mat-toolbar>
         <div class="example-container mat-elevation-z8">
           <mat-table #tableDetail [dataSource]="dataSourceSimulateResult">
 
@@ -125,9 +129,7 @@
       </mat-tab>
     </mat-tab-group>
   </mat-card-content>
-  <mat-card-actions>
-    <button mat-button color="primary" *ngIf="isFieldChangable"
-      (click)="onGenerateDetails()">{{'Common.Simulate' | translate}}</button>
+  <mat-card-actions>    
     <button mat-button color="primary" *ngIf="isFieldChangable"
       (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
     <button mat-button color="warn" (click)="onCancel()">{{'Common.BackToList' | translate}}</button>

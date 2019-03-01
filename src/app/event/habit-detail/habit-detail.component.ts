@@ -9,7 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil,
-  momentDateFormat, EventHabitCheckin } from '../../model';
+  momentDateFormat, EventHabitCheckin, RepeatFrequencyEnum } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
 
 @Component({
@@ -59,6 +59,16 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
+    this.detailForm = this._formBuilder.group({
+      nameControl: ['', [Validators.required, , Validators.maxLength(50)]],
+      startDateControl: [{value: moment()}, Validators.required],
+      endDateControl: [{value: moment().add(1, 'y')}, Validators.required],
+      rptTypeControl: [RepeatFrequencyEnum.Month, Validators.required],
+      countControl: [1, Validators.required],
+      contentControl: ['', Validators.required],
+      assigneeControl: ['', Validators.required],
+    });
+
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -67,7 +77,7 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
 
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.onInitCreateMode();
+          this.uiMode = UIMode.Create;
         } else if (x[0].path === 'edit') {
           this.routerID = +x[1].path;
 
@@ -100,15 +110,6 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
           });
         }
       }
-    }, (error: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent ngOnInit but failed: ${error}`);
-      }
-      this._snackBar.open(error.toString(), undefined, {
-        duration: 2000,
-      });
-    }, () => {
-      // Empty
     });
   }
 
@@ -157,6 +158,13 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
+    if (!this.isFieldChangable) {
+      return;
+    }
+    if (!this.detailForm.valid) {
+      return;
+    }
+
     if (this.uiMode === UIMode.Create) {
       this.createImpl();
     } else if (this.uiMode === UIMode.Change) {

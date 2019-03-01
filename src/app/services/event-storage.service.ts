@@ -4,7 +4,8 @@ import { Observable, Subject, BehaviorSubject, merge, of, throwError, } from 'rx
 import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { LogLevel, momentDateFormat, GeneralEvent, RecurEvent, EventHabit, EventHabitCheckin } from '../model';
+import { LogLevel, momentDateFormat, GeneralEvent, RecurEvent, EventHabit, EventHabitCheckin,
+  EventHabitDetail } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import * as moment from 'moment';
@@ -363,7 +364,7 @@ export class EventStorageService {
    * Generate detail habit item
    * @param hevnt Event to  create
    */
-  public generateHabitEvent(hevnt: EventHabit): Observable<any> {
+  public generateHabitEvent(hevnt: EventHabit): Observable<EventHabitDetail[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -376,14 +377,34 @@ export class EventStorageService {
     return this._http.post(apiurl, jdata, {
         headers: headers,
         params: params,
-      });
+      }).pipe(map((val: any) => {
+        let arDetail: EventHabitDetail[] = [];
+        if (val instanceof Array && val.length > 0) {
+          for (let dtl of val) {
+            let ndtl: EventHabitDetail = new EventHabitDetail();
+            ndtl.StartDate = moment(dtl.startTimePoint, momentDateFormat);
+            ndtl.EndDate = moment(dtl.endTimePoint, momentDateFormat);
+            ndtl.Name = dtl.name;
+            arDetail.push(ndtl);
+          }
+        }
+        return arDetail;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }),
+      );
   }
 
   /**
    * Create habit event
    * @param hevnt Event to  create
    */
-  public createHabitEvent(hevnt: EventHabit): Observable<any> {
+  public createHabitEvent(hevnt: EventHabit): Observable<EventHabit> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -396,14 +417,26 @@ export class EventStorageService {
     return this._http.post(apiurl, jdata, {
         headers: headers,
         params: params,
-      });
+      }).pipe(map((val: any) => {
+        let gevnt: EventHabit = new EventHabit();
+        gevnt.onSetData(val);
+        return gevnt;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }),
+      );
   }
 
   /**
    * Update habit event
    * @param hevnt Event to  create
    */
-  public updateHabitEvent(hevnt: EventHabit): Observable<any> {
+  public updateHabitEvent(hevnt: EventHabit): Observable<EventHabit> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -416,7 +449,19 @@ export class EventStorageService {
     return this._http.put(apiurl, jdata, {
         headers: headers,
         params: params,
-      });
+      }).pipe(map((val: any) => {
+        let gevnt: EventHabit = new EventHabit();
+        gevnt.onSetData(val);
+        return gevnt;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }),
+      );
   }
 
   /**
