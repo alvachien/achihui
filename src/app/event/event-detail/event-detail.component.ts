@@ -4,6 +4,7 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT
 import { Observable, merge, of, Subscription, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, GeneralEvent } from '../../model';

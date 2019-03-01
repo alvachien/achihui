@@ -1,7 +1,8 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, merge, of, throwError, } from 'rxjs';
+import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
+
 import { environment } from '../../environments/environment';
 import { LogLevel, momentDateFormat, GeneralEvent, RecurEvent, EventHabit, EventHabitCheckin } from '../model';
 import { AuthService } from './auth.service';
@@ -341,13 +342,21 @@ export class EventStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readHabitEvent in EventStorageService`);
+          console.log(`AC_HIH_UI [Debug]: Entering EventStorageService readHabitEvent`);
         }
 
         let hd: EventHabit = new EventHabit();
         hd.onSetData(response);
         return hd;
-      }));
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering EventStorageService readHabitEvent failed ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }),
+      );
   }
 
   /**

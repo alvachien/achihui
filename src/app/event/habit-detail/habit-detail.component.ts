@@ -1,15 +1,16 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
+import { Subscription, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil,
   momentDateFormat, EventHabitCheckin } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
-import * as moment from 'moment';
-import { Subscription, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-event-habit-detail',
@@ -21,6 +22,7 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
   private routerID: number = -1; // Current object ID in routing
   private _destroyed$: ReplaySubject<boolean>;
 
+  public detailForm: FormGroup;
   public currentMode: string;
   public detailObject: EventHabit;
   public isLoadingData: boolean;
@@ -41,12 +43,12 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _snackBar: MatSnackBar,
+    private _formBuilder: FormBuilder,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering HabitDetailComponent constructor ...');
     }
 
-    this.onInitCreateMode();
     this.isLoadingData = false;
   }
 

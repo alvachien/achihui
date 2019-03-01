@@ -67,7 +67,6 @@ export class FinanceStorageService {
   changeControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
   createOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
   changeOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
-  deleteDocumentEvent: EventEmitter<any | undefined> = new EventEmitter(undefined);
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -1629,16 +1628,16 @@ export class FinanceStorageService {
    * Delete the document
    * @param docid ID fo the doc
    */
-  public deleteDocument(docid: number): void {
+  public deleteDocument(docid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/financedocument/' + docid.toString();
+    let apiurl: string = environment.ApiUrl + '/api/FinanceDocument/' + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.delete(apiurl, {
+    return this._http.delete(apiurl, {
       headers: headers,
       params: params,
     })
@@ -1648,24 +1647,12 @@ export class FinanceStorageService {
         }
 
         return <any>response;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in deleteDocument in FinanceStorageService: ${x}`);
-        }
-
-        // Broadcast event
-        this.deleteDocumentEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in deleteDocument in FinanceStorageService:  ${error}`);
-        }
-
-        // Broadcast event: failed
-        this.deleteDocumentEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+      }),
+      catchError((errresp: HttpErrorResponse) => {
+        const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
+        return throwError(errmsg);
+      }),
+      );
   }
 
   /**

@@ -299,6 +299,14 @@ describe('DocumentItemSearchListComponent', () => {
       expect(searchDocItemSpy).toHaveBeenCalled();
       tick();
       fixture.detectChanges();
+
+      // Expect a dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
       expect(component.dataSource.data.length).toEqual(0);
     }));
   });

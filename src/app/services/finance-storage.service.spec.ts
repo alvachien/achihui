@@ -2833,4 +2833,58 @@ describe('FinanceStorageService', () => {
       req.flush(msg, { status: 500, statusText: 'server failed' });
     });
   });
+
+  describe('deleteDocument', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.deleteDocument(1).subscribe(
+        (data: any) => {
+          // expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to DELETE from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE'
+          && requrl.url === documentAPIURL + '/1'
+          && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      req.flush('', {status: 200, statusText: 'OK'});
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.deleteDocument(1).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      // Service should have made one request to DELETE from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'DELETE'
+          && requrl.url === documentAPIURL + '/1'
+          && requrl.params.has('hid');
+       });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
 });

@@ -17,7 +17,13 @@ import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '..
 import { DocumentListComponent } from './document-list.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
-import { Document, BaseListModel } from '../../model';
+import { Document, BaseListModel, financeDocTypeNormal, financeDocTypeCurrencyExchange,
+  financeDocTypeTransfer, financeDocTypeAdvancePayment,
+  financeDocTypeAssetBuyIn, financeDocTypeAssetSoldOut,
+  financeDocTypeBorrowFrom,
+  financeDocTypeAdvanceReceived,
+  financeDocTypeAssetValChg,
+  financeDocTypeLendTo, } from '../../model';
 
 describe('DocumentListComponent', () => {
   let component: DocumentListComponent;
@@ -25,6 +31,7 @@ describe('DocumentListComponent', () => {
   let fakeData: FakeDataHelper;
   let routerSpy: any;
   let fetchAllDocumentsSpy: any;
+  let deleteDocumentSpy: any;
 
   beforeEach(async(() => {
     fakeData = new FakeDataHelper();
@@ -36,8 +43,10 @@ describe('DocumentListComponent', () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllDocuments',
+      'deleteDocument',
     ]);
     fetchAllDocumentsSpy = stroageService.fetchAllDocuments.and.returnValue(of([]));
+    deleteDocumentSpy = stroageService.deleteDocument.and.returnValue({});
 
     TestBed.configureTestingModule({
       imports: [
@@ -79,14 +88,13 @@ describe('DocumentListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentListComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+ });
 
   it('1. should be created without data', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('shall load the document', () => {
+  describe('2. shall work with data', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let rstdoc: BaseListModel<Document>;
@@ -110,6 +118,7 @@ describe('DocumentListComponent', () => {
       rstdoc.totalCount = 5;
 
       fetchAllDocumentsSpy.and.returnValue(asyncData(rstdoc));
+      deleteDocumentSpy.and.returnValue(asyncData(''));
     });
 
     beforeEach(inject([OverlayContainer],
@@ -123,15 +132,224 @@ describe('DocumentListComponent', () => {
     });
 
     it('should load the data automatically', fakeAsync(() => {
+      expect(fetchAllDocumentsSpy).not.toHaveBeenCalled();
       fixture.detectChanges(); // ngOnInit
       tick(); // complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(fetchAllDocumentsSpy).toHaveBeenCalled();
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(1);
       tick();
       fixture.detectChanges();
       expect(component.totalDocumentCount).toEqual(5);
       expect(component.dataSource.data.length).toEqual(2);
+    }));
+
+    it('should display an error if data fetch failed', fakeAsync(() => {
+      fetchAllDocumentsSpy.and.returnValue(asyncError('server 500 error'));
+
+      expect(fetchAllDocumentsSpy).not.toHaveBeenCalled();
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(1);
+      tick();
+      fixture.detectChanges();
+
+      // Expect a dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+
+      expect(component.dataSource.data.length).toEqual(0);
+    }));
+
+    it('should re-load the data after the refresh', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(1);
+      tick();
+      fixture.detectChanges();
+
+      component.onRefreshList();
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(2);
+      tick();
+      fixture.detectChanges();
+
+      expect(component.totalDocumentCount).toEqual(5);
+      expect(component.dataSource.data.length).toEqual(2);
+    }));
+
+    it('should re-load the data after the scope changed', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(1);
+      tick();
+      fixture.detectChanges();
+
+      component.onDocScopeChanged();
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(2);
+      tick();
+      fixture.detectChanges();
+
+      expect(component.totalDocumentCount).toEqual(5);
+      expect(component.dataSource.data.length).toEqual(2);
+    }));
+
+    it('should navigate to target views for document creating', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(1);
+
+      component.onCreateADPDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createadp']);
+      component.onCreateADRDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createadr']);
+      component.onCreateAssetBuyInDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createassetbuy']);
+      component.onCreateAssetSoldOutDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createassetsold']);
+      component.onCreateAssetValChgDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createassetvalchg']);
+      component.onCreateBorrowFromDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createbrwfrm']);
+      component.onCreateExgDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createexg']);
+      component.onCreateLendToDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createlendto']);
+      component.onCreateNormalDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createnormal']);
+      component.onCreateRepayDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createrepayex']);
+      component.onCreateTransferDocument();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/createtransfer']);
+    }));
+
+    it('should navigate to target views for document changing', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(1);
+
+      let doc: Document = new Document();
+      doc.Id = 101;
+      doc.DocType = financeDocTypeNormal;
+      component.onChangeDocument(doc);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/edit', doc.Id]);
+
+      doc.DocType = financeDocTypeTransfer;
+      component.onChangeDocument(doc);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/edit', doc.Id]);
+
+      doc.DocType = financeDocTypeCurrencyExchange;
+      component.onChangeDocument(doc);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/edit', doc.Id]);
+
+      doc.DocType = financeDocTypeAdvancePayment;
+      component.onChangeDocument(doc);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/edit', doc.Id]);
+
+      doc.DocType = financeDocTypeAdvanceReceived;
+      component.onChangeDocument(doc);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/edit', doc.Id]);
+
+      doc.DocType = financeDocTypeAssetBuyIn;
+      component.onChangeDocument(doc);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/edit', doc.Id]);
+
+      doc.DocType = financeDocTypeAssetSoldOut;
+      component.onChangeDocument(doc);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/edit', doc.Id]);
+
+      doc.DocType = financeDocTypeAssetValChg;
+      component.onChangeDocument(doc);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/edit', doc.Id]);
+
+      doc.DocType = financeDocTypeBorrowFrom;
+      component.onChangeDocument(doc);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/edit', doc.Id]);
+
+      doc.DocType = financeDocTypeLendTo;
+      component.onChangeDocument(doc);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/edit', doc.Id]);
+    }));
+
+    it('should delete document successful', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(1);
+
+      let doc: Document = new Document();
+      doc.Id = 2;
+      component.onDeleteDocument(doc);
+      tick();
+      fixture.detectChanges();
+
+      // Expect the confirm dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Click the Yes button!
+      (overlayContainerElement.querySelector('.message-dialog-button-yes') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      expect(deleteDocumentSpy).toHaveBeenCalled();
+      tick();
+      fixture.detectChanges();
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(2);
+
+      flush();
+    }));
+
+    it('should handle delete failed case', fakeAsync(() => {
+      deleteDocumentSpy.and.returnValue(asyncError('failed'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick(); // complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(1);
+
+      let doc: Document = new Document();
+      doc.Id = 2;
+      component.onDeleteDocument(doc);
+      tick();
+      fixture.detectChanges();
+
+      // Expect the confirm dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Click the Yes button!
+      (overlayContainerElement.querySelector('.message-dialog-button-yes') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+      // expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      expect(deleteDocumentSpy).toHaveBeenCalled();
+      tick();
+      fixture.detectChanges();
+
+      // Expect the error dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Click the Yes button!
+      (overlayContainerElement.querySelector('.message-dialog-button-ok') as HTMLElement).click();
+      fixture.detectChanges();
+      flush();
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledTimes(1);
+
+      flush();
     }));
   });
 });

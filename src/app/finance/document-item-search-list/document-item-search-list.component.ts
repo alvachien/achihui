@@ -144,7 +144,19 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
             return [];
           }
         }),
-        catchError(() => {
+        catchError((error: any) => {
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          });
+
           this.isLoadingResults = false;
           return observableOf([]);
         }),

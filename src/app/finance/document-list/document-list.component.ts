@@ -65,7 +65,6 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
           return this._storageService!.fetchAllDocuments(bgn, end, this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize);
         }),
         map((revdata: BaseListModel<Document>) => {
-          console.error('entering map');
           if (revdata) {
             if (revdata.totalCount) {
               this.totalDocumentCount = +revdata.totalCount;
@@ -81,7 +80,6 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
           return [];
         }),
         catchError((error: any) => {
-          console.error('real error');
           const dlginfo: MessageDialogInfo = {
             Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
             Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
@@ -99,9 +97,6 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
         this.dataSource.data = data;
         this.isLoadingResults = false;
       });
-
-    // Load the data
-    this._docScopeEvent.emit();
   }
 
   ngOnDestroy(): void {
@@ -249,11 +244,10 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
       }
 
       if (x2) {
-        this._storageService.deleteDocumentEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+        this._storageService.deleteDocument(doc.Id).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
           // Refresh the list!
           this.onRefreshList();
         }, (err2: any) => {
-          // TBD: handle the error!
           const dlginfo2: MessageDialogInfo = {
             Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
             Content: err2 ? err2.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
@@ -264,12 +258,8 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
             disableClose: false,
             width: '500px',
             data: dlginfo2,
-          }).afterClosed().subscribe((x3: any) => {
-            // Do nothing
           });
         });
-
-        this._storageService.deleteDocument(doc.Id);
       }
     });
   }
