@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, } from '@angular/forms';
 import * as moment from 'moment';
 import { Subscription, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil,
-  momentDateFormat, EventHabitCheckin, RepeatFrequencyEnum } from '../../model';
+  momentDateFormat, EventHabitCheckin, RepeatFrequencyEnum, dateRangeValidator, } from '../../model';
 import { EventStorageService, UIStatusService, HomeDefDetailService } from '../../services';
 
 @Component({
@@ -24,7 +24,6 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
 
   public detailForm: FormGroup;
   public currentMode: string;
-  public detailObject: EventHabit;
   public isLoadingData: boolean;
   arFrequencies: any = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   displayedColumns: string[] = ['name', 'startdate', 'enddate'];
@@ -59,15 +58,15 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.detailForm = this._formBuilder.group({
-      nameControl: ['', [Validators.required, , Validators.maxLength(50)]],
-      startDateControl: [{value: moment()}, Validators.required],
-      endDateControl: [{value: moment().add(1, 'y')}, Validators.required],
-      rptTypeControl: [RepeatFrequencyEnum.Month, Validators.required],
-      countControl: [1, Validators.required],
-      contentControl: ['', Validators.required],
-      assigneeControl: ['', Validators.required],
-    });
+    this.detailForm = new FormGroup({
+      nameControl: new FormControl('', [Validators.required, , Validators.maxLength(50)]),
+      startDateControl: new FormControl(moment(), Validators.required),
+      endDateControl: new FormControl(moment().add(1, 'y'), Validators.required),
+      rptTypeControl: new FormControl(RepeatFrequencyEnum.Month, Validators.required),
+      countControl: new FormControl(1, Validators.required),
+      contentControl: new FormControl('', Validators.required),
+      assigneeControl: new FormControl('', Validators.required),
+    }, [dateRangeValidator,]);
 
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
@@ -95,9 +94,9 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
           this._storageService.readHabitEvent(this.routerID)
             .pipe(takeUntil(this._destroyed$))
             .subscribe((y: any) => {
-            this.detailObject = y;
-            this.dataSourceSimulateResult.data = this.detailObject.details;
-            this.dataSourceCheckIn.data = this.detailObject.checkInLogs;
+            // this.detailObject = y;
+            // this.dataSourceSimulateResult.data = this.detailObject.details;
+            // this.dataSourceCheckIn.data = this.detailObject.checkInLogs;
             this.isLoadingData = false;
           }, (error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
@@ -129,23 +128,28 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
   }
 
   public onGenerateDetails(): void {
-    this._storageService.generateHabitEvent(this.detailObject)
+    if (!this.detailForm.valid) {
+      return;
+    }
+
+    let detail: EventHabit = this._generateObject();
+    this._storageService.generateHabitEvent(detail)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
       // Show the result.
       if (x instanceof Array && x.length > 0) {
-        this.detailObject.details = [];
-        for (let dtl of x) {
-          let ndtl: EventHabitDetail = new EventHabitDetail();
-          ndtl.StartDate = moment(dtl.startTimePoint, momentDateFormat);
-          ndtl.EndDate = moment(dtl.endTimePoint, momentDateFormat);
-          ndtl.Name = dtl.name;
-          this.detailObject.details.push(ndtl);
-        }
+        // this.detailObject.details = [];
+        // for (let dtl of x) {
+        //   let ndtl: EventHabitDetail = new EventHabitDetail();
+        //   ndtl.StartDate = moment(dtl.startTimePoint, momentDateFormat);
+        //   ndtl.EndDate = moment(dtl.endTimePoint, momentDateFormat);
+        //   ndtl.Name = dtl.name;
+        //   this.detailObject.details.push(ndtl);
+        // }
       } else {
-        this.detailObject.details = [];
+        // this.detailObject.details = [];
       }
-      this.dataSourceSimulateResult.data = this.detailObject.details;
+      // this.dataSourceSimulateResult.data = this.detailObject.details;
     }, (error: HttpErrorResponse) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering HabitDetailComponent onGenerateDetails but failed to generateHabitEvent: ${error.message}`);
@@ -173,12 +177,23 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
   }
 
   private onInitCreateMode(): void {
-    this.detailObject = new EventHabit();
-    this.uiMode = UIMode.Create;
-    this.detailObject.HID = this._homedefService.ChosedHome.ID;
+    // this.detailObject = new EventHabit();
+    // this.uiMode = UIMode.Create;
+    // this.detailObject.HID = this._homedefService.ChosedHome.ID;
+  }
+  private _generateObject(): EventHabit {
+    let detail: EventHabit = new EventHabit();
+    detail.EndDate = this.detailForm.get('endDateControl').value;
+    detail.Name = this.detailForm.get('nameControl').value;
+    detail.StartDate = this.detailForm.get('startDateControl').value;
+    detail.assignee = this.detailForm.get('assigneeControl').value;
+    detail.content = this.detailForm.get('contentControl').value;
+    return detail;
   }
   private createImpl(): void {
-    this._storageService.createHabitEvent(this.detailObject)
+    let detail: EventHabit = new EventHabit();
+    detail = this._generateObject();
+    this._storageService.createHabitEvent(detail)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
       // Navigate to display

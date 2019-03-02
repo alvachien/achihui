@@ -7,13 +7,11 @@ import { Observable, forkJoin, Subject, BehaviorSubject, merge, of, ReplaySubjec
 import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, Plan, PlanTypeEnum, UIMode, getUIModeString, UICommonLabelEnum, BuildupAccountForSelection,
+import { LogLevel, Plan, PlanTypeEnum, UIMode, getUIModeString, UICommonLabelEnum, BuildupAccountForSelection,
   UIAccountForSelection, IAccountCategoryFilter, momentDateFormat, InfoMessage, MessageType,
 } from '../../model';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService, FinCurrencyService } from '../../services';
-import { ElementSchemaRegistry } from '@angular/compiler';
 
 @Component({
   selector: 'hih-finance-plan-detail',
@@ -23,6 +21,7 @@ import { ElementSchemaRegistry } from '@angular/compiler';
 export class PlanDetailComponent implements OnInit, OnDestroy {
   private _routerID: number;
   private _destroyed$: ReplaySubject<boolean>;
+
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   public mainFormGroup: FormGroup;
@@ -129,8 +128,10 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onSubmit(): void {

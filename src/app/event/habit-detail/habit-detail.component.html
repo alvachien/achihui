@@ -63,6 +63,12 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <!-- Error hint -->
+      <div *ngIf="detailForm.errors?.invalidDateRange && (detailForm.touched || detailForm.dirty)" 
+        class="cross-validation-error-message alert alert-danger">
+        Date range invalid.
+      </div>
     </form>
 
     <mat-tab-group>

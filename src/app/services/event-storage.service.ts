@@ -5,35 +5,36 @@ import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { LogLevel, momentDateFormat, GeneralEvent, RecurEvent, EventHabit, EventHabitCheckin,
-  EventHabitDetail } from '../model';
+  EventHabitDetail, BaseListModel, } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import * as moment from 'moment';
 
 @Injectable()
 export class EventStorageService {
+  readonly eventHabitUrl: string = environment.ApiUrl + '/api/eventhabit';
+  readonly recurEventUrl: string = environment.ApiUrl + '/api/recurevent';
+  readonly generalEventUrl: string = environment.ApiUrl + '/api/event'; 
+
   constructor(private _http: HttpClient,
     private _authService: AuthService,
     private _homeService: HomeDefDetailService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.log(`AC_HIH_UI [Debug]: Entering EventStorageService constructor`);
+    }
   }
 
   /**
-   * Get All events
+   * Get All general events
    * @param top Amount of records to fetch
    * @param skip Skip the records
    * @returns Observable of Event
    */
-  public fetchAllEvents(top: number, skip: number, skipfinished?: boolean,
-    dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
-    // const requestUrl: any = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
-
-    // Fetch all events
-    const apiurl: string = environment.ApiUrl + '/api/Event';
-    const curhid: number = this._homeService.ChosedHome.ID;
-
+  public fetchAllGeneralEvents(top: number, skip: number, skipfinished?: boolean,
+    dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<BaseListModel<GeneralEvent>> {
     let headers: HttpHeaders = new HttpHeaders();
     let params: HttpParams = new HttpParams();
-    params = params.append('hid', curhid.toString());
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('top', top.toString());
     params = params.append('skip', skip.toString());
     if (skipfinished !== undefined) {
@@ -50,7 +51,31 @@ export class EventStorageService {
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(apiurl, {headers: headers, params: params });
+    return this._http.get<any>(this.generalEventUrl, {headers: headers, params: params })
+      .pipe(map((data: any) => {
+        let rslts: GeneralEvent[] = [];
+        if (data.contentList && data.contentList instanceof Array) {
+          for (let ci of data) {
+            let rst: GeneralEvent = new GeneralEvent();
+            rst.onSetData(ci);
+
+            rslts.push(rst);
+          }
+        }
+
+        return {
+          totalCount: data!.totalCount,
+          contentList: rslts,
+        }
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering EventStorageService fetchAllGeneralEvents failed ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }),
+      );
   }
 
   /**
@@ -63,7 +88,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/event/' + eid.toString();
+    let apiurl: string = this.generalEventUrl + '/' + eid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -72,13 +97,21 @@ export class EventStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readObject in EventStorageService`);
+          console.log(`AC_HIH_UI [Debug]: Entering EventStorageService readGeneralEvents`);
         }
 
         let hd: GeneralEvent = new GeneralEvent();
         hd.onSetData(response);
         return hd;
-      }));
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering EventStorageService readGeneralEvents failed ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }),
+      );
   }
 
   /**
@@ -91,11 +124,10 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/event';
     let jdata: string = gevnt.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.post(apiurl, jdata, {
+    return this._http.post(this.generalEventUrl, jdata, {
         headers: headers,
         params: params,
       });
@@ -114,7 +146,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/event/' + gevnt.ID.toString();
+    let apiurl: string = this.generalEventUrl + '/' + gevnt.ID.toString();
     let jdata: any[] = [{
         'op': 'add',
         'path': '/completeTimePoint',
@@ -135,18 +167,41 @@ export class EventStorageService {
    * @param top Amount of records to fetch
    * @param skip Skip the records
    */
-  fetchAllRecurEvents(top: number, skip: number): Observable<any> {
-    // Fetch all events
-    const apiurl: string = environment.ApiUrl + '/api/recurevent';
-    const curhid: number = this._homeService.ChosedHome.ID;
-    const requestUrl: any = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
-
+  fetchAllRecurEvents(top: number, skip: number): Observable<BaseListModel<RecurEvent>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('top', top.toString());
+    params = params.append('skip', skip.toString());
 
-    return this._http.get<any>(requestUrl, {headers: headers, });
+    return this._http.get<any>(this.recurEventUrl, {headers: headers, params: params,})
+      .pipe(map((data: any) => {
+        let rslts: RecurEvent[] = [];
+        if (data && data.contentList && data.contentList instanceof Array) {
+          for (let ci of data.contentList) {
+            let rst: RecurEvent = new RecurEvent();
+            rst.onSetData(ci);
+
+            rslts.push(rst);
+          }
+        }
+
+        return {
+          totalCount: data.totalCount,
+          contentList: rslts,
+        }
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering EventStorageService fetchAllRecurEvents failed ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }),
+      );
   }
 
   /**
@@ -159,7 +214,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/recurevent/' + eid.toString();
+    let apiurl: string = this.recurEventUrl + '/' + eid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
 
@@ -201,12 +256,11 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/recurevent/';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     let jdata: string = reobj.writeJSONString();
 
-    return this._http.post(apiurl, jdata, {
+    return this._http.post(this.recurEventUrl, jdata, {
         headers: headers,
         params: params,
       })
@@ -273,7 +327,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/recurevent/' + rid.toString();
+    let apiurl: string = this.recurEventUrl + '/' + rid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
 
@@ -295,18 +349,41 @@ export class EventStorageService {
    * @param top Amount of records to fetch
    * @param skip Skip the records
    */
-  public fetchAllHabitEvents(top: number, skip: number): Observable<any> {
-    // Fetch all events
-    const apiurl: string = environment.ApiUrl + '/api/eventhabit';
-    const curhid: number = this._homeService.ChosedHome.ID;
-    const requestUrl: any = `${apiurl}?hid=${curhid}&top=${top}&skip=${skip}`;
-
+  public fetchAllHabitEvents(top: number, skip: number): Observable<BaseListModel<EventHabit>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('top', top.toString());
+    params = params.append('skip', skip.toString());
 
-    return this._http.get<any>(requestUrl, {headers: headers, });
+    return this._http.get(this.eventHabitUrl, {headers: headers, })
+      .pipe(map((val: any) => {
+        let rslts: EventHabit[] = [];
+        if (val && val.contentList && val.contentList instanceof Array) {
+          for (let ci of val.contentList) {
+            let rst: EventHabit = new EventHabit();
+            rst.onSetData(ci);
+
+            rslts.push(rst);
+          }
+        }
+
+        return { 
+          totalCount: val.totalCount,
+          contentList: rslts,
+        };
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering EventStorageService fetchAllHabitEvents failed ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }),
+      );
   }
 
   public fetchHabitDetailWithCheckIn(bgn: moment.Moment, end: moment.Moment): Observable<any> {
@@ -334,7 +411,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/eventhabit/' + eid.toString();
+    let apiurl: string = this.eventHabitUrl + '/' + eid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -370,7 +447,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/eventhabit?geneMode=true';
+    let apiurl: string = this.eventHabitUrl + '?geneMode=true';
     let jdata: string = hevnt.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
@@ -410,11 +487,10 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/eventhabit';
     let jdata: string = hevnt.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    return this._http.post(apiurl, jdata, {
+    return this._http.post(this.eventHabitUrl, jdata, {
         headers: headers,
         params: params,
       }).pipe(map((val: any) => {
@@ -442,7 +518,7 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/eventhabit/' + hevnt.ID.toString();
+    let apiurl: string = this.eventHabitUrl + '/' + hevnt.ID.toString();
     let jdata: string = hevnt.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());

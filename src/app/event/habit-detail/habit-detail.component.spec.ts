@@ -148,5 +148,63 @@ describe('HabitDetailComponent', () => {
 
       expect(component.detailForm.valid).toBeFalsy();
     }));
+
+    it('content is mandatory', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component.detailForm.valid).toBeFalsy();
+      expect(component.isCreateMode).toBeTruthy();
+      expect(component.isFieldChangable).toBeTruthy();
+
+      // Name
+      component.detailForm.get('nameControl').setValue('test');
+      // Start date - default
+      // End date - default
+      // Repeat tyep - default
+      // Count - default
+      // Content
+      // component.detailForm.get('contentControl').setValue('test');
+      // Assignee
+      component.detailForm.get('assigneeControl').setValue(fakeData.currentUser.getUserId());
+      fixture.detectChanges();
+
+      expect(component.detailForm.valid).toBeFalsy();
+    }));
+    it('shall allow generate details in valid case', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+
+      tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      expect(component.detailForm.valid).toBeFalsy();
+      expect(component.isCreateMode).toBeTruthy();
+      expect(component.isFieldChangable).toBeTruthy();
+
+      // Name
+      component.detailForm.get('nameControl').setValue('test');
+      // Start date - default
+      // End date - default
+      // Repeat tyep - default
+      // Count - default
+      // Content
+      component.detailForm.get('contentControl').setValue('test');
+      // Assignee
+      component.detailForm.get('assigneeControl').setValue(fakeData.currentUser.getUserId());
+      component.detailForm.updateValueAndValidity();
+      fixture.detectChanges();
+
+      expect(component.detailForm.valid).toBeTruthy('Detail form shall be valid');
+
+      component.onGenerateDetails();
+      expect(generateHabitEventSpy).toHaveBeenCalled();
+
+      tick();
+      fixture.detectChanges();
+
+      flush();
+    }));
   });
 });

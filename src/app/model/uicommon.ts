@@ -1,6 +1,8 @@
 import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum, RepeatFrequencyEnum } from './common';
 import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum } from './financemodel';
 import { EnPOSEnum } from './learnmodel';
+import { ValidatorFn, FormGroup, ValidationErrors, } from '@angular/forms';
+import * as moment from 'moment';
 
 /**
  * UI Status
@@ -477,3 +479,13 @@ export class GeneralFilterItem {
   highValue: any;
   valueType: GeneralFilterValueType;
 }
+
+export const dateRangeValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+  let startDate: moment.Moment = group.get('startDateControl').value.startOf('day');
+  let endDate: moment.Moment = group.get('endDateControl').value.startOf('day');
+  if (!endDate.isSameOrAfter(startDate)) {
+    return  {'invalidDateRange': true};
+  }
+
+  return null;
+};

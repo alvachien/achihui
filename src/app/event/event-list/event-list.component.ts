@@ -61,7 +61,7 @@ export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          return this._storageService!.fetchAllEvents(this.paginator.pageSize,
+          return this._storageService!.fetchAllGeneralEvents(this.paginator.pageSize,
             this.paginator.pageIndex * this.paginator.pageSize,
             (this.includeCompleted ? false : true),
             );

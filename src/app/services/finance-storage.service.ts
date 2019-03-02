@@ -34,6 +34,12 @@ export class FinanceStorageService {
   private _isOrderListLoaded: boolean;
   private _listOrder: Order[];
 
+  readonly planAPIUrl: string = environment.ApiUrl + '/api/FinancePlan';
+  readonly documentAPIUrl: string = environment.ApiUrl + '/api/FinanceDocument';
+  readonly accountAPIUrl: string = environment.ApiUrl + '/api/FinanceAccount';
+  readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenter';
+  readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrder';
+
   get AccountCategories(): AccountCategory[] {
     return this._listAccountCategory;
   }
@@ -322,8 +328,6 @@ export class FinanceStorageService {
   // Account
   public fetchAllAccounts(forceReload?: boolean): Observable<Account[]> {
     if (!this._isAccountListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceAccount';
-
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -331,7 +335,7 @@ export class FinanceStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
+      return this._http.get(this.accountAPIUrl, {
         headers: headers,
         params: params,
       })
@@ -379,10 +383,8 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceAccount';
-
     const jdata: string = objAcnt.writeJSONString();
-    return this._http.post(apiurl, jdata, {
+    return this._http.post(this.accountAPIUrl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
@@ -414,7 +416,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceAccount/' + objAcnt.Id.toString();
+    let apiurl: string = this.accountAPIUrl + '/' + objAcnt.Id.toString();
 
     const jdata: string = objAcnt.writeJSONString();
     let params: HttpParams = new HttpParams();
@@ -461,7 +463,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceAccount/' + acntid.toString();
+    let apiurl: string = this.accountAPIUrl + '/' + acntid.toString();
     let jdata: any[] = [{
         'op': 'replace',
         'path': '/status',
@@ -509,7 +511,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceAccount/' + acntid.toString();
+    let apiurl: string = this.accountAPIUrl + '/' + acntid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -550,8 +552,6 @@ export class FinanceStorageService {
    */
   public fetchAllControlCenters(forceReload?: boolean): Observable<ControlCenter[]> {
     if (!this._isConctrolCenterListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceControlCenter';
-
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -560,7 +560,7 @@ export class FinanceStorageService {
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
 
-      return this._http.get<any>(apiurl, {
+      return this._http.get<any>(this.controlCenterAPIUrl, {
           headers: headers,
           params: params,
         })
@@ -609,10 +609,8 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceControlCenter';
-
     const jdata: string = objDetail.writeJSONString();
-    this._http.post(apiurl, jdata, {
+    this._http.post(this.controlCenterAPIUrl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
@@ -655,7 +653,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceControlCenter/' + objDetail.Id.toString();
+    let apiurl: string = this.controlCenterAPIUrl + '/' + objDetail.Id.toString();
 
     const jdata: string = objDetail.writeJSONString();
     let params: HttpParams = new HttpParams();
@@ -709,7 +707,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceControlCenter/' + ccid.toString();
+    let apiurl: string = this.controlCenterAPIUrl + '/' + ccid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -749,8 +747,6 @@ export class FinanceStorageService {
    */
   public fetchAllOrders(forceReload?: boolean): Observable<Order[]> {
     if (!this._isOrderListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceOrder';
-
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -761,7 +757,7 @@ export class FinanceStorageService {
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
       params = params.append('incInv', incInv.toString());
 
-      return this._http.get(apiurl, {
+      return this._http.get(this.orderAPIUrl, {
         headers: headers,
         params: params,
       })
@@ -807,10 +803,8 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceOrder';
-
     const jdata: string = objDetail.writeJSONString();
-    return this._http.post(apiurl, jdata, {
+    return this._http.post(this.orderAPIUrl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
@@ -844,7 +838,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceOrder/' + objDetail.Id.toString();
+    let apiurl: string = this.orderAPIUrl + '/' + objDetail.Id.toString();
     const jdata: string = objDetail.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
@@ -890,7 +884,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceOrder/' + ordid.toString();
+    let apiurl: string = this.orderAPIUrl + '/' + ordid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -933,8 +927,6 @@ export class FinanceStorageService {
    *
    */
   public fetchAllPlans(top?: number, skip?: number): Observable<BaseListModel<Plan>> {
-    const apiurl: string = environment.ApiUrl + '/api/FinancePlan';
-
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -949,7 +941,7 @@ export class FinanceStorageService {
       params = params.append('skip', skip.toString());
     }
 
-    return this._http.get(apiurl, {
+    return this._http.get(this.planAPIUrl, {
       headers: headers,
       params: params,
     })
@@ -991,10 +983,8 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + '/api/FinancePlan';
-
     const jdata: string = nplan.writeJSONString();
-    return this._http.post(apiurl, jdata, {
+    return this._http.post(this.planAPIUrl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
@@ -1024,7 +1014,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinancePlan/' + planid.toString();
+    let apiurl: string = this.planAPIUrl + '/' + planid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -1050,8 +1040,6 @@ export class FinanceStorageService {
    * @param skip Skip the amount
    */
   public fetchAllDocuments(dtbgn?: moment.Moment, dtend?: moment.Moment, top?: number, skip?: number): Observable<BaseListModel<Document>> {
-    const apiurl: string = environment.ApiUrl + '/api/FinanceDocument';
-
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -1072,7 +1060,7 @@ export class FinanceStorageService {
       params = params.append('skip', skip.toString());
     }
 
-    return this._http.get(apiurl, {
+    return this._http.get(this.documentAPIUrl, {
       headers: headers,
       params: params,
     })
@@ -1115,10 +1103,8 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocument';
-
     const jdata: string = objDetail.writeJSONString();
-    return this._http.post(apiurl, jdata, {
+    return this._http.post(this.documentAPIUrl, jdata, {
         headers: headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
@@ -1149,7 +1135,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    const apiurl: string = environment.ApiUrl + '/api/FinanceDocument/' + objDetail.Id.toString();
+    const apiurl: string = this.documentAPIUrl + '/' + objDetail.Id.toString();
 
     const jdata: string = objDetail.writeJSONString();
     return this._http.put(apiurl, jdata, {
@@ -1495,7 +1481,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocument/' + docid.toString();
+    let apiurl: string = this.documentAPIUrl + '/' + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.get(apiurl, {
@@ -1634,7 +1620,7 @@ export class FinanceStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/FinanceDocument/' + docid.toString();
+    let apiurl: string = this.documentAPIUrl + '/' + docid.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     return this._http.delete(apiurl, {
