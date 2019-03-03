@@ -1,8 +1,8 @@
 <h2 matDialogTitle>{{ dlgInfo.Header | translate}}</h2>
 <mat-dialog-content>  
-  <h2 class="achih-control-full-width" *ngIf="dlgInfo.Content"> {{ dlgInfo.Content | translate}}
+  <h2 class="achih-control-full-width" class="message-dialog-content" *ngIf="dlgInfo.Content"> {{ dlgInfo.Content | translate}}
   </h2>
-  <div *ngIf="dlgInfo.ContentTable">
+  <div *ngIf="dlgInfo.ContentTable" class="message-dialog-content-table">
     <div *ngFor="let cont of dlgInfo.ContentTable">
       <div class="alert" [ngClass]="{'alter-danger': cont.IsError, 'alter-warning': cont.IsWarning, 'alert-info': cont.IsInfo}" role="alert">
         <h4 class="alert-heading">{{cont.MsgTitle | translate}}</h4>

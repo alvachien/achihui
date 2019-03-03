@@ -11,7 +11,7 @@ import { UserAuthInfo, FinanceADPCalAPIInput, FinanceLoanCalAPIInput, RepeatFreq
   FinanceADPCalAPIOutput, FinanceLoanCalAPIOutput, momentDateFormat, Document, DocumentItem,
   financeDocTypeNormal, DocumentWithPlanExgRateForUpdate, ReportTrendExTypeEnum,
   Account, TemplateDocADP, Order, AccountStatusEnum, GeneralFilterItem, GeneralFilterValueType,
-  GeneralFilterOperatorEnum, } from '../model';
+  GeneralFilterOperatorEnum, Plan, PlanTypeEnum, } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 
@@ -2777,7 +2777,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET'
-          && requrl.url === documentAPIURL
+          && requrl.url === service.documentAPIUrl
           && requrl.params.has('hid')
           && requrl.params.has('dtbgn')
           && requrl.params.has('dtend')
@@ -2823,7 +2823,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET'
-          && requrl.url === documentAPIURL
+          && requrl.url === service.documentAPIUrl
           && requrl.params.has('hid')
           && requrl.params.has('dtbgn')
           && requrl.params.has('dtend');
@@ -2857,7 +2857,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to DELETE from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'DELETE'
-          && requrl.url === documentAPIURL + '/1'
+          && requrl.url === service.documentAPIUrl + '/1'
           && requrl.params.has('hid');
        });
 
@@ -2879,9 +2879,183 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to DELETE from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'DELETE'
-          && requrl.url === documentAPIURL + '/1'
+          && requrl.url === service.documentAPIUrl + '/1'
           && requrl.params.has('hid');
        });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('fetchAllPlans', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.fetchAllPlans(100, 10).subscribe(
+        (data: any) => {
+          expect(data.totalCount).toEqual(0);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.planAPIUrl
+          && requrl.params.has('hid')
+          && requrl.params.has('top')
+          && requrl.params.has('skip');
+       });
+
+      // Respond with the mock data
+      req.flush({'contentList': [], 'totalCount': 0});
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.fetchAllPlans().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET'
+          && requrl.url === service.planAPIUrl
+          && requrl.params.has('hid')
+          && !requrl.params.has('top')
+          && !requrl.params.has('skip');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('readPlan', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return plan in success case', () => {
+      service.readPlan(21).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.planAPIUrl + '/21' && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      let planData: Plan = new Plan();
+      planData.StartDate = moment();
+      planData.AccountCategoryID = 1;
+      planData.AccountID = 21;
+      planData.Description = 'test';
+      planData.PlanType = PlanTypeEnum.Account;
+      planData.TargetBalance = 20;
+      planData.TranCurrency = 'CNY';
+      planData.ID = 21;
+      req.flush(planData.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.readPlan(21).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.planAPIUrl + '/21' && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createPlan', () => {
+    let planData: Plan;
+    beforeEach(() => {
+      planData = new Plan();
+      planData.StartDate = moment();
+      planData.AccountCategoryID = 1;
+      planData.AccountID = 21;
+      planData.Description = 'test';
+      planData.PlanType = PlanTypeEnum.Account;
+      planData.TargetBalance = 20;
+      planData.TranCurrency = 'CNY';
+      planData.ID = 21;
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should create a plan in success case', () => {
+      service.createPlan(planData).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.planAPIUrl;
+       });
+
+      // Respond with the mock data
+      req.flush(planData.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createPlan(planData).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.planAPIUrl;
+      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: 'server failed' });

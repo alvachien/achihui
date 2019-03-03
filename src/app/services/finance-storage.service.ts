@@ -947,7 +947,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllPlans in FinanceStorageService.`);
+          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService fetchAllPlans map.`);
         }
 
         let listRst: Plan[] = [];
@@ -959,15 +959,15 @@ export class FinanceStorageService {
             listRst.push(rst);
           }
         }
-        let rstObj: BaseListModel<Plan> = new BaseListModel<Plan>();
-        rstObj.totalCount = +rjs.totalCount;
-        rstObj.contentList = listRst;
 
-        return rstObj;
+        return {
+          totalCount: rjs.totalCount,
+          contentList: listRst,
+        };
       }),
       catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Failed in fetchAllPlans in FinanceStorageService: ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService fetchAllPlans failed: ${error}`);
         }
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -989,7 +989,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering Map of createPlan in FinanceStorageService: ' + response);
+          console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService, createPlan, map');
         }
 
         let hd: Plan = new Plan();
@@ -998,7 +998,7 @@ export class FinanceStorageService {
       }),
       catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Failed in createPlan in FinanceStorageService: ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService createPlan failed: ${error}`);
         }
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -1023,12 +1023,19 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readPlan in FinanceStorageService`);
+          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService readPlan`);
         }
 
         let hd: Plan = new Plan();
         hd.onSetData(response);
         return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService createPlan, failed: ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
   }
 

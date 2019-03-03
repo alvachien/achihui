@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -9,7 +9,7 @@ import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Component, Input } from '@angular/core';
 
-import { HttpLoaderTestFactory, FakeDataHelper } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, } from '../../../testing';
 import { ControlCenterTreeComponent } from './control-center-tree.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 
@@ -23,13 +23,16 @@ describe('ControlCenterTreeComponent', () => {
   let component: ControlCenterTreeComponent;
   let fixture: ComponentFixture<ControlCenterTreeComponent>;
   let fakeData: FakeDataHelper;
+  let fetchAllControlCentersSpy: any;
 
   beforeEach(async(() => {
     fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
+    fakeData.buildFinControlCenter();
 
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllControlCenters']);
-    const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllControlCenters']);
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
 
@@ -54,7 +57,7 @@ describe('ControlCenterTreeComponent', () => {
       providers: [
         TranslateService,
         UIStatusService,
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
         { provide: HomeDefDetailService, useValue: homeService },
       ],
     })
@@ -64,10 +67,19 @@ describe('ControlCenterTreeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ControlCenterTreeComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('1. should create', () => {
+  it('1. should create withou data', () => {
     expect(component).toBeTruthy();
   });
+
+  it('2. should load the data successfully', fakeAsync(() => {
+    fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    expect(component.dataSource.data.length).toBeGreaterThan(0);
+  }));
 });

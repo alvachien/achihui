@@ -28,7 +28,7 @@ describe('LibraryStorageService', () => {
     const homeService: Partial<HomeDefDetailService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
-  };
+    };
 
     TestBed.configureTestingModule({
       imports: [

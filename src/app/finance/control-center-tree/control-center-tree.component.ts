@@ -70,8 +70,8 @@ export class ControlCenterTreeComponent implements OnInit, OnDestroy {
           console.debug('AC_HIH_UI [Debug]: Entering ControlCenterTreeComponent ngOnInit, fetchAllControlCenters...');
         }
 
-        if (this._storageService.ControlCenters) {
-          let nodes: ControlCenterTreeNode[] = this._buildControlCenterTree(this._storageService.ControlCenters, 1);
+        if (value) {
+          let nodes: ControlCenterTreeNode[] = this._buildControlCenterTree(value, 1);
           this.dataSource.data = nodes;
         }
       }, (error: any) => {
@@ -82,8 +82,10 @@ export class ControlCenterTreeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   onTreeNodeClicked(node: ControlCenterTreeFlatNode): void {

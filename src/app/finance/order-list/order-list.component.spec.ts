@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -6,50 +6,46 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { OrderListComponent } from './order-list.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
+import { Order } from '../../model';
 
 describe('OrderListComponent', () => {
   let component: OrderListComponent;
   let fixture: ComponentFixture<OrderListComponent>;
   let fakeData: FakeDataHelper;
+  let fetchAllOrdersSpy: any;
+  let routerSpy: any;
 
   beforeEach(async(() => {
     fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
+    fakeData.buildFinControlCenter();
+    fakeData.buildFinOrders();
 
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
-      'fetchAllAccountCategories',
-      'fetchAllDocTypes',
-      'fetchAllTranTypes',
-      'fetchAllAccounts',
-      'fetchAllControlCenters',
       'fetchAllOrders',
     ]);
-    const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    const fetchAllDocTypesSpy: any = stroageService.fetchAllDocTypes.and.returnValue(of([]));
-    const fetchAllTranTypesSpy: any = stroageService.fetchAllTranTypes.and.returnValue(of([]));
-    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    const fetchAllOrdersSpy: any = stroageService.fetchAllOrders.and.returnValue(of([]));
-    const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
+    fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     const fetchAllCurrenciesSpy: any = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {
@@ -79,11 +75,34 @@ describe('OrderListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(OrderListComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should be created', () => {
-    // expect(component).toBeTruthy();
-    expect(1).toBe(1);
+    expect(component).toBeTruthy();
+  });
+
+  describe('shall load the data', () => {
+    beforeEach(() => {
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+    });
+    afterEach(() => {
+      // Do nothing
+    });
+
+    it('shall make the links shall work', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.onCreateOrder();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/order/create']);
+
+      let curOder: Order = fakeData.finOrders[0];
+      component.onChangeOrder(curOder);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/order/edit', curOder.Id]);
+
+      component.onDisplayOrder(curOder);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/order/display', curOder.Id]);
+    }));
   });
 });

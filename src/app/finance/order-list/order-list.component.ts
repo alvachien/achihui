@@ -3,12 +3,12 @@ import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Order, UICommonLabelEnum, momentDateFormat } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import * as moment from 'moment';
 
 @Component({
   selector: 'hih-finance-order-list',
@@ -69,8 +69,10 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onCreateOrder(): void {

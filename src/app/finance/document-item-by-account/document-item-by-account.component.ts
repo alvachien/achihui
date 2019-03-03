@@ -121,7 +121,9 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 }

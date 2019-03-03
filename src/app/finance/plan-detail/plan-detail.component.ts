@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import * as moment from 'moment';
 import { Observable, forkJoin, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -25,7 +25,6 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   public mainFormGroup: FormGroup;
-  public detailObject: Plan;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
@@ -38,18 +37,16 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   }
 
   constructor(private _homedefService: HomeDefDetailService,
-    private _formBuilder: FormBuilder,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
     private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering PlanDetailComponent constructor...');
     }
-
-    this.detailObject = new Plan();
   }
 
   ngOnInit(): void {
@@ -59,11 +56,11 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.mainFormGroup = this._formBuilder.group({
-      dateControl: [{ value: moment(), disabled: false }, Validators.required],
-      accountControl: ['', Validators.required],
-      tgtbalanceControl: [{ value: 0 }, Validators.required],
-      despControl: ['', Validators.required],
+    this.mainFormGroup = new FormGroup({
+      dateControl: new FormControl(moment().add(1, 'M'), Validators.required),
+      accountControl: new FormControl('', Validators.required),
+      tgtbalanceControl: new FormControl(0, [Validators.required]),
+      despControl: new FormControl('', Validators.required),
     });
 
     forkJoin([
@@ -89,37 +86,65 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
+            this.uiMode = UIMode.Create;
             // Do nothing
           } else if (x[0].path === 'edit') {
             this._routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
-            this._storageService.readPlan(this._routerID).pipe(takeUntil(this._destroyed$)).subscribe((nplan: Plan) => {
-              this.mainFormGroup.setValue({
-                dateControl: nplan.TargetDate,
-                accountControl: nplan.AccountID,
-                tgtbalanceControl: nplan.TargetBalance,
-                despControl: nplan.Description,
-              });
-            });
           } else if (x[0].path === 'display') {
             this._routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
+          }
 
-            this._storageService.readPlan(this._routerID).pipe(takeUntil(this._destroyed$)).subscribe((nplan: Plan) => {
+          this.currentMode = getUIModeString(this.uiMode);
+
+          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+            this._storageService.readPlan(this._routerID)
+            .pipe(takeUntil(this._destroyed$))
+            .subscribe((nplan: Plan) => {
               this.mainFormGroup.setValue({
                 dateControl: nplan.TargetDate,
                 accountControl: nplan.AccountID,
                 tgtbalanceControl: nplan.TargetBalance,
                 despControl: nplan.Description,
               });
-              this.mainFormGroup.disable();
+
+              if (this.uiMode === UIMode.Display) {
+                this.mainFormGroup.disable();
+              } else if (this.uiMode === UIMode.Change) {
+                this.mainFormGroup.enable();
+              }
+            }, (error: any) => {
+              // Show error dialog
+              const dlginfo: MessageDialogInfo = {
+                Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+                Content: error.toString(),
+                Button: MessageDialogButtonEnum.onlyok,
+              };
+
+              this._dialog.open(MessageDialogComponent, {
+                disableClose: false,
+                width: '500px',
+                data: dlginfo,
+              });
             });
           }
-
-          this.currentMode = getUIModeString(this.uiMode);
         }
+      });
+    }, (error: any) => {
+      // Show error dialog
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
       });
     });
   }
@@ -163,20 +188,20 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
       // Create
       this._storageService.createPlan(nplan).pipe(takeUntil(this._destroyed$)).subscribe((x: Plan) => {
         // Create successfully
-        this._router.navigate(['/finance/plan/display/' + x.ID.toString()]);
+        this._snackbar.open('Succeed', undefined, {
+          duration: 2000,
+        }).afterDismissed().subscribe(() => {
+          this._router.navigate(['/finance/plan/display/' + x.ID.toString()]);
+        });
       }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering PlanDetailComponent onSubmit to createPlan, failed with ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering PlanDetailComponent onSubmit to createPlan, failed: ${error}`);
         }
 
         // Show a dialog for error details
-        let nmsg: InfoMessage = new InfoMessage();
-        nmsg.MsgType = MessageType.Error;
-        nmsg.MsgContent = error;
-        nmsg.MsgTitle = error;
         const dlginfo: MessageDialogInfo = {
           Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          ContentTable: [nmsg],
+          Content: error.toString(),
           Button: MessageDialogButtonEnum.onlyok,
         };
 
