@@ -39,14 +39,16 @@ describe('DocumentItemOverviewComponent', () => {
   let fakeData: FakeDataHelper;
   let routerSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
     fakeData.buildCurrencies();
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
+  });
 
+  beforeEach(async(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const homeService: Partial<HomeDefDetailService> = {
       ChosedHome: fakeData.chosedHome,

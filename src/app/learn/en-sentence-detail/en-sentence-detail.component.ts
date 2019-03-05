@@ -50,7 +50,7 @@ export class EnSentenceDetailComponent implements OnInit, OnDestroy {
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent ngOnInit for activateRoute URL: ${x}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent ngOnInit for activateRoute URL: ${x}`);
       }
 
       if (x instanceof Array && x.length > 0) {
@@ -72,7 +72,7 @@ export class EnSentenceDetailComponent implements OnInit, OnDestroy {
             this._readSub = this._storageService.readEnSentenceEvent.pipe(takeUntil(this._destroyed$)).subscribe((x2: any) => {
               if (x2 instanceof EnSentence) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent, ngOninit, readEnSentenceEvent`);
+                  console.debug(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent, ngOninit, readEnSentenceEvent`);
                 }
 
                 this.detailObject = x2;
@@ -123,7 +123,7 @@ export class EnSentenceDetailComponent implements OnInit, OnDestroy {
       if (!this._createSub) {
         this._createSub = this._storageService.createEnSentenceEvent.subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent, onSubmit, createEnSentenceEvent`);
+            console.debug(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent, onSubmit, createEnSentenceEvent`);
           }
 
           // Navigate back to list view
@@ -162,7 +162,7 @@ export class EnSentenceDetailComponent implements OnInit, OnDestroy {
             }).afterClosed().subscribe((x2: any) => {
               // Do nothing!
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent, onSubmit, Message dialog result ${x2}`);
+                console.debug(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent, onSubmit, Message dialog result ${x2}`);
               }
             });
           }

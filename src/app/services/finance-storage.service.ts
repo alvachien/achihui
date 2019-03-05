@@ -39,6 +39,7 @@ export class FinanceStorageService {
   readonly accountAPIUrl: string = environment.ApiUrl + '/api/FinanceAccount';
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenter';
   readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrder';
+  readonly docItemAPIUrl: string = environment.ApiUrl + '/api/FinanceDocumentItem';
 
   get AccountCategories(): AccountCategory[] {
     return this._listAccountCategory;
@@ -117,7 +118,7 @@ export class FinanceStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAccountCategories in FinanceStorageService`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllAccountCategories in FinanceStorageService`);
           }
 
           this._listAccountCategory = [];
@@ -168,7 +169,7 @@ export class FinanceStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceStorageService.`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceStorageService.`);
           }
 
           this._listDocType = [];
@@ -218,8 +219,8 @@ export class FinanceStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceStorageService: ${response}`);
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceStorageService.`);
+            // console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceStorageService: ${response}`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceStorageService.`);
           }
 
           this._listTranType = [];
@@ -292,7 +293,7 @@ export class FinanceStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAssetCategories in FinanceStorageService`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllAssetCategories in FinanceStorageService`);
           }
 
           this._listAssetCategory = [];
@@ -341,7 +342,7 @@ export class FinanceStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceStorageService.`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceStorageService.`);
           }
 
           this._listAccount = [];
@@ -520,7 +521,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readAccount in FinanceStorageService`);
+          console.debug(`AC_HIH_UI [Debug]: Entering readAccount in FinanceStorageService`);
         }
 
         let hd: Account = new Account();
@@ -567,7 +568,7 @@ export class FinanceStorageService {
         // .retry(3)
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceStorageService.`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceStorageService.`);
           }
 
           this._listControlCenter = [];
@@ -624,7 +625,7 @@ export class FinanceStorageService {
       }))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createControlCenter in FinanceStorageService: ${x}`);
+          console.debug(`AC_HIH_UI [Debug]: Fetch data success in createControlCenter in FinanceStorageService: ${x}`);
         }
 
         this._listControlCenter.push(x);
@@ -673,7 +674,7 @@ export class FinanceStorageService {
       }))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in changeControlCenter in FinanceStorageService: ${x}`);
+          console.debug(`AC_HIH_UI [Debug]: Fetch data success in changeControlCenter in FinanceStorageService: ${x}`);
         }
 
         let idx: number = this._listControlCenter.findIndex((val: any) => {
@@ -716,7 +717,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readControlCenter in FinanceStorageService`);
+          console.debug(`AC_HIH_UI [Debug]: Entering readControlCenter in FinanceStorageService`);
         }
 
         let hd: ControlCenter = new ControlCenter();
@@ -763,7 +764,7 @@ export class FinanceStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceStorageService.`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceStorageService.`);
           }
 
           this._listOrder = [];
@@ -893,7 +894,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readOrder in FinanceStorageService`);
+          console.debug(`AC_HIH_UI [Debug]: Entering readOrder in FinanceStorageService`);
         }
 
         let hd: Order = new Order();
@@ -947,7 +948,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService fetchAllPlans map.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService fetchAllPlans map.`);
         }
 
         let listRst: Plan[] = [];
@@ -1023,7 +1024,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService readPlan`);
+          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService readPlan`);
         }
 
         let hd: Plan = new Plan();
@@ -1073,7 +1074,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService, fetchAllDocuments, mpa.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService, fetchAllDocuments, mpa.`);
         }
 
         let listRst: Document[] = [];
@@ -1281,7 +1282,7 @@ export class FinanceStorageService {
       }))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in updateLoanDocument in FinanceStorageService: ${x}`);
+          console.debug(`AC_HIH_UI [Debug]: Fetch data success in updateLoanDocument in FinanceStorageService: ${x}`);
         }
 
         // const copiedData: any = this.Documents.slice();
@@ -1323,7 +1324,7 @@ export class FinanceStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService, getLoanTmpDocs`);
+          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService, getLoanTmpDocs`);
         }
 
         let docLoan: TemplateDocLoan[] = [];
@@ -1367,7 +1368,7 @@ export class FinanceStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering createLoanRepayDoc in FinanceStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering createLoanRepayDoc in FinanceStorageService: ${response}`);
         }
 
         let hd: Document = new Document();
@@ -1497,7 +1498,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readDocument in FinanceStorageService`);
+          console.debug(`AC_HIH_UI [Debug]: Entering readDocument in FinanceStorageService`);
         }
 
         let hd: Document = new Document();
@@ -1531,8 +1532,8 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering readAssetDocument in FinanceStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering readAssetDocument in FinanceStorageService.`);
+          // console.debug(`AC_HIH_UI [Debug]: Entering readAssetDocument in FinanceStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering readAssetDocument in FinanceStorageService.`);
         }
 
         // let hd: Document = new Document();
@@ -1568,8 +1569,8 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering readADPDocument in FinanceStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering readADPDocument in FinanceStorageService.`);
+          // console.debug(`AC_HIH_UI [Debug]: Entering readADPDocument in FinanceStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering readADPDocument in FinanceStorageService.`);
         }
 
         // let hd: Document = new Document();
@@ -1602,8 +1603,8 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering readLoanDocument in FinanceStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering readLoanDocument in FinanceStorageService.`);
+          // console.debug(`AC_HIH_UI [Debug]: Entering readLoanDocument in FinanceStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering readLoanDocument in FinanceStorageService.`);
         }
 
         // let hd: Document = new Document();
@@ -1673,7 +1674,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService, getADPTmpDocs.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService, getADPTmpDocs.`);
         }
 
         let docADP: TemplateDocADP[] = [];
@@ -1715,7 +1716,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering doPostADPTmpDoc in FinanceStorageService`);
+          console.debug(`AC_HIH_UI [Debug]: Entering doPostADPTmpDoc in FinanceStorageService`);
         }
 
         let ndoc: Document = new Document();
@@ -1750,7 +1751,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering fetchPreviousDocWithPlanExgRate in FinanceStorageService`);
+          console.debug(`AC_HIH_UI [Debug]: Entering fetchPreviousDocWithPlanExgRate in FinanceStorageService`);
         }
 
         let ardocs: DocumentWithPlanExgRate[] = [];
@@ -1791,7 +1792,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService`);
+          console.debug(`AC_HIH_UI [Debug]: Entering updatePreviousDocWithPlanExgRate in FinanceStorageService`);
         }
 
         // It's an empty Ok();
@@ -1808,13 +1809,13 @@ export class FinanceStorageService {
    * Get document items by account
    * @param acntid Account ID
    */
-  public getDocumentItemByAccount(acntid: number, top?: number, skip?: number, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+  public getDocumentItemByAccount(acntid: number, top?: number, skip?: number, dtbgn?: moment.Moment,
+    dtend?: moment.Moment): Observable<BaseListModel<DocumentItemWithBalance>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/financedocumentitem';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('acntid', acntid.toString());
@@ -1831,17 +1832,30 @@ export class FinanceStorageService {
       params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
-    return this._http.get(apiurl, {
+    return this._http.get(this.docItemAPIUrl, {
       headers: headers,
       params: params,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering getDocumentItemByAccount in FinanceStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering getDocumentItemByAccount in FinanceStorageService.`);
+          // console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByAccount in FinanceStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByAccount in FinanceStorageService.`);
         }
 
-        return response;
+        let data: any = <any>response;
+        let ardi: DocumentItemWithBalance[] = [];
+        if (data && data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
+          for (let di of data.contentList) {
+            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
+            docitem.onSetData(di);
+            ardi.push(docitem);
+          }
+        }
+
+        return {
+          totalCount: data.totalCount,
+          contentList: ardi,
+        };
       }),
       catchError((errresp: HttpErrorResponse) => {
         const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
@@ -1854,13 +1868,13 @@ export class FinanceStorageService {
    * Get document items by control center
    * @param ccid Control center ID
    */
-  public getDocumentItemByControlCenter(ccid: number, top?: number, skip?: number, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+  public getDocumentItemByControlCenter(ccid: number, top?: number, skip?: number, dtbgn?: moment.Moment,
+    dtend?: moment.Moment): Observable<BaseListModel<DocumentItemWithBalance>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/financedocumentitem';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('ccid', ccid.toString());
@@ -1877,17 +1891,30 @@ export class FinanceStorageService {
       params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
-    return this._http.get(apiurl, {
+    return this._http.get(this.docItemAPIUrl, {
       headers: headers,
       params: params,
     })
     .pipe(map((response: HttpResponse<any>) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        // console.log(`AC_HIH_UI [Debug]: Entering getDocumentItemByControlCenter in FinanceStorageService: ${response}`);
-        console.log(`AC_HIH_UI [Debug]: Entering getDocumentItemByControlCenter in FinanceStorageService.`);
+        // console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByControlCenter in FinanceStorageService: ${response}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByControlCenter in FinanceStorageService.`);
       }
 
-      return response;
+      let data: any = <any>response;
+      let ardi: DocumentItemWithBalance[] = [];
+      if (data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
+        for (let di of data.contentList) {
+          let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
+          docitem.onSetData(di);
+          ardi.push(docitem);
+        }
+      }
+
+      return {
+        totalCount: data.totalCount,
+        contentList: ardi,
+      };
     }),
     catchError((errresp: HttpErrorResponse) => {
       const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
@@ -1900,13 +1927,12 @@ export class FinanceStorageService {
    * Get document items by order
    * @param ordid Order ID
    */
-  public getDocumentItemByOrder(ordid: number, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+  public getDocumentItemByOrder(ordid: number, dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<BaseListModel<DocumentItemWithBalance>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    let apiurl: string = environment.ApiUrl + '/api/financedocumentitem';
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     params = params.append('ordid', ordid.toString());
@@ -1917,17 +1943,30 @@ export class FinanceStorageService {
       params = params.append('dtend', dtend.format(momentDateFormat));
     }
 
-    return this._http.get(apiurl, {
+    return this._http.get(this.docItemAPIUrl, {
         headers: headers,
         params: params,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceStorageService.`);
+          // console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering getDocumentItemByOrder in FinanceStorageService.`);
         }
 
-        return response;
+        let data: any = <any>response;
+        let ardi: DocumentItemWithBalance[] = [];
+        if (data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
+          for (let di of data.contentList) {
+            let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
+            docitem.onSetData(di);
+            ardi.push(docitem);
+          }
+        }
+
+        return {
+          totalCount: data.totalCount,
+          contentList: ardi,
+        };
       }),
       catchError((errresp: HttpErrorResponse) => {
         const errmsg: string = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
@@ -1955,7 +1994,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportBS.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportBS.`);
         }
 
         let reportdata: BalanceSheetReport[] = [];
@@ -1995,7 +2034,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportCC.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportCC.`);
         }
 
         let reportdata: ControlCenterReport[] = [];
@@ -2035,7 +2074,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportBS.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering FinanceStorageService getReportBS.`);
         }
 
         let reportdata: OrderReport[] = [];
@@ -2081,7 +2120,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering getReportTranType in FinanceStorageService.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering getReportTranType in FinanceStorageService.`);
         }
 
         // Do the grouping here.
@@ -2157,8 +2196,8 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering getReportMonthOnMonth in FinanceStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering getReportMonthOnMonth in FinanceStorageService`);
+          // console.debug(`AC_HIH_UI [Debug]: Entering getReportMonthOnMonth in FinanceStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering getReportMonthOnMonth in FinanceStorageService`);
         }
 
         // Do the grouping here.
@@ -2215,7 +2254,7 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering fetchReportTrendData in FinanceStorageService.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering fetchReportTrendData in FinanceStorageService.`);
         }
 
         // Do the grouping here.
@@ -2348,8 +2387,8 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering calcADPTmpDocs in FinanceStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering calcADPTmpDocs in FinanceStorageService.`);
+          // console.debug(`AC_HIH_UI [Debug]: Entering calcADPTmpDocs in FinanceStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering calcADPTmpDocs in FinanceStorageService.`);
         }
 
         let results: FinanceADPCalAPIOutput[] = [];
@@ -2409,8 +2448,8 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          // console.log(`AC_HIH_UI [Debug]: Entering calcLoanTmpDocs in FinanceStorageService: ${response}`);
-          console.log(`AC_HIH_UI [Debug]: Entering calcLoanTmpDocs in FinanceStorageService.`);
+          // console.debug(`AC_HIH_UI [Debug]: Entering calcLoanTmpDocs in FinanceStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering calcLoanTmpDocs in FinanceStorageService.`);
         }
 
         let results: FinanceLoanCalAPIOutput[] = [];

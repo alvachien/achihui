@@ -66,12 +66,12 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
       countControl: new FormControl(1, Validators.required),
       contentControl: new FormControl('', Validators.required),
       assigneeControl: new FormControl('', Validators.required),
-    }, [dateRangeValidator,]);
+    }, [dateRangeValidator]);
 
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnInit for activateRoute URL: ${x}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering HabitDetailComponent ngOnInit for activateRoute URL: ${x}`);
       }
 
       if (x instanceof Array && x.length > 0) {

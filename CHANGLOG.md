@@ -3,7 +3,8 @@
 Released at 2019.6.30
 
 Bug fixing and Feature list
-- Unit tests are all available;
+- More than 900 unit tests are all available;
+- Finance: Document header refactored;
 - Finance: plan;
 - [?] Use ACTSLib instead of default array or other data structures;
 

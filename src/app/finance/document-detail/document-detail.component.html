@@ -12,7 +12,7 @@
           <mat-form-field>
             <mat-select placeholder="{{'Finance.DocumentType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.DocType"
               name="doctype">
-              <mat-option *ngFor="let dt of _storageService.DocumentTypes" [value]="dt.Id">
+              <mat-option *ngFor="let dt of arDocTypes" [value]="dt.Id">
                 {{dt.Name | translate}}
               </mat-option>
             </mat-select>
@@ -22,7 +22,7 @@
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
               name="curr">
-              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+              <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
                 {{cr.Symbol}} - {{cr.Name | translate}}
               </mat-option>
             </mat-select>
@@ -88,7 +88,7 @@
                 <mat-form-field>
                   <mat-select placeholder="{{'Finance.TransactionType' | translate}}" disabled
                     [(ngModel)]="element.TranType" name="ittt">
-                    <mat-option *ngFor="let tt of _storageService.TranTypes" [value]="tt.Id">
+                    <mat-option *ngFor="let tt of arTranTypes" [value]="tt.Id">
                       <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
                     </mat-option>
                   </mat-select>
@@ -98,7 +98,7 @@
                   <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" disabled
                     [(ngModel)]="element.ControlCenterId" name="itcc">
                     <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-                    <mat-option *ngFor="let tt of _storageService.ControlCenters" [value]="tt.Id">
+                    <mat-option *ngFor="let tt of arControlCenters" [value]="tt.Id">
                       {{tt.Name}}
                     </mat-option>
                   </mat-select>

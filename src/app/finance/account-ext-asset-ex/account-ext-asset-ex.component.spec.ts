@@ -23,13 +23,15 @@ describe('AccountExtAssetExComponent', () => {
   let fakeData: FakeDataHelper;
   let fetchAllAssetCategoriesSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
     fakeData.buildCurrencies();
     fakeData.buildFinConfigData();
+  });
 
+  beforeEach(async(() => {
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAssetCategories',
     ]);

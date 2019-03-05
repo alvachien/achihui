@@ -170,7 +170,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       this._currService.fetchAllCurrencies(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       this.arDocTypes = rst[1];
@@ -281,7 +281,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
 
     this._storageService.createLoanDocument(docObj, acntobj).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument`);
       }
 
       // Navigate back to list view

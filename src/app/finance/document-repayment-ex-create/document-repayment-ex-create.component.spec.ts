@@ -39,7 +39,7 @@ describe('DocumentRepaymentExCreateComponent', () => {
   let createRepayDocSpy: any;
   let readAccountSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrencies();
@@ -48,7 +48,9 @@ describe('DocumentRepaymentExCreateComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
+  });
 
+  beforeEach(async(() => {
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',

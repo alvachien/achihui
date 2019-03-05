@@ -6,7 +6,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
-  UIFinAssetOperationDocument, AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
+  AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilterEx, financeTranTypeAssetSoldoutIncome, momentDateFormat, ModelUtility,
   InfoMessage, MessageType, financeDocTypeAssetSoldOut, financeTranTypeAssetSoldout, FinanceAssetSoldoutDocumentAPI,
@@ -179,14 +179,14 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor`);
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor`);
     }
     this.arMembersInChosedHome = this._homeService.ChosedHome.Members.slice();
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit`);
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -214,7 +214,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
       this._currService.fetchAllCurrencies(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit for forkJoin, result length: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit for forkJoin, result length: ${rst.length}`);
       }
 
       this.arDocTypes = rst[2];
@@ -250,7 +250,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this._destroyed$) {
       this._destroyed$.next(true);
-      this._destroyed$.complete();  
+      this._destroyed$.complete();
     }
   }
 
@@ -326,7 +326,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
     this._storageService.createAssetSoldoutDocument(this.detailObject).subscribe((nid: number) => {
       // New doc created with ID returned
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetSoldoutCreateComponent for createAssetSoldoutDocument, new doc ID: ${nid}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent, createAssetSoldoutDocument`);
       }
 
       // Show success
@@ -340,7 +340,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
     }, (err: string) => {
       // Handle the error
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Failed in onSubmit in DocumentAssetSoldoutCreateComponent for createAssetSoldoutDocument, result: ${err}`);
+        console.error(`AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent, createAssetSoldoutDocument, failed: ${err}`);
       }
 
       let msg: InfoMessage = new InfoMessage();

@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewChild, AfterViewInit, HostBinding, OnDestroy } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
-import { LogLevel, LearnObject, LearnHistory } from '../../model';
-import { LearnStorageService } from '../../services';
+import { LogLevel, LearnObject, LearnHistory, UICommonLabelEnum, } from '../../model';
+import { LearnStorageService, UIStatusService, } from '../../services';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
   selector: 'hih-learn-history-list',
@@ -20,8 +22,13 @@ export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isLoadingResults: boolean;
 
-  constructor(public _storageService: LearnStorageService,
-    private _router: Router) {
+  constructor(private _storageService: LearnStorageService,
+    private _router: Router,
+    private _dialog: MatDialog,
+    private _uiStatusService: UIStatusService) {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug('AC_HIH_UI [Debug]: Entering HistoryListComponent constructor...');
+    }
     this.isLoadingResults = false;
   }
 
@@ -47,6 +54,17 @@ export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering HistoryListComponent ngOnInit forkJoin failed with: ${error}`);
       }
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     }, () => {
       this.isLoadingResults = false;
     });
@@ -61,8 +79,10 @@ export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering HistoryListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onCreateHistory(): void {
@@ -83,12 +103,23 @@ export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public onRefresh(): void {
     this.isLoadingResults = true;
-    this._storageService.fetchAllHistories(true).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-      // Do nothing
+    this._storageService.fetchAllHistories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.dataSource.data = x;
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering HistoryListComponent onRefresh failed with: ${error}`);
       }
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     }, () => {
       this.isLoadingResults = false;
     });

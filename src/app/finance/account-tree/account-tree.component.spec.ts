@@ -6,7 +6,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Component, Input } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
@@ -36,12 +36,14 @@ describe('AccountTreeComponent', () => {
   let fetchAllAccountCategoriesSpy: any;
   let fetchAllAccountsSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
     fakeData.buildChosedHome();
+  });
 
+  beforeEach(async(() => {
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const storageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
@@ -51,7 +53,7 @@ describe('AccountTreeComponent', () => {
       imports: [
         UIDependModule,
         FormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {

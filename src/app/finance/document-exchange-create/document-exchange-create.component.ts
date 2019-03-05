@@ -61,6 +61,12 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
       return datctrl.value;
     }
   }
+  get tranDateString(): any {
+    let dval: any = this.tranDate;
+    if (dval) {
+      return dval.format(momentDateFormat);
+    }
+  }
   get sourceCurrency(): string {
     let currctrl: any = this.fromFormGroup.get('currControl');
     if (currctrl) {
@@ -215,7 +221,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this._destroyed$))
     .subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnInit, forkJoin: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnInit, forkJoin: ${rst.length}`);
       }
 
       this.arDocTypes = rst[1];
@@ -265,7 +271,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
 
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentExchangeCreateComponent: ${event.selectedIndex}`);
+      console.debug(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentExchangeCreateComponent: ${event.selectedIndex}`);
     }
 
     if (event.selectedIndex === 3) {
@@ -274,7 +280,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._destroyed$))
         .subscribe((x: DocumentWithPlanExgRate[]) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onStepSelectionChange, fetchPreviousDocWithPlanExgRate`);
+            console.debug(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onStepSelectionChange, fetchPreviousDocWithPlanExgRate`);
           }
 
           if (x.length > 0) {
@@ -340,7 +346,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     docObj.HID = this._homedefService.ChosedHome.ID;
     this._storageService.createDocument(docObj).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, createDocument`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, createDocument`);
       }
 
       // Navigate back to list view
@@ -365,7 +371,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
 
         this._storageService.updatePreviousDocWithPlanExgRate(cobj).subscribe((rst: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, updatePreviousDocWithPlanExgRate`);
+            console.debug(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, updatePreviousDocWithPlanExgRate`);
           }
           this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
             undefined, {
@@ -422,7 +428,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
       }).afterClosed().subscribe((x2: any) => {
         // Do nothing!
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, Message dialog result ${x2}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, Message dialog result ${x2}`);
         }
       });
     });

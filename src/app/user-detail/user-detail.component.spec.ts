@@ -4,7 +4,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BehaviorSubject } from 'rxjs';
 
 import { HttpLoaderTestFactory, } from '../../testing';
@@ -26,7 +26,7 @@ describe('UserDetailComponent', () => {
       imports: [
         UIDependModule,
         HttpClientTestingModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
         TranslateModule.forRoot({

@@ -41,7 +41,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
   let routerSpy: any;
   let activatedRouteStub: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
@@ -50,6 +50,9 @@ describe('DocumentAssetBuyInCreateComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
+  });
+
+  beforeEach(async(() => {
 
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [

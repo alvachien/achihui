@@ -243,7 +243,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
 
     this._storageService.createDocument(docObj).subscribe((x: Document) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent, onSubmit, createDocument`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent, onSubmit, createDocument`);
       }
 
       // Show the snackbar
@@ -279,7 +279,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       }).afterClosed().subscribe((x2: any) => {
         // Do nothing!
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent, onSubmit, Message dialog result ${x2}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent, onSubmit, Message dialog result ${x2}`);
         }
       });
     });

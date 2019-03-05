@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub } from '../../../testing';
 import { EventStorageService, HomeDefDetailService } from 'app/services';
@@ -41,7 +41,7 @@ describe('EventDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         FormsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({

@@ -118,7 +118,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
     private _snackbar: MatSnackBar,
     private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent constructor`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent constructor`);
     }
   }
 
@@ -141,7 +141,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent ngOnInit`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent ngOnInit`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -173,7 +173,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent ngOnDestroy`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent ngOnDestroy`);
     }
 
     if (this._destroyed$) {
@@ -184,7 +184,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
 
   public onGenerateTmpDocs(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
     }
     let tmpdocs: TemplateDocLoan[] = [];
     tmpdocs = this.dataSource.data.slice();
@@ -263,7 +263,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
 
   writeValue(val: any): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
     }
 
     if (val) {
@@ -285,19 +285,19 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
   }
   registerOnChange(fn: any): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
     }
     this._onChange = fn;
   }
   registerOnTouched(fn: any): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
     }
     this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
     }
     if (isDisabled) {
       this.loanInfoForm.disable();
@@ -310,7 +310,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
 
   validate(c: AbstractControl): ValidationErrors | null {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtLoanExComponent validate`);
     }
     if (this.loanInfoForm.valid) {
       // Beside the basic form valid, it need more checks

@@ -32,7 +32,7 @@ export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
     this.isLoadingResults = true;
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter EventListComponent constructor...`);
+      console.debug(`AC_HIH_UI [Debug]: Enter EventListComponent constructor...`);
     }
 
     this.totalCountOfEvent = 0;
@@ -41,7 +41,7 @@ export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter EventListComponent ngOnInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Enter EventListComponent ngOnInit...`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -49,7 +49,7 @@ export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter EventListComponent ngAfterContentInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Enter EventListComponent ngAfterContentInit...`);
     }
 
     // If the user changes the sort order, reset back to the first page.

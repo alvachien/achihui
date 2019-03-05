@@ -33,12 +33,15 @@ describe('DocumentListComponent', () => {
   let fetchAllDocumentsSpy: any;
   let deleteDocumentSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
+  });
+
+  beforeEach(async(() => {
 
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [

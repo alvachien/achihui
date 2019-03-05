@@ -1,21 +1,27 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, } from '../../../testing';
 import { ObjectByCategoryComponent } from './object-by-category.component';
 import { AuthService, HomeDefDetailService, LearnStorageService } from '../../services';
 
 describe('ObjectByCategoryComponent', () => {
   let component: ObjectByCategoryComponent;
   let fixture: ComponentFixture<ObjectByCategoryComponent>;
+  let fakeData: FakeDataHelper;
 
   beforeEach(async(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+    fakeData.buildLearnCategories();
+
     const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchHomeMembers']);
     homeService.ChosedHome = {
       _id: 1,
@@ -33,7 +39,7 @@ describe('ObjectByCategoryComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         HttpClientTestingModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

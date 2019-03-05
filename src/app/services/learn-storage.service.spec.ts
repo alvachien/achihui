@@ -2,13 +2,14 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
+import * as moment from 'moment';
 
 import { LearnStorageService } from './learn-storage.service';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
-import { QuestionBankItem, QuestionBankTypeEnum, LearnObject } from '../model';
+import { QuestionBankItem, QuestionBankTypeEnum, LearnObject, LearnHistory } from '../model';
 
 describe('LearnStorageService', () => {
   let httpTestingController: HttpTestingController;
@@ -803,6 +804,247 @@ describe('LearnStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.objecturl + '/2';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('fetchAllObjects', () => {
+    beforeEach(() => {
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.fetchAllObjects().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.objecturl
+          && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      let obj1: LearnObject = new LearnObject();
+      obj1.Id = 1;
+      obj1.Name = 'test1';
+      obj1.HID = 1;
+      obj1.CategoryId = 1;
+      obj1.Content = 'test1';
+      req.flush({
+        totalCount: 2,
+        contentList: [obj1],
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.fetchAllObjects().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.objecturl
+          && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('fetchAllHistories', () => {
+    beforeEach(() => {
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.fetchAllHistories().subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET data from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.historyurl
+          && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      let hist1: LearnHistory = new LearnHistory();
+      hist1.HID = 1;
+      hist1.ObjectId = 1;
+      hist1.ObjectName = 'test';
+      hist1.UserId = 'user1';
+      hist1.LearnDate = moment();
+
+      req.flush({
+        totalCount: 2,
+        contentList: [hist1],
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.fetchAllHistories().subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.historyurl
+          && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createHistory', () => {
+    let hist1: LearnHistory;
+
+    beforeEach(() => {
+      hist1 = new LearnHistory();
+      hist1.HID = 1;
+      hist1.ObjectId = 1;
+      hist1.ObjectName = 'test';
+      hist1.UserId = 'user1';
+      hist1.LearnDate = moment();
+
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.createHistory(hist1).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.historyurl;
+       });
+
+      // Respond with the mock data
+      req.flush(hist1.writeJSONString());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.createHistory(hist1).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.historyurl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('readHistory', () => {
+    let hist1: LearnHistory;
+
+    beforeEach(() => {
+      hist1 = new LearnHistory();
+      hist1.HID = 1;
+      hist1.ObjectId = 1;
+      hist1.ObjectName = 'test';
+      hist1.UserId = 'user1';
+      hist1.LearnDate = moment();
+
+      service = TestBed.get(LearnStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return data for success case', () => {
+      service.readHistory('2').subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.historyurl + '/2';
+       });
+
+      // Respond with the mock data
+      req.flush(hist1.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+
+      service.readHistory('2').subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.historyurl + '/2';
       });
 
       // respond with a 500 and the error message in the body

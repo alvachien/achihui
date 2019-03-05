@@ -276,12 +276,12 @@ Just remove the binding here.
 ### Error: Found the synthetic property @transitionMessages. Please include either "BrowserAnimationsModule" or "NoopAnimationsModule" in your application.
 Do as the error message indicates. The included path as following:
 ```typescript
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform-browser/animations';
 ```
 And:
 ```typescript
     imports: [
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         ...
     ]
 ```
@@ -417,4 +417,56 @@ Therefore, use NoopAnimationsModule will help.
 
 ```typescript
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+```
+
+### Expecting a snackbar
+Ensure the definition of overlayContainerElement was defined:
+```typescript
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+```
+
+Then, expect there is a snackbar for 'text':
+```typescript
+    let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+    expect(messageElement.textContent).toContain('text', 'Expected snack bar to show the error message: text');
+```
+
+
+### Expecting a dialog
+Ensure the definition of overlayContainerElement was defined:
+```typescript
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+```
+
+Expect there is a popup dialog for text:
+
+```typescript
+    expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+    // Since there is only one button
+    (overlayContainerElement.querySelector('button') as HTMLElement).click();
+    tick();
+    fixture.detectChanges();
+    expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
 ```

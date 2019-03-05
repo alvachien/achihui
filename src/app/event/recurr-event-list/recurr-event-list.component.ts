@@ -30,7 +30,7 @@ export class RecurrEventListComponent implements OnInit, AfterContentInit, OnDes
     this.isLoadingResults = true;
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent constructor...`);
+      console.debug(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent constructor...`);
     }
 
     this.dataSource = new MatTableDataSource([]);
@@ -38,7 +38,7 @@ export class RecurrEventListComponent implements OnInit, AfterContentInit, OnDes
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngOnInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngOnInit...`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -46,7 +46,7 @@ export class RecurrEventListComponent implements OnInit, AfterContentInit, OnDes
 
   ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngAfterContentInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngAfterContentInit...`);
     }
 
     this.dataSource.paginator = this.paginator;

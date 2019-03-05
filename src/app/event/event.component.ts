@@ -21,13 +21,13 @@ export class EventComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnInit`);
+      console.debug(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnInit`);
     }
     this.onSetLanguage(this._uistatusService.CurrentLanguage);
 
     this._langChangeSub = this._uistatusService.langChangeEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Enter language change event in EventComponent: ${x}`);
+        console.debug(`AC_HIH_UI [Debug]: Enter language change event in EventComponent: ${x}`);
       }
 
       this.onSetLanguage(x);
@@ -36,7 +36,7 @@ export class EventComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnDestroy`);
+      console.debug(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnDestroy`);
     }
 
     try {

@@ -94,7 +94,7 @@ export class ControlCenterListComponent implements OnInit, AfterViewInit, OnDest
     }).afterClosed().subscribe((x2: any) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering ControlCenterListComponent, onDeleteCC, Message dialog result ${x2}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterListComponent, onDeleteCC, Message dialog result ${x2}`);
       }
 
       if (x2) {

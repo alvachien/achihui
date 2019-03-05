@@ -45,13 +45,15 @@ describe('AccountDetailComponent', () => {
   let changeAccountSpy: any;
   let updateAccountStatusSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
+  });
 
+  beforeEach(async(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
     const homeService: Partial<HomeDefDetailService> = {

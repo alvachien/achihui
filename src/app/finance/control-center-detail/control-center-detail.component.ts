@@ -66,7 +66,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit for activateRoute URL: ${x}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit for activateRoute URL: ${x}`);
       }
 
       if (x instanceof Array && x.length > 0) {
@@ -88,7 +88,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._destroyed$))
             .subscribe((x2: any) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, readControlCenter.`);
+                console.debug(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, readControlCenter.`);
               }
               this.detailObject = x2;
             }, (error: any) => {
@@ -166,7 +166,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._destroyed$))
         .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent`);
+          console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent`);
         }
 
         // Navigate back to list view
@@ -205,7 +205,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent,
+              console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent,
                 failed, dialog result ${x2}`);
             }
           });
@@ -222,7 +222,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._destroyed$))
         .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
+          console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
         }
 
         // Navigate back to list view
@@ -252,7 +252,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
           }).afterClosed().subscribe((x2: any) => {
             // Do nothing!
             if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.log(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent,
+              console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent,
                 failed, Message dialog result ${x2}`);
             }
           });

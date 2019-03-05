@@ -126,7 +126,7 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       ],
       eventClick: (arg: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Enter OverviewComponent's eventClick
+          console.debug(`AC_HIH_UI [Debug]: Enter OverviewComponent's eventClick
             ${arg.view.name} - ${arg.event.title}, ${arg.jsEvent.pageX} - ${arg.jsEvent.pageY}`);
         }
 

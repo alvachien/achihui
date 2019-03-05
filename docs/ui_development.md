@@ -50,7 +50,7 @@ this._dialog.open(MessageDialogComponent, {
 }).afterClosed().subscribe((x2: any) => {
     // Do nothing!
     if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering XXXComponent, afterClosed, Message dialog result ${x2}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering XXXComponent, afterClosed, Message dialog result ${x2}`);
     }
 });
 ```

@@ -13,8 +13,8 @@ import {
   FinanceAssetBuyinDocumentAPI, AccountExtraAsset, FinanceAssetSoldoutDocumentAPI,
   momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom,
   AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
-  financeAccountCategoryAdvancePayment,
-  SettlementRule,
+  financeAccountCategoryAdvancePayment, LearnObject, LearnHistory,
+  SettlementRule, financeDocTypeNormal,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -47,6 +47,7 @@ export class FakeDataHelper {
   private _appLanguagesFromAPI: AppLanguageJson[];
   private _learnCategoriesFromAPI: LearnCategoryJson[];
   private _learnCategories: LearnCategory[];
+  private _learnObjects: LearnObject[];
   private _libBookCategories: BookCategory[];
   private _libBookCategoriesFromAPI: BookCategoryJson[];
   private _tags: Tag[];
@@ -200,6 +201,11 @@ export class FakeDataHelper {
   get learnCategories(): LearnCategory[] {
     if (this._learnCategories) {
       return this._learnCategories;
+    }
+  }
+  get learnObjects(): LearnObject[] {
+    if (this._learnObjects) {
+      return this._learnObjects;
     }
   }
   get libBookCategories(): BookCategory[] {
@@ -1152,6 +1158,17 @@ export class FakeDataHelper {
     ctgy.Comment = 'Category 1.1';
     this._learnCategories.push(ctgy);
   }
+  public buildLearnObjects(): void {
+    this._learnObjects = [];
+    for (let i: number = 0; i < 10; i ++) {
+      let obj1: LearnObject = new LearnObject();
+      obj1.HID = this._chosedHome ? this._chosedHome.ID : 0;
+      obj1.Id = 11 + i;
+      obj1.Name = `test-${i + 1}`;
+      obj1.Content = 'test';
+      this._learnObjects.push(obj1);
+    }
+  }
   public buildLibBookCategories(): void {
     this._libBookCategories = [];
     let ctgy: BookCategory;
@@ -1369,5 +1386,23 @@ export class FakeDataHelper {
     // });
 
     return detailObject;
+  }
+  public buildFinNormalDocument(): Document {
+    let doc: Document = new Document();
+    doc.Id = 100;
+    doc.DocType = financeDocTypeNormal;
+    doc.Desp = 'Test';
+    doc.TranCurr = this.chosedHome ? this.chosedHome.BaseCurrency : 'CNY';
+    doc.TranDate = moment();
+    let ditem: DocumentItem = new DocumentItem();
+    ditem.ItemId = 1;
+    ditem.AccountId = 11;
+    ditem.ControlCenterId = 1;
+    ditem.TranType = 2;
+    ditem.Desp = 'test';
+    ditem.TranAmount = 20;
+    doc.Items = [ditem];
+
+    return doc;
   }
 }

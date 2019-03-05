@@ -6,7 +6,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule } from '@angular/forms';
 import { of, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -21,13 +21,17 @@ describe('ConfigComponent', () => {
   let fixture: ComponentFixture<ConfigComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
-  let fakeData: FakeDataHelper = new FakeDataHelper();
+  let fakeData: FakeDataHelper;
   let fetchAllAccountCategoriesSpy: any;
   let fetchAllDocTypesSpy: any;
   let fetchAllAssetCategoriesSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
     fakeData.buildFinConfigData();
+  });
+
+  beforeEach(async(() => {
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService',
       ['fetchAllAccountCategories', 'fetchAllDocTypes', 'fetchAllAssetCategories']);
     fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
@@ -38,7 +42,7 @@ describe('ConfigComponent', () => {
       imports: [
         UIDependModule,
         FormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {

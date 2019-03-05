@@ -41,19 +41,7 @@ export class CreditsComponent {
   constructor() {
     // Empty
     QuickSort(this.creditApp, (a: any, b: any) => {
-      if (!a.name) {
-        if (!b.name) {
-          return 0;
-        } else {
-          return -1;
-        }
-      } else {
-        if (!b.name) {
-          return 1;
-        } else {
-          return a.name.localeCompare(b.name);
-        }
-      }
+      return a.name.localeCompare(b.name);
     });
   }
 }

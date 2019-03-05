@@ -226,7 +226,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
       this._currService.fetchAllCurrencies(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       this.arDocTypes = rst[2];
@@ -349,7 +349,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     this._storageService.createAssetBuyinDocument(apidetail).subscribe((nid: number) => {
       // New doc created with ID returned
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetBuyinCreateComponent for createAssetBuyinDocument, new doc ID: ${nid}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetBuyinCreateComponent for createAssetBuyinDocument, new doc ID: ${nid}`);
       }
 
       // Show success

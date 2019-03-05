@@ -8,7 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { EventEmitter } from '@angular/core';
 import { ThemeStorage } from '../theme-picker';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { MatTabGroup } from '@angular/material';
 import { By } from '@angular/platform-browser';
@@ -49,7 +49,7 @@ describe('TagsListComponent', () => {
         HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

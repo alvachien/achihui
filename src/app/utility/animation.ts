@@ -1,6 +1,6 @@
 import { trigger, state, animate, transition, style } from '@angular/animations';
 
-export const fadeInAnimation =
+export const fadeInAnimation: any =
   trigger('fadeInAnimation', [
     transition(':enter', [
       style({ opacity: 0 }),
@@ -8,7 +8,7 @@ export const fadeInAnimation =
     ]),
   ]);
 
-export const slideInOutAnimation =
+export const slideInOutAnimation: any =
   trigger('slideInOutAnimation', [
 
     state('*', style({

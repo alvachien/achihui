@@ -39,7 +39,7 @@ describe('DocumentTransferCreateComponent', () => {
   let createDocSpy: any;
   let routerSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
@@ -48,7 +48,9 @@ describe('DocumentTransferCreateComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
+  });
 
+  beforeEach(async(() => {
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',

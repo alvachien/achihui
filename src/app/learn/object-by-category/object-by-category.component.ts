@@ -28,36 +28,36 @@ export class ObjectByCategoryComponent implements OnInit, AfterViewInit, OnDestr
 
       this.dataSource.data = [];
 
-      this._storageService.fetchAllObjects(true, this._seledCategory)
+      this._storageService.fetchAllObjects(this._seledCategory)
         .pipe(takeUntil(this._destroyed$))
         .subscribe((x: any) => {
-        if (x instanceof Array && x.length > 0) {
-          let arobjs: any[] = [];
-          for (let di of x) {
-            arobjs.push(di);
-          }
+          if (x instanceof Array && x.length > 0) {
+            let arobjs: any[] = [];
+            for (let di of x) {
+              arobjs.push(di);
+            }
 
-          this.dataSource.data = arobjs;
-        }
-      });
+            this.dataSource.data = arobjs;
+          }
+        });
     }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public _storageService: LearnStorageService) {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent constructor...');
-      }
-     }
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent constructor...');
+    }
+  }
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
-   }
+  }
 
   /**
    * Set the paginator after the view init since this component will
@@ -73,7 +73,9 @@ export class ObjectByCategoryComponent implements OnInit, AfterViewInit, OnDestr
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering ObjectByCategoryComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 }

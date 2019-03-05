@@ -23,8 +23,8 @@
 
       <div class="achih-control-full-width">
         <mat-label>{{'Learning.LearningObject' | translate}}</mat-label>
-        <a mat-flat-button *ngIf="!isFieldChangable && detailObject.ObjectId" routerLink="/learn/object/display/{{detailObject.ObjectId}}">
-          {{detailObject.ObjectId}}
+        <a mat-flat-button *ngIf="!isFieldChangable && objectDisplayID" routerLink="/learn/object/display/{{objectDisplayID}}">
+          {{objectDisplayID}}
         </a>
       </div>
 
@@ -33,7 +33,7 @@
         <input type="number" placeholder="{{'Learning.LearningObject' | translate}}" matInput 
           formControlName="objControl" [matAutocomplete]="objectAuto">
         <mat-autocomplete #objectAuto="matAutocomplete" [displayWith]="displayObjectFn">
-          <mat-option *ngFor="let obj of _storageService.Objects" [value]="obj.Id">
+          <mat-option *ngFor="let obj of arObjects" [value]="obj.Id">
             {{obj.Name}}
           </mat-option>
         </mat-autocomplete>

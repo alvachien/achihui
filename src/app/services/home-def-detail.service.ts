@@ -26,7 +26,7 @@ export class HomeDefDetailService {
   }
   set ChosedHome(hd: HomeDef) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Setting ChosedHome in HomeDefDetailService: ${hd}`);
+      console.debug(`AC_HIH_UI [Debug]: Setting ChosedHome in HomeDefDetailService: ${hd}`);
     }
 
     if (hd) {
@@ -78,7 +78,7 @@ export class HomeDefDetailService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, fetchAllHomeDef, map.`);
+            console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, fetchAllHomeDef, map.`);
           }
 
           this._islistLoaded = true;
@@ -124,7 +124,7 @@ export class HomeDefDetailService {
     return this._http.get(apiurl, { headers: headers, })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, readHomeDef, map`);
+          console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, readHomeDef, map`);
         }
 
         const hd: HomeDef = new HomeDef();
@@ -169,7 +169,7 @@ export class HomeDefDetailService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, createHomeDef, map.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, createHomeDef, map.`);
         }
 
         let hd: HomeDef = new HomeDef();
@@ -212,7 +212,7 @@ export class HomeDefDetailService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefDetailService.`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefDetailService.`);
           }
 
           const rjs: any = <any>response;
@@ -371,7 +371,7 @@ export class HomeDefDetailService {
     return this._http.get<any>(requestUrl, {headers: headers, })
       .pipe(map((x: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, getHomeKeyFigure, map.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, getHomeKeyFigure, map.`);
         }
         this.keyFigure = new HomeKeyFigure();
         this.keyFigure.onSetData(<any>x);

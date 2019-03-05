@@ -1,13 +1,14 @@
 import { Component, ViewChild, AfterViewInit, OnInit, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
+import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { LogLevel, Account, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection,
-  OverviewScopeEnum, getOverviewScopeRange } from '../../model';
+  OverviewScopeEnum, getOverviewScopeRange, TranType, BaseListModel, UICommonLabelEnum, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { environment } from '../../../environments/environment';
-import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-fin-docitem-by-acntctgy',
@@ -21,6 +22,7 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
   displayedColumns: string[] = ['DocID', 'AccountId', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
   arUIAccount: UIAccountForSelection[] = [];
+  arTranType: TranType[] = [];
   isLoadingResults: boolean;
   resultsLength: number;
   public subjAccountIDS: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
@@ -50,11 +52,9 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(
-    public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService,
-    public _currService: FinCurrencyService) {
+  constructor(private _storageService: FinanceStorageService,
+    private _dialog: MatDialog,
+    private _uiStatusService: UIStatusService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByAccountCategoryComponent constructor...');
     }
@@ -66,12 +66,29 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
     forkJoin([
       this._storageService.fetchAllAccounts(),
+      this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllTranTypes(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arUIAccount = BuildupAccountForSelection(x[0], x[1]);
+
+      this.arTranType = x[2];
+    }, (error: any) => {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     });
   }
 
@@ -109,27 +126,33 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
         map((data: any) => {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
-          this.resultsLength = 0;
 
-          let ardi: any[] = [];
-          if (!data) {
-            for (let val of data) {
-              this.resultsLength += val.totalCount;
-              if (val && val.contentList && val.contentList instanceof Array && val.contentList.length > 0) {
-                for (let val2 of val.contentList) {
-                  let di: DocumentItemWithBalance = new DocumentItemWithBalance();
-                  di.onSetData(val2);
-                  ardi.push(di);
-                }
-              }
+          let arItems: DocumentItemWithBalance[] = [];
+          this.resultsLength = 0;
+          if (data instanceof Array && data.length > 0) {
+            for (let rst of data) {
+              this.resultsLength += rst.totalCount;
+              arItems.push(rst.contentList);
             }
           }
 
-          // return ardi.splice(0, this.paginator.pageSize);
-          return ardi;
+          return arItems;
         }),
-        catchError(() => {
+        catchError((error: any) => {
+          // Show a dialog for error details
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: error.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          });
           this.isLoadingResults = false;
+          this.resultsLength = 0;
           return observableOf([]);
         }),
     ).subscribe((data: any) => this.dataSource.data = data);
@@ -139,7 +162,9 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByAccountCategoryComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 }

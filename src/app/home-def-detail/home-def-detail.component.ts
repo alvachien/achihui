@@ -43,7 +43,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     private _activateRoute: ActivatedRoute,
     private _formBuilder: FormBuilder, ) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor`);
+      console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor`);
     }
 
     this.isLoadingResults = false;
@@ -51,7 +51,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit`);
+      console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -70,7 +70,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit for activateRoute URL`);
+          console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit for activateRoute URL`);
         }
 
         if (x instanceof Array && x.length > 0) {
@@ -157,7 +157,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     if (this.uiMode === UIMode.Create) {
       this._homedefService.createHomeDef(dtobj).subscribe((x: HomeDef) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent, createHomeDef, succeed...`);
+          console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent, createHomeDef, succeed...`);
         }
 
         this._snackbar.open('Home def created successfully', undefined, {

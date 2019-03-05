@@ -1,12 +1,14 @@
 import { Component, ViewChild, OnInit, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
-import { LogLevel, ControlCenter, DocumentItemWithBalance, OverviewScopeEnum, getOverviewScopeRange } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { environment } from '../../../environments/environment';
 import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
+import { environment } from '../../../environments/environment';
+import { LogLevel, ControlCenter, DocumentItemWithBalance, OverviewScopeEnum, getOverviewScopeRange,
+  TranType, UICommonLabelEnum, } from '../../model';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
 @Component({
   selector: 'hih-fin-docitem-by-cc',
@@ -19,6 +21,7 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
   private _seledScope: OverviewScopeEnum;
 
   displayedColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
+  arTranType: TranType[] = [];
   dataSource: any = new MatTableDataSource<DocumentItemWithBalance>();
   isLoadingResults: boolean;
   resultsLength: number;
@@ -43,16 +46,13 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
       this.subjCCID.next(this._seledCC);
     }
   }
-
   get selectedControlCenter(): number { return this._seledCC; }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(
-    public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService,
-    public _currService: FinCurrencyService) {
+  constructor(private _storageService: FinanceStorageService,
+    private _uiStatusService: UIStatusService,
+    private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent constructor...');
     }
@@ -65,7 +65,20 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
 
     this._destroyed$ = new ReplaySubject(1);
     this._storageService.fetchAllTranTypes().subscribe((x: any) => {
-      // Just ensure the HTTP GET fired.
+      this.arTranType = x;
+    }, (error: any) => {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     });
    }
 
@@ -98,19 +111,25 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
           this.resultsLength = data.totalCount;
-
-          let ardi: any[] = [];
-          if (data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
-            for (let di of data.contentList) {
-              let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-              docitem.onSetData(di);
-              ardi.push(docitem);
-            }
-          }
-          return ardi;
+          return data.contentList;
         }),
-        catchError(() => {
+        catchError((error: any) => {
+          // Show a dialog for error details
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: error.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          });
+
           this.isLoadingResults = false;
+          this.resultsLength = 0;
+
           return observableOf([]);
         }),
     ).subscribe((data: any) => this.dataSource.data = data);
@@ -120,7 +139,9 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByControlCenterComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 }

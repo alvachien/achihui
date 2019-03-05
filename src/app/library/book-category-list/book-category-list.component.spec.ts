@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { BookCategoryListComponent } from './book-category-list.component';
 import { LibraryStorageService } from 'app/services';
@@ -35,7 +35,7 @@ describe('BookCategoryListComponent', () => {
         HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

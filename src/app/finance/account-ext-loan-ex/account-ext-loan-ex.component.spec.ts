@@ -32,7 +32,7 @@ describe('AccountExtLoanExComponent', () => {
   let fetchAllAccountsSpy: any;
   let calcLoanTmpDocsSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
@@ -41,7 +41,9 @@ describe('AccountExtLoanExComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
+  });
 
+  beforeEach(async(() => {
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllAccounts',

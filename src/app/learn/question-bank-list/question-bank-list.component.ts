@@ -65,7 +65,7 @@ export class QuestionBankListComponent implements OnInit, OnDestroy {
   public onDeleteQuestion(qst: QuestionBankItem): void {
     this._storageService.deleteQuestionBankItem(qst).pipe(takeUntil(this._destroyed$)).subscribe(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering QuestionBankListComponent, onDeleteQuestion`);
+        console.debug(`AC_HIH_UI [Debug]: Entering QuestionBankListComponent, onDeleteQuestion`);
       }
 
       // Do nothing

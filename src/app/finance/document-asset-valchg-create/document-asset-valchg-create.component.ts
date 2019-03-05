@@ -144,7 +144,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _formBuilder: FormBuilder) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent constructor`);
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent constructor`);
     }
 
     this.arMembersInChosedHome = this._homeService.ChosedHome.Members.slice();
@@ -152,7 +152,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit`);
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -180,7 +180,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
       this._currService.fetchAllCurrencies(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit, forkJoin, result length: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnInit, forkJoin, result length: ${rst.length}`);
       }
 
       this.arDocTypes = rst[2];
@@ -265,7 +265,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
     this._storageService.createAssetValChgDocument(this.detailObject).subscribe((nid: number) => {
       // New doc created with ID returned
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetValChgCreateComponent for createAssetValChgDocument, new doc ID: ${nid}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetValChgCreateComponent for createAssetValChgDocument, new doc ID: ${nid}`);
       }
 
       // Show success
@@ -306,7 +306,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
 
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentAssetValChgCreateComponent`);
+      console.debug(`AC_HIH_UI [Debug]: Entering onStepSelectionChange in DocumentAssetValChgCreateComponent`);
     }
 
     const curidx: number = event.selectedIndex;

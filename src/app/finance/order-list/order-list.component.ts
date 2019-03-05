@@ -48,7 +48,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
         console.debug('AC_HIH_UI [Debug]: Entering OrderListComponent ngOnInit, fetchAllOrders.');
       }
 
-      this._buildDataSource();
+      this._buildDataSource(x);
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.log(`AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders, failed with ${error}`);
@@ -102,7 +102,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
     }).afterClosed().subscribe((x2: any) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering OrderListComponent, onDeleteOrder, Message dialog result ${x2}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering OrderListComponent, onDeleteOrder, Message dialog result ${x2}`);
       }
 
       if (x2) {
@@ -116,7 +116,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.includeInvalid = !this.includeInvalid;
 
     this._storageService.fetchAllOrders(true).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-      this._buildDataSource();
+      this._buildDataSource(x);
     }, (error: any) => {
       // Do nothing
     }, () => {
@@ -124,11 +124,11 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private _buildDataSource(): void {
+  private _buildDataSource(arOrders: Order[]): void {
     let mtoday: moment.Moment = moment();
     let mtoday2: moment.Moment = moment(mtoday.format(momentDateFormat), momentDateFormat);
-    if (this._storageService.Orders) {
-      this.dataSource.data = this._storageService.Orders.filter((value: Order) => {
+    if (arOrders) {
+      this.dataSource.data = arOrders.filter((value: Order) => {
         if (this.includeInvalid !== true) {
           if (value._validFrom.isBefore(mtoday2) && value._validTo.isAfter(mtoday2)) {
             return true;

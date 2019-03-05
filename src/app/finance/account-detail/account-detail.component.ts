@@ -28,6 +28,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   public uiMode: UIMode = UIMode.Create;
   arrayStatus: UIDisplayString[] = [];
   extObject: AccountExtra;
+  arAccountCategories: AccountCategory[] = [];
 
   // Stepper
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
@@ -157,10 +158,12 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     ])
       .pipe(takeUntil(this._destroyed$))
       .subscribe((rst: any) => {
+      this.arAccountCategories = rst[0];
+
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit for activateRoute URL: ${x}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
 
         if (x instanceof Array && x.length > 0) {
@@ -182,7 +185,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
               .pipe(takeUntil(this._destroyed$))
               .subscribe((x3: Account) => {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOninit, readAccount: ${x3}`);
+                  console.debug(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOninit, readAccount: ${x3}`);
                 }
                 this._displayAccountContent(x3);
               }, (error: any) => {
@@ -275,7 +278,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: Account) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent createAccount succeed`);
+        console.debug(`AC_HIH_UI [Debug]: Entering AccountDetailComponent createAccount succeed`);
       }
 
       // Show the snackbar
@@ -319,7 +322,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onUpdateImpl, changeAccountEvent with : ${x}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering AccountDetailComponent, onUpdateImpl, changeAccountEvent with : ${x}`);
       }
       // Show the snackbar
       let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),

@@ -60,8 +60,10 @@ export class ObjectListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onCreateObject(): void {
@@ -82,7 +84,7 @@ export class ObjectListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public onRefresh(): void {
     this.isLoadingResults = true;
-    this._storageService.fetchAllObjects(true);
+    this._storageService.fetchAllObjects();
     this.isLoadingResults = false;
   }
 

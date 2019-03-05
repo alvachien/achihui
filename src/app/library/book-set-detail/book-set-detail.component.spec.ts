@@ -4,7 +4,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HttpLoaderTestFactory } from '../../../testing';
 import { BookSetDetailComponent } from './book-set-detail.component';
@@ -20,6 +20,7 @@ describe('BookSetDetailComponent', () => {
       imports: [
         UIDependModule,
         HttpClientTestingModule,
+        NoopAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

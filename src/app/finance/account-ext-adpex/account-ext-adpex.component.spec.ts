@@ -6,7 +6,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
 } from '@angular/material';
@@ -28,13 +28,15 @@ describe('AccountExtADPExComponent', () => {
   let fakeData: FakeDataHelper;
   let calcADPTmpDocsSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
     fakeData.buildFinConfigData();
     fakeData.buildFinAccountExtraAdvancePayment();
+  });
 
+  beforeEach(async(() => {
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['calcADPTmpDocs']);
     calcADPTmpDocsSpy = stroageService.calcADPTmpDocs.and.returnValue(of([]));
@@ -46,7 +48,7 @@ describe('AccountExtADPExComponent', () => {
         UIDependModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HttpClientTestingModule,
         RouterTestingModule,
         TranslateModule.forRoot({

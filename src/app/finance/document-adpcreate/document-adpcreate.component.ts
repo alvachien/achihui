@@ -164,7 +164,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this._destroyed$))
       .subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -287,7 +287,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
 
     this._storageService.createADPDocument(docObj, detailObject.AdvPayAccount, this._isADP).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, createADPDocument`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, createADPDocument`);
       }
 
       // Show the snackbar

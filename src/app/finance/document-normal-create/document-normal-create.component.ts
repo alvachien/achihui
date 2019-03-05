@@ -179,7 +179,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       this._currService.fetchAllCurrencies(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts
@@ -277,7 +277,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
     this._storageService.createDocument(detailObject).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Receiving createDocument in DocumentNormalCreateComponent with : ${x}`);
+        console.debug(`AC_HIH_UI [Debug]: Receiving createDocument in DocumentNormalCreateComponent with : ${x}`);
       }
 
       // Show the snackbar
@@ -289,7 +289,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       let isrecreate: boolean = false;
       snackbarRef.onAction().subscribe(() => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar onAction()`);
+          console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar onAction()`);
         }
 
         isrecreate = true;
@@ -301,7 +301,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       snackbarRef.afterDismissed().subscribe(() => {
         // Navigate to display
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar afterDismissed with ${isrecreate}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent, Snackbar afterDismissed with ${isrecreate}`);
         }
 
         if (!isrecreate) {
@@ -327,7 +327,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       }).afterClosed().subscribe((x2: any) => {
         // Do nothing!
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalDetailComponent, Message dialog result ${x2}`);
         }
       });
     });
@@ -376,7 +376,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent onStepSelectionChange with index = ${event.selectedIndex}`);
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent onStepSelectionChange with index = ${event.selectedIndex}`);
     }
 
     if (event.selectedIndex === 2) {

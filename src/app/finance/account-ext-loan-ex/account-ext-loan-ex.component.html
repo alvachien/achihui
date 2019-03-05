@@ -23,13 +23,13 @@
     </mat-form-field>
 
     <!-- Repay day -->
-    <mat-form-field *ngIf="isCreateMode">
+    <mat-form-field *ngIf="isFieldChangable">
       <input matInput type="number" placeholder="{{'Finance.RepayDayInMonth' | translate}}"
         formControlName="repayDayControl" name="repayday">
     </mat-form-field>
 
     <!-- First repay date -->
-    <mat-form-field *ngIf="isCreateMode">
+    <mat-form-field *ngIf="isFieldChangable">
       <input matInput [matDatepicker]="firstrpdatedpicker" placeholder="{{'Finance.FirstRepayDate' | translate}}"
         formControlName="firstRepayDateControl" name="firstRepayDate">
       <mat-datepicker-toggle matSuffix [for]="firstrpdatedpicker"></mat-datepicker-toggle>

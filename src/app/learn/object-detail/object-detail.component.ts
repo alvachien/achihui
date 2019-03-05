@@ -67,7 +67,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit for activateRoute URL: ${x}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit for activateRoute URL: ${x}`);
         }
 
         if (x instanceof Array && x.length > 0) {
@@ -87,7 +87,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this._storageService.readObject(this.routerID).subscribe((x2: any) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit readObject`);
+                console.debug(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent ngOnInit readObject`);
               }
               this.detailForm.get('nameControl').setValue(x2.Name);
               this.detailForm.get('ctgyControl').setValue(x2.CategoryId);
@@ -199,7 +199,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent`);
+          console.debug(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onCreateObject, createObjectEvent`);
         }
 
         // Show the snackbar
@@ -244,7 +244,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent`);
+          console.debug(`AC_HIH_UI [Debug]: Entering ObjectDetailComponent, onUpdateObject, updateObjectEvent`);
         }
 
         // Show the snackbar

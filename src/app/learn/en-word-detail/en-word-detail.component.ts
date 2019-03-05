@@ -56,7 +56,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnInit for activateRoute URL: ${x}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent ngOnInit for activateRoute URL: ${x}`);
       }
 
       if (x instanceof Array && x.length > 0) {
@@ -78,7 +78,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
             this._readSub = this._storageService.readEnWordEvent.subscribe((x2: any) => {
               if (x2 instanceof EnWord) {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, ngOninit, readEnWordEvent`);
+                  console.debug(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, ngOninit, readEnWordEvent`);
                 }
 
                 this.detailObject = x2;
@@ -149,7 +149,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       if (!this._createSub) {
         this._createSub = this._storageService.createEnWordEvent.subscribe((x: any) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, createEnWordEvent`);
+            console.debug(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, createEnWordEvent`);
           }
 
           // Navigate back to list view
@@ -188,7 +188,7 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
             }).afterClosed().subscribe((x2: any) => {
               // Do nothing!
               if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.log(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, Message dialog result ${x2}`);
+                console.debug(`AC_HIH_UI [Debug]: Entering EnWordDetailComponent, onSubmit, Message dialog result ${x2}`);
               }
             });
           }

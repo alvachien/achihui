@@ -21,13 +21,13 @@ export class LearnComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter FinanceComponent's ngOnInit`);
+      console.debug(`AC_HIH_UI [Debug]: Enter FinanceComponent's ngOnInit`);
     }
     this.onSetLanguage(this._uistatusService.CurrentLanguage);
 
     this._langChangeSub = this._uistatusService.langChangeEvent.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Enter language change event in FinanceComponent: ${x}`);
+        console.debug(`AC_HIH_UI [Debug]: Enter language change event in FinanceComponent: ${x}`);
       }
 
       this.onSetLanguage(x);
@@ -36,7 +36,7 @@ export class LearnComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter FinanceComponent's ngOnDestroy`);
+      console.debug(`AC_HIH_UI [Debug]: Enter FinanceComponent's ngOnDestroy`);
     }
     try {
       if (this._langChangeSub) {

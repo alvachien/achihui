@@ -3,7 +3,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatPaginator, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { LogLevel, Account, DocumentItemWithBalance, OverviewScopeEnum, getOverviewScopeRange, } from '../../model';
+
+import { LogLevel, Account, DocumentItemWithBalance, OverviewScopeEnum, getOverviewScopeRange,
+  TranType, UICommonLabelEnum, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { environment } from '../../../environments/environment';
@@ -19,6 +21,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
   private _seledScope: OverviewScopeEnum;
 
   displayedColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp', 'Balance'];
+  arTranTypes: TranType[] = [];
   dataSource: MatTableDataSource<DocumentItemWithBalance> = new MatTableDataSource<DocumentItemWithBalance>();
   isLoadingResults: boolean;
   resultsLength: number;
@@ -48,11 +51,10 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(
-    public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService,
-    public _currService: FinCurrencyService) {
+  constructor(private _storageService: FinanceStorageService,
+    private _uiStatusService: UIStatusService,
+    private _dialog: MatDialog,
+    ) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentItemByAccountComponent constructor...');
     }
@@ -65,7 +67,20 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
     this._destroyed$ = new ReplaySubject(1);
 
     this._storageService.fetchAllTranTypes().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-      // Just ensure the HTTP GET fired.
+      this.arTranTypes = x;
+    }, (error: any) => {
+      // Show a dialog for error details
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     });
   }
 
@@ -99,19 +114,24 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
           this.resultsLength = data.totalCount;
-
-          let ardi: any[] = [];
-          if (data && data.contentList && data.contentList instanceof Array && data.contentList.length > 0) {
-            for (let di of data.contentList) {
-              let docitem: DocumentItemWithBalance = new DocumentItemWithBalance();
-              docitem.onSetData(di);
-              ardi.push(docitem);
-            }
-          }
-          return ardi;
+          return data.contentList;
         }),
-        catchError(() => {
+        catchError((error: any) => {
+          // Show a dialog for error details
+          const dlginfo: MessageDialogInfo = {
+            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            Content: error.toString(),
+            Button: MessageDialogButtonEnum.onlyok,
+          };
+
+          this._dialog.open(MessageDialogComponent, {
+            disableClose: false,
+            width: '500px',
+            data: dlginfo,
+          });
+
           this.isLoadingResults = false;
+          this.resultsLength = 0;
           return observableOf([]);
         }),
     ).subscribe((data: any) => this.dataSource.data = data);

@@ -71,7 +71,7 @@ export class LibraryStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllBookCategories in LibraryStorageService`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllBookCategories in LibraryStorageService`);
           }
 
           const rjs: any = <any>response;
@@ -129,7 +129,7 @@ export class LibraryStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllMovieGenres in LibraryStorageService`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllMovieGenres in LibraryStorageService`);
           }
 
           const rjs: any = <any>response;
@@ -187,7 +187,7 @@ export class LibraryStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllLocations in LibraryStorageService`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllLocations in LibraryStorageService`);
           }
 
           const rjs: any = <any>response;
@@ -238,7 +238,7 @@ export class LibraryStorageService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllBooks in LibraryStorageService`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllBooks in LibraryStorageService`);
           }
 
           const rjs: any = <any>response;

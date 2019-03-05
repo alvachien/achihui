@@ -27,7 +27,7 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy
     this.isLoadingResults = true;
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent constructor...`);
+      console.debug(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent constructor...`);
     }
 
     this.dataSource = new MatTableDataSource([]);
@@ -35,7 +35,7 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngOnInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngOnInit...`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -43,7 +43,7 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy
     this.isLoadingResults = true;
     this._storageService!.fetchAllMovieGenres().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngAfterViewInit fetchAllMovieGenres...`);
+        console.debug(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngAfterViewInit fetchAllMovieGenres...`);
       }
       if (x) {
         this.dataSource.data = x;
@@ -59,7 +59,7 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngAfterViewInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Enter MovieGenreListComponent ngAfterViewInit...`);
     }
 
     this.dataSource.paginator = this.paginator;

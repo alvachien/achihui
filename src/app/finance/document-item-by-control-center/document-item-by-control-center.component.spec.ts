@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject, } from '@angular/core/testing';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -6,54 +7,58 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { By } from '@angular/platform-browser';
 
-import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper } from '../../../testing';
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentItemByControlCenterComponent } from './document-item-by-control-center.component';
-import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
+import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
+import { BaseListModel, DocumentItemWithBalance, OverviewScopeEnum, } from '../../model';
+import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 
 describe('DocumentItemByControlCenterComponent', () => {
   let component: DocumentItemByControlCenterComponent;
   let fixture: ComponentFixture<DocumentItemByControlCenterComponent>;
   let fakeData: FakeDataHelper;
+  let fetchAllTranTypesSpy: any;
+  let fetchAllAccountsSpy: any;
+  let fetchAllControlCentersSpy: any;
+  let getDocumentItemByControlCenterSpy: any;
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+    fakeData.buildFinAccounts();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinControlCenter();
+  });
 
   beforeEach(async(() => {
-    fakeData = new FakeDataHelper();
-    fakeData.buildChosedHome();
-
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const homeService: Partial<HomeDefDetailService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
-      'fetchAllAccountCategories',
-      'fetchAllDocTypes',
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllTranTypes',
       'fetchAllAccounts',
       'fetchAllControlCenters',
-      'fetchAllOrders',
-      'fetchAllAssetCategories',
       'getDocumentItemByControlCenter',
     ]);
-    const fetchAllAccountCategoriesSpy: any = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    const fetchAllAssetCategoriesSpy: any = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
-    const fetchAllDocTypesSpy: any = stroageService.fetchAllDocTypes.and.returnValue(of([]));
-    const fetchAllTranTypesSpy: any = stroageService.fetchAllTranTypes.and.returnValue(of([]));
-    const fetchAllAccountsSpy: any = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    const fetchAllOrdersSpy: any = stroageService.fetchAllOrders.and.returnValue(of([]));
-    const fetchAllControlCentersSpy: any = stroageService.fetchAllControlCenters.and.returnValue(of([]));
-    const getDocumentItemByControlCenterSpy: any = stroageService.getDocumentItemByControlCenter.and.returnValue(of([]));
-    const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
-    const fetchAllCurrenciesSpy: any = currService.fetchAllCurrencies.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    getDocumentItemByControlCenterSpy = storageService.getDocumentItemByControlCenter.and.returnValue(of([]));
 
     TestBed.configureTestingModule({
       imports: [
         UIDependModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {
@@ -66,6 +71,7 @@ describe('DocumentItemByControlCenterComponent', () => {
       declarations: [
         RouterLinkDirectiveStub,
         DocumentItemByControlCenterComponent,
+        MessageDialogComponent,
       ],
       providers: [
         TranslateService,
@@ -74,21 +80,101 @@ describe('DocumentItemByControlCenterComponent', () => {
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: Router, useValue: routerSpy },
-        { provide: FinanceStorageService, useValue: stroageService },
-        { provide: HomeDefDetailService, useValue: homeService },
-        { provide: FinCurrencyService, useValue: currService },
+        { provide: FinanceStorageService, useValue: storageService },
       ],
-    })
-    .compileComponents();
+    });
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ MessageDialogComponent ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentItemByControlCenterComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create without data', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('should work properly with data', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+
+      component.selectedControlCenter = fakeData.finControlCenters[0].Id;
+      component.selectedScope = OverviewScopeEnum.CurrentMonth;
+
+      let rst: BaseListModel<DocumentItemWithBalance> = new BaseListModel<DocumentItemWithBalance>();
+      rst.totalCount = 5;
+      rst.contentList = [];
+      let balitem: DocumentItemWithBalance = new DocumentItemWithBalance();
+      balitem.AccountId = 21;
+      balitem.Balance = 200;
+      balitem.Desp = 'test';
+      balitem.DocDesp = 'test';
+      balitem.DocId = 101;
+      balitem.ItemId = 1;
+      balitem.TranAmount = 100;
+      balitem.TranAmount_Org = 100;
+      balitem.TranCurr = 'CNY';
+      rst.contentList.push(balitem);
+      getDocumentItemByControlCenterSpy.and.returnValue(asyncData(rst));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('shall load the data', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(getDocumentItemByControlCenterSpy).toHaveBeenCalled();
+      expect(component.resultsLength).toEqual(5);
+      expect(component.dataSource.data.length).toEqual(1);
+    }));
+
+    it('should popup dialog if failted to load tran type', fakeAsync(() => {
+      fetchAllTranTypesSpy.and.returnValue(asyncError('error'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick();
+      fixture.detectChanges();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('.message-dialog-button-ok') as HTMLElement).click();
+      flush();
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+    }));
+
+    it('should popup dialog if failted to load data', fakeAsync(() => {
+      getDocumentItemByControlCenterSpy.and.returnValue(asyncError('error'));
+
+      fixture.detectChanges(); // ngOnInit
+      tick();
+      fixture.detectChanges();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('.message-dialog-button-ok') as HTMLElement).click();
+      flush();
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+    }));
   });
 });

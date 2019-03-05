@@ -33,7 +33,7 @@ describe('ReportComponent', () => {
   let getReportOrderSpy: any;
   let getReportMonthOnMonthSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
@@ -41,7 +41,9 @@ describe('ReportComponent', () => {
     fakeData.buildFinAccounts();
     fakeData.buildFinControlCenter();
     fakeData.buildFinOrders();
+  });
 
+  beforeEach(async(() => {
     const themeStorageStub: Partial<ThemeStorage> = {};
     themeStorageStub.getStoredTheme = () => { return undefined; };
     themeStorageStub.onThemeUpdate = new EventEmitter<any>();

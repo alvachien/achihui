@@ -52,6 +52,7 @@ import { AccountExtAssetExComponent } from './account-ext-asset-ex';
 import { PlanComponent } from './plan';
 import { PlanDetailComponent } from './plan-detail';
 import { PlanListComponent } from './plan-list';
+import { DocumentHeaderComponent } from './document-header';
 
 @NgModule({
   imports: [
@@ -109,6 +110,7 @@ import { PlanListComponent } from './plan-list';
     DocumentRepaymentExCreateComponent,
     AccountExtLoanExComponent,
     AccountExtADPExComponent,
+    DocumentHeaderComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

@@ -8,7 +8,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilter } from '../../model';
+  IAccountCategoryFilter, Currency, TranType, DocumentType, ControlCenter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ENTER, COMMA, } from '@angular/cdk/keycodes';
@@ -37,6 +37,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
+  public arCurrencies: Currency[] = [];
+  public arTranTypes: TranType[] = [];
+  public arDocTypes: DocumentType[] = [];
+  public arControlCenters: ControlCenter[] = [];
   // Enter, comma
   separatorKeysCodes: any[] = [ENTER, COMMA];
 
@@ -88,15 +92,19 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.destroyed$))
     .subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
+      this.arDocTypes = rst[1];
+      this.arTranTypes = rst[2];
+      this.arControlCenters = rst[4];
+      this.arCurrencies = rst[6];
 
       // Accounts
-      this.arUIAccount = BuildupAccountForSelection(this._storageService.Accounts, this._storageService.AccountCategories);
+      this.arUIAccount = BuildupAccountForSelection(rst[3], rst[0]);
       this.uiAccountStatusFilter = undefined;
       this.uiAccountCtgyFilter = undefined;
       // Orders
-      this.arUIOrder = BuildupOrderForSelection(this._storageService.Orders);
+      this.arUIOrder = BuildupOrderForSelection(rst[5]);
       this.uiOrderFilter = undefined;
 
       this._activateRoute.url.subscribe((x: any) => {
@@ -120,20 +128,28 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
             this._storageService.readDocument(this.routerID).pipe(takeUntil(this.destroyed$)).subscribe((x2: any) => {
-              if (x2 instanceof Document) {
-                if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.log(`AC_HIH_UI [Debug]: Entering ngOninit, succeed to readDocument : ${x2}`);
-                }
-
-                this.detailObject = x2;
-                this.dataSource.data = this.detailObject.Items;
-              } else {
-                if (environment.LoggingLevel >= LogLevel.Error) {
-                  console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to readDocument : ${x2}`);
-                }
-
-                this.detailObject = new Document();
+              if (environment.LoggingLevel >= LogLevel.Debug) {
+                console.debug(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent, ngOninit, readDocument`);
               }
+
+              this.detailObject = x2;
+              this.dataSource.data = this.detailObject.Items;
+          }, (error: any) => {
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Error]: Entering DocumentDetailComponent, ngOninit, readDocument failed: ${error}`);
+              }
+
+              const dlginfo: MessageDialogInfo = {
+                Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+                Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+                Button: MessageDialogButtonEnum.onlyok,
+              };
+
+              this._dialog.open(MessageDialogComponent, {
+                disableClose: false,
+                width: '500px',
+                data: dlginfo,
+              });
             });
           }
         } else {
@@ -162,8 +178,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroyed$.next(true);
-    this.destroyed$.complete();
+    if (this.destroyed$) {
+      this.destroyed$.next(true);
+      this.destroyed$.complete();
+    }
   }
 
   public getHeaderDisplayString(hdr: string): string {

@@ -42,7 +42,7 @@ describe('DocumentADPCreateComponent', () => {
   let routerSpy: any;
   let activatedRouteStub: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildChosedHome();
     fakeData.buildCurrentUser();
@@ -53,7 +53,9 @@ describe('DocumentADPCreateComponent', () => {
     fakeData.buildFinOrders();
     fakeData.buildFinAccountExtraAdvancePayment();
     fakeData.buildFinADPDocumentForCreate();
+  });
 
+  beforeEach(async(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createadp', {})] as UrlSegment[]);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [

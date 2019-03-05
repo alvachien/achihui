@@ -30,13 +30,15 @@ describe('DocumentItemSearchListComponent', () => {
   let routerSpy: any;
   let searchDocItemSpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
+  });
 
+  beforeEach(async(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
@@ -303,11 +305,14 @@ describe('DocumentItemSearchListComponent', () => {
       // Expect a dialog
       expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
       // Since there is only one button
-      (overlayContainerElement.querySelector('button') as HTMLElement).click();
-      fixture.detectChanges();
-      flush();
+      let btnElement: HTMLElement = (overlayContainerElement.querySelector('.message-dialog-button-ok') as HTMLElement);
+      if (btnElement) {
+        btnElement.click();
+        fixture.detectChanges();
+        flush();
 
-      expect(component.dataSource.data.length).toEqual(0);
+        expect(component.dataSource.data.length).toEqual(0);
+      }
     }));
   });
 });

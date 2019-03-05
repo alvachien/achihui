@@ -184,7 +184,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
       this._currService.fetchAllCurrencies(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
       }
       this.arDocTypes = rst[1];
       this.arTranTypes = rst[2];
@@ -242,7 +242,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
 
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent onStepSelectionChange with idex = ${event.selectedIndex}`);
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent onStepSelectionChange with idex = ${event.selectedIndex}`);
     }
 
     if (event.selectedIndex === 1) {
@@ -259,7 +259,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
 
   public onReset(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering onReset in DocumentRepaymentExCreateComponent`);
+      console.debug(`AC_HIH_UI [Debug]: Entering onReset in DocumentRepaymentExCreateComponent`);
     }
 
     this._stepper.reset();
@@ -313,7 +313,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
         let isrecreate: boolean = false;
         snackbarRef.onAction().subscribe(() => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent, Snackbar onAction()`);
+            console.debug(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent, Snackbar onAction()`);
           }
 
           isrecreate = true;
@@ -323,7 +323,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
         snackbarRef.afterDismissed().subscribe(() => {
           // Navigate to display
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent, Snackbar afterDismissed with ${isrecreate}`);
+            console.debug(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent, Snackbar afterDismissed with ${isrecreate}`);
           }
 
           if (!isrecreate) {
@@ -345,7 +345,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
         }).afterClosed().subscribe((x2: any) => {
           // Do nothing!
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent, Message dialog result ${x2}`);
+            console.debug(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent, Message dialog result ${x2}`);
           }
         });
       });
@@ -397,14 +397,14 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
 
   private _readLoanAccount(nAcntID: number): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering _readLoanAccount in DocumentRepaymentExCreateComponent`);
+      console.debug(`AC_HIH_UI [Debug]: Entering _readLoanAccount in DocumentRepaymentExCreateComponent`);
     }
 
     this._storageService.readAccount(nAcntID)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: Account) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent, readAccount succeed.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering DocumentRepaymentExCreateComponent, readAccount succeed.`);
         }
 
         this.loanAccount = x;

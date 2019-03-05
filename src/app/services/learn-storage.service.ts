@@ -14,8 +14,7 @@ export class LearnStorageService {
   // Buffer
   private _isCtgyListLoaded: boolean = false;
   private _listCategory: LearnCategory[];
-  private _isObjListLoaded: boolean = false;
-  private _isHistListLoaded: boolean = false;
+
   private _isEnWordListLoaded: boolean = false;
   private _isEnSentListLoaded: boolean = false;
 
@@ -26,16 +25,6 @@ export class LearnStorageService {
 
   get Categories(): LearnCategory[] {
     return this._listCategory;
-  }
-
-  listObjectChange: BehaviorSubject<LearnObject[]> = new BehaviorSubject<LearnObject[]>([]);
-  get Objects(): LearnObject[] {
-    return this.listObjectChange.value;
-  }
-
-  listHistoryChange: BehaviorSubject<LearnHistory[]> = new BehaviorSubject<LearnHistory[]>([]);
-  get Histories(): LearnHistory[] {
-    return this.listHistoryChange.value;
   }
 
   listEnWordChange: BehaviorSubject<EnWord[]> = new BehaviorSubject<EnWord[]>([]);
@@ -49,8 +38,6 @@ export class LearnStorageService {
   }
 
   // Events
-  createHistoryEvent: EventEmitter<LearnHistory | string | undefined> = new EventEmitter(undefined);
-  readHistoryEvent: EventEmitter<LearnHistory | string | undefined> = new EventEmitter(undefined);
   createEnWordEvent: EventEmitter<EnWord | string | undefined> = new EventEmitter(undefined);
   readEnWordEvent: EventEmitter<EnWord | string | undefined> = new EventEmitter(undefined);
   createEnSentenceEvent: EventEmitter<EnSentence | string | undefined> = new EventEmitter(undefined);
@@ -65,8 +52,7 @@ export class LearnStorageService {
 
     this._isCtgyListLoaded = false;
     this._listCategory = [];
-    this._isObjListLoaded = false;
-    this._isHistListLoaded = false;
+
     this._isEnWordListLoaded = false;
     this._isEnSentListLoaded = false;
   }
@@ -89,8 +75,8 @@ export class LearnStorageService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCategories in LearnStorageService: ${response}`);
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllCategories in LearnStorageService.`);
+            // console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllCategories in LearnStorageService: ${response}`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllCategories in LearnStorageService.`);
           }
 
           const rjs: any = <any>response;
@@ -131,58 +117,49 @@ export class LearnStorageService {
   }
 
   // Object
-  public fetchAllObjects(forceReload?: boolean, ctgyID?: number): Observable<any> {
-    if (!this._isObjListLoaded || forceReload) {
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+  public fetchAllObjects(ctgyID?: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+              .append('Accept', 'application/json')
+              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      if (ctgyID) {
-        params = params.append('ctgyid', ctgyID.toString());
-      }
-
-      return this._http.get(this.objecturl, {
-          headers: headers,
-          params: params,
-        })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService: ${response}`);
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService.`);
-          }
-
-          const rjs: any = <any>response;
-          let listRst: LearnObject[] = [];
-
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
-              const rst: LearnObject = new LearnObject();
-              rst.onSetData(si);
-              listRst.push(rst);
-            }
-          }
-
-          this._isObjListLoaded = true;
-          this.listObjectChange.next(listRst);
-          return listRst;
-        }),
-        catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            // console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService: ${error}`);
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService.`);
-          }
-
-          this._isObjListLoaded = true;
-          this.listObjectChange.next([]);
-
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));
-    } else {
-      return of(this.listObjectChange.value);
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    if (ctgyID) {
+      params = params.append('ctgyid', ctgyID.toString());
     }
+
+    return this._http.get(this.objecturl, {
+        headers: headers,
+        params: params,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          // console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllObjects in LearnStorageService.`);
+        }
+
+        const rjs: any = <any>response;
+        let listRst: LearnObject[] = [];
+
+        if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+          for (const si of rjs.contentList) {
+            const rst: LearnObject = new LearnObject();
+            rst.onSetData(si);
+            listRst.push(rst);
+          }
+        }
+
+        return listRst;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          // console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService: ${error}`);
+          console.error(`AC_HIH_UI [Error]: Failed in fetchAllObjects in LearnStorageService.`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -303,7 +280,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering LearnStorageService readObject`);
+          console.debug(`AC_HIH_UI [Debug]: Entering LearnStorageService readObject`);
         }
 
         let hd: LearnObject = new LearnObject();
@@ -321,70 +298,62 @@ export class LearnStorageService {
 
   /**
    * Fetch all all histories information
-   * @param forceReload Force to reload all histories
    */
-  public fetchAllHistories(forceReload?: boolean): Observable<LearnHistory[]> {
-    if (!this._isHistListLoaded || forceReload) {
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+  public fetchAllHistories(): Observable<LearnHistory[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+              .append('Accept', 'application/json')
+              .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(this.historyurl, {
-          headers: headers,
-          params: params,
-        })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHistories in LearnStorageService: ${response}`);
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllHistories in LearnStorageService.`);
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    return this._http.get(this.historyurl, {
+        headers: headers,
+        params: params,
+      })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.debug(`AC_HIH_UI [Debug]: Entering LearnStorageService, fetchAllHistories, map.`);
+        }
+
+        const rjs: any = <any>response;
+        let listRst: any[] = [];
+
+        if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
+          for (const si of rjs.contentList) {
+            const rst: LearnHistory = new LearnHistory();
+            rst.onSetData(si);
+            listRst.push(rst);
           }
+        }
 
-          const rjs: any = <any>response;
-          let listRst: any[] = [];
+        return listRst;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService fetchAllHistories failed: ${error}`);
+        }
 
-          if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-            for (const si of rjs.contentList) {
-              const rst: LearnHistory = new LearnHistory();
-              rst.onSetData(si);
-              listRst.push(rst);
-            }
-          }
-
-          this._isHistListLoaded = true;
-          this.listHistoryChange.next(listRst);
-          return listRst;
-        }),
-        catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllHistories in LearnStorageService: ${error}`);
-          }
-
-          this._isHistListLoaded = true;
-          this.listHistoryChange.next([]);
-
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));
-    } else {
-      return of(this.listHistoryChange.value);
-    }
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Create a history
    * @param hist History to create
    */
-  public createHistory(hist: LearnHistory): void {
+  public createHistory(hist: LearnHistory): Observable<LearnHistory> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     const jdata: string = hist.writeJSONString();
-    this._http.post(this.historyurl, jdata, {
+    return this._http.post(this.historyurl, jdata, {
         headers: headers,
+        params: params,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -394,81 +363,50 @@ export class LearnStorageService {
         let hd: LearnHistory = new LearnHistory();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createHistory in LearnStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Histories.slice();
-        copiedData.push(x);
-        this.listHistoryChange.next(copiedData);
-
-        // Broadcast event
-        this.createHistoryEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createHistory in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService fetchAllHistories failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.createHistoryEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Read a history
    * @param histid ID of the history to read
    */
-  public readHistory(histid: string): void {
+  public readHistory(histid: string): Observable<LearnHistory> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
     let apiurl: string = this.historyurl + '/' + histid;
-    this._http.get(apiurl, {
+
+    return this._http.get(apiurl, {
         headers: headers,
+        params: params,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readHistory in LearnStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering LearnStorageService readHistory`);
         }
 
         let hd: LearnHistory = new LearnHistory();
         hd.onSetData(response);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in readHistory in LearnStorageService: ${x}`);
-        }
-
-        const copiedData: any = this.Histories.slice();
-        let idx: number = copiedData.findIndex((val: any) => {
-          return val.generateKey() === x.generateKey();
-        });
-        if (idx !== -1) {
-          copiedData.splice(idx, 1, x);
-        } else {
-          copiedData.push(x);
-        }
-        this.listHistoryChange.next(copiedData);
-
-        // Broadcast event
-        this.readHistoryEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.log(`AC_HIH_UI [Error]: Error occurred in readHistory in LearnStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering LearnStorageService fetchAllHistories failed: ${error}`);
         }
 
-        // Broadcast event: failed
-        this.readHistoryEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
@@ -496,7 +434,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering LearnStorageService getHistoryReportByUser.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering LearnStorageService getHistoryReportByUser.`);
         }
 
         return <any>response;
@@ -535,7 +473,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering LearnStorageService, getHistoryReportByCategory.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering LearnStorageService, getHistoryReportByCategory.`);
         }
 
         return <any>response;
@@ -566,7 +504,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllQuestionBankItem in LearnStorageService.`);
+          console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllQuestionBankItem in LearnStorageService.`);
         }
 
         const rjs: any = <any>response;
@@ -710,7 +648,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering LearnStorageService readQuestionBank`);
+          console.debug(`AC_HIH_UI [Debug]: Entering LearnStorageService readQuestionBank`);
         }
 
         let hd: QuestionBankItem = new QuestionBankItem();
@@ -747,7 +685,7 @@ export class LearnStorageService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllEnWord in LearnStorageService`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllEnWord in LearnStorageService`);
           }
 
           const rjs: any = <any>response;
@@ -807,7 +745,7 @@ export class LearnStorageService {
       }))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createEnWord in LearnStorageService: ${x}`);
+          console.debug(`AC_HIH_UI [Debug]: Fetch data success in createEnWord in LearnStorageService: ${x}`);
         }
 
         const copiedData: any = this.EnWords.slice();
@@ -847,7 +785,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readEnWord in LearnStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering readEnWord in LearnStorageService: ${response}`);
         }
 
         let hd: EnWord = new EnWord();
@@ -856,7 +794,7 @@ export class LearnStorageService {
       }))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in readEnWord in LearnStorageService: ${x}`);
+          console.debug(`AC_HIH_UI [Debug]: Fetch data success in readEnWord in LearnStorageService: ${x}`);
         }
 
         // Broadcast event
@@ -894,7 +832,7 @@ export class LearnStorageService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.log(`AC_HIH_UI [Debug]: Entering map in fetchAllEnSentence in LearnStorageService`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllEnSentence in LearnStorageService`);
           }
 
           const rjs: any = <any>response;
@@ -954,7 +892,7 @@ export class LearnStorageService {
       }))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in createEnSentence in LearnStorageService: ${x}`);
+          console.debug(`AC_HIH_UI [Debug]: Fetch data success in createEnSentence in LearnStorageService: ${x}`);
         }
 
         const copiedData: any = this.EnSentences.slice();
@@ -994,7 +932,7 @@ export class LearnStorageService {
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Entering readEnSentence in LearnStorageService: ${response}`);
+          console.debug(`AC_HIH_UI [Debug]: Entering readEnSentence in LearnStorageService: ${response}`);
         }
 
         let hd: EnSentence = new EnSentence();
@@ -1003,7 +941,7 @@ export class LearnStorageService {
       }))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.log(`AC_HIH_UI [Debug]: Fetch data success in readEnSentence in LearnStorageService: ${x}`);
+          console.debug(`AC_HIH_UI [Debug]: Fetch data success in readEnSentence in LearnStorageService: ${x}`);
         }
 
         // Broadcast event

@@ -34,7 +34,7 @@ export class HabitListComponent implements OnInit, AfterContentInit, OnDestroy {
     this.isLoadingResults = true;
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering HabitListComponent constructor...`);
+      console.debug(`AC_HIH_UI [Debug]: Entering HabitListComponent constructor...`);
     }
 
     this.dataSource = new MatTableDataSource([]);
@@ -43,7 +43,7 @@ export class HabitListComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering HabitListComponent ngOnInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Entering HabitListComponent ngOnInit...`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -51,7 +51,7 @@ export class HabitListComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngAfterContentInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering HabitListComponent ngAfterContentInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Entering HabitListComponent ngAfterContentInit...`);
     }
 
     this.dataSource.paginator = this.paginator;

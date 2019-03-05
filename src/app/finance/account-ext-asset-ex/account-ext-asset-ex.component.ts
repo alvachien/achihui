@@ -61,7 +61,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
   constructor(public _storageService: FinanceStorageService,
     private _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent constructor`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent constructor`);
     }
   }
 
@@ -84,7 +84,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent ngOnInit`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent ngOnInit`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -100,7 +100,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent ngOnDestroy`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent ngOnDestroy`);
     }
 
     if (this._destroyed$) {
@@ -111,7 +111,7 @@ export class AccountExtAssetExComponent implements OnInit, ControlValueAccessor,
 
   writeValue(val: AccountExtraAsset): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.log(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent writeValue: ${val}`);
+      console.debug(`AC_HIH_UI [Debug]: Entering AccountExtAssetExComponent writeValue: ${val}`);
     }
     if (val) {
       this.assetInfoForm.get('ctgyControl').setValue(val.CategoryID);
