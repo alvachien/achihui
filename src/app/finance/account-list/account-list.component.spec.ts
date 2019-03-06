@@ -32,9 +32,9 @@ describe('AccountListComponent', () => {
 
   beforeEach(async(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
-    fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', ['fetchAllAccountCategories', 'fetchAllAccounts']);
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
 
     TestBed.configureTestingModule({
       imports: [
@@ -56,7 +56,7 @@ describe('AccountListComponent', () => {
       providers: [
         TranslateService,
         UIStatusService,
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
         { provide: Router, useValue: routerSpy },
       ],
     })
@@ -124,14 +124,14 @@ describe('AccountListComponent', () => {
 
     it('should display error when Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchAllAccountsSpy.and.returnValue(asyncError('Service failed'));
 
       fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(0);
-      flush();
-
       tick();
-      fixture.detectChanges();
+      // fixture.detectChanges();
+      // flush();
+
+      expect(overlayContainerElement.querySelectorAll('snack-bar-container').length).toBe(1);
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Service failed',
         'Expected snack bar to show the error message: Service failed');

@@ -133,17 +133,19 @@ describe('AccountTreeComponent', () => {
 
     it('should display error when Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError('Service failed'));
 
       fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(0);
-      flush();
-
       tick();
       fixture.detectChanges();
+
+      expect(overlayContainerElement.querySelectorAll('snack-bar-container').length).toBe(1);
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Service failed',
         'Expected snack bar to show the error message: Service failed');
+
+      // Clean
+      flush();
     }));
   });
 
@@ -164,7 +166,7 @@ describe('AccountTreeComponent', () => {
       expect(component.dataSource.data.length).toEqual(0);
     });
 
-    xit('should show data after OnInit (fakeAsync)', fakeAsync(() => {
+    it('should show data after OnInit (fakeAsync)', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit()
       expect(component.dataSource.data.length).toEqual(0);
 
@@ -173,7 +175,7 @@ describe('AccountTreeComponent', () => {
 
       expect(component.dataSource.data.length).toBeGreaterThan(0);
 
-      // Search for the Notes
+      // // Search for the Notes
       // (getNodes(treeElement)[0] as HTMLElement).click();
       // // flush();
       // fixture.detectChanges();

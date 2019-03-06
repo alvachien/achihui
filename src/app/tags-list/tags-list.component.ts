@@ -20,7 +20,6 @@ export class TagsListComponent implements OnInit, AfterContentInit, OnDestroy {
   tagTerm: string;
   tagType: TagTypeEnum;
   rstSearch: Tag[] = [];
-  // @ViewChild('tagcloud') tagcloud: ElementRef;
   tagChartOption: Observable<EChartOption>;
   chartTheme: string;
 

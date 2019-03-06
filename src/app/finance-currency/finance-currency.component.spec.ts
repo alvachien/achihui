@@ -131,17 +131,18 @@ describe('FinanceCurrencyComponent', () => {
 
     it('should display error when Service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
+      fetchAllCurrenciesSpy.and.returnValue(asyncError('Service failed'));
 
       fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(0);
-      flush();
-
       tick();
-      fixture.detectChanges();
+      // fixture.detectChanges();
+
+      expect(overlayContainerElement.querySelectorAll('snack-bar-container').length).toBe(1);
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Service failed',
         'Expected snack bar to show the error message: Service failed');
+
+      flush();
     }));
   });
 });

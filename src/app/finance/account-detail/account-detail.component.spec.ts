@@ -154,7 +154,7 @@ describe('AccountDetailComponent', () => {
 
     it('1. should display error when account category service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Account category service failed'));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError('Account category service failed'));
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
@@ -168,11 +168,12 @@ describe('AccountDetailComponent', () => {
 
     it('2. should display error when asset category service fails', fakeAsync(() => {
       // tell spy to return an async error observable
-      fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Asset category service failed'));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncError('Asset category service failed'));
 
       fixture.detectChanges();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
+
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Asset category service failed',
         'Expected snack bar to show the error message: Asset category service failed');

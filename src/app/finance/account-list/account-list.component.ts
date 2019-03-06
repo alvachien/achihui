@@ -3,10 +3,10 @@ import { MatPaginator, MatTableDataSource, MatSnackBar } from '@angular/material
 import { Router } from '@angular/router';
 import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil } from '../../model';
 import { FinanceStorageService } from '../../services';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'hih-finance-account-list',

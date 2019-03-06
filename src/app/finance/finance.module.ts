@@ -53,6 +53,7 @@ import { PlanComponent } from './plan';
 import { PlanDetailComponent } from './plan-detail';
 import { PlanListComponent } from './plan-list';
 import { DocumentHeaderComponent } from './document-header';
+import { DocumentItemsComponent } from './document-items';
 
 @NgModule({
   imports: [
@@ -111,6 +112,7 @@ import { DocumentHeaderComponent } from './document-header';
     AccountExtLoanExComponent,
     AccountExtADPExComponent,
     DocumentHeaderComponent,
+    DocumentItemsComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

@@ -33,7 +33,8 @@ export class FinanceCurrencyComponent implements OnInit, AfterViewInit, OnDestro
     }
     this._destroyed$ = new ReplaySubject(1);
 
-    this._currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+    this._currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$))
+    .subscribe((x: any) => {
       // Do nothing
       if (x) {
         this.dataSource = new MatTableDataSource(x);

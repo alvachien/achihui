@@ -7,124 +7,16 @@
     <mat-tab-group color="accent" backgroundColor="primary">
       <!-- Tab: Header -->
       <mat-tab label="{{'Finance.Header' | translate}}">
-        <div class="tab-content">
-          <!-- Doc. type -->
-          <mat-form-field>
-            <mat-select placeholder="{{'Finance.DocumentType' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.DocType"
-              name="doctype">
-              <mat-option *ngFor="let dt of arDocTypes" [value]="dt.Id">
-                {{dt.Name | translate}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Currency -->
-          <mat-form-field>
-            <mat-select placeholder="{{'Finance.Currency' | translate}}" [disabled]="!isFieldChangable" [(ngModel)]="detailObject.TranCurr"
-              name="curr">
-              <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
-                {{cr.Symbol}} - {{cr.Name | translate}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Tran date -->
-          <mat-form-field>
-            <input matInput [(ngModel)]="detailObject.TranDate" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}"
-              [disabled]="!isFieldChangable">
-            <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
-            <mat-datepicker #tdpicker></mat-datepicker>
-          </mat-form-field>
-
-          <!-- Desp -->
-          <mat-form-field>
-            <input matInput type="text" placeholder="{{'Common.Description' |translate}}" [readonly]="!isFieldChangable"
-              [(ngModel)]="detailObject.Desp" name="hdesp">
-          </mat-form-field>
-
-          <!-- Exchange rate -->
-          <mat-form-field *ngIf="isForeignCurrency">
-            <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-              [readonly]="!isFieldChangable" [(ngModel)]="detailObject.ExgRate" name="hexrate">
-          </mat-form-field>
-
-          <!-- Planned Exchange rate -->
-          <div *ngIf="isForeignCurrency" class="achih-control-full-width">
-            <mat-slide-toggle [(checked)]="detailObject.ExgRate_Plan" [disabled]="!isFieldChangable">{{'Finance.ProposedExchangeRate'
-              | translate}}</mat-slide-toggle>
-          </div>
-        </div>
+        <form [formGroup]="headerGroup">
+          <hih-fin-document-header [docType]="curDocType"  formControlName="headerControl"></hih-fin-document-header>
+        </form>
       </mat-tab>
 
       <!-- Tab: Items -->
       <mat-tab label="{{'Finance.Items' | translate}}">
-        <table mat-table
-              [dataSource]="dataSource" multiTemplateDataRows
-              class="mat-elevation-z8">
-          <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
-            <th mat-header-cell *matHeaderCellDef> {{getHeaderDisplayString(column) | translate}} </th>
-            <td mat-cell *matCellDef="let element"> 
-              {{element[column]}} 
-            </td>
-          </ng-container>
-        
-          <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-          <ng-container matColumnDef="expandedDetail">
-            <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-              <div class="docitem-element-detail"
-                    [@detailExpand]="element === expandedItem ? 'expanded' : 'collapsed'">
-                <mat-form-field>
-                  <mat-select placeholder="{{'Finance.Account' | translate}}" disabled
-                    [(ngModel)]="element.AccountId" name="itacnt">
-                    <mat-option *ngFor="let acnt of arUIAccount | uiAccountStatusFilter: uiAccountStatusFilter | uiAccountCtgyFilter: uiAccountCtgyFilter"
-                      [value]="acnt.Id">
-                      <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">{{acnt.Name}}
-                        ({{acnt.CategoryName | translate}})
-                      </span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-select placeholder="{{'Finance.TransactionType' | translate}}" disabled
-                    [(ngModel)]="element.TranType" name="ittt">
-                    <mat-option *ngFor="let tt of arTranTypes" [value]="tt.Id">
-                      <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" disabled
-                    [(ngModel)]="element.ControlCenterId" name="itcc">
-                    <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-                    <mat-option *ngFor="let tt of arControlCenters" [value]="tt.Id">
-                      {{tt.Name}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-select placeholder="{{'Finance.Order' | translate}}" disabled [(ngModel)]="element.OrderId"
-                    name="itord">
-                    <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-                    <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
-                      {{tt.Name}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-            </td>
-          </ng-container>
-        
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let element; columns: displayedColumns;"
-              class="docitem-element-row"
-              [class.docitem-expanded-row]="expandedItem === element"
-              (click)="expandedItem = element">
-          </tr>
-          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="docitem-detail-row"></tr>
-        </table>
+        <form [formGroup]="itemGroup">
+          <hih-fin-document-items formControlName="itemControl"></hih-fin-document-items>
+        </form>
       </mat-tab>
     </mat-tab-group>
   </mat-card-content>

@@ -4,6 +4,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { Observable, forkJoin, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { ENTER, COMMA, } from '@angular/cdk/keycodes';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal, UICommonLabelEnum,
@@ -11,7 +13,6 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTy
   IAccountCategoryFilter, Currency, TranType, DocumentType, ControlCenter } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { ENTER, COMMA, } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'hih-finance-document-detail',
@@ -30,33 +31,22 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   private destroyed$: ReplaySubject<boolean>;
 
   public currentMode: string;
-  public detailObject: Document | undefined = undefined;
   public uiMode: UIMode = UIMode.Display;
-  public arUIAccount: UIAccountForSelection[] = [];
-  public uiAccountStatusFilter: string | undefined;
-  public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
-  public arUIOrder: UIOrderForSelection[] = [];
-  public uiOrderFilter: boolean | undefined;
   public arCurrencies: Currency[] = [];
   public arTranTypes: TranType[] = [];
   public arDocTypes: DocumentType[] = [];
   public arControlCenters: ControlCenter[] = [];
-  // Enter, comma
-  separatorKeysCodes: any[] = [ENTER, COMMA];
-
-  dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
-  displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'TranAmount', 'Desp', 'ControlCenterId', 'OrderId'];
-  expandedItem: DocumentItem;
+  // Form group
+  public headerGroup: FormGroup = new FormGroup({
+    headerControl: new FormControl('', Validators.required),
+  });
+  public itemGroup: FormGroup = new FormGroup({
+    itemControl: new FormControl('', Validators.required),
+  });
+  curDocType: number;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
-  }
-  get isForeignCurrency(): boolean {
-    if (this.detailObject && this.detailObject.TranCurr !== this._homedefService.ChosedHome.BaseCurrency) {
-      return true;
-    }
-
-    return false;
   }
 
   constructor(private _dialog: MatDialog,
@@ -70,7 +60,6 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...');
     }
-    this.detailObject = new Document();
   }
 
   ngOnInit(): void {
@@ -99,14 +88,6 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this.arControlCenters = rst[4];
       this.arCurrencies = rst[6];
 
-      // Accounts
-      this.arUIAccount = BuildupAccountForSelection(rst[3], rst[0]);
-      this.uiAccountStatusFilter = undefined;
-      this.uiAccountCtgyFilter = undefined;
-      // Orders
-      this.arUIOrder = BuildupOrderForSelection(rst[5]);
-      this.uiOrderFilter = undefined;
-
       this._activateRoute.url.subscribe((x: any) => {
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
@@ -132,8 +113,16 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 console.debug(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent, ngOninit, readDocument`);
               }
 
-              this.detailObject = x2;
-              this.dataSource.data = this.detailObject.Items;
+              this.headerGroup.get('headerControl').setValue(x2);
+              this.itemGroup.get('itemControl').setValue(x2.Items);
+
+              if (this.uiMode === UIMode.Display) {
+                this.headerGroup.disable();
+                this.itemGroup.disable();
+               } else {
+                this.headerGroup.enable();
+                this.itemGroup.enable();
+               }
           }, (error: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
                 console.error(`AC_HIH_UI [Error]: Entering DocumentDetailComponent, ngOninit, readDocument failed: ${error}`);

@@ -135,8 +135,6 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     this._lrnstorageService.getHistoryReportByUser(bgn, end)
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((x: any) => {
-        console.log('getHistoryReportByUser succeeeeeeed');
-
         let dataLrnUser: any[] = [];
 
         if (x instanceof Array && x.length > 0) {
@@ -200,8 +198,6 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
     this._finstorageService.getReportTranType(bgn, end).pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe(([val1, val2]: any[]) => {
-      console.log('getReportTranType succeeeeeeed');
-
       this.mapFinTTIn = <Map<number, UINameValuePair<number>>>val1;
       this.mapFinTTOut = <Map<number, UINameValuePair<number>>>val2;
 
@@ -345,8 +341,6 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
   private _getHomeKeyFigure(): void {
     this._homeDefService.getHomeKeyFigure().pipe(takeUntil(this.ngUnsubscribe$)).subscribe((x: HomeKeyFigure) => {
-      console.log('_getHomeKeyFigure succeeeeeed');
-
       this.eventChartOption = of([]).pipe(
         (map(() => {
           const legends: any[] = ['Completed', 'Todo'];

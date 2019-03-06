@@ -18,6 +18,8 @@ import { MessageDialogComponent } from '../../message-dialog/message-dialog.comp
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
 import { DocumentNormalCreateComponent } from './document-normal-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { Document, DocumentItem, financeDocTypeNormal, UIDisplayStringUtil, UICommonLabelEnum } from 'app/model';
@@ -92,6 +94,8 @@ describe('DocumentNormalCreateComponent', () => {
         UIOrderValidFilterPipe,
         DocumentNormalCreateComponent,
         MessageDialogComponent,
+        DocumentHeaderComponent,
+        DocumentItemsComponent,
       ],
       providers: [
         TranslateService,
@@ -152,28 +156,17 @@ describe('DocumentNormalCreateComponent', () => {
     });
 
     it('step 1: should set the default values: base currency, date, and so on', fakeAsync(() => {
-      expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.TranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
+      expect(component.firstFormGroup.get('headerControl')).toBeTruthy('Expect control has been initialized');
+
+      expect(component.tranCurrency).toEqual(fakeData.chosedHome.BaseCurrency, 'Expect base currency is set');
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
       // Also, the date shall be inputted
-      expect(component.TranDate).toBeTruthy();
-    }));
-
-    it('step 1: should have accounts and others loaded', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      expect(component.arUIAccount.length).toEqual(0);
-      expect(component.arUIOrder.length).toEqual(0);
-
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component.arUIAccount.length).toBeGreaterThan(0);
-      expect(component.arUIOrder.length).toBeGreaterThan(0);
+      expect(component.tranDate).toBeTruthy();
     }));
 
     it('step 1: should not allow go to second step if there are failure in first step', fakeAsync(() => {
@@ -189,60 +182,25 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBe(false);
-      expect(component.firstStepCompleted).toBe(false);
-      expect(component._stepper.selectedIndex).toBe(0);
-    }));
-
-    it('step 1: shall show exchange rate for foreign currency', fakeAsync(() => {
-      expect(component.firstFormGroup).toBeFalsy();
-      fixture.detectChanges(); // ngOnInit
-
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Input foreign currency
-      component.firstFormGroup.get('currControl').setValue('USD');
-      fixture.detectChanges();
-
-      expect(fixture.debugElement.query(By.css('#exgrate'))).toBeTruthy();
-      expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
-    }));
-
-    it('step 1: shall input exchange rate for foreign currency', fakeAsync(() => {
-      expect(component.firstFormGroup).toBeFalsy();
-      fixture.detectChanges(); // ngOnInit
-
-      component.firstFormGroup.get('despControl').setValue('Test');
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Input foreign currency
-      component.firstFormGroup.get('currControl').setValue('USD');
-      fixture.detectChanges();
-
-      expect(component.firstStepCompleted).toBeFalsy();
-
-      // Shall not allow go to second step
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
       expect(component._stepper.selectedIndex).toBe(0);
     }));
 
     it('step 1: should go to second step for valid base currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
-
-      component.firstFormGroup.get('despControl').setValue('Test');
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
-      component.firstFormGroup.get('currControl').setValue('USD');
-      component.firstFormGroup.get('exgControl').setValue(654.35);
+
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.firstFormGroup.updateValueAndValidity();
       fixture.detectChanges();
+
+      expect(component.firstFormGroup.valid).toBe(true);
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -253,16 +211,21 @@ describe('DocumentNormalCreateComponent', () => {
       flush();
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBe(true);
-      expect(component.firstStepCompleted).toBe(true);
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
     it('step 1: should go to second step for valid foreign currency case', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
-
-      component.firstFormGroup.get('despControl').setValue('Test');
       tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = 'USD';
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      curdoc.ExgRate = 654.23;
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
@@ -270,12 +233,9 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(0);
 
       nextButtonNativeEl.click();
-      fixture.detectChanges();
       flush();
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBe(true);
-      expect(component.firstStepCompleted).toBe(true);
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
@@ -284,10 +244,15 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Now in step 1
       expect(component._stepper.selectedIndex).toBe(0);
-
-      // On step 1, setup the content
-      component.firstFormGroup.get('despControl').setValue('Test');
       tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -301,24 +266,21 @@ describe('DocumentNormalCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      // // It shall show a snackbar for error info.
-      // let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
-      // expect(messageElement.textContent).toContain('No items or invalid item detected',
-      //   'Expected snack bar to show the error message: No items or invalid item detected');
-      // flush();
-      // fixture.detectChanges();
-      // flush();
-
       // It shall be stop at step 2.
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
     it('step 2: should not allow go to third step if there are items without account', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue('Test');
       tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -327,86 +289,16 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
 
       // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(1);
       // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
+      let ditem: DocumentItem = new DocumentItem();
+      ditem.ItemId = 1;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
-    }));
-
-    it('step 2: should not allow go third step if there are items without tran. type', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue('Test');
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Click the next button > second step
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.TranAmount = 200;
-      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      // ditem.TranType = 2;
-      ditem.Desp = 'test';
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
-    }));
-
-    it('step 2: should not allow go third step if there are items without amount', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue('Test');
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Click the next button > second step
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      ditem.TranType = 2;
-      ditem.Desp = 'test';
-      component.dataSource.data = [ditem];
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
+      expect(component.itemFormGroup.valid).toBeFalsy();
       fixture.detectChanges();
 
       // Then, click the next button > third step
@@ -426,119 +318,17 @@ describe('DocumentNormalCreateComponent', () => {
 
     // Order which not valid in this date shall not allow
 
-    it('step 2: should not allow go third step if item has neither control center nor order', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue('Test');
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Click the next button > second step
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.TranType = 2;
-      ditem.Desp = 'test';
-      ditem.TranAmount = 200;
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
-    }));
-
-    it('step 2: should not allow go third step if item has control center and order both', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue('Test');
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Click the next button > second step
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      ditem.OrderId = fakeData.finOrders[0].Id;
-      ditem.TranType = 2;
-      ditem.TranAmount = 20;
-      ditem.Desp = 'test';
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
-    }));
-
-    it('step 2: should not allow go third step if item miss desp', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue('Test');
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Click the next button > second step
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      ditem.TranType = 2;
-      ditem.TranAmount = 20;
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
-    }));
-
     it('step 2: should allow go third step if items are valid', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue('Test');
       tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -546,19 +336,18 @@ describe('DocumentNormalCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
+      // Add items
+      let ditem: DocumentItem = new DocumentItem();
       ditem.AccountId = 11;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
       ditem.TranAmount = 20;
-      component.dataSource.data = [ditem];
+      ditem.ItemId = 1;
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
       fixture.detectChanges();
+      expect(component.itemFormGroup.valid).toBeTruthy();
 
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -572,7 +361,7 @@ describe('DocumentNormalCreateComponent', () => {
     // Reset should work
   });
 
-  describe('3. Exception case handling (async loading)', () => {
+  describe('3. Exception case handling', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
 
@@ -605,7 +394,6 @@ describe('DocumentNormalCreateComponent', () => {
       fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Currency service failed'));
 
       fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(0);
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
@@ -619,7 +407,6 @@ describe('DocumentNormalCreateComponent', () => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Account category service failed'));
 
       fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(0);
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
@@ -633,7 +420,6 @@ describe('DocumentNormalCreateComponent', () => {
       fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Doc type service failed'));
 
       fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(0);
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
@@ -647,7 +433,6 @@ describe('DocumentNormalCreateComponent', () => {
       fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Tran type service failed'));
 
       fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(0);
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
@@ -661,7 +446,6 @@ describe('DocumentNormalCreateComponent', () => {
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Account service failed'));
 
       fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(0);
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
@@ -675,7 +459,6 @@ describe('DocumentNormalCreateComponent', () => {
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Control center service failed'));
 
       fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(0);
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
@@ -689,7 +472,6 @@ describe('DocumentNormalCreateComponent', () => {
       fetchAllOrdersSpy.and.returnValue(asyncError<string>('Order service failed'));
 
       fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(0);
       tick(); // Complete the Observables in ngOnInit
 
       // tick();
@@ -702,7 +484,7 @@ describe('DocumentNormalCreateComponent', () => {
   });
 
   // Add item/Remove item
-  describe('4. Items operation', () => {
+  xdescribe('4. Items operation', () => {
     beforeEach(() => {
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
@@ -802,30 +584,34 @@ describe('DocumentNormalCreateComponent', () => {
 
     it('should handle checking failed case with a popup dialog', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
       tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button > second step
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(1);
 
       // Add item
       let ditem: DocumentItem = fakeData.finNormalDocumentForCreate.Items[0];
-      component.dataSource.data = [ditem];
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
       fixture.detectChanges();
 
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(2);
 
       // Now go to submit
       component.arTranType = []; // Ensure check failed
@@ -851,30 +637,35 @@ describe('DocumentNormalCreateComponent', () => {
 
     it('should handle create success case with navigate to display', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
       tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.DocType = financeDocTypeNormal;
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button > second step
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(1);
 
       // Add item
       let ditem: DocumentItem = fakeData.finNormalDocumentForCreate.Items[0];
-      component.dataSource.data = [ditem];
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
       fixture.detectChanges();
 
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(2);
 
       // Now go to submit
       component.onSubmit();
@@ -896,24 +687,28 @@ describe('DocumentNormalCreateComponent', () => {
 
     it('should handle create success case with recreate', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
       tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.DocType = financeDocTypeNormal;
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button > second step
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(1);
 
       // Add item
       let ditem: DocumentItem = fakeData.finNormalDocumentForCreate.Items[0];
-      component.dataSource.data = [ditem];
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
       fixture.detectChanges();
 
       // Then, click the next button > third step
@@ -921,6 +716,7 @@ describe('DocumentNormalCreateComponent', () => {
       nextButtonNativeEl.click();
       flush();
       fixture.detectChanges();
+      expect(component._stepper.selectedIndex).toEqual(2);
 
       // Now go to submit
       component.onSubmit();
@@ -943,10 +739,6 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
       // Check the reset
       expect(component._stepper.selectedIndex).toBe(0);
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.firstFormGroup.get('dateControl').value).not.toBeNull();
-      expect(component.firstFormGroup.get('despControl').value).toBeFalsy();
-      expect(component.firstFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
 
       flush(); // Empty the call stack
     }));
@@ -955,10 +747,16 @@ describe('DocumentNormalCreateComponent', () => {
       createDocSpy.and.returnValue(asyncError('Doc Created Failed!'));
 
       fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue(fakeData.finNormalDocumentForCreate.Desp);
       tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.DocType = financeDocTypeNormal;
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -966,13 +764,10 @@ describe('DocumentNormalCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
       // Add item
       let ditem: DocumentItem = fakeData.finNormalDocumentForCreate.Items[0];
-      component.dataSource.data = [ditem];
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
       fixture.detectChanges();
 
       // Then, click the next button > third step
@@ -1020,10 +815,16 @@ describe('DocumentNormalCreateComponent', () => {
 
     it('shall clear all items', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
-
-      // Setup the first step
-      component.firstFormGroup.get('despControl').setValue('Test');
       tick(); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      let curdoc: Document = new Document();
+      curdoc.DocType = financeDocTypeNormal;
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button > second step
@@ -1031,18 +832,16 @@ describe('DocumentNormalCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
       // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
+      let ditem: DocumentItem = new DocumentItem();
       ditem.AccountId = 11;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
       ditem.TranAmount = 20;
-      component.dataSource.data = [ditem];
+      ditem.ItemId = 1;
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
       fixture.detectChanges();
 
       // Then, click the next button > third step
@@ -1056,10 +855,6 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component._stepper.selectedIndex).toBe(0);
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.firstFormGroup.get('dateControl').value).not.toBeNull();
-      expect(component.firstFormGroup.get('despControl').value).toBeFalsy();
-      expect(component.firstFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
     }));
   });
 });

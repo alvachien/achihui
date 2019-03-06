@@ -135,7 +135,7 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering TranTypeListComponent ngOnInit, fetchAllTranTypes, failed with ${error}`);
       }
-      this._snackBar.open(error, undefined, {
+      this._snackBar.open(error.toString(), undefined, {
         duration: 2000,
       });
     }, () => {

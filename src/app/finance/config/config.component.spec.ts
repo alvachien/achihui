@@ -171,6 +171,9 @@ describe('ConfigComponent', () => {
       fixture.detectChanges();
       expect(component.dataSourceAsstCtgy.data.length).toBeGreaterThan(0);
       expect(component.dataSourceAsstCtgy.data.length).toEqual(fakeData.finAssetCategories.length);
+
+      // Clean
+      flush();
     }));
   });
 
@@ -198,10 +201,10 @@ describe('ConfigComponent', () => {
       expect(component.dataSourceAcntCtgy.data.length).toEqual(0);
       expect(component.dataSourceDocType.data.length).toEqual(0);
       expect(component.dataSourceAsstCtgy.data.length).toEqual(0);
-      flush();
-
       tick();
-      fixture.detectChanges();
+      // fixture.detectChanges();
+
+      expect(overlayContainerElement.querySelectorAll('snack-bar-container').length).toBe(1);
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Service failed',
         'Expected snack bar to show the error message: Service failed');
@@ -217,10 +220,10 @@ describe('ConfigComponent', () => {
       expect(component.dataSourceAcntCtgy.data.length).toEqual(0);
       expect(component.dataSourceDocType.data.length).toEqual(0);
       expect(component.dataSourceAsstCtgy.data.length).toEqual(0);
-      flush();
-
       tick();
-      fixture.detectChanges();
+      // fixture.detectChanges();
+
+      expect(overlayContainerElement.querySelectorAll('snack-bar-container').length).toBe(1);
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Service failed',
         'Expected snack bar to show the error message: Service failed');
@@ -236,10 +239,10 @@ describe('ConfigComponent', () => {
       expect(component.dataSourceAcntCtgy.data.length).toEqual(0);
       expect(component.dataSourceDocType.data.length).toEqual(0);
       expect(component.dataSourceAsstCtgy.data.length).toEqual(0);
-      flush();
-
       tick();
-      fixture.detectChanges();
+      // fixture.detectChanges();
+
+      expect(overlayContainerElement.querySelectorAll('snack-bar-container').length).toBe(1);
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Service failed',
         'Expected snack bar to show the error message: Service failed');

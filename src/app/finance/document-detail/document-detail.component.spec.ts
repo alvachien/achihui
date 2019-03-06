@@ -19,7 +19,8 @@ import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData
 import { DocumentDetailComponent } from './document-detail.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { Document, DocumentType, DocumentItem } from '../../model';
-import { read } from 'fs';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
 
 describe('DocumentDetailComponent', () => {
   let component: DocumentDetailComponent;
@@ -92,6 +93,8 @@ describe('DocumentDetailComponent', () => {
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
         DocumentDetailComponent,
+        DocumentHeaderComponent,
+        DocumentItemsComponent,
       ],
       providers: [
         TranslateService,
@@ -152,7 +155,6 @@ describe('DocumentDetailComponent', () => {
       fixture.detectChanges();
 
       expect(readDocumentSpy).toHaveBeenCalled();
-      expect(component.detailObject).toBeTruthy();
     }));
   });
 

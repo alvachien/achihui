@@ -7,8 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {
-  MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
+import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { EventEmitter } from '@angular/core';
@@ -403,7 +402,7 @@ describe('DocumentItemOverviewComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       tick(); // For charts
-      fixture.detectChanges();
+      // fixture.detectChanges();
 
       let adpacntext: AccountExtraAdvancePayment = fakeData.finAccounts.find((vl: Account) => { return vl.Id === 24; })
         .ExtraInfo as AccountExtraAdvancePayment;
@@ -411,7 +410,7 @@ describe('DocumentItemOverviewComponent', () => {
 
       expect(doPostADPTmpDocSpy).toHaveBeenCalled();
       tick(); // Makt the data return
-      fixture.detectChanges();
+      // fixture.detectChanges();
 
       // Expect there is a snackbar
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
@@ -421,15 +420,15 @@ describe('DocumentItemOverviewComponent', () => {
       let actionButton: any = overlayContainerElement.querySelector('button.mat-button') as HTMLButtonElement;
       actionButton.click();
       tick();
-      fixture.detectChanges();
+      // fixture.detectChanges();
 
       expect(getADPTmpDocsSpy).toHaveBeenCalledTimes(1);
       expect(getLoanTmpDocsSpy).toHaveBeenCalledTimes(1);
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/document/display/100']);
 
-      tick();
-      fixture.detectChanges();
-      // flush();
+      // tick();
+      // fixture.detectChanges();
+      flush();
       // flushMicrotasks();
       // flush();
       // tick();
@@ -439,11 +438,13 @@ describe('DocumentItemOverviewComponent', () => {
     it('6. onPostTmpDocument shall handle exception for ADP temp doc fail case', fakeAsync(() => {
       doPostADPTmpDocSpy.and.returnValue(asyncError('server failed with 500'));
 
+      expect(getADPTmpDocsSpy).toHaveBeenCalledTimes(0);
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
+      expect(getADPTmpDocsSpy).toHaveBeenCalledTimes(1);
       tick(); // For charts
-      fixture.detectChanges();
+      // fixture.detectChanges();
 
       let adpacntext: AccountExtraAdvancePayment = fakeData.finAccounts.find((vl: Account) => { return vl.Id === 24; })
         .ExtraInfo as AccountExtraAdvancePayment;
@@ -451,15 +452,15 @@ describe('DocumentItemOverviewComponent', () => {
 
       expect(doPostADPTmpDocSpy).toHaveBeenCalled();
       tick(); // Makt the exception
-      fixture.detectChanges();
+      // fixture.detectChanges();
 
       // Expect there is a snackbar
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('server failed with 500',
         'Expected snack bar to show the error message: server failed with 500');
 
-      tick();
-      // flush();
+      // tick();
+      flush();
     }));
 
     // it('2. shall handle the fetchDocPostedFrequencyPerUser fails case', fakeAsync(() => {

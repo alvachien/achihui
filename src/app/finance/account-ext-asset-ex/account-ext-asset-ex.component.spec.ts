@@ -50,9 +50,9 @@ describe('AccountExtAssetExComponent', () => {
           loader: {
             provide: TranslateLoader,
             useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient]
-          }
-        })
+            deps: [HttpClient],
+          },
+        }),
       ],
       declarations: [ AccountExtAssetExComponent ],
       providers: [

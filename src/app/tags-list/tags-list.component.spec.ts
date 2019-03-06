@@ -148,13 +148,15 @@ describe('TagsListComponent', () => {
       fetchAllTagsSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      flush();
-
       tick();
-      fixture.detectChanges();
+      // fixture.detectChanges();
+
+      expect(overlayContainerElement.querySelectorAll('snack-bar-container').length).toBe(1);
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).toContain('Service failed',
         'Expected snack bar to show the error message: Service failed');
+
+      flush();
     }));
   });
 
