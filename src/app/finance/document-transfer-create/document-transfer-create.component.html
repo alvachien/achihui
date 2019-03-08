@@ -4,49 +4,19 @@
     <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-horizontal-stepper linear>
+    <mat-horizontal-stepper linear (selectionChange)="onStepSelectionChange($event)">
 
       <!-- Header -->
-      <mat-step [completed]="headerStepCompleted" errorMessage="Invalid header">
+      <mat-step [stepControl]="headerFormGroup">
         <form [formGroup]="headerFormGroup">
           <ng-template matStepLabel>{{'Finance.Header' | translate}}</ng-template>
-          <!-- Tran date -->
-          <mat-form-field>
-            <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
-            <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
-            <mat-datepicker #dtpker></mat-datepicker>
-          </mat-form-field>
 
-          <!-- Desp -->
-          <mat-form-field>
-            <input matInput type="text" placeholder="{{'Common.Description' | translate}}" formControlName="despControl"
-              required maxlength="44">
-          </mat-form-field>
+          <hih-fin-document-header [docType]="curDocType"  formControlName="headerControl"></hih-fin-document-header>
 
           <!-- Amount -->
           <mat-form-field>
             <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
           </mat-form-field>
-
-          <!-- Currency -->
-          <mat-form-field>
-            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
-              <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
-                {{cr.Symbol}} - {{cr.Name | translate}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Exchange rate -->
-          <mat-form-field *ngIf="isForeignCurrency">
-            <input matInput type="text" placeholder="{{'Finance.ExchangeRate' |translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-              formControlName="exgControl" id="exgrate">
-          </mat-form-field>
-
-          <!-- Planned Exchange rate -->
-          <div *ngIf="isForeignCurrency" class="achih-control-full-width">
-            <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
-          </div>
         </form>
         <div>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
@@ -54,7 +24,7 @@
       </mat-step>
 
       <!-- Step: From -->
-      <mat-step [completed]="fromStepCompleted" errorMessage="Invalid from">
+      <mat-step [stepControl]="fromFormGroup">
         <form [formGroup]="fromFormGroup">
           <ng-template matStepLabel>{{'Finance.TransferFrom' | translate}}</ng-template>
           <mat-form-field>
@@ -91,7 +61,7 @@
       </mat-step>
 
       <!-- Step: To -->
-      <mat-step [completed]="toStepCompleted" errorMessage="Invalid to">
+      <mat-step [stepControl]="toFormGroup">
         <form [formGroup]="toFormGroup">
           <ng-template matStepLabel>{{'Finance.TransferTo' | translate}}</ng-template>
 
@@ -120,7 +90,6 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-
         </form>
         <div>
           <button mat-button matStepperPrevious>{{'Common.BackButton' | translate}}</button>
@@ -132,12 +101,11 @@
       <mat-step>
         <ng-template matStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
         <div class="mat-typography achih-control-full-width">
-          <h2>{{'Finance.Amount' | translate}}: {{TranAmount}} ({{TranCurrency}})</h2>
-          <h3>{{'Common.Date' | translate}}: {{TranDate}}</h3>
-          <!-- <h2>{{'Finance.TransferFrom' | translate}}: {{detailObject.SourceAccountId}}</h2>
-          <h2>{{'Finance.TransferTo' | translate}}: {{detailObject.TargetAccountId}}</h2>          
-          <h3>{{'Common.Description' | translate}}: {{detailObject.Desp}}</h3>
-           -->
+          <h2>{{'Finance.Amount' | translate}}: {{confirmInfo?.tranAmount}} ({{confirmInfo?.tranCurrency}})</h2>
+          <h3>{{'Common.Date' | translate}}: {{confirmInfo?.tranDateString}}</h3>
+          <h2>{{'Finance.TransferFrom' | translate}}: {{confirmInfo?.sourceAccountName}}</h2>
+          <h2>{{'Finance.TransferTo' | translate}}: {{confirmInfo?.targetAccountName}}</h2>          
+          <h3>{{'Common.Description' | translate}}: {{confirmInfo?.Desp}}</h3>
         </div>
 
         <div>

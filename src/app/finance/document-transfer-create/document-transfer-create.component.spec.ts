@@ -24,6 +24,7 @@ import { DocumentTransferCreateComponent } from './document-transfer-create.comp
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { Document, DocumentItem, financeDocTypeTransfer, financeTranTypeTransferOut,
   financeTranTypeTransferIn, } from '../../model';
+import { DocumentHeaderComponent } from '../document-header';
 
 describe('DocumentTransferCreateComponent', () => {
   let component: DocumentTransferCreateComponent;
@@ -51,7 +52,7 @@ describe('DocumentTransferCreateComponent', () => {
   });
 
   beforeEach(async(() => {
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -60,13 +61,13 @@ describe('DocumentTransferCreateComponent', () => {
       'fetchAllOrders',
       'createDocument',
     ]);
-    fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllDocTypesSpy = stroageService.fetchAllDocTypes.and.returnValue(of([]));
-    fetchAllTranTypesSpy = stroageService.fetchAllTranTypes.and.returnValue(of([]));
-    fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
-    fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
-    createDocSpy = stroageService.createDocument.and.returnValue(of({}));
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    createDocSpy = storageService.createDocument.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
@@ -95,6 +96,7 @@ describe('DocumentTransferCreateComponent', () => {
         UIOrderValidFilterPipe,
         DocumentTransferCreateComponent,
         MessageDialogComponent,
+        DocumentHeaderComponent,
       ],
       providers: [
         TranslateService,
@@ -103,7 +105,7 @@ describe('DocumentTransferCreateComponent', () => {
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinCurrencyService, useValue: currService },
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: Router, useValue: routerSpy },
       ],
@@ -281,11 +283,7 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.TranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Also, the date shall be inputted
-      expect(component.TranDate).toBeTruthy();
     }));
 
     it('step 1: should have accounts and orders loaded', fakeAsync(() => {
@@ -301,94 +299,27 @@ describe('DocumentTransferCreateComponent', () => {
     }));
 
     it('step 1: amount is mandatory', fakeAsync(() => {
-      expect(component.headerFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
+      expect(component.arUIAccount.length).toEqual(0);
+      expect(component.arUIOrder.length).toEqual(0);
 
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Input all fields exclude amount
-      component.headerFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      component.headerFormGroup.updateValueAndValidity();
+      expect(component.headerFormGroup.valid).toBeFalsy('Expect header form is invalid because amount is missing');
       fixture.detectChanges();
 
-      expect(component.headerFormGroup.valid).toBeFalsy();
-      expect(component.headerStepCompleted).toBeFalsy();
-
-      // Click the next button - no work!
+      // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       expect(component._stepper.selectedIndex).toBe(0);
 
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toBe(0);
-    }));
-
-    it('step 1: desp is mandatory', fakeAsync(() => {
-      expect(component.headerFormGroup).toBeFalsy();
-      fixture.detectChanges(); // ngOnInit
-
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Input all fields exclude desp
-      component.headerFormGroup.get('amountControl').setValue(100);
-      fixture.detectChanges();
-
-      expect(component.headerFormGroup.valid).toBeFalsy();
-      expect(component.headerStepCompleted).toBeFalsy();
-
-      // Click the next button - no work!
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      expect(component._stepper.selectedIndex).toBe(0);
-
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toBe(0);
-    }));
-
-    it('step 1: shall show exchange rate for foreign currency', fakeAsync(() => {
-      expect(component.headerFormGroup).toBeFalsy();
-      fixture.detectChanges(); // ngOnInit
-
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Input foreign currency
-      component.headerFormGroup.get('currControl').setValue('USD');
-      fixture.detectChanges();
-
-      expect(fixture.debugElement.query(By.css('#exgrate'))).toBeTruthy();
-      expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
-    }));
-
-    it('step 1: shall input exchange rate for foreign currency', fakeAsync(() => {
-      expect(component.headerFormGroup).toBeFalsy();
-      fixture.detectChanges(); // ngOnInit
-
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('despControl').setValue('test');
-      fixture.detectChanges();
-      // Input foreign currency
-      component.headerFormGroup.get('currControl').setValue('USD');
-      fixture.detectChanges();
-
-      expect(component.headerStepCompleted).toBeFalsy();
-
-      // Shall not allow go to second step
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -404,12 +335,16 @@ describe('DocumentTransferCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
       component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('despControl').setValue('test');
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
-
-      expect(component.headerFormGroup.valid).toBeTruthy();
-      expect(component.headerStepCompleted).toBeTruthy();
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -430,16 +365,16 @@ describe('DocumentTransferCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = 'USD';
+      curdoc.ExgRate = 653.33;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
       component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('despControl').setValue('test');
-      fixture.detectChanges();
-
-      // Input foreign currency
-      component.headerFormGroup.get('currControl').setValue('USD');
-      component.headerFormGroup.get('exgControl').setValue(654.22);
-
-      expect(component.headerFormGroup.valid).toBeTruthy();
-      expect(component.headerStepCompleted).toBeTruthy();
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      component.headerFormGroup.updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -457,11 +392,15 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
       component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('despControl').setValue('test');
-      fixture.detectChanges();
-
-      expect(component.headerFormGroup.valid).toBeTruthy();
+      component.headerFormGroup.updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -493,8 +432,15 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
       component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('despControl').setValue('test');
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
@@ -509,7 +455,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // However, it is invalid
-      expect(component.fromStepCompleted).toBeFalsy();
+      expect(component.fromFormGroup.valid).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -524,8 +470,15 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('despControl').setValue('test');
+      component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
@@ -542,7 +495,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // However, it is invalid
-      expect(component.fromStepCompleted).toBeFalsy();
+      expect(component.fromFormGroup.valid).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -557,8 +510,15 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('despControl').setValue('test');
+      component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
@@ -579,7 +539,7 @@ describe('DocumentTransferCreateComponent', () => {
 
       // Now in step 3
       expect(component._stepper.selectedIndex).toBe(2);
-      expect(component.toStepCompleted).toBeFalsy();
+      expect(component.toFormGroup.valid).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
@@ -594,8 +554,16 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header form');
+      component.headerFormGroup.updateValueAndValidity();
       component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('despControl').setValue('test');
+      expect(component.headerFormGroup.valid).toBeTruthy('Expect a valid header step');
       fixture.detectChanges();
 
       // Click the next button
@@ -604,7 +572,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Now sit in step 2
-      expect(component._stepper.selectedIndex).toBe(1);
+      expect(component._stepper.selectedIndex).toBe(1, 'Expect the stepper is now in From Step');
       component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
@@ -618,7 +586,8 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(2);
       component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      expect(component.toStepCompleted).toBeFalsy();
+      component.toFormGroup.updateValueAndValidity();
+      expect(component.toFormGroup.valid).toBeFalsy('Expect the from account and to account are not the same');
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
@@ -636,8 +605,15 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('despControl').setValue('test');
+      component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
@@ -660,7 +636,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(2);
       component.fromFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       fixture.detectChanges();
-      expect(component.toStepCompleted).toBeFalsy();
+      expect(component.toFormGroup.valid).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
@@ -675,8 +651,15 @@ describe('DocumentTransferCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
       component.headerFormGroup.get('amountControl').setValue(100);
-      component.headerFormGroup.get('despControl').setValue('test');
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       // Click the next button
@@ -702,7 +685,7 @@ describe('DocumentTransferCreateComponent', () => {
       component.fromFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       component.fromFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
       fixture.detectChanges();
-      expect(component.toStepCompleted).toBeFalsy();
+      expect(component.toFormGroup.valid).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
@@ -831,8 +814,15 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the header step
-      component.headerFormGroup.get('despControl').setValue(fakeData.finTransferDocumentForCreate.Desp);
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
       component.headerFormGroup.get('amountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].TranAmount);
+      expect(component.headerFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
+      component.headerFormGroup.updateValueAndValidity();
       fixture.detectChanges();
 
       tick(); // Complete the Observables in ngOnInit
@@ -856,6 +846,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(2);
       component.toFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].AccountId);
       component.toFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].ControlCenterId);
+      component.toFormGroup.updateValueAndValidity();
       fixture.detectChanges();
       // Then, click the next button > Review step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
@@ -889,7 +880,12 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the header step
-      component.headerFormGroup.get('despControl').setValue(fakeData.finTransferDocumentForCreate.Desp);
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
       component.headerFormGroup.get('amountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].TranAmount);
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -912,6 +908,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(2);
       component.toFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].AccountId);
       component.toFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].ControlCenterId);
+      component.toFormGroup.updateValueAndValidity();
       fixture.detectChanges();
       // Then, click the next button > Review step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
@@ -941,7 +938,12 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the header step
-      component.headerFormGroup.get('despControl').setValue(fakeData.finTransferDocumentForCreate.Desp);
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
       component.headerFormGroup.get('amountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].TranAmount);
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -964,6 +966,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(2);
       component.toFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].AccountId);
       component.toFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].ControlCenterId);
+      component.toFormGroup.updateValueAndValidity();
       fixture.detectChanges();
       // Then, click the next button > Review step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
@@ -991,9 +994,6 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
       // Check the reset
       expect(component._stepper.selectedIndex).toBe(0);
-      expect(component.headerFormGroup.get('dateControl').value).not.toBeNull();
-      expect(component.headerFormGroup.get('despControl').value).toBeFalsy();
-      expect(component.headerFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
 
       flush(); // Empty the call stack
     }));
@@ -1004,7 +1004,12 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the header step
-      component.headerFormGroup.get('despControl').setValue(fakeData.finTransferDocumentForCreate.Desp);
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
       component.headerFormGroup.get('amountControl').setValue(fakeData.finTransferDocumentForCreate.Items[0].TranAmount);
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -1027,6 +1032,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(2);
       component.toFormGroup.get('accountControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].AccountId);
       component.toFormGroup.get('ccControl').setValue(fakeData.finTransferDocumentForCreate.Items[1].ControlCenterId);
+      component.toFormGroup.updateValueAndValidity();
       fixture.detectChanges();
       // Then, click the next button > Review step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
@@ -1034,7 +1040,7 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       // Now go to submit
-      expect(component._stepper.selectedIndex).toBe(3);
+      expect(component._stepper.selectedIndex).toBe(3, 'Expect to the confirm step');
       component.onSubmit();
       fixture.detectChanges();
       tick();
@@ -1076,8 +1082,14 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges(); // ngOnInit
 
       // Setup the header step
-      component.headerFormGroup.get('despControl').setValue('desp');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.headerFormGroup.get('headerControl').setValue(curdoc);
+      component.headerFormGroup.get('headerControl').updateValueAndValidity();
       component.headerFormGroup.get('amountControl').setValue(300);
+      component.headerFormGroup.updateValueAndValidity();
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
@@ -1100,6 +1112,7 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(2);
       component.toFormGroup.get('accountControl').setValue(fakeData.finAccounts[1].Id);
       component.toFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
+      component.toFormGroup.updateValueAndValidity();
       fixture.detectChanges();
       // Then, click the next button > Review step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
@@ -1112,9 +1125,6 @@ describe('DocumentTransferCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component._stepper.selectedIndex).toBe(0);
-      expect(component.headerFormGroup.get('dateControl').value).not.toBeNull();
-      expect(component.headerFormGroup.get('despControl').value).toBeFalsy();
-      expect(component.headerFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
 
       flush(); // clean
     }));

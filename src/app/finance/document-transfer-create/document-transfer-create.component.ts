@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatHorizontalStepper } from '@angular/material';
@@ -7,11 +7,10 @@ import { Observable, forkJoin, merge, of, ReplaySubject, Subscription } from 'rx
 import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, momentDateFormat, Document, DocumentItem, financeDocTypeTransfer,
+import { LogLevel, momentDateFormat, Document, DocumentItem, financeDocTypeTransfer,
   financeTranTypeTransferOut, financeTranTypeTransferIn,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  UIDisplayStringUtil, IAccountCategoryFilter,
+  UIDisplayStringUtil, IAccountCategoryFilter, costObjectValidator,
   Currency, TranType, ControlCenter, Order, Account, DocumentType,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
@@ -37,106 +36,25 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public arAccounts: Account[] = [];
   public arOrders: Order[] = [];
   public arDocTypes: DocumentType[] = [];
+  public curDocType: number = financeDocTypeTransfer;
   // Stepper
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Header info
   public headerFormGroup: FormGroup;
-  get headerStepCompleted(): boolean {
-    if (this.headerFormGroup && this.headerFormGroup.valid) {
-      // Ensure the exchange rate
-      if (this.isForeignCurrency) {
-        if (this.headerFormGroup.get('exgControl').value) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return true;
-      }
-    }
-    return false;
-  }
   // Step: From
   public fromFormGroup: FormGroup;
-  get fromStepCompleted(): boolean {
-    if (this.fromFormGroup && this.fromFormGroup.valid) {
-      if (this.fromFormGroup.get('ccControl').value) {
-        if (this.fromFormGroup.get('orderControl').value) {
-          return false;
-        } else {
-          return true;
-        }
-      } else {
-        if (this.fromFormGroup.get('orderControl').value) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-    return false;
-  }
   // Step: To
   public toFormGroup: FormGroup;
-  get toStepCompleted(): boolean {
-    if (this.toFormGroup && this.toFormGroup.valid) {
-      // Ensure the account is different
-      if (this.toFormGroup.get('accountControl').value === this.fromFormGroup.get('accountControl').value) {
-        return false;
-      }
-
-      // Other checks
-      if (this.toFormGroup.get('ccControl').value) {
-        if (this.toFormGroup.get('orderControl').value) {
-          return false;
-        } else {
-          return true;
-        }
-      } else {
-        if (this.toFormGroup.get('orderControl').value) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-    return false;
-  }
-
-  get TranAmount(): number {
-    let amtctrl: any = this.headerFormGroup.get('amountControl');
-    if (amtctrl) {
-      return amtctrl.value;
-    }
-  }
-  get TranDate(): string {
-    let datctrl: any = this.headerFormGroup.get('dateControl');
-    if (datctrl && datctrl.value && datctrl.value.format) {
-      return datctrl.value.format(momentDateFormat);
-    }
-  }
-  get TranCurrency(): string {
-    let currctrl: any = this.headerFormGroup.get('currControl');
-    if (currctrl) {
-      return currctrl.value;
-    }
-  }
-  get isForeignCurrency(): boolean {
-    if (this.TranCurrency && this.TranCurrency !== this._homeService.ChosedHome.BaseCurrency) {
-      return true;
-    }
-
-    return false;
-  }
+  // Step: Confirm
+  public confirmInfo: any = {};
 
   constructor(public _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
     private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _homeService: HomeDefDetailService,
-    public _currService: FinCurrencyService,
-    private _router: Router,
-    private _formBuilder: FormBuilder) {
+    private _currService: FinCurrencyService,
+    private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...');
     }
@@ -148,24 +66,20 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
-    this.headerFormGroup = this._formBuilder.group({
-      dateControl: [{ value: moment(), disabled: false }, Validators.required],
-      despControl: ['', Validators.required],
-      amountControl: ['', Validators.required],
-      currControl: ['', Validators.required],
-      exgControl: [''],
-      exgpControl: [''],
+    this.headerFormGroup = new FormGroup({
+      headerControl: new FormControl('', Validators.required),
+      amountControl: new FormControl('', [Validators.required]),
     });
-    this.fromFormGroup = this._formBuilder.group({
-      accountControl: ['', Validators.required],
-      ccControl: [''],
-      orderControl: [''],
-    });
-    this.toFormGroup = this._formBuilder.group({
-      accountControl: ['', Validators.required],
-      ccControl: [''],
-      orderControl: [''],
-    });
+    this.fromFormGroup = new FormGroup({
+      accountControl: new FormControl('', Validators.required),
+      ccControl: new FormControl(''),
+      orderControl: new FormControl(''),
+    }, costObjectValidator);
+    this.toFormGroup = new FormGroup({
+      accountControl: new FormControl('', Validators.required),
+      ccControl: new FormControl(''),
+      orderControl: new FormControl(''),
+    }, [costObjectValidator, this._duplicateAccountValidator]);
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -192,9 +106,6 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       this.arControlCenters = rst[4];
       // Document type
       this.arDocTypes = rst[1];
-
-      // Default currency
-      this.headerFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
     }, (error: any) => {
       // Show the error
       this._snackbar.open(error.toString(), undefined, {
@@ -298,23 +209,31 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     if (this.toFormGroup) {
       this.toFormGroup.reset();
     }
+  }
 
-    // Default values apply
-    this.headerFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
-    this.headerFormGroup.get('dateControl').setValue(moment());
+  public onStepSelectionChange(event: StepperSelectionEvent): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onStepSelectionChange with index = ${event.selectedIndex}`);
+    }
+
+    if (event.selectedIndex === 3) {
+      // Update the info.
+      let doc: Document = this.headerFormGroup.get('headerControl').value;
+      this.confirmInfo.tranAmount = this.headerFormGroup.get('amountControl').value;
+      this.confirmInfo.tranCurrency = doc.TranCurr;
+      this.confirmInfo.tranDateString = doc.TranDateFormatString;
+      this.confirmInfo.sourceAccountName = this.arUIAccount.find((val: UIAccountForSelection) => {
+        return val.Id === this.fromFormGroup.get('accountControl').value;
+      })!.Name;
+      this.confirmInfo.targetAccountName = this.arUIAccount.find((val: UIAccountForSelection) => {
+        return val.Id === this.toFormGroup.get('accountControl').value;
+      })!.Name;
+      this.confirmInfo.Desp = doc.Desp;
+    }
   }
 
   private _generateDoc(): Document {
-    let doc: Document = new Document();
-    doc.DocType = financeDocTypeTransfer;
-    doc.HID = this._homeService.ChosedHome.ID;
-    doc.TranDate = moment(this.TranDate, momentDateFormat);
-    doc.Desp = this.headerFormGroup.get('despControl').value;
-    doc.TranCurr = this.TranCurrency;
-    if (this.isForeignCurrency) {
-      doc.ExgRate = this.headerFormGroup.get('exgControl').value;
-      doc.ExgRate_Plan = this.headerFormGroup.get('exgpControl').value;
-    }
+    let doc: Document = this.headerFormGroup.get('headerControl').value;
 
     let docitem: DocumentItem = new DocumentItem();
     docitem.ItemId = 1;
@@ -322,7 +241,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     docitem.ControlCenterId = this.fromFormGroup.get('ccControl').value;
     docitem.OrderId = this.fromFormGroup.get('orderControl').value;
     docitem.TranType = financeTranTypeTransferOut;
-    docitem.TranAmount = this.TranAmount;
+    docitem.TranAmount = this.headerFormGroup.get('amountControl').value;
     docitem.Desp = doc.Desp;
     doc.Items.push(docitem);
 
@@ -332,10 +251,26 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     docitem.TranType = financeTranTypeTransferIn;
     docitem.ControlCenterId = this.toFormGroup.get('ccControl').value;
     docitem.OrderId = this.toFormGroup.get('orderControl').value;
-    docitem.TranAmount = this.TranAmount;
+    docitem.TranAmount = this.headerFormGroup.get('amountControl').value;
     docitem.Desp = doc.Desp;
     doc.Items.push(docitem);
 
     return doc;
+  }
+
+  private _duplicateAccountValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent _duplicateAccountValidator...');
+    }
+
+    let account: any = group.get('accountControl').value;
+    let fromAccount: any = this.fromFormGroup.get('accountControl').value;
+    if (account && fromAccount) {
+      if (account === fromAccount) {
+        return { duplicatedccount: true };
+      }
+    }
+
+    return null;
   }
 }

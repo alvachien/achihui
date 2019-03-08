@@ -480,11 +480,35 @@ export class GeneralFilterItem {
   valueType: GeneralFilterValueType;
 }
 
+/**
+ * Validator for date range
+ * @param group Instance of the form group
+ */
 export const dateRangeValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
   let startDate: moment.Moment = group.get('startDateControl').value.startOf('day');
   let endDate: moment.Moment = group.get('endDateControl').value.startOf('day');
   if (!endDate.isSameOrAfter(startDate)) {
-    return  {'invalidDateRange': true};
+    return  { 'invalidDateRange': true };
+  }
+
+  return null;
+};
+
+/**
+ * Validator for cost object
+ * @param group Instance of the form group
+ */
+export const costObjectValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+  let cc: any = group.get('ccControl').value;
+  let order: any = group.get('orderControl').value;
+  if (cc) {
+    if (order) {
+      return { costobjectoverassign: true };
+    }
+  } else {
+    if (!order) {
+      return { nocostobject: true };
+    }
   }
 
   return null;
