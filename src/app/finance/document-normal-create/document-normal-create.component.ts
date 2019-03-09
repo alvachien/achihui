@@ -37,31 +37,15 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   // Step: Items
   public itemFormGroup: FormGroup;
   // Step: Confirm
-  inAmount: number;
-  outAmount: number;
-  get tranDate(): string {
-    if (this.firstFormGroup.get('headerControl').value && this.firstFormGroup.get('headerControl').value.TranDate) {
-      return this.firstFormGroup.get('headerControl').value.TranDate.format(momentDateFormat);
-    }
-  }
-  get tranDesp(): string {
-    if (this.firstFormGroup.get('headerControl').value) {
-      return this.firstFormGroup.get('headerControl').value.TranDesp;
-    }
-  }
-  get tranCurrency(): string {
-    if (this.firstFormGroup.get('headerControl').value) {
-      return this.firstFormGroup.get('headerControl').value.TranCurr;
-    }
-  }
+  public confirmInfo: any = {};
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _uiStatusService: UIStatusService,
-    public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService,
-    public _currService: FinCurrencyService) {
+    private _homedefService: HomeDefDetailService,
+    private _storageService: FinanceStorageService,
+    private _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...');
     }
@@ -228,8 +212,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     }
 
     // Confirm
-    this.inAmount = 0;
-    this.outAmount = 0;
+    this.confirmInfo = {};
   }
 
   public onStepSelectionChange(event: StepperSelectionEvent): void {
@@ -239,8 +222,12 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
 
     if (event.selectedIndex === 2) {
       // Update the confirm info.
-      this.inAmount = 0;
-      this.outAmount = 0;
+      let doc: Document = this.firstFormGroup.get('headerControl').value;
+      this.confirmInfo.tranDateString = doc.TranDateFormatString;
+      this.confirmInfo.tranDesp = doc.Desp;
+      this.confirmInfo.tranCurrency = doc.TranCurr;
+      this.confirmInfo.inAmount = 0;
+      this.confirmInfo.outAmount = 0;
 
       this.itemFormGroup.get('itemControl').value.forEach((val: DocumentItem) => {
         let ttid: number = this.arTranType.findIndex((tt: TranType) => {
@@ -248,9 +235,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         });
         if (ttid !== -1) {
           if (this.arTranType[ttid].Expense) {
-            this.outAmount += val.TranAmount;
+            this.confirmInfo.outAmount += val.TranAmount;
           } else {
-            this.inAmount += val.TranAmount;
+            this.confirmInfo.inAmount += val.TranAmount;
           }
         }
       });

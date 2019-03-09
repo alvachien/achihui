@@ -15,7 +15,6 @@ import { LogLevel, momentDateFormat, Document, DocumentItem, financeDocTypeTrans
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import * as moment from 'moment';
 
 @Component({
   selector: 'hih-document-transfer-create',
@@ -209,6 +208,8 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     if (this.toFormGroup) {
       this.toFormGroup.reset();
     }
+    // Confirm
+    this.confirmInfo = {};
   }
 
   public onStepSelectionChange(event: StepperSelectionEvent): void {

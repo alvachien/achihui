@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatCheckboxChange, MatButton, MatVerticalStepper } from '@angular/material';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -10,12 +11,11 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, fin
   AccountExtraAsset, UICommonLabelEnum, ModelUtility,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilter, momentDateFormat, InfoMessage, MessageType, financeDocTypeAssetBuyIn, FinanceAssetBuyinDocumentAPI,
-  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency,
+  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import * as moment from 'moment';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'hih-document-asset-buy-in-create',
@@ -24,22 +24,23 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 })
 export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
+
+  // Stepper
+  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
+  public curDocType: number = financeDocTypeAssetBuyIn;
   public assetAccount: AccountExtraAsset;
+  // Step: Items
+  public itemFormGroup: FormGroup;
+  // Step: Confirm
+  public confirmInfo: any = {};
 
-  // Second Step
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
-  @ViewChild('btnCrtItem') btnCreateItem: MatButton;
-  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
-  // Enter, comma
-  separatorKeysCodes: any[] = [ENTER, COMMA];
-  dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
-  displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
   // Buffered variables
   arMembersInChosedHome: HomeMember[];
   arControlCenters: ControlCenter[];
@@ -49,142 +50,20 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   arDocTypes: DocumentType[];
   arCurrencies: Currency[];
 
-  get BuyinAmount(): number {
-    let amtctrl: any = this.firstFormGroup.get('amountControl');
-    if (amtctrl) {
-      return amtctrl.value;
-    }
-  }
-  get BuyinDate(): string {
-    let datctrl: any = this.firstFormGroup.get('dateControl');
-    if (datctrl && datctrl.value && datctrl.value.format) {
-      return datctrl.value.format(momentDateFormat);
-    }
-
-    return '';
-  }
-  get BuyinAssetName(): string {
-    return this.firstFormGroup.get('assetAccountControl').value.Name;
-  }
   get IsLegacyAsset(): boolean {
     let legctrl: any = this.firstFormGroup.get('legacyControl');
     if (legctrl) {
       return legctrl.value;
     }
   }
-  get TranCurrency(): string {
-    let currctrl: any = this.firstFormGroup.get('currControl');
-    if (currctrl) {
-      return currctrl.value;
-    }
-  }
-  get isForeignCurrency(): boolean {
-    if (this.TranCurrency && this.TranCurrency !== this._homedefService.ChosedHome.BaseCurrency) {
-      return true;
-    }
-
-    return false;
-  }
-  get firstStepCompleted(): boolean {
-    if (this.firstFormGroup && this.firstFormGroup.valid) {
-      // Ensure amount
-      if (this.BuyinAmount <= 0) {
-        return false;
-      }
-
-      // Legacy asset: Buyin date
-      if (this.IsLegacyAsset) {
-        let datBuy: any = this.firstFormGroup.get('dateControl').value;
-        if (!datBuy) {
-          return false;
-        }
-        if (datBuy.startOf('day').isSameOrAfter(moment().startOf('day'))) {
-          return false;
-        }
-      }
-
-      // Ensure the exchange rate
-      if (this.isForeignCurrency) {
-        if (!this.firstFormGroup.get('exgControl').value) {
-          return false;
-        }
-      }
-
-      if (this.firstFormGroup.get('ccControl').value) {
-        if (this.firstFormGroup.get('orderControl').value) {
-          return false;
-        } else {
-          return true;
-        }
-      } else {
-        if (this.firstFormGroup.get('orderControl').value) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-    return false;
-  }
-  get itemStepCompleted(): boolean {
-    if (this.IsLegacyAsset) {
-      if (this.dataSource.data.length > 0) {
-        return false;
-      }
-      return true;
-    }
-    // Check 1: Have items
-    if (this.dataSource.data.length <= 0) {
-      return false;
-    }
-    // Check 2: Each item has account
-    let erridx: number = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return val.AccountId === undefined;
-    });
-    if (erridx !== -1) {
-      return false;
-    }
-    // Check 3. Each item has tran type
-    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return val.TranType === undefined;
-    });
-    if (erridx !== -1) {
-      return false;
-    }
-    // Check 4. Amount
-    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return val.TranAmount === undefined;
-    });
-    if (erridx !== -1) {
-      return false;
-    }
-    // Check 5. Each item has control center or order
-    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return (val.ControlCenterId !== undefined && val.OrderId !== undefined)
-      || (val.ControlCenterId === undefined && val.OrderId === undefined);
-    });
-    if (erridx !== -1) {
-      return false;
-    }
-    // Check 6. Each item has description
-    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return val.Desp === undefined || val.Desp.length === 0;
-    });
-    if (erridx !== -1) {
-      return false;
-    }
-
-    return true;
-  }
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router,
-    private _formBuilder: FormBuilder,
     private _uiStatusService: UIStatusService,
-    public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService,
-    public _currService: FinCurrencyService) {
+    private _homedefService: HomeDefDetailService,
+    private _storageService: FinanceStorageService,
+    private _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent constructor...');
     }
@@ -199,21 +78,18 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.firstFormGroup = this._formBuilder.group({
-      dateControl: [{value: moment(), disabled: false}, Validators.required],
-      amountControl: [0, Validators.required],
-      currControl: ['', Validators.required],
-      exgControl: [''],
-      exgpControl: [''],
-      despControl: ['', Validators.required],
-      assetAccountControl: ['', Validators.required],
-      ownerControl: ['', Validators.required],
-      legacyControl: '',
-      ccControl: '',
-      orderControl: '',
-    });
-
-    this.dataSource.data = [];
+    this.firstFormGroup = new FormGroup({
+      headerControl: new FormControl('', Validators.required),
+      amountControl: new FormControl(0, Validators.required),
+      assetAccountControl: new FormControl('', Validators.required),
+      ownerControl: new FormControl('', Validators.required),
+      legacyControl: new FormControl(false, Validators.required),
+      ccControl: new FormControl(''),
+      orderControl: new FormControl(''),
+    }, [costObjectValidator, this._legacyDateValidator, this._amountValidator]);
+    this.itemFormGroup = new FormGroup({
+      itemControl: new FormControl(''),
+    })
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -242,8 +118,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
-
-      this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering DocumentAssetBuyInCreateComponent's ngOninit, failed to load depended objects : ${error}`);
@@ -262,40 +136,13 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onCreateDocItem(): void {
-    let di: DocumentItem = new DocumentItem();
-    di.ItemId = ModelUtility.getFinanceNextItemID(this.dataSource.data);
-
-    let aritems: any[] = this.dataSource.data.slice();
-    aritems.push(di);
-    this.dataSource.data = aritems;
-  }
-
-  public onDeleteDocItem(di: any): void {
-    let aritems: DocumentItem[] = this.dataSource.data.slice();
-
-    let idx: number = -1;
-    for (let i: number = 0; i < aritems.length; i ++) {
-      if (aritems[i].ItemId === di.ItemId) {
-        idx = i;
-        break;
-      }
-    }
-
-    if (idx !== -1) {
-      aritems.splice(idx);
-    }
-
-    this.dataSource.data = aritems;
-  }
-
   public onIsLegacyChecked(evnt: MatCheckboxChange): void {
     let chked: boolean = evnt.checked;
 
     if (chked) {
-      this.btnCreateItem.disabled = true;
+      this.itemFormGroup.disable();
     } else {
-      this.btnCreateItem.disabled = false;
+      this.itemFormGroup.enable();
     }
   }
 
@@ -332,9 +179,9 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     // Do the real submit.
     let apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
     apidetail.HID = this._homedefService.ChosedHome.ID;
-    apidetail.tranDate = this.BuyinDate;
-    apidetail.tranCurr = this.TranCurrency;
-    apidetail.tranAmount = this.BuyinAmount;
+    apidetail.tranDate = docobj.TranDateFormatString;
+    apidetail.tranCurr = docobj.TranCurr;
+    apidetail.tranAmount = this.firstFormGroup.get('amountControl').value;
     apidetail.desp = docobj.Desp;
     apidetail.controlCenterID = this.firstFormGroup.get('ccControl').value;
     apidetail.orderID = this.firstFormGroup.get('orderControl').value;
@@ -392,43 +239,66 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     this._router.navigate(['/finance/document/']);
   }
 
-  public addItemTag(row: DocumentItem, $event: MatChipInputEvent): void {
-    let input: any = $event.input;
-    let value: any = $event.value;
-
-    // Add new Tag
-    if ((value || '').trim()) {
-      row.Tags.push(value.trim());
-    }
-
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
+  public onReset(): void {
+    this._stepper.reset();
+    this.confirmInfo = {};
   }
 
-  public removeItemTag(row: DocumentItem, tag: any): void {
-    let index: number = row.Tags.indexOf(tag);
+  public onStepSelectionChange(event: StepperSelectionEvent): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent onStepSelectionChange with index = ${event.selectedIndex}`);
+    }
 
-    if (index >= 0) {
-      row.Tags.splice(index, 1);
+    if (event.selectedIndex === 1) {
+      // Update the confirm info.
+      let doc: Document = this.firstFormGroup.get('headerControl').value;
+      this.confirmInfo.tranDateString = doc.TranDateFormatString;
+      this.confirmInfo.tranDesp = doc.Desp;
+      this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl').value;
+      this.confirmInfo.tranCurrency = doc.TranCurr;
+      this.confirmInfo.assetName = this.firstFormGroup.get('assetAccountControl').value!.Name;
     }
   }
 
   private _generateDoc(): Document {
-    let ndoc: Document = new Document();
-    ndoc.DocType = financeDocTypeAssetBuyIn;
+    let ndoc: Document = this.firstFormGroup.get('headerControl').value;
     ndoc.HID = this._homedefService.ChosedHome.ID;
-    ndoc.TranDate = this.firstFormGroup.get('dateControl').value;
-    ndoc.TranCurr = this._homedefService.ChosedHome.BaseCurrency;
-    ndoc.Desp = this.firstFormGroup.get('despControl').value;
     // Add items
     if (!this.IsLegacyAsset) {
-      this.dataSource.data.forEach((val: DocumentItem) => {
-        ndoc.Items.push(val);
-      });
+      ndoc.Items = this.itemFormGroup.get('itemControl').value;
     }
 
     return ndoc;
+  }
+  private _legacyDateValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent _legacyDateValidator...');
+    }
+
+    if (this.IsLegacyAsset) {
+      let datBuy: any = group.get('headerControl').value.TranDate;
+      if (!datBuy) {
+        return { dateisempty: true};
+      }
+      if (datBuy.startOf('day').isSameOrAfter(moment().startOf('day'))) {
+        return { dateisinvalid: true };
+      }
+    }
+
+    return null;
+  }
+  private _amountValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent _amountValidator...');
+    }
+
+    if (this.IsLegacyAsset) {
+      let amt: any = group.get('amountControl').value;
+      if (amt <= 0) {
+        return { amountisinvalid: true};
+      }
+    }
+
+    return null;
   }
 }

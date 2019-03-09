@@ -4,51 +4,20 @@
     <mat-card-subtitle>{{'Common.Create' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-horizontal-stepper linear #stepper>
+    <mat-horizontal-stepper linear (selectionChange)="onStepSelectionChange($event)" #stepper>
       <!-- Step: Generic Info -->
-      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
+      <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
-          <!-- Tran date -->
-          <mat-form-field>
-            <input matInput formControlName="dateControl" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
-            <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
-            <mat-datepicker #tdpicker></mat-datepicker>
-          </mat-form-field>
+          <!-- Doc. header -->
+          <hih-fin-document-header [docType]="loanType"  formControlName="headerControl"></hih-fin-document-header>
 
-          <!-- Description -->
-          <mat-form-field>
-            <input matInput type="text" placeholder="{{'Common.Description' |translate}}" maxlength="44"
-              formControlName="despControl" #desp>
-            <mat-hint align="end">{{desp.value.length}} / 44</mat-hint>
-          </mat-form-field>
-  
           <!-- Amount -->
           <mat-form-field>
             <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
           </mat-form-field>
   
-          <!-- Currency -->
-          <mat-form-field>
-            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
-              <mat-option *ngFor="let cr of this.arCurrencies" [value]="cr.Currency">
-                {{cr.Symbol}} - {{cr.Name | translate}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Exchange rate -->
-          <mat-form-field *ngIf="isForeignCurrency">
-            <input matInput type="number" placeholder="{{'Finance.ExchangeRate' | translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-              formControlName="exgControl" id="exgrate">
-          </mat-form-field>
-
-          <!-- Planned Exchange rate -->
-          <div *ngIf="isForeignCurrency" class="achih-control-full-width">
-            <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
-          </div>
-    
           <!-- Account -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Account' | translate}}" formControlName="accountControl">
@@ -63,7 +32,7 @@
           <!-- CC -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl">
-              <mat-option *ngFor="let cc of this.arControlCenters" [value]="cc.Id">
+              <mat-option *ngFor="let cc of arControlCenters" [value]="cc.Id">
                 {{cc.Name}}
               </mat-option>
             </mat-select>
@@ -85,7 +54,7 @@
       </mat-step>
 
       <!-- Step: Extra Info -->
-      <mat-step [completed]="extraStepCompleted" errorMessage="Invalid extra. info">
+      <mat-step [stepControl]="extraFormGroup">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
 
         <form [formGroup]="extraFormGroup">
@@ -105,14 +74,10 @@
       <!-- Step: Review and Confirm -->
       <mat-step>
         <ng-template matStepLabel>{{'Common.Confirm' | translate}}</ng-template>
-        <!-- 
-          1. Account
-          2. Date
-          3. Amount
-        -->
         <div class="mat-typography achih-control-full-width">
-          <h3>{{'Common.Date' | translate}}: {{tranDate}}</h3>
-          <h3>{{'Common.Amount' | translate}}: {{tranAmount}} {{tranCurrency}}</h3>
+          <h3>{{'Common.Date' | translate}}: {{confirmInfo?.tranDateString}}</h3>
+          <h2>{{'Common.Description' |translate}}: {{confirmInfo?.tranDesp}}</h2>
+          <h2>{{'Common.Amount' | translate}}: {{confirmInfo?.tranAmount}} {{confirmInfo?.tranCurrency}}</h3>
         </div>
 
         <div>

@@ -41,10 +41,10 @@
           3. Amount
         -->
         <div class="mat-typography achih-control-full-width">
-          <h3>{{'Common.Date' | translate}}: {{tranDate}}</h3>
-          <h2>{{'Common.Description' |translate}}: {{tranDesp}}</h2>
-          <h2 *ngIf="inAmount">{{'Finance.Incoming' | translate}}: {{inAmount}} {{tranCurrency}}</h2>
-          <h2 *ngIf="outAmount">{{'Finance.Outgoing' | translate}}: {{outAmount}} {{tranCurrency}}</h2>
+          <h3>{{'Common.Date' | translate}}: {{confirmInfo?.tranDateString}}</h3>
+          <h2>{{'Common.Description' |translate}}: {{confirmInfo?.tranDesp}}</h2>
+          <h2>{{'Finance.Incoming' | translate}}: {{confirmInfo?.inAmount}} {{confirmInfo?.tranCurrency}}</h2>
+          <h2>{{'Finance.Outgoing' | translate}}: {{confirmInfo?.outAmount}} {{confirmInfo?.tranCurrency}}</h2>
         </div>
 
         <div>

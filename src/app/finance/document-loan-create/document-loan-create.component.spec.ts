@@ -12,10 +12,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
   MatStepperNext, } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { Component, Input } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
-import * as moment from 'moment';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
@@ -54,7 +52,7 @@ describe('DocumentLoanCreateComponent', () => {
   });
 
   beforeEach(async(() => {
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -63,13 +61,13 @@ describe('DocumentLoanCreateComponent', () => {
       'fetchAllOrders',
       'createLoanDocument',
     ]);
-    fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllDocTypesSpy = stroageService.fetchAllDocTypes.and.returnValue(of([]));
-    fetchAllTranTypesSpy = stroageService.fetchAllTranTypes.and.returnValue(of([]));
-    fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
-    fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
-    createDocSpy = stroageService.createLoanDocument.and.returnValue(of({}));
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    createDocSpy = storageService.createLoanDocument.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
@@ -111,7 +109,7 @@ describe('DocumentLoanCreateComponent', () => {
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinCurrencyService, useValue: currService },
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -293,10 +291,7 @@ describe('DocumentLoanCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.tranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      // Also, the date shall be inputted
-      expect(component.tranDate).toBeTruthy();
     }));
 
     it('step 1: should have accounts and others loaded (createbrwfrm)', fakeAsync(() => {
@@ -346,7 +341,6 @@ describe('DocumentLoanCreateComponent', () => {
 
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
 
       // Click the next button, not working!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -375,7 +369,6 @@ describe('DocumentLoanCreateComponent', () => {
 
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
 
       // Click the next button, not working!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -404,7 +397,6 @@ describe('DocumentLoanCreateComponent', () => {
 
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
 
       // Click the next button, not working!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -438,7 +430,8 @@ describe('DocumentLoanCreateComponent', () => {
 
       fixture.detectChanges();
 
-      expect(component.firstStepCompleted).toBeFalsy();
+      component.firstFormGroup.updateValueAndValidity();
+      expect(component.firstFormGroup.valid).toBeFalsy('not allow input control center and order both');
 
       // Click the next button - no work!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -473,78 +466,13 @@ describe('DocumentLoanCreateComponent', () => {
       // component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
 
-      expect(component.firstStepCompleted).toBeFalsy();
+      component.firstFormGroup.updateValueAndValidity();
+      expect(component.firstFormGroup.valid).toBeFalsy('not allow neither control center nor order');
 
       // Click the next button - no work!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       expect(component._stepper.selectedIndex).toBe(0);
 
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toBe(0);
-    }));
-
-    it('step 1: shall show exchange rate for foreign currency', fakeAsync(() => {
-      expect(component.firstFormGroup).toBeFalsy();
-      fixture.detectChanges(); // ngOnInit
-
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      component.firstFormGroup.get('currControl').setValue('USD');
-      // Exg rate
-      // Exg rate plan
-      // Account
-      component.firstFormGroup.get('accountControl').setValue(11); // Cash
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      // Input foreign currency
-      fixture.detectChanges();
-
-      expect(fixture.debugElement.query(By.css('#exgrate'))).toBeTruthy();
-      expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
-    }));
-
-    it('step 1: shall input exchange rate for foreign currency', fakeAsync(() => {
-      expect(component.firstFormGroup).toBeFalsy();
-      fixture.detectChanges(); // ngOnInit
-
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      component.firstFormGroup.get('currControl').setValue('USD');
-      // Exg rate
-      // Exg rate plan
-      // Account
-      component.firstFormGroup.get('accountControl').setValue(11); // Cash
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-
-      fixture.detectChanges();
-
-      expect(component.firstStepCompleted).toBeFalsy();
-
-      // Shall not allow go to second step
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -576,7 +504,6 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -617,7 +544,6 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -663,7 +589,6 @@ describe('DocumentLoanCreateComponent', () => {
       // Step 2.
       // Input nothing!
       expect(component.extraFormGroup.valid).toBeFalsy();
-      expect(component.extraStepCompleted).toBeFalsy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -711,7 +636,6 @@ describe('DocumentLoanCreateComponent', () => {
       component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
       fixture.detectChanges();
       expect(component.extraFormGroup.valid).toBeTruthy();
-      expect(component.extraStepCompleted).toBeTruthy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -792,7 +716,6 @@ describe('DocumentLoanCreateComponent', () => {
       component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
       fixture.detectChanges();
       expect(component.extraFormGroup.valid).toBeTruthy();
-      expect(component.extraStepCompleted).toBeTruthy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -853,7 +776,6 @@ describe('DocumentLoanCreateComponent', () => {
       component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
       fixture.detectChanges();
       expect(component.extraFormGroup.valid).toBeTruthy();
-      expect(component.extraStepCompleted).toBeTruthy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -918,7 +840,6 @@ describe('DocumentLoanCreateComponent', () => {
       component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
       fixture.detectChanges();
       expect(component.extraFormGroup.valid).toBeTruthy();
-      expect(component.extraStepCompleted).toBeTruthy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -994,7 +915,6 @@ describe('DocumentLoanCreateComponent', () => {
       component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
       fixture.detectChanges();
       expect(component.extraFormGroup.valid).toBeTruthy();
-      expect(component.extraStepCompleted).toBeTruthy();
 
       // Click the next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;

@@ -3,18 +3,19 @@
     <mat-card-title>{{curTitle | translate}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <mat-vertical-stepper linear #stepper>
+    <mat-vertical-stepper linear (selectionChange)="onStepSelectionChange($event)" #stepper>
 
       <!-- Step 1. Generic Info -->
-      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
+      <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
-          <!-- Tran date -->
+          <!-- Header -->
+          <hih-fin-document-header [docType]="curDocType"  formControlName="headerControl"></hih-fin-document-header>
+
+          <!-- Amount -->
           <mat-form-field>
-            <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
-            <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
-            <mat-datepicker #dtpker></mat-datepicker>
+            <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
           </mat-form-field>
 
           <!-- Account -->
@@ -35,36 +36,6 @@
                 <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
               </mat-option>
             </mat-select>
-          </mat-form-field>
-
-          <!-- Amount -->
-          <mat-form-field>
-            <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
-          </mat-form-field>
-
-          <!-- Currency -->
-          <mat-form-field>
-            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
-              <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
-                {{cr.Symbol}} - {{cr.Name | translate}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Exchange rate -->
-          <mat-form-field *ngIf="isForeignCurrency">
-            <input matInput type="text" placeholder="{{'Finance.ExchangeRate' | translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-              formControlName="exgControl" id="exgrate">
-          </mat-form-field>
-
-          <!-- Planned Exchange rate -->
-          <div *ngIf="isForeignCurrency" class="achih-control-full-width">
-            <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
-          </div>
-
-          <!-- Desp -->
-          <mat-form-field>
-            <input matInput type="text" placeholder="{{'Common.Description' | translate}}" formControlName="despControl">
           </mat-form-field>
 
           <!-- CC -->
@@ -91,13 +62,13 @@
       </mat-step>
 
       <!-- Step 2: Extra Info -->
-      <mat-step [completed]="extraStepCompleted" errorMessage="Invalid extra">
+      <mat-step [stepControl]="extraFormGroup">
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
         <form [formGroup]="extraFormGroup">
           <hih-finance-account-ext-adpex #accountExtraInfo
             formControlName="adpAccountControl"
-            [tranType]="TranType" 
-            [tranAmount]="TranAmount">
+            [tranType]="confirmInfo?.tranType" 
+            [tranAmount]="confirmInfo?.tranAmount">
           </hih-finance-account-ext-adpex>
         </form>
         <div>
@@ -109,6 +80,12 @@
       <!-- Step 3: Review and Confirm -->
       <mat-step>
         <ng-template matStepLabel>{{'Common.ReviewForSubmit' | translate}}</ng-template>
+        <div class="mat-typography achih-control-full-width">
+          <h3>{{'Common.Date' | translate}}: {{confirmInfo?.tranDateString}}</h3>
+          <h2>{{'Common.Description' |translate}}: {{confirmInfo?.tranDesp}}</h2>
+          <h2>{{'Common.Amount' | translate}}: {{confirmInfo?.tranAmount}} {{confirmInfo?.tranCurrency}}</h3>
+        </div>
+
         <div>
           <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
           <button mat-button (click)="onReset()">{{'Common.Reset' | translate}}</button>

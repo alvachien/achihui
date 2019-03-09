@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper } from '@angular/material';
@@ -12,11 +12,10 @@ import { LogLevel, Account, Document, DocumentItem, Currency, financeDocTypeBorr
   ControlCenter, Order, TranType, financeDocTypeLendTo,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   FinanceLoanCalAPIInput, DocumentType, IAccountCategoryFilter, AccountExtraLoan,
-  momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom,
+  momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom, costObjectValidator,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { AccountExtLoanExComponent } from '../account-ext-loan-ex';
 
 @Component({
   selector: 'hih-document-loan-create',
@@ -25,7 +24,7 @@ import { AccountExtLoanExComponent } from '../account-ext-loan-ex';
 })
 export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private loanType: number;
+  public loanType: number;
 
   public documentTitle: string;
   public arUIAccount: UIAccountForSelection[] = [];
@@ -33,12 +32,6 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
-  // Stepper
-  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
-  // Step: Generic info
-  public firstFormGroup: FormGroup;
-  // Step: Extra Info
-  public extraFormGroup: FormGroup;
   // Variables
   arControlCenters: ControlCenter[];
   arOrders: Order[];
@@ -46,82 +39,14 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   arAccounts: Account[];
   arDocTypes: DocumentType[];
   arCurrencies: Currency[];
-
-  get tranAmount(): number {
-    let amtctrl: any = this.firstFormGroup.get('amountControl');
-    if (amtctrl) {
-      return amtctrl.value;
-    }
-  }
-  get tranDate(): string {
-    let datctrl: any = this.firstFormGroup.get('dateControl');
-    if (datctrl && datctrl.value && datctrl.value.format) {
-      return datctrl.value.format(momentDateFormat);
-    }
-
-    return '';
-  }
-  get tranCurrency(): string {
-    let currctrl: any = this.firstFormGroup.get('currControl');
-    if (currctrl) {
-      return currctrl.value;
-    }
-  }
-  get isForeignCurrency(): boolean {
-    if (this.tranCurrency && this.tranCurrency !== this._homedefService.ChosedHome.BaseCurrency) {
-      return true;
-    }
-
-    return false;
-  }
-  get controlCenterID(): number {
-    let ccctrl: any = this.firstFormGroup.get('ccControl');
-    if (ccctrl) {
-      return ccctrl.value;
-    }
-  }
-  get orderID(): number {
-    let orderctrl: any = this.firstFormGroup.get('orderControl');
-    if (orderctrl) {
-      return orderctrl.value;
-    }
-  }
-  get firstStepCompleted(): boolean {
-    if (this.firstFormGroup && this.firstFormGroup.valid) {
-      // Ensure the exchange rate
-      if (this.isForeignCurrency) {
-        if (!this.firstFormGroup.get('exgControl').value) {
-          return false;
-        }
-      }
-
-      if (this.firstFormGroup.get('ccControl').value) {
-        if (this.firstFormGroup.get('orderControl').value) {
-          return false;
-        } else {
-          return true;
-        }
-      } else {
-        if (this.firstFormGroup.get('orderControl').value) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-    return false;
-  }
-  get extraStepCompleted(): boolean {
-    if (!this.firstStepCompleted) {
-      return false;
-    }
-
-    if (this.extraFormGroup && this.extraFormGroup.valid) {
-      return true;
-    }
-
-    return false;
-  }
+  // Stepper
+  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
+  // Step: Generic info
+  public firstFormGroup: FormGroup;
+  // Step: Extra Info
+  public extraFormGroup: FormGroup;
+  // Step: Confirm
+  public confirmInfo: any = {};
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -130,13 +55,13 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     private _activateRoute: ActivatedRoute,
     private _authService: AuthService,
     private _cdr: ChangeDetectorRef,
-    public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService,
-    public _currService: FinCurrencyService,
-    private _formBuilder: FormBuilder) {
+    private _homedefService: HomeDefDetailService,
+    private _storageService: FinanceStorageService,
+    private _currService: FinCurrencyService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent constructor...');
     }
+    this.loanType = financeDocTypeBorrowFrom;
   }
 
   ngOnInit(): void {
@@ -145,19 +70,15 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
-    this.firstFormGroup = this._formBuilder.group({
-      dateControl: [{ value: moment(), disabled: false }, Validators.required],
-      despControl: ['', Validators.required],
-      amountControl: ['', Validators.required],
-      currControl: ['', Validators.required],
-      exgControl: [''],
-      exgpControl: [''],
-      accountControl: ['', Validators.required],
-      ccControl: [''],
-      orderControl: [''],
-    });
-    this.extraFormGroup = this._formBuilder.group({
-      loanAccountControl: ['', Validators.required],
+    this.firstFormGroup = new FormGroup({
+      headerControl: new FormControl('', Validators.required),
+      amountControl: new FormControl('', Validators.required),
+      accountControl: new FormControl('', Validators.required),
+      ccControl: new FormControl(''),
+      orderControl: new FormControl(''),
+    }, [costObjectValidator]);
+    this.extraFormGroup = new FormGroup({
+      loanAccountControl: new FormControl('', Validators.required),
     });
 
     forkJoin([
@@ -235,10 +156,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     }
     this.firstFormGroup.reset();
     this.extraFormGroup.reset();
-    // Date
-    this.firstFormGroup.get('dateControl').setValue(moment());
-    // Currency
-    this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
+    // Confirm
+    this.confirmInfo = {};
   }
 
   onSubmit(): void {
@@ -318,13 +237,25 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     });
   }
 
+  public onStepSelectionChange(event: StepperSelectionEvent): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent onStepSelectionChange with index = ${event.selectedIndex}`);
+    }
+
+    if (event.selectedIndex === 2) {
+      // Update the confirm info.
+      let doc: Document = this.firstFormGroup.get('headerControl').value;
+      this.confirmInfo.tranDateString = doc.TranDateFormatString;
+      this.confirmInfo.tranDesp = doc.Desp;
+      this.confirmInfo.tranCurrency = doc.TranCurr;
+      this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl').value;
+    }
+  }
+
   private _generateDocument(): Document {
-    let doc: Document = new Document();
+    let doc: Document = this.firstFormGroup.get('headerControl').value;
     doc.HID = this._homedefService.ChosedHome.ID;
     doc.DocType = this.loanType;
-    doc.Desp = this.firstFormGroup.get('despControl').value;
-    doc.TranCurr = this.tranCurrency;
-    doc.TranDate = moment(this.tranDate, momentDateFormat);
 
     let fitem: DocumentItem = new DocumentItem();
     fitem.ItemId = 1;
@@ -336,7 +267,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     } else {
       fitem.TranType = financeTranTypeBorrowFrom;
     }
-    fitem.TranAmount = this.tranAmount;
+    fitem.TranAmount = this.firstFormGroup.get('amountControl').value;
     fitem.Desp = doc.Desp;
     doc.Items.push(fitem);
 

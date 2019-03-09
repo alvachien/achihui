@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper, MatSnackBarConfig } from '@angular/material';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
+import { MatDialog, MatSnackBar, MatVerticalStepper, } from '@angular/material';
 import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
@@ -24,9 +25,18 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 })
 export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
+
   public detailObject: FinanceAssetSoldoutDocumentAPI;
+  // Stepper
+  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
+  public curDocType: number = financeDocTypeAssetSoldOut;
+  // Step: Items
+  public itemFormGroup: FormGroup;
+  // Step: Confirm
+  public confirmInfo: any = {};
+
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
@@ -34,11 +44,6 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
   public uiOrderFilter: boolean | undefined;
   // Step: Extra info
   public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
-  separatorKeysCodes: any[] = [ENTER, COMMA];
-  dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>();
-  displayedColumns: string[] = ['ItemId', 'AccountId', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
-  // Stepper
-  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   arMembersInChosedHome: HomeMember[];
   arControlCenters: ControlCenter[];
   arOrders: Order[];
@@ -47,137 +52,13 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
   arDocTypes: DocumentType[];
   arCurrencies: Currency[];
 
-  get TranCurrency(): string {
-    let currctrl: any = this.firstFormGroup.get('currControl');
-    if (currctrl) {
-      return currctrl.value;
-    }
-  }
-  get isForeignCurrency(): boolean {
-    if (this.TranCurrency && this.TranCurrency !== this._homeService.ChosedHome.BaseCurrency) {
-      return true;
-    }
-
-    return false;
-  }
-  get SoldoutAssetAccountID(): number {
-    let acccontrol: any = this.firstFormGroup.get('accountControl');
-    if (acccontrol) {
-      return acccontrol.value;
-    }
-  }
-  get SoldoutAmount(): number {
-    let amtctrl: any = this.firstFormGroup.get('amountControl');
-    if (amtctrl) {
-      return amtctrl.value;
-    }
-  }
-  get SoldoutDate(): string {
-    let datctrl: any = this.firstFormGroup.get('dateControl');
-    if (datctrl && datctrl.value && datctrl.value.format) {
-      return datctrl.value.format(momentDateFormat);
-    }
-
-    return '';
-  }
-  get firstStepCompleted(): boolean {
-    if (this.firstFormGroup && this.firstFormGroup.valid) {
-      // Ensure the amount
-      if (this.SoldoutAmount <= 0) {
-        return false;
-      }
-
-      // Ensure the exchange rate
-      if (this.isForeignCurrency) {
-        if (!this.firstFormGroup.get('exgControl').value) {
-          return false;
-        }
-      }
-
-      if (this.firstFormGroup.get('ccControl').value) {
-        if (this.firstFormGroup.get('orderControl').value) {
-          return false;
-        } else {
-          return true;
-        }
-      } else {
-        if (this.firstFormGroup.get('orderControl').value) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-    return false;
-  }
-  get itemStepCompleted(): boolean {
-    // Check 1: Have items
-    if (this.dataSource.data.length <= 0) {
-      return false;
-    }
-    // Check 2: Each item has account
-    let erridx: number = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return val.AccountId === undefined;
-    });
-    if (erridx !== -1) {
-      return false;
-    }
-    // Check 3. Each item has tran type
-    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return val.TranType === undefined;
-    });
-    if (erridx !== -1) {
-      return false;
-    }
-    // Check 4. Amount
-    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return val.TranAmount === undefined;
-    });
-    if (erridx !== -1) {
-      return false;
-    }
-    // Check 5. Each item has control center or order
-    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return (val.ControlCenterId !== undefined && val.OrderId !== undefined)
-      || (val.ControlCenterId === undefined && val.OrderId === undefined);
-    });
-    if (erridx !== -1) {
-      return false;
-    }
-    // Check 6. Each item has description
-    erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return val.Desp === undefined || val.Desp.length === 0;
-    });
-    if (erridx !== -1) {
-      return false;
-    }
-    // Check 7. Ensure the amount is equals to soldout
-    let totalAmt: number = 0;
-    this.dataSource.data.forEach((val: DocumentItem) => {
-      let bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
-        return valtt.Id === val.TranType;
-      }).Expense;
-      if (bExpense) {
-        totalAmt -= val.TranAmount;
-      } else {
-        totalAmt += val.TranAmount;
-      }
-    });
-    if (totalAmt !== this.SoldoutAmount) {
-      return false;
-    }
-
-    return true;
-  }
-
-  constructor(public _storageService: FinanceStorageService,
+  constructor(private _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
     private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _homeService: HomeDefDetailService,
     private _currService: FinCurrencyService,
-    private _router: Router,
-    private _formBuilder: FormBuilder) {
+    private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor`);
     }
@@ -191,17 +72,16 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.firstFormGroup = this._formBuilder.group({
-      accountControl: ['', Validators.required],
-      dateControl: [{value: moment(), disabled: false}, Validators.required],
-      amountControl: [0, Validators.required],
-      currControl: ['', Validators.required],
-      exgControl: [''],
-      exgpControl: [''],
-      despControl: ['', Validators.required],
-      ccControl: [''],
-      orderControl: [''],
+    this.firstFormGroup = new FormGroup({
+      accountControl: new FormControl('', Validators.required),
+      headerControl: new FormControl('', Validators.required),
+      amountControl: new FormControl(0, Validators.required),
+      ccControl: new FormControl(''),
+      orderControl: new FormControl(''),
     });
+    this.itemFormGroup = new FormGroup({
+      itemControl: new FormControl(''),
+    }, [this._amountValidator]);
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -238,8 +118,6 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
       // Orders
       this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
       this.uiOrderFilter = undefined;
-
-      this.firstFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
     }, (error: any) => {
       this._snackbar.open(error.toString(), undefined, {
         duration: 2000,
@@ -252,33 +130,6 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
       this._destroyed$.next(true);
       this._destroyed$.complete();
     }
-  }
-
-  public onCreateDocItem(): void {
-    let di: DocumentItem = new DocumentItem();
-    di.ItemId = ModelUtility.getFinanceNextItemID(this.dataSource.data);
-
-    let aritems: any[] = this.dataSource.data.slice();
-    aritems.push(di);
-    this.dataSource.data = aritems;
-  }
-
-  public onDeleteDocItem(di: any): void {
-    let aritems: DocumentItem[] = this.dataSource.data.slice();
-
-    let idx: number = -1;
-    for (let i: number = 0; i < aritems.length; i ++) {
-      if (aritems[i].ItemId === di.ItemId) {
-        idx = i;
-        break;
-      }
-    }
-
-    if (idx !== -1) {
-      aritems.splice(idx);
-    }
-
-    this.dataSource.data = aritems;
   }
 
   onSubmit(): void {
@@ -313,10 +164,10 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
     this.detailObject = new FinanceAssetSoldoutDocumentAPI();
     this.detailObject.HID = this._homeService.ChosedHome.ID;
     this.detailObject.tranDate = docobj.TranDate.format(momentDateFormat);
-    this.detailObject.tranCurr = this.TranCurrency;
-    this.detailObject.tranAmount = this.SoldoutAmount;
+    this.detailObject.tranCurr = docobj.TranCurr;
+    this.detailObject.tranAmount = this.firstFormGroup.get('amountControl').value;
     this.detailObject.desp = docobj.Desp;
-    this.detailObject.assetAccountID = this.SoldoutAssetAccountID;
+    this.detailObject.assetAccountID = this.firstFormGroup.get('accountControl').value;
     this.detailObject.controlCenterID = this.firstFormGroup.get('ccControl').value;
     this.detailObject.orderID = this.firstFormGroup.get('orderControl').value;
     docobj.Items.forEach((val: DocumentItem) => {
@@ -366,48 +217,62 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
     });
   }
 
-  public addItemTag(row: DocumentItem, $event: MatChipInputEvent): void {
-    let input: any = $event.input;
-    let value: any = $event.value;
-
-    // Add new Tag
-    if ((value || '').trim()) {
-      row.Tags.push(value.trim());
-    }
-
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
-  }
-
-  public removeItemTag(row: DocumentItem, tag: any): void {
-    let index: number = row.Tags.indexOf(tag);
-
-    if (index >= 0) {
-      row.Tags.splice(index, 1);
-    }
-  }
-
   public onReset(): void {
     if (this._stepper) {
       this._stepper.reset();
+    }
+    this.confirmInfo = {};
+  }
+  public onStepSelectionChange(event: StepperSelectionEvent): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent onStepSelectionChange with index = ${event.selectedIndex}`);
+    }
+
+    if (event.selectedIndex === 1) {
+      // Update the confirm info.
+      let doc: Document = this.firstFormGroup.get('headerControl').value;
+      this.confirmInfo.tranDateString = doc.TranDateFormatString;
+      this.confirmInfo.tranDesp = doc.Desp;
+      this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl').value;
+      this.confirmInfo.tranCurrency = doc.TranCurr;
+      this.confirmInfo.soldoutAssetAccountID = this.firstFormGroup.get('accountControl').value;
+      this.confirmInfo.soldOutAssetAccountName = this.arAccounts.find((val: Account) => {
+        return val.Id === this.confirmInfo.soldoutAssetAccountID;
+      })!.Name;
     }
   }
 
   private _generateDoc(): Document {
     let ndoc: Document = new Document();
-    ndoc.DocType = financeDocTypeAssetSoldOut;
     ndoc.HID = this._homeService.ChosedHome.ID;
-    ndoc.TranDate = this.firstFormGroup.get('dateControl').value;
-    ndoc.TranCurr = this._homeService.ChosedHome.BaseCurrency;
-    ndoc.Desp = this.firstFormGroup.get('despControl').value;
     // Add items
-    this.dataSource.data.forEach((val: DocumentItem) => {
-      val.TranType = financeTranTypeAssetSoldoutIncome;
-      ndoc.Items.push(val);
-    });
+    ndoc.Items = this.itemFormGroup.get('itemControl').value;
 
     return ndoc;
+  }
+  private _amountValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent _amountValidator...');
+    }
+
+    let amt: any = this.firstFormGroup.get('amountControl').value;
+    let items: DocumentItem[] = this.itemFormGroup.get('itemControl').value;
+
+    let totalAmt: number = 0;
+    items.forEach((val: DocumentItem) => {
+      let bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
+        return valtt.Id === val.TranType;
+      }).Expense;
+      if (bExpense) {
+        totalAmt -= val.TranAmount;
+      } else {
+        totalAmt += val.TranAmount;
+      }
+    });
+    if (totalAmt !== amt) {
+      return { amountmismatch: true };
+    }
+
+    return null;
   }
 }

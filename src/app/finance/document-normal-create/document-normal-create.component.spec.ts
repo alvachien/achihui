@@ -50,7 +50,7 @@ describe('DocumentNormalCreateComponent', () => {
   });
 
   beforeEach(async(() => {
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -59,13 +59,13 @@ describe('DocumentNormalCreateComponent', () => {
       'fetchAllOrders',
       'createDocument',
     ]);
-    fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllDocTypesSpy = stroageService.fetchAllDocTypes.and.returnValue(of([]));
-    fetchAllTranTypesSpy = stroageService.fetchAllTranTypes.and.returnValue(of([]));
-    fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
-    fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
-    createDocSpy = stroageService.createDocument.and.returnValue(of({}));
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    createDocSpy = storageService.createDocument.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
@@ -104,7 +104,7 @@ describe('DocumentNormalCreateComponent', () => {
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinCurrencyService, useValue: currService },
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: Router, useValue: routerSpy },
       ],
@@ -163,10 +163,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       expect(component.firstFormGroup.get('headerControl')).toBeTruthy('Expect control has been initialized');
 
-      expect(component.tranCurrency).toEqual(fakeData.chosedHome.BaseCurrency, 'Expect base currency is set');
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      // Also, the date shall be inputted
-      expect(component.tranDate).toBeTruthy();
     }));
 
     it('step 1: should not allow go to second step if there are failure in first step', fakeAsync(() => {

@@ -4,7 +4,7 @@
   </mat-card-header>
   <mat-card-content>
     <mat-vertical-stepper linear #stepper (selectionChange)="onStepSelectionChange($event)">
-      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
+      <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
@@ -20,41 +20,12 @@
             </mat-select>
           </mat-form-field>
 
-          <!-- Tran. date -->
-          <mat-form-field>
-            <input matInput [matDatepicker]="dtpker" placeholder="{{'Common.Date' | translate}}" formControlName="dateControl">
-            <mat-datepicker-toggle matSuffix [for]="dtpker"></mat-datepicker-toggle>
-            <mat-datepicker #dtpker></mat-datepicker>
-          </mat-form-field>
+          <!-- Header -->
+          <hih-fin-document-header [docType]="curDocType"  formControlName="headerControl"></hih-fin-document-header>
 
           <!-- Balance -->
           <mat-form-field>
             <input matInput type="number" placeholder="{{'Finance.Balance' | translate}}" formControlName="amountControl">
-          </mat-form-field>
-
-          <!-- Currency -->
-          <mat-form-field>
-            <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
-              <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
-                {{cr.Symbol}} - {{cr.Name | translate}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Exchange rate -->
-          <mat-form-field *ngIf="isForeignCurrency">
-            <input matInput type="text" placeholder="{{'Finance.ExchangeRate' | translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-              formControlName="exgControl" id="exgrate">
-          </mat-form-field>
-
-          <!-- Planned Exchange rate -->
-          <div *ngIf="isForeignCurrency" class="achih-control-full-width">
-            <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
-          </div>
-
-          <!-- Desp -->
-          <mat-form-field>
-            <input matInput type="text" placeholder="{{'Common.Description' | translate}}" formControlName="despControl">
           </mat-form-field>
 
           <!-- Control center -->
@@ -84,16 +55,11 @@
 
       <mat-step>
         <ng-template matStepLabel>{{'Common.Confirm' | translate}}</ng-template>
-        <!-- 
-            1. Account
-            2. Date
-            3. Amount
-          -->
         <div class="mat-typography achih-control-full-width">
-          <h2>{{'Sys.AcntCty.AssetAccount' | translate}}: {{TargetAssetAccountID}}</h2>
-          <h3 *ngIf="TransactionAmount">{{'Finance.Amount' | translate}}: {{TransactionAmount.toFixed(2)}}</h3>
-          <h3 *ngIf="NewEstimatedAmount">{{'Finance.Balance' | translate}}: {{NewEstimatedAmount.toFixed(2)}}</h3>
-          <h3>{{'Common.Date' | translate}}: {{TransactionDate}}</h3>
+          <h2>{{'Sys.AcntCty.AssetAccount' | translate}}: {{confirmInfo?.targetAssetAccountName}} ({{confirmInfo?.targetAssetAccountID}})</h2>
+          <h3>{{'Finance.Amount' | translate}}: {{tranAmount?.toFixed(2)}}</h3>
+          <h3>{{'Finance.Balance' | translate}}: {{NewEstimatedAmount?.toFixed(2)}}</h3>
+          <h3>{{'Common.Date' | translate}}: {{confirmInfo?.tranDateString}}</h3>
         </div>
 
         <div class="table-container mat-elevation-z8">

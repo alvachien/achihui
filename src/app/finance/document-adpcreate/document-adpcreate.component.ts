@@ -4,18 +4,20 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerticalStepper } from '@angular/material';
 import { Observable, forkJoin, merge, ReplaySubject } from 'rxjs';
+import * as moment from 'moment';
+import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import {
-  LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAdvancePayment,
-  UIFinAdvPayDocument, TemplateDocADP, AccountExtraAdvancePayment, DocumentType,
+import { LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeString, Account,
+  AccountExtraAdvancePayment, DocumentType,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
-  Currency, ControlCenter, Order, IAccountCategoryFilter, financeAccountCategoryAdvanceReceived, TranType, AccountExtra,
+  Currency, ControlCenter, Order, IAccountCategoryFilter, TranType,
+  financeDocTypeAdvancePayment, financeTranTypeAdvancePaymentOut,
+  costObjectValidator,
+  financeDocTypeAdvanceReceived, financeTranTypeAdvanceReceiveIn,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import * as moment from 'moment';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-document-adpcreate',
@@ -39,90 +41,25 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   public arAccounts: Account[] = [];
   public arOrders: Order[] = [];
   public arDocTypes: DocumentType[] = [];
+  public curDocType: number = financeDocTypeAdvancePayment;
+  // Stepper
+  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: Extra
   public extraFormGroup: FormGroup;
-  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
+  // Step: Confirm
+  public confirmInfo: any = {};
 
-  get firstStepCompleted(): boolean {
-    if (this.firstFormGroup && this.firstFormGroup.valid) {
-      // Ensure the exchange rate
-      if (this.isForeignCurrency) {
-        if (!this.firstFormGroup.get('exgControl').value) {
-          return false;
-        }
-      }
-
-      if (this.firstFormGroup.get('ccControl').value) {
-        if (this.firstFormGroup.get('orderControl').value) {
-          return false;
-        } else {
-          return true;
-        }
-      } else {
-        if (this.firstFormGroup.get('orderControl').value) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-    return false;
-  }
-  get TranAmount(): number {
-    let amtctrl: any = this.firstFormGroup.get('amountControl');
-    if (amtctrl) {
-      return amtctrl.value;
-    }
-  }
-  get TranDate(): string {
-    let datctrl: any = this.firstFormGroup.get('dateControl');
-    if (datctrl && datctrl.value && datctrl.value.format) {
-      return datctrl.value.format(momentDateFormat);
-    }
-
-    return '';
-  }
-  get TranType(): TranType {
-    let trantypectrl: any = this.firstFormGroup.get('tranTypeControl');
-    if (trantypectrl && trantypectrl.value) {
-      return trantypectrl.value;
-    }
-  }
-  get TranCurrency(): string {
-    let currctrl: any = this.firstFormGroup.get('currControl');
-    if (currctrl) {
-      return currctrl.value;
-    }
-  }
-  get isForeignCurrency(): boolean {
-    if (this.TranCurrency && this.TranCurrency !== this._homeService.ChosedHome.BaseCurrency) {
-      return true;
-    }
-
-    return false;
-  }
-  get extraStepCompleted(): boolean {
-    if (!this.firstStepCompleted) {
-      return false;
-    }
-    if (this.extraFormGroup && this.extraFormGroup.valid) {
-      return true;
-    }
-    return false;
-  }
-
-  constructor(public _storageService: FinanceStorageService,
+  constructor(private _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
     private _activateRoute: ActivatedRoute,
     private _cdr: ChangeDetectorRef,
     private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _homeService: HomeDefDetailService,
-    public _currService: FinCurrencyService,
-    private _router: Router,
-    private _formBuilder: FormBuilder) {
+    private _currService: FinCurrencyService,
+    private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent constructor...');
     }
@@ -135,20 +72,16 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.firstFormGroup = this._formBuilder.group({
-      dateControl: [{ value: moment(), disabled: false }, Validators.required],
-      accountControl: ['', Validators.required],
-      tranTypeControl: ['', Validators.required],
-      amountControl: ['', Validators.required],
-      currControl: ['', Validators.required],
-      exgControl: [''],
-      exgpControl: [''],
-      despControl: ['', Validators.required],
-      ccControl: [''],
-      orderControl: [''],
-    });
-    this.extraFormGroup = this._formBuilder.group({
-      adpAccountControl: ['', Validators.required],
+    this.firstFormGroup = new FormGroup({
+      headerControl: new FormControl(moment(), Validators.required),
+      accountControl: new FormControl('', Validators.required),
+      tranTypeControl: new FormControl('', Validators.required),
+      amountControl: new FormControl('', Validators.required),
+      ccControl: new FormControl(''),
+      orderControl: new FormControl(''),
+    }, [costObjectValidator]);
+    this.extraFormGroup = new FormGroup({
+      adpAccountControl: new FormControl(''),
     });
 
     // Fetch the data
@@ -164,7 +97,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this._destroyed$))
       .subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent, forkJoin`);
       }
 
       // Accounts
@@ -202,16 +135,13 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
             };
             this.uiOrderFilter = true;
 
-            // Set default currency
-            this.firstFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
-
             this._cdr.detectChanges();
           }
         }
       });
     }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error('AC_HIH_UI [Error]: Entering Entering DocumentAdvancepaymentDetailComponent ngOnInit, forkJoin, failed');
+        console.error('AC_HIH_UI [Error]: Entering Entering DocumentADPCreateComponent ngOnInit forkJoin, failed');
       }
       this._snackbar.open(error, undefined, {
         duration: 2000,
@@ -236,28 +166,13 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
 
     // First step
     this.firstFormGroup.reset();
-    // Set default values
-    this.firstFormGroup.get('currControl').setValue(this._homeService.ChosedHome.BaseCurrency);
-    this.firstFormGroup.get('dateControl').setValue(moment());
-
     // Second step
     this.extraFormGroup.reset();
   }
 
   onSubmit(): void {
-    let detailObject: UIFinAdvPayDocument = new UIFinAdvPayDocument();
-    detailObject.Desp = this.firstFormGroup.get('despControl').value;
-    detailObject.SourceAccountId = this.firstFormGroup.get('accountControl').value;
-    detailObject.SourceControlCenterId = this.firstFormGroup.get('ccControl').value;
-    detailObject.SourceOrderId = this.firstFormGroup.get('orderControl').value;
-    detailObject.SourceTranType = +this.TranType;
-    detailObject.TranAmount = this.TranAmount;
-    detailObject.TranCurr = this.firstFormGroup.get('currControl').value;
-    detailObject.TranDate = moment(this.TranDate, momentDateFormat);
-    detailObject.AdvPayAccount = this.extraFormGroup.get('adpAccountControl').value as AccountExtraAdvancePayment;
-
-    let docObj: Document = detailObject.generateDocument(this._isADP);
-    docObj.HID = this._homeService.ChosedHome.ID;
+    let docObj: Document = this._geneateDocument();
+    let accountExtra: AccountExtraAdvancePayment = this.extraFormGroup.get('adpAccountControl').value;
 
     // Check!
     if (!docObj.onVerify({
@@ -285,9 +200,9 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._storageService.createADPDocument(docObj, detailObject.AdvPayAccount, this._isADP).subscribe((x: any) => {
+    this._storageService.createADPDocument(docObj, accountExtra, this._isADP).subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug(`AC_HIH_UI [Debug]: Entering DocumentAdvancepaymentDetailComponent, onSubmit, createADPDocument`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent, onSubmit, createADPDocument`);
       }
 
       // Show the snackbar
@@ -326,11 +241,53 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     });
   }
 
+  public onStepSelectionChange(event: StepperSelectionEvent): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent onStepSelectionChange with index = ${event.selectedIndex}`);
+    }
+
+    if (event.selectedIndex === 1) {
+      // Update the confirm info.
+      let doc: Document = this.firstFormGroup.get('headerControl').value;
+      this.confirmInfo.tranDateString = doc.TranDateFormatString;
+      this.confirmInfo.tranDesp = doc.Desp;
+      this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl').value;
+      this.confirmInfo.tranCurrency = doc.TranCurr;
+      if (this._isADP) {
+        this.confirmInfo.tranType = financeTranTypeAdvancePaymentOut;
+      } else {
+        this.confirmInfo.tranType = financeTranTypeAdvanceReceiveIn;
+      }
+    }
+  }
+
   private _updateCurrentTitle(): void {
     if (this._isADP) {
       this.curTitle = 'Sys.DocTy.AdvancedPayment';
+      this.curDocType = financeDocTypeAdvancePayment;
     } else {
       this.curTitle = 'Sys.DocTy.AdvancedRecv';
+      this.curDocType = financeDocTypeAdvanceReceived;
     }
+  }
+  private _geneateDocument(): Document {
+    let doc: Document = this.firstFormGroup.get('headerControl').value;
+    doc.HID = this._homeService.ChosedHome.ID;
+
+    let fitem: DocumentItem = new DocumentItem();
+    fitem.ItemId = 1;
+    fitem.AccountId = this.firstFormGroup.get('accountControl').value;
+    fitem.ControlCenterId = this.firstFormGroup.get('ccControl').value;
+    fitem.OrderId = this.firstFormGroup.get('orderControl').value;
+    if (this._isADP) {
+      fitem.TranType = financeTranTypeAdvancePaymentOut;
+    } else {
+      fitem.TranType = financeTranTypeAdvanceReceiveIn;
+    }
+    fitem.TranAmount = this.firstFormGroup.get('amountControl').value;
+    fitem.Desp = doc.Desp;
+    doc.Items.push(fitem);
+
+    return doc;
   }
 }
