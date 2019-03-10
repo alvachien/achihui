@@ -24,6 +24,7 @@ import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurren
   AuthService, } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 import { AccountExtADPExComponent } from '../account-ext-adpex';
+import { DocumentHeaderComponent } from '../document-header';
 
 describe('DocumentADPCreateComponent', () => {
   let component: DocumentADPCreateComponent;
@@ -58,7 +59,7 @@ describe('DocumentADPCreateComponent', () => {
   beforeEach(async(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createadp', {})] as UrlSegment[]);
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -67,13 +68,13 @@ describe('DocumentADPCreateComponent', () => {
       'fetchAllOrders',
       'createADPDocument',
     ]);
-    fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllDocTypesSpy = stroageService.fetchAllDocTypes.and.returnValue(of([]));
-    fetchAllTranTypesSpy = stroageService.fetchAllTranTypes.and.returnValue(of([]));
-    fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
-    fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
-    createDocSpy = stroageService.createADPDocument.and.returnValue(of({}));
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    createDocSpy = storageService.createADPDocument.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
@@ -99,6 +100,7 @@ describe('DocumentADPCreateComponent', () => {
         AccountExtADPExComponent,
         DocumentADPCreateComponent,
         MessageDialogComponent,
+        DocumentHeaderComponent,
       ],
       providers: [
         TranslateService,
@@ -107,7 +109,7 @@ describe('DocumentADPCreateComponent', () => {
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinCurrencyService, useValue: currService },
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: Router, useValue: routerSpy },
@@ -134,7 +136,14 @@ describe('DocumentADPCreateComponent', () => {
     activatedRouteStub.setURL([new UrlSegment('createadr', {})] as UrlSegment[]);
 
     expect(component).toBeTruthy();
-  });
+
+    fixture.detectChanges(); // ngOnInit
+
+    tick(); // Complete the Observables in ngOnInit
+    fixture.detectChanges();
+
+    expect(component._stepper.selectedIndex).toEqual(0); // At first page
+});
 
   // Handle url which neither adp nor adr case?
 
@@ -293,11 +302,7 @@ describe('DocumentADPCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.TranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Also, the date shall be inputted
-      expect(component.TranDate).toBeTruthy();
     }));
 
     it('step 1: should have accounts and orders loaded', fakeAsync(() => {
@@ -322,21 +327,22 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
       // Input all fields exclude account
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Currency - default
-      // Exchange rate - not need
       // CC or order
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('Account is missing');
 
       // Click the next button - no work!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -358,59 +364,22 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
       // Input all fields exclude amount
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
-      // Currency - default
-      // Exchange rate - not need
       // CC or order
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
-
-      // Click the next button - no work!
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      expect(component._stepper.selectedIndex).toBe(0);
-
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toBe(0);
-    }));
-
-    it('step 1: desp is mandatory', fakeAsync(() => {
-      expect(component.firstFormGroup).toBeFalsy();
-      fixture.detectChanges(); // ngOnInit
-
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Input all fields exclude desp
-      // Tran date - default
-      // Account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      // Tran type
-      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      // component.firstFormGroup.get('despControl').setValue('test');
-      // Currency - default
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
-      // CC or order
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      fixture.detectChanges();
-
-      expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('Amount is missing');
 
       // Click the next button - no work!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -431,24 +400,25 @@ describe('DocumentADPCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Input all fields exclude desp
-      // Tran date - default
+      // Input all fields exclude tran. type
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       // component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
-      // Currency - default
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       // CC or order
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('Tran type is missing');
 
       // Click the next button - no work!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -470,24 +440,26 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
       // Input all fields
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
-      // Currency - default
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       // CC
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
       component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
       fixture.detectChanges();
 
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('cost object over assigned');
 
       // Click the next button - no work!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -509,78 +481,27 @@ describe('DocumentADPCreateComponent', () => {
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
       // Input all fields
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
-      // Currency - default
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       fixture.detectChanges();
 
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('no cost object assigned');
 
       // Click the next button - no work!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       expect(component._stepper.selectedIndex).toBe(0);
 
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toBe(0);
-    }));
-
-    it('step 1: shall show exchange rate for foreign currency', fakeAsync(() => {
-      expect(component.firstFormGroup).toBeFalsy();
-      fixture.detectChanges(); // ngOnInit
-
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Input foreign currency
-      component.firstFormGroup.get('currControl').setValue('USD');
-      fixture.detectChanges();
-
-      expect(fixture.debugElement.query(By.css('#exgrate'))).toBeTruthy();
-      expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
-    }));
-
-    it('step 1: shall input exchange rate for foreign currency', fakeAsync(() => {
-      expect(component.firstFormGroup).toBeFalsy();
-      fixture.detectChanges(); // ngOnInit
-
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Tran date - default
-      // Account
-      component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
-      // Tran type
-      component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
-      // CC or order
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      fixture.detectChanges();
-      // Input foreign currency
-      component.firstFormGroup.get('currControl').setValue('USD');
-      fixture.detectChanges();
-
-      expect(component.firstStepCompleted).toBeFalsy();
-
-      // Shall not allow go to second step
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -596,13 +517,17 @@ describe('DocumentADPCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
       // Exchange rate - not need
@@ -611,7 +536,6 @@ describe('DocumentADPCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -632,25 +556,25 @@ describe('DocumentADPCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = 'USD';
+      curdoc.ExgRate = 654.23;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
       // Order
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-
-      // Input foreign currency
-      component.firstFormGroup.get('currControl').setValue('USD');
-      component.firstFormGroup.get('exgControl').setValue(654.22);
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
 
       // Click the next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -671,16 +595,19 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 1.
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       // Order
       component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
       fixture.detectChanges();
@@ -692,13 +619,12 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 2.
       expect(component._stepper.selectedIndex).toBe(1);
-      expect(component.extraStepCompleted).toBeFalsy();
       // Ensure the date is invalid
       // component.accountAdvPay.StartDate = moment().add(1, 'M');
       // component.accountAdvPay.EndDate = moment();
       fixture.detectChanges();
 
-      expect(component.extraStepCompleted).toBeFalsy();
+      expect(component.extraFormGroup.valid).toBeFalsy();
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
@@ -714,16 +640,19 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 1.
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       // Order
       component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
       fixture.detectChanges();
@@ -735,7 +664,7 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 2.
       expect(component._stepper.selectedIndex).toBe(1);
-      expect(component.extraStepCompleted).toBeFalsy();
+      expect(component.extraFormGroup.valid).toBeFalsy();
       // By default, no tmp docs are generated
       // component.accountAdvPay.RepeatType = RepeatFrequencyEnum.Week;
       // component.accountAdvPay.Comment = fakeData.finAccountExtraAdvancePayment.Comment;
@@ -743,7 +672,7 @@ describe('DocumentADPCreateComponent', () => {
       // expect(component.accountAdvPay.isValid).toBeTruthy();
       // expect(component.accountAdvPay.dpTmpDocs.length).toBe(0);
 
-      expect(component.extraStepCompleted).toBeFalsy();
+      expect(component.extraFormGroup.valid).toBeFalsy();
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
@@ -789,16 +718,19 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 1.
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
@@ -810,7 +742,7 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 2.
       expect(component._stepper.selectedIndex).toBe(1);
-      expect(component.extraStepCompleted).toBeFalsy();
+      expect(component.extraFormGroup.valid).toBeFalsy();
       // By default, no tmp docs are generated
       let acntAdvPay: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
       acntAdvPay.RepeatType = RepeatFrequencyEnum.Week;
@@ -819,7 +751,7 @@ describe('DocumentADPCreateComponent', () => {
       component.extraFormGroup.get('adpAccountControl').setValue(acntAdvPay);
       component.extraFormGroup.get('adpAccountControl').updateValueAndValidity({onlySelf: false, emitEvent: true});
       fixture.detectChanges();
-      expect(component.extraStepCompleted).toBeTruthy();
+      expect(component.extraFormGroup.valid).toBeTruthy();
       // Click next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
@@ -858,16 +790,19 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 1.
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
@@ -919,16 +854,19 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 1.
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
@@ -975,9 +913,6 @@ describe('DocumentADPCreateComponent', () => {
       fixture.detectChanges();
       // Check the reset
       expect(component._stepper.selectedIndex).toBe(0);
-      expect(component.firstFormGroup.get('dateControl').value).not.toBeNull();
-      expect(component.firstFormGroup.get('despControl').value).toBeFalsy();
-      expect(component.firstFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
 
       flush(); // Empty the call stack
     }));
@@ -992,16 +927,19 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 1.
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
@@ -1071,16 +1009,19 @@ describe('DocumentADPCreateComponent', () => {
 
       // Step 1.
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Account
       component.firstFormGroup.get('accountControl').setValue(fakeData.finAccounts[0].Id);
       // Tran type
       component.firstFormGroup.get('tranTypeControl').setValue(fakeData.finTranTypes[0].Id);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(200);
-      // Exchange rate - not need
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
@@ -1110,10 +1051,7 @@ describe('DocumentADPCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component._stepper.selectedIndex).toBe(0);
-      expect(component.firstFormGroup.get('dateControl').value).not.toBeNull();
-      expect(component.firstFormGroup.get('despControl').value).toBeFalsy();
-      expect(component.firstFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
-      expect(component.extraFormGroup.valid).toBeFalsy();
+      // expect(component.extraFormGroup.valid).toBeFalsy();
 
       flush(); // clean
     }));

@@ -5,12 +5,11 @@ import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { Observable, forkJoin, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { ENTER, COMMA, } from '@angular/cdk/keycodes';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal, UICommonLabelEnum,
-  BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilter, Currency, TranType, DocumentType, ControlCenter } from '../../model';
+  Currency, TranType, DocumentType, ControlCenter, Order, Account,
+} from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -18,13 +17,6 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   selector: 'hih-finance-document-detail',
   templateUrl: './document-detail.component.html',
   styleUrls: ['./document-detail.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   private routerID: number = -1; // Current object ID in routing
@@ -36,6 +28,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   public arTranTypes: TranType[] = [];
   public arDocTypes: DocumentType[] = [];
   public arControlCenters: ControlCenter[] = [];
+  public arAccounts: Account[] = [];
+  public arOrders: Order[] = [];
   // Form group
   public headerGroup: FormGroup = new FormGroup({
     headerControl: new FormControl('', Validators.required),
@@ -46,7 +40,15 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   curDocType: number;
 
   get isFieldChangable(): boolean {
-    return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+    return this.uiMode === UIMode.Change;
+  }
+  get isSubmitButtonDisabled(): boolean {
+    if (this.isFieldChangable && (this.headerGroup.valid && (this.headerGroup.touched || this.headerGroup.dirty))
+      || (this.itemGroup.valid && (this.itemGroup.touched || this.itemGroup.dirty))) {
+      return false; // In this case, the submit button shall enable
+    }
+
+    return true;
   }
 
   constructor(private _dialog: MatDialog,
@@ -78,78 +80,162 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this._storageService.fetchAllOrders(),
       this._currService.fetchAllCurrencies(),
     ])
-    .pipe(takeUntil(this.destroyed$))
-    .subscribe((rst: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
-      }
-      this.arDocTypes = rst[1];
-      this.arTranTypes = rst[2];
-      this.arControlCenters = rst[4];
-      this.arCurrencies = rst[6];
-
-      this._activateRoute.url.subscribe((x: any) => {
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            // Create is not allowed!
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Entering DocumentDetailComponent, ngOninit, error in wrong create mode!`);
-            }
-            this.uiMode = UIMode.Invalid;
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
-
-            this.uiMode = UIMode.Display;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
-
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
-
-          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readDocument(this.routerID).pipe(takeUntil(this.destroyed$)).subscribe((x2: any) => {
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.debug(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent, ngOninit, readDocument`);
-              }
-
-              this.headerGroup.get('headerControl').setValue(x2);
-              this.itemGroup.get('itemControl').setValue(x2.Items);
-
-              if (this.uiMode === UIMode.Display) {
-                this.headerGroup.disable();
-                this.itemGroup.disable();
-               } else {
-                this.headerGroup.enable();
-                this.itemGroup.enable();
-               }
-          }, (error: any) => {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering DocumentDetailComponent, ngOninit, readDocument failed: ${error}`);
-              }
-
-              const dlginfo: MessageDialogInfo = {
-                Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-                Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-                Button: MessageDialogButtonEnum.onlyok,
-              };
-
-              this._dialog.open(MessageDialogComponent, {
-                disableClose: false,
-                width: '500px',
-                data: dlginfo,
-              });
-            });
-          }
-        } else {
-          this.uiMode = UIMode.Invalid;
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((rst: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.debug(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit for activateRoute URL: ${rst.length}`);
         }
+        this.arDocTypes = rst[1];
+        this.arTranTypes = rst[2];
+        this.arAccounts = rst[3];
+        this.arControlCenters = rst[4];
+        this.arOrders = rst[5];
+        this.arCurrencies = rst[6];
+
+        this._activateRoute.url.subscribe((x: any) => {
+          if (x instanceof Array && x.length > 0) {
+            if (x[0].path === 'create') {
+              // Create is not allowed!
+              if (environment.LoggingLevel >= LogLevel.Error) {
+                console.error(`AC_HIH_UI [Error]: Entering DocumentDetailComponent, ngOninit, error in wrong create mode!`);
+              }
+              this.uiMode = UIMode.Invalid;
+            } else if (x[0].path === 'edit') {
+              this.routerID = +x[1].path;
+
+              this.uiMode = UIMode.Change;
+            } else if (x[0].path === 'display') {
+              this.routerID = +x[1].path;
+
+              this.uiMode = UIMode.Display;
+            }
+            this.currentMode = getUIModeString(this.uiMode);
+
+            if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+              this._storageService.readDocument(this.routerID).pipe(takeUntil(this.destroyed$)).subscribe((x2: any) => {
+                if (environment.LoggingLevel >= LogLevel.Debug) {
+                  console.debug(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent, ngOninit, readDocument`);
+                }
+
+                this.curDocType = x2.DocType;
+                this.headerGroup.get('headerControl').setValue(x2);
+                this.itemGroup.get('itemControl').setValue(x2.Items);
+
+                if (this.uiMode === UIMode.Display) {
+                  this.headerGroup.disable();
+                  this.itemGroup.disable();
+                } else {
+                  this.headerGroup.enable();
+                  this.itemGroup.enable();
+                }
+                this.headerGroup.markAsPristine();
+                this.headerGroup.markAsUntouched();
+                this.itemGroup.markAsPristine();
+                this.itemGroup.markAsUntouched();
+              }, (error: any) => {
+                if (environment.LoggingLevel >= LogLevel.Error) {
+                  console.error(`AC_HIH_UI [Error]: Entering DocumentDetailComponent, ngOninit, readDocument failed: ${error}`);
+                }
+
+                const dlginfo: MessageDialogInfo = {
+                  Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+                  Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+                  Button: MessageDialogButtonEnum.onlyok,
+                };
+
+                this._dialog.open(MessageDialogComponent, {
+                  disableClose: false,
+                  width: '500px',
+                  data: dlginfo,
+                });
+              });
+            }
+          } else {
+            this.uiMode = UIMode.Invalid;
+          }
+        });
+      }, (error: any) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
+        }
+
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        });
+
+        this.uiMode = UIMode.Invalid;
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.destroyed$) {
+      this.destroyed$.next(true);
+      this.destroyed$.complete();
+    }
+  }
+
+  public onBackToList(): void {
+    this._router.navigate(['/finance/document/']);
+  }
+  public onSubmit(): void {
+    if (this.isSubmitButtonDisabled) {
+      return;
+    }
+
+    switch (this.curDocType) {
+      case financeDocTypeNormal: this._updateNormalDoc(); break;
+
+      default: break;
+    }
+  }
+  private _updateNormalDoc(): void {
+    // For normal document, just update the whole document.
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.DocType = financeDocTypeNormal;
+
+    if (!doc.onVerify({ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranTypes,
+      Currencies: this.arCurrencies,
+      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+    })) {
+      // Show a error dialog
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: doc.VerifiedMsgs,
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+      return;
+    }
+
+    this._storageService.updateNormalDocument(doc).subscribe((rst: Document) => {
+      // Switch to display mode
+      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
+        duration: 2000,
+      }).afterDismissed().subscribe(() => {
+        this._router.navigate(['/finance/document/' + this.routerID.toString()]);
       });
     }, (error: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
-      }
-
+      // Show a error dialog
       const dlginfo: MessageDialogInfo = {
         Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
         Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
@@ -161,47 +247,6 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         width: '500px',
         data: dlginfo,
       });
-
-      this.uiMode = UIMode.Invalid;
     });
-  }
-
-  ngOnDestroy(): void {
-    if (this.destroyed$) {
-      this.destroyed$.next(true);
-      this.destroyed$.complete();
-    }
-  }
-
-  public getHeaderDisplayString(hdr: string): string {
-    switch (hdr) {
-      case 'ItemId':
-      return '#';
-
-      case 'AccountId':
-      return 'Finance.Account';
-
-      case 'TranType':
-      return 'Finance.TransactionType';
-
-      case 'TranAmount':
-      return 'Finance.Amount';
-
-      case 'Desp':
-      return 'Common.Comment';
-
-      case 'ControlCenterId':
-      return 'Finance.ControlCenter';
-
-      case 'OrderId':
-      return 'Finance.Order';
-
-      default:
-      return '';
-    }
-  }
-
-  public onBackToList(): void {
-    this._router.navigate(['/finance/document/']);
   }
 }

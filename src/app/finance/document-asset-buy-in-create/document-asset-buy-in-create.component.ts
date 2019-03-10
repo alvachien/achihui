@@ -51,9 +51,8 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   arCurrencies: Currency[];
 
   get IsLegacyAsset(): boolean {
-    let legctrl: any = this.firstFormGroup.get('legacyControl');
-    if (legctrl) {
-      return legctrl.value;
+    if (this.firstFormGroup) {
+      return this.firstFormGroup.get('legacyControl')!.value;
     }
   }
 
@@ -69,14 +68,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     }
     this.assetAccount = new AccountExtraAsset();
     this.arMembersInChosedHome = this._homedefService.ChosedHome.Members.slice();
-  }
-
-  ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit...');
-    }
-
-    this._destroyed$ = new ReplaySubject(1);
 
     this.firstFormGroup = new FormGroup({
       headerControl: new FormControl('', Validators.required),
@@ -90,6 +81,14 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     this.itemFormGroup = new FormGroup({
       itemControl: new FormControl(''),
     })
+  }
+
+  ngOnInit(): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit...');
+    }
+
+    this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -263,6 +262,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   private _generateDoc(): Document {
     let ndoc: Document = this.firstFormGroup.get('headerControl').value;
     ndoc.HID = this._homedefService.ChosedHome.ID;
+    ndoc.DocType = financeDocTypeAssetBuyIn;
     // Add items
     if (!this.IsLegacyAsset) {
       ndoc.Items = this.itemFormGroup.get('itemControl').value;
@@ -292,10 +292,10 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent _amountValidator...');
     }
 
-    if (this.IsLegacyAsset) {
+    if (!this.IsLegacyAsset) {
       let amt: any = group.get('amountControl').value;
-      if (amt <= 0) {
-        return { amountisinvalid: true};
+      if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
+        return { amountisinvalid: true };
       }
     }
 

@@ -14,6 +14,7 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
+import * as moment from 'moment';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
@@ -24,6 +25,7 @@ import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurren
   AuthService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 import { AccountExtLoanExComponent } from '../account-ext-loan-ex';
+import { DocumentHeaderComponent } from '../document-header';
 
 describe('DocumentLoanCreateComponent', () => {
   let component: DocumentLoanCreateComponent;
@@ -101,6 +103,7 @@ describe('DocumentLoanCreateComponent', () => {
         AccountExtLoanExComponent,
         DocumentLoanCreateComponent,
         MessageDialogComponent,
+        DocumentHeaderComponent,
       ],
       providers: [
         TranslateService,
@@ -320,47 +323,20 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component.arUIOrder.length).toBeGreaterThan(0);
     }));
 
-    it('step 1: Desp is mandatory', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Date - default
-      // Desp
-      // component.firstFormGroup.get('despControl').setValue('test');
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
-      // Account
-      component.firstFormGroup.get('accountControl').setValue(11); // Cash
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-
-      fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();
-
-      // Click the next button, not working!
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-    }));
-
     it('step 1: amount is mandatory', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       // component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center
@@ -368,7 +344,7 @@ describe('DocumentLoanCreateComponent', () => {
       // Order
 
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('Amount is missing');
 
       // Click the next button, not working!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -381,14 +357,15 @@ describe('DocumentLoanCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       // component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center
@@ -396,7 +373,7 @@ describe('DocumentLoanCreateComponent', () => {
       // Order
 
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('Account is missing');
 
       // Click the next button, not working!
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -413,14 +390,15 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // CC
@@ -452,14 +430,15 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center
@@ -488,14 +467,15 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center
@@ -524,23 +504,21 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = 'USD';
+      curdoc.ExgRate = 645.23;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
-
-      // Input foreign currency
-      component.firstFormGroup.get('currControl').setValue('USD');
-      component.firstFormGroup.get('exgControl').setValue(654.22);
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
@@ -564,14 +542,15 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center
@@ -597,7 +576,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
     }));
 
-    it('step 3: shall allow go to step 3 for valid account', fakeAsync(() => {
+    it('step 2: shall allow go to step 3 for valid account', fakeAsync(() => {
       expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
@@ -606,14 +585,15 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center
@@ -634,6 +614,7 @@ describe('DocumentLoanCreateComponent', () => {
       }).ExtraInfo as AccountExtraLoan;
       component.extraFormGroup.get('loanAccountControl').setValue(loanAccount);
       component.extraFormGroup.get('loanAccountControl').updateValueAndValidity();
+      component.extraFormGroup.updateValueAndValidity();
       fixture.detectChanges();
       expect(component.extraFormGroup.valid).toBeTruthy();
 
@@ -686,14 +667,15 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center
@@ -746,14 +728,15 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center
@@ -810,14 +793,15 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center
@@ -868,9 +852,6 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       // Check the reset
       expect(component._stepper.selectedIndex).toBe(0);
-      expect(component.firstFormGroup.get('dateControl').value).not.toBeNull();
-      expect(component.firstFormGroup.get('despControl').value).toBeFalsy();
-      expect(component.firstFormGroup.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
 
       flush(); // Empty the call stack
     }));
@@ -885,14 +866,15 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
 
-      // Date - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100000);
-      // Currency - default
-      // Exg rate
-      // Exg rate plan
       // Account
       component.firstFormGroup.get('accountControl').setValue(11); // Cash
       // Control center

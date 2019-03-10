@@ -59,7 +59,10 @@
 
         <form [formGroup]="extraFormGroup">
           <div class="achih-control-full-width">
-            <hih-finance-account-ext-loan-ex [tranAmount]="tranAmount" [controlCenterID]="controlCenterID" [orderID]="orderID"
+            <hih-finance-account-ext-loan-ex 
+              [tranAmount]="confirmInfo?.tranAmount" 
+              [controlCenterID]="confirmInfo?.controlCenterID"
+              [orderID]="confirmInfo?.orderID"
               formControlName="loanAccountControl">
             </hih-finance-account-ext-loan-ex>
           </div>
@@ -77,7 +80,7 @@
         <div class="mat-typography achih-control-full-width">
           <h3>{{'Common.Date' | translate}}: {{confirmInfo?.tranDateString}}</h3>
           <h2>{{'Common.Description' |translate}}: {{confirmInfo?.tranDesp}}</h2>
-          <h2>{{'Common.Amount' | translate}}: {{confirmInfo?.tranAmount}} {{confirmInfo?.tranCurrency}}</h3>
+          <h2>{{'Common.Amount' | translate}}: {{confirmInfo?.tranAmount}} {{confirmInfo?.tranCurrency}}</h2>
         </div>
 
         <div>

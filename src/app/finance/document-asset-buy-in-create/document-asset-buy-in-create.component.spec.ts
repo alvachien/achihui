@@ -22,8 +22,10 @@ import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '..
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
-import { DocumentItem, AccountExtraAsset, } from '../../model';
+import { DocumentItem, AccountExtraAsset, Document, } from '../../model';
 import { AccountExtAssetExComponent } from '../account-ext-asset-ex';
+import { DocumentHeaderComponent } from '../document-header';
+import { DocumentItemsComponent } from '../document-items';
 
 describe('DocumentAssetBuyInCreateComponent', () => {
   let component: DocumentAssetBuyInCreateComponent;
@@ -55,7 +57,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
   beforeEach(async(() => {
 
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllDocTypes',
       'fetchAllTranTypes',
@@ -65,14 +67,14 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       'fetchAllAssetCategories',
       'createAssetBuyinDocument',
     ]);
-    fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllAssetCategoriesSpy = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
-    fetchAllDocTypesSpy = stroageService.fetchAllDocTypes.and.returnValue(of([]));
-    fetchAllTranTypesSpy = stroageService.fetchAllTranTypes.and.returnValue(of([]));
-    fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
-    fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
-    createDocSpy = stroageService.createAssetBuyinDocument.and.returnValue(of({}));
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(of([]));
+    fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    createDocSpy = storageService.createAssetBuyinDocument.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of([]));
     const homeService: Partial<HomeDefDetailService> = {};
@@ -101,6 +103,8 @@ describe('DocumentAssetBuyInCreateComponent', () => {
         AccountExtAssetExComponent,
         DocumentAssetBuyInCreateComponent,
         MessageDialogComponent,
+        DocumentHeaderComponent,
+        DocumentItemsComponent,
       ],
       providers: [
         TranslateService,
@@ -109,7 +113,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinCurrencyService, useValue: currService },
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: Router, useValue: routerSpy },
       ],
@@ -294,17 +298,12 @@ describe('DocumentAssetBuyInCreateComponent', () => {
     });
 
     it('step 1: should set the default values: base currency, date, and so on', fakeAsync(() => {
-      expect(component.firstFormGroup).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.TranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Also, the date shall be inputted
-      expect(component.BuyinDate).toBeTruthy();
     }));
 
     it('step 1: should have accounts and orders loaded', fakeAsync(() => {
@@ -317,7 +316,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
 
       expect(component.arUIAccount.length).toBeGreaterThan(0);
       expect(component.arUIOrder.length).toBeGreaterThan(0);
-      expect(component.firstFormGroup.get('dateControl').value).toBeTruthy();
     }));
 
     it('step 1. amount is a must', fakeAsync(() => {
@@ -326,12 +324,13 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date - default
-      // Amount
-      // component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -346,43 +345,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
-      // Click next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-      expect(component._stepper.selectedIndex).toBe(0);
-    }));
-
-    it('step 1. desp is a must', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Step 1.
-      // Tran. date - default
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Desp
-      // component.firstFormGroup.get('despControl').setValue('Test');
-      // Asset
-      let extAsset: AccountExtraAsset = new AccountExtraAsset();
-      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
-      extAsset.Name = 'Asset 1';
-      extAsset.Comment = 'test Comment';
-      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
-      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
-      // Owner
-      component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
-      // Legacy
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('Amount is not inputted');
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -396,12 +359,14 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date - default
-      // Amount
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       // extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -417,7 +382,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -431,12 +395,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -452,7 +419,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -466,12 +432,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -487,7 +456,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -501,12 +469,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -521,8 +492,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('no cost object assignment');
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -536,12 +506,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -557,47 +530,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
-      // Click next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-      expect(component._stepper.selectedIndex).toBe(0);
-    }));
-
-    it('step 1. Exchange rate is a must in foreign currency case', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Step 1.
-      // Tran. date - default
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - foreign currency
-      component.firstFormGroup.get('currControl').setValue('USD');
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
-      // Asset
-      let extAsset: AccountExtraAsset = new AccountExtraAsset();
-      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
-      extAsset.Name = 'Asset 1';
-      extAsset.Comment = 'test Comment';
-      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
-      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
-      // Owner
-      component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
-      // Legacy
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      fixture.detectChanges();
-      expect(component.isForeignCurrency).toBeTruthy();
-      expect(fixture.debugElement.query(By.css('#exgrate'))).toBeTruthy();
-      expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('cost object over assigned');
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -611,13 +544,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date - next month
-      component.firstFormGroup.get('dateControl').setValue(moment().add(1, 'M'));
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment().add(1, 'M');
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -633,8 +568,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('Legacy asset requires a earlier date');
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -648,12 +582,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -669,7 +606,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -677,8 +613,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
+      expect(component.itemFormGroup.valid).toBeFalsy();
     }));
 
     it('step 1. shall go to step 2 in foreign currency case', fakeAsync(() => {
@@ -687,15 +622,16 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = 'USD';
+      curdoc.ExgRate = 654.23;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      component.firstFormGroup.get('currControl').setValue('USD');
-      // Exchange rate
-      component.firstFormGroup.get('exgControl').setValue(654.23);
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -711,7 +647,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -719,8 +654,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
+      expect(component.itemFormGroup.valid).toBeFalsy();
     }));
 
     it('step 2. items is required for non-legacy case', fakeAsync(() => {
@@ -729,12 +663,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -750,7 +687,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -758,8 +694,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
+      expect(component.itemFormGroup.valid).toBeFalsy();
     }));
 
     it('step 2. items is not required for legacy case', fakeAsync(() => {
@@ -768,13 +703,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date
-      component.firstFormGroup.get('dateControl').setValue(moment().subtract(1, 'y'));
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment().subtract(1, 'y');
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -791,7 +728,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -799,189 +735,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeTruthy();
-    }));
-
-    it('step 2 (non-legacy): should not allow go to third step if there are items without account', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Step 1.
-      // Tran. date
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
-      // Asset
-      let extAsset: AccountExtraAsset = new AccountExtraAsset();
-      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
-      extAsset.Name = 'Asset 1';
-      extAsset.Comment = 'test Comment';
-      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
-      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
-      // Owner
-      component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
-      // Legacy
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
-      // Click next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-      expect(component._stepper.selectedIndex).toBe(1);
-
-      // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
-      component.onCreateDocItem();
-      fixture.detectChanges();
-      expect(component.dataSource.data.length).toEqual(1);
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.TranAmount = 200;
-      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      ditem.TranType = 2;
-      ditem.Desp = 'test';
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      expect(component.itemStepCompleted).toBeFalsy();
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
-    }));
-
-    it('step 2 (non-legacy): should not allow go third step if there are items without tran. type', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Step 1.
-      // Tran. date
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
-      // Asset
-      let extAsset: AccountExtraAsset = new AccountExtraAsset();
-      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
-      extAsset.Name = 'Asset 1';
-      extAsset.Comment = 'test Comment';
-      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
-      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
-      // Owner
-      component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
-      // Legacy
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
-      // Click next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-      expect(component._stepper.selectedIndex).toBe(1);
-
-      // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.TranAmount = 200;
-      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      // ditem.TranType = 2;
-      ditem.Desp = 'test';
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      expect(component.itemStepCompleted).toBeFalsy();
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
-    }));
-
-    it('step 2 (non-legacy): should not allow go third step if there are items without amount', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Step 1.
-      // Tran. date
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
-      // Asset
-      let extAsset: AccountExtraAsset = new AccountExtraAsset();
-      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
-      extAsset.Name = 'Asset 1';
-      extAsset.Comment = 'test Comment';
-      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
-      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
-      // Owner
-      component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
-      // Legacy
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
-      // Click next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-      expect(component._stepper.selectedIndex).toBe(1);
-
-      // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      ditem.TranType = 2;
-      ditem.Desp = 'test';
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      expect(component.itemStepCompleted).toBeFalsy();
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
+      expect(component.itemFormGroup.disabled).toBeFalsy();
     }));
 
     // Asset account should not allowed
@@ -992,203 +746,21 @@ describe('DocumentAssetBuyInCreateComponent', () => {
 
     // Order which not valid in this date shall not allow
 
-    it('step 2 (non-legacy): should not allow go third step if item has neither control center nor order', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Step 1.
-      // Tran. date
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
-      // Asset
-      let extAsset: AccountExtraAsset = new AccountExtraAsset();
-      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
-      extAsset.Name = 'Asset 1';
-      extAsset.Comment = 'test Comment';
-      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
-      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
-      // Owner
-      component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
-      // Legacy
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
-      // Click next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-      expect(component._stepper.selectedIndex).toBe(1);
-
-      // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.TranType = 2;
-      ditem.Desp = 'test';
-      ditem.TranAmount = 200;
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      expect(component.itemStepCompleted).toBeFalsy();
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
-    }));
-
-    it('step 2 (non-legacy): should not allow go third step if item has control center and order both', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Step 1.
-      // Tran. date
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
-      // Asset
-      let extAsset: AccountExtraAsset = new AccountExtraAsset();
-      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
-      extAsset.Name = 'Asset 1';
-      extAsset.Comment = 'test Comment';
-      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
-      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
-      // Owner
-      component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
-      // Legacy
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
-      // Click next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-      expect(component._stepper.selectedIndex).toBe(1);
-
-      // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      ditem.OrderId = fakeData.finOrders[0].Id;
-      ditem.TranType = 2;
-      ditem.TranAmount = 20;
-      ditem.Desp = 'test';
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      expect(component.itemStepCompleted).toBeFalsy();
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
-    }));
-
-    it('step 2 (non-legacy): should not allow go third step if item miss desp', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Step 1.
-      // Tran. date
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
-      // Asset
-      let extAsset: AccountExtraAsset = new AccountExtraAsset();
-      extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
-      extAsset.Name = 'Asset 1';
-      extAsset.Comment = 'test Comment';
-      component.firstFormGroup.get('assetAccountControl').setValue(extAsset);
-      component.firstFormGroup.get('assetAccountControl').updateValueAndValidity();
-      // Owner
-      component.firstFormGroup.get('ownerControl').setValue(fakeData.currentUser.getUserId());
-      // Legacy
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
-      // Click next button
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-      expect(component._stepper.selectedIndex).toBe(1);
-
-      // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
-
-      // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
-      ditem.AccountId = 11;
-      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
-      ditem.TranType = 2;
-      ditem.TranAmount = 20;
-      component.dataSource.data = [ditem];
-      fixture.detectChanges();
-
-      expect(component.itemStepCompleted).toBeFalsy();
-      // Then, click the next button > third step
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // It shall not allow
-      expect(component._stepper.selectedIndex).toBe(1);
-    }));
-
     it('step 2 (non-legacy): should allow go third step if items are valid', fakeAsync(() => {
       fixture.detectChanges(); // ngOnInit
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -1204,7 +776,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -1212,24 +783,20 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
+      expect(component.itemFormGroup.valid).toBeFalsy();
 
       // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
+      let ditem: DocumentItem = new DocumentItem();
       ditem.AccountId = 11;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
       ditem.TranAmount = 20;
-      component.dataSource.data = [ditem];
+      ditem.ItemId = 1;
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
       fixture.detectChanges();
-
-      expect(component.itemStepCompleted).toBeTruthy();
+      expect(component.itemFormGroup.valid).toBeTruthy();
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
@@ -1277,12 +844,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -1298,7 +868,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -1306,24 +875,20 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
+      expect(component.itemFormGroup.valid).toBeFalsy();
 
       // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
+      let ditem: DocumentItem = new DocumentItem();
       ditem.AccountId = 11;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
       ditem.TranAmount = 20;
-      component.dataSource.data = [ditem];
+      ditem.ItemId = 1;
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
       fixture.detectChanges();
-
-      expect(component.itemStepCompleted).toBeTruthy();
+      expect(component.itemFormGroup.valid).toBeTruthy();
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
@@ -1354,12 +919,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -1375,7 +943,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -1383,24 +950,20 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
+      expect(component.itemFormGroup.valid).toBeFalsy();
 
       // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
+      let ditem: DocumentItem = new DocumentItem();
       ditem.AccountId = 11;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
       ditem.TranAmount = 20;
-      component.dataSource.data = [ditem];
+      ditem.ItemId = 1;
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
       fixture.detectChanges();
-
-      expect(component.itemStepCompleted).toBeTruthy();
+      expect(component.itemFormGroup.valid).toBeTruthy();
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
@@ -1436,12 +999,15 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      // Tran. date
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('Test');
       // Asset
       let extAsset: AccountExtraAsset = new AccountExtraAsset();
       extAsset.CategoryID = fakeData.finAssetCategories[0].ID;
@@ -1457,7 +1023,6 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -1465,24 +1030,20 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       expect(component._stepper.selectedIndex).toBe(1);
 
       // Step 2.
-      expect(component.dataSource.data.length).toEqual(0);
-      expect(component.itemStepCompleted).toBeFalsy();
+      expect(component.itemFormGroup.valid).toBeFalsy();
 
       // Setup the second step
-      component.onCreateDocItem();
-      fixture.detectChanges();
-
-      // Add item
-      let ditem: DocumentItem = component.dataSource.data[0];
+      let ditem: DocumentItem = new DocumentItem();
       ditem.AccountId = 11;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
       ditem.TranAmount = 20;
-      component.dataSource.data = [ditem];
+      ditem.ItemId = 1;
+      component.itemFormGroup.get('itemControl').setValue([ditem]);
+      component.itemFormGroup.get('itemControl').updateValueAndValidity();
       fixture.detectChanges();
-
-      expect(component.itemStepCompleted).toBeTruthy();
+      expect(component.itemFormGroup.valid).toBeTruthy();
       // Then, click the next button > third step
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();

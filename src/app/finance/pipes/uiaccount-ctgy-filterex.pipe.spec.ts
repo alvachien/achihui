@@ -116,6 +116,6 @@ describe('UIAccountCtgyFilterExPipe', () => {
         financeAccountCategoryLendTo,
       ],
     });
-    expect(rstAccounts.length).toBeGreaterThan(1);
+    expect(rstAccounts.length).toBeGreaterThan(0);
   });
 });

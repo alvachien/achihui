@@ -1525,6 +1525,71 @@ describe('FinanceStorageService', () => {
     });
   });
 
+  describe('updateNormalDocument', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+
+      let doc: Document = new Document();
+      doc.Id = 100;
+      doc.DocType = financeDocTypeNormal;
+      doc.Desp = 'Test';
+      doc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      doc.TranDate = moment();
+      let ditem: DocumentItem = new DocumentItem();
+      ditem.ItemId = 1;
+      ditem.AccountId = 11;
+      ditem.ControlCenterId = 1;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      ditem.TranAmount = 20;
+      doc.Items = [ditem];
+      fakeData.setFinNormalDocumentForCreate(doc);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return doc for normal doc', () => {
+      service.updateNormalDocument(fakeData.finNormalDocumentForCreate).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === documentAPIURL + '/100';
+       });
+
+      // Respond with the mock data
+      req.flush(fakeData.finNormalDocumentForCreate.writeJSONObject());
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.updateNormalDocument(fakeData.finNormalDocumentForCreate).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === documentAPIURL + '/100';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
   describe('readAccount', () => {
     beforeEach(() => {
       service = TestBed.get(FinanceStorageService);

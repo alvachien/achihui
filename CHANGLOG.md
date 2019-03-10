@@ -4,8 +4,10 @@ Released at 2019.6.30
 
 Bug fixing and Feature list
 - More than 900 unit tests are all available;
-- Finance: Document header refactored;
+- Finance: Document header refactored as an reusable control;
+- Finance: Items refactored as an reusable control;
 - Finance: plan;
+- Finance: Normal document now support editing;
 - [?] Use ACTSLib instead of default array or other data structures;
 
 ## Version 0.7.x

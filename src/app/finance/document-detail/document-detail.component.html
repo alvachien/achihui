@@ -23,5 +23,8 @@
 
   <mat-card-actions>
     <button mat-button color="warn" (click)="onBackToList()">{{'Common.BackToList' | translate}}</button>
+    <button mat-button *ngIf="isFieldChangable" color="primary" 
+      [disabled]="isSubmitButtonDisabled"
+      (click)="onSubmit()" class="docdetail-button-submit">{{'Common.onSubmit' | translate}}</button>
   </mat-card-actions>
 </mat-card>

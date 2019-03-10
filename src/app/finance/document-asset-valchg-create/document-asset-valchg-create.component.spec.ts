@@ -22,6 +22,8 @@ import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncDa
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
+import { DocumentHeaderComponent } from '../document-header';
+import { Document } from '../../model';
 
 describe('DocumentAssetValChgCreateComponent', () => {
   let component: DocumentAssetValChgCreateComponent;
@@ -54,7 +56,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
   beforeEach(async(() => {
 
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllAccountCategories',
       'fetchAllAssetCategories',
       'fetchAllDocTypes',
@@ -65,15 +67,15 @@ describe('DocumentAssetValChgCreateComponent', () => {
       'createAssetValChgDocument',
       'getDocumentItemByAccount',
     ]);
-    fetchAllAccountCategoriesSpy = stroageService.fetchAllAccountCategories.and.returnValue(of([]));
-    fetchAllAssetCategoriesSpy = stroageService.fetchAllAssetCategories.and.returnValue(of([]));
-    fetchAllDocTypesSpy = stroageService.fetchAllDocTypes.and.returnValue(of([]));
-    fetchAllTranTypesSpy = stroageService.fetchAllTranTypes.and.returnValue(of([]));
-    fetchAllAccountsSpy = stroageService.fetchAllAccounts.and.returnValue(of([]));
-    fetchAllOrdersSpy = stroageService.fetchAllOrders.and.returnValue(of([]));
-    fetchAllControlCentersSpy = stroageService.fetchAllControlCenters.and.returnValue(of([]));
-    createDocSpy = stroageService.createAssetValChgDocument.and.returnValue(of({}));
-    getDocItemSpy = stroageService.getDocumentItemByAccount.and.returnValue(of({}));
+    fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
+    fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(of([]));
+    fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
+    fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    createDocSpy = storageService.createAssetValChgDocument.and.returnValue(of({}));
+    getDocItemSpy = storageService.getDocumentItemByAccount.and.returnValue(of({}));
     const currService: any = jasmine.createSpyObj('FinCurrencyService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = currService.fetchAllCurrencies.and.returnValue(of({}));
     const homeService: Partial<HomeDefDetailService> = {};
@@ -102,6 +104,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
         RouterLinkDirectiveStub,
         DocumentAssetValChgCreateComponent,
         MessageDialogComponent,
+        DocumentHeaderComponent,
       ],
       providers: [
         TranslateService,
@@ -110,7 +113,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: FinCurrencyService, useValue: currService },
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
         { provide: HomeDefDetailService, useValue: homeService },
         { provide: Router, useValue: routerSpy },
       ],
@@ -287,11 +290,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
       tick(); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.TranCurrency).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(component._stepper.selectedIndex).toEqual(0); // At first page
-
-      // Also, the date shall be inputted
-      expect(component.TransactionDate).toBeTruthy();
     }));
 
     it('step 1: should have accounts and orders loaded', fakeAsync(() => {
@@ -313,20 +312,20 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       // Asset account
       // component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('Asset account is missing');
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -341,48 +340,20 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       // Asset account
       component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       // component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
-      // Click on the Next button
-      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-      expect(component._stepper.selectedIndex).toBe(0);
-    }));
-
-    it('step 1: desp is mandatory', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Asset account
-      component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      // component.firstFormGroup.get('despControl').setValue('test');
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('Amount is missing');
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -397,20 +368,20 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       // Asset account
       component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Control center
       // component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('no cost object assigned');
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -425,56 +396,21 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       // Asset account
       component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
       component.firstFormGroup.get('orderControl').setValue(fakeData.finOrders[0].Id);
       fixture.detectChanges();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
-      // Click on the Next button
-      let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-      expect(component._stepper.selectedIndex).toBe(0);
-    }));
-
-    it('step 1: exchange rate is mandatory in foreign currency', fakeAsync(() => {
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-
-      // Asset account
-      component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
-      // Amount
-      component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      component.firstFormGroup.get('currControl').setValue('USD');
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
-      // Control center
-      component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
-      // Order
-      fixture.detectChanges();
-      expect(component.isForeignCurrency).toBeTruthy();
-      expect(fixture.debugElement.query(By.css('#exgrate'))).toBeTruthy();
-      expect(fixture.debugElement.query(By.css('#exgrate_plan'))).toBeTruthy();
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      if (!component.firstFormGroup.valid) {
-        console.log(component.firstFormGroup);
-      }
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy('Cost object over assigned');
       // Click on the Next button
       let nextButtonNativeEl: HTMLElement = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -489,19 +425,19 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       // Asset account
       component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -520,22 +456,21 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       // Asset account
       component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = 'USD';
+      curdoc.ExgRate = 645.23;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      component.firstFormGroup.get('currControl').setValue('USD');
-      // Exchange rate
-      component.firstFormGroup.get('exgControl').setValue(643.12);
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       // Order
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -576,19 +511,19 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       // Asset account
       component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -667,19 +602,19 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       // Asset account
       component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -711,19 +646,19 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       // Asset account
       component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -759,19 +694,19 @@ describe('DocumentAssetValChgCreateComponent', () => {
 
       // Asset account
       component.firstFormGroup.get('accountControl').setValue(21);
-      // Tran date - default
+      let curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      curdoc.TranDate = moment();
+      component.firstFormGroup.get('headerControl').setValue(curdoc);
+      component.firstFormGroup.get('headerControl').updateValueAndValidity();
+      expect(component.firstFormGroup.get('headerControl').valid).toBeTruthy('Expect a valid header');
       // Amount
       component.firstFormGroup.get('amountControl').setValue(100);
-      // Currency - default
-      // Exchange rate
-      // Exchange rate plan
-      // Desp
-      component.firstFormGroup.get('despControl').setValue('test');
       // Control center
       component.firstFormGroup.get('ccControl').setValue(fakeData.finControlCenters[0].Id);
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();

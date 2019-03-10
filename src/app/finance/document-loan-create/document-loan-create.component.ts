@@ -101,9 +101,6 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       this.arOrders = rst[5];
       this.arCurrencies = rst[6];
 
-      // Currency
-      this.firstFormGroup.get('currControl').setValue(this._homedefService.ChosedHome.BaseCurrency);
-
       // Accounts
       this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
       this.uiAccountStatusFilter = undefined;
@@ -242,13 +239,15 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       console.debug(`AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent onStepSelectionChange with index = ${event.selectedIndex}`);
     }
 
-    if (event.selectedIndex === 2) {
+    if (event.selectedIndex === 1) {
       // Update the confirm info.
       let doc: Document = this.firstFormGroup.get('headerControl').value;
       this.confirmInfo.tranDateString = doc.TranDateFormatString;
       this.confirmInfo.tranDesp = doc.Desp;
       this.confirmInfo.tranCurrency = doc.TranCurr;
       this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl').value;
+      this.confirmInfo.controlCenterID = this.firstFormGroup.get('ccControl').value;
+      this.confirmInfo.orderID = this.firstFormGroup.get('orderControl').value;
     }
   }
 

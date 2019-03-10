@@ -2,6 +2,8 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import * as moment from 'moment';
+
 import { environment } from '../../environments/environment';
 import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Account, ControlCenter, Order,
   Document, DocumentWithPlanExgRateForUpdate, momentDateFormat, TemplateDocADP, AccountStatusEnum, TranTypeReport,
@@ -14,7 +16,6 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
-import * as moment from 'moment';
 
 @Injectable()
 export class FinanceStorageService {
@@ -1151,16 +1152,16 @@ export class FinanceStorageService {
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering Map of createDocument in FinanceStorageService: ' + response);
+          console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService updateNormalDocument, map');
         }
 
         let hd: Document = new Document();
-        hd.onSetData(response);
+        hd.onSetData(<any>response);
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Failed in createDocument in FinanceStorageService.`);
+          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService updateNormalDocument, failed.`);
         }
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);

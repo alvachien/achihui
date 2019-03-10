@@ -168,6 +168,8 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     this.firstFormGroup.reset();
     // Second step
     this.extraFormGroup.reset();
+
+    this.confirmInfo = {};
   }
 
   onSubmit(): void {
@@ -273,6 +275,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   private _geneateDocument(): Document {
     let doc: Document = this.firstFormGroup.get('headerControl').value;
     doc.HID = this._homeService.ChosedHome.ID;
+    doc.DocType = this.curDocType;
 
     let fitem: DocumentItem = new DocumentItem();
     fitem.ItemId = 1;
@@ -286,7 +289,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
     }
     fitem.TranAmount = this.firstFormGroup.get('amountControl').value;
     fitem.Desp = doc.Desp;
-    doc.Items.push(fitem);
+    doc.Items = [fitem];
 
     return doc;
   }

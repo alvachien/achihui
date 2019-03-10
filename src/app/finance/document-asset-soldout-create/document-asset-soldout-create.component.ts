@@ -11,7 +11,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, fin
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilterEx, financeTranTypeAssetSoldoutIncome, momentDateFormat, ModelUtility,
   InfoMessage, MessageType, financeDocTypeAssetSoldOut, financeTranTypeAssetSoldout, FinanceAssetSoldoutDocumentAPI,
-  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency,
+  HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -78,10 +78,10 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
       amountControl: new FormControl(0, Validators.required),
       ccControl: new FormControl(''),
       orderControl: new FormControl(''),
-    });
+    }, [costObjectValidator, this._headerAmountValidator]);
     this.itemFormGroup = new FormGroup({
       itemControl: new FormControl(''),
-    }, [this._amountValidator]);
+    }, [this._itemAmountValidator]);
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -243,32 +243,46 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
   }
 
   private _generateDoc(): Document {
-    let ndoc: Document = new Document();
+    let ndoc: Document = this.firstFormGroup.get('headerControl').value;
     ndoc.HID = this._homeService.ChosedHome.ID;
+    ndoc.DocType = this.curDocType;
     // Add items
     ndoc.Items = this.itemFormGroup.get('itemControl').value;
 
     return ndoc;
   }
-  private _amountValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+  private _headerAmountValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent _amountValidator...');
+    }
+
+    let amt: any = group.get('amountControl').value;
+    if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
+      return { amountisinvalid: true };
+    }
+
+    return null;
+  }
+  private _itemAmountValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent _amountValidator...');
     }
 
     let amt: any = this.firstFormGroup.get('amountControl').value;
-    let items: DocumentItem[] = this.itemFormGroup.get('itemControl').value;
+    let items: DocumentItem[] = group.get('itemControl').value;
 
     let totalAmt: number = 0;
-    items.forEach((val: DocumentItem) => {
+    for (let item of items) {
       let bExpense: boolean = this.arTranTypes.find((valtt: TranType) => {
-        return valtt.Id === val.TranType;
+        return valtt.Id === item.TranType;
       }).Expense;
       if (bExpense) {
-        totalAmt -= val.TranAmount;
+        totalAmt -= item.TranAmount;
       } else {
-        totalAmt += val.TranAmount;
+        totalAmt += item.TranAmount;
       }
-    });
+    }
+
     if (totalAmt !== amt) {
       return { amountmismatch: true };
     }

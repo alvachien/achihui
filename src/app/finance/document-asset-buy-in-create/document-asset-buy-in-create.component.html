@@ -64,7 +64,7 @@
       </mat-step>
 
       <!-- Step 2 -->
-      <mat-step [stepControl]="itemFormGroup">
+      <mat-step [stepControl]="itemFormGroup" [optional]="IsLegacyAsset">
         <ng-template matStepLabel>{{'Finance.Items' | translate}}</ng-template>
 
         <form [formGroup]="itemFormGroup">

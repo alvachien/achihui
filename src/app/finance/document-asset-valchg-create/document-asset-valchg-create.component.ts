@@ -305,8 +305,9 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
   }
 
   private _generateDoc(): Document {
-    let ndoc: Document = new Document();
+    let ndoc: Document = this.firstFormGroup.get('headerControl').value;
     ndoc.HID = this._homeService.ChosedHome.ID;
+    ndoc.DocType = this.curDocType;
 
     // Add items
     let ndocitem: DocumentItem = new DocumentItem();
@@ -322,7 +323,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
       ndocitem.TranAmount = Math.abs(ndoc.TranAmount);
       ndocitem.TranType = financeTranTypeAssetValueDecrease;
     }
-    ndoc.Items.push(ndocitem);
+    ndoc.Items= [ndocitem];
 
     return ndoc;
   }
@@ -331,7 +332,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent _amountValidator...');
     }
 
-    let amt: any = this.firstFormGroup.get('amountControl').value;
+    let amt: any = group.get('amountControl').value;
     if (amt === undefined || Number.isNaN(amt) || amt <= 0) {
       return { amountisinvalid: true };
     }

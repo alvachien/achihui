@@ -44,6 +44,9 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
   }
   get documentHeader(): Document {
     this._instanceObject.DocType = this.headerForm.get('docTypeControl').value;
+    if (!this._instanceObject.DocType && this.docType) {
+      this._instanceObject.DocType = this.docType;
+    }
     this._instanceObject.TranCurr = this.headerForm.get('currControl').value;
     this._instanceObject.TranDate = this.headerForm.get('dateControl').value;
     this._instanceObject.Desp = this.headerForm.get('despControl').value;
