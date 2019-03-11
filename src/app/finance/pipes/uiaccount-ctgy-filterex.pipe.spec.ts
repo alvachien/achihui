@@ -87,7 +87,7 @@ describe('UIAccountCtgyFilterExPipe', () => {
       excludedCategories: [
       ],
     });
-    expect(rstAccounts.length).toBeGreaterThan(1);
+    expect(rstAccounts.length).toBeGreaterThan(0);
     // expect(rstAccounts[0].Name).toContain('Cash');
   });
   it('3. include nothing, exclude cash account', () => {

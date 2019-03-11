@@ -348,10 +348,18 @@ describe('DocumentDetailComponent', () => {
       expect(updateNormalDocumentSpy).toHaveBeenCalled();
 
       tick();
+      fixture.detectChanges();
 
       // Expect a snackbar
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
       expect(messageElement.textContent).not.toBeNull('Expected snack bar to show the error message: text');
+
+      tick(2000);
+      fixture.detectChanges();
+
+      // Expect a navigator
+      expect(routerSpy.navigate).toHaveBeenCalled();
+      flush();
     }));
   });
 

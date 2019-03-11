@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { OverviewComponent } from './overview.component';
 import { EventStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 
@@ -17,15 +17,28 @@ describe('OverviewComponent', () => {
   let fixture: ComponentFixture<OverviewComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
+  let fetchAllGeneralEventsSpy: any;
+  let fetchHabitDetailWithCheckInSpy: any;
+  let fakeData: FakeDataHelper;
+  let routerSpy: any;
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+  });
 
   beforeEach(async(() => {
-    const storageService: any = jasmine.createSpyObj('EventStorageService', ['fetchAllEvents', 'fetchHabitDetailWithCheckIn']);
-    const fetchAllEventsSpy: any = storageService.fetchAllEvents.and.returnValue(of([]));
-    const fetchHabitDetailWithCheckInSpy: any = storageService.fetchHabitDetailWithCheckIn.and.returnValue(of([]));
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllMembersInChosedHome']);
-    homeService.ChosedHome = {
-      _id: 1,
+    const storageService: any = jasmine.createSpyObj('EventStorageService', [
+      'fetchAllGeneralEvents',
+      'fetchHabitDetailWithCheckIn',
+    ]);
+    fetchAllGeneralEventsSpy = storageService.fetchAllGeneralEvents.and.returnValue(of([]));
+    fetchHabitDetailWithCheckInSpy = storageService.fetchHabitDetailWithCheckIn.and.returnValue(of([]));
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const homeService: Partial<HomeDefDetailService> = {
+      ChosedHome: fakeData.chosedHome,
+      MembersInChosedHome: fakeData.chosedHome.Members,
     };
 
     TestBed.configureTestingModule({
