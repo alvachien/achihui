@@ -7,6 +7,11 @@
     <mat-tab-group color="accent" backgroundColor="primary">
       <!-- Tab: Header -->
       <mat-tab label="{{'Finance.Header' | translate}}">
+        <!-- ID -->
+        <mat-form-field>
+          <input matInput type="number" readonly placeholder="{{'Common.ID' | translate}}" [(ngModel)]="routerID">
+        </mat-form-field>
+
         <form [formGroup]="headerGroup">
           <hih-fin-document-header [docType]="curDocType"  formControlName="headerControl"></hih-fin-document-header>
         </form>
@@ -25,6 +30,6 @@
     <button mat-button color="warn" (click)="onBackToList()">{{'Common.BackToList' | translate}}</button>
     <button mat-button *ngIf="isFieldChangable" color="primary" 
       [disabled]="isSubmitButtonDisabled"
-      (click)="onSubmit()" class="docdetail-button-submit">{{'Common.onSubmit' | translate}}</button>
+      (click)="onSubmit()" class="docdetail-button-submit">{{'Common.Submit' | translate}}</button>
   </mat-card-actions>
 </mat-card>

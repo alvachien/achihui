@@ -1,14 +1,18 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import * as moment from 'moment';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { environment } from '../../../environments/environment';
 import { UIStatusService, EventStorageService } from '../../services';
 import { LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN,
   GeneralEvent, momentDateFormat, HabitEventDetailWithCheckInStatistics,
 } from '../../model';
-import { environment } from '../../../environments/environment';
-import { Router } from '@angular/router';
-import { Calendar } from 'fullcalendar';
-import * as moment from 'moment';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'hih-event-overview',
@@ -50,15 +54,14 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
     let that: any = this;
     this.ctrlCalendar = new Calendar(this.elemcalendar.nativeElement, {
-      // options here
+      plugins: [ dayGridPlugin, timeGridPlugin, listPlugin ],
       header: {
         left: 'prev,next today',
         center: 'title',
-        right: 'month,agendaWeek,agendaDay,listWeek',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
       },
       defaultDate: new Date(),
       locale: this.initialLocaleCode,
-      themeSystem: 'standard',
       navLinks: true, // can click day/week names to navigate views
       editable: true,
       eventLimit: true, // allow "more" link when too many events
@@ -67,7 +70,7 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
         (arg: any, successCallback: any, failureCallback: any) => {
           let dtbgn: moment.Moment = moment(arg.startStr);
           let dtend: moment.Moment = moment(arg.endStr);
-          that._storageService.fetchAllEvents(100, 0, true, dtbgn, dtend)
+          that._storageService.fetchAllGeneralEvents(100, 0, true, dtbgn, dtend)
             .pipe(takeUntil(this._destroyed$))
             .subscribe((data: any) => {
             let arevents: any[] = [];
@@ -138,17 +141,19 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
           this.onNavigateToHabitEvent(arg.event.extendedProps.event_id);
         }
       },
-      // plugins: [],
     });
 
     this.ctrlCalendar.render();
   }
+
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering OverviewComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onNavigateToGeneralEvent(id: number): void {

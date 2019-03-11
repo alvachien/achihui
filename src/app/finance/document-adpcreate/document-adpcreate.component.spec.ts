@@ -132,7 +132,7 @@ describe('DocumentADPCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('1a. should create with adr', () => {
+  it('1a. should create with adr', fakeAsync(() => {
     activatedRouteStub.setURL([new UrlSegment('createadr', {})] as UrlSegment[]);
 
     expect(component).toBeTruthy();
@@ -143,7 +143,7 @@ describe('DocumentADPCreateComponent', () => {
     fixture.detectChanges();
 
     expect(component._stepper.selectedIndex).toEqual(0); // At first page
-});
+  }));
 
   // Handle url which neither adp nor adr case?
 

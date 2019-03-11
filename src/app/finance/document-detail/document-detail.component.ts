@@ -19,8 +19,8 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   styleUrls: ['./document-detail.component.scss'],
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
-  private routerID: number = -1; // Current object ID in routing
   private destroyed$: ReplaySubject<boolean>;
+  public routerID: number = -1; // Current object ID in routing
 
   public currentMode: string;
   public uiMode: UIMode = UIMode.Display;
@@ -232,7 +232,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
         duration: 2000,
       }).afterDismissed().subscribe(() => {
-        this._router.navigate(['/finance/document/' + this.routerID.toString()]);
+        this._router.navigate(['/finance/document/display/' + this.routerID.toString()]);
       });
     }, (error: any) => {
       // Show a error dialog

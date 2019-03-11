@@ -346,6 +346,12 @@ describe('DocumentDetailComponent', () => {
 
       component.onSubmit();
       expect(updateNormalDocumentSpy).toHaveBeenCalled();
+
+      tick();
+
+      // Expect a snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull('Expected snack bar to show the error message: text');
     }));
   });
 
