@@ -105,17 +105,6 @@ describe('TagsListComponent', () => {
       expect(component.tagChartOption).toBeTruthy();
     }));
 
-    it('should show data after OnInit (async)', async(() => {
-      fixture.detectChanges(); // ngOnInit()
-      expect(component.tagChartOption).toBeFalsy();
-
-      fixture.whenStable().then(() => {
-        fixture.detectChanges();
-
-        expect(component.tagChartOption).toBeTruthy();
-      });
-    }));
-
     it('should show data after fetchAllTags (spy done)', (done: DoneFn) => {
       fixture.detectChanges();
 

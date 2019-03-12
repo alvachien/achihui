@@ -1635,42 +1635,45 @@ export interface DocumentVerifyContext {
  */
 export class Document extends hih.BaseModel {
   private _id: number;
-  get Id(): number {
-    return this._id;
-  }
-  set Id(id: number) {
-    this._id = id;
-  }
-
+  private _tranDate: moment.Moment;
   private _hid: number;
-  get HID(): number {
-    return this._hid;
-  }
-  set HID(hid: number) {
-    this._hid = hid;
-  }
+  private _doctype: number;
+  private _trancurr: string;
+  private _desp: string;
+  private _exgrate?: number;
+  private _exgratePlan?: boolean;
+  private _trancurr2?: string;
+  private _exgrate2?: number;
+  private _exgrate2Plan?: boolean;
 
-  public DocType: number;
-  public _tranDate: moment.Moment;
-  public TranCurr: string;
-  public Desp: string;
-  public ExgRate: number;
-  public ExgRate_Plan: boolean;
-  public TranCurr2: string;
-  public ExgRate2: number;
-  public ExgRate_Plan2: boolean;
+  get Id(): number                      { return this._id;          }
+  set Id(id: number)                    { this._id = id;            }
+  get HID(): number                     { return this._hid;         }
+  set HID(hid: number)                  { this._hid = hid;          }
+  get DocType(): number                 { return this._doctype;     }
+  set DocType(dt: number)               { this._doctype = dt;       }
+  get TranCurr(): string                { return this._trancurr;    }
+  set TranCurr(curr: string)            { this._trancurr = curr;    }
+  get Desp(): string                    { return this._desp;        }
+  set Desp(desp: string)                { this._desp = desp;        }
+  get ExgRate(): number                 { return this._exgrate;     }
+  set ExgRate(exg: number | undefined)  { this._exgrate = exg;      }
+  get ExgRate_Plan(): boolean           { return this._exgratePlan; }
+  set ExgRate_Plan(plan: boolean | undefined) { this._exgratePlan = plan; }
+  get TranCurr2(): string               { return this._trancurr2;   }
+  set TranCurr2(cr: string | undefined) { this._trancurr2 = cr;     }
+  get ExgRate2(): number                { return this._exgrate2;    }
+  set ExgRate2(eg2: number | undefined) { this._exgrate2 = eg2;     }
+  get ExgRate_Plan2(): boolean          { return this._exgrate2Plan; }
+  set ExgRate_Plan2(pl: boolean | undefined) { this._exgrate2Plan = pl; }
+  get TranDate(): moment.Moment         { return this._tranDate;    }
+  set TranDate(td: moment.Moment)       { this._tranDate = td;      }
 
   public Items: DocumentItem[] = [];
 
   // UI fields
   public DocTypeName: string;
   public TranAmount: number;
-  get TranDate(): moment.Moment {
-    return this._tranDate;
-  }
-  set TranDate(td: moment.Moment) {
-    this._tranDate = td;
-  }
   get TranDateFormatString(): string {
     return this._tranDate.format(hih.momentDateFormat);
   }
@@ -1695,14 +1698,11 @@ export class Document extends hih.BaseModel {
     // Doc type
     if (context && context.DocumentTypes && context.DocumentTypes instanceof Array) {
       if (this.DocType > 0) {
-        let bExist: boolean = false;
-        for (let tt of context.DocumentTypes) {
-          if (+tt.Id === this.DocType) {
-            bExist = true;
-          }
-        }
+        let dtidx: number = context.DocumentTypes.findIndex((dt: DocumentType) => {
+          return dt.Id === this.DocType;
+        });
 
-        if (!bExist) {
+        if (dtidx === -1) {
           let msg: hih.InfoMessage = new hih.InfoMessage();
           msg.MsgTime = moment();
           msg.MsgType = hih.MessageType.Error;
@@ -1730,6 +1730,7 @@ export class Document extends hih.BaseModel {
       chkrst = false;
     }
     // Desp
+    this.Desp = this.Desp.trim();
     if (!this.Desp) {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTime = moment();
@@ -1993,29 +1994,56 @@ export class Document extends hih.BaseModel {
  * Document item
  */
 export class DocumentItem {
-  public DocId: number;
-  public ItemId: number;
-  public AccountId: number;
-  public TranType: number;
-  public TranAmount: number;
-  public UseCurr2: boolean;
-  public ControlCenterId: number;
-  public OrderId: number;
-  public Desp: string;
+  private _docid?: number;
+  private _itemid: number;
+  private _accountid: number;
+  private _trantype: number;
+  private _tranamt: number;
+  private _usecurr2?: boolean;
+  private _ccid?: number;
+  private _orderid?: number;
+  private _desp: string;
 
-  public AccountName: string;
-  public TranTypeName: string;
-  public ControlCenterName: string;
-  public OrderName: string;
-  public VerifiedMsgs: hih.InfoMessage[] = [];
+  get DocId(): number             { return this._docid;       }
+  set DocId(docid: number )       { this._docid = docid;      }
+  get ItemId(): number            { return this._itemid;      }
+  set ItemId(iid: number)         { this._itemid = iid;       }
+  get AccountId(): number         { return this._accountid;   }
+  set AccountId(acntid: number)   { this._accountid = acntid; }
+  get TranType(): number          { return this._trantype;    }
+  set TranType(tt: number)        { this._trantype = tt;      }
+  get TranAmount(): number        { return this._tranamt;     }
+  set TranAmount(tamt: number)    { this._tranamt = tamt;     }
+  get UseCurr2(): boolean         { return this._usecurr2;    }
+  set UseCurr2(ucur2: boolean | undefined) {
+    this._usecurr2 = ucur2;
+  }
+  get ControlCenterId(): number   { return this._ccid;        }
+  set ControlCenterId(ccid: number | undefined) {
+    this._ccid = ccid;
+  }
+  get OrderId(): number | undefined { return this._orderid;   }
+  set OrderId(oid: number | undefined) {
+    this._orderid = oid;
+  }
+  get Desp(): string              { return this._desp;        }
+  set Desp(dsp: string)           { this._desp = dsp;         }
 
-  public Tags: string[] = [];
+  public VerifiedMsgs: hih.InfoMessage[];
+
+  public Tags: string[];
+
+  constructor() {
+    this.TranAmount = 0;
+    this.Tags = [];
+    this.VerifiedMsgs = [];
+  }
 
   public onVerify(context?: DocumentVerifyContext): boolean {
     let chkrst: boolean = true;
 
     // Item Id
-    if (this.ItemId <= 0) {
+    if (this.ItemId === undefined || this.ItemId <= 0) {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgContent = 'Finance.InvalidItemID';
       msg.MsgTitle = 'Finance.InvalidItemID';
@@ -2026,16 +2054,13 @@ export class DocumentItem {
     }
 
     // Account
-    if (context && context.Accounts && context.Accounts instanceof Array) {
+    if (context && context.Accounts && context.Accounts instanceof Array && context.Accounts.length > 0) {
       if (this.AccountId > 0) {
-        let bAcntExist: boolean = false;
-        for (let acnt of context.Accounts) {
-          if (+acnt.Id === this.AccountId) {
-            bAcntExist = true;
-          }
-        }
+        let acnt: Account = context.Accounts.find((val: Account) => {
+          return val.Id === this.AccountId;
+        });
 
-        if (!bAcntExist) {
+        if (!acnt || acnt.Status !== AccountStatusEnum.Normal) {
           let msg: hih.InfoMessage = new hih.InfoMessage();
           msg.MsgTime = moment();
           msg.MsgType = hih.MessageType.Error;
@@ -2064,15 +2089,12 @@ export class DocumentItem {
     }
     // Transaction type
     if (context && context.TransactionTypes && context.TransactionTypes instanceof Array) {
-      if (this.TranType > 0) {
-        let bExist: boolean = false;
-        for (let tt of context.TransactionTypes) {
-          if (+tt.Id === this.TranType) {
-            bExist = true;
-          }
-        }
+      if (this.TranType !== undefined) {
+        let ttidx: number = context.TransactionTypes.findIndex((tt: TranType) => {
+          return tt.Id === this.TranType;
+        });
 
-        if (!bExist) {
+        if (ttidx === -1) {
           let msg: hih.InfoMessage = new hih.InfoMessage();
           msg.MsgTime = moment();
           msg.MsgType = hih.MessageType.Error;
@@ -2104,12 +2126,13 @@ export class DocumentItem {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTime = moment();
       msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.AmountIsMust';
-      msg.MsgContent = 'Finance.AmountIsMust';
+      msg.MsgTitle = 'Finance.AmountIsNotCorrect';
+      msg.MsgContent = 'Finance.AmountIsNotCorrect';
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
     // Desp
+    this.Desp = this.Desp.trim();
     if (!this.Desp) {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTime = moment();
@@ -2166,14 +2189,11 @@ export class DocumentItem {
       // Control center
       if (this.ControlCenterId) {
         if (context && context.ControlCenters && context.ControlCenters instanceof Array) {
-          let bExist: boolean = false;
-          for (let tt of context.ControlCenters) {
-            if (+tt.Id === this.ControlCenterId) {
-              bExist = true;
-            }
-          }
+          let ccidx: number = context.ControlCenters.findIndex((cc: ControlCenter) => {
+            return cc.Id === this.ControlCenterId;
+          });
 
-          if (!bExist) {
+          if (ccidx === -1) {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
@@ -2194,14 +2214,11 @@ export class DocumentItem {
       } else if (this.OrderId) {
         // Order
         if (context && context.Orders && context.Orders instanceof Array) {
-          let bExist: boolean = false;
-          for (let tt of context.Orders) {
-            if (+tt.Id === this.OrderId) {
-              bExist = true;
-            }
-          }
+          let ordidx: number = context.Orders.findIndex((ord: Order) => {
+            return ord.Id === this.OrderId;
+          });
 
-          if (!bExist) {
+          if (ordidx === -1) {
             let msg: hih.InfoMessage = new hih.InfoMessage();
             msg.MsgTime = moment();
             msg.MsgType = hih.MessageType.Error;
@@ -2256,14 +2273,8 @@ export class DocumentItem {
     if (data && data.accountID) {
       this.AccountId = +data.accountID;
     }
-    if (data && data.accountName) {
-      this.AccountName = data.accountName;
-    }
     if (data && data.tranType) {
       this.TranType = +data.tranType;
-    }
-    if (data && data.tranTypeName) {
-      this.TranTypeName = data.tranTypeName;
     }
     if (data && data.tranAmount) {
       this.TranAmount = +data.tranAmount;
@@ -2274,14 +2285,8 @@ export class DocumentItem {
     if (data && data.controlCenterID) {
       this.ControlCenterId = +data.controlCenterID;
     }
-    if (data && data.controlCenterName) {
-      this.ControlCenterName = data.controlCenterName;
-    }
     if (data && data.orderID) {
       this.OrderId = +data.orderID;
-    }
-    if (data && data.orderName) {
-      this.OrderName = data.orderName;
     }
     if (data && data.desp) {
       this.Desp = data.desp;

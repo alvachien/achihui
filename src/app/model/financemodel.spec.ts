@@ -5,9 +5,10 @@
 import { Currency, CurrencyJson, AccountCategory, AccountCategoryJson, Account, AccountJson,
   DocumentType, DocumentTypeJson, AssetCategory, AssetCategoryJson, AccountExtraAdvancePayment,
   AccountExtraAsset, AccountExtraLoan, ControlCenter, Order, SettlementRule,
-  Document, DocumentItem, TemplateDocLoan, TemplateDocADP, Plan, FinanceReportBase, } from './financemodel';
+  Document, DocumentItem, TemplateDocLoan, TemplateDocADP, Plan, FinanceReportBase, AccountStatusEnum, } from './financemodel';
 import * as moment from 'moment';
 import * as hih from './common';
+import { FakeDataHelper } from '../../testing';
 
 describe('Currency', () => {
   let instance: Currency;
@@ -484,6 +485,17 @@ describe('SettlementRule', () => {
 
 describe('Document', () => {
   let instance: Document;
+  let fakeData: FakeDataHelper;
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+    fakeData.buildCurrencies();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
+    fakeData.buildFinControlCenter();
+    fakeData.buildFinOrders();
+  });
 
   beforeEach(() => {
     instance = new Document();
@@ -500,6 +512,17 @@ describe('Document', () => {
 
 describe('DocumentItem', () => {
   let instance: DocumentItem;
+  let fakeData: FakeDataHelper;
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildChosedHome();
+    fakeData.buildCurrencies();
+    fakeData.buildFinConfigData();
+    fakeData.buildFinAccounts();
+    fakeData.buildFinControlCenter();
+    fakeData.buildFinOrders();
+  });
 
   beforeEach(() => {
     instance = new DocumentItem();
@@ -520,13 +543,403 @@ describe('DocumentItem', () => {
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
   });
-  it ('#4. onVerify', () => {
-    instance.ItemId = -1;
-    instance.TranAmount = 0;
+  it ('#4. onVerify: Item Id is a must', () => {
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id;
 
-    let rst: boolean = instance.onVerify();
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
     expect(rst).toBeFalsy();
-    expect(instance.VerifiedMsgs.length).toBeGreaterThan(0);
+
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidItemID';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#5. onVerify: Account Id is a must', () => {
+    instance.ItemId = 1;
+    // instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id;
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.AccountIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#6. onVerify: Account Id must be exists', () => {
+    instance.ItemId = 1;
+    instance.AccountId = 30001; // Invalid account ID
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id;
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidAccount';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#7. onVerify: Account status must be normal', () => {
+    let arAccounts: Account[] = fakeData.finAccounts.slice();
+    arAccounts[0].Status = AccountStatusEnum.Closed;
+    instance.ItemId = 1;
+    instance.AccountId = arAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id;
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: arAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidAccount';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#8. onVerify: Account must be fetched for verifying', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id;
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: [],
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.AccountFetchFailed';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#9. onVerify: Tran type is a must', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    // instance.TranType = fakeData.finTranTypes[0].Id;
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.TransactionTypeIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#10. onVerify: Tran type should be valid', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = 32323; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidTransactionType';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#11. onVerify: Tran type must be fetched', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: [],
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.TransactionTypeFetchFailed';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#12. onVerify: Tran amount must larger than 0', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.Desp = 'test';
+    // instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.AmountIsNotCorrect';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#13. onVerify: Desp is must', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    // instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DespIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#14. onVerify: Desp is max to 44', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.Desp = 'testtttttttttttttttttttttttttttttttttttttttttttttttt';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DespIsTooLong';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#15. onVerify: control center and order not allow assign both', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    instance.OrderId = fakeData.finOrders[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DualInputFound';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#16. onVerify: control center and order not allow no assign', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    // instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    // instance.OrderId = fakeData.finOrders[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.NoInputFound';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#17. onVerify: control center shall be valid', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = 33331;
+    // instance.OrderId = fakeData.finOrders[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidControlCenter';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#18. onVerify: order shall be valid', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    // instance.ControlCenterId = 33331;
+    instance.OrderId = 33331;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidOrder';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#19. onVerify: control center shall be fetched', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.ControlCenterId = fakeData.finControlCenters[0].Id;
+    // instance.OrderId = fakeData.finOrders[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: [],
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.ControlCenterFetchFailedOrNoCC';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it ('#20. onVerify: order shall be fteched', () => {
+    instance.ItemId = 1;
+    instance.AccountId = fakeData.finAccounts[0].Id;
+    instance.OrderId = fakeData.finOrders[0].Id;
+    instance.Desp = 'test';
+    instance.TranAmount = 100;
+    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: [],
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.OrderFetchFailedOrNoOrder';
+    });
+    expect(idx).not.toEqual(-1);
   });
 });
 

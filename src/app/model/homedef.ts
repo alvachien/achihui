@@ -5,9 +5,9 @@ import * as hih from './common';
  * Relationship
  */
 export enum HomeMemberRelationEnum {
-  Self = 0,
+  Self   = 0,
   Couple = 1,
-  Child = 2,
+  Child  = 2,
   Parent = 3,
 }
 

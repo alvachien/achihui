@@ -188,7 +188,7 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
     }
     // Check 4. Amount
     erridx = this.dataSource.data.findIndex((val: DocumentItem) => {
-      return val.TranAmount === undefined;
+      return val.TranAmount <= 0;
     });
     if (erridx !== -1) {
       return {itemwithoutamount: true};
