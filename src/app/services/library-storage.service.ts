@@ -14,12 +14,16 @@ export class LibraryStorageService {
   private _isBookCtgyListLoaded: boolean;
   private _listBookCategories: BookCategory[];
   private _isMovieGenreListLoaded: boolean;
+  private _listMovieGenres: MovieGenre[];
   private _isBookListLoaded: boolean;
   private _isLocationListLoaded: boolean;
   private _isMovieListLoaded: boolean;
 
   get BookCategories(): BookCategory[] {
     return this._listBookCategories;
+  }
+  get MovieGenres(): MovieGenre[] {
+    return this._listMovieGenres;
   }
   listBookChange: BehaviorSubject<Book[]> = new BehaviorSubject<Book[]>([]);
   get Books(): Book[] {
@@ -29,14 +33,13 @@ export class LibraryStorageService {
   get Locations(): Location[] {
     return this.listLocationChange.value;
   }
-  listMovieGenreChange: BehaviorSubject<MovieGenre[]> = new BehaviorSubject<MovieGenre[]>([]);
-  get MovieGenres(): MovieGenre[] {
-    return this.listMovieGenreChange.value;
-  }
   listMovieChange: BehaviorSubject<Movie[]> = new BehaviorSubject<Movie[]>([]);
   get Movies(): Movie[] {
     return this.listMovieChange.value;
   }
+
+  readonly bookCategoryAPIURL: any = environment.ApiUrl + '/api/LibBookCategory';
+  readonly movieGenreAPIURL: any = environment.ApiUrl + '/api/LibMovieGenre';
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -48,6 +51,7 @@ export class LibraryStorageService {
     this._isBookCtgyListLoaded = false;
     this._listBookCategories = [];
     this._isMovieGenreListLoaded = false;
+    this._listMovieGenres = [];
     this._isBookListLoaded = false;
     this._isLocationListLoaded = false;
     this._isMovieListLoaded = false;
@@ -56,8 +60,6 @@ export class LibraryStorageService {
   // Book Categories
   public fetchAllBookCategories(forceReload?: boolean): Observable<any> {
     if (!this._isBookCtgyListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/LibBookCategory';
-
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -65,7 +67,7 @@ export class LibraryStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
+      return this._http.get(this.bookCategoryAPIURL, {
         headers: headers,
         params: params,
       })
@@ -114,8 +116,6 @@ export class LibraryStorageService {
   // Movie Genres
   public fetchAllMovieGenres(forceReload?: boolean): Observable<any> {
     if (!this._isMovieGenreListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/LibMovieGenre';
-
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -123,7 +123,7 @@ export class LibraryStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
+      return this._http.get(this.movieGenreAPIURL, {
         headers: headers,
         params: params,
       })
@@ -133,26 +133,26 @@ export class LibraryStorageService {
           }
 
           const rjs: any = <any>response;
-          let listRst: MovieGenre[] = [];
+          this._listMovieGenres = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: MovieGenre = new MovieGenre();
               rst.onSetData(si);
-              listRst.push(rst);
+              this._listMovieGenres.push(rst);
             }
           }
 
           // Prepare for the hierarchy
-          this._buildMovieGenreHierarchy(listRst);
+          this._buildMovieGenreHierarchy(this._listMovieGenres);
           // Sort it
-          listRst.sort((a: any, b: any) => {
+          this._listMovieGenres.sort((a: any, b: any) => {
             return a.FullDisplayText.localeCompare(b.FullDisplayText);
           });
 
           this._isMovieGenreListLoaded = true;
-          this.listMovieGenreChange.next(listRst);
-          return listRst;
+
+          return this._listMovieGenres;
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
@@ -160,12 +160,12 @@ export class LibraryStorageService {
             }
 
             this._isMovieGenreListLoaded = false;
-            this.listMovieGenreChange.next([]);
+            this._listMovieGenres = [];
 
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listMovieGenreChange.value);
+      return of(this._listMovieGenres);
     }
   }
 
