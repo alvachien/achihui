@@ -361,6 +361,43 @@ describe('DocumentDetailComponent', () => {
       expect(routerSpy.navigate).toHaveBeenCalled();
       flush();
     }));
+    it('shall popup a dialog if submit failed', fakeAsync(() => {
+      updateNormalDocumentSpy.and.returnValue(asyncError('server 500 error'));
+
+      fixture.detectChanges();
+      tick();
+      flush();
+      fixture.detectChanges();
+      let submitButton: HTMLButtonElement = fixture.debugElement.query(By.css('.docdetail-button-submit'))!.nativeElement;
+
+      fixture.detectChanges();
+      expect(submitButton.disabled).toBeTruthy('Submit button shall be disabled as no change performed');
+
+      // Header: change the desp.
+      let doc: any = component.headerGroup.get('headerControl').value;
+      doc.Desp = 'Test2';
+      component.headerGroup.get('headerControl').setValue(doc);
+      component.headerGroup.get('headerControl').markAsDirty();
+      fixture.detectChanges();
+      expect(component.headerGroup.valid).toBeTruthy();
+      expect(submitButton.disabled).toBeFalsy('Submit button shall be enabled as desp in Header has been changed');
+
+      component.onSubmit();
+      expect(updateNormalDocumentSpy).toHaveBeenCalled();
+
+      tick();
+      fixture.detectChanges();
+
+      // Expect a dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      flush();
+    }));
   });
 
   describe('3. display mode', () => {

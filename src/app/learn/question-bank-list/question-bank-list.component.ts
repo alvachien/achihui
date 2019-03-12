@@ -87,6 +87,8 @@ export class QuestionBankListComponent implements OnInit, OnDestroy {
       this.dataSource.paginator = this.paginator;
     }, (error: any) => {
       // TBD.
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 }

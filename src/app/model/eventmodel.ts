@@ -17,36 +17,16 @@ export class GeneralEvent extends hih.BaseModel {
   private _ispublic: boolean;
   private _refRecurID: number;
 
-  get ID(): number {
-    return this._id;
-  }
-  set ID(id: number) {
-    this._id = id;
-  }
-  get HID(): number {
-    return this._hid;
-  }
-  set HID(hid: number) {
-    this._hid = hid;
-  }
-  get Assignee(): string {
-    return this._assignee;
-  }
-  set Assignee(asgnee: string) {
-    this._assignee = asgnee;
-  }
-  get Name(): string {
-    return this._name;
-  }
-  set Name(name: string) {
-    this._name = name;
-  }
-  get Content(): string {
-    return this._content;
-  }
-  set Content(content: string) {
-    this._content = content;
-  }
+  get ID(): number            { return this._id;          }
+  set ID(id: number)          { this._id = id;            }
+  get HID(): number           { return this._hid;         }
+  set HID(hid: number)        { this._hid = hid;          }
+  get Assignee(): string      { return this._assignee;    }
+  set Assignee(asgee: string) { this._assignee = asgee;   }
+  get Name(): string          { return this._name;        }
+  set Name(name: string)      { this._name = name;        }
+  get Content(): string       { return this._content;     }
+  set Content(cont: string)   { this._content = cont;     }
   get StartTime(): moment.Moment {
     return this._startTime;
   }

@@ -507,6 +507,117 @@ describe('Document', () => {
 
   it('#1. Default values', () => {
     expect(instance.VerifiedMsgs.length).toEqual(0);
+    expect(instance.TranDate).toBeTruthy();
+  });
+  it('#2. onVerify: Doc type is a must', () => {
+    instance.Id = 1;
+    // instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.TranCurr = fakeData.chosedHome.BaseCurrency;
+    instance.TranDate = moment();
+    instance.Desp = 'test';
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DocumentTypeIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#3. onVerify: Doc type should be valid', () => {
+    instance.Id = 1;
+    instance.DocType = 233; // Invalid one
+    instance.TranCurr = fakeData.chosedHome.BaseCurrency;
+    instance.TranDate = moment();
+    instance.Desp = 'test';
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidDocumentType';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#4. onVerify: Doc type must be fetched', () => {
+    instance.Id = 1;
+    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.TranCurr = fakeData.chosedHome.BaseCurrency;
+    instance.TranDate = moment();
+    instance.Desp = 'test';
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: [],
+      TransactionTypes: [],
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DocumentTypeFetchFailed';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#5. onVerify: Desp is a must', () => {
+    instance.Id = 1;
+    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.TranCurr = fakeData.chosedHome.BaseCurrency;
+    instance.TranDate = moment();
+    // instance.Desp = 'test';
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DespIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#6. onVerify: Desp larger than 44', () => {
+    instance.Id = 1;
+    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.TranCurr = fakeData.chosedHome.BaseCurrency;
+    instance.TranDate = moment();
+    instance.Desp = 'testttttttttttttttttttttttttttttttttttttttttttttttttt';
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.DespIsTooLong';
+    });
+    expect(idx).not.toEqual(-1);
   });
 });
 
@@ -918,13 +1029,13 @@ describe('DocumentItem', () => {
     });
     expect(idx).not.toEqual(-1);
   });
-  it ('#20. onVerify: order shall be fteched', () => {
+  it ('#20. onVerify: order shall be fetched', () => {
     instance.ItemId = 1;
     instance.AccountId = fakeData.finAccounts[0].Id;
-    instance.OrderId = fakeData.finOrders[0].Id;
+    instance.OrderId = fakeData.finOrders[0].Id; // Invalid one
     instance.Desp = 'test';
     instance.TranAmount = 100;
-    instance.TranType = fakeData.finTranTypes[0].Id; // Invalid one
+    instance.TranType = fakeData.finTranTypes[0].Id;
 
     let rst: boolean = instance.onVerify({
       ControlCenters: fakeData.finControlCenters,

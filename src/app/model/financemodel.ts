@@ -1672,7 +1672,6 @@ export class Document extends hih.BaseModel {
   public Items: DocumentItem[] = [];
 
   // UI fields
-  public DocTypeName: string;
   public TranAmount: number;
   get TranDateFormatString(): string {
     return this._tranDate.format(hih.momentDateFormat);
@@ -1696,8 +1695,9 @@ export class Document extends hih.BaseModel {
     let chkrst: boolean = true;
 
     // Doc type
-    if (context && context.DocumentTypes && context.DocumentTypes instanceof Array) {
-      if (this.DocType > 0) {
+    if (context && context.DocumentTypes 
+      && context.DocumentTypes instanceof Array && context.DocumentTypes.length > 0) {
+      if (this.DocType !== undefined) {
         let dtidx: number = context.DocumentTypes.findIndex((dt: DocumentType) => {
           return dt.Id === this.DocType;
         });
@@ -1730,7 +1730,6 @@ export class Document extends hih.BaseModel {
       chkrst = false;
     }
     // Desp
-    this.Desp = this.Desp.trim();
     if (!this.Desp) {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTime = moment();
@@ -1740,6 +1739,7 @@ export class Document extends hih.BaseModel {
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     } else {
+      this.Desp = this.Desp.trim();
       if (this.Desp.length > 44) {
         let msg: hih.InfoMessage = new hih.InfoMessage();
         msg.MsgTime = moment();
@@ -1752,7 +1752,8 @@ export class Document extends hih.BaseModel {
     }
 
     // Currency check
-    if (context && context.Currencies && context.Currencies instanceof Array) {
+    if (context && context.Currencies 
+      && context.Currencies instanceof Array && context.Currencies.length > 0) {
       if (this.TranCurr) {
         let bExist: boolean = false;
         for (let cc of context.Currencies) {
@@ -1948,9 +1949,6 @@ export class Document extends hih.BaseModel {
     if (data && data.docType) {
       this.DocType = +data.docType;
     }
-    if (data && data.docTypeName) {
-      this.DocTypeName = data.docTypeName;
-    }
     if (data && data.tranDate) {
       this.TranDate = moment(data.tranDate, hih.momentDateFormat);
     }
@@ -2054,7 +2052,8 @@ export class DocumentItem {
     }
 
     // Account
-    if (context && context.Accounts && context.Accounts instanceof Array && context.Accounts.length > 0) {
+    if (context && context.Accounts 
+      && context.Accounts instanceof Array && context.Accounts.length > 0) {
       if (this.AccountId > 0) {
         let acnt: Account = context.Accounts.find((val: Account) => {
           return val.Id === this.AccountId;
@@ -2088,7 +2087,9 @@ export class DocumentItem {
       chkrst = false;
     }
     // Transaction type
-    if (context && context.TransactionTypes && context.TransactionTypes instanceof Array) {
+    if (context && context.TransactionTypes 
+      && context.TransactionTypes instanceof Array
+      && context.TransactionTypes.length > 0) {
       if (this.TranType !== undefined) {
         let ttidx: number = context.TransactionTypes.findIndex((tt: TranType) => {
           return tt.Id === this.TranType;
@@ -2132,7 +2133,6 @@ export class DocumentItem {
       chkrst = false;
     }
     // Desp
-    this.Desp = this.Desp.trim();
     if (!this.Desp) {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTime = moment();
@@ -2142,6 +2142,7 @@ export class DocumentItem {
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     } else {
+      this.Desp = this.Desp.trim();
       if (this.Desp.length > 44) {
         let msg: hih.InfoMessage = new hih.InfoMessage();
         msg.MsgTime = moment();
@@ -2188,7 +2189,8 @@ export class DocumentItem {
     if (bccord) {
       // Control center
       if (this.ControlCenterId) {
-        if (context && context.ControlCenters && context.ControlCenters instanceof Array) {
+        if (context && context.ControlCenters 
+          && context.ControlCenters instanceof Array && context.ControlCenters.length > 0) {
           let ccidx: number = context.ControlCenters.findIndex((cc: ControlCenter) => {
             return cc.Id === this.ControlCenterId;
           });
@@ -2213,7 +2215,8 @@ export class DocumentItem {
         }
       } else if (this.OrderId) {
         // Order
-        if (context && context.Orders && context.Orders instanceof Array) {
+        if (context && context.Orders 
+          && context.Orders instanceof Array && context.Orders.length > 0) {
           let ordidx: number = context.Orders.findIndex((ord: Order) => {
             return ord.Id === this.OrderId;
           });
