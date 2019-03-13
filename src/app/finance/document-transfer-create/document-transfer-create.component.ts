@@ -235,6 +235,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
 
   private _generateDoc(): Document {
     let doc: Document = this.headerFormGroup.get('headerControl').value;
+    doc.HID = this._homeService.ChosedHome.ID;
 
     let docitem: DocumentItem = new DocumentItem();
     docitem.ItemId = 1;

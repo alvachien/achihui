@@ -10,7 +10,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Currency, UIAccountForSelection,
   IAccountCategoryFilter, UIOrderForSelection, TranType, ControlCenter, Order,
-  BuildupAccountForSelection, BuildupOrderForSelection, ModelUtility, } from '../../model';
+  BuildupAccountForSelection, BuildupOrderForSelection, ModelUtility, financeDocTypeTransfer, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 
 @Component({
@@ -50,6 +50,8 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   tranCurr: string;
   @Input()
   tranCurr2: string;
+  @Input()
+  docType: number;
 
   // Step: Items
   separatorKeysCodes: any[] = [ENTER, COMMA];
@@ -61,6 +63,15 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   }
   get isFieldChangable(): boolean {
     return this._isChangable;
+  }
+  get isAddItemAllowed(): boolean {
+    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer);
+  }
+  get isDeleteItemAllowed(): boolean {
+    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer);
+  }
+  get isTranTypeEditable(): boolean {
+    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer);
   }
 
   constructor(public _currService: FinCurrencyService,

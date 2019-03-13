@@ -1230,58 +1230,45 @@ export interface OrderJson extends hih.BaseModelJson {
  */
 export class Order extends hih.BaseModel {
   private _id: number;
-  get Id(): number {
-    return this._id;
-  }
-  set Id(id: number) {
-    this._id = id;
-  }
-
   private _hid: number;
-  get HID(): number {
-    return this._hid;
-  }
-  set HID(hid: number) {
-    this._hid = hid;
-  }
-  public Name: string;
-  public _validFrom: moment.Moment;
-  public _validTo: moment.Moment;
-  public Comment: string;
+  private _name: string;
+  private _cmt: string;
+  private _validFrom: moment.Moment;
+  private _validTo: moment.Moment;
 
-  public SRules: SettlementRule[] = [];
-
-  get ValidFrom(): moment.Moment {
-    return this._validFrom;
-  }
-  set ValidFrom(vf: moment.Moment) {
-    this._validFrom = vf;
-  }
+  get Id(): number                    { return this._id;              }
+  set Id(id: number)                  { this._id = id;                }
+  get HID(): number                   { return this._hid;             }
+  set HID(hid: number)                { this._hid = hid;              }
+  get Name(): string                  { return this._name;            }
+  set Name(name: string)              { this._name = name;            }
+  get Comment(): string               { return this._cmt;             }
+  set Comment(cmt: string)            { this._cmt = cmt;              }
+  get ValidFrom(): moment.Moment      { return this._validFrom;       }
+  set ValidFrom(vf: moment.Moment)    { this._validFrom = vf;         }
+  get ValidTo(): moment.Moment        { return this._validTo;         }
+  set ValidTo(vt: moment.Moment)      { this._validTo = vt;           }
   get ValidFromFormatString(): string {
     return this._validFrom.format(hih.momentDateFormat);
   }
-  get ValidTo(): moment.Moment {
-    return this._validTo;
-  }
-  set ValidTo(vt: moment.Moment) {
-    this._validTo = vt;
-  }
-  get ValidToFormatString(): string {
+  get ValidToFormatString(): string   {
     return this._validTo.format(hih.momentDateFormat);
   }
+
+  public SRules: SettlementRule[];
 
   constructor() {
     super();
 
-    this._validFrom = moment();
-    this._validTo = this._validFrom.clone().add(1, 'months');
+    this.onInit();
   }
 
   public onInit(): void {
     super.onInit();
 
     this._validFrom = moment();
-    this._validTo = this._validFrom.clone().add(1, 'months');
+    this._validTo = this._validFrom.clone().add(1, 'M');
+    this.SRules = [];
   }
 
   public onVerify(context?: IOrderVerifyContext): boolean {
@@ -1291,14 +1278,27 @@ export class Order extends hih.BaseModel {
 
     let chkrst: boolean = true;
 
+    // HID
+    if (!this.HID) {
+      let msg: hih.InfoMessage = new hih.InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = hih.MessageType.Error;
+      msg.MsgTitle = 'Common.HIDIsMust';
+      msg.MsgContent = 'Common.HIDIsMust';
+      this.VerifiedMsgs.push(msg);
+      chkrst = false;
+    }
     // Name
+    if (this.Name && this.Name.length > 0) {
+      this.Name = this.Name.trim();
+    }
     if (this.Name && this.Name.length > 0) {
       // Allowed
     } else {
       let msg: hih.InfoMessage = new hih.InfoMessage();
       msg.MsgTime = moment();
       msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Common.InvalidName';
+      msg.MsgTitle = 'Common.NameIsMust';
       msg.MsgContent = 'Common.NameIsMust';
       this.VerifiedMsgs.push(msg);
       chkrst = false;
@@ -1328,7 +1328,7 @@ export class Order extends hih.BaseModel {
       chkrst = false;
     }
     // Valid to > valid from
-    if (this.ValidTo.startOf('day').isAfter(this.ValidFrom.startOf('day'))) {
+    if (this.ValidTo && this.ValidFrom && this.ValidTo.startOf('day').isAfter(this.ValidFrom.startOf('day'))) {
       // Allowed
     } else {
       let msg: hih.InfoMessage = new hih.InfoMessage();
@@ -1671,6 +1671,7 @@ export class Document extends hih.BaseModel {
   public Items: DocumentItem[] = [];
 
   // UI fields
+  public DocTypeName: string;
   public TranAmount: number;
   get TranDateFormatString(): string {
     return this._tranDate.format(hih.momentDateFormat);
@@ -1693,6 +1694,16 @@ export class Document extends hih.BaseModel {
 
     let chkrst: boolean = true;
 
+    // HID
+    if (!this.HID) {
+      let msg: hih.InfoMessage = new hih.InfoMessage();
+      msg.MsgTime = moment();
+      msg.MsgType = hih.MessageType.Error;
+      msg.MsgTitle = 'Finance.HIDIsMust';
+      msg.MsgContent = 'Finance.HIDIsMust';
+      this.VerifiedMsgs.push(msg);
+      chkrst = false;
+    }
     // Doc type
     if (context && context.DocumentTypes
       && context.DocumentTypes instanceof Array && context.DocumentTypes.length > 0) {
@@ -1975,6 +1986,9 @@ export class Document extends hih.BaseModel {
     }
     if (data && data.tranAmount) {
       this.TranAmount = data.tranAmount;
+    }
+    if (data && data.docTypeName) {
+      this.DocTypeName = data.docTypeName;
     }
 
     this.Items = [];

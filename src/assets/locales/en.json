@@ -155,6 +155,7 @@
     "InvalidName": "Invalid name",
     "InvalidDate": "Invalid date",
     "NameIsMust": "Name is a must",
+    "HIDIsMust": "Home ID is a must",
     "InvalidValidFrom": "Invalid valid from",
     "ValidFromIsMust": "Valid from is a must",
     "InvalidValidTo": "Invalid valid to",

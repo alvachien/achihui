@@ -147,8 +147,8 @@ export function BuildupOrderForSelection(orders: HIHFinance.Order[], skipinv?: b
       let rst: UIOrderForSelection = new UIOrderForSelection();
       rst.Id = ord.Id;
       rst.Name = ord.Name;
-      rst._validFrom = ord._validFrom.clone();
-      rst._validTo = ord._validTo.clone();
+      rst._validFrom = ord.ValidFrom.clone();
+      rst._validTo = ord.ValidTo.clone();
 
       // Skip some categories
       if (skipinv) {

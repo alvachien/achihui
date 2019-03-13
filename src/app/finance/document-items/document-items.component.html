@@ -1,5 +1,5 @@
 <ng-container class="achih-control-full-width">
-  <mat-toolbar *ngIf="isFieldChangable">
+  <mat-toolbar *ngIf="isAddItemAllowed" color="accent">
     <button mat-icon-button (click)="onCreateDocItem()" matTooltip="{{'Common.Create' | translate}}" #btnCrtItem>
       <mat-icon>add</mat-icon>
     </button>
@@ -10,7 +10,7 @@
     <ng-container matColumnDef="ItemId">
       <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <button mat-icon-button *ngIf="isFieldChangable" (click)="onDeleteDocItem(row)" matTooltip="{{'Common.Delete' | translate}}">
+        <button mat-icon-button *ngIf="isDeleteItemAllowed" (click)="onDeleteDocItem(row)" matTooltip="{{'Common.Delete' | translate}}">
           <mat-icon color="warn" class="toolbar-icon">delete</mat-icon>
         </button>
         <span class="toolbar-spacer"></span>
@@ -46,7 +46,7 @@
         <mat-form-field>
           <mat-select placeholder="{{'Finance.TransactionType' | translate}}" [(ngModel)]="row.TranType"
             (selectionChange)="onChange()"
-            [disabled]="!isFieldChangable" name="ittt">
+            [disabled]="!isTranTypeEditable" name="ittt">
             <mat-option *ngFor="let tt of arTranType" [value]="tt.Id">
               <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
             </mat-option>
@@ -67,7 +67,7 @@
       </mat-cell>
     </ng-container>
 
-    <!-- Amount Column -->
+    <!-- Currency Column -->
     <ng-container matColumnDef="Curr">
       <mat-header-cell *matHeaderCellDef>{{'Finance.Currency' | translate}}</mat-header-cell>
       <mat-cell *matCellDef="let row">

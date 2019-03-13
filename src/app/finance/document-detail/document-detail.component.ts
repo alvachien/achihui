@@ -255,6 +255,56 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     });
   }
   private _updateTransferDoc(): void {
-    // Do nothing.
+    // For normal document, just update the whole document.
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.DocType = financeDocTypeTransfer;
+
+    if (!doc.onVerify({ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranTypes,
+      Currencies: this.arCurrencies,
+      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+    })) {
+      // Show a error dialog
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        ContentTable: doc.VerifiedMsgs,
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+      return;
+    }
+
+    this._storageService.updateNormalDocument(doc).subscribe((rst: Document) => {
+      // Switch to display mode
+      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
+        duration: 2000,
+      }).afterDismissed().subscribe(() => {
+        this._router.navigate(['/finance/document/display/' + this.routerID.toString()]);
+      });
+    }, (error: any) => {
+      // Show a error dialog
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+    });
   }
 }

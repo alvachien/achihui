@@ -155,6 +155,7 @@
     "InvalidName": "无效的名字",
     "InvalidDate": "无效的日期",
     "NameIsMust": "名字必须输入",
+    "HIDIsMust": "家庭ID必须输入",
     "InvalidValidFrom": "无效的有效期开始日期",
     "ValidFromIsMust": "有效期开始日必须输入",
     "InvalidValidTo": "无效的有效期结束日期",

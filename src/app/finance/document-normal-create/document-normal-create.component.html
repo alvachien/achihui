@@ -10,7 +10,7 @@
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
-          <hih-fin-document-header [docType]="curDocType"  formControlName="headerControl"></hih-fin-document-header>
+          <hih-fin-document-header [docType]="curDocType" formControlName="headerControl"></hih-fin-document-header>
         </form>
         
         <div>
@@ -23,7 +23,8 @@
         <ng-template matStepLabel>{{'Finance.Items' | translate}}</ng-template>
 
         <form [formGroup]="itemFormGroup">
-          <hih-fin-document-items formControlName="itemControl" [tranCurr]="confirmInfo?.tranCurrency"></hih-fin-document-items>
+          <hih-fin-document-items formControlName="itemControl" [tranCurr]="confirmInfo?.tranCurrency"
+            [docType]="curDocType"></hih-fin-document-items>
         </form>
 
         <div>

@@ -130,7 +130,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (arOrders) {
       this.dataSource.data = arOrders.filter((value: Order) => {
         if (this.includeInvalid !== true) {
-          if (value._validFrom.isBefore(mtoday2) && value._validTo.isAfter(mtoday2)) {
+          if (value.ValidFrom.isBefore(mtoday2) && value.ValidTo.isAfter(mtoday2)) {
             return true;
           } else {
             return false;

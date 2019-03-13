@@ -20,7 +20,8 @@
       <!-- Tab: Items -->
       <mat-tab label="{{'Finance.Items' | translate}}">
         <form [formGroup]="itemGroup">
-          <hih-fin-document-items formControlName="itemControl" [tranCurr]="tranCurr" [tranCurr2]="tranCurr2"></hih-fin-document-items>
+          <hih-fin-document-items formControlName="itemControl" [tranCurr]="tranCurr" 
+            [tranCurr2]="tranCurr2" [docType]="curDocType"></hih-fin-document-items>
         </form>
       </mat-tab>
     </mat-tab-group>

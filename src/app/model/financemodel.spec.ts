@@ -413,6 +413,12 @@ describe('ControlCenter', () => {
 
 describe('Order', () => {
   let instance: Order;
+  let fakeData: FakeDataHelper;
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildFinControlCenter();
+  });
 
   beforeEach(() => {
     instance = new Order();
@@ -439,13 +445,67 @@ describe('Order', () => {
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
   });
-  it ('#4. onVerify', () => {
-    instance.ValidFrom = moment();
-    instance.ValidTo = moment().add(1, 'y');
+  it ('#4. onVerify: name is must', () => {
+    instance.Name = undefined;
     instance.SRules.push(new SettlementRule());
+
     let rst: boolean = instance.onVerify();
     expect(rst).toBeFalsy();
-    expect(instance.VerifiedMsgs.length).toBeGreaterThan(0);
+
+    let erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgTitle === 'Common.NameIsMust';
+    });
+    expect(erridx).not.toEqual(-1);
+  });
+  it ('#5. onVerify: valid from is must', () => {
+    instance.Name = 'test';
+    instance.ValidFrom = undefined;
+    instance.SRules.push(new SettlementRule());
+
+    let rst: boolean = instance.onVerify();
+    expect(rst).toBeFalsy();
+
+    let erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgTitle === 'Common.InvalidValidFrom';
+    });
+    expect(erridx).not.toEqual(-1);
+  });
+  it ('#6. onVerify: valid to is must', () => {
+    instance.Name = 'test';
+    instance.ValidTo = undefined;
+    instance.SRules.push(new SettlementRule());
+
+    let rst: boolean = instance.onVerify();
+    expect(rst).toBeFalsy();
+
+    let erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgTitle === 'Common.InvalidValidTo';
+    });
+    expect(erridx).not.toEqual(-1);
+  });
+  it ('#7. onVerify: valid from must earlier than valid to', () => {
+    instance.Name = 'test';
+    instance.ValidTo = instance.ValidFrom.subtract(1, 'M');
+    instance.SRules.push(new SettlementRule());
+
+    let rst: boolean = instance.onVerify();
+    expect(rst).toBeFalsy();
+
+    let erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgTitle === 'Common.InvalidValidRange';
+    });
+    expect(erridx).not.toEqual(-1);
+  });
+  it ('#8. onVerify: settlement rule is must', () => {
+    instance.Name = 'test';
+
+    let rst: boolean = instance.onVerify();
+    expect(rst).toBeFalsy();
+
+    let erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgContent === 'Finance.NoSettlementRule';
+    });
+    expect(erridx).not.toEqual(-1);
   });
 });
 
