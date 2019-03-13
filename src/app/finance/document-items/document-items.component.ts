@@ -34,7 +34,6 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   private _isChangable: boolean = true; // Default is changable
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
-  private _instanceObject: DocumentItem[] = [];
 
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
@@ -47,10 +46,15 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   public arAccounts: Account[] = [];
   public arOrders: Order[] = [];
 
+  @Input()
+  tranCurr: string;
+  @Input()
+  tranCurr2: string;
+
   // Step: Items
   separatorKeysCodes: any[] = [ENTER, COMMA];
   dataSource: MatTableDataSource<DocumentItem> = new MatTableDataSource<DocumentItem>([]);
-  displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Desp', 'ControlCenter', 'Order', 'Tag'];
+  displayedColumns: string[] = ['ItemId', 'AccountId', 'TranType', 'Amount', 'Curr', 'Desp', 'ControlCenter', 'Order', 'Tag'];
 
   get documentItems(): DocumentItem[] {
     return this.dataSource.data;
@@ -61,7 +65,6 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
 
   constructor(public _currService: FinCurrencyService,
     private _storageService: FinanceStorageService,
-    private _homeService: HomeDefDetailService,
     private _snackbar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug(`AC_HIH_UI [Debug]: Entering DocumentItemsComponent ngOnDestroy`);

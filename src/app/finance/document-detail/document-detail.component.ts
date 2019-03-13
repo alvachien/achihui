@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal, UICommonLabelEnum,
-  Currency, TranType, DocumentType, ControlCenter, Order, Account,
+  Currency, TranType, DocumentType, ControlCenter, Order, Account, financeDocTypeTransfer,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -38,6 +38,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     itemControl: new FormControl('', Validators.required),
   });
   curDocType: number;
+  tranCurr: string;
+  tranCurr2: string;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Change;
@@ -118,6 +120,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 }
 
                 this.curDocType = x2.DocType;
+                this.tranCurr = x2.tranCurr;
+                this.tranCurr2 = x2.tranCurr2;
                 this.headerGroup.get('headerControl').setValue(x2);
                 this.itemGroup.get('itemControl').setValue(x2.Items);
 
@@ -191,7 +195,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     }
 
     switch (this.curDocType) {
-      case financeDocTypeNormal: this._updateNormalDoc(); break;
+      case financeDocTypeNormal:      this._updateNormalDoc();        break;
+      case financeDocTypeTransfer:    this._updateTransferDoc();      break;
 
       default: break;
     }
@@ -248,5 +253,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         data: dlginfo,
       });
     });
+  }
+  private _updateTransferDoc(): void {
+    // Do nothing.
   }
 }

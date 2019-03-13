@@ -68,7 +68,7 @@
         <ng-template matStepLabel>{{'Finance.Items' | translate}}</ng-template>
 
         <form [formGroup]="itemFormGroup">
-          <hih-fin-document-items formControlName="itemControl"></hih-fin-document-items>
+          <hih-fin-document-items formControlName="itemControl" [tranCurr]="confirmInfo?.tranCurrency"></hih-fin-document-items>
         </form>
 
         <div>

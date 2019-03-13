@@ -31,11 +31,20 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
   private _isChangable: boolean = true; // Default is changable
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
+  private _doctype: number;
+
   private _instanceObject: Document = new Document();
   public arCurrencies: Currency[] = [];
   public arDocTypes: DocumentType[] = [];
 
-  @Input() docType: number;
+  @Input()
+  get docType(): number { return this._doctype;  }
+  set docType(dt: number) {
+    this._doctype = dt;
+    if (this.headerForm) {
+      this.headerForm.get('docTypeControl').setValue(dt);
+    }
+  }
 
   public headerForm: FormGroup;
 

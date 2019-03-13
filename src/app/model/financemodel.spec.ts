@@ -619,6 +619,72 @@ describe('Document', () => {
     });
     expect(idx).not.toEqual(-1);
   });
+  it('#7. onVerify: currency is a must', () => {
+    instance.Id = 1;
+    instance.DocType = fakeData.finDocTypes[0].Id;
+    // instance.TranCurr = fakeData.chosedHome.BaseCurrency;
+    instance.TranDate = moment();
+    instance.Desp = 'test';
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.CurrencyIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#8. onVerify: currency should be valid', () => {
+    instance.Id = 1;
+    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.TranCurr = 'DEM'; // Invalid currency
+    instance.TranDate = moment();
+    instance.Desp = 'test';
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidCurrency';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#9. onVerify: currency should be fetched', () => {
+    instance.Id = 1;
+    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.TranCurr = fakeData.chosedHome.BaseCurrency;
+    instance.TranDate = moment();
+    instance.Desp = 'test';
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: [],
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.CurrencyFetchFailed';
+    });
+    expect(idx).not.toEqual(-1);
+  });
 });
 
 describe('DocumentItem', () => {

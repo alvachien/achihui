@@ -6,8 +6,8 @@ import * as hih from './common';
  * Gender
  */
 export enum GenderEnum {
-  Male = 1,
-  Female = 2,
+  Male    = 1,
+  Female  = 2,
 }
 
 /**
@@ -30,6 +30,14 @@ export class Person extends hih.MultipleNamesObject {
   set ShortIntro(si: string) { this._shrtintro = si; }
   get Ext1Link(): string { return this._ext1link; }
   set Ext1Link(el: string) { this._ext1link = el; }
+}
+
+export interface LocationJson extends hih.BaseModelJson {
+  id: number;
+  hid?: number;
+  name: string;
+  isDevice: boolean;
+  desp: string;
 }
 
 /**
@@ -73,7 +81,7 @@ export class Location extends hih.BaseModel {
     return rstobj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: LocationJson): void {
     super.onSetData(data);
 
     if (data && data.id) {
@@ -178,6 +186,14 @@ export class Book extends hih.MultipleNamesObject {
   public Locations: Location[];
 }
 
+export interface MovieGenreJson {
+  id: number;
+  hid?: number;
+  name: string;
+  parid?: number;
+  others?: string;
+}
+
 /**
  * Movie genre
  */
@@ -223,7 +239,7 @@ export class MovieGenre extends hih.BaseModel {
     return rstobj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: MovieGenreJson): void {
     super.onSetData(data);
 
     if (data && data.id) {

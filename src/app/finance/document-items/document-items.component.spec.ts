@@ -5,10 +5,9 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDER, MatPaginatorIntl,
-} from '@angular/material';
+  MatChipInputEvent, } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
@@ -349,6 +348,26 @@ describe('DocumentItemsComponent', () => {
       let err: any = component.validate(undefined);
       expect(err).toBeTruthy();
       expect(err.itemwithoutdesp).toBeTruthy('Expect itemwithoutdesp is true');
+    }));
+    it('shall remove item on deletion', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.onCreateDocItem();
+      let ditem: DocumentItem = component.dataSource.data[0];
+      ditem.AccountId = fakeData.finAccounts[0].Id;
+      ditem.TranAmount = 200;
+      ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem.TranType = 2;
+      ditem.Desp = 'test';
+      component.dataSource.data = [ditem];
+      component.onChange();
+
+      component.onDeleteDocItem(component.dataSource.data[0]);
+      fixture.detectChanges();
+
+      expect(component.dataSource.data.length).toEqual(0);
     }));
     it('shall be valid in valid case', fakeAsync(() => {
       fixture.detectChanges();

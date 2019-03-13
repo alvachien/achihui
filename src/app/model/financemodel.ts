@@ -1548,25 +1548,24 @@ export interface TranTypeJson extends hih.BaseModelJson {
 
 export class TranType extends hih.BaseModel {
   private _id: number;
-  get Id(): number {
-    return this._id;
-  }
-  set Id(id: number) {
-    this._id = id;
-  }
-
   private _hid: number;
-  get HID(): number {
-    return this._hid;
-  }
-  set HID(hid: number) {
-    this._hid = hid;
-  }
+  private _name: string;
+  private _expense: boolean;
+  private _parid?: number;
+  private _cmt: string;
 
-  public Name: string;
-  public Expense: boolean;
-  public ParId: number;
-  public Comment: string;
+  get Id(): number                    { return this._id;        }
+  set Id(id: number)                  { this._id = id;          }
+  get HID(): number                   { return this._hid;       }
+  set HID(hid: number)                { this._hid = hid;        }
+  get Name(): string                  { return this._name;      }
+  set Name(name: string)              { this._name = name;      }
+  get Expense(): boolean              { return this._expense;   }
+  set Expense(exp: boolean)           { this._expense = exp;    }
+  get ParId(): number                 { return this._parid;     }
+  set ParId(pid: number | undefined)  { this._parid = pid;      }
+  get Comment(): string               { return this._cmt;       }
+  set Comment(cmt: string)            { this._cmt = cmt;        }
 
   // For UI display
   public HierLevel: TranTypeLevelEnum;
@@ -1695,7 +1694,7 @@ export class Document extends hih.BaseModel {
     let chkrst: boolean = true;
 
     // Doc type
-    if (context && context.DocumentTypes 
+    if (context && context.DocumentTypes
       && context.DocumentTypes instanceof Array && context.DocumentTypes.length > 0) {
       if (this.DocType !== undefined) {
         let dtidx: number = context.DocumentTypes.findIndex((dt: DocumentType) => {
@@ -1752,13 +1751,14 @@ export class Document extends hih.BaseModel {
     }
 
     // Currency check
-    if (context && context.Currencies 
+    if (context && context.Currencies
       && context.Currencies instanceof Array && context.Currencies.length > 0) {
       if (this.TranCurr) {
         let bExist: boolean = false;
         for (let cc of context.Currencies) {
           if (cc.Currency === this.TranCurr) {
             bExist = true;
+            break;
           }
         }
 
@@ -2052,7 +2052,7 @@ export class DocumentItem {
     }
 
     // Account
-    if (context && context.Accounts 
+    if (context && context.Accounts
       && context.Accounts instanceof Array && context.Accounts.length > 0) {
       if (this.AccountId > 0) {
         let acnt: Account = context.Accounts.find((val: Account) => {
@@ -2087,7 +2087,7 @@ export class DocumentItem {
       chkrst = false;
     }
     // Transaction type
-    if (context && context.TransactionTypes 
+    if (context && context.TransactionTypes
       && context.TransactionTypes instanceof Array
       && context.TransactionTypes.length > 0) {
       if (this.TranType !== undefined) {
@@ -2189,7 +2189,7 @@ export class DocumentItem {
     if (bccord) {
       // Control center
       if (this.ControlCenterId) {
-        if (context && context.ControlCenters 
+        if (context && context.ControlCenters
           && context.ControlCenters instanceof Array && context.ControlCenters.length > 0) {
           let ccidx: number = context.ControlCenters.findIndex((cc: ControlCenter) => {
             return cc.Id === this.ControlCenterId;
@@ -2215,7 +2215,7 @@ export class DocumentItem {
         }
       } else if (this.OrderId) {
         // Order
-        if (context && context.Orders 
+        if (context && context.Orders
           && context.Orders instanceof Array && context.Orders.length > 0) {
           let ordidx: number = context.Orders.findIndex((ord: Order) => {
             return ord.Id === this.OrderId;
@@ -2608,7 +2608,7 @@ export class Plan extends hih.BaseModel {
     super();
     this.onInit();
   }
-  public onInit() {
+  public onInit(): void {
     super.onInit();
 
     this._startDate = moment().startOf('day');

@@ -220,12 +220,12 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onStepSelectionChange with index = ${event.selectedIndex}`);
     }
 
-    if (event.selectedIndex === 2) {
-      // Update the confirm info.
+    if (event.selectedIndex === 1) {
       let doc: Document = this.firstFormGroup.get('headerControl').value;
       this.confirmInfo.tranDateString = doc.TranDateFormatString;
       this.confirmInfo.tranDesp = doc.Desp;
       this.confirmInfo.tranCurrency = doc.TranCurr;
+    } else if (event.selectedIndex === 2) {
       this.confirmInfo.inAmount = 0;
       this.confirmInfo.outAmount = 0;
 

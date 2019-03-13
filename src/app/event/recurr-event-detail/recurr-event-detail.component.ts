@@ -93,16 +93,6 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
           });
         }
       }
-    }, (error: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Enter RecurrEventDetailComponent ngOnInit, but failed with URL: ${error}`);
-      }
-
-      this._snackBar.open(error.toString(), undefined, {
-        duration: 2000,
-      });
-    }, () => {
-      // Empty
     });
   }
 
@@ -110,8 +100,10 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onCancel(): void {

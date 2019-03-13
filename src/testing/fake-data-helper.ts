@@ -14,7 +14,8 @@ import {
   momentDateFormat, financeAccountCategoryAsset, FinanceAssetValChgDocumentAPI, financeAccountCategoryBorrowFrom,
   AccountExtraLoan, RepaymentMethodEnum, TemplateDocLoan, financeAccountCategoryLendTo,
   financeAccountCategoryAdvancePayment, LearnObject, LearnHistory,
-  SettlementRule, financeDocTypeNormal,
+  SettlementRule, financeDocTypeNormal, MovieGenre, MovieGenreJson,
+  Location, LocationJson,
 } from '../app/model';
 import { User } from 'oidc-client';
 import * as moment from 'moment';
@@ -50,6 +51,10 @@ export class FakeDataHelper {
   private _learnObjects: LearnObject[];
   private _libBookCategories: BookCategory[];
   private _libBookCategoriesFromAPI: BookCategoryJson[];
+  private _libMovieGenres: MovieGenre[];
+  private _libMovieGenresFromAPI: MovieGenreJson[];
+  private _libLocations: Location[];
+  private _libLocationsFromAPI: LocationJson[];
   private _tags: Tag[];
   private _tagsFromAPI: TagJson[];
   private _tagsCount: TagCount[];
@@ -226,6 +231,42 @@ export class FakeDataHelper {
       };
     }
   }
+  get libMovieGenres(): MovieGenre[] {
+    if (this._libMovieGenres) {
+      return this._libMovieGenres;
+    }
+  }
+  get libMovieGenresFromAPI(): MovieGenreJson[] {
+    if (this._libMovieGenresFromAPI) {
+      return this._libMovieGenresFromAPI;
+    }
+  }
+  get libMovieGenresFullReplyFromAPI(): any {
+    if (this._libMovieGenresFromAPI) {
+      return {
+        totalCount: this._libMovieGenresFromAPI.length,
+        contentList: this._libMovieGenresFromAPI,
+      };
+    }
+  }
+  get libLocations(): Location[] {
+    if (this._libLocations) {
+      return this._libLocations;
+    }
+  }
+  get libLocationsFromAPI(): LocationJson[] {
+    if (this._libLocationsFromAPI) {
+      return this._libLocationsFromAPI;
+    }
+  }
+  get libLocationsFullReplyFromAPI(): any {
+    if (this._libLocationsFromAPI) {
+      return {
+        totalCount: this._libLocationsFromAPI.length,
+        contentList: this._libLocationsFromAPI,
+      };
+    }
+  }
   get tags(): Tag[] {
     if (this._tags) {
       return this._tags;
@@ -282,6 +323,7 @@ export class FakeDataHelper {
     hmem.HomeID = this._chosedHome.ID;
     hmem.User = this._chosedHome.Host;
     hmem.Relation = HomeMemberRelationEnum.Self;
+    hmem.DisplayAs = 'Creator in Home';
     this._chosedHome.Members.push(hmem);
   }
   public buildHomeDefs(): void {
@@ -1187,6 +1229,49 @@ export class FakeDataHelper {
         name: `category ${i + 1}`,
       };
       this._libBookCategoriesFromAPI.push(ct1);
+    }
+  }
+  public buildLibMovieGenres(): void {
+    this._libMovieGenres = [];
+    let ctgy: MovieGenre;
+    for (let i: number = 0; i < 2; i++) {
+      ctgy = new MovieGenre();
+      ctgy.ID = i + 1;
+      ctgy.Name = `Genre ${i + 1}`;
+      this._libMovieGenres.push(ctgy);
+    }
+  }
+  public buildLibMovieGenresFromAPI(): void {
+    this._libMovieGenresFromAPI = [];
+    for (let i: number = 0; i < 2; i++) {
+      let ct1: MovieGenreJson = {
+        id: i + 1,
+        name: `genre ${i + 1}`,
+      };
+      this._libMovieGenresFromAPI.push(ct1);
+    }
+  }
+  public buildLibLocations(): void {
+    this._libLocations = [];
+    let loc: Location;
+    for (let i: number = 0; i < 2; i++) {
+      loc = new Location();
+      loc.ID = i + 1;
+      loc.Name = `Loc ${i + 1}`;
+      loc.IsDevice = true;
+      loc.Desp = `desp ${i + 1}`;
+      this._libLocations.push(loc);
+    }
+  }
+  public buildLibLocationsFromAPI(): void {
+    this._libLocationsFromAPI = [];
+    for (let i: number = 0; i < 2; i++) {
+      let ct1: any = {
+        id: i + 1,
+        name: `loc ${i + 1}`,
+        desp: `desp ${i + 1}`,
+      };
+      this._libLocationsFromAPI.push(ct1 as LocationJson);
     }
   }
   public buildTags(): void {

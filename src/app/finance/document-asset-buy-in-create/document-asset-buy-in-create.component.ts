@@ -80,7 +80,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     }, [costObjectValidator, this._legacyDateValidator, this._amountValidator]);
     this.itemFormGroup = new FormGroup({
       itemControl: new FormControl(''),
-    })
+    });
   }
 
   ngOnInit(): void {
@@ -229,8 +229,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
       });
 
       return;
-    }, () => {
-      // DO nothing
     });
   }
 

@@ -15,8 +15,10 @@ export class LibraryStorageService {
   private _listBookCategories: BookCategory[];
   private _isMovieGenreListLoaded: boolean;
   private _listMovieGenres: MovieGenre[];
-  private _isBookListLoaded: boolean;
   private _isLocationListLoaded: boolean;
+  private _listLocation: Location[];
+
+  private _isBookListLoaded: boolean;
   private _isMovieListLoaded: boolean;
 
   get BookCategories(): BookCategory[] {
@@ -25,13 +27,13 @@ export class LibraryStorageService {
   get MovieGenres(): MovieGenre[] {
     return this._listMovieGenres;
   }
+  get Locations(): Location[] {
+    return this._listLocation;
+  }
+
   listBookChange: BehaviorSubject<Book[]> = new BehaviorSubject<Book[]>([]);
   get Books(): Book[] {
     return this.listBookChange.value;
-  }
-  listLocationChange: BehaviorSubject<Location[]> = new BehaviorSubject<Location[]>([]);
-  get Locations(): Location[] {
-    return this.listLocationChange.value;
   }
   listMovieChange: BehaviorSubject<Movie[]> = new BehaviorSubject<Movie[]>([]);
   get Movies(): Movie[] {
@@ -40,6 +42,7 @@ export class LibraryStorageService {
 
   readonly bookCategoryAPIURL: any = environment.ApiUrl + '/api/LibBookCategory';
   readonly movieGenreAPIURL: any = environment.ApiUrl + '/api/LibMovieGenre';
+  readonly locationAPIURL: string = environment.ApiUrl + '/api/LibLocation';
 
   constructor(private _http: HttpClient,
     private _authService: AuthService,
@@ -52,8 +55,10 @@ export class LibraryStorageService {
     this._listBookCategories = [];
     this._isMovieGenreListLoaded = false;
     this._listMovieGenres = [];
-    this._isBookListLoaded = false;
     this._isLocationListLoaded = false;
+    this._listLocation = [];
+
+    this._isBookListLoaded = false;
     this._isMovieListLoaded = false;
   }
 
@@ -172,8 +177,6 @@ export class LibraryStorageService {
   // Location
   public fetchAllLocations(forceReload?: boolean): Observable<any> {
     if (!this._isLocationListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/LibLocation';
-
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
@@ -181,7 +184,7 @@ export class LibraryStorageService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
+      return this._http.get(this.locationAPIURL, {
         headers: headers,
         params: params,
       })
@@ -191,19 +194,19 @@ export class LibraryStorageService {
           }
 
           const rjs: any = <any>response;
-          let listRst: Location[] = [];
+          this._listLocation = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
               const rst: Location = new Location();
               // rst.onSetData(si);
-              listRst.push(rst);
+              this._listLocation.push(rst);
             }
           }
 
           this._isLocationListLoaded = true;
-          this.listLocationChange.next(listRst);
-          return listRst;
+
+          return this._listLocation;
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
@@ -211,12 +214,12 @@ export class LibraryStorageService {
             }
 
             this._isLocationListLoaded = false;
-            this.listLocationChange.next([]);
+            this._listLocation = [];
 
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listLocationChange.value);
+      return of(this._listLocation);
     }
   }
 
@@ -267,7 +270,7 @@ export class LibraryStorageService {
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
           }));
     } else {
-      return of(this.listLocationChange.value);
+      return of(this.listBookChange.value);
     }
   }
 
