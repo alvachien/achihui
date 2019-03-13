@@ -323,7 +323,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
       ndocitem.TranAmount = Math.abs(ndoc.TranAmount);
       ndocitem.TranType = financeTranTypeAssetValueDecrease;
     }
-    ndoc.Items= [ndocitem];
+    ndoc.Items = [ndocitem];
 
     return ndoc;
   }

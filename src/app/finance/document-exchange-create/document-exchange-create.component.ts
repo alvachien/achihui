@@ -436,6 +436,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
 
   private _generateDocument(): Document {
     let doc: Document = new Document();
+    doc.HID = this._homedefService.ChosedHome.ID;
     doc.DocType = financeDocTypeCurrencyExchange;
     doc.Desp = this.firstFormGroup.get('despControl').value;
     doc.TranCurr = this.sourceCurrency;
