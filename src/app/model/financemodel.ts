@@ -131,34 +131,16 @@ export class AccountCategory extends hih.BaseModel {
   private _assetFlag: boolean;
   private _comment: string;
 
-  get ID(): number {
-    return this._id;
-  }
-  set ID(id: number) {
-    this._id = id;
-  }
-
-  get HID(): number {
-    return this._hid;
-  }
-  set HID(hid: number) {
-    this._hid = hid;
-  }
-
-  get Name(): string {
-    return this._name;
-  }
-  set Name(nm: string) {
-    this._name = nm;
-  }
-
-  get AssetFlag(): boolean {
-    return this._assetFlag;
-  }
+  get ID(): number          { return this._id;        }
+  set ID(id: number)        { this._id = id;          }
+  get HID(): number         { return this._hid;       }
+  set HID(hid: number)      { this._hid = hid;        }
+  get Name(): string        { return this._name;      }
+  set Name(nm: string)      { this._name = nm;        }
+  get AssetFlag(): boolean  { return this._assetFlag; }
   set AssetFlag(af: boolean) {
     this._assetFlag = af;
   }
-
   get Comment(): string {
     return this._comment;
   }
@@ -236,30 +218,15 @@ export class DocumentType extends hih.BaseModel {
   private _id: number;
   private _name: string;
   private _comment: string;
-  get HID(): number {
-    return this._hid;
-  }
-  set HID(homeid: number) {
-    this._hid = homeid;
-  }
-  get Id(): number {
-    return this._id;
-  }
-  set Id(tid: number) {
-    this._id = tid;
-  }
-  get Name(): string {
-    return this._name;
-  }
-  set Name(tname: string) {
-    this._name = tname;
-  }
-  get Comment(): string {
-    return this._comment;
-  }
-  set Comment(cmt: string) {
-    this._comment = cmt;
-  }
+
+  get HID(): number       { return this._hid;   }
+  set HID(homeid: number) { this._hid = homeid; }
+  get Id(): number        { return this._id;    }
+  set Id(tid: number)     { this._id = tid;     }
+  get Name(): string      { return this._name;  }
+  set Name(tname: string) { this._name = tname; }
+  get Comment(): string     { return this._comment; }
+  set Comment(cmt: string)  { this._comment = cmt;  }
 
   constructor() {
     super();
@@ -458,21 +425,12 @@ export class Account extends hih.BaseModel {
   private _name: string;
   private _comment: string;
   private _ownerid: string;
-  get Id(): number {
-    return this._id;
-  }
-  set Id(id: number) {
-    this._id = id;
-  }
-  get HID(): number {
-    return this._hid;
-  }
-  set HID(hid: number) {
-    this._hid = hid;
-  }
-  get CategoryId(): number {
-    return this._ctgyid;
-  }
+
+  get Id(): number        { return this._id;    }
+  set Id(id: number)      { this._id = id;      }
+  get HID(): number       { return this._hid;   }
+  set HID(hid: number)    { this._hid = hid;    }
+  get CategoryId(): number { return this._ctgyid; }
   set CategoryId(cid: number) {
     this._ctgyid = cid;
   }
@@ -523,6 +481,13 @@ export class Account extends hih.BaseModel {
 
     let brst: boolean = true;
 
+    if (!this.HID) {
+      this._addMessage(hih.MessageType.Error,
+        'Common.HIDIsMust',
+        'Common.HIDIsMust');
+      brst = false;
+    }
+
     if (context) {
       // Category
       if (context.arCategory && context.arCategory.length > 0) {
@@ -534,22 +499,15 @@ export class Account extends hih.BaseModel {
         }
 
         if (!bCategory) {
-          // Error message
-          let msg: hih.InfoMessage = new hih.InfoMessage();
-          msg.MsgType = hih.MessageType.Error;
-          msg.MsgTitle = 'Common.InvalidCategory';
-          msg.MsgContent = 'Common.InputtedCategoryIsInvalid';
-          msg.MsgTime = moment();
-          this.VerifiedMsgs.push(msg);
+          this._addMessage(hih.MessageType.Error,
+            'Common.InvalidCategory',
+            'Common.InputtedCategoryIsInvalid');
           brst = false;
         }
       } else {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTitle = 'Common.InvalidCategory';
-        msg.MsgContent = 'Common.CategoryIsMust';
-        msg.MsgTime = moment();
-        this.VerifiedMsgs.push(msg);
+        this._addMessage(hih.MessageType.Error,
+          'Common.InvalidCategory',
+          'Common.CategoryIsMust');
         brst = false;
       }
 
@@ -1280,12 +1238,7 @@ export class Order extends hih.BaseModel {
 
     // HID
     if (!this.HID) {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Common.HIDIsMust';
-      msg.MsgContent = 'Common.HIDIsMust';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
       chkrst = false;
     }
     // Name
@@ -1295,48 +1248,28 @@ export class Order extends hih.BaseModel {
     if (this.Name && this.Name.length > 0) {
       // Allowed
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Common.NameIsMust';
-      msg.MsgContent = 'Common.NameIsMust';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Common.NameIsMust', 'Common.NameIsMust');
       chkrst = false;
     }
     // Valid from
     if (this.ValidFrom) {
       // Allowed
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Common.InvalidValidFrom';
-      msg.MsgContent = 'Common.ValidFromIsMust';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Common.InvalidValidFrom', 'Common.ValidFromIsMust');
       chkrst = false;
     }
     // Valid to
     if (this.ValidTo) {
       // Allowed
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Common.InvalidValidTo';
-      msg.MsgContent = 'Common.ValidToIsMust';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Common.InvalidValidTo', 'Common.ValidToIsMust');
       chkrst = false;
     }
     // Valid to > valid from
     if (this.ValidTo && this.ValidFrom && this.ValidTo.startOf('day').isAfter(this.ValidFrom.startOf('day'))) {
       // Allowed
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Common.InvalidValidRange';
-      msg.MsgContent = 'Common.ValidToMustLaterThanValidFrom';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Common.InvalidValidRange', 'Common.ValidToMustLaterThanValidFrom');
       chkrst = false;
     }
     // Srules
@@ -1355,21 +1288,11 @@ export class Order extends hih.BaseModel {
       }
 
       if (ntotal !== 100) {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTitle = 'Finance.InvalidSettlementRule';
-        msg.MsgContent = 'Finance.SettlementRulePrecentSumNotCorrect';
-        this.VerifiedMsgs.push(msg);
+        this._addMessage(hih.MessageType.Error, 'Finance.InvalidSettlementRule', 'Finance.SettlementRulePrecentSumNotCorrect');
         chkrst = false;
       }
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.InvalidSettlementRule';
-      msg.MsgContent = 'Finance.NoSettlementRule';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Finance.InvalidSettlementRule', 'Finance.NoSettlementRule');
       chkrst = false;
     }
 
@@ -1458,11 +1381,8 @@ export class SettlementRule {
 
     // ID
     if (this.RuleId <= 0) {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTitle = 'Finance.InvalidRuleID';
-      msg.MsgContent = 'Finance.InvalidRuleID';
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTime = moment();
+      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+        'Finance.InvalidRuleID', 'Finance.InvalidRuleID');
       this.VerifiedMsgs.push(msg);
       brst = false;
     }
@@ -1474,11 +1394,8 @@ export class SettlementRule {
       }) !== -1) {
         // Allowed
       } else {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgTitle = 'Finance.InvalidControlCenter';
-        msg.MsgContent = 'Finance.InvalidControlCenter';
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTime = moment();
+        let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+          'Finance.InvalidControlCenter', 'Finance.InvalidControlCenter');
         this.VerifiedMsgs.push(msg);
         brst = false;
       }
@@ -1486,11 +1403,8 @@ export class SettlementRule {
 
     // Precent
     if (this.Precent <= 0 || this.Precent > 100) {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTitle = 'Finance.InvalidPrecent';
-      msg.MsgContent = 'Finance.InvalidPrecent';
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTime = moment();
+      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+        'Finance.InvalidPrecent', 'Finance.InvalidPrecent');
       this.VerifiedMsgs.push(msg);
       brst = false;
     }
@@ -1529,8 +1443,8 @@ export class SettlementRule {
 }
 
 export enum TranTypeLevelEnum {
-  TopLevel = 0,
-  FirstLevel = 1,
+  TopLevel    = 0,
+  FirstLevel  = 1,
   SecondLevel = 2,
 }
 
@@ -1696,12 +1610,7 @@ export class Document extends hih.BaseModel {
 
     // HID
     if (!this.HID) {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.HIDIsMust';
-      msg.MsgContent = 'Finance.HIDIsMust';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Finance.HIDIsMust', 'Finance.HIDIsMust');
       chkrst = false;
     }
     // Doc type
@@ -1713,50 +1622,25 @@ export class Document extends hih.BaseModel {
         });
 
         if (dtidx === -1) {
-          let msg: hih.InfoMessage = new hih.InfoMessage();
-          msg.MsgTime = moment();
-          msg.MsgType = hih.MessageType.Error;
-          msg.MsgTitle = 'Finance.InvalidDocumentType';
-          msg.MsgContent = 'Finance.InvalidDocumentType';
-          this.VerifiedMsgs.push(msg);
+          this._addMessage(hih.MessageType.Error, 'Finance.InvalidDocumentType', 'Finance.InvalidDocumentType');
           chkrst = false;
         }
       } else {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTitle = 'Finance.DocumentTypeIsMust';
-        msg.MsgContent = 'Finance.DocumentTypeIsMust';
-        this.VerifiedMsgs.push(msg);
+        this._addMessage(hih.MessageType.Error, 'Finance.DocumentTypeIsMust', 'Finance.DocumentTypeIsMust');
         chkrst = false;
       }
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.DocumentTypeFetchFailed';
-      msg.MsgContent = 'Finance.DocumentTypeFetchFailed';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Finance.DocumentTypeFetchFailed', 'Finance.DocumentTypeFetchFailed');
       chkrst = false;
     }
     // Desp
     if (!this.Desp) {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.DespIsMust';
-      msg.MsgContent = 'Finance.DespIsMust';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Finance.DespIsMust', 'Finance.DespIsMust');
       chkrst = false;
     } else {
       this.Desp = this.Desp.trim();
       if (this.Desp.length > 44) {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTitle = 'Finance.DespIsTooLong';
-        msg.MsgContent = 'Finance.DespIsTooLong';
-        this.VerifiedMsgs.push(msg);
+        this._addMessage(hih.MessageType.Error, 'Finance.DespIsTooLong', 'Finance.DespIsTooLong');
         chkrst = false;
       }
     }
@@ -1774,30 +1658,23 @@ export class Document extends hih.BaseModel {
         }
 
         if (!bExist) {
-          let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
-          this.VerifiedMsgs.push(msg);
+          this._addMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
           chkrst = false;
         } else {
           if (this.TranCurr !== context.BaseCurrency) {
             if (!this.ExgRate) {
-              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
-              this.VerifiedMsgs.push(msg);
+              this._addMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
+              chkrst = false;
             }
           } else {
             if (this.ExgRate) {
-              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-                'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
-              this.VerifiedMsgs.push(msg);
+              this._addMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
+              chkrst = false;
             }
           }
         }
       } else {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTitle = 'Finance.CurrencyIsMust';
-        msg.MsgContent = 'Finance.CurrencyIsMust';
-        this.VerifiedMsgs.push(msg);
+        this._addMessage(hih.MessageType.Error, 'Finance.CurrencyIsMust', 'Finance.CurrencyIsMust');
         chkrst = false;
       }
 
@@ -1810,31 +1687,24 @@ export class Document extends hih.BaseModel {
         }
 
         if (!bExist) {
-          let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
-          this.VerifiedMsgs.push(msg);
+          this._addMessage(hih.MessageType.Error, 'Finance.InvalidCurrency', 'Finance.InvalidCurrency');
           chkrst = false;
         } else {
           if (this.TranCurr2 !== context.BaseCurrency) {
             if (!this.ExgRate2) {
-              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
-              this.VerifiedMsgs.push(msg);
+              this._addMessage(hih.MessageType.Error, 'Finance.NoExchangeRate', 'Finance.NoExchangeRate');
+              chkrst = false;
             }
           } else {
             if (this.ExgRate2) {
-              let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-                'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
-              this.VerifiedMsgs.push(msg);
+              this._addMessage(hih.MessageType.Error, 'Finance.UnnecessaryExchangeRate', 'Finance.UnnecessaryExchangeRate');
+              chkrst = false;
             }
           }
         }
       }
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.CurrencyFetchFailed';
-      msg.MsgContent = 'Finance.CurrencyFetchFailed';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Finance.CurrencyFetchFailed', 'Finance.CurrencyFetchFailed');
       chkrst = false;
     }
 
@@ -1883,31 +1753,20 @@ export class Document extends hih.BaseModel {
             });
 
             if (vordidx === -1) {
-              let msg: hih.InfoMessage = new hih.InfoMessage();
-              msg.MsgTime = moment();
-              msg.MsgType = hih.MessageType.Error;
-              msg.MsgTitle = 'Finance.InvalidOrder';
-              msg.MsgContent = 'Finance.InvalidOrder';
-              this.VerifiedMsgs.push(msg);
+              this._addMessage(hih.MessageType.Error, 'Finance.InvalidOrder', 'Finance.InvalidOrder');
               chkrst = false;
             }
           }
         }
       }
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.NoDocumentItem';
-      msg.MsgContent = 'Finance.NoDocumentItem';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Finance.NoDocumentItem', 'Finance.NoDocumentItem');
       chkrst = false;
     }
 
     if (this.DocType === hih.financeDocTypeTransfer || this.DocType === hih.financeDocTypeCurrencyExchange) {
       if (amtTotal !== 0) {
-        let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error, 'Finance.AmountIsNotCorrect', 'Finance.AmountIsZeroInTransferDocument');
-        this.VerifiedMsgs.push(msg);
+        this._addMessage(hih.MessageType.Error, 'Finance.AmountIsNotCorrect', 'Finance.AmountIsZeroInTransferDocument');
         chkrst = false;
       }
     }
@@ -2056,11 +1915,8 @@ export class DocumentItem {
 
     // Item Id
     if (this.ItemId === undefined || this.ItemId <= 0) {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgContent = 'Finance.InvalidItemID';
-      msg.MsgTitle = 'Finance.InvalidItemID';
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTime = moment();
+      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+        'Finance.InvalidItemID', 'Finance.InvalidItemID');
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
@@ -2074,29 +1930,24 @@ export class DocumentItem {
         });
 
         if (!acnt || acnt.Status !== AccountStatusEnum.Normal) {
-          let msg: hih.InfoMessage = new hih.InfoMessage();
-          msg.MsgTime = moment();
-          msg.MsgType = hih.MessageType.Error;
-          msg.MsgTitle = 'Finance.InvalidAccount';
-          msg.MsgContent = 'Finance.InvalidAccount';
+          let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+            'Finance.InvalidAccount',
+            'Finance.InvalidAccount',
+          );
           this.VerifiedMsgs.push(msg);
           chkrst = false;
         }
       } else {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTitle = 'Finance.AccountIsMust';
-        msg.MsgContent = 'Finance.AccountIsMust';
+        let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+          'Finance.AccountIsMust',
+          'Finance.AccountIsMust');
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       }
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.AccountFetchFailed';
-      msg.MsgContent = 'Finance.AccountFetchFailed';
+      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+        'Finance.AccountFetchFailed',
+        'Finance.AccountFetchFailed');
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
@@ -2110,59 +1961,41 @@ export class DocumentItem {
         });
 
         if (ttidx === -1) {
-          let msg: hih.InfoMessage = new hih.InfoMessage();
-          msg.MsgTime = moment();
-          msg.MsgType = hih.MessageType.Error;
-          msg.MsgTitle = 'Finance.InvalidTransactionType';
-          msg.MsgContent = 'Finance.InvalidTransactionType';
+          let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+            'Finance.InvalidTransactionType', 'Finance.InvalidTransactionType');
           this.VerifiedMsgs.push(msg);
           chkrst = false;
         }
       } else {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTitle = 'Finance.TransactionTypeIsMust';
-        msg.MsgContent = 'Finance.TransactionTypeIsMust';
+        let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+          'Finance.TransactionTypeIsMust', 'Finance.TransactionTypeIsMust');
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       }
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.TransactionTypeFetchFailed';
-      msg.MsgContent = 'Finance.TransactionTypeFetchFailed';
+      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+        'Finance.TransactionTypeFetchFailed', 'Finance.TransactionTypeFetchFailed');
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
     // Amount
     if (this.TranAmount <= 0) {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.AmountIsNotCorrect';
-      msg.MsgContent = 'Finance.AmountIsNotCorrect';
+      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+        'Finance.AmountIsNotCorrect', 'Finance.AmountIsNotCorrect');
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     }
     // Desp
     if (!this.Desp) {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTitle = 'Finance.DespIsMust';
-      msg.MsgContent = 'Finance.DespIsMust';
+      let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+        'Finance.DespIsMust', 'Finance.DespIsMust');
       this.VerifiedMsgs.push(msg);
       chkrst = false;
     } else {
       this.Desp = this.Desp.trim();
       if (this.Desp.length > 44) {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTitle = 'Finance.DespIsTooLong';
-        msg.MsgContent = 'Finance.DespIsTooLong';
+        let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+          'Finance.DespIsTooLong', 'Finance.DespIsTooLong');
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       }
@@ -2174,11 +2007,8 @@ export class DocumentItem {
         // Both inputted
         bccord = false;
 
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTitle = 'Finance.DualInputFound';
-        msg.MsgContent = 'Finance.EitherControlCenterOrOrder';
+        let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+          'Finance.DualInputFound', 'Finance.EitherControlCenterOrOrder');
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       } else {
@@ -2191,11 +2021,8 @@ export class DocumentItem {
         // Neither inputted
         bccord = false;
 
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgTime = moment();
-        msg.MsgType = hih.MessageType.Error;
-        msg.MsgTitle = 'Finance.NoInputFound';
-        msg.MsgContent = 'Finance.EitherControlCenterOrOrder';
+        let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+          'Finance.NoInputFound', 'Finance.EitherControlCenterOrOrder');
         this.VerifiedMsgs.push(msg);
         chkrst = false;
       }
@@ -2210,20 +2037,14 @@ export class DocumentItem {
           });
 
           if (ccidx === -1) {
-            let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = moment();
-            msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = 'Finance.InvalidControlCenter';
-            msg.MsgContent = 'Finance.InvalidControlCenter';
+            let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+              'Finance.InvalidControlCenter', 'Finance.InvalidControlCenter');
             this.VerifiedMsgs.push(msg);
             chkrst = false;
           }
         } else {
-          let msg: hih.InfoMessage = new hih.InfoMessage();
-          msg.MsgTime = moment();
-          msg.MsgType = hih.MessageType.Error;
-          msg.MsgTitle = 'Finance.ControlCenterFetchFailedOrNoCC';
-          msg.MsgContent = 'Finance.ControlCenterFetchFailedOrNoCC';
+          let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+            'Finance.ControlCenterFetchFailedOrNoCC', 'Finance.ControlCenterFetchFailedOrNoCC');
           this.VerifiedMsgs.push(msg);
           chkrst = false;
         }
@@ -2236,20 +2057,14 @@ export class DocumentItem {
           });
 
           if (ordidx === -1) {
-            let msg: hih.InfoMessage = new hih.InfoMessage();
-            msg.MsgTime = moment();
-            msg.MsgType = hih.MessageType.Error;
-            msg.MsgTitle = 'Finance.InvalidOrder';
-            msg.MsgContent = 'Finance.InvalidOrder';
+            let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+              'Finance.InvalidOrder', 'Finance.InvalidOrder');
             this.VerifiedMsgs.push(msg);
             chkrst = false;
           }
         } else {
-          let msg: hih.InfoMessage = new hih.InfoMessage();
-          msg.MsgTime = moment();
-          msg.MsgType = hih.MessageType.Error;
-          msg.MsgTitle = 'Finance.OrderFetchFailedOrNoOrder';
-          msg.MsgContent = 'Finance.OrderFetchFailedOrNoOrder';
+          let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
+            'Finance.OrderFetchFailedOrNoOrder', 'Finance.OrderFetchFailedOrNoOrder');
           this.VerifiedMsgs.push(msg);
           chkrst = false;
         }

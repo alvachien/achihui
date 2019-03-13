@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "private": true,
   "description": "UI layer for HIH, built with Angular 6, Material 6, and so on.",
   "keywords": [

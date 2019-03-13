@@ -2,7 +2,7 @@
   <!-- Doc type -->
   <mat-form-field>
     <mat-select placeholder="{{'Finance.DocumentType' | translate}}" formControlName="docTypeControl"
-      name="doctype">
+      name="doctype" disabled>
       <mat-option *ngFor="let dt of arDocTypes" [value]="dt.Id">
         {{dt.Name | translate}}
       </mat-option>

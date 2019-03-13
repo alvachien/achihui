@@ -349,6 +349,17 @@ export class BaseModel {
       this.UpdatedAt = moment(data.updatedAt, momentDateFormat);
     }
   }
+
+  protected _addMessage(msgtype: MessageType,
+    msgtitle: string,
+    msgcontent: string): void {
+    let msg: InfoMessage = new InfoMessage();
+    msg.MsgType = msgtype;
+    msg.MsgTitle = msgtitle;
+    msg.MsgContent = msgcontent;
+    msg.MsgTime = moment();
+    this._verifiedMsgs.push(msg);
+  }
 }
 
 // List model
