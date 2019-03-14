@@ -164,6 +164,8 @@
     "ValidToMustLaterThanValidFrom": "Valid to must later than valid from",
     "InvalidCategory": "Invalid category",
     "InputtedCategoryIsInvalid": "Inputted category is invalid",
+    "CategoryFetchFailedOrNoOne": "Failed to fetch categories or no category created at all",
+    "DuplicatedID": "Duplicated ID",
     "CategoryIsMust": "Category is a must",
     "CreateAnotherOne": "Create another One",
     "CreatedSuccessfully": "Created successfully",

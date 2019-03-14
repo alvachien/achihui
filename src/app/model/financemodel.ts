@@ -430,30 +430,16 @@ export class Account extends hih.BaseModel {
   set Id(id: number)      { this._id = id;      }
   get HID(): number       { return this._hid;   }
   set HID(hid: number)    { this._hid = hid;    }
-  get CategoryId(): number { return this._ctgyid; }
-  set CategoryId(cid: number) {
-    this._ctgyid = cid;
-  }
-  get Name(): string {
-    return this._name;
-  }
-  set Name(name: string) {
-    this._name = name;
-  }
-  get Comment(): string {
-    return this._comment;
-  }
-  set Comment(cmt: string) {
-    this._comment = cmt;
-  }
-  get OwnerId(): string {
-    return this._ownerid;
-  }
-  set OwnerId(oid: string) {
-    this._ownerid = oid;
-  }
-  public Status: AccountStatusEnum;
+  get CategoryId(): number    { return this._ctgyid;  }
+  set CategoryId(cid: number) { this._ctgyid = cid;   }
+  get Name(): string      { return this._name;        }
+  set Name(name: string)  { this._name = name;        }
+  get Comment(): string   { return this._comment;     }
+  set Comment(cmt: string)    { this._comment = cmt;  }
+  get OwnerId(): string   { return this._ownerid;     }
+  set OwnerId(oid: string)    { this._ownerid = oid;  }
 
+  public Status: AccountStatusEnum;
   public CategoryName: string;
   public OwnerDisplayAs: string;
 
@@ -469,18 +455,14 @@ export class Account extends hih.BaseModel {
     super.onInit();
   }
 
-  public onVerify(context?: any): boolean {
+  public onVerify(context?: IAccountVerifyContext): boolean {
     if (!super.onVerify(context)) {
-      return false;
-    }
-
-    if (this._name === undefined
-      || this._name.length <= 0) {
       return false;
     }
 
     let brst: boolean = true;
 
+    // HID
     if (!this.HID) {
       this._addMessage(hih.MessageType.Error,
         'Common.HIDIsMust',
@@ -488,13 +470,26 @@ export class Account extends hih.BaseModel {
       brst = false;
     }
 
-    if (context) {
-      // Category
-      if (context.arCategory && context.arCategory.length > 0) {
+    // Name
+    if (this.Name) {
+      this.Name = this.Name.trim();
+    }
+    if (!this.Name) {
+      this._addMessage(hih.MessageType.Error,
+        'Common.NameIsMust',
+        'Common.NameIsMust');
+      brst = false;
+    }
+
+    // Category
+    if (this.CategoryId) {
+      if (context && context.Categories instanceof Array
+        && context.Categories.length > 0) {
         let bCategory: boolean = false;
-        for (let ctgy of context.arCategory) {
-          if (+ctgy.Id === +this.CategoryId) {
+        for (let ctgy of context.Categories) {
+          if (+ctgy.ID === +this.CategoryId) {
             bCategory = true;
+            break;
           }
         }
 
@@ -506,13 +501,22 @@ export class Account extends hih.BaseModel {
         }
       } else {
         this._addMessage(hih.MessageType.Error,
-          'Common.InvalidCategory',
-          'Common.CategoryIsMust');
+          'Common.CategoryFetchFailedOrNoOne',
+          'Common.CategoryFetchFailedOrNoOne');
         brst = false;
       }
-
-      // Owner
+    } else {
+      this._addMessage(hih.MessageType.Error,
+        'Common.CategoryIsMust',
+        'Common.CategoryIsMust');
+      brst = false;
     }
+
+    // Status
+    // TBD.
+
+    // Extra
+    // TBD.
 
     return brst;
   }
@@ -1060,49 +1064,35 @@ export interface ControlCenterJson extends hih.BaseModelJson {
  */
 export class ControlCenter extends hih.BaseModel {
   private _id: number;
-  get Id(): number {
-    return this._id;
-  }
-  set Id(id: number) {
-    this._id = id;
-  }
-
   private _hid: number;
-  get HID(): number {
-    return this._hid;
-  }
-  set HID(hid: number) {
-    this._hid = hid;
-  }
   private _name: string;
-  get Name(): string {
-    return this._name;
-  }
-  set Name(name: string) {
-    this._name = name;
-  }
   private _comment: string;
-  get Comment(): string {
-    return this._comment;
-  }
-  set Comment(cmt: string) {
-    this._comment = cmt;
-  }
   private _owner: string;
-  get Owner(): string {
-    return this._owner;
-  }
-  set Owner(owner: string) {
-    this._owner = owner;
-  }
-  public ParentId: number;
+  private _parid?: number;
+
+  get Id(): number                        { return this._id;              }
+  set Id(id: number)                      { this._id = id;                }
+  get HID(): number                       { return this._hid;             }
+  set HID(hid: number)                    { this._hid = hid;              }
+  get Name(): string                      { return this._name;            }
+  set Name(name: string)                  { this._name = name;            }
+  get Comment(): string                   { return this._comment;         }
+  set Comment(cmt: string)                { this._comment = cmt;          }
+  get Owner(): string                     { return this._owner;           }
+  set Owner(owner: string)                { this._owner = owner;          }
+  get ParentId(): number                  { return this._parid;           }
+  set ParentId(pid: number | undefined)   { this._parid = pid;            }
 
   constructor() {
     super();
+
+    this.onInit();
   }
 
   public onInit(): void {
     super.onInit();
+
+    this._parid = undefined;
   }
 
   public onVerify(context?: any): boolean {
@@ -1111,15 +1101,20 @@ export class ControlCenter extends hih.BaseModel {
     }
 
     let bRst: boolean = true;
+
+    // HID
+    if (!this.HID) {
+      this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
+      bRst = false;
+    }
+
+    if (this.Name && this.Name.length > 0) {
+      this.Name = this.Name.trim();
+    }
     if (this.Name && this.Name.length > 0) {
       // Empty
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgTitle = 'Common.InvalidName';
-      msg.MsgContent = 'Common.NameIsMust';
-      msg.MsgType = hih.MessageType.Error;
-      msg.MsgTime = moment();
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Common.InvalidName', 'Common.NameIsMust');
       bRst = false;
     }
 
@@ -1272,8 +1267,21 @@ export class Order extends hih.BaseModel {
       this._addMessage(hih.MessageType.Error, 'Common.InvalidValidRange', 'Common.ValidToMustLaterThanValidFrom');
       chkrst = false;
     }
+
     // Srules
     if (this.SRules.length > 0) {
+      // Check for duplicated IDs
+      let idMap: Map<number, Object> = new Map();
+      this.SRules.forEach((val: SettlementRule) => {
+        if (val.RuleId && !idMap.has(val.RuleId)) {
+          idMap.set(val.RuleId, undefined);
+        }
+      });
+      if (idMap.size !== this.SRules.length) {
+        this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
+        chkrst = false;
+      }
+
       let ntotal: number = 0;
       for (let srobj of this.SRules) {
         ntotal += srobj.Precent;
@@ -1354,7 +1362,6 @@ export class Order extends hih.BaseModel {
 export interface SettlementRuleJson {
   ruleID: number;
   controlCenterID: number;
-  controlCenterName?: string;
   precent: number;
   comment?: string;
 }
@@ -1363,17 +1370,28 @@ export interface SettlementRuleJson {
  * Settlement rule
  */
 export class SettlementRule {
-  public OrdId: number;
-  public RuleId: number;
-  public ControlCenterId: number;
-  public Precent: number;
-  public Comment: string;
+  private _orderid: number;
+  private _ruleid: number;
+  private _ccid: number;
+  private _precent: number;
+  private _cmt: string;
 
-  public ControlCenterName: string;
+  get OrdId(): number               { return this._orderid;       }
+  set OrdId(oi: number)             { this._orderid = oi;         }
+  get RuleId(): number              { return this._ruleid;        }
+  set RuleId(rid: number)           { this._ruleid = rid;         }
+  get ControlCenterId(): number     { return this._ccid;          }
+  set ControlCenterId(cid: number)  { this._ccid = cid;           }
+  get Precent(): number             { return this._precent;       }
+  set Precent(precent: number)      { this._precent = precent;    }
+  get Comment(): string             { return this._cmt;           }
+  set Comment(cmt: string)          { this._cmt = cmt;            }
+
   public VerifiedMsgs: hih.InfoMessage[] = [];
 
   constructor() {
     this.RuleId = -1;
+    this.Precent = 0;
   }
 
   public onVerify(context?: IOrderVerifyContext): boolean {
@@ -1429,9 +1447,6 @@ export class SettlementRule {
     }
     if (data && data.controlCenterID) {
       this.ControlCenterId = +data.controlCenterID;
-    }
-    if (data && data.controlCenterName) {
-      this.ControlCenterName = data.controlCenterName;
     }
     if (data && data.precent) {
       this.Precent = +data.precent;
@@ -1711,6 +1726,20 @@ export class Document extends hih.BaseModel {
     // Items
     let amtTotal: number = 0;
     if (this.Items instanceof Array && this.Items.length > 0) {
+      // Check for duplicated IDs
+      if (this.Items.length > 1) {
+        let idMap: Map<number, Object> = new Map();
+        this.Items.forEach((val: DocumentItem) => {
+          if (val.ItemId && !idMap.has(val.ItemId)) {
+            idMap.set(val.ItemId, undefined);
+          }
+        });
+        if (idMap.size !== this.Items.length) {
+          this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
+          chkrst = false;
+        }
+      }
+
       for (let fit of this.Items) {
         // amtTotal += fit.TranAmount;
         if (!fit.onVerify(context)) {

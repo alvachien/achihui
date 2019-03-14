@@ -11,7 +11,7 @@ import { LogLevel, Account, UIMode, getUIModeString, financeAccountCategoryAsset
   financeAccountCategoryLendTo, UICommonLabelEnum,
   UIDisplayString, UIDisplayStringUtil, AccountStatusEnum, financeAccountCategoryAdvanceReceived,
   AccountExtraAsset, AccountExtraAdvancePayment, AccountExtraLoan, AccountCategory,
-  financeAccountCategoryInsurance, AccountExtra, } from '../../model';
+  financeAccountCategoryInsurance, AccountExtra, IAccountVerifyContext, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 
@@ -188,6 +188,11 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
                   console.debug(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOninit, readAccount: ${x3}`);
                 }
                 this._displayAccountContent(x3);
+                this.firstFormGroup.markAsPristine();
+                this.extraADPFormGroup.markAsPristine();
+                this.extraAssetFormGroup.markAsPristine();
+                this.extraLoanFormGroup.markAsPristine();
+                this.statusFormGroup.markAsPristine();
               }, (error: any) => {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`);
@@ -239,6 +244,9 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   }
 
   public onCloseAccount(): void {
+    // TBD.
+    // Popup a warning dialog?!
+
     // Close the account
     this._storageService.updateAccountStatus(this.routerID, AccountStatusEnum.Closed).subscribe((x: any) => {
       // It has been updated successfully, then navigate to current account again
@@ -273,6 +281,13 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
   private onCreateImpl(): void {
     let acntObj: Account = this._generateAccount();
+    if (!acntObj.onVerify({
+      Categories: this.arAccountCategories,
+    } as IAccountVerifyContext)) {
+      // TBD.
+      // Popup dialog
+      return;
+    }
 
     this._storageService.createAccount(acntObj)
       .pipe(takeUntil(this._destroyed$))
@@ -318,6 +333,14 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
   private onUpdateImpl(): void {
     let acntObj: Account = this._generateAccount();
+    if (!acntObj.onVerify({
+      Categories: this.arAccountCategories,
+    } as IAccountVerifyContext)) {
+      // TBD.
+      // Popup dialog!
+      return;
+    }
+
     this._storageService.changeAccount(acntObj)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
@@ -395,6 +418,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
   private _generateAccount(): Account {
     let acntObj: Account = new Account();
+    acntObj.HID = this._homedefService.ChosedHome.ID;
+
     acntObj.Name = this.firstFormGroup.get('nameControl').value;
     acntObj.CategoryId = this.currentCategory;
     acntObj.OwnerId = this.firstFormGroup.get('ownerControl').value;

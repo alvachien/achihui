@@ -1,15 +1,13 @@
-import {
-  Component, OnInit, OnDestroy, AfterViewInit, EventEmitter,
-  Input, Output, ViewContainerRef,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
+import { Subscription, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/Operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, ControlCenter, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
-import { Subscription, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/Operators';
 
 @Component({
   selector: 'hih-finance-control-center-detail',
@@ -18,11 +16,10 @@ import { takeUntil } from 'rxjs/Operators';
 })
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _listReadStub: Subscription;
   private _createStub: Subscription;
   private _changeStub: Subscription;
-
   private routerID: number = -1; // Current object ID in routing
+
   public currentMode: string;
   public detailObject: ControlCenter | undefined;
   public uiMode: UIMode = UIMode.Create;
@@ -52,7 +49,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     }
     this._destroyed$ = new ReplaySubject(1);
 
-    this._listReadStub = this.storageService.fetchAllControlCenters()
+    this.storageService.fetchAllControlCenters()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((cclist: ControlCenter[]) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -107,8 +104,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOnInit with activateRoute URL : ${error}`);
       }
-    }, () => {
-      // Empty
+      // Dialog
     });
   }
 
@@ -116,10 +112,6 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
-    }
-
-    if (this._listReadStub) {
-      this._listReadStub.unsubscribe();
     }
     if (this._createStub) {
       this._createStub.unsubscribe();
@@ -202,12 +194,6 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
             disableClose: false,
             width: '500px',
             data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent,
-                failed, dialog result ${x2}`);
-            }
           });
         }
       });

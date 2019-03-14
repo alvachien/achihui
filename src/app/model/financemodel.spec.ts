@@ -507,6 +507,28 @@ describe('Order', () => {
     });
     expect(erridx).not.toEqual(-1);
   });
+  it ('#9. onVerify: settlement rule ID shall not duplicate', () => {
+    // Ref: https://github.com/alvachien/achihui/issues/245
+    instance.Name = 'test';
+    let srule: SettlementRule = new SettlementRule();
+    srule.RuleId = 1;
+    srule.ControlCenterId = fakeData.finControlCenters[0].Id;
+    srule.Precent = 30;
+    instance.SRules.push(srule);
+    srule = new SettlementRule();
+    srule.RuleId = 1;
+    srule.ControlCenterId = fakeData.finControlCenters[1].Id;
+    srule.Precent = 70;
+    instance.SRules.push(srule);
+
+    let rst: boolean = instance.onVerify();
+    expect(rst).toBeFalsy();
+
+    let erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgContent === 'Common.DuplicatedID';
+    });
+    expect(erridx).not.toEqual(-1);
+  });
 });
 
 describe('SettlementRule', () => {
@@ -742,6 +764,43 @@ describe('Document', () => {
     expect(rst).toBeFalsy();
     let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Finance.CurrencyFetchFailed';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#10. onVerify: item ID shall not duplicated', () => {
+    // Ref: https://github.com/alvachien/achihui/issues/244
+    instance.Id = 1;
+    instance.DocType = fakeData.finDocTypes[0].Id;
+    instance.TranCurr = fakeData.chosedHome.BaseCurrency;
+    instance.TranDate = moment();
+    instance.Desp = 'test';
+    let di: DocumentItem = new DocumentItem();
+    di.ItemId = 1;
+    di.AccountId = fakeData.finAccounts[0].Id;
+    di.ControlCenterId = fakeData.finControlCenters[0].Id;
+    di.TranAmount = 100;
+    di.Desp = 'Test 1';
+    instance.Items.push(di);
+    di = new DocumentItem();
+    di.ItemId = 1;
+    di.AccountId = fakeData.finAccounts[1].Id;
+    di.ControlCenterId = fakeData.finControlCenters[0].Id;
+    di.TranAmount = 100;
+    di.Desp = 'Test 2';
+    instance.Items.push(di);
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: [],
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Common.DuplicatedID';
     });
     expect(idx).not.toEqual(-1);
   });

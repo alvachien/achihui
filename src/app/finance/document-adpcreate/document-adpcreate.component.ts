@@ -14,7 +14,7 @@ import { LogLevel, momentDateFormat, Document, DocumentItem, UIMode, getUIModeSt
   Currency, ControlCenter, Order, IAccountCategoryFilter, TranType,
   financeDocTypeAdvancePayment, financeTranTypeAdvancePaymentOut,
   costObjectValidator,
-  financeDocTypeAdvanceReceived, financeTranTypeAdvanceReceiveIn,
+  financeDocTypeAdvanceReceived, financeTranTypeAdvanceReceiveIn, DocumentVerifyContext,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
@@ -185,7 +185,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
       TransactionTypes: this.arTranType,
       Currencies: this.arCurrencies,
       BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
-    })) {
+    } as DocumentVerifyContext)) {
       // Show a dialog for error details
       const dlginfo: MessageDialogInfo = {
         Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),

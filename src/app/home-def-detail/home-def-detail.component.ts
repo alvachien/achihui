@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -40,12 +40,18 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     private _snackbar: MatSnackBar,
     private _uiService: UIStatusService,
     private _router: Router,
-    private _activateRoute: ActivatedRoute,
-    private _formBuilder: FormBuilder, ) {
+    private _activateRoute: ActivatedRoute) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor`);
     }
 
+    this.detailForm = new FormGroup({
+      nameControl: new FormControl('', Validators.required),
+      creatorDisplayAsControl: new FormControl('', Validators.required),
+      baseCurrControl: new FormControl('', Validators.required),
+      hostControl: new FormControl({value: this._authService.authSubject.getValue().getUserId(), disable: true }, Validators.required),
+      detailControl: new FormControl(''),
+    });
     this.isLoadingResults = false;
   }
 
@@ -55,17 +61,11 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
-    this.detailForm = this._formBuilder.group({
-      nameControl: ['', Validators.required],
-      creatorDisplayAsControl: ['', Validators.required],
-      baseCurrControl: ['', Validators.required],
-      hostControl: [{ value: this._authService.authSubject.getValue().getUserId(), disable: true }, Validators.required],
-      detailControl: '',
-    });
 
-    this._fincurrService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$)).subscribe((curries: Currency[]) => {
+    this._fincurrService.fetchAllCurrencies()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((curries: Currency[]) => {
       this.arCurrencies = curries;
-      this.isLoadingResults = true;
 
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
@@ -88,15 +88,25 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._homedefService.readHomeDef(this.routerID).subscribe((dtl: HomeDef) => {
+            this.isLoadingResults = true;
+
+            this._homedefService.readHomeDef(this.routerID)
+              .pipe(takeUntil(this._destroyed$))
+              .subscribe((dtl: HomeDef) => {
+
+              this.isLoadingResults = false;
               this.detailForm.get('nameControl').setValue(dtl.Name);
               this.detailForm.get('creatorDisplayAsControl').setValue(dtl.CreatorDisplayAs);
               this.detailForm.get('baseCurrControl').setValue(dtl.BaseCurrency);
               this.detailForm.get('hostControl').setValue(dtl.Host);
               this.detailForm.get('detailControl').setValue(dtl.Details);
+              this.detailForm.markAsUntouched();
+              this.detailForm.markAsPristine();
 
               this.arMembers = dtl.Members.slice();
             }, (error: any) => {
+              this.isLoadingResults = false;
+
               // Show error dialog
               const dlginfo: MessageDialogInfo = {
                 Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
@@ -112,13 +122,6 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
             });
           }
         }
-      }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering HomeDefDetailComponent, ngOnInit, activateRoute failed: ${error}`);
-        }
-        // Shall never happen!
-      }, () => {
-        this.isLoadingResults = false;
       });
     }, (error: any) => {
       // Show error dialog
@@ -160,16 +163,16 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
           console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent, createHomeDef, succeed...`);
         }
 
-        this._snackbar.open('Home def created successfully', undefined, {
+        this._snackbar.open(this._uiService.getUILabel(UICommonLabelEnum.CreatedSuccess), undefined, {
           duration: 2000,
         }).afterDismissed().subscribe(() => {
-          console.log('snackbar dismissed');
           this._router.navigate(['/homedef/' + x.ID.toString()]);
         });
       }, (error: any) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Entering HomeDefDetailComponent, onSubmit, createHomeDef, failed: ${error}`);
         }
+
         // Show error dialog
         const dlginfo: MessageDialogInfo = {
           Header: this._uiService.getUILabel(UICommonLabelEnum.Error),

@@ -42,14 +42,13 @@ describe('DocumentListComponent', () => {
   });
 
   beforeEach(async(() => {
-
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllDocuments',
       'deleteDocument',
     ]);
-    fetchAllDocumentsSpy = stroageService.fetchAllDocuments.and.returnValue(of([]));
-    deleteDocumentSpy = stroageService.deleteDocument.and.returnValue({});
+    fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
+    deleteDocumentSpy = storageService.deleteDocument.and.returnValue({});
 
     TestBed.configureTestingModule({
       imports: [
@@ -76,7 +75,7 @@ describe('DocumentListComponent', () => {
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
         { provide: Router, useValue: routerSpy },
       ],
     });

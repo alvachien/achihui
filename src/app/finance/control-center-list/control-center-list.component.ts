@@ -1,8 +1,9 @@
-import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatPaginator, MatDialog, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, merge, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { LogLevel, ControlCenter, UICommonLabelEnum } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
@@ -15,14 +16,16 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
   styleUrls: ['./control-center-list.component.scss'],
   animations: [fadeAnimation],
 })
-export class ControlCenterListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ControlCenterListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'comment'];
+
   dataSource: MatTableDataSource<ControlCenter> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   isLoadingResults: boolean;
+  totalCount: number;
 
-  constructor(public _storageService: FinanceStorageService,
+  constructor(private _storageService: FinanceStorageService,
     private _router: Router,
     private _uiStatusService: UIStatusService,
     private _dialog: MatDialog) {
@@ -38,33 +41,18 @@ export class ControlCenterListComponent implements OnInit, AfterViewInit, OnDest
     }
 
     this._destroyed$ = new ReplaySubject(1);
-    this.isLoadingResults = true;
-    this._storageService.fetchAllControlCenters().subscribe((x: any) => {
-      // Just ensure the REQUEST has been sent
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...');
-      }
-      this.dataSource.data = x;
-    }, (error: any) => {
-      // Do nothing
-    }, () => {
-      this.isLoadingResults = false;
-    });
-  }
 
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngAfterViewInit...');
-    }
-    this.dataSource.paginator = this.paginator;
+    this._fetchData();
   }
 
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onCreateCC(): void {
@@ -104,16 +92,30 @@ export class ControlCenterListComponent implements OnInit, AfterViewInit, OnDest
   }
 
   public onRefresh(): void {
+    this._fetchData(true);
+  }
+  private _fetchData(bForceReload?: boolean): void {
     this.isLoadingResults = true;
-    this._storageService.fetchAllControlCenters(true).subscribe((x: any) => {
-      // Just ensure the REQUEST has been sent
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent OnRefresh, fetchAllControlCenters...');
-      }
-    }, (error: any) => {
-      // Do nothing
-    }, () => {
+    this._storageService.fetchAllControlCenters(bForceReload)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
       this.isLoadingResults = false;
+      this.dataSource = new MatTableDataSource(x);
+      this.dataSource.paginator = this.paginator;
+    }, (error: any) => {
+      this.isLoadingResults = false;
+      // Show error dialog
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
+
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
     });
   }
 }
