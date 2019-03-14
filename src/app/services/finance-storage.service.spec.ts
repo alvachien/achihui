@@ -11,7 +11,7 @@ import { UserAuthInfo, FinanceADPCalAPIInput, FinanceLoanCalAPIInput, RepeatFreq
   FinanceADPCalAPIOutput, FinanceLoanCalAPIOutput, momentDateFormat, Document, DocumentItem,
   financeDocTypeNormal, DocumentWithPlanExgRateForUpdate, ReportTrendExTypeEnum,
   Account, TemplateDocADP, Order, AccountStatusEnum, GeneralFilterItem, GeneralFilterValueType,
-  GeneralFilterOperatorEnum, Plan, PlanTypeEnum, } from '../model';
+  GeneralFilterOperatorEnum, Plan, PlanTypeEnum, ControlCenter, } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 
@@ -62,7 +62,7 @@ describe('FinanceStorageService', () => {
     service = TestBed.get(FinanceStorageService);
   });
 
-  it('1. should be created without data', () => {
+  it('should be created without data', () => {
     expect(service).toBeTruthy();
   });
 
@@ -1686,6 +1686,113 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === ccAPIURL + '/21' && requrl.params.has('hid');
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('createControlCenter', () => {
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should create a control center in success case', () => {
+      expect(service.ControlCenters.length).toEqual(0);
+      service.createControlCenter(new ControlCenter()).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(service.ControlCenters.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to GET cc from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.controlCenterAPIUrl;
+       });
+
+      // Respond with the mock data
+      req.flush(fakeData.finControlCentersFromAPI[0]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.createControlCenter(new ControlCenter()).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.controlCenterAPIUrl;
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
+  describe('changeControlCenter', () => {
+    let cc: ControlCenter;
+    beforeEach(() => {
+      service = TestBed.get(FinanceStorageService);
+      cc = new ControlCenter();
+      cc.Id = 11;
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should return order in success case', () => {
+      expect(service.ControlCenters.length).toEqual(0);
+      service.changeControlCenter(cc).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+          expect(service.ControlCenters.length).toEqual(1);
+        },
+        (fail: any) => {
+          // Empty
+        },
+      );
+
+      // Service should have made one request to PUT from expected URL
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === service.controlCenterAPIUrl + '/11'
+          && requrl.params.has('hid');
+       });
+
+      // Respond with the mock data
+      req.flush(fakeData.finOrdersFromAPI[0]);
+    });
+
+    it('should return error in case error appear', () => {
+      const msg: string = 'server failed';
+      service.changeControlCenter(cc).subscribe(
+        (data: any) => {
+          fail('expected to fail');
+        },
+        (error: any) => {
+          expect(error).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === service.controlCenterAPIUrl + '/11'
+          && requrl.params.has('hid');
       });
 
       // respond with a 500 and the error message in the body

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, } from '@angular/core/testing';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
@@ -28,6 +28,7 @@ describe('ControlCenterDetailComponent', () => {
   let createControlCenterSpy: any;
   let readControlCenterSpy: any;
   let activatedRouteStub: any;
+  let fetchAllControlCentersSpy: any;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -43,9 +44,13 @@ describe('ControlCenterDetailComponent', () => {
     const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'createControlCenter',
       'readControlCenter',
+      'fetchAllControlCenters',
     ]);
     createControlCenterSpy = storageService.createControlCenter.and.returnValue(of([]));
-    readControlCenterSpy = storageService.readControlCenter.and.returnValue({});
+    readControlCenterSpy = storageService.readControlCenter.and.returnValue(of({}));
+    fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    const homeService: Partial<HomeDefDetailService> = {};
+    homeService.ChosedHome = fakeData.chosedHome;
 
     TestBed.configureTestingModule({
       imports: [
@@ -75,6 +80,7 @@ describe('ControlCenterDetailComponent', () => {
         { provide: FinanceStorageService, useValue: storageService },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
+        { provide: HomeDefDetailService, useValue: homeService },
       ],
     });
 
@@ -92,5 +98,19 @@ describe('ControlCenterDetailComponent', () => {
 
   it('should be created', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('1. Create mode', () => {
+    beforeEach(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+    });
+
+    it('shall load the default values', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.isFieldChangable).toBeTruthy();
+    }));
   });
 });

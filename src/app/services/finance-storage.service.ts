@@ -71,7 +71,6 @@ export class FinanceStorageService {
   }
 
   // Events
-  createControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
   changeControlCenterEvent: EventEmitter<ControlCenter | string | undefined> = new EventEmitter(undefined);
   createOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
   changeOrderEvent: EventEmitter<Order | string | undefined> = new EventEmitter(undefined);
@@ -605,51 +604,41 @@ export class FinanceStorageService {
    * Create a control center
    * @param objDetail Instance of control center to create
    */
-  public createControlCenter(objDetail: ControlCenter): void {
+  public createControlCenter(objDetail: ControlCenter): Observable<ControlCenter> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
     const jdata: string = objDetail.writeJSONString();
-    this._http.post(this.controlCenterAPIUrl, jdata, {
+    return this._http.post(this.controlCenterAPIUrl, jdata, {
       headers: headers,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering Map of createControlCenter in FinanceStorageService: ' + response);
+          console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService, createControlCenter');
         }
 
         let hd: ControlCenter = new ControlCenter();
         hd.onSetData(response);
+
+        this._listControlCenter.push(hd);
         return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Fetch data success in createControlCenter in FinanceStorageService: ${x}`);
-        }
-
-        this._listControlCenter.push(x);
-
-        // Broadcast event
-        this.createControlCenterEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in createControlCenter in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService, Failed in createControlCenter.`);
         }
 
-        // Broadcast event: failed
-        this.createControlCenterEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**
    * Change a control center
    * @param objDetail Instance of control center to change
    */
-  public changeControlCenter(objDetail: ControlCenter): void {
+  public changeControlCenter(objDetail: ControlCenter): Observable<ControlCenter> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -660,43 +649,36 @@ export class FinanceStorageService {
     const jdata: string = objDetail.writeJSONString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-    this._http.put(apiurl, jdata, {
+    return this._http.put(apiurl, jdata, {
       headers: headers,
       params: params,
     })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering Map of changeControlCenter in FinanceStorageService: ' + response);
+          console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService, changeControlCenter');
         }
 
         let hd: ControlCenter = new ControlCenter();
         hd.onSetData(response);
-        return hd;
-      }))
-      .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Fetch data success in changeControlCenter in FinanceStorageService: ${x}`);
-        }
 
         let idx: number = this._listControlCenter.findIndex((val: any) => {
-          return val.Id === x.Id;
+          return val.Id === hd.Id;
         });
         if (idx !== -1) {
-          this._listControlCenter.splice(idx, 1, x);
+          this._listControlCenter.splice(idx, 1, hd);
+        } else {
+          this._listControlCenter.push(hd);
         }
 
-        // Broadcast event
-        this.changeControlCenterEvent.emit(x);
-      }, (error: HttpErrorResponse) => {
+        return hd;
+      }),
+      catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Error occurred in changeControlCenter in FinanceStorageService:  ${error}`);
+          console.error(`AC_HIH_UI [Error]: Entering FinanceStorageService, Failed in createControlCenter.`);
         }
 
-        // Broadcast event: failed
-        this.changeControlCenterEvent.emit(error.statusText + '; ' + error.error + '; ' + error.message);
-      }, () => {
-        // Empty
-      });
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   /**

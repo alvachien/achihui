@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Subscription, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/Operators';
@@ -16,14 +17,13 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } fr
 })
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private _createStub: Subscription;
-  private _changeStub: Subscription;
   private routerID: number = -1; // Current object ID in routing
 
   public currentMode: string;
   public detailObject: ControlCenter | undefined;
   public uiMode: UIMode = UIMode.Create;
   public existedCC: ControlCenter[];
+  public detailFormGroup: FormGroup;
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
@@ -35,7 +35,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
     public homedefService: HomeDefDetailService,
-    public storageService: FinanceStorageService) {
+    private _storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...');
     }
@@ -49,16 +49,16 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     }
     this._destroyed$ = new ReplaySubject(1);
 
-    this.storageService.fetchAllControlCenters()
+    this._storageService.fetchAllControlCenters()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((cclist: ControlCenter[]) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...');
-      }
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.debug('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...');
+        }
 
-      // Load all control centers.
-      this.existedCC = cclist;
-    });
+        // Load all control centers.
+        this.existedCC = cclist;
+      });
 
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
@@ -81,7 +81,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this.storageService.readControlCenter(this.routerID)
+          this._storageService.readControlCenter(this.routerID)
             .pipe(takeUntil(this._destroyed$))
             .subscribe((x2: any) => {
               if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -97,7 +97,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
               });
 
               this.detailObject = new ControlCenter();
-          });
+            });
         }
       }
     }, (error: any) => {
@@ -112,12 +112,6 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
-    }
-    if (this._createStub) {
-      this._createStub.unsubscribe();
-    }
-    if (this._changeStub) {
-      this._changeStub.unsubscribe();
     }
   }
 
@@ -153,99 +147,79 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   }
 
   private onCreateControlCenter(): void {
-    if (!this._createStub) {
-      this._createStub = this.storageService.createControlCenterEvent
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((x: any) => {
+    this._storageService.createControlCenter(this.detailObject)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
           console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onCreateControlCenter, createControlCenterEvent`);
         }
 
-        // Navigate back to list view
-        if (x instanceof ControlCenter) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
-            this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
-              duration: 3000,
-            });
-
-          let recreate: boolean = false;
-          snackbarRef.onAction().subscribe(() => {
-            recreate = true;
-
-            this.onInitCreateMode();
+        // Show the snackbar
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.CreatedSuccess),
+          this._uiStatusService.getUILabel(UICommonLabelEnum.CreateAnotherOne), {
+            duration: 3000,
           });
 
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            if (!recreate) {
-              this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
-            }
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+        let recreate: boolean = false;
+        snackbarRef.onAction().subscribe(() => {
+          recreate = true;
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          });
-        }
+          this.onInitCreateMode();
+        });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          if (!recreate) {
+            this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
+          }
+        });
+      }, (error: any) => {
+        // Show error message
+        const dlginfo: MessageDialogInfo = {
+          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          Content: error.toString(),
+          Button: MessageDialogButtonEnum.onlyok,
+        };
+
+        this._dialog.open(MessageDialogComponent, {
+          disableClose: false,
+          width: '500px',
+          data: dlginfo,
+        });
       });
-    }
-
-    this.storageService.createControlCenter(this.detailObject);
   }
 
   private onUpdateControlCenter(): void {
-    if (!this._changeStub) {
-      this._changeStub = this.storageService.changeControlCenterEvent
-        .pipe(takeUntil(this._destroyed$))
-        .subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
-        }
+    this._storageService.changeControlCenter(this.detailObject)
+    .pipe(takeUntil(this._destroyed$))
+    .subscribe((x: any) => {
+      if (environment.LoggingLevel >= LogLevel.Debug) {
+        console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
+      }
 
-        // Navigate back to list view
-        if (x instanceof ControlCenter) {
-          // Show the snackbar
-          let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
-            'OK', {
-              duration: 3000,
-            });
+      // Show the snackbar
+      let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
+        'OK', {
+          duration: 3000,
+        });
 
-          snackbarRef.afterDismissed().subscribe(() => {
-            // Navigate to display
-            this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
-          });
-        } else {
-          // Show error message
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: x.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
-            // Do nothing!
-            if (environment.LoggingLevel >= LogLevel.Debug) {
-              console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent,
-                failed, Message dialog result ${x2}`);
-            }
-          });
-        }
+      snackbarRef.afterDismissed().subscribe(() => {
+        // Navigate to display
+        this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
       });
-    }
+    }, (error: any) => {
+      // Show error message
+      const dlginfo: MessageDialogInfo = {
+        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        Content: error.toString(),
+        Button: MessageDialogButtonEnum.onlyok,
+      };
 
-    this.storageService.changeControlCenter(this.detailObject);
+      this._dialog.open(MessageDialogComponent, {
+        disableClose: false,
+        width: '500px',
+        data: dlginfo,
+      });
+    });
   }
 }
