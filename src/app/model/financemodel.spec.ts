@@ -529,6 +529,28 @@ describe('Order', () => {
     });
     expect(erridx).not.toEqual(-1);
   });
+  it ('#10. onVerify: one control center shall not used in multiple settlement rules', () => {
+    // Ref: https://github.com/alvachien/achihui/issues/249
+    instance.Name = 'test';
+    let srule: SettlementRule = new SettlementRule();
+    srule.RuleId = 1;
+    srule.ControlCenterId = fakeData.finControlCenters[0].Id;
+    srule.Precent = 30;
+    instance.SRules.push(srule);
+    srule = new SettlementRule();
+    srule.RuleId = 2;
+    srule.ControlCenterId = fakeData.finControlCenters[0].Id;
+    srule.Precent = 70;
+    instance.SRules.push(srule);
+
+    let rst: boolean = instance.onVerify();
+    expect(rst).toBeFalsy();
+
+    let erridx: number = instance.VerifiedMsgs.findIndex((val: hih.InfoMessage) => {
+      return val.MsgContent === 'Common.DuplicatedID';
+    });
+    expect(erridx).not.toEqual(-1);
+  });
 });
 
 describe('SettlementRule', () => {

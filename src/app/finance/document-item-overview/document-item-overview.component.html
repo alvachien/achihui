@@ -5,7 +5,7 @@
   <mat-card-content style="width: 96%">
     <mat-toolbar color="accent">
       <mat-form-field class="docitemoverview-toolbar-item">
-        <mat-select color="accent" class="mt-1" [(ngModel)]="selectedTmpScope" (selectionChange)="onTmpDocsRefresh()">
+        <mat-select color="accent" [(ngModel)]="selectedTmpScope" (selectionChange)="onTmpDocsRefresh()">
           <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
         </mat-select>
       </mat-form-field>

@@ -114,7 +114,16 @@ describe('ControlCenterListComponent', () => {
 
       expect(fetchAllControlCentersSpy).toHaveBeenCalled();
       expect(component.isLoadingResults).toBeFalsy();
+      expect(component.totalCount).toBeGreaterThan(0);
       expect(component.dataSource.data.length).toBeGreaterThan(0);
+    }));
+    it('shall perform navigation if button clicked', fakeAsync(() => {
+      fixture.detectChanges(); // ngOnInit
+      tick(); // Complete the observables in ngOnInit
+      fixture.detectChanges();
+
+      component.onCreateCC();
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/controlcenter/create']);
     }));
   });
 });

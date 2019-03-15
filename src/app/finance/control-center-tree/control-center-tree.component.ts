@@ -4,6 +4,7 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, forkJoin, of as observableOf, ReplaySubject, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
+
 import { LogLevel, ControlCenter, UIDisplayString, UIDisplayStringUtil, OverviewScopeEnum } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { environment } from '../../../environments/environment';
@@ -63,6 +64,7 @@ export class ControlCenterTreeComponent implements OnInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
     this.isLoadingResults = true;
     this._storageService.fetchAllControlCenters()
       .subscribe((value: any) => {

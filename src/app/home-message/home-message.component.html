@@ -10,7 +10,7 @@
     <div>
       <mat-toolbar>
         <button mat-icon-button (click)="onCreateMessage()" matTooltip="{{'Common.Create' | translate}}">
-          <mat-icon color="primary" class="mt-3">add</mat-icon>
+          <mat-icon color="primary">add</mat-icon>
         </button>
         <mat-slide-toggle color="primary" [checked]="sentBox" (change)="onSwitchSentBox()">{{'Common.SentBox' | translate}}</mat-slide-toggle>
       </mat-toolbar>
@@ -22,7 +22,7 @@
           <ng-container matColumnDef="id">
             <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
             <mat-cell *matCellDef="let row">
-              <button mat-icon-button (click)="onDeleteMsg(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="mt-3">delete</mat-icon></button>
+              <button mat-icon-button (click)="onDeleteMsg(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn">delete</mat-icon></button>
               <button (click)="onOpenMsg(row)">{{row.ID}}</button>              
             </mat-cell>
           </ng-container>

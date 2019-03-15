@@ -15,7 +15,7 @@
       <!-- User -->
       <mat-form-field>
         <mat-select placeholder="{{'Login.User' | translate}}" formControlName="userControl">
-          <mat-option *ngFor="let mem of _homedefService.MembersInChosedHome" [value]="mem.User">
+          <mat-option *ngFor="let mem of arMembersInChosedHome" [value]="mem.User">
             {{mem.DisplayAs}}
           </mat-option>
         </mat-select>
@@ -31,7 +31,7 @@
       <!-- Learn Object -->
       <mat-form-field>
         <input type="number" placeholder="{{'Learning.LearningObject' | translate}}" matInput 
-          formControlName="objControl" [matAutocomplete]="objectAuto">
+          formControlName="objectControl" [matAutocomplete]="objectAuto">
         <mat-autocomplete #objectAuto="matAutocomplete" [displayWith]="displayObjectFn">
           <mat-option *ngFor="let obj of arObjects" [value]="obj.Id">
             {{obj.Name}}

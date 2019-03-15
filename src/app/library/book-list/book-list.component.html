@@ -4,9 +4,9 @@
     <mat-card-subtitle>{{'Common.ListView' | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <mat-toolbar color="accent" class="mt-2">
+    <mat-toolbar color="accent">
       <button mat-icon-button (click)="onCreateBook()" matTooltip="{{'Common.Create' | translate}}"><mat-icon color="primary">add</mat-icon></button>
-      <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="accent">refresh</mat-icon></button>
+      <button mat-icon-button (click)="onRefresh()" matTooltip="{{'Common.Refresh' | translate}}"><mat-icon color="primary">refresh</mat-icon></button>
     </mat-toolbar>
     <div class="table-container mat-elevation-z8">
       <mat-table #table [dataSource]="dataSource">
@@ -14,9 +14,9 @@
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
           <mat-cell *matCellDef="let row">
-            <button mat-icon-button (click)="onChangeObject(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="mt-3">edit</mat-icon></button>
-            <button mat-icon-button (click)="onDeleteObject(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="mt-3">delete</mat-icon></button>
-            <a class="mt-1" routerLink='/learn/object/display/{{row.Id}}' routerLinkActive="active" *ngIf="row.Id">{{row.Id}}</a>
+            <button mat-icon-button (click)="onChangeObject(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent">edit</mat-icon></button>
+            <button mat-icon-button (click)="onDeleteObject(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn">delete</mat-icon></button>
+            <a routerLink='/learn/object/display/{{row.Id}}' routerLinkActive="active" *ngIf="row.Id">{{row.Id}}</a>
           </mat-cell>
         </ng-container>
 

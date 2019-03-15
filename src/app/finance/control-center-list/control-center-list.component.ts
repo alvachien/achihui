@@ -90,12 +90,15 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
     this.isLoadingResults = true;
     this._storageService.fetchAllControlCenters(bForceReload)
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((x: any) => {
+      .subscribe((x: ControlCenter[]) => {
       this.isLoadingResults = false;
+
+      this.totalCount = x.length;
       this.dataSource = new MatTableDataSource(x);
       this.dataSource.paginator = this.paginator;
     }, (error: any) => {
       this.isLoadingResults = false;
+
       // Show error dialog
       popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
     });

@@ -3,8 +3,8 @@
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
     <mat-cell *matCellDef="let row">
-      <button mat-icon-button (click)="onChangeObject(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent" class="mt-3">edit</mat-icon></button>
-      <button mat-icon-button (click)="onDeleteObject(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn" class="mt-3">delete</mat-icon></button>
+      <button mat-icon-button (click)="onChangeObject(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="accent">edit</mat-icon></button>
+      <button mat-icon-button (click)="onDeleteObject(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon color="warn">delete</mat-icon></button>
       {{row.Id}}
     </mat-cell>
   </ng-container>

@@ -3,13 +3,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import * as moment from 'moment';
-
-import { environment } from '../../../environments/environment';
-import { LogLevel, LearnHistory, UIMode, getUIModeString, UICommonLabelEnum, LearnObject } from '../../model';
-import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
-import { popupDialog, } from '../../message-dialog';
 import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
+import { environment } from '../../../environments/environment';
+import { LogLevel, LearnHistory, UIMode, getUIModeString, UICommonLabelEnum, LearnObject, HomeMember } from '../../model';
+import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
+import { popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-learn-history-detail',
@@ -24,6 +24,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
   public currentMode: string;
   public detailFormGroup: FormGroup;
   public arObjects: LearnObject[];
+  public arMembersInChosedHome: HomeMember[];
   public objectDisplayID?: number;
 
   get isFieldChangable(): boolean {
@@ -40,6 +41,8 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering HistoryDetailComponent constructor...');
     }
+    this.arObjects = [];
+    this.arMembersInChosedHome = [];
   }
 
   ngOnInit(): void {
@@ -49,14 +52,15 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
+    this.arMembersInChosedHome = this._homedefService.ChosedHome.Members.slice();
     // Start create the UI elements
     this.detailFormGroup = new FormGroup({
       dateControl: new FormControl(moment(), Validators.required),
       userControl: new FormControl('', Validators.required),
-      objControl: new FormControl('', Validators.required),
+      objectControl: new FormControl('', Validators.required),
     });
 
-    this._storageService.fetchAllObjects().pipe(takeUntil(this._destroyed$)).subscribe((x1: any) => {
+    this._storageService.fetchAllObjects().pipe(takeUntil(this._destroyed$)).subscribe((x1: LearnObject[]) => {
       this.arObjects = x1;
 
       // Distinguish current mode
@@ -84,12 +88,14 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
               let hist: LearnHistory = <LearnHistory>x2;
               this.detailFormGroup.get('dateControl').setValue(hist.LearnDate);
               this.detailFormGroup.get('userControl').setValue(hist.UserId);
-              this.detailFormGroup.get('objControl').setValue(hist.ObjectId);
+              this.detailFormGroup.get('objectControl').setValue(hist.ObjectId);
+
               if (this.uiMode === UIMode.Display) {
                 this.detailFormGroup.disable();
                 this.objectDisplayID = hist.ObjectId;
               } else {
                 this.detailFormGroup.enable();
+                this.detailFormGroup.markAsPristine();
               }
             }, (error: any) => {
               if (environment.LoggingLevel >= LogLevel.Error) {
@@ -123,11 +129,24 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
+    // Shall allow edit
+    if (!this.isFieldChangable) {
+      return;
+    }
+    // Shall ensure the form is valid
+    if (this.detailFormGroup.valid) {
+      return;
+    }
+    let detailObject: LearnHistory = this._generateDetailObject();
+    if (!detailObject.onVerify()) {
+      return;
+    }
+
     if (this.uiMode === UIMode.Create) {
-      this.onCreateHistory();
+      this._createHistory(detailObject);
     } else if (this.uiMode === UIMode.Change) {
       // Update mode
-      this.onUpdateHistory();
+      this._updateHistory(detailObject);
     }
   }
 
@@ -142,9 +161,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
       undefined;
   }
 
-  private onCreateHistory(): void {
-    let detailObject: LearnHistory = this._generateDetailObject();
-
+  private _createHistory(detailObject: LearnHistory): void {
     this._storageService.createHistory(detailObject)
     .pipe(takeUntil(this._destroyed$))
     .subscribe((x: any) => {
@@ -178,8 +195,8 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  private onUpdateHistory(): void {
-    // Empty
+  private _updateHistory(detailObject: LearnHistory): void {
+    // TBD.
   }
 
   private _generateDetailObject(): LearnHistory {
@@ -187,6 +204,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     hist.LearnDate = this.detailFormGroup.get('dateControl').value;
     hist.ObjectId = this.detailFormGroup.get('objControl').value;
     hist.UserId = this.detailFormGroup.get('userControl').value;
+
     hist.HID = this._homedefService.ChosedHome.ID;
     return hist;
   }

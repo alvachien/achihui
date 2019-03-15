@@ -1285,13 +1285,25 @@ export class Order extends hih.BaseModel {
       chkrst = false;
     }
 
-    // Srules
+    // S. Rules
     if (this.SRules.length > 0) {
       // Check for duplicated IDs
       let idMap: Map<number, Object> = new Map();
       this.SRules.forEach((val: SettlementRule) => {
         if (val.RuleId && !idMap.has(val.RuleId)) {
           idMap.set(val.RuleId, undefined);
+        }
+      });
+      if (idMap.size !== this.SRules.length) {
+        this._addMessage(hih.MessageType.Error, 'Common.DuplicatedID', 'Common.DuplicatedID');
+        chkrst = false;
+      }
+
+      // Check for duplicated CC IDs
+      idMap = new Map();
+      this.SRules.forEach((val: SettlementRule) => {
+        if (val.ControlCenterId && !idMap.has(val.ControlCenterId)) {
+          idMap.set(val.ControlCenterId, undefined);
         }
       });
       if (idMap.size !== this.SRules.length) {

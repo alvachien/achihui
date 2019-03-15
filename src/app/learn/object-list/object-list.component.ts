@@ -1,61 +1,53 @@
-import { Component, OnInit, ViewChild, AfterViewInit, HostBinding, OnDestroy } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { MatPaginator, MatTableDataSource, MatDialog, } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, forkJoin, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
-import { LogLevel, LearnObject } from '../../model';
-import { LearnStorageService } from '../../services';
+import { LogLevel, LearnObject, LearnCategory, UICommonLabelEnum, } from '../../model';
+import { LearnStorageService, UIStatusService, } from '../../services';
+import { popupDialog } from '../../message-dialog';
 
 @Component({
   selector: 'hih-learn-object-list',
   templateUrl: './object-list.component.html',
   styleUrls: ['./object-list.component.scss'],
 })
-export class ObjectListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ObjectListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: MatTableDataSource<LearnObject> = new MatTableDataSource();
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  isSlideMode: boolean = false;
   isLoadingResults: boolean;
+  arCategories: LearnCategory[];
 
-  constructor(public _storageService: LearnStorageService,
-    private _router: Router) {
-    this.isSlideMode = false;
+  constructor(private _storageService: LearnStorageService,
+    private _router: Router,
+    private _uiStatusService: UIStatusService,
+    private _dialog: MatDialog) {
     this.isLoadingResults = false;
+    this.arCategories = [];
   }
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnInit...');
     }
+
     this._destroyed$ = new ReplaySubject(1);
 
-    this.isLoadingResults = true;
+    this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.arCategories = x[0].slice();
 
-    forkJoin([
-      this._storageService.fetchAllCategories(),
-      this._storageService.fetchAllObjects(),
-    ]).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-      // Just ensure the REQUEST has been sent
-      if (x) {
-        // Do NOTHING
-        this.dataSource.data = x[1];
-      }
+      this._loadObjects();
     }, (error: any) => {
       // Do nothing
-    }, () => {
-      this.isLoadingResults = false;
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
     });
   }
-  ngAfterViewInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ObjectListComponent ngAfterViewInit...');
-    }
-    this.dataSource.paginator = this.paginator;
-  }
+
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnDestroy...');
@@ -79,20 +71,24 @@ export class ObjectListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public onDeleteObject(obj: any): void {
-    // Empty
+    // TBD.
   }
 
   public onRefresh(): void {
-    this.isLoadingResults = true;
-    this._storageService.fetchAllObjects();
-    this.isLoadingResults = false;
+    this._loadObjects();
   }
 
-  public onToggleSlide(): void {
-    if (!this.isSlideMode) {
-      this.isSlideMode = true;
-    } else {
-      this.isSlideMode = false;
-    }
+  private _loadObjects(): void {
+    this.isLoadingResults = true;
+
+    this._storageService.fetchAllObjects().subscribe((x: LearnObject[]) => {
+      this.dataSource = new MatTableDataSource(x);
+      this.dataSource.paginator = this.paginator;
+    }, (error: any) => {
+      // Do nothing
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
+    }, () => {
+      this.isLoadingResults = false;
+    });
   }
 }

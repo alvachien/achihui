@@ -75,13 +75,18 @@ describe('ControlCenterTreeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('2. should load the data successfully', fakeAsync(() => {
-    fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+  describe('should work with the data', () => {
+    beforeEach(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+    });
 
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
+    it('shall load the data',  fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
 
-    expect(component.dataSource.data.length).toBeGreaterThan(0);
-  }));
+      expect(fetchAllControlCentersSpy).toHaveBeenCalled();
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
+    }));
+  });
 });

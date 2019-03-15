@@ -377,10 +377,17 @@ export class LearnObject extends hih.BaseModel {
  */
 export class LearnHistory extends hih.BaseModel {
   private _learnDate: moment.Moment;
+  private _userId: string;
+  private _objId: number;
+  private _cmt: string;
+
   public HID: number;
-  public UserId: string;
-  public ObjectId: number;
-  public Comment: string;
+  get UserId(): string              { return this._userId;      }
+  set UserId(userid: string)        { this._userId = userid;    }
+  get ObjectId(): number            { return this._objId;       }
+  set ObjectId(objid: number)       { this._objId = objid;      }
+  get Comment(): string             { return this._cmt;         }
+  set Comment(cmt: string)          { this._cmt = cmt;          }
 
   // Additional info, not need for saving
   public UserDisplayAs: string;
@@ -389,7 +396,7 @@ export class LearnHistory extends hih.BaseModel {
   constructor() {
     super();
 
-    this.LearnDate = moment();
+    this.onInit();
   }
 
   public generateKey(): string {
@@ -408,6 +415,7 @@ export class LearnHistory extends hih.BaseModel {
 
   public onInit(): void {
     super.onInit();
+    this.LearnDate = moment();
   }
 
   public onVerify(context?: any): boolean {
@@ -416,6 +424,23 @@ export class LearnHistory extends hih.BaseModel {
     }
 
     let chkrst: boolean = true;
+
+    // HID
+    if (!this.HID) {
+      this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
+      chkrst = false;
+    }
+    // User ID
+    // TBD.
+    // Learn Date
+    // TBD.
+    // Object ID
+    if (!this.ObjectId) {
+
+    } else {
+
+    }
+
     if (context && context.arObjects && context.arObjects.length > 0) {
       let bObj: boolean = false;
       for (let obj of context.arObjects) {
@@ -490,7 +515,7 @@ export class LearnHistory extends hih.BaseModel {
     rstObj.hid = this.HID;
     rstObj.userID = this.UserId;
     rstObj.objectID = this.ObjectId;
-    rstObj.learnDate = this._learnDate.format(hih.momentDateFormat);
+    rstObj.learnDate = this.LearnDateDisplayString;
     rstObj.comment = this.Comment;
     return rstObj;
   }
