@@ -217,8 +217,6 @@ describe('ControlCenterDetailComponent', () => {
       tick();
       fixture.detectChanges();
 
-      expect(component.existedCC.length).toEqual(fakeData.finControlCenters.length);
-
       expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
       // Since there is only one button
       (overlayContainerElement.querySelector('button') as HTMLElement).click();

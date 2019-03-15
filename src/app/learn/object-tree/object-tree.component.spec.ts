@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed, fakeAsync, inject, tick, flush, } from '@angular/core/testing';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +11,8 @@ import { Component, Input } from '@angular/core';
 
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { ObjectTreeComponent } from './object-tree.component';
-import { AuthService, HomeDefDetailService, LearnStorageService } from '../../services';
+import { AuthService, HomeDefDetailService, LearnStorageService, UIStatusService, } from '../../services';
+import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 
 @Component({selector: 'hih-learn-object-by-category', template: ''})
 class ObjectByCategoryComponent {
@@ -55,13 +57,20 @@ describe('ObjectTreeComponent', () => {
       declarations: [
         ObjectByCategoryComponent,
         ObjectTreeComponent,
+        MessageDialogComponent,
       ],
       providers: [
         TranslateLoader,
+        UIStatusService,
         { provide: LearnStorageService, useValue: lrnStorageService },
       ],
-    })
-    .compileComponents();
+    });
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ MessageDialogComponent ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {

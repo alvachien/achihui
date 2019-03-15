@@ -202,7 +202,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
   private _generateDetailObject(): LearnHistory {
     let hist: LearnHistory = new LearnHistory();
     hist.LearnDate = this.detailFormGroup.get('dateControl').value;
-    hist.ObjectId = this.detailFormGroup.get('objControl').value;
+    hist.ObjectId = this.detailFormGroup.get('objectControl').value;
     hist.UserId = this.detailFormGroup.get('userControl').value;
 
     hist.HID = this._homedefService.ChosedHome.ID;

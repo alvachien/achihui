@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, inject, tick, flush, } from '@angular/core/testing';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -8,9 +9,10 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory, asyncData, asyncError, } from '../../../testing';
 import { ObjectListComponent } from './object-list.component';
-import { LearnStorageService } from '../../services';
+import { LearnStorageService, UIStatusService, } from '../../services';
+import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 
 describe('ObjectListComponent', () => {
   let component: ObjectListComponent;
@@ -42,14 +44,21 @@ describe('ObjectListComponent', () => {
       ],
       declarations: [
         ObjectListComponent,
+        MessageDialogComponent,
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: Router, useValue: routerSpy },
         { provide: LearnStorageService, useValue: lrnStroageService },
       ],
-    })
-    .compileComponents();
+    });
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ MessageDialogComponent ],
+      },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
