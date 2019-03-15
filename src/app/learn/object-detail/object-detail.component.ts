@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject, UIMode, getUIModeString, UICommonLabelEnum, LearnCategory } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-learn-object-detail',
@@ -102,17 +102,8 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
                 console.error(`AC_HIH_UI [Error]: Entering ObjectDetailComponent ngOnInit readObject failed: ${error}`);
               }
               // Show error message
-              const dlginfo: MessageDialogInfo = {
-                Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-                Content: error.toString(),
-                Button: MessageDialogButtonEnum.onlyok,
-              };
-
-              this._dialog.open(MessageDialogComponent, {
-                disableClose: false,
-                width: '500px',
-                data: dlginfo,
-              });
+              popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+                error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
             });
           }
         }
@@ -123,17 +114,8 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
       }
 
       // Show error message
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 
@@ -223,17 +205,8 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
         });
       }, (error: any) => {
         // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
+        popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
       });
   }
 
@@ -259,17 +232,8 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
         });
       }, (error: any) => {
         // Show error message with dialog
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
+        popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
       });
   }
 }

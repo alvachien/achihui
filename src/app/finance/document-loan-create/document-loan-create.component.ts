@@ -15,7 +15,7 @@ import { LogLevel, Account, Document, DocumentItem, Currency, financeDocTypeBorr
   momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom, costObjectValidator,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-document-loan-create',
@@ -172,17 +172,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: docObj.VerifiedMsgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, docObj.VerifiedMsgs);
 
       return;
     }
@@ -220,17 +211,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       });
     }, (error: any) => {
       // Show error message
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 

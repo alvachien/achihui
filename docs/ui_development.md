@@ -55,6 +55,22 @@ this._dialog.open(MessageDialogComponent, {
 });
 ```
 
+To reduce the codes here, there is one more function has been defined within message-dialog.component.ts:
+```typescript
+export function popupDialog(dlg: MatDialog, header: string, content?: string, contentTable?: InfoMessage[]): MatDialogRef<any> {
+    ...
+}
+export function popupConfirmDialog(dlg: MatDialog, header: string, content?: string, contentTable?: InfoMessage[]): MatDialogRef<any> {
+    ...
+}
+```
+
+Therefore, to use it in the component, just write the codes like:
+```typescript
+    popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
+      error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
+```
+
 - Snackbar: To show a snackbar, do the following:
 ```typescript
 import { MatSnackBar } from '@angular/material';

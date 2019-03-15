@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EnSentence, EnSentenceExplain, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-learn-en-sentence-detail',
@@ -149,22 +149,8 @@ export class EnSentenceDetailComponent implements OnInit, OnDestroy {
             });
           } else {
             // Show error message
-            const dlginfo: MessageDialogInfo = {
-              Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-              Content: x.toString(),
-              Button: MessageDialogButtonEnum.onlyok,
-            };
-
-            this._dialog.open(MessageDialogComponent, {
-              disableClose: false,
-              width: '500px',
-              data: dlginfo,
-            }).afterClosed().subscribe((x2: any) => {
-              // Do nothing!
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.debug(`AC_HIH_UI [Debug]: Entering EnSentenceDetailComponent, onSubmit, Message dialog result ${x2}`);
-              }
-            });
+            popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+              x ? x.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
           }
         });
       }

@@ -14,7 +14,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, fin
   HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 import * as moment from 'moment';
 
 @Component({
@@ -159,17 +159,8 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
         BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
       })) {
         // Show a dialog for error details
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          ContentTable: docobj.VerifiedMsgs,
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
+        popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), undefined,
+          docobj.VerifiedMsgs);
 
         return;
       }
@@ -195,7 +186,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     this._storageService.createAssetBuyinDocument(apidetail).subscribe((nid: number) => {
       // New doc created with ID returned
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug(`AC_HIH_UI [Debug]: Entering OnSubmit in DocumentAssetBuyinCreateComponent for createAssetBuyinDocument, new doc ID: ${nid}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetBuyinCreateComponent onSubmit, createAssetBuyinDocument, new doc ID: ${nid}`);
       }
 
       // Show success
@@ -208,25 +199,10 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     }, (err: string) => {
       // Handle the error
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Failed in onSubmit in DocumentAssetBuyinCreateComponent for createAssetBuyinDocument, result: ${err}`);
+        console.error(`AC_HIH_UI [Error]: Entering DocumentAssetBuyinCreateComponent, onSubmit createAssetBuyinDocument, failed: ${err}`);
       }
 
-      let msg: InfoMessage = new InfoMessage();
-      msg.MsgTime = moment();
-      msg.MsgType = MessageType.Error;
-      msg.MsgTitle = 'Common.Error';
-      msg.MsgContent = err;
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: [msg],
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), err.toString());
 
       return;
     });

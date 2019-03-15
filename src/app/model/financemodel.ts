@@ -1117,6 +1117,23 @@ export class ControlCenter extends hih.BaseModel {
       this._addMessage(hih.MessageType.Error, 'Common.InvalidName', 'Common.NameIsMust');
       bRst = false;
     }
+    // Parent
+    if (this.ParentId) {
+      if (context && context.ControlCenters instanceof Array
+        && context.ControlCenters.length > 0) {
+        let pidx: number = context.ControlCenters.findIndex((val: ControlCenter) => {
+          return val.Id === this.ParentId;
+        });
+        if (pidx === -1) {
+          this._addMessage(hih.MessageType.Error, 'Finance.InvalidControlCenter', 'Finance.InvalidControlCenter');
+          bRst = false;
+        }
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Finance.ControlCenterFetchFailedOrNoCC', 'Finance.ControlCenterFetchFailedOrNoCC');
+        bRst = false;
+      }
+    }
+    // Owner
 
     return bRst;
   }

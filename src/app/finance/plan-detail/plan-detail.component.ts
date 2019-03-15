@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Plan, PlanTypeEnum, UIMode, getUIModeString, UICommonLabelEnum, BuildupAccountForSelection,
   UIAccountForSelection, IAccountCategoryFilter, momentDateFormat, InfoMessage, MessageType,
 } from '../../model';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService, FinCurrencyService } from '../../services';
 
 @Component({
@@ -118,34 +118,16 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
               }
             }, (error: any) => {
               // Show error dialog
-              const dlginfo: MessageDialogInfo = {
-                Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-                Content: error.toString(),
-                Button: MessageDialogButtonEnum.onlyok,
-              };
-
-              this._dialog.open(MessageDialogComponent, {
-                disableClose: false,
-                width: '500px',
-                data: dlginfo,
-              });
+              popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+                error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
             });
           }
         }
       });
     }, (error: any) => {
       // Show error dialog
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 
@@ -168,17 +150,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     let nplan: Plan = this._generatePlanObject();
     if (!nplan.onVerify()) {
       // Show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: nplan.VerifiedMsgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, nplan.VerifiedMsgs);
 
       return;
     }
@@ -199,18 +172,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
         }
 
         // Show a dialog for error details
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
-
+        popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
         return;
     });
     } else if (this.uiMode === UIMode.Change) {

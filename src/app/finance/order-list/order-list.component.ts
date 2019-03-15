@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Order, UICommonLabelEnum, momentDateFormat } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { popupConfirmDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-finance-order-list',
@@ -89,17 +89,9 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public onDeleteOrder(acnt: any): void {
     // Show a confirmation dialog for the deletion
-    const dlginfo: MessageDialogInfo = {
-      Header: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
-      Content: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfrimContent),
-      Button: MessageDialogButtonEnum.yesno,
-    };
-
-    this._dialog.open(MessageDialogComponent, {
-      disableClose: false,
-      width: '500px',
-      data: dlginfo,
-    }).afterClosed().subscribe((x2: any) => {
+    popupConfirmDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
+      this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfrimContent))
+      .afterClosed().subscribe((x2: any) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.debug(`AC_HIH_UI [Debug]: Entering OrderListComponent, onDeleteOrder, Message dialog result ${x2}`);

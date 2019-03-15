@@ -8,7 +8,7 @@ import { LogLevel, QuestionBankItem, QuestionBankSubItem, UIMode, getUIModeStrin
   QuestionBankTypeEnum, UICommonLabelEnum,
 } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 import { Observable, ReplaySubject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ENTER, COMMA, SPACE } from '@angular/cdk/keycodes';
@@ -207,17 +207,8 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
       });
     }, (error: any) => {
       // Show error message
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 
@@ -240,17 +231,8 @@ export class QuestionBankDetailComponent implements OnInit, OnDestroy {
       });
     }, (error: any) => {
       // Show error message
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 

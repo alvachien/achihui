@@ -49,3 +49,34 @@ export class MessageDialogComponent {
     @Inject(MAT_DIALOG_DATA) public dlgInfo: MessageDialogInfo) {
   }
 }
+
+// Popup dialog
+export function popupDialog(dlg: MatDialog, header: string, content?: string, contentTable?: InfoMessage[]): MatDialogRef<any> {
+  const dlginfo: MessageDialogInfo = {
+    Header: header,
+    Content: content,
+    ContentTable: contentTable,
+    Button: MessageDialogButtonEnum.onlyok,
+  };
+
+  return dlg.open(MessageDialogComponent, {
+    disableClose: false,
+    width: '500px',
+    data: dlginfo,
+  });
+}
+
+export function popupConfirmDialog(dlg: MatDialog, header: string, content?: string, contentTable?: InfoMessage[]): MatDialogRef<any> {
+  const dlginfo: MessageDialogInfo = {
+    Header: header,
+    Content: content,
+    ContentTable: contentTable,
+    Button: MessageDialogButtonEnum.yesno,
+  };
+
+  return dlg.open(MessageDialogComponent, {
+    disableClose: false,
+    width: '500px',
+    data: dlginfo,
+  });
+}

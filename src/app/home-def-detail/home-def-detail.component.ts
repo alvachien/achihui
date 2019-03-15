@@ -8,7 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { LogLevel, HomeDef, Currency, UICommonLabelEnum, UIMode, getUIModeString, HomeMember } from '../model';
 import { AuthService, HomeDefDetailService, FinCurrencyService, UIStatusService } from '../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../message-dialog';
 
 @Component({
   selector: 'hih-home-def-detail',
@@ -108,34 +108,16 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
               this.isLoadingResults = false;
 
               // Show error dialog
-              const dlginfo: MessageDialogInfo = {
-                Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-                Content: error.toString(),
-                Button: MessageDialogButtonEnum.onlyok,
-              };
-
-              this._dialog.open(MessageDialogComponent, {
-                disableClose: false,
-                width: '500px',
-                data: dlginfo,
-              });
+              popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
+                error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
             });
           }
         }
       });
     }, (error: any) => {
       // Show error dialog
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 
@@ -174,17 +156,8 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
         }
 
         // Show error dialog
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-          Content: error.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
+        popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
+          error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
       });
     }
   }

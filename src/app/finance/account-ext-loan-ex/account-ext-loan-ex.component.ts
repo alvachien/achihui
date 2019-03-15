@@ -7,7 +7,7 @@ import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator } from '@angul
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 import { LogLevel, Document, DocumentItem, UIMode, AccountExtraLoan, UIAccountForSelection,
     IAccountCategoryFilter, BuildupAccountForSelection, TemplateDocLoan, FinanceLoanCalAPIInput, UICommonLabelEnum } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
@@ -247,17 +247,8 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
         console.error(`AC_HIH_UI [Error]: Entering AccountExtLoanComponent onGenerateTmpDocs, failed with: ${error}`);
       }
 
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 

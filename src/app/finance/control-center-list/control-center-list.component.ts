@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, ControlCenter, UICommonLabelEnum } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
 import { fadeAnimation } from '../../utility';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, popupConfirmDialog } from '../../message-dialog';
 
 @Component({
   selector: 'hih-finance-control-center-list',
@@ -69,24 +69,16 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
 
   public onDeleteCC(acnt: any): void {
     // Show a confirmation dialog for the deletion
-    const dlginfo: MessageDialogInfo = {
-      Header: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
-      Content: this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfrimContent),
-      Button: MessageDialogButtonEnum.yesno,
-    };
-
-    this._dialog.open(MessageDialogComponent, {
-      disableClose: false,
-      width: '500px',
-      data: dlginfo,
-    }).afterClosed().subscribe((x2: any) => {
+    popupConfirmDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
+      this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfrimContent))
+      .afterClosed().subscribe((x2: any) => {
       // Do nothing!
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterListComponent, onDeleteCC, Message dialog result ${x2}`);
       }
 
       if (x2) {
-        // Todo!
+        // TBD!
       }
     });
   }
@@ -105,17 +97,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
     }, (error: any) => {
       this.isLoadingResults = false;
       // Show error dialog
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
     });
   }
 }

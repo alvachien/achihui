@@ -6,7 +6,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 
 import { environment } from '../../environments/environment';
 import { LogLevel, HomeDef, UICommonLabelEnum, } from '../model';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../message-dialog';
+import { popupDialog, } from '../message-dialog';
 import { HomeDefDetailService, UIStatusService, } from '../services';
 
 @Component({
@@ -100,17 +100,8 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
         this.dataSource.paginator = this.paginator;
       }, (error: any) => {
         // Show error dialog
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiService.getUILabel(UICommonLabelEnum.Error),
-          Content: error.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
+        popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
+          error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
       }, () => {
         this.isLoadingResults = false;
       });

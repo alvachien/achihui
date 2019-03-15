@@ -9,7 +9,7 @@ import { GeneralFilterOperatorEnum, GeneralFilterItem, UIDisplayString, UIDispla
   GeneralFilterValueType, LogLevel, TranType, UICommonLabelEnum, } from '../../model';
 import { environment, } from '../../../environments/environment';
 import { AuthService, FinanceStorageService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-fin-document-item-search-list',
@@ -91,17 +91,8 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
       this.onAddFilter();
     }, (error: any) => {
       // Error occurred, show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 
@@ -145,17 +136,8 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
           }
         }),
         catchError((error: any) => {
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          });
+          popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
 
           this.isLoadingResults = false;
           return observableOf([]);

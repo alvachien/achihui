@@ -101,8 +101,22 @@ describe('ControlCenterDetailComponent', () => {
   });
 
   describe('1. Create mode', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
     beforeEach(() => {
       fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      createControlCenterSpy.and.returnValue(asyncData(fakeData.finControlCenters[0]));
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
     });
 
     it('shall load the default values', fakeAsync(() => {
@@ -111,6 +125,108 @@ describe('ControlCenterDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.isFieldChangable).toBeTruthy();
+      expect(component.existedCC.length).toEqual(fakeData.finControlCenters.length);
+    }));
+
+    it('shall popup an error dialog if control center failed to fetch', fakeAsync(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncError('server 500 failed!'));
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(fetchAllControlCentersSpy).toHaveBeenCalled();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      flush();
+    }));
+
+    it('Name is mandatory', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.detailFormGroup.valid).toBeFalsy();
+      component.detailFormGroup.get('nameControl').setValue('Test');
+      component.detailFormGroup.get('nameControl').markAsDirty();
+      component.detailFormGroup.get('nameControl').updateValueAndValidity();
+      expect(component.detailFormGroup.valid).toBeTruthy();
+    }));
+
+    it('shall handle create success case', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.detailFormGroup.valid).toBeFalsy();
+      component.detailFormGroup.get('nameControl').setValue('Test');
+      component.detailFormGroup.get('nameControl').markAsDirty();
+      component.detailFormGroup.get('nameControl').updateValueAndValidity();
+      expect(component.detailFormGroup.valid).toBeTruthy();
+
+      component.onSubmit();
+      tick();
+      fixture.detectChanges();
+      expect(createControlCenterSpy).toHaveBeenCalled();
+
+      flush();
+    }));
+  });
+
+  describe('2. Change mode', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      readControlCenterSpy.and.returnValue(asyncData(fakeData.finControlCenters[0]));
+
+      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('122', {})] as UrlSegment[]);
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('shall load the default values', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.isFieldChangable).toBeTruthy();
+      expect(component.existedCC.length).toEqual(fakeData.finControlCenters.length);
+      expect(readControlCenterSpy).toHaveBeenCalled();
+    }));
+
+    it('shall popup an error dialog if control center failed to fetch', fakeAsync(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncError('server 500 failed!'));
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.existedCC.length).toEqual(fakeData.finControlCenters.length);
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      flush();
     }));
   });
 });

@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Subscription, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/Operators';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, ControlCenter, UIMode, getUIModeString, UICommonLabelEnum } from '../../model';
+import { LogLevel, ControlCenter, UIMode, getUIModeString, UICommonLabelEnum, InfoMessage, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-finance-control-center-detail',
@@ -20,7 +20,6 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   private routerID: number = -1; // Current object ID in routing
 
   public currentMode: string;
-  public detailObject: ControlCenter | undefined;
   public uiMode: UIMode = UIMode.Create;
   public existedCC: ControlCenter[];
   public detailFormGroup: FormGroup;
@@ -40,7 +39,12 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       console.debug('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...');
     }
 
-    this.detailObject = new ControlCenter();
+    this.detailFormGroup = new FormGroup({
+      nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      cmtControl: new FormControl('', Validators.maxLength(45)),
+      parentControl: new FormControl(),
+      ownerControl: new FormControl(),
+    });
   }
 
   ngOnInit(): void {
@@ -58,54 +62,57 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
 
         // Load all control centers.
         this.existedCC = cclist;
+
+        // Distinguish current mode
+        this._activateRoute.url.subscribe((x: any) => {
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit for activateRoute URL: ${x}`);
+          }
+
+          if (x instanceof Array && x.length > 0) {
+            if (x[0].path === 'create') {
+              this.onInitCreateMode();
+            } else if (x[0].path === 'edit') {
+              this.routerID = +x[1].path;
+
+              this.uiMode = UIMode.Change;
+            } else if (x[0].path === 'display') {
+              this.routerID = +x[1].path;
+
+              this.uiMode = UIMode.Display;
+            }
+            this.currentMode = getUIModeString(this.uiMode);
+
+            if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+              this._storageService.readControlCenter(this.routerID)
+                .pipe(takeUntil(this._destroyed$))
+                .subscribe((x2: ControlCenter) => {
+                  if (environment.LoggingLevel >= LogLevel.Debug) {
+                    console.debug(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, readControlCenter.`);
+                  }
+                  this.detailFormGroup.get('nameControl').setValue(x2.Name);
+                  this.detailFormGroup.get('cmtControl').setValue(x2.Comment);
+                  this.detailFormGroup.get('parentControl').setValue(x2.ParentId);
+                  this.detailFormGroup.get('ownerControl').setValue(x2.Owner);
+                  this.detailFormGroup.markAsPristine();
+                  if (this.uiMode === UIMode.Display) {
+                    this.detailFormGroup.disable();
+                  } else {
+                    this.detailFormGroup.enable();
+                  }
+                }, (error: any) => {
+                  if (environment.LoggingLevel >= LogLevel.Error) {
+                    console.error(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${error}`);
+                  }
+                  this._popupErrorDialog(error.toString());
+                });
+            }
+          }
+        });
+      }, (error: any) => {
+        // Show the error dialog
+        this._popupErrorDialog(error.toString());
       });
-
-    // Distinguish current mode
-    this._activateRoute.url.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit for activateRoute URL: ${x}`);
-      }
-
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.onInitCreateMode();
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
-
-          this.uiMode = UIMode.Change;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
-
-          this.uiMode = UIMode.Display;
-        }
-        this.currentMode = getUIModeString(this.uiMode);
-
-        if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-          this._storageService.readControlCenter(this.routerID)
-            .pipe(takeUntil(this._destroyed$))
-            .subscribe((x2: any) => {
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.debug(`AC_HIH_UI [Debug]: Entering ngOninit in ControlCenterDetailComponent, readControlCenter.`);
-              }
-              this.detailObject = x2;
-            }, (error: any) => {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${error}`);
-              }
-              this._snackbar.open(error.toString(), undefined, {
-                duration: 2000,
-              });
-
-              this.detailObject = new ControlCenter();
-            });
-        }
-      }
-    }, (error: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOnInit with activateRoute URL : ${error}`);
-      }
-      // Dialog
-    });
   }
 
   ngOnDestroy(): void {
@@ -115,24 +122,31 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  public canSubmit(): boolean {
-    if (!this.isFieldChangable) {
-      return false;
-    }
-
-    // Name
-    if (this.detailObject.Name.trim().length <= 0) {
-      return false;
-    }
-
-    return true;
-  }
-
   public onSubmit(): void {
+    if (!this.isFieldChangable) {
+      return;
+    }
+    if (!this.detailFormGroup.valid) {
+      return;
+    }
+
+    let detailObject: ControlCenter = new ControlCenter();
+    detailObject.HID = this.homedefService.ChosedHome.ID;
+    detailObject.Name = this.detailFormGroup.get('nameControl').value;
+    detailObject.Comment = this.detailFormGroup.get('cmtControl').value;
+    detailObject.ParentId = this.detailFormGroup.get('parentControl').value;
+    detailObject.Owner = this.detailFormGroup.get('ownerControl').value;
+    if (!detailObject.onVerify({
+      ControlCenters: this.existedCC,
+    })) {
+      // Error dialog
+      return;
+    }
+
     if (this.uiMode === UIMode.Create) {
-      this.onCreateControlCenter();
+      this._createControlCenter(detailObject);
     } else if (this.uiMode === UIMode.Change) {
-      this.onUpdateControlCenter();
+      this._updateControlCenter(detailObject);
     }
   }
 
@@ -141,13 +155,11 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   }
 
   private onInitCreateMode(): void {
-    this.detailObject = new ControlCenter();
     this.uiMode = UIMode.Create;
-    this.detailObject.HID = this.homedefService.ChosedHome.ID;
   }
 
-  private onCreateControlCenter(): void {
-    this._storageService.createControlCenter(this.detailObject)
+  private _createControlCenter(detailObject: ControlCenter): void {
+    this._storageService.createControlCenter(detailObject)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -175,51 +187,36 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         });
       }, (error: any) => {
         // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
+        this._popupErrorDialog(error.toString());
       });
   }
 
-  private onUpdateControlCenter(): void {
-    this._storageService.changeControlCenter(this.detailObject)
-    .pipe(takeUntil(this._destroyed$))
-    .subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
-      }
+  private _updateControlCenter(detailObject: ControlCenter): void {
+    this._storageService.changeControlCenter(detailObject)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((x: any) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.debug(`AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, onUpdateControlCenter, changeControlCenterEvent`);
+        }
 
-      // Show the snackbar
-      let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
-        'OK', {
-          duration: 3000,
+        // Show the snackbar
+        let snackbarRef: any = this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess),
+          'OK', {
+            duration: 3000,
+          });
+
+        snackbarRef.afterDismissed().subscribe(() => {
+          // Navigate to display
+          this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
         });
-
-      snackbarRef.afterDismissed().subscribe(() => {
-        // Navigate to display
-        this._router.navigate(['/finance/controlcenter/display/' + x.Id.toString()]);
+      }, (error: any) => {
+        // Show error message
+        this._popupErrorDialog(error.toString());
       });
-    }, (error: any) => {
-      // Show error message
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
+  }
 
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
-    });
+  private _popupErrorDialog(content?: string, contentTable?: InfoMessage[]): void {
+    popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+      content, contentTable);
   }
 }

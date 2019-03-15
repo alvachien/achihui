@@ -14,7 +14,7 @@ import { LogLevel, momentDateFormat, Document, DocumentItem, financeDocTypeTrans
   Currency, TranType, ControlCenter, Order, Account, DocumentType,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-document-transfer-create',
@@ -136,17 +136,8 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       BaseCurrency: this._homeService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: docObj.VerifiedMsgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, docObj.VerifiedMsgs);
 
       return;
     }
@@ -176,22 +167,8 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       });
     }, (error: any) => {
       // Show error message
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      }).afterClosed().subscribe((x2: any) => {
-        // Do nothing!
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent, onSubmit, Message dialog result ${x2}`);
-        }
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 

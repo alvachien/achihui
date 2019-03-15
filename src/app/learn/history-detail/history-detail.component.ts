@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnHistory, UIMode, getUIModeString, UICommonLabelEnum, LearnObject } from '../../model';
 import { HomeDefDetailService, LearnStorageService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { popupDialog, } from '../../message-dialog';
 import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -96,17 +96,8 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
                 console.error(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, readHistory`);
               }
               // Show a dialog!
-              const dlginfo: MessageDialogInfo = {
-                Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-                Content: error.toString(),
-                Button: MessageDialogButtonEnum.onlyok,
-              };
-
-              this._dialog.open(MessageDialogComponent, {
-                disableClose: false,
-                width: '500px',
-                data: dlginfo,
-              });
+              popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+                error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
             });
           }
         }
@@ -116,17 +107,8 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
         console.error(`AC_HIH_UI [Error]: Entering HistoryDetailComponent, fetchAllObjects failed with: ${error}`);
       }
       // Show the error dialog
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 
@@ -191,17 +173,8 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
       });
     }, (error: any) => {
       // Show error message
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 

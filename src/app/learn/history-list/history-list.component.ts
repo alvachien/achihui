@@ -7,7 +7,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject, LearnHistory, UICommonLabelEnum, } from '../../model';
 import { LearnStorageService, UIStatusService, } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-learn-history-list',
@@ -54,17 +54,8 @@ export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering HistoryListComponent ngOnInit forkJoin failed with: ${error}`);
       }
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     }, () => {
       this.isLoadingResults = false;
     });
@@ -109,17 +100,8 @@ export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering HistoryListComponent onRefresh failed with: ${error}`);
       }
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     }, () => {
       this.isLoadingResults = false;
     });

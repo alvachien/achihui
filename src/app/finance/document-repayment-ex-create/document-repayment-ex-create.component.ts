@@ -16,9 +16,8 @@ import { LogLevel, Account, Document, DocumentItem, ControlCenter, Order, TranTy
   AccountExtraLoan, TemplateDocLoan, financeAccountCategoryAsset, financeAccountCategoryLendTo, DocumentType,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { HttpErrorResponse } from '@angular/common/http';
 
 // Assist class for paying account in Paying Account Step
 class PayingAccountInfo {
@@ -287,17 +286,8 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
       BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: docObj.VerifiedMsgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, docObj.VerifiedMsgs);
 
       return;
     }
@@ -330,24 +320,10 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
             this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
           }
         });
-      }, (error: HttpErrorResponse) => {
+      }, (error: any) => {
         // Show error message
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error.toString(),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        }).afterClosed().subscribe((x2: any) => {
-          // Do nothing!
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering DocumentRepaymentCreateComponent, Message dialog result ${x2}`);
-          }
-        });
+        popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
       });
   }
 

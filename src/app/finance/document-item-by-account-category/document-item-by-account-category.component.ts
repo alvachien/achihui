@@ -7,7 +7,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import { LogLevel, Account, DocumentItemWithBalance, UIAccountForSelection, BuildupAccountForSelection,
   OverviewScopeEnum, getOverviewScopeRange, TranType, BaseListModel, UICommonLabelEnum, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -78,17 +78,8 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
       this.arTranType = x[2];
     }, (error: any) => {
       // Show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 
@@ -140,17 +131,9 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
         }),
         catchError((error: any) => {
           // Show a dialog for error details
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: error.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
+          popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
 
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          });
           this.isLoadingResults = false;
           this.resultsLength = 0;
           return observableOf([]);

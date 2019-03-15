@@ -15,7 +15,7 @@ import { LogLevel, Document, DocumentItem, DocumentType, TranType, Currency, Acc
   IAccountCategoryFilter, momentDateFormat, financeTranTypeTransferIn, financeTranTypeTransferOut,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
@@ -292,17 +292,8 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
           }
         }, (error: any) => {
           // Show a dialog for error details
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: error.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          });
+          popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
       });
     }
   }
@@ -328,17 +319,8 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
       BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
     })) {
       // Show a dialog for error details
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: docObj.VerifiedMsgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, docObj.VerifiedMsgs);
 
       return;
     }
@@ -386,17 +368,9 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
           }
 
           // Show dialog
-          const dlginfo: MessageDialogInfo = {
-            Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-            Content: error.toString(),
-            Button: MessageDialogButtonEnum.onlyok,
-          };
-
-          this._dialog.open(MessageDialogComponent, {
-            disableClose: false,
-            width: '500px',
-            data: dlginfo,
-          }).afterClosed().subscribe((x2: any) => {
+          popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+            error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error))
+            .afterClosed().subscribe((x2: any) => {
             this._router.navigate(['/finance/document/display/' + x.Id.toString()]);
           });
         });
@@ -415,22 +389,8 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
       }
 
       // Show error message
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error.toString(),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      }).afterClosed().subscribe((x2: any) => {
-        // Do nothing!
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, Message dialog result ${x2}`);
-        }
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 

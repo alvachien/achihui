@@ -11,7 +11,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTy
   Currency, TranType, DocumentType, ControlCenter, Order, Account, financeDocTypeTransfer,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-finance-document-detail',
@@ -141,17 +141,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                   console.error(`AC_HIH_UI [Error]: Entering DocumentDetailComponent, ngOninit, readDocument failed: ${error}`);
                 }
 
-                const dlginfo: MessageDialogInfo = {
-                  Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-                  Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-                  Button: MessageDialogButtonEnum.onlyok,
-                };
-
-                this._dialog.open(MessageDialogComponent, {
-                  disableClose: false,
-                  width: '500px',
-                  data: dlginfo,
-                });
+                popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+                  error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
               });
             }
           } else {
@@ -163,17 +154,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
           console.error(`AC_HIH_UI [Error]: Entering ngOninit, failed to load depended objects : ${error}`);
         }
 
-        const dlginfo: MessageDialogInfo = {
-          Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-          Button: MessageDialogButtonEnum.onlyok,
-        };
-
-        this._dialog.open(MessageDialogComponent, {
-          disableClose: false,
-          width: '500px',
-          data: dlginfo,
-        });
+        popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
 
         this.uiMode = UIMode.Invalid;
       });
@@ -218,17 +200,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
     })) {
       // Show a error dialog
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: doc.VerifiedMsgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, doc.VerifiedMsgs);
       return;
     }
 
@@ -241,17 +214,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       });
     }, (error: any) => {
       // Show a error dialog
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
   private _updateTransferDoc(): void {
@@ -271,17 +235,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
     })) {
       // Show a error dialog
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        ContentTable: doc.VerifiedMsgs,
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, doc.VerifiedMsgs);
       return;
     }
 
@@ -294,17 +249,8 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       });
     }, (error: any) => {
       // Show a error dialog
-      const dlginfo: MessageDialogInfo = {
-        Header: this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Content: error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        Button: MessageDialogButtonEnum.onlyok,
-      };
-
-      this._dialog.open(MessageDialogComponent, {
-        disableClose: false,
-        width: '500px',
-        data: dlginfo,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 }
