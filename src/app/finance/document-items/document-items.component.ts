@@ -32,6 +32,9 @@ import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from 
 export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   private _isChangable: boolean = true; // Default is changable
+  private _tranCurr: string;
+  private _tranCurr2: string;
+  private _docType: number;
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
 
@@ -47,11 +50,26 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   public arOrders: Order[] = [];
 
   @Input()
-  tranCurr: string;
+  set tranCurr(curr: string) {
+    this._tranCurr = curr;
+  }
+  get tranCurr(): string {
+    return this._tranCurr;
+  }
   @Input()
-  tranCurr2: string;
+  set tranCurr2(curr: string) {
+    this._tranCurr2 = curr;
+  }
+  get tranCurr2(): string {
+    return this._tranCurr2;
+  }
   @Input()
-  docType: number;
+  set docType(doctype: number) {
+    this._docType = doctype;
+  }
+  get docType(): number {
+    return this._docType;
+  }
 
   // Step: Items
   separatorKeysCodes: any[] = [ENTER, COMMA];

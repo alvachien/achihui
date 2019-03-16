@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
@@ -58,9 +58,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
-    public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService,
-    public _currService: FinCurrencyService) {
+    private _homedefService: HomeDefDetailService,
+    private _storageService: FinanceStorageService,
+    private _currService: FinCurrencyService,
+    private _chgDetector: ChangeDetectorRef) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...');
     }
@@ -114,14 +115,15 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             this.currentMode = getUIModeString(this.uiMode);
 
             if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-              this._storageService.readDocument(this.routerID).pipe(takeUntil(this.destroyed$)).subscribe((x2: any) => {
+              this._storageService.readDocument(this.routerID).pipe(takeUntil(this.destroyed$))
+              .subscribe((x2: Document) => {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.debug(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent, ngOninit, readDocument`);
                 }
 
                 this.curDocType = x2.DocType;
-                this.tranCurr = x2.tranCurr;
-                this.tranCurr2 = x2.tranCurr2;
+                this.tranCurr = x2.TranCurr;
+                this.tranCurr2 = x2.TranCurr2;
                 this.headerGroup.get('headerControl').setValue(x2);
                 this.itemGroup.get('itemControl').setValue(x2.Items);
 

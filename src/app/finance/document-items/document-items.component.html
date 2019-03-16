@@ -71,8 +71,8 @@
     <ng-container matColumnDef="Curr">
       <mat-header-cell *matHeaderCellDef>{{'Finance.Currency' | translate}}</mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <div *ngIf="!row.UserCurr2">{{tranCurr}}</div>
-        <div *ngIf="row.UserCurr2">{{tranCurr2}}</div>
+        <div *ngIf="!row.UseCurr2">{{tranCurr}}</div>
+        <div *ngIf="row.UseCurr2">{{tranCurr2}}</div>
       </mat-cell>
     </ng-container>
 
