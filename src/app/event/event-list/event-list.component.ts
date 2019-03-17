@@ -1,42 +1,43 @@
-import { Component, OnInit, AfterContentInit, ViewChild, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, PageEvent,
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef,
   MatSnackBar } from '@angular/material';
-
-import { environment } from '../../../environments/environment';
-import { LogLevel, GeneralEvent } from '../../model';
-import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
 import { Observable, merge, of, forkJoin, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
+
+import { environment } from '../../../environments/environment';
+import { LogLevel, GeneralEvent, BaseListModel, HomeMember, HomeDef, } from '../../model';
+import { EventStorageService, AuthService, HomeDefDetailService } from '../../services';
 
 @Component({
   selector: 'hih-event-list',
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.scss'],
 })
-export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
+export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'complete', 'assignee'];
-  dataSource: any = new MatTableDataSource();
+  dataSource: MatTableDataSource<GeneralEvent> = new MatTableDataSource();
   totalCountOfEvent: number;
   refreshEvent: EventEmitter<Object> = new EventEmitter<Object>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   isLoadingResults: boolean;
   includeCompleted: boolean;
+  arMembers: HomeMember[];
 
   constructor(private _storageService: EventStorageService,
+    private _homeService: HomeDefDetailService,
     private _router: Router,
     private _snackBar: MatSnackBar) {
-    this.isLoadingResults = true;
-
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug(`AC_HIH_UI [Debug]: Enter EventListComponent constructor...`);
     }
 
+    this.isLoadingResults = false;
     this.totalCountOfEvent = 0;
     this.includeCompleted = false; // Include completed events
+    this.arMembers = this._homeService.MembersInChosedHome;
   }
 
   ngOnInit(): void {
@@ -47,9 +48,9 @@ export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
   }
 
-  ngAfterContentInit(): void {
+  ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Enter EventListComponent ngAfterContentInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Enter EventListComponent ngAfterViewInit...`);
     }
 
     // If the user changes the sort order, reset back to the first page.
@@ -66,7 +67,7 @@ export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
             (this.includeCompleted ? false : true),
             );
         }),
-        map((revdata: any) => {
+        map((revdata: BaseListModel<GeneralEvent>) => {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
           this.totalCountOfEvent = +revdata.totalCount;
@@ -78,26 +79,18 @@ export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
 
           return of([]);
         }),
-      ).subscribe((data: any) => {
-        let rslts: GeneralEvent[] = [];
-        if (data && data instanceof Array) {
-          for (let ci of data) {
-            let rst: GeneralEvent = new GeneralEvent();
-            rst.onSetData(ci);
-
-            rslts.push(rst);
-          }
-        }
-
-        this.dataSource.data = rslts;
+      ).subscribe((data: GeneralEvent[]) => {
+        this.dataSource.data = data;
       });
   }
   ngOnDestroy(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering EventListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onCreateEvent(): void {
@@ -114,7 +107,7 @@ export class EventListComponent implements OnInit, AfterContentInit, OnDestroy {
       .subscribe((x: any) => {
       // Jump to display mode
       this._router.navigate(['/event/general/display/' + row.ID.toString()]);
-    }, (error: HttpErrorResponse) => {
+    }, (error: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering EventListComponent onMarkAsDone but failed to completeGeneralEvent: ${error.message}`);
       }

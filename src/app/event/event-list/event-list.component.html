@@ -42,7 +42,7 @@
             <mat-cell *matCellDef="let row"> 
               <mat-form-field>
                 <mat-select [(ngModel)]="row.Assignee" name="assgnee">
-                  <mat-option *ngFor="let mem of _homeDefService.MembersInChosedHome" [value]="mem.User">
+                  <mat-option *ngFor="let mem of arMembers" [value]="mem.User">
                     {{mem.DisplayAs}} - {{ mem.User }} 
                   </mat-option>
                 </mat-select>

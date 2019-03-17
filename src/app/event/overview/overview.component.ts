@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { UIStatusService, EventStorageService } from '../../services';
 import { LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN,
-  GeneralEvent, momentDateFormat, HabitEventDetailWithCheckInStatistics,
+  GeneralEvent, momentDateFormat, HabitEventDetailWithCheckInStatistics, BaseListModel,
 } from '../../model';
 
 @Component({
@@ -72,13 +72,10 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
           let dtend: moment.Moment = moment(arg.endStr);
           that._storageService.fetchAllGeneralEvents(100, 0, true, dtbgn, dtend)
             .pipe(takeUntil(this._destroyed$))
-            .subscribe((data: any) => {
+            .subscribe((data: BaseListModel<GeneralEvent>) => {
             let arevents: any[] = [];
             if (data && data.contentList && data.contentList instanceof Array) {
-              for (let ci of data.contentList) {
-                let gevnt: GeneralEvent = new GeneralEvent();
-                gevnt.onSetData(ci);
-
+              for (let gevnt of data.contentList) {
                 let evnt: any = {
                   title: gevnt.Name,
                   start: gevnt.StartTimeFormatString,

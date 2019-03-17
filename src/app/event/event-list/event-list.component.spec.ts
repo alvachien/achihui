@@ -22,6 +22,8 @@ describe('EventListComponent', () => {
     const storageService: any = jasmine.createSpyObj('EventStorageService', ['fetchAllEvents']);
     const fetchAllEventsSpy: any = storageService.fetchAllEvents.and.returnValue(of([]));
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const homeService: Partial<HomeDefDetailService> = {
+    }
 
     TestBed.configureTestingModule({
       imports: [
@@ -41,6 +43,7 @@ describe('EventListComponent', () => {
       providers: [
         TranslateService,
         { provide: EventStorageService, useValue: storageService },
+        { provide: HomeDefDetailService, useValue: homeService },
         { provide: Router, useValue: routerSpy },
       ],
     })

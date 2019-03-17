@@ -55,7 +55,7 @@ export class EventStorageService {
       .pipe(map((data: any) => {
         let rslts: GeneralEvent[] = [];
         if (data.contentList && data.contentList instanceof Array) {
-          for (let ci of data) {
+          for (let ci of data.contentList) {
             let rst: GeneralEvent = new GeneralEvent();
             rst.onSetData(ci);
 
