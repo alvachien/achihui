@@ -36,11 +36,6 @@
               "node_modules/@fullcalendar/daygrid/main.css",
               "node_modules/@fullcalendar/timegrid/main.css",
               "node_modules/@fullcalendar/list/main.css",
-              "node_modules/tinymce/skins/content/default/content.min.css",
-              "node_modules/tinymce/skins/ui/oxide/content.min.css",
-              "node_modules/tinymce/skins/ui/oxide/content.inline.min.css",
-              "node_modules/tinymce/skins/ui/oxide/skin.min.css",
-              "node_modules/tinymce/skins/ui/oxide/skin.mobile.min.css",
               "src/styles.scss"
             ],
             "scripts": [
@@ -143,11 +138,6 @@
               "node_modules/@fullcalendar/daygrid/main.css",
               "node_modules/@fullcalendar/timegrid/main.css",
               "node_modules/@fullcalendar/list/main.css",
-              "node_modules/tinymce/skins/content/default/content.min.css",
-              "node_modules/tinymce/skins/ui/oxide/content.min.css",
-              "node_modules/tinymce/skins/ui/oxide/content.inline.min.css",
-              "node_modules/tinymce/skins/ui/oxide/skin.min.css",
-              "node_modules/tinymce/skins/ui/oxide/skin.mobile.min.css",
               "src/styles.scss"
             ],
             "assets": [

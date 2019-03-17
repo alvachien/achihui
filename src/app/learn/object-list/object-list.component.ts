@@ -39,7 +39,7 @@ export class ObjectListComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
-      this.arCategories = x[0].slice();
+      this.arCategories = x.slice();
 
       this._loadObjects();
     }, (error: any) => {

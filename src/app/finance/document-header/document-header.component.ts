@@ -110,6 +110,18 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
     }
     return this._homeService.ChosedHome.BaseCurrency !== this.headerForm!.get('curr2Control').value;
   }
+  get isCurrencyEditable(): boolean {
+    return this._isChangable && (this._doctype !== financeDocTypeCurrencyExchange);
+  }
+  get isExchangeRateEditable(): boolean {
+    return this.isCurrencyEditable;
+  }
+  get isCurrency2Editable(): boolean {
+    return this._isChangable && (this._doctype !== financeDocTypeCurrencyExchange);
+  }
+  get isExchangeRate2Editable(): boolean {
+    return this.isCurrencyEditable;
+  }
 
   constructor(public _currService: FinCurrencyService,
     private _storageService: FinanceStorageService,
@@ -225,6 +237,7 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
       this._isChangable = false;
     } else {
       this.headerForm.enable();
+      this.headerForm.get('docTypeControl').disable(); // doc. type cannot be edit
       this._isChangable = true;
     }
   }

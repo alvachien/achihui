@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal, UICommonLabelEnum,
-  Currency, TranType, DocumentType, ControlCenter, Order, Account, financeDocTypeTransfer,
+  Currency, TranType, DocumentType, ControlCenter, Order, Account, financeDocTypeTransfer, financeDocTypeCurrencyExchange,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
@@ -181,6 +181,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     switch (this.curDocType) {
       case financeDocTypeNormal:      this._updateNormalDoc();        break;
       case financeDocTypeTransfer:    this._updateTransferDoc();      break;
+      case financeDocTypeCurrencyExchange: this._updateCurrExgDoc();   break;
 
       default: break;
     }
@@ -221,12 +222,47 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     });
   }
   private _updateTransferDoc(): void {
-    // For normal document, just update the whole document.
+    // For transfer document, just update the whole document.
     let doc: Document = this.headerGroup.get('headerControl').value;
     doc.Items = this.itemGroup.get('itemControl').value;
     doc.HID = this._homedefService.ChosedHome.ID;
     doc.Id = this.routerID;
     doc.DocType = financeDocTypeTransfer;
+
+    if (!doc.onVerify({ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranTypes,
+      Currencies: this.arCurrencies,
+      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+    })) {
+      // Show a error dialog
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, doc.VerifiedMsgs);
+      return;
+    }
+
+    this._storageService.updateNormalDocument(doc).subscribe((rst: Document) => {
+      // Switch to display mode
+      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
+        duration: 2000,
+      }).afterDismissed().subscribe(() => {
+        this._router.navigate(['/finance/document/display/' + this.routerID.toString()]);
+      });
+    }, (error: any) => {
+      // Show a error dialog
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+    });
+  }
+  private _updateCurrExgDoc(): void {
+    // For transfer document, just update the whole document.
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.DocType = financeDocTypeCurrencyExchange;
 
     if (!doc.onVerify({ControlCenters: this.arControlCenters,
       Orders: this.arOrders,

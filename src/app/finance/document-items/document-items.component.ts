@@ -10,7 +10,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Currency, UIAccountForSelection,
   IAccountCategoryFilter, UIOrderForSelection, TranType, ControlCenter, Order,
-  BuildupAccountForSelection, BuildupOrderForSelection, ModelUtility, financeDocTypeTransfer, } from '../../model';
+  BuildupAccountForSelection, BuildupOrderForSelection, ModelUtility, financeDocTypeTransfer, financeDocTypeCurrencyExchange, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 
 @Component({
@@ -83,13 +83,19 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
     return this._isChangable;
   }
   get isAddItemAllowed(): boolean {
-    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer);
+    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer)
+    && (this.docType !== financeDocTypeCurrencyExchange);
   }
   get isDeleteItemAllowed(): boolean {
-    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer);
+    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer)
+    && (this.docType !== financeDocTypeCurrencyExchange);
   }
   get isTranTypeEditable(): boolean {
-    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer);
+    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer)
+    && (this.docType !== financeDocTypeCurrencyExchange);
+  }
+  get isAmountEditable(): boolean {
+    return this.isFieldChangable && (this.docType !== financeDocTypeCurrencyExchange);
   }
 
   constructor(public _currService: FinCurrencyService,

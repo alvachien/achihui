@@ -23,7 +23,8 @@
   
   <!-- Currency -->
   <mat-form-field>
-    <mat-select id="curr" placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
+    <mat-select id="curr" placeholder="{{'Finance.Currency' | translate}}" 
+      [disabled]="!isCurrencyEditable" formControlName="currControl">
       <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
         {{cr.Symbol}} - {{cr.Name | translate}}
       </mat-option>
@@ -32,8 +33,10 @@
 
   <!-- Exchange rate -->
   <mat-form-field *ngIf="tranCurrency && isForeignCurrency">
-    <input matInput type="number" placeholder="{{'Finance.ExchangeRate' | translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-      formControlName="exgControl" id="exgrate">
+    <input matInput type="number" placeholder="{{'Finance.ExchangeRate' | translate}}" 
+      matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
+      formControlName="exgControl" id="exgrate"
+      [readonly]="!isExchangeRateEditable">
   </mat-form-field>
 
   <!-- Planned Exchange rate -->
@@ -43,7 +46,8 @@
 
   <!-- Currency -->
   <mat-form-field *ngIf="isCurrencyExchangeDocument">
-    <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="curr2Control">
+    <mat-select placeholder="{{'Finance.Currency' | translate}}" 
+      [disabled]="!isCurrency2Editable" formControlName="curr2Control">
       <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
         {{cr.Symbol}} - {{cr.Name | translate}}
       </mat-option>
@@ -53,7 +57,8 @@
   <!-- Exchange rate -->
   <mat-form-field *ngIf="tranCurrency2 && isForeignCurrency2">
     <input matInput type="number" placeholder="{{'Finance.ExchangeRate' | translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-      formControlName="exg2Control" id="exgrate2">
+      formControlName="exg2Control" id="exgrate2"
+      [readonly]="!isExchangeRate2Editable">
   </mat-form-field>
 
   <!-- Planned Exchange rate -->

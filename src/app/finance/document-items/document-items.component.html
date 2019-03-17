@@ -60,7 +60,7 @@
       <mat-header-cell *matHeaderCellDef>{{'Finance.Amount' | translate}}</mat-header-cell>
       <mat-cell *matCellDef="let row">
         <mat-form-field>
-          <input matInput type="number" [readonly]="!isFieldChangable" required placeholder="{{'Finance.Amount' |translate}}"
+          <input matInput type="number" [readonly]="!isAmountEditable" required placeholder="{{'Finance.Amount' |translate}}"
             [(ngModel)]="row.TranAmount" (change)="onChange()"
             name="itamt">
         </mat-form-field>
