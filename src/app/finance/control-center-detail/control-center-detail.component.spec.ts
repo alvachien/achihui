@@ -29,6 +29,7 @@ describe('ControlCenterDetailComponent', () => {
   let readControlCenterSpy: any;
   let activatedRouteStub: any;
   let fetchAllControlCentersSpy: any;
+  let changeControlCenterSpy: any;
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -45,10 +46,12 @@ describe('ControlCenterDetailComponent', () => {
       'createControlCenter',
       'readControlCenter',
       'fetchAllControlCenters',
+      'changeControlCenter',
     ]);
     createControlCenterSpy = storageService.createControlCenter.and.returnValue(of([]));
     readControlCenterSpy = storageService.readControlCenter.and.returnValue(of({}));
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
+    changeControlCenterSpy = storageService.changeControlCenter.and.returnValue(of({}));
     const homeService: Partial<HomeDefDetailService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
 
@@ -216,6 +219,61 @@ describe('ControlCenterDetailComponent', () => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
+
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      flush();
+    }));
+  });
+
+  describe('3. Display mode', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      readControlCenterSpy.and.returnValue(asyncData(fakeData.finControlCenters[0]));
+
+      activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('shall display the data', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.isFieldChangable).toBeFalsy();
+      expect(component.detailFormGroup.disabled).toBeTruthy();
+
+      component.onSubmit();
+      expect(createControlCenterSpy).not.toHaveBeenCalled();
+      expect(changeControlCenterSpy).not.toHaveBeenCalled();
+    }));
+
+    it('shall popup dialog if read control center failed', fakeAsync(() => {
+      readControlCenterSpy.and.returnValue(asyncError('server faield'));
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.isFieldChangable).toBeFalsy();
+      expect(component.detailFormGroup.disabled).toBeTruthy();
 
       expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
       // Since there is only one button

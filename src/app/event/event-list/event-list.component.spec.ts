@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush, inject, } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError, } from '../../../testing';
 import { EventStorageService, HomeDefDetailService } from 'app/services';
 import { EventListComponent } from './event-list.component';
 
@@ -17,13 +17,25 @@ describe('EventListComponent', () => {
   let fixture: ComponentFixture<EventListComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
+  let fakeData: FakeDataHelper;
+  let fetchAllGeneralEventsSpy: any;
+  let routerSpy: any;
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+  });
 
   beforeEach(async(() => {
-    const storageService: any = jasmine.createSpyObj('EventStorageService', ['fetchAllEvents']);
-    const fetchAllEventsSpy: any = storageService.fetchAllEvents.and.returnValue(of([]));
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
+    const storageService: any = jasmine.createSpyObj('EventStorageService', [
+      'fetchAllGeneralEvents',
+    ]);
+    fetchAllGeneralEventsSpy = storageService.fetchAllGeneralEvents.and.returnValue(of({}));
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const homeService: Partial<HomeDefDetailService> = {
-    }
+      ChosedHome: fakeData.chosedHome,
+    };
 
     TestBed.configureTestingModule({
       imports: [
@@ -55,10 +67,10 @@ describe('EventListComponent', () => {
     component = fixture.componentInstance;
     translate = TestBed.get(TranslateService);
     http = TestBed.get(HttpTestingController);
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
-  it('1. should be created', () => {
+  it('should be created without data', () => {
     expect(component).toBeTruthy();
   });
 });

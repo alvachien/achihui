@@ -26,10 +26,10 @@ describe('TranTypeListComponent', () => {
     fakeData = new FakeDataHelper();
     fakeData.buildFinConfigData();
 
-    const stroageService: any = jasmine.createSpyObj('FinanceStorageService', [
+    const storageService: any = jasmine.createSpyObj('FinanceStorageService', [
       'fetchAllTranTypes',
     ]);
-    fetchAllTranTypesSpy = stroageService.fetchAllTranTypes.and.returnValue(of([]));
+    fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
 
     TestBed.configureTestingModule({
       imports: [
@@ -55,7 +55,7 @@ describe('TranTypeListComponent', () => {
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
-        { provide: FinanceStorageService, useValue: stroageService },
+        { provide: FinanceStorageService, useValue: storageService },
       ],
     })
     .compileComponents();
@@ -147,6 +147,15 @@ describe('TranTypeListComponent', () => {
 
       // Clear
       flush();
+    }));
+
+    it('should handle the filter', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      component.applyFilter('a');
+      expect(component.dataSource.data.length).toBeGreaterThan(0);
     }));
   });
 });

@@ -15,7 +15,7 @@ import { AppComponent } from './app.component';
 import { AuthService, AuthGuardService,
   FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService, LibraryStorageService,
   HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService,
-  EventStorageService,
+  EventStorageService, PaginatorIntlService,
 } from './services';
 import { appRoutes } from './app.routes';
 import { PageInitialComponent } from './page-initial';
@@ -37,13 +37,11 @@ import { AboutComponent } from './about';
 import { CreditsComponent } from './credits';
 import { VersionComponent } from './version';
 import { HomeMessageComponent, HomeMessageDialogComponent } from './home-message';
-// import { MatPaginatorIntlCN  } from './utility';
 import { ThemePickerModule, ThemeStorage } from './theme-picker';
 import { FooterComponent } from './footer';
 import { HomeDashboardComponent } from './home-dashboard';
 import { UserDetailComponent } from './user-detail';
 import { PageFatalErrorComponent } from './page-fatal-error';
-import { environment } from '../environments/environment';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -104,7 +102,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       provide: STEPPER_GLOBAL_OPTIONS,
       useValue: { showError: true },
     },
-    // { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCN },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlService },
     AuthService,
     AuthGuardService,
     FinCurrencyService,
