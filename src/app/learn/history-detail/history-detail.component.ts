@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, EventEmitter, } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, DateAdapter } from '@angular/material';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import * as moment from 'moment';
 import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject, Subscription } from 'rxjs';
@@ -36,6 +36,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<any>,
     public _homedefService: HomeDefDetailService,
     public _storageService: LearnStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -51,6 +52,12 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
+    });
 
     this.arMembersInChosedHome = this._homedefService.ChosedHome.Members.slice();
     // Start create the UI elements
@@ -207,5 +214,14 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
 
     hist.HID = this._homedefService.ChosedHome.ID;
     return hist;
+  }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
   }
 }

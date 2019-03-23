@@ -3,12 +3,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
   Validator, Validators, AbstractControl, ValidationErrors, ValidatorFn, } from '@angular/forms';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatSnackBar, MatSelectChange, } from '@angular/material';
+import { MatSnackBar, MatSelectChange, DateAdapter, } from '@angular/material';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange, } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange, UIStatusEnum, } from '../../model';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 
 @Component({
   selector: 'hih-fin-document-header',
@@ -130,6 +130,8 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
   constructor(public _currService: FinCurrencyService,
     private _storageService: FinanceStorageService,
     private _homeService: HomeDefDetailService,
+    private _uiStatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<any>,
     private _snackbar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent ngOnDestroy`);
@@ -171,6 +173,11 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
     }
 
     this._destroyed$ = new ReplaySubject(1);
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
+    });
 
     forkJoin(
       this._storageService.fetchAllDocTypes(),
@@ -286,5 +293,14 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
     }
 
     return null;
+  }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
   }
 }

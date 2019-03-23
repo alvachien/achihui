@@ -12,7 +12,7 @@ import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-mo
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub } from '../../../testing';
-import { EventStorageService, HomeDefDetailService } from 'app/services';
+import { EventStorageService, HomeDefDetailService, UIStatusService, } from 'app/services';
 import { EventDetailComponent } from './event-detail.component';
 
 describe('EventDetailComponent', () => {
@@ -55,6 +55,7 @@ describe('EventDetailComponent', () => {
       declarations: [ EventDetailComponent ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
@@ -75,7 +76,7 @@ describe('EventDetailComponent', () => {
     fixture.detectChanges();
   });
 
-  it('1. should be created', () => {
+  it('should be created', () => {
     expect(component).toBeTruthy();
   });
 });

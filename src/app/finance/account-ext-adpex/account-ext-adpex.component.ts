@@ -3,14 +3,14 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator, DateAdapter } from '@angular/material';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, AccountExtraAdvancePayment, UIDisplayStringUtil, TemplateDocADP,
   FinanceADPCalAPIInput, FinanceADPCalAPIOutput,
 } from '../../model';
-import { HomeDefDetailService, FinanceStorageService } from '../../services';
+import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 
 @Component({
   selector: 'hih-finance-account-ext-adpex',
@@ -84,7 +84,9 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
 
   constructor(public _storageService: FinanceStorageService,
     private _snackbar: MatSnackBar,
-    private _homedefService: HomeDefDetailService) {
+    private _uiStatusService: UIStatusService,
+    private _homedefService: HomeDefDetailService,
+    private _dateAdapter: DateAdapter<any>) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...');
     }
@@ -112,6 +114,12 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
       console.debug('AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit...');
     }
     this._destroyed$ = new ReplaySubject(1);
+
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
+    });
   }
 
   ngOnDestroy(): void {
@@ -254,5 +262,14 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
     }
 
     return { invalidForm: {valid: false, message: 'Advance payment fields are invalid'} };
+  }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
   }
 }

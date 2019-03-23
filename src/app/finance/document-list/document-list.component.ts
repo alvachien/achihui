@@ -87,6 +87,8 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
         }),
       ).subscribe((data: any) => {
         this.dataSource.data = data;
+        this.paginator.pageIndex = 0;
+
         this.isLoadingResults = false;
       });
   }

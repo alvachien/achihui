@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper, } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper, DateAdapter, } from '@angular/material';
 import { Observable, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -82,6 +82,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<any>,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -95,6 +96,12 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
+    });
 
     this.firstFormGroup = this._formBuilder.group({
       nameControl: ['', Validators.required],
@@ -347,5 +354,14 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     ordInstance.Comment = this.firstFormGroup.get('cmtControl').value;
     ordInstance.SRules = this.dataSource.data.slice();
     return ordInstance;
+  }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
   }
 }

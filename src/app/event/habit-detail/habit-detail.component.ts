@@ -6,7 +6,7 @@ import * as moment from 'moment';
 import { Subscription, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, DateAdapter } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, EventHabit, EventHabitDetail, UIDisplayStringUtil,
   momentDateFormat, EventHabitCheckin, RepeatFrequencyEnum, dateRangeValidator, } from '../../model';
@@ -43,6 +43,8 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
     private _activateRoute: ActivatedRoute,
     private _snackBar: MatSnackBar,
     private _formBuilder: FormBuilder,
+    private _uiStatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<any>,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering HabitDetailComponent constructor ...');
@@ -57,6 +59,12 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
+    });
 
     this.detailForm = new FormGroup({
       nameControl: new FormControl('', [Validators.required, , Validators.maxLength(50)]),
@@ -212,5 +220,14 @@ export class HabitDetailComponent implements OnInit, OnDestroy {
   }
   private updateImpl(): void {
     // TBD.
+  }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
   }
 }

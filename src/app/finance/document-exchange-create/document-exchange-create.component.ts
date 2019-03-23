@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper, MatPaginator } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper, MatPaginator, DateAdapter } from '@angular/material';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -170,6 +170,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _uiStatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<any>,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService,
@@ -185,6 +186,12 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
+    });
 
     this.firstFormGroup = this._formBuilder.group({
       dateControl: [{ value: moment(), disabled: false }, Validators.required],
@@ -426,5 +433,14 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     doc.Items.push(docitem);
 
     return doc;
+  }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
   }
 }

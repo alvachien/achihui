@@ -1,9 +1,10 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, DateAdapter } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, merge, of, Subscription, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, UIMode, getUIModeString, GeneralEvent, RecurEvent, UIDisplayStringUtil } from '../../model';
@@ -35,6 +36,8 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _snackBar: MatSnackBar,
+    private _uiStatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<any>,
     public _homedefService: HomeDefDetailService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering RecurrEventDetailComponent constructor...');
@@ -51,7 +54,12 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this._homedefService.fetchAllMembersInChosedHome();
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
+    });
+
     // Distinguish current mode
     this._activateRoute.url.subscribe((x: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -160,4 +168,14 @@ export class RecurrEventDetailComponent implements OnInit, OnDestroy {
   private updateImpl(): void {
     // TBD.
   }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
+  }
+
 }

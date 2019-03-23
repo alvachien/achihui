@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, EventEmitter, OnDestroy } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatDialog, DateAdapter } from '@angular/material';
 import { Observable, forkJoin, merge, of as observableOf, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -34,6 +34,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
 
   constructor(private _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<any>,
     private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent constructor...');
@@ -77,7 +78,15 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentItemSearchListComponent ngOnInit...');
     }
+
     this._destroyed$ = new ReplaySubject(1);
+
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
+    });
+
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
       this._storageService.fetchAllAccounts(),
@@ -237,5 +246,14 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
 
     // Do the real search
     this.subjFilters.next(arRealFilter);
+  }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
   }
 }

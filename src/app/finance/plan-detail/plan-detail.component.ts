@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, DateAdapter } from '@angular/material';
 import * as moment from 'moment';
 import { Observable, forkJoin, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -40,6 +40,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<any>,
     private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     public _storageService: FinanceStorageService,
@@ -55,6 +56,12 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
+    });
 
     this.mainFormGroup = new FormGroup({
       dateControl: new FormControl(moment().add(1, 'M'), Validators.required),
@@ -197,5 +204,14 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     nplan.AccountID = this.mainFormGroup.get('accountControl').value;
 
     return nplan;
+  }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
   }
 }

@@ -17,7 +17,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { AccountExtADPExComponent } from './account-ext-adpex.component';
-import { FinanceStorageService, HomeDefDetailService } from 'app/services';
+import { FinanceStorageService, HomeDefDetailService, UIStatusService, } from 'app/services';
 import { UIMode, RepeatFrequencyEnum, FinanceADPCalAPIOutput, AccountExtraAdvancePayment, TemplateDocADP } from 'app/model';
 
 describe('AccountExtADPExComponent', () => {
@@ -65,6 +65,7 @@ describe('AccountExtADPExComponent', () => {
       ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },

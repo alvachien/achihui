@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
   Validator, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, take } from 'rxjs/operators';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatDialog, MatSnackBar, MatTableDataSource, MatPaginator, DateAdapter } from '@angular/material';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
@@ -115,6 +115,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
+    private _dateAdapter: DateAdapter<any>,
     private _snackbar: MatSnackBar,
     private _dialog: MatDialog) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -145,6 +146,12 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
+    });
 
     this.uiAccountStatusFilter = undefined;
     this.uiAccountCtgyFilter = {
@@ -315,5 +322,14 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
     }
 
     return { invalidForm: {valid: false, message: 'Loan fields are invalid'} };
+  }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
   }
 }
