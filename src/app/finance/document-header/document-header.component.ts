@@ -1,9 +1,9 @@
-import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, } from '@angular/core';
+import { Component, OnInit, forwardRef, HostListener, OnDestroy, Input, Output, EventEmitter, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl,
   Validator, Validators, AbstractControl, ValidationErrors, ValidatorFn, } from '@angular/forms';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatSelectChange, } from '@angular/material';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
@@ -45,6 +45,10 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
       this.headerForm.get('docTypeControl').setValue(dt);
     }
   }
+  @Output()
+  currencyChanged: EventEmitter<string> = new EventEmitter();
+  @Output()
+  currency2Changed: EventEmitter<string> = new EventEmitter();
 
   public headerForm: FormGroup;
 
@@ -254,6 +258,19 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
     }
 
     return { invalidForm: {valid: false, message: 'Header fields are invalid'} };
+  }
+
+  onCurrencyChange(event: MatSelectChange): void {
+    this.currencyChanged.emit(event.value);
+    if (this._onChange) {
+      this._onChange(this.documentHeader);
+    }
+  }
+  onCurrency2Change(event: MatSelectChange): void {
+    this.currency2Changed.emit(event.value);
+    if (this._onChange) {
+      this._onChange(this.documentHeader);
+    }
   }
 
   private exchangeRateMissingValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {

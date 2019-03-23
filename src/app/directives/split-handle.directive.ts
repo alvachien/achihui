@@ -7,7 +7,7 @@ import { map, switchMap, takeUntil } from 'rxjs/operators';
   selector: '[ngxSplitHandle]',
   host: {
     class: 'ngx-split-handle',
-    title: 'Drag to resize'
+    title: 'Drag to resize',
   }
 })
 export class SplitHandleDirective {

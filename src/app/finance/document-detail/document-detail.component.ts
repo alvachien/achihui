@@ -170,6 +170,12 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  public onHeaderCurrencyChanged(curr: string): void {
+    this.tranCurr = curr;
+  }
+  public onHeaderCurrency2Changed(curr: string): void {
+    this.tranCurr2 = curr;
+  }
   public onBackToList(): void {
     this._router.navigate(['/finance/document/']);
   }
@@ -192,6 +198,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     doc.Items = this.itemGroup.get('itemControl').value;
     doc.HID = this._homedefService.ChosedHome.ID;
     doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
+    });
     doc.DocType = financeDocTypeNormal;
 
     if (!doc.onVerify({ControlCenters: this.arControlCenters,
@@ -227,6 +236,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     doc.Items = this.itemGroup.get('itemControl').value;
     doc.HID = this._homedefService.ChosedHome.ID;
     doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
+    });
     doc.DocType = financeDocTypeTransfer;
 
     if (!doc.onVerify({ControlCenters: this.arControlCenters,
@@ -262,6 +274,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     doc.Items = this.itemGroup.get('itemControl').value;
     doc.HID = this._homedefService.ChosedHome.ID;
     doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
+    });
     doc.DocType = financeDocTypeCurrencyExchange;
 
     if (!doc.onVerify({ControlCenters: this.arControlCenters,

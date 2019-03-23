@@ -2134,6 +2134,9 @@ export class DocumentItem {
 
   public writeJSONObject(): any {
     let rstObj: any = {};
+    if (this.DocId) {
+      rstObj.docID = this.DocId;
+    }
     rstObj.itemID = this.ItemId;
     rstObj.accountID = this.AccountId;
     rstObj.tranType = this.TranType;

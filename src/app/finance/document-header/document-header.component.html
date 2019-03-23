@@ -24,6 +24,7 @@
   <!-- Currency -->
   <mat-form-field>
     <mat-select id="curr" placeholder="{{'Finance.Currency' | translate}}" 
+      (selectionChange)="onCurrencyChange($event)"
       [disabled]="!isCurrencyEditable" formControlName="currControl">
       <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
         {{cr.Symbol}} - {{cr.Name | translate}}
@@ -47,6 +48,7 @@
   <!-- Currency -->
   <mat-form-field *ngIf="isCurrencyExchangeDocument">
     <mat-select placeholder="{{'Finance.Currency' | translate}}" 
+      (selectionChange)="onCurrency2Change($event)"
       [disabled]="!isCurrency2Editable" formControlName="curr2Control">
       <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
         {{cr.Symbol}} - {{cr.Name | translate}}
