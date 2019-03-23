@@ -99,6 +99,8 @@ mat-form-field {
 // Table
 mat-table {
   overflow: auto;
+  min-height: 500px;
+  height: 500px;
 }
 
 .mat-cell:nth-child(1),

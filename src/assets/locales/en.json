@@ -537,7 +537,7 @@
     "Movie": "Movie"
   },
   "Paginator": {
-    "ItemPerPage": "Items per page:",
+    "ItemsPerPage": "Items per page:",
     "NextPage": "Next page",
     "PreviousPage": "Previous page",
     "FirstPage": "First page",

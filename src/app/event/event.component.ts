@@ -13,47 +13,15 @@ import { LogLevel } from '../model';
   styleUrls: ['./event.component.scss'],
 })
 export class EventComponent implements OnInit, OnDestroy {
-  private _langChangeSub: any;
-  constructor(private _uistatusService: UIStatusService,
-    private _dateAdapter: DateAdapter<MomentDateAdapter>) {
+  constructor() {
+    // Empty
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnInit`);
-    }
-    this.onSetLanguage(this._uistatusService.CurrentLanguage);
-
-    this._langChangeSub = this._uistatusService.langChangeEvent.subscribe((x: any) => {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug(`AC_HIH_UI [Debug]: Enter language change event in EventComponent: ${x}`);
-      }
-
-      this.onSetLanguage(x);
-    });
+    // Empty
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Enter EventComponent's ngOnDestroy`);
-    }
-
-    try {
-      if (this._langChangeSub) {
-        this._langChangeSub.unsubscribe();
-      }
-    } catch (err) {
-      console.error(`AC_HIH_UI [Error]: Enter EventComponent's ngOnDestroy: ${err}`);
-    }
-  }
-
-  private onSetLanguage(x: string): void {
-    if (x === 'zh') {
-      moment.locale('zh-cn');
-      this._dateAdapter.setLocale('zh-cn');
-    } else if (x === 'en') {
-      moment.locale(x);
-      this._dateAdapter.setLocale(x);
-    }
+    // Empty
   }
 }

@@ -537,7 +537,7 @@
     "Movie": "影视剧"
   },
   "Paginator": {
-    "ItemPerPage": "每页项目数:",
+    "ItemsPerPage": "每页项目数:",
     "NextPage": "下一页",
     "PreviousPage": "前一页",
     "FirstPage": "首页",

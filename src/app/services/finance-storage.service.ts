@@ -910,7 +910,7 @@ export class FinanceStorageService {
    * @param skip Skip the amount
    *
    */
-  public fetchAllPlans(top?: number, skip?: number): Observable<BaseListModel<Plan>> {
+  public fetchAllPlans(top?: number, skip?: number): Observable<Plan[]> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
@@ -936,18 +936,15 @@ export class FinanceStorageService {
 
         let listRst: Plan[] = [];
         const rjs: any = <any>response;
-        if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
-          for (const si of rjs.contentList) {
+        if (rjs instanceof Array && rjs.length > 0) {
+          for (const si of rjs) {
             const rst: Plan = new Plan();
             rst.onSetData(si);
             listRst.push(rst);
           }
         }
 
-        return {
-          totalCount: rjs.totalCount,
-          contentList: listRst,
-        };
+        return listRst;
       }),
       catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {

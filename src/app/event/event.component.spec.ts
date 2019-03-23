@@ -51,7 +51,7 @@ describe('EventComponent', () => {
     fixture.detectChanges();
   });
 
-  it('1. should be created', () => {
+  it('should be created', () => {
     expect(component).toBeTruthy();
   });
 });

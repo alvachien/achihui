@@ -76,10 +76,6 @@ export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  public onCreateHistory(): void {
-    this._router.navigate(['/learn/history/create']);
-  }
-
   public onDisplayHistory(hist: LearnHistory): void {
     this._router.navigate(['/learn/history/display', hist.generateKey()]);
   }

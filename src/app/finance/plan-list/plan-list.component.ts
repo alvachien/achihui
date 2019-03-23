@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog, MatPaginator, MatTableDataSource } from '@angular/material';
 import * as moment from 'moment';
@@ -19,7 +19,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   displayedColumns: string[] = ['id', 'accid', 'tgtdate', 'tgtbalance', 'desp'];
   dataSource: MatTableDataSource<Plan> = new MatTableDataSource<Plan>();
-  totalPlanCount: number;
+  @ViewChild(MatPaginator) paginator;
 
   constructor(private _router: Router,
     private _storageService: FinanceStorageService) {
@@ -36,10 +36,11 @@ export class PlanListComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this._storageService.fetchAllPlans().pipe(takeUntil(this._destroyed$)).subscribe((x: BaseListModel<Plan>) => {
+    this._storageService.fetchAllPlans().pipe(takeUntil(this._destroyed$))
+      .subscribe((x: Plan[]) => {
       if (x) {
-        this.totalPlanCount = x.totalCount;
-        this.dataSource.data = x.contentList;
+        this.dataSource = new MatTableDataSource(x);
+        this.dataSource.paginator = this.paginator;
       }
     });
   }
@@ -48,8 +49,10 @@ export class PlanListComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering PlanListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();  
+    }
   }
 
   onCreatePlan(): void {

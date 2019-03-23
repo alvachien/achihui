@@ -4,23 +4,22 @@ import { LearnComponent } from './learn.component';
 
 describe('LearnComponent', () => {
   let component: LearnComponent;
-  // let fixture: ComponentFixture<LearnComponent>;
+  let fixture: ComponentFixture<LearnComponent>;
 
   beforeEach(async(() => {
-    // TestBed.configureTestingModule({
-    //   declarations: [ LearnComponent ],
-    // })
-    // .compileComponents();
+    TestBed.configureTestingModule({
+      declarations: [ LearnComponent ],
+    })
+    .compileComponents();
   }));
 
   beforeEach(() => {
-    // fixture = TestBed.createComponent(LearnComponent);
-    // component = fixture.componentInstance;
-    // fixture.detectChanges();
+    fixture = TestBed.createComponent(LearnComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should be created', () => {
-    // expect(component).toBeTruthy();
-    expect(component).toBeFalsy();
+    expect(component).toBeTruthy();
   });
 });
