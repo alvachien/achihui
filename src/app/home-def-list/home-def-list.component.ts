@@ -68,14 +68,16 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   public onChooseHome(row: HomeDef): void {
     this._homedefService.ChosedHome = row;
 
-    if (this._homedefService.RedirectURL) {
-      let url: string = this._homedefService.RedirectURL;
-      this._homedefService.RedirectURL = '';
+    this._homedefService.fetchAllMembersInChosedHome().subscribe(x => {
+      if (this._homedefService.RedirectURL) {
+        let url: string = this._homedefService.RedirectURL;
+        this._homedefService.RedirectURL = '';
 
-      this._router.navigate([url]);
-    } else {
-      this._router.navigate(['/']);
-    }
+        this._router.navigate([url]);
+      } else {
+        this._router.navigate(['/']);
+      }
+    });
   }
 
   public onHomeDefRowSelect(row: HomeDef): void {
