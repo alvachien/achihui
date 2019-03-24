@@ -32,16 +32,20 @@ describe('HistoryDetailComponent', () => {
   let activatedRouteStub: any;
   let createHistorySpy: any;
 
-  beforeEach(async(() => {
+  beforeAll(() => {
     fakeData = new FakeDataHelper();
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
     fakeData.buildLearnCategories();
     fakeData.buildLearnObjects();
+  });
 
+  beforeEach(async(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: Partial<HomeDefDetailService> = {};
-    homeService.ChosedHome = fakeData.chosedHome;
+    const homeService: Partial<HomeDefDetailService> = {
+      ChosedHome: fakeData.chosedHome,
+    };
+
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
     const lrnStorageService: any = jasmine.createSpyObj('LearnStorageService', [
       'readHistory',
@@ -101,7 +105,7 @@ describe('HistoryDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('1. create mode', () => {
+  describe('create mode', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     let hist: LearnHistory;

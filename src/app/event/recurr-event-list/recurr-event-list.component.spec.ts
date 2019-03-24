@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, inject, flush, } from '@angular/core/testing';
 import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError, } from '../../../testing';
 import { RecurrEventListComponent } from './recurr-event-list.component';
 import { EventStorageService, HomeDefDetailService } from 'app/services';
 
@@ -17,14 +17,22 @@ describe('RecurrEventListComponent', () => {
   let fixture: ComponentFixture<RecurrEventListComponent>;
   let translate: TranslateService;
   let http: HttpTestingController;
+  let fakeData: FakeDataHelper;
+  let fetchAllRecurEventsSpy: any;
+  let routerSpy: any;
+
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+  });
 
   beforeEach(async(() => {
     const storageService: any = jasmine.createSpyObj('EventStorageService', ['fetchAllRecurEvents']);
-    const fetchAllRecurEventsSpy: any = storageService.fetchAllRecurEvents.and.returnValue(of([]));
-    const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllMembersInChosedHome']);
-    homeService.ChosedHome = {
-      _id: 1,
+    fetchAllRecurEventsSpy = storageService.fetchAllRecurEvents.and.returnValue(of([]));
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const homeService: Partial<HomeDefDetailService> = {
+      ChosedHome: fakeData.chosedHome,
     };
 
     TestBed.configureTestingModule({
@@ -57,7 +65,7 @@ describe('RecurrEventListComponent', () => {
     component = fixture.componentInstance;
     translate = TestBed.get(TranslateService);
     http = TestBed.get(HttpTestingController);
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('1. should create', () => {

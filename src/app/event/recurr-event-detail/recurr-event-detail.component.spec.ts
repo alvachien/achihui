@@ -12,7 +12,7 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
-import { EventStorageService, HomeDefDetailService } from 'app/services';
+import { EventStorageService, HomeDefDetailService, UIStatusService, } from 'app/services';
 import { RecurrEventDetailComponent } from './recurr-event-detail.component';
 
 describe('RecurrEventDetailComponent', () => {
@@ -22,13 +22,17 @@ describe('RecurrEventDetailComponent', () => {
   let http: HttpTestingController;
   let fakeData: FakeDataHelper;
 
+  beforeAll(() => {
+    fakeData = new FakeDataHelper();
+    fakeData.buildCurrentUser();
+    fakeData.buildChosedHome();
+  });
+
   beforeEach(async(() => {
     const stgserviceStub: Partial<EventStorageService> = {};
-    const homeService: any = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllMembersInChosedHome']);
-    homeService.ChosedHome = {
-      _id: 1,
+    const homeService: Partial<HomeDefDetailService> = {
+      ChosedHome: fakeData.chosedHome,
     };
-    const chosedHomeMemSpy: any = homeService.fetchAllMembersInChosedHome.and.returnValue();
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
     const activatedRouteStub: any = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
@@ -49,6 +53,7 @@ describe('RecurrEventDetailComponent', () => {
       declarations: [ RecurrEventDetailComponent ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
@@ -66,7 +71,7 @@ describe('RecurrEventDetailComponent', () => {
     component = fixture.componentInstance;
     translate = TestBed.get(TranslateService);
     http = TestBed.get(HttpTestingController);
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('1. should be created', () => {

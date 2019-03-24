@@ -173,11 +173,6 @@ describe('HistoryListComponent', () => {
       tick();
       fixture.detectChanges();
 
-      component.onCreateHistory();
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/learn/history/create']);
-
-      expect(component.dataSource.data.length).toBeGreaterThan(0);
-
       let hist: LearnHistory = component.dataSource.data[0];
       component.onDisplayHistory(hist);
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/learn/history/display', hist.generateKey()]);

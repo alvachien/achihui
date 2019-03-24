@@ -73,4 +73,10 @@ describe('EventListComponent', () => {
   it('should be created without data', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('should display the data', () => {
+    beforeEach(() => {
+      fetchAllGeneralEventsSpy.and.returnValue(asyncData([]));
+    });
+  });
 });

@@ -31,7 +31,7 @@ export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
     private _router: Router,
     private _snackBar: MatSnackBar) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Enter EventListComponent constructor...`);
+      console.debug(`AC_HIH_UI [Debug]: Entering EventListComponent constructor...`);
     }
 
     this.isLoadingResults = false;
@@ -42,7 +42,7 @@ export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Enter EventListComponent ngOnInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Entering EventListComponent ngOnInit...`);
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -50,7 +50,7 @@ export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Enter EventListComponent ngAfterViewInit...`);
+      console.debug(`AC_HIH_UI [Debug]: Entering EventListComponent ngAfterViewInit...`);
     }
 
     // If the user changes the sort order, reset back to the first page.

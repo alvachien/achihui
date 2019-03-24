@@ -14,7 +14,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
-import { EventStorageService, HomeDefDetailService } from 'app/services';
+import { EventStorageService, HomeDefDetailService, UIStatusService, } from 'app/services';
 import { HabitDetailComponent } from './habit-detail.component';
 import { RepeatFrequencyEnum } from 'app/model';
 
@@ -68,6 +68,7 @@ describe('HabitDetailComponent', () => {
       declarations: [ HabitDetailComponent ],
       providers: [
         TranslateService,
+        UIStatusService,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },

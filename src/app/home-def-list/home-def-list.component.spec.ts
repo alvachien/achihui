@@ -22,6 +22,7 @@ describe('HomeDefListComponent', () => {
   let http: HttpTestingController;
   let fakeData: FakeDataHelper;
   let fetchAllHomeDefSpy: any;
+  let fetchAllMembersInChosedHomeSpy: any;
   let routerSpy: any;
   let homeService: any;
 
@@ -31,8 +32,9 @@ describe('HomeDefListComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildHomeDefs();
 
-    homeService = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllHomeDef']);
+    homeService = jasmine.createSpyObj('HomeDefDetailService', ['fetchAllHomeDef', 'fetchAllMembersInChosedHome']);
     fetchAllHomeDefSpy = homeService.fetchAllHomeDef.and.returnValue(of([]));
+    fetchAllMembersInChosedHomeSpy = homeService.fetchAllMembersInChosedHome.and.returnValue(of([]));
     homeService.ChosedHome = fakeData.chosedHome;
     // homeService.RedirectURL = 'aaa';
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
@@ -86,6 +88,7 @@ describe('HomeDefListComponent', () => {
   describe('2. shall work with data', () => {
     beforeEach(() => {
       fetchAllHomeDefSpy.and.returnValue(asyncData(fakeData.HomeDefs));
+      fetchAllMembersInChosedHomeSpy.and.returnValue(asyncData(fakeData.chosedHome.Members));
     });
 
     it('should not show data before OnInit', () => {
@@ -117,6 +120,7 @@ describe('HomeDefListComponent', () => {
 
       // Simulate the row click
       component.onChooseHome(component.dataSource.data[0]);
+      tick(); // Complete the observables.
       expect(component.IsCurrentHomeChosed).toBeTruthy();
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
     }));

@@ -35,7 +35,6 @@ export class AppComponent implements OnInit {
     private _zone: NgZone,
     private _router: Router,
     private _uistatusService: UIStatusService,
-    private _dateAdapter: DateAdapter<any>,
     private _iconRegistry: MatIconRegistry,
     private _http: HttpClient,
     private _sanitizer: DomSanitizer) {
@@ -73,8 +72,6 @@ export class AppComponent implements OnInit {
             if (environment.LoggingLevel >= LogLevel.Error) {
               console.error('AC HIH UI [Error]: Failed in subscribe to User', error);
             }
-          }, () => {
-            // Completed
           });
         } else {
           this.isLoggedIn = false;
@@ -83,8 +80,6 @@ export class AppComponent implements OnInit {
         this.isFatalError = true;
         this._uistatusService.latestError = error.message;
         this._router.navigate(['/fatalerror']);
-      }, () => {
-        // Do nothing
       });
   }
 
@@ -93,7 +88,7 @@ export class AppComponent implements OnInit {
     this._translate.use(languageZh).subscribe((x: any) => {
       this.selectedLanguage = languageZh;
       this._uistatusService.CurrentLanguage = this.selectedLanguage;
-      this._dateAdapter.setLocale(languageZhCN);
+
       this.updateDocumentTitle();
     });
 
@@ -147,14 +142,6 @@ export class AppComponent implements OnInit {
     if (this._translate.currentLang !== this.selectedLanguage &&
       this.selectedLanguage !== undefined) {
       this._translate.use(this.selectedLanguage);
-
-      if (this.selectedLanguage === languageZh) {
-        moment.locale(languageZhCN);
-        this._dateAdapter.setLocale(languageZhCN);
-      } else if (this.selectedLanguage === languageEn) {
-        moment.locale(languageEn);
-        this._dateAdapter.setLocale(languageEn);
-      }
 
       this._uistatusService.CurrentLanguage = this.selectedLanguage;
 
