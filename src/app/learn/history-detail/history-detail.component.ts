@@ -79,7 +79,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
         this.currentMode = getUIModeString(this.uiMode);
 
         if (this.uiMode === UIMode.Create) {
-          if (!this._uiStatusService.currentLearnObjectID) {
+          if (this._uiStatusService.currentLearnObjectID) {
             this.objectDisplayID = this._uiStatusService.currentLearnObjectID;
           } else {
             // Show a dialog!
@@ -132,12 +132,18 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
       return;
     }
     // Shall ensure the form is valid
-    if (this.detailFormGroup.valid) {
+    if (!this.detailFormGroup.valid) {
       return;
     }
 
     let detailObject: LearnHistory = this._generateDetailObject();
-    if (!detailObject.onVerify()) {
+    if (!detailObject.onVerify({
+      arObjects: [],
+      arUsers: this._homedefService.MembersInChosedHome,
+    })) {
+      // Show error message
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, detailObject.VerifiedMsgs);
       return;
     }
 
