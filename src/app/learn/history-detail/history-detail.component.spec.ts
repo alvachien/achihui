@@ -121,10 +121,12 @@ describe('HistoryDetailComponent', () => {
       createHistorySpy.and.returnValue(asyncData(hist));
     });
 
-    beforeEach(inject([OverlayContainer],
-      (oc: OverlayContainer) => {
+    beforeEach(inject([OverlayContainer, UIStatusService],
+      (oc: OverlayContainer, uiservice: UIStatusService) => {
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
+
+      uiservice.currentLearnObjectID = fakeData.learnObjects[0].Id;
     }));
 
     afterEach(() => {
@@ -143,13 +145,11 @@ describe('HistoryDetailComponent', () => {
       expect(component.detailFormGroup.get('dateControl')).not.toBeNull();
       // User
       // component.detailFormGroup.get('userControl').setValue(fakeData.currentUser.getUserId());
-      // Object it
-      component.detailFormGroup.get('objControl').setValue(fakeData.learnObjects[0].Id);
 
       expect(component.detailFormGroup.valid).toBeFalsy();
     }));
 
-    it('object is mandatory', fakeAsync(() => {
+    it('shall save history in success case', fakeAsync(() => {
       fixture.detectChanges();
       tick();
       fixture.detectChanges();
@@ -161,44 +161,6 @@ describe('HistoryDetailComponent', () => {
       expect(component.detailFormGroup.get('dateControl')).not.toBeNull();
       // User
       component.detailFormGroup.get('userControl').setValue(fakeData.currentUser.getUserId());
-      // Object it
-      // component.detailFormGroup.get('objControl').setValue(fakeData.learnObjects[0].Id);
-
-      expect(component.detailFormGroup.valid).toBeFalsy();
-    }));
-
-    it('shall popup a dialog if objects failed to fetch', fakeAsync(() => {
-      fetchAllObjectsSpy.and.returnValue(asyncError('failed'));
-
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      // Expect a dialog;
-      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
-      // Since there is only one button
-      (overlayContainerElement.querySelector('button') as HTMLElement).click();
-      tick();
-      fixture.detectChanges();
-      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
-
-      flush();
-    }));
-
-    it('shall save object in success case', fakeAsync(() => {
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      expect(component.currentMode).toEqual('Common.Create');
-      expect(component.isFieldChangable).toBeTruthy();
-
-      // Date - default
-      expect(component.detailFormGroup.get('dateControl')).not.toBeNull();
-      // User
-      component.detailFormGroup.get('userControl').setValue(fakeData.currentUser.getUserId());
-      // Object it
-      component.detailFormGroup.get('objControl').setValue(fakeData.learnObjects[0].Id);
 
       expect(component.detailFormGroup.valid).toBeTruthy();
 
@@ -232,8 +194,6 @@ describe('HistoryDetailComponent', () => {
       expect(component.detailFormGroup.get('dateControl')).not.toBeNull();
       // User
       component.detailFormGroup.get('userControl').setValue(fakeData.currentUser.getUserId());
-      // Object it
-      component.detailFormGroup.get('objControl').setValue(fakeData.learnObjects[0].Id);
 
       expect(component.detailFormGroup.valid).toBeTruthy();
 

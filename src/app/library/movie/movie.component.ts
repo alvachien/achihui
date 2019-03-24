@@ -1,17 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'hih-lib-movie',
   template: `<router-outlet></router-outlet>`,
-  styleUrls: ['./movie.component.scss'],
 })
-export class MovieComponent implements OnInit {
+export class MovieComponent {
 
   constructor() {
-    // Empty
-  }
-
-  ngOnInit(): void {
     // Empty
   }
 }

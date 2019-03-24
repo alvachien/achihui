@@ -1,16 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'hih-learn-history',
   template: `<router-outlet></router-outlet>`,
 })
-export class HistoryComponent implements OnInit {
+export class HistoryComponent {
 
   constructor() {
     // Empty
-  }
-
-  ngOnInit(): void {
-    // Emtpy
   }
 }

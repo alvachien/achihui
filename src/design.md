@@ -99,6 +99,67 @@ For lend to transaction:
     a. The new posted document with doc type - repayment.
     b. It contains several line items: the original amount (repayment out 86 to the lend to account, repayment out 87 to the account which received the amount), the interest amount;
 
+#### Post new document
+
+##### Normal document
+To create normal document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- For tran. type, can only use the non-system tran. type;
+- When using non-base currency, exchange rate is a must;
+- Cannot use 0 as amount in line item;
+
+##### Transfer document
+To create transfer document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- For tran. type, can only use the two system tran. types: transfer out and transfer in;
+- When using non-base currency, need input the exchange rate;
+- Cannot use 0 as the amount;
+
+##### Currency exchange document
+##### Advance payment document
+##### Advance received document
+##### Borrow from document
+##### Lent to document
+##### Asset buy in document
+##### Asset value change document
+##### Asset sold out document
+##### Repayment document
+
+#### Change existing document
+
+##### Normal document
+To change normal document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- For tran. type, can only use the non-system tran. type;
+- Cannot use 0 as amount in line item;
+- When using non-base currency, need input the exchange rate;
+
+##### Transfer document
+To create transfer document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- It's not allowed to change tran. type;
+- When using non-base currency, need input the exchange rate;
+
+##### Currency exchange document
+To create currency exchange document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- It's not allowed to change tran. type;
+- When using non-base currency, need input the exchange rate;
+
+##### Advance payment document
+##### Advance received document
+##### Borrow from document
+##### Lent to document
+##### Asset buy in document
+##### Asset value change document
+##### Asset sold out document
+##### Repayment document
+
 #### Others
 Others
 

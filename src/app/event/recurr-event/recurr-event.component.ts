@@ -5,7 +5,6 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 @Component({
   selector: 'hih-event-recurrevent',
   template: `<router-outlet></router-outlet>`,
-  styleUrls: ['./recurr-event.component.scss'],
 })
 export class RecurrEventComponent implements OnInit {
 

@@ -1,17 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'hih-learn-question-bank',
   template: `<router-outlet></router-outlet>`,
-  styleUrls: ['./question-bank.component.scss']
 })
-export class QuestionBankComponent implements OnInit {
+export class QuestionBankComponent {
 
   constructor() {
-    // Empty
-  }
-
-  ngOnInit(): void {
     // Empty
   }
 }

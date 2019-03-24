@@ -1,5 +1,4 @@
-import {
-  Component, OnInit, OnDestroy, AfterContentInit, EventEmitter,
+import { Component, OnInit, OnDestroy, AfterContentInit, EventEmitter,
   Input, Output, ViewContainerRef,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -41,6 +40,9 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
     height: 500,
     plugins: 'fullscreen',
   };
+  get isCreateMode(): boolean {
+    return this.uiMode === UIMode.Create;
+  }
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -161,6 +163,13 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
   public onCancel(): void {
     // Jump back to the list view
     this._router.navigate(['/learn/object']);
+  }
+
+  public onCreateHistory(): void {
+    if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+      this._uiStatusService.currentLearnObjectID = this.routerID;
+      this._router.navigate(['/learn/history/create']);
+    }
   }
 
   private onInitCreateMode(): void {

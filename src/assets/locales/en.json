@@ -392,7 +392,8 @@
     "MultipleChoice": "Multiple Choice",
     "Question": "Question",
     "Answer": "Answer",
-    "BriefAnswer": "Brief Answer"  
+    "BriefAnswer": "Brief Answer",
+    "CreateHistory": "Create History"
   },
   "Finance": {
     "Accounts": "Accounts",

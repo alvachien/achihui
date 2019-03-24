@@ -392,7 +392,8 @@
     "MultipleChoice": "选择题",
     "Question": "问题",
     "Answer": "答案",
-    "BriefAnswer": "答案提要"  
+    "BriefAnswer": "答案提要",
+    "CreateHistory": "创建学习记录"
   },
   "Finance": {
     "Accounts": "账户",

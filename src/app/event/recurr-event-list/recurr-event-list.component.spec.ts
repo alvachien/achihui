@@ -70,5 +70,7 @@ describe('RecurrEventListComponent', () => {
 
   it('1. should create', () => {
     expect(component).toBeTruthy();
+    fixture.detectChanges();
+    expect(component.isLoadingResults).toBeFalsy();
   });
 });

@@ -74,7 +74,18 @@ describe('RecurrEventDetailComponent', () => {
     // fixture.detectChanges();
   });
 
-  it('1. should be created', () => {
+  it('should be created', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('1. create mode', () => {
+    it('shall prepare for the create', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+      expect(component.isFieldChangable).toBeTruthy();
+    }));
   });
 });

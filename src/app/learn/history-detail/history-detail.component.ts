@@ -22,8 +22,10 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
   private uiMode: UIMode = UIMode.Create;
 
   public currentMode: string;
-  public detailFormGroup: FormGroup;
-  public arObjects: LearnObject[];
+  public detailFormGroup: FormGroup = new FormGroup({
+    dateControl: new FormControl(moment(), Validators.required),
+    userControl: new FormControl('', Validators.required),
+  });
   public arMembersInChosedHome: HomeMember[];
   public objectDisplayID?: number;
 
@@ -42,7 +44,6 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering HistoryDetailComponent constructor...');
     }
-    this.arObjects = [];
     this.arMembersInChosedHome = [];
   }
 
@@ -60,68 +61,58 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     });
 
     this.arMembersInChosedHome = this._homedefService.ChosedHome.Members.slice();
-    // Start create the UI elements
-    this.detailFormGroup = new FormGroup({
-      dateControl: new FormControl(moment(), Validators.required),
-      userControl: new FormControl('', Validators.required),
-      objectControl: new FormControl('', Validators.required),
-    });
 
-    this._storageService.fetchAllObjects().pipe(takeUntil(this._destroyed$)).subscribe((x1: LearnObject[]) => {
-      this.arObjects = x1;
+    // Distinguish current mode
+    this._activateRoute.url.subscribe((x: any) => {
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.uiMode = UIMode.Create;
+        } else if (x[0].path === 'edit') {
+          this.routerID = x[1].path;
 
-      // Distinguish current mode
-      this._activateRoute.url.subscribe((x: any) => {
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.uiMode = UIMode.Create;
-          } else if (x[0].path === 'edit') {
-            this.routerID = x[1].path;
+          this.uiMode = UIMode.Change;
+        } else if (x[0].path === 'display') {
+          this.routerID = x[1].path;
 
-            this.uiMode = UIMode.Change;
-          } else if (x[0].path === 'display') {
-            this.routerID = x[1].path;
-
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
-
-          if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readHistory(this.routerID).pipe(takeUntil(this._destroyed$)).subscribe((x2: any) => {
-              if (environment.LoggingLevel >= LogLevel.Debug) {
-                console.debug(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, readHistory`);
-              }
-
-              let hist: LearnHistory = <LearnHistory>x2;
-              this.detailFormGroup.get('dateControl').setValue(hist.LearnDate);
-              this.detailFormGroup.get('userControl').setValue(hist.UserId);
-              this.detailFormGroup.get('objectControl').setValue(hist.ObjectId);
-
-              if (this.uiMode === UIMode.Display) {
-                this.detailFormGroup.disable();
-                this.objectDisplayID = hist.ObjectId;
-              } else {
-                this.detailFormGroup.enable();
-                this.detailFormGroup.markAsPristine();
-              }
-            }, (error: any) => {
-              if (environment.LoggingLevel >= LogLevel.Error) {
-                console.error(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, readHistory`);
-              }
-              // Show a dialog!
-              popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-                error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
-            });
-          }
+          this.uiMode = UIMode.Display;
         }
-      });
-    }, (error: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering HistoryDetailComponent, fetchAllObjects failed with: ${error}`);
+        this.currentMode = getUIModeString(this.uiMode);
+
+        if (this.uiMode === UIMode.Create) {
+          if (!this._uiStatusService.currentLearnObjectID) {
+            this.objectDisplayID = this._uiStatusService.currentLearnObjectID;
+          } else {
+            // Show a dialog!
+            popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+              this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+          }
+        } else if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
+          this._storageService.readHistory(this.routerID).pipe(takeUntil(this._destroyed$)).subscribe((x2: any) => {
+            if (environment.LoggingLevel >= LogLevel.Debug) {
+              console.debug(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, readHistory`);
+            }
+
+            let hist: LearnHistory = <LearnHistory>x2;
+            this.detailFormGroup.get('dateControl').setValue(hist.LearnDate);
+            this.detailFormGroup.get('userControl').setValue(hist.UserId);
+
+            if (this.uiMode === UIMode.Display) {
+              this.detailFormGroup.disable();
+              this.objectDisplayID = hist.ObjectId;
+            } else {
+              this.detailFormGroup.enable();
+              this.detailFormGroup.markAsPristine();
+            }
+          }, (error: any) => {
+            if (environment.LoggingLevel >= LogLevel.Error) {
+              console.error(`AC_HIH_UI [Debug]: Entering HistoryDetailComponent, readHistory`);
+            }
+            // Show a dialog!
+            popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+              error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+          });
+        }
       }
-      // Show the error dialog
-      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 
@@ -144,6 +135,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     if (this.detailFormGroup.valid) {
       return;
     }
+
     let detailObject: LearnHistory = this._generateDetailObject();
     if (!detailObject.onVerify()) {
       return;
@@ -209,7 +201,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
   private _generateDetailObject(): LearnHistory {
     let hist: LearnHistory = new LearnHistory();
     hist.LearnDate = this.detailFormGroup.get('dateControl').value;
-    hist.ObjectId = this.detailFormGroup.get('objectControl').value;
+    hist.ObjectId = this.objectDisplayID;
     hist.UserId = this.detailFormGroup.get('userControl').value;
 
     hist.HID = this._homedefService.ChosedHome.ID;

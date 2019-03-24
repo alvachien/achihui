@@ -1,17 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'hih-learn-object',
   template: `<router-outlet></router-outlet>`,
-  styleUrls: ['./object.component.scss'],
 })
-export class ObjectComponent implements OnInit {
+export class ObjectComponent {
 
   constructor() {
-    // Empty
-  }
-
-  ngOnInit(): void {
     // Empty
   }
 }

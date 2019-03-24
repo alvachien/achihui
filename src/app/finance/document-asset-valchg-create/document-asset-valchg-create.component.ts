@@ -209,8 +209,6 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
       popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), err.toString());
 
       return;
-    }, () => {
-      // DO nothing
     });
   }
 

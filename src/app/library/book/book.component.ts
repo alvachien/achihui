@@ -3,15 +3,10 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'hih-lib-book',
   template: `<router-outlet></router-outlet>`,
-  styleUrls: ['./book.component.scss']
 })
-export class BookComponent implements OnInit {
+export class BookComponent {
 
   constructor() {
-    // Empty
-  }
-
-  ngOnInit(): void {
     // Empty
   }
 }

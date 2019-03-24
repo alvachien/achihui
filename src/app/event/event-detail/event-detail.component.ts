@@ -105,8 +105,6 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering EventDetailComponent ngOnInit but failed: ${error}`);
       }
-    }, () => {
-      // Empty
     });
   }
 

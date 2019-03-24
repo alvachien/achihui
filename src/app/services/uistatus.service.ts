@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { OverviewScopeEnum, QuestionBankTypeEnum, TagTypeEnum, UICommonLabelEnum,
-  UIDisplayString, UIDisplayStringUtil, TemplateDocLoan, QuestionBankItem, } from '../model';
+  UIDisplayString, UIDisplayStringUtil, TemplateDocLoan, QuestionBankItem, LearnObject, } from '../model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
@@ -62,6 +62,14 @@ export class UIStatusService {
   }
   set currentTemplateLoanDoc(doc: TemplateDocLoan) {
     this._docTempLoan = doc;
+  }
+
+  private _objLearnID: number;
+  get currentLearnObjectID(): number {
+    return this._objLearnID;
+  }
+  set currentLearnObjectID(objid: number) {
+    this._objLearnID = objid;
   }
 
   public arrLabels: UIDisplayString[] = [];

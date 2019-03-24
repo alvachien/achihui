@@ -13,13 +13,15 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
+import * as moment from 'moment';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentDetailComponent } from './document-detail.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
-import { Document, DocumentType, DocumentItem } from '../../model';
+import { Document, DocumentType, DocumentItem, financeDocTypeTransfer, financeTranTypeTransferOut,
+  financeTranTypeTransferIn, } from '../../model';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
@@ -319,6 +321,227 @@ describe('DocumentDetailComponent', () => {
       item2.TranAmount = 200;
       item2.TranType = fakeData.finTranTypes[5].Id;
       items.push(item2);
+      component.itemGroup.get('itemControl').setValue(items);
+      component.itemGroup.get('itemControl').markAsDirty();
+      fixture.detectChanges();
+      expect(component.itemGroup.valid).toBeTruthy();
+      expect(submitButton.disabled).toBeFalsy('Submit button shall be enabled as items has been changed');
+    }));
+    it('shall handle submit succee case in valid case', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      flush();
+      fixture.detectChanges();
+      let submitButton: HTMLButtonElement = fixture.debugElement.query(By.css('.docdetail-button-submit'))!.nativeElement;
+
+      fixture.detectChanges();
+      expect(submitButton.disabled).toBeTruthy('Submit button shall be disabled as no change performed');
+
+      // Header: change the desp.
+      let doc: any = component.headerGroup.get('headerControl').value;
+      doc.Desp = 'Test2';
+      component.headerGroup.get('headerControl').setValue(doc);
+      component.headerGroup.get('headerControl').markAsDirty();
+      fixture.detectChanges();
+      expect(component.headerGroup.valid).toBeTruthy();
+      expect(submitButton.disabled).toBeFalsy('Submit button shall be enabled as desp in Header has been changed');
+
+      component.onSubmit();
+      expect(updateNormalDocumentSpy).toHaveBeenCalled();
+
+      tick();
+      fixture.detectChanges();
+
+      // Expect a snackbar
+      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container')!;
+      expect(messageElement.textContent).not.toBeNull('Expected snack bar to show the error message: text');
+
+      tick(2000);
+      fixture.detectChanges();
+
+      // Expect a navigator
+      expect(routerSpy.navigate).toHaveBeenCalled();
+      flush();
+    }));
+    it('shall popup a dialog if submit failed', fakeAsync(() => {
+      updateNormalDocumentSpy.and.returnValue(asyncError('server 500 error'));
+
+      fixture.detectChanges();
+      tick();
+      flush();
+      fixture.detectChanges();
+      let submitButton: HTMLButtonElement = fixture.debugElement.query(By.css('.docdetail-button-submit'))!.nativeElement;
+
+      fixture.detectChanges();
+      expect(submitButton.disabled).toBeTruthy('Submit button shall be disabled as no change performed');
+
+      // Header: change the desp.
+      let doc: any = component.headerGroup.get('headerControl').value;
+      doc.Desp = 'Test2';
+      component.headerGroup.get('headerControl').setValue(doc);
+      component.headerGroup.get('headerControl').markAsDirty();
+      fixture.detectChanges();
+      expect(component.headerGroup.valid).toBeTruthy();
+      expect(submitButton.disabled).toBeFalsy('Submit button shall be enabled as desp in Header has been changed');
+
+      component.onSubmit();
+      expect(updateNormalDocumentSpy).toHaveBeenCalled();
+
+      tick();
+      fixture.detectChanges();
+
+      // Expect a dialog
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(1);
+      // Since there is only one button
+      (overlayContainerElement.querySelector('button') as HTMLElement).click();
+      tick();
+      fixture.detectChanges();
+      expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
+
+      flush();
+    }));
+  });
+  describe('2.2 edit transfer document', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+      let doc: Document = new Document();
+      doc.Id = 11;
+      doc.DocType = financeDocTypeTransfer;
+      doc.Desp = 'Transfer test';
+      doc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      doc.TranDate = moment();
+      let ditem1: DocumentItem = new DocumentItem();
+      ditem1.DocId = 11;
+      ditem1.ItemId = 1;
+      ditem1.AccountId = fakeData.finAccounts[0].Id;
+      ditem1.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem1.TranType = financeTranTypeTransferOut;
+      ditem1.Desp = 'From';
+      ditem1.TranAmount = 220;
+      let ditem2: DocumentItem = new DocumentItem();
+      ditem1.DocId = 11;
+      ditem2.ItemId = 2;
+      ditem2.AccountId = fakeData.finAccounts[1].Id;
+      ditem2.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem2.TranType = financeTranTypeTransferIn;
+      ditem2.Desp = 'To';
+      ditem2.TranAmount = 220;
+      doc.Items = [ditem1, ditem2];
+      fakeData.setFinTransferDocumentForCreate(doc);
+
+      // let rstdoc: Document = fakeData.buildFinTr();
+      readDocumentSpy.and.returnValue(asyncData(fakeData.finTransferDocumentForCreate));
+      updateNormalDocumentSpy.and.returnValue(asyncData(fakeData.finTransferDocumentForCreate));
+
+      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('11', {})] as UrlSegment[]);
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('shall read out the document', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      flush();
+      fixture.detectChanges();
+
+      expect(readDocumentSpy).toHaveBeenCalled();
+      expect(component.isFieldChangable).toEqual(true);
+      expect(component.headerGroup.enabled).toBeTruthy();
+      expect(component.itemGroup.enabled).toBeTruthy();
+    }));
+    it('shall disable submit button if header is invalid', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      flush();
+      fixture.detectChanges();
+      let submitButton: HTMLButtonElement = fixture.debugElement.query(By.css('.docdetail-button-submit'))!.nativeElement;
+
+      expect(readDocumentSpy).toHaveBeenCalled();
+      expect(component.isFieldChangable).toEqual(true);
+      expect(component.headerGroup.enabled).toBeTruthy();
+      expect(component.itemGroup.enabled).toBeTruthy();
+      fixture.detectChanges();
+      expect(submitButton.disabled).toBeTruthy('Submit button shall be disabled as no change performed');
+
+      // Header: change the desp.
+      let doc: any = component.headerGroup.get('headerControl').value;
+      doc.Desp = undefined;
+      component.headerGroup.get('headerControl').setValue(doc);
+      component.headerGroup.get('headerControl').markAsDirty();
+      fixture.detectChanges();
+      expect(component.headerGroup.valid).toBeFalsy('Desp is a must');
+      // Expect the button is disabled
+      expect(submitButton.disabled).toBeTruthy('Submit button shall be disabled since desp in Header is missing');
+    }));
+    it('shall disable submit button if item is invalid', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      flush();
+      fixture.detectChanges();
+      let submitButton: HTMLButtonElement = fixture.debugElement.query(By.css('.docdetail-button-submit'))!.nativeElement;
+
+      expect(readDocumentSpy).toHaveBeenCalled();
+      expect(component.isFieldChangable).toEqual(true);
+      expect(component.headerGroup.enabled).toBeTruthy();
+      expect(component.itemGroup.enabled).toBeTruthy();
+      fixture.detectChanges();
+      expect(submitButton.disabled).toBeTruthy('Submit button shall be disabled as no change performed');
+
+      let items: any[] = component.itemGroup.get('itemControl').value;
+      component.itemGroup.get('itemControl').setValue([]);
+      component.itemGroup.get('itemControl').markAsDirty();
+      expect(submitButton.disabled).toBeTruthy('Submit button shall be disabled since items are empty');
+    }));
+    it('shall enable submit button is enable if document header was changed and valid', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      flush();
+      fixture.detectChanges();
+      let submitButton: HTMLButtonElement = fixture.debugElement.query(By.css('.docdetail-button-submit'))!.nativeElement;
+
+      fixture.detectChanges();
+      expect(submitButton.disabled).toBeTruthy('Submit button shall be disabled as no change performed');
+
+      // Header: change the desp.
+      let doc: any = component.headerGroup.get('headerControl').value;
+      doc.Desp = 'Test2';
+      component.headerGroup.get('headerControl').setValue(doc);
+      component.headerGroup.get('headerControl').markAsDirty();
+      fixture.detectChanges();
+      expect(component.headerGroup.valid).toBeTruthy();
+      expect(submitButton.disabled).toBeFalsy('Submit button shall be enabled as desp in Header has been changed');
+    }));
+    it('shall enable submit button if desp in item was changed and valid', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      flush();
+      fixture.detectChanges();
+      let submitButton: HTMLButtonElement = fixture.debugElement.query(By.css('.docdetail-button-submit'))!.nativeElement;
+
+      fixture.detectChanges();
+      expect(submitButton.disabled).toBeTruthy('Submit button shall be disabled as no change performed');
+
+      // Item: change the desp.
+      let items: any[] = component.itemGroup.get('itemControl').value;
+      expect(items.length).toBeGreaterThan(0);
+      items[0].Desp = 'Desp changed';
       component.itemGroup.get('itemControl').setValue(items);
       component.itemGroup.get('itemControl').markAsDirty();
       fixture.detectChanges();

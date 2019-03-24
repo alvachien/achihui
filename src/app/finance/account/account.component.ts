@@ -1,4 +1,4 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { fadeAnimation } from '../../utility';
 
 @Component({
@@ -7,14 +7,10 @@ import { fadeAnimation } from '../../utility';
   styleUrls: ['./account.component.scss'],
   animations: [fadeAnimation],
 })
-export class AccountComponent implements OnInit {
+export class AccountComponent {
   @HostBinding('@routeAnimation') routeAnimation: boolean = true;
 
   constructor() {
     // Empty
-  }
-
-  ngOnInit(): void {
-    // Emptyu
   }
 }

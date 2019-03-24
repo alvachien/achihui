@@ -8,7 +8,10 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal, UICommonLabelEnum,
-  Currency, TranType, DocumentType, ControlCenter, Order, Account, financeDocTypeTransfer, financeDocTypeCurrencyExchange,
+  Currency, TranType, DocumentType, ControlCenter, Order, Account, financeDocTypeTransfer,
+  financeDocTypeCurrencyExchange, financeDocTypeAdvancePayment, financeDocTypeAdvanceReceived,
+  financeDocTypeAssetBuyIn, financeDocTypeAssetSoldOut, financeDocTypeAssetValChg, financeDocTypeLendTo,
+  financeDocTypeBorrowFrom, financeDocTypeRepay,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
@@ -188,6 +191,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       case financeDocTypeNormal:      this._updateNormalDoc();        break;
       case financeDocTypeTransfer:    this._updateTransferDoc();      break;
       case financeDocTypeCurrencyExchange: this._updateCurrExgDoc();   break;
+      case financeDocTypeAdvancePayment: break;
+      case financeDocTypeAdvanceReceived: break;
+      case financeDocTypeAssetBuyIn: break;
+      case financeDocTypeAssetSoldOut: break;
+      case financeDocTypeAssetValChg: break;
+      case financeDocTypeLendTo: break;
+      case financeDocTypeBorrowFrom: break;
+      case financeDocTypeRepay: break;
 
       default: break;
     }
