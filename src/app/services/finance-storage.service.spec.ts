@@ -3072,8 +3072,8 @@ describe('FinanceStorageService', () => {
 
     it('should return data for success case', () => {
       service.fetchAllPlans(100, 10).subscribe(
-        (data: any) => {
-          expect(data.totalCount).toEqual(0);
+        (data: Plan[]) => {
+          expect(data.length).toEqual(1);
         },
         (fail: any) => {
           // Empty

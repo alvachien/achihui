@@ -52,7 +52,6 @@ export class RecurrEventListComponent implements OnInit, AfterContentInit, OnDes
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this._homeDefService.fetchAllMembersInChosedHome();
     this.fetchRecurEvents();
   }
 
@@ -60,8 +59,10 @@ export class RecurrEventListComponent implements OnInit, AfterContentInit, OnDes
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering RecurrEventListComponent ngOnDestroy...');
     }
-    this._destroyed$.next(true);
-    this._destroyed$.complete();
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
   }
 
   public onCreateRecurEvent(): void {

@@ -85,7 +85,7 @@ For borrow from transaction:
 1. First of all, create a borrow from document with: Document type (Borrow From, 9) whch contains two items: 
     a. First document line posted to the New created BorrowFromAccount, tran. type 82 (opening liability));
     b. Second document line posted to the account which receiving the amount, tran. type 80 (borrow from);
-2. In addition, there are several template document will be created with the relevant.
+2. In addition, there are several template documents will be created with the relevant.
 3. A repay document will be post periodly or manually;
     a. The new posted document with doc type - repayment.
     b. It contains several line items: the original amount (repayment in 87 to the borrow from account, repayment out 86 to the account which paid the amount), the interest amount;
@@ -94,7 +94,7 @@ For lend to transaction:
 1. First of all, create a lend to document with: Document type (Borrow To, 10) whch contains two items: 
     a. First document line posted to the New created LendToAccount, tran. type 1 (opening asset));
     b. Second document line posted to the account which paid the amount, tran. type 81 (lent to);
-2. In addition, there are several template document will be created with the relevant.
+2. In addition, there are several template documents will be created with the relevant.
 3. A repay document will be post periodly or manually;
     a. The new posted document with doc type - repayment.
     b. It contains several line items: the original amount (repayment out 86 to the lend to account, repayment out 87 to the account which received the amount), the interest amount;
@@ -115,17 +115,65 @@ To create transfer document:
 - For order, can only use the orders which is validated at the transaction date;
 - For tran. type, can only use the two system tran. types: transfer out and transfer in;
 - When using non-base currency, need input the exchange rate;
-- Cannot use 0 as the amount;
+- Cannot use 0 as the amount in line item;
+- Ensure the total transaction amount (with tran. currency) is zero.
 
 ##### Currency exchange document
+To create currency exchange document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- For tran. type, can only use the two system tran. types: transfer out and transfer in;
+- Two currencies are required, and at least one of them is non-base currency. For currency which is non-base currency, the exchange rate is a must;
+- Cannot use 0 as the amount in line item;
+- Ensure the total transaction amount (with base currency) is zero.
+
 ##### Advance payment document
+To create advance payment document
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- Cannot use 0 as the amount in line item;
+
 ##### Advance received document
+To create advance received document
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- Cannot use 0 as the amount in line item;
+
 ##### Borrow from document
+To create borrow from document
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- Cannot use 0 as the amount in line item;
+
 ##### Lent to document
+To create lend to document
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- Cannot use 0 as the amount in line item;
+
 ##### Asset buy in document
+To create asset buy in document
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- Cannot use 0 as the amount in line item;
+
 ##### Asset value change document
+To create value change document
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- Cannot use 0 as the amount in line item;
+
 ##### Asset sold out document
+To create asset sold out document
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- Cannot use 0 as the amount in line item;
+
 ##### Repayment document
+To create repayment document
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- Cannot use 0 as the amount in line item;
 
 #### Change existing document
 
@@ -138,27 +186,74 @@ To change normal document:
 - When using non-base currency, need input the exchange rate;
 
 ##### Transfer document
-To create transfer document:
+To change transfer document:
 - For account, can only use the account with activated status;
 - For order, can only use the orders which is validated at the transaction date;
 - It's not allowed to change tran. type;
 - When using non-base currency, need input the exchange rate;
 
 ##### Currency exchange document
-To create currency exchange document:
+To change currency exchange document:
 - For account, can only use the account with activated status;
 - For order, can only use the orders which is validated at the transaction date;
 - It's not allowed to change tran. type;
 - When using non-base currency, need input the exchange rate;
 
 ##### Advance payment document
+To change advance payment document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- It's not allowed to change tran. type;
+- When using non-base currency, need input the exchange rate;
+
 ##### Advance received document
+To change advance received document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- It's not allowed to change tran. type;
+- When using non-base currency, need input the exchange rate;
+
 ##### Borrow from document
-##### Lent to document
+To change borrow from document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- It's not allowed to change tran. type;
+- When using non-base currency, need input the exchange rate;
+
+##### Lend to document
+To change lend to document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- It's not allowed to change tran. type;
+- When using non-base currency, need input the exchange rate;
+
 ##### Asset buy in document
+To change asset buy in document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- It's not allowed to change tran. type;
+- When using non-base currency, need input the exchange rate;
+
 ##### Asset value change document
+To change asset value change document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- It's not allowed to change tran. type;
+- When using non-base currency, need input the exchange rate;
+
 ##### Asset sold out document
+To change asset sold out document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- It's not allowed to change tran. type;
+- When using non-base currency, need input the exchange rate;
+
 ##### Repayment document
+To change repayment document:
+- For account, can only use the account with activated status;
+- For order, can only use the orders which is validated at the transaction date;
+- It's not allowed to change tran. type;
+- When using non-base currency, need input the exchange rate;
 
 #### Others
 Others
@@ -208,9 +303,8 @@ To save the working load the API, also increase the performance of the app from 
 * Transaction
 * Learn Category
 * Finance Account
-* Finance Document
-* Learn Object
-* Learn History
+* Learn Object (TBD.)
+* Learn History (TBD.)
 * Control Center
 * Order
 
