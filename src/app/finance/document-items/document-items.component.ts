@@ -10,7 +10,8 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Currency, UIAccountForSelection,
   IAccountCategoryFilter, UIOrderForSelection, TranType, ControlCenter, Order,
-  BuildupAccountForSelection, BuildupOrderForSelection, ModelUtility, financeDocTypeTransfer, financeDocTypeCurrencyExchange, } from '../../model';
+  BuildupAccountForSelection, BuildupOrderForSelection, ModelUtility, financeDocTypeTransfer,
+  financeDocTypeCurrencyExchange, financeDocTypeNormal, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService } from '../../services';
 
 @Component({
@@ -83,19 +84,19 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
     return this._isChangable;
   }
   get isAddItemAllowed(): boolean {
-    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer)
-    && (this.docType !== financeDocTypeCurrencyExchange);
+    return this.isFieldChangable && this.docType === financeDocTypeNormal;
   }
   get isDeleteItemAllowed(): boolean {
-    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer)
-    && (this.docType !== financeDocTypeCurrencyExchange);
+    return this.isFieldChangable && this.docType === financeDocTypeNormal;
+  }
+  get isAccountIDEditable(): boolean {
+    return this.isFieldChangable && this.docType === financeDocTypeNormal;
   }
   get isTranTypeEditable(): boolean {
-    return this.isFieldChangable && (this.docType !== financeDocTypeTransfer)
-    && (this.docType !== financeDocTypeCurrencyExchange);
+    return this.isFieldChangable && this.docType === financeDocTypeNormal;
   }
   get isAmountEditable(): boolean {
-    return this.isFieldChangable && (this.docType !== financeDocTypeCurrencyExchange);
+    return this.isFieldChangable && this.docType === financeDocTypeNormal;
   }
 
   constructor(public _currService: FinCurrencyService,

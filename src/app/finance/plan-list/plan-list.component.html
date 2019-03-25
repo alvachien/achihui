@@ -36,7 +36,7 @@
         <!-- Target date Column -->
         <ng-container matColumnDef="tgtdate">
           <mat-header-cell *matHeaderCellDef> {{'Common.Date' | translate}} </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.TargetDate | date:'YYYY-m-dd'}} </mat-cell>
+          <mat-cell *matCellDef="let row"> {{row.TargetDate | date}} </mat-cell>
         </ng-container>
 
         <!-- Target Balance Column -->

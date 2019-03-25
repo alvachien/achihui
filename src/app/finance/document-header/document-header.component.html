@@ -11,7 +11,8 @@
 
   <!-- Tran date -->
   <mat-form-field>
-    <input id="trandate" matInput formControlName="dateControl" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
+    <input id="trandate" matInput formControlName="dateControl" 
+      [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
     <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
     <mat-datepicker #tdpicker></mat-datepicker>
   </mat-form-field>
@@ -42,7 +43,9 @@
 
   <!-- Planned Exchange rate -->
   <div *ngIf="tranCurrency && isForeignCurrency" class="achih-control-full-width">
-    <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
+    <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">
+      {{'Finance.ProposedExchangeRate' | translate}}
+    </mat-checkbox>
   </div>
 
   <!-- Currency -->
@@ -58,18 +61,20 @@
 
   <!-- Exchange rate -->
   <mat-form-field *ngIf="tranCurrency2 && isForeignCurrency2">
-    <input matInput type="number" placeholder="{{'Finance.ExchangeRate' | translate}}" matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
+    <input matInput type="number" placeholder="{{'Finance.ExchangeRate' | translate}}"
+      matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
       formControlName="exg2Control" id="exgrate2"
       [readonly]="!isExchangeRate2Editable">
   </mat-form-field>
 
   <!-- Planned Exchange rate -->
   <div *ngIf="tranCurrency2 && isForeignCurrency2" class="achih-control-full-width">
-    <mat-checkbox formControlName="exgp2Control" color="accent" id="exgrate_plan2">{{'Finance.ProposedExchangeRate' | translate}}</mat-checkbox>
+    <mat-checkbox formControlName="exgp2Control" color="accent" id="exgrate_plan2">
+      {{'Finance.ProposedExchangeRate' | translate}}
+    </mat-checkbox>
   </div>
 
-  <div *ngIf="headerForm.errors?.exchangeRateMissing && (headerForm.touched || headerForm.dirty)"
-    class="achih-control-full-width cross-validation-error-message">
-      Exchange rate is missing.
-  </div>
+  <mat-error *ngIf="headerForm.errors?.exchangeRateMissing && (headerForm.touched || headerForm.dirty)">
+    {{'Finance.NoExchangeRate' | translate}}
+  </mat-error>
 </ng-container>
