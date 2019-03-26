@@ -188,20 +188,48 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     }
 
     switch (this.curDocType) {
-      case financeDocTypeNormal:      this._updateNormalDoc();        break;
-      case financeDocTypeTransfer:    this._updateTransferDoc();      break;
-      case financeDocTypeCurrencyExchange: this._updateCurrExgDoc();   break;
-      case financeDocTypeAdvancePayment: break;
-      case financeDocTypeAdvanceReceived: break;
-      case financeDocTypeAssetBuyIn: break;
-      case financeDocTypeAssetSoldOut: break;
-      case financeDocTypeAssetValChg: break;
-      case financeDocTypeLendTo: break;
-      case financeDocTypeBorrowFrom: break;
-      case financeDocTypeRepay: break;
+      case financeDocTypeNormal:            this._updateNormalDoc();        break;
+      case financeDocTypeTransfer:          this._updateTransferDoc();      break;
+      case financeDocTypeCurrencyExchange:  this._updateCurrExgDoc();       break;
+      case financeDocTypeAdvancePayment:    this._updateADPDoc();           break;
+      case financeDocTypeAdvanceReceived:   this._updateADRDoc();           break;
+      case financeDocTypeAssetBuyIn:        this._updateAssetBuyDoc();      break;
+      case financeDocTypeAssetSoldOut:      this._updateAssetSoldDoc();     break;
+      case financeDocTypeAssetValChg:       this._updateAssetValChgDoc();   break;
+      case financeDocTypeLendTo:            this._updateLendToDoc();        break;
+      case financeDocTypeBorrowFrom:        this._updateBorrowFromDoc();    break;
+      case financeDocTypeRepay:             this._updateRepayDoc();         break;
 
       default: break;
     }
+  }
+  private _updateDoc(doc: Document): void {
+    if (!doc.onVerify({ControlCenters: this.arControlCenters,
+      Orders: this.arOrders,
+      Accounts: this.arAccounts,
+      DocumentTypes: this.arDocTypes,
+      TransactionTypes: this.arTranTypes,
+      Currencies: this.arCurrencies,
+      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
+    })) {
+      // Show a error dialog
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, doc.VerifiedMsgs);
+      return;
+    }
+
+    this._storageService.updateNormalDocument(doc).subscribe((rst: Document) => {
+      // Switch to display mode
+      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
+        duration: 2000,
+      }).afterDismissed().subscribe(() => {
+        this._router.navigate(['/finance/document/display/' + this.routerID.toString()]);
+      });
+    }, (error: any) => {
+      // Show a error dialog
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+    });
   }
   private _updateNormalDoc(): void {
     // For normal document, just update the whole document.
@@ -214,32 +242,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     });
     doc.DocType = financeDocTypeNormal;
 
-    if (!doc.onVerify({ControlCenters: this.arControlCenters,
-      Orders: this.arOrders,
-      Accounts: this.arAccounts,
-      DocumentTypes: this.arDocTypes,
-      TransactionTypes: this.arTranTypes,
-      Currencies: this.arCurrencies,
-      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
-    })) {
-      // Show a error dialog
-      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        undefined, doc.VerifiedMsgs);
-      return;
-    }
-
-    this._storageService.updateNormalDocument(doc).subscribe((rst: Document) => {
-      // Switch to display mode
-      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
-        duration: 2000,
-      }).afterDismissed().subscribe(() => {
-        this._router.navigate(['/finance/document/display/' + this.routerID.toString()]);
-      });
-    }, (error: any) => {
-      // Show a error dialog
-      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
-    });
+    this._updateDoc(doc);
   }
   private _updateTransferDoc(): void {
     // For transfer document, just update the whole document.
@@ -252,32 +255,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     });
     doc.DocType = financeDocTypeTransfer;
 
-    if (!doc.onVerify({ControlCenters: this.arControlCenters,
-      Orders: this.arOrders,
-      Accounts: this.arAccounts,
-      DocumentTypes: this.arDocTypes,
-      TransactionTypes: this.arTranTypes,
-      Currencies: this.arCurrencies,
-      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
-    })) {
-      // Show a error dialog
-      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        undefined, doc.VerifiedMsgs);
-      return;
-    }
-
-    this._storageService.updateNormalDocument(doc).subscribe((rst: Document) => {
-      // Switch to display mode
-      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
-        duration: 2000,
-      }).afterDismissed().subscribe(() => {
-        this._router.navigate(['/finance/document/display/' + this.routerID.toString()]);
-      });
-    }, (error: any) => {
-      // Show a error dialog
-      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
-    });
+    this._updateDoc(doc);
   }
   private _updateCurrExgDoc(): void {
     // For transfer document, just update the whole document.
@@ -290,31 +268,103 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     });
     doc.DocType = financeDocTypeCurrencyExchange;
 
-    if (!doc.onVerify({ControlCenters: this.arControlCenters,
-      Orders: this.arOrders,
-      Accounts: this.arAccounts,
-      DocumentTypes: this.arDocTypes,
-      TransactionTypes: this.arTranTypes,
-      Currencies: this.arCurrencies,
-      BaseCurrency: this._homedefService.ChosedHome.BaseCurrency,
-    })) {
-      // Show a error dialog
-      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        undefined, doc.VerifiedMsgs);
-      return;
-    }
-
-    this._storageService.updateNormalDocument(doc).subscribe((rst: Document) => {
-      // Switch to display mode
-      this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.UpdatedSuccess), undefined, {
-        duration: 2000,
-      }).afterDismissed().subscribe(() => {
-        this._router.navigate(['/finance/document/display/' + this.routerID.toString()]);
-      });
-    }, (error: any) => {
-      // Show a error dialog
-      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+    this._updateDoc(doc);
+  }
+  private _updateADPDoc(): void {
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
     });
+    doc.DocType = financeDocTypeAdvancePayment;
+
+    this._updateDoc(doc);
+
+  }
+  private _updateADRDoc(): void {
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
+    });
+    doc.DocType = financeDocTypeAdvanceReceived;
+
+    this._updateDoc(doc);
+  }
+  private _updateAssetBuyDoc(): void {
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
+    });
+    doc.DocType = financeDocTypeAssetBuyIn;
+
+    this._updateDoc(doc);
+  }
+  private _updateAssetSoldDoc(): void {
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
+    });
+    doc.DocType = financeDocTypeAssetSoldOut;
+
+    this._updateDoc(doc);
+  }
+  private _updateAssetValChgDoc(): void {
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
+    });
+    doc.DocType = financeDocTypeAssetValChg;
+
+    this._updateDoc(doc);
+  }
+  private _updateLendToDoc(): void {
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
+    });
+    doc.DocType = financeDocTypeLendTo;
+
+    this._updateDoc(doc);
+  }
+  private _updateBorrowFromDoc(): void {
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
+    });
+    doc.DocType = financeDocTypeBorrowFrom;
+
+    this._updateDoc(doc);
+  }
+  private _updateRepayDoc(): void {
+    let doc: Document = this.headerGroup.get('headerControl').value;
+    doc.Items = this.itemGroup.get('itemControl').value;
+    doc.HID = this._homedefService.ChosedHome.ID;
+    doc.Id = this.routerID;
+    doc.Items.forEach((val: DocumentItem) => {
+      val.DocId = this.routerID;
+    });
+    doc.DocType = financeDocTypeRepay;
+
+    this._updateDoc(doc);
   }
 }

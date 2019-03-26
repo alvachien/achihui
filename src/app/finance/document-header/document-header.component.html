@@ -11,7 +11,7 @@
 
   <!-- Tran date -->
   <mat-form-field>
-    <input id="trandate" matInput formControlName="dateControl" 
+    <input id="trandate" matInput formControlName="dateControl" [disabled]="!isTranDateEditable"
       [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
     <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
     <mat-datepicker #tdpicker></mat-datepicker>

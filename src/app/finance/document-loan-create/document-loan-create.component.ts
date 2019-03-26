@@ -9,7 +9,7 @@ import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Account, Document, DocumentItem, Currency, financeDocTypeBorrowFrom,
-  ControlCenter, Order, TranType, financeDocTypeLendTo,
+  ControlCenter, Order, TranType, financeDocTypeLendTo, UIMode,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   FinanceLoanCalAPIInput, DocumentType, IAccountCategoryFilter, AccountExtraLoan,
   momentDateFormat, financeTranTypeLendTo, financeTranTypeBorrowFrom, costObjectValidator,
@@ -39,6 +39,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   arAccounts: Account[];
   arDocTypes: DocumentType[];
   arCurrencies: Currency[];
+  curMode: UIMode = UIMode.Create;
+
   // Stepper
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Generic info

@@ -11,7 +11,7 @@
         <form [formGroup]="headerFormGroup">
           <ng-template matStepLabel>{{'Finance.Header' | translate}}</ng-template>
 
-          <hih-fin-document-header [docType]="curDocType"  formControlName="headerControl"></hih-fin-document-header>
+          <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"></hih-fin-document-header>
 
           <!-- Amount -->
           <mat-form-field>

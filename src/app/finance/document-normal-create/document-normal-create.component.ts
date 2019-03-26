@@ -30,6 +30,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public arDocTypes: DocumentType[] = [];
   public curDocType: number = financeDocTypeNormal;
+  public curMode: UIMode = UIMode.Create;
   // Stepper
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   // Step: Generic info

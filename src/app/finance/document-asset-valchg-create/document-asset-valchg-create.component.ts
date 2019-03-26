@@ -70,6 +70,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
   arAccounts: Account[];
   arDocTypes: DocumentType[];
   arCurrencies: Currency[];
+  curMode: UIMode = UIMode.Create;
 
   get NewEstimatedAmount(): number {
     let amtctrl: any = this.firstFormGroup.get('amountControl');

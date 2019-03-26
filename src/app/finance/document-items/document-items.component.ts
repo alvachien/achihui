@@ -38,6 +38,7 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   private _docType: number;
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
+  private _uiMode: UIMode;
 
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
@@ -49,6 +50,14 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   public arControlCenters: ControlCenter[] = [];
   public arAccounts: Account[] = [];
   public arOrders: Order[] = [];
+
+  @Input()
+  get currentUIMode(): UIMode {
+    return this._uiMode;
+  }
+  set currentUIMode(mode: UIMode) {
+    this._uiMode = mode;
+  }
 
   @Input()
   set tranCurr(curr: string) {
@@ -84,27 +93,30 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
     return this._isChangable;
   }
   get isAddItemAllowed(): boolean {
-    return this.isFieldChangable && this.docType === financeDocTypeNormal;
+    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
+      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
   }
   get isDeleteItemAllowed(): boolean {
-    return this.isFieldChangable && this.docType === financeDocTypeNormal;
+    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
+      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
   }
   get isAccountIDEditable(): boolean {
-    return this.isFieldChangable && this.docType === financeDocTypeNormal;
+    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
+      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
   }
   get isTranTypeEditable(): boolean {
-    return this.isFieldChangable && this.docType === financeDocTypeNormal;
+    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
+      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
   }
   get isAmountEditable(): boolean {
-    return this.isFieldChangable && this.docType === financeDocTypeNormal;
+    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
+      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
   }
 
   constructor(public _currService: FinCurrencyService,
     private _storageService: FinanceStorageService,
     private _snackbar: MatSnackBar) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Entering DocumentItemsComponent ngOnDestroy`);
-    }
+    // Empty
   }
 
   @HostListener('change') onChange(): void {

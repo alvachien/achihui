@@ -11,7 +11,7 @@
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
           <!-- Doc. header -->
-          <hih-fin-document-header [docType]="loanType"  formControlName="headerControl"></hih-fin-document-header>
+          <hih-fin-document-header [docType]="loanType" [currentUIMode]="curMode" formControlName="headerControl"></hih-fin-document-header>
 
           <!-- Amount -->
           <mat-form-field>

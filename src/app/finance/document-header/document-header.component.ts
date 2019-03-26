@@ -7,7 +7,8 @@ import { MatSnackBar, MatSelectChange, DateAdapter, } from '@angular/material';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange, UIStatusEnum, } from '../../model';
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange,
+  UIStatusEnum, financeDocTypeNormal, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 
 @Component({
@@ -32,11 +33,19 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
   private _doctype: number;
+  private _uiMode: UIMode;
 
   private _instanceObject: Document = new Document();
   public arCurrencies: Currency[] = [];
   public arDocTypes: DocumentType[] = [];
 
+  @Input()
+  get currentUIMode(): UIMode {
+    return this._uiMode;
+  }
+  set currentUIMode(mode: UIMode) {
+    this._uiMode = mode;
+  }
   @Input()
   get docType(): number { return this._doctype;  }
   set docType(dt: number) {
@@ -52,6 +61,10 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
 
   public headerForm: FormGroup;
 
+  get isTranDateEditable(): boolean {
+    return this._isChangable && (this.currentUIMode === UIMode.Create
+      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+  }
   get isCurrencyExchangeDocument(): boolean {
     return this.docType === financeDocTypeCurrencyExchange;
   }
@@ -115,16 +128,18 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
     return this._homeService.ChosedHome.BaseCurrency !== this.headerForm!.get('curr2Control').value;
   }
   get isCurrencyEditable(): boolean {
-    return this._isChangable && (this._doctype !== financeDocTypeCurrencyExchange);
+    return this._isChangable && (this.currentUIMode === UIMode.Create
+      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
   }
   get isExchangeRateEditable(): boolean {
     return this.isCurrencyEditable;
   }
   get isCurrency2Editable(): boolean {
-    return this._isChangable && (this._doctype !== financeDocTypeCurrencyExchange);
+    return this._isChangable && (this.currentUIMode === UIMode.Create
+      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
   }
   get isExchangeRate2Editable(): boolean {
-    return this.isCurrencyEditable;
+    return this.isCurrency2Editable;
   }
 
   constructor(public _currService: FinCurrencyService,

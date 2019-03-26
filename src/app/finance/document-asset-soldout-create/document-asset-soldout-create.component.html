@@ -21,7 +21,7 @@
           </mat-form-field>
 
           <!-- Header -->
-          <hih-fin-document-header [docType]="curDocType"  formControlName="headerControl"></hih-fin-document-header>
+          <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"></hih-fin-document-header>
 
           <!-- Amount -->
           <mat-form-field>
@@ -57,7 +57,9 @@
         <ng-template matStepLabel>{{'Common.ExtraInfo' | translate}}</ng-template>
 
         <form [formGroup]="itemFormGroup">
-          <hih-fin-document-items formControlName="itemControl" [tranCurr]="confirmInfo?.tranCurrency"
+          <hih-fin-document-items formControlName="itemControl" 
+            [currentUIMode]="curMode"
+            [tranCurr]="confirmInfo?.tranCurrency"
             [docType]="curDocType"></hih-fin-document-items>
         </form>
 

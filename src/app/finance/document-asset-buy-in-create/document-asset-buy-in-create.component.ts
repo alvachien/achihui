@@ -36,6 +36,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   // Step: Confirm
   public confirmInfo: any = {};
 
+  public curMode: UIMode = UIMode.Create;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;

@@ -11,7 +11,7 @@ import { LogLevel, momentDateFormat, Document, DocumentItem, financeDocTypeTrans
   financeTranTypeTransferOut, financeTranTypeTransferIn,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   UIDisplayStringUtil, IAccountCategoryFilter, costObjectValidator,
-  Currency, TranType, ControlCenter, Order, Account, DocumentType,
+  Currency, TranType, ControlCenter, Order, Account, DocumentType, UIMode,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
@@ -36,6 +36,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public arOrders: Order[] = [];
   public arDocTypes: DocumentType[] = [];
   public curDocType: number = financeDocTypeTransfer;
+  public curMode: UIMode = UIMode.Create;
   // Stepper
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Header info
