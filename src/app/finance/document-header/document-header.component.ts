@@ -101,7 +101,7 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
     return this._instanceObject;
   }
   get isFieldChangable(): boolean {
-    return this._isChangable;
+    return this._isChangable && (this.currentUIMode === UIMode.Change || this.currentUIMode === UIMode.Create);
   }
   get tranCurrency(): string {
     if (!this.headerForm || !this.headerForm.get('currControl')) {

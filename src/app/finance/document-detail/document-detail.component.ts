@@ -130,13 +130,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 this.headerGroup.get('headerControl').setValue(x2);
                 this.itemGroup.get('itemControl').setValue(x2.Items);
 
-                if (this.uiMode === UIMode.Display) {
-                  this.headerGroup.disable();
-                  this.itemGroup.disable();
-                } else {
-                  this.headerGroup.enable();
-                  this.itemGroup.enable();
-                }
+                // if (this.uiMode === UIMode.Display) {
+                //   this.headerGroup.disable();
+                //   this.itemGroup.disable();
+                // } else {
+                //   this.headerGroup.enable();
+                //   this.itemGroup.enable();
+                // }
                 this.headerGroup.markAsPristine();
                 this.headerGroup.markAsUntouched();
                 this.itemGroup.markAsPristine();

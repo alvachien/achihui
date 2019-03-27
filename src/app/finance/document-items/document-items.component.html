@@ -14,7 +14,7 @@
           <mat-icon color="warn">delete</mat-icon>
         </button>
         <mat-form-field>
-          <input matInput type="number" [readonly]="!isFieldChangable" required
+          <input matInput type="number" [readonly]="!isItemIDEditable" required
             (change)="onChange()" [(ngModel)]="row.ItemId" name="itid">
         </mat-form-field>
       </mat-cell>

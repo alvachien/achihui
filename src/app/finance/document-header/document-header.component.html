@@ -19,7 +19,8 @@
 
   <!-- Description -->
   <mat-form-field>
-    <input id="desp" matInput type="text" placeholder="{{'Common.Description' |translate}}" formControlName="despControl">
+    <input id="desp" matInput type="text" placeholder="{{'Common.Description' |translate}}"
+      [readonly]="!isFieldChangable" formControlName="despControl">
   </mat-form-field>
   
   <!-- Currency -->

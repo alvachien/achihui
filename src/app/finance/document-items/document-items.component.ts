@@ -90,13 +90,17 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
     return this.dataSource.data;
   }
   get isFieldChangable(): boolean {
-    return this._isChangable;
+    return this._isChangable && (this.currentUIMode === UIMode.Create || this.currentUIMode === UIMode.Change);
   }
   get isAddItemAllowed(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
       || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
   }
   get isDeleteItemAllowed(): boolean {
+    return this.isFieldChangable && (this.currentUIMode === UIMode.Create
+      || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
+  }
+  get isItemIDEditable(): boolean {
     return this.isFieldChangable && (this.currentUIMode === UIMode.Create
       || (this.currentUIMode === UIMode.Change && this.docType === financeDocTypeNormal));
   }
