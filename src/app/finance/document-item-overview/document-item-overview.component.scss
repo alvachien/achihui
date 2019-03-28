@@ -43,9 +43,8 @@
 }
 
 .mat-table {
-  width: 90%;
-  max-width: 96%;
-  max-height: 520px;
+  min-height: 200px;
+  max-height: 500px;
 }
 
 .mat-column-DocID {
