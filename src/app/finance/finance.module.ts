@@ -54,6 +54,7 @@ import { PlanDetailComponent } from './plan-detail';
 import { PlanListComponent } from './plan-list';
 import { DocumentHeaderComponent } from './document-header';
 import { DocumentItemsComponent } from './document-items';
+import { DocumentItemByOrderComponent } from './document-item-by-order';
 
 @NgModule({
   imports: [
@@ -113,6 +114,7 @@ import { DocumentItemsComponent } from './document-items';
     AccountExtADPExComponent,
     DocumentHeaderComponent,
     DocumentItemsComponent,
+    DocumentItemByOrderComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
