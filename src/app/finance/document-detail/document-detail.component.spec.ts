@@ -21,7 +21,8 @@ import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData
 import { DocumentDetailComponent } from './document-detail.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { Document, DocumentType, DocumentItem, financeDocTypeTransfer, financeTranTypeTransferOut,
-  financeTranTypeTransferIn, } from '../../model';
+  financeTranTypeTransferIn,
+  financeDocTypeCurrencyExchange, } from '../../model';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
@@ -620,6 +621,72 @@ describe('DocumentDetailComponent', () => {
       expect(overlayContainerElement.querySelectorAll('.mat-dialog-container').length).toBe(0);
 
       flush();
+    }));
+  });
+  describe('2.3 edit currency exchange document', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
+      fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
+      fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
+      fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
+      fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
+      let doc: Document = new Document();
+      doc.Id = 11;
+      doc.DocType = financeDocTypeCurrencyExchange;
+      doc.Desp = 'Transfer test';
+      doc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      doc.TranDate = moment();
+      let ditem1: DocumentItem = new DocumentItem();
+      ditem1.DocId = 11;
+      ditem1.ItemId = 1;
+      ditem1.AccountId = fakeData.finAccounts[0].Id;
+      ditem1.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem1.TranType = financeTranTypeTransferOut;
+      ditem1.Desp = 'From';
+      ditem1.TranAmount = 220;
+      let ditem2: DocumentItem = new DocumentItem();
+      ditem1.DocId = 11;
+      ditem2.ItemId = 2;
+      ditem2.AccountId = fakeData.finAccounts[1].Id;
+      ditem2.ControlCenterId = fakeData.finControlCenters[0].Id;
+      ditem2.TranType = financeTranTypeTransferIn;
+      ditem2.Desp = 'To';
+      ditem2.TranAmount = 220;
+      doc.Items = [ditem1, ditem2];
+      fakeData.setFinTransferDocumentForCreate(doc);
+
+      // let rstdoc: Document = fakeData.buildFinTr();
+      readDocumentSpy.and.returnValue(asyncData(fakeData.finTransferDocumentForCreate));
+      updateNormalDocumentSpy.and.returnValue(asyncData(fakeData.finTransferDocumentForCreate));
+
+      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('11', {})] as UrlSegment[]);
+    });
+
+    beforeEach(inject([OverlayContainer],
+      (oc: OverlayContainer) => {
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+    }));
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('shall read out the document', fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+      flush();
+      fixture.detectChanges();
+
+      expect(readDocumentSpy).toHaveBeenCalled();
+      expect(component.isFieldChangable).toEqual(true);
+      expect(component.headerGroup.enabled).toBeTruthy();
+      expect(component.itemGroup.enabled).toBeTruthy();
     }));
   });
 
