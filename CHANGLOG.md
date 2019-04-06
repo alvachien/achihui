@@ -8,6 +8,8 @@ Bug fixing and Feature list
 - Finance: Items refactored as an reusable control;
 - Finance: plan;
 - Finance: Normal document now support editing;
+- Finance: Transfer document now support editing;
+- Finance: All documents now support description and Tag editing;
 - [?] Use ACTSLib instead of default array or other data structures;
 
 ## Version 0.7.x
