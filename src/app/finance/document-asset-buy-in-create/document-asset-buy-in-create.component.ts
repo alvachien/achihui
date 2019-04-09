@@ -179,7 +179,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     apidetail.accountAsset = this.firstFormGroup.get('assetAccountControl').value;
 
     docobj.Items.forEach((val: DocumentItem) => {
-      apidetail.items.push(val);
+      apidetail.items.push(val.writeJSONObject());
     });
 
     this._storageService.createAssetBuyinDocument(apidetail).subscribe((nid: number) => {
