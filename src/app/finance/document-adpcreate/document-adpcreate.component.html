@@ -57,7 +57,7 @@
           </mat-form-field>
         </form>
 
-        <mat-error *ngIf="(firstFormGroup && fromFormGroup.hasError('nocostobject')) || (firstFormGroup && fromFormGroup.hasError('costobjectoverassign'))">
+        <mat-error *ngIf="(firstFormGroup && firstFormGroup.hasError('nocostobject')) || (firstFormGroup && firstFormGroup.hasError('costobjectoverassign'))">
           <div class="mat-h3">{{'Finance.EitherControlCenterOrOrder' | translate}}</div>
         </mat-error>
         <div>

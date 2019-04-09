@@ -124,23 +124,33 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                   console.debug(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent, ngOninit, readDocument`);
                 }
 
-                this.curDocType = x2.DocType;
-                this.tranCurr = x2.TranCurr;
-                this.tranCurr2 = x2.TranCurr2;
-                this.headerGroup.get('headerControl').setValue(x2);
-                this.itemGroup.get('itemControl').setValue(x2.Items);
+                // Check whether we need additional fetch for account
+                let addreqs: any[] = [];
+                x2.Items.forEach((docitem: DocumentItem) => {
+                  if (this._storageService.Accounts.findIndex((acnt: Account) => {
+                    return acnt.Id === docitem.AccountId;
+                  }) === -1) {
+                    addreqs.push(this._storageService.readAccount(docitem.AccountId));
+                  }
 
-                // if (this.uiMode === UIMode.Display) {
-                //   this.headerGroup.disable();
-                //   this.itemGroup.disable();
-                // } else {
-                //   this.headerGroup.enable();
-                //   this.itemGroup.enable();
-                // }
-                this.headerGroup.markAsPristine();
-                this.headerGroup.markAsUntouched();
-                this.itemGroup.markAsPristine();
-                this.itemGroup.markAsUntouched();
+                  if (docitem.OrderId) {
+                    if (this._storageService.Orders.findIndex((ord: Order) => {
+                      return ord.Id === docitem.AccountId;
+                    }) === -1) {
+                      addreqs.push(this._storageService.readOrder(docitem.OrderId));
+                    }
+                  }
+                });
+                if (addreqs.length > 0) {
+                  forkJoin(addreqs).subscribe(() => {
+                    this.arAccounts = this._storageService.Accounts.slice();
+                    this.arOrders = this._storageService.Orders.slice();
+
+                    this._setDocumentContent(x2);
+                  });
+                } else {
+                  this._setDocumentContent(x2);
+                }
               }, (error: any) => {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering DocumentDetailComponent, ngOninit, readDocument failed: ${error}`);
@@ -366,5 +376,16 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     doc.DocType = financeDocTypeRepay;
 
     this._updateDoc(doc);
+  }
+  private _setDocumentContent(x2: Document): void{
+    this.curDocType = x2.DocType;
+    this.tranCurr = x2.TranCurr;
+    this.tranCurr2 = x2.TranCurr2;
+    this.headerGroup.get('headerControl').setValue(x2);
+    this.itemGroup.get('itemControl').setValue(x2.Items);
+    this.headerGroup.markAsPristine();
+    this.headerGroup.markAsUntouched();
+    this.itemGroup.markAsPristine();
+    this.itemGroup.markAsUntouched();
   }
 }
