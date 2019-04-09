@@ -978,6 +978,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
       tick();
       fixture.detectChanges();
       expect(createDocSpy).toHaveBeenCalled();
+      // expect(createDocSpy).toHaveBeenCalledWith()
 
       // Expect there is snackbar
       let messageElement: any = overlayContainerElement.querySelector('snack-bar-container');

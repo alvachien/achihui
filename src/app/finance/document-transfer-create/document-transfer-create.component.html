@@ -54,6 +54,10 @@
           </mat-form-field>
         </form>
 
+        <mat-error *ngIf="(fromFormGroup && fromFormGroup.hasError('nocostobject')) || (fromFormGroup && fromFormGroup.hasError('costobjectoverassign'))">
+          <div class="mat-h3">{{'Finance.EitherControlCenterOrOrder' | translate}}</div>
+        </mat-error>
+
         <div>
           <button mat-button matStepperPrevious>{{'Common.BackButton' | translate}}</button>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
@@ -91,6 +95,11 @@
             </mat-select>
           </mat-form-field>
         </form>
+
+        <mat-error *ngIf="(toFormGroup && toFormGroup.hasError('nocostobject')) || (toFormGroup && toFormGroup.hasError('costobjectoverassign'))">
+          <div class="mat-h3">{{'Finance.EitherControlCenterOrOrder' | translate}}</div>
+        </mat-error>
+
         <div>
           <button mat-button matStepperPrevious>{{'Common.BackButton' | translate}}</button>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>

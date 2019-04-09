@@ -58,8 +58,9 @@
           </mat-form-field>
         </form>
         <mat-divider></mat-divider>
-        <mat-error *ngIf="firstFormGroup.hasError('nocostobject')"><div class="mat-h3">No Cost Object</div></mat-error>
-        <mat-error *ngIf="firstFormGroup.hasError('costobjectoverassign')"><div class="mat-h3">Cost Object Over assigned</div></mat-error>
+        <mat-error *ngIf="(firstFormGroup && firstFormGroup.hasError('nocostobject')) || (firstFormGroup && firstFormGroup.hasError('costobjectoverassign'))">
+          <div class="mat-h3">{{'Finance.EitherControlCenterOrOrder' | translate}}</div>
+        </mat-error>
 
         <div>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>

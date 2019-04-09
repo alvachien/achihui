@@ -7,7 +7,7 @@ import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
+import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account,
   AccountExtraAsset, UICommonLabelEnum, ModelUtility,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
   IAccountCategoryFilter, financeDocTypeAssetBuyIn, FinanceAssetBuyinDocumentAPI,
@@ -52,9 +52,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   arCurrencies: Currency[];
 
   get IsLegacyAsset(): boolean {
-    if (this.firstFormGroup) {
-      return this.firstFormGroup.get('legacyControl')!.value;
-    }
+    return this.firstFormGroup && this.firstFormGroup.get('legacyControl')!.value;
   }
 
   constructor(private _dialog: MatDialog,
