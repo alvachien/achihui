@@ -3,8 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, DateAdapter } from '@angular/material';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import * as moment from 'moment';
-import { Observable, Subject, BehaviorSubject, merge, of, ReplaySubject, Subscription } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { ReplaySubject, } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, LearnHistory, UIMode, getUIModeString, UICommonLabelEnum, LearnObject, HomeMember } from '../../model';
@@ -117,9 +117,6 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering HistroryDetailComponent ngOnDestroy...');
-    }
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

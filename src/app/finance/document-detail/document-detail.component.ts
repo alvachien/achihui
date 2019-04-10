@@ -65,16 +65,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private _storageService: FinanceStorageService,
     private _currService: FinCurrencyService,
     private _chgDetector: ChangeDetectorRef) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...');
-    }
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...');
-    }
-
     this.destroyed$ = new ReplaySubject(1);
 
     forkJoin([
@@ -127,14 +120,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 // Check whether we need additional fetch for account
                 let addreqs: any[] = [];
                 x2.Items.forEach((docitem: DocumentItem) => {
-                  if (this._storageService.Accounts.findIndex((acnt: Account) => {
+                  if (this.arAccounts.findIndex((acnt: Account) => {
                     return acnt.Id === docitem.AccountId;
                   }) === -1) {
                     addreqs.push(this._storageService.readAccount(docitem.AccountId));
                   }
 
                   if (docitem.OrderId) {
-                    if (this._storageService.Orders.findIndex((ord: Order) => {
+                    if (this.arOrders.findIndex((ord: Order) => {
                       return ord.Id === docitem.AccountId;
                     }) === -1) {
                       addreqs.push(this._storageService.readOrder(docitem.OrderId));
@@ -377,7 +370,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
     this._updateDoc(doc);
   }
-  private _setDocumentContent(x2: Document): void{
+  private _setDocumentContent(x2: Document): void {
     this.curDocType = x2.DocType;
     this.tranCurr = x2.TranCurr;
     this.tranCurr2 = x2.TranCurr2;

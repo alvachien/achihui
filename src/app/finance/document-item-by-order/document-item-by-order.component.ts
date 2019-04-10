@@ -18,9 +18,11 @@ export class DocumentItemByOrderComponent implements OnInit {
   isLoadingResults: boolean;
   resultsLength: number;
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    // Empty
   }
 
+  ngOnInit(): void {
+    // Empty
+  }
 }

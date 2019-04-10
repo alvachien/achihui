@@ -3090,9 +3090,9 @@ describe('FinanceStorageService', () => {
        });
 
       // Respond with the mock data
-      req.flush('[{"id":1,"hid":1,"planType":0,"accountID":4,"accountCategoryID":null,"controlCenterID":null,"tranTypeID":null,'
-        + '"startDate":"2019-03-23","targetDate":"2019-04-23","targetBalance":10.00,"tranCurr":"CNY",'
-        + '"description":"Test plan 1","createdBy":"aaa","createdAt":"2019-03-23"}]');
+      req.flush([{id: 1, hid: 1, planType: 0, accountID: 4,
+        startDate: '2019-03-23', targetDate: '2019-04-23', targetBalance: 10.00, tranCurr: 'CNY',
+        description: 'Test plan 1', createdBy: 'aaa', createdAt: '2019-03-23'}]);
     });
 
     it('should return error in case error appear', () => {

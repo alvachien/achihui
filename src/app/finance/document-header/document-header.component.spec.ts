@@ -17,7 +17,7 @@ import * as moment from 'moment';
 import { DocumentHeaderComponent } from './document-header.component';
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
-import { Document, DocumentType, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange } from '../../model';
+import { Document, DocumentType, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange, UIMode, } from '../../model';
 
 describe('DocumentHeaderComponent', () => {
   let component: DocumentHeaderComponent;
@@ -122,6 +122,7 @@ describe('DocumentHeaderComponent', () => {
 
     beforeEach(() => {
       component.docType = financeDocTypeNormal;
+      component.currentUIMode = UIMode.Change;
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
     });
@@ -144,7 +145,8 @@ describe('DocumentHeaderComponent', () => {
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.headerForm.get('currControl').value).toEqual(fakeData.chosedHome.BaseCurrency);
 
-      component.headerForm.get('dateControl').setValue(undefined);
+      component.headerForm.get('dateControl').setValue('');
+      fixture.detectChanges();
       component.onChange();
 
       expect(component.headerForm.valid).toBeFalsy();

@@ -104,28 +104,18 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
     return this._isChangable && (this.currentUIMode === UIMode.Change || this.currentUIMode === UIMode.Create);
   }
   get tranCurrency(): string {
-    if (!this.headerForm || !this.headerForm.get('currControl')) {
-      return undefined;
-    }
-    return this.headerForm.get('currControl').value;
+    return this.headerForm && this.headerForm.get('currControl') && this.headerForm.get('currControl').value;
   }
   get isForeignCurrency(): boolean {
-    if (!this.headerForm || !this.headerForm.get('currControl')) {
-      return undefined;
-    }
-    return this._homeService.ChosedHome.BaseCurrency !== this.headerForm.get('currControl').value;
+    return this.headerForm && this.headerForm.get('currControl')
+      && this._homeService.ChosedHome.BaseCurrency !== this.headerForm.get('currControl').value;
   }
   get tranCurrency2(): string {
-    if (!this.headerForm || !this.headerForm.get('curr2Control')) {
-      return undefined;
-    }
-    return this.headerForm.get('curr2Control').value;
+    return this.headerForm && this.headerForm.get('curr2Control') && this.headerForm.get('curr2Control').value;
   }
   get isForeignCurrency2(): boolean {
-    if (!this.headerForm || !this.headerForm.get('curr2Control')) {
-      return undefined;
-    }
-    return this._homeService.ChosedHome.BaseCurrency !== this.headerForm!.get('curr2Control').value;
+    return this.headerForm && this.headerForm.get('curr2Control')
+      && this._homeService.ChosedHome.BaseCurrency !== this.headerForm!.get('curr2Control').value;
   }
   get isCurrencyEditable(): boolean {
     return this._isChangable && (this.currentUIMode === UIMode.Create
@@ -215,10 +205,6 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent ngOnDestroy`);
-    }
-
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
