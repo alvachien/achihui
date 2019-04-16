@@ -17,10 +17,9 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, pop
   styleUrls: ['./order-detail.component.scss'],
 })
 export class OrderDetailComponent implements OnInit, OnDestroy {
-
-  private routerID: number = -1; // Current object ID in routing
   private _destroyed$: ReplaySubject<boolean>;
 
+  public routerID: number = -1; // Current object ID in routing
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   public arControlCenters: ControlCenter[] = [];
@@ -75,6 +74,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
+  get isCreateMode(): boolean {
+    return this.uiMode === UIMode.Create;
+  }
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
@@ -83,18 +85,12 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
     private _dateAdapter: DateAdapter<any>,
-    public _homedefService: HomeDefDetailService,
-    public _storageService: FinanceStorageService) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering OrderDetailComponent constructor...');
-    }
+    private _homedefService: HomeDefDetailService,
+    private _storageService: FinanceStorageService) {
+    // Empty
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit...');
-    }
-
     this._destroyed$ = new ReplaySubject(1);
 
     this.onSetLanguage(this._uiStatusService.CurrentLanguage);

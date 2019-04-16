@@ -6,7 +6,7 @@ import { Subscription, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/Operators';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, ControlCenter, UIMode, getUIModeString, UICommonLabelEnum, InfoMessage, } from '../../model';
+import { LogLevel, ControlCenter, UIMode, getUIModeString, UICommonLabelEnum, InfoMessage, HomeMember, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, UIStatusService } from '../../services';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 
@@ -17,15 +17,19 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, pop
 })
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private routerID: number = -1; // Current object ID in routing
 
+  public routerID: number = -1; // Current object ID in routing
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   public existedCC: ControlCenter[];
   public detailFormGroup: FormGroup;
+  public arMembers: HomeMember[] = [];
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
+  }
+  get isCreateMode(): boolean {
+    return this.uiMode === UIMode.Create;
   }
 
   constructor(private _dialog: MatDialog,
@@ -33,11 +37,13 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
-    public homedefService: HomeDefDetailService,
+    private _homedefService: HomeDefDetailService,
     private _storageService: FinanceStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...');
     }
+
+    this.arMembers = this._homedefService.MembersInChosedHome.slice();
 
     this.detailFormGroup = new FormGroup({
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
@@ -48,9 +54,6 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...');
-    }
     this._destroyed$ = new ReplaySubject(1);
 
     this._storageService.fetchAllControlCenters()
@@ -123,15 +126,12 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
-    if (!this.isFieldChangable) {
-      return;
-    }
-    if (!this.detailFormGroup.valid) {
+    if (!this.isFieldChangable || !this.detailFormGroup.valid) {
       return;
     }
 
     let detailObject: ControlCenter = new ControlCenter();
-    detailObject.HID = this.homedefService.ChosedHome.ID;
+    detailObject.HID = this._homedefService.ChosedHome.ID;
     detailObject.Name = this.detailFormGroup.get('nameControl').value;
     detailObject.Comment = this.detailFormGroup.get('cmtControl').value;
     detailObject.ParentId = this.detailFormGroup.get('parentControl').value;

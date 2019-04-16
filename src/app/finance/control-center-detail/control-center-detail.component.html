@@ -4,7 +4,14 @@
     <mat-card-subtitle>{{currentMode | translate}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
+    <!-- ID -->
+    <div class="control-full-width" *ngIf="!isCreateMode">
+      {{'Common.ID' | translate}}: {{routerID}}
+    </div>
+
+    <!-- Form -->
     <form [formGroup]="detailFormGroup">
+      <!-- Name -->
       <mat-form-field>
         <input matInput type="text" placeholder="{{'Common.Name' |translate}}"
           formControlName="nameControl"
@@ -12,6 +19,7 @@
         <mat-hint align="end">{{name.value.length}} / 30</mat-hint>
       </mat-form-field>
   
+      <!-- Comment -->
       <mat-form-field>
         <input matInput type="text" placeholder="{{'Common.Comment' |translate}}"
           formControlName="cmtControl"
@@ -19,6 +27,7 @@
         <mat-hint align="end">{{comment.value.length}} / 45</mat-hint>
       </mat-form-field>
   
+      <!-- Parent -->
       <mat-form-field>
         <mat-select placeholder="{{'Common.Parent' | translate}}"
           formControlName="parentControl" name="parid">
@@ -29,11 +38,12 @@
         </mat-select>
       </mat-form-field>
       
+      <!-- Owner -->
       <mat-form-field>
         <mat-select placeholder="{{'Finance.Owner' | translate}}"
           formControlName="ownerControl" name="owner">
           <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-          <mat-option *ngFor="let usr of homedefService.MembersInChosedHome" [value]="usr.User">
+          <mat-option *ngFor="let usr of arMembers" [value]="usr.User">
             {{usr.DisplayAs}}
           </mat-option>
         </mat-select>

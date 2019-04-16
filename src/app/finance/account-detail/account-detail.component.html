@@ -10,12 +10,19 @@
         <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
         <form [formGroup]="firstFormGroup">
+          <!-- ID -->
+          <div class="control-full-width" *ngIf="!isCreateMode">
+            {{'Common.ID' | translate}}: {{routerID}}
+          </div>
+
+          <!-- Name -->
           <mat-form-field>
             <input matInput type="text" placeholder="{{'Common.Name' |translate}}" formControlName="nameControl"
               name="name" #accountname maxlength="30">
             <mat-hint align="end">{{accountname.value.length}} / 30</mat-hint>
           </mat-form-field>
 
+          <!-- Category -->
           <mat-form-field>
             <mat-select placeholder="{{'Common.Category' | translate}}" formControlName="ctgyControl" name="ctgy">
               <mat-option *ngFor="let ctgy of arAccountCategories" [value]="ctgy.ID" [disabled]="isCategoryDisabled(ctgy.ID)">

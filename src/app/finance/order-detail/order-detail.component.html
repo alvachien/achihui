@@ -9,6 +9,11 @@
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
+          <!-- ID -->
+          <div class="control-full-width" *ngIf="!isCreateMode">
+            {{'Common.ID' | translate}}: {{routerID}}
+          </div>
+
           <!-- Name -->
           <mat-form-field>
             <input matInput type="text" placeholder="{{'Common.Name' | translate}}" formControlName="nameControl"

@@ -22,8 +22,8 @@ import { popupDialog } from '../../message-dialog';
 })
 export class AccountDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  private routerID: number = -1; // Current object ID in routing
 
+  public routerID: number = -1; // Current object ID in routing
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   arrayStatus: UIDisplayString[] = [];
