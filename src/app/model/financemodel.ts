@@ -1811,7 +1811,7 @@ export class Document extends hih.BaseModel {
             });
 
             if (vordidx === -1) {
-              this._addMessage(hih.MessageType.Error, 'Finance.InvalidOrder', 'Finance.InvalidOrder');
+              this._addMessage(hih.MessageType.Error, 'Finance.InvalidActivity', 'Finance.InvalidActivity');
               chkrst = false;
             }
           }
@@ -2116,13 +2116,13 @@ export class DocumentItem {
 
           if (ordidx === -1) {
             let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-              'Finance.InvalidOrder', 'Finance.InvalidOrder');
+              'Finance.InvalidActivity', 'Finance.InvalidActivity');
             this.VerifiedMsgs.push(msg);
             chkrst = false;
           }
         } else {
           let msg: hih.InfoMessage = new hih.InfoMessage(hih.MessageType.Error,
-            'Finance.OrderFetchFailedOrNoOrder', 'Finance.OrderFetchFailedOrNoOrder');
+            'Finance.ActivityFetchFailedOrNoActivity', 'Finance.ActivityFetchFailedOrNoActivity');
           this.VerifiedMsgs.push(msg);
           chkrst = false;
         }

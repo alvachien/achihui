@@ -218,7 +218,7 @@
       <!-- Tab: Order report -->
       <mat-tab>
         <ng-template mat-tab-label>
-          {{'Finance.OrderReport' | translate}}
+          {{'Finance.ActivityReport' | translate}}
         </ng-template>
 
         <mat-toolbar>
@@ -257,7 +257,7 @@
           <mat-table #tableOrder [dataSource]="dataSourceOrder">
             <!-- Order column -->
             <ng-container matColumnDef="Order">
-              <mat-header-cell *matHeaderCellDef>{{'Finance.Order' | translate}}</mat-header-cell>
+              <mat-header-cell *matHeaderCellDef>{{'Finance.Activity' | translate}}</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
                   <mat-select disabled [(ngModel)]="row.OrderId" name="acnt">

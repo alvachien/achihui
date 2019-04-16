@@ -63,7 +63,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
       value: 'CONTROLCENTERID',
       valueType: GeneralFilterValueType.number, // 1
     }, {
-      displayas: 'Finance.Order',
+      displayas: 'Finance.Activity',
       value: 'ORDERID',
       valueType: GeneralFilterValueType.number, // 1
     }, {

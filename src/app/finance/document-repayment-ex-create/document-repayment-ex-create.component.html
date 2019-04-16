@@ -157,10 +157,10 @@
 
             <!-- Order Column -->
             <ng-container matColumnDef="order">
-              <mat-header-cell *matHeaderCellDef> {{'Finance.Order' | translate}} </mat-header-cell>
+              <mat-header-cell *matHeaderCellDef> {{'Finance.Activity' | translate}} </mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <mat-form-field>
-                  <mat-select placeholder="{{'Finance.Order' | translate}}" [(ngModel)]="row.OrderId" name="itord">
+                  <mat-select placeholder="{{'Finance.Activity' | translate}}" [(ngModel)]="row.OrderId" name="itord">
                     <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
                     <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
                       {{tt.Name}}

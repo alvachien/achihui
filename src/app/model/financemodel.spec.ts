@@ -1208,7 +1208,7 @@ describe('DocumentItem', () => {
 
     expect(rst).toBeFalsy();
     let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
-      return msg.MsgTitle === 'Finance.InvalidOrder';
+      return msg.MsgTitle === 'Finance.InvalidActivity';
     });
     expect(idx).not.toEqual(-1);
   });
@@ -1255,7 +1255,7 @@ describe('DocumentItem', () => {
 
     expect(rst).toBeFalsy();
     let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
-      return msg.MsgTitle === 'Finance.OrderFetchFailedOrNoOrder';
+      return msg.MsgTitle === 'Finance.ActivityFetchFailedOrNoActivity';
     });
     expect(idx).not.toEqual(-1);
   });

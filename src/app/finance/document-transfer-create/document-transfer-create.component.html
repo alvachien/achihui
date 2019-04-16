@@ -46,7 +46,7 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl">
+            <mat-select placeholder="{{'Finance.Activity' | translate}}" formControlName="orderControl">
               <mat-option *ngFor="let ord of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="ord.Id">
                 {{ord.Name}}
               </mat-option>
@@ -88,7 +88,7 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-select placeholder="{{'Finance.Order' | translate}}" formControlName="orderControl">
+            <mat-select placeholder="{{'Finance.Activity' | translate}}" formControlName="orderControl">
               <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
                 {{tt.Name}}
               </mat-option>

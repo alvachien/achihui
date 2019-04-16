@@ -1,5 +1,5 @@
 .grid-container {
-  display: flex;
+  //display: flex;
   margin: 10px;
 }
 
@@ -19,7 +19,7 @@
 
 .dashboard-card-content {
   /*text-align: center;*/
-  // justify-content:space-between;
+  justify-content:space-between;
 }
 
 .flex-spacer {
@@ -27,7 +27,7 @@
 }
 
 .table-container {
-  display: flex;
+  // display: flex;
   flex-direction: column;
   min-width: 300px;
   max-height: 530px;
