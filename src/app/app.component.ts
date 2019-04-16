@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, NgZone } from '@angular/core';
+import { Component, OnInit, ElementRef, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DateAdapter, MatIconRegistry } from '@angular/material';
@@ -10,13 +10,16 @@ import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, languageEn, 
 import { AuthService, HomeDefDetailService, UIStatusService } from './services';
 import * as moment from 'moment';
 import { LanguageComponent } from './language';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 @Component({
   selector: 'hih-app',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+  private _mobileQueryListener: () => void;
+
   public availableLanguages: appLanguage[] = [
     { displayas: 'Nav.English', value: 'en' },
     { displayas: 'Nav.SimplifiedChinese', value: 'zh' },
@@ -27,17 +30,23 @@ export class AppComponent implements OnInit {
   public userDisplayAs: string;
   public curChosenHome: HomeDef;
   public selectedLanguage: string;
+  mobileQuery: MediaQueryList;
 
   constructor(private _element: ElementRef,
     private _translate: TranslateService,
     private _authService: AuthService,
     public _homeDefService: HomeDefDetailService,
+    private _changeDetectorRef: ChangeDetectorRef,
+    private _media: MediaMatcher,
     private _zone: NgZone,
     private _router: Router,
     private _uistatusService: UIStatusService,
     private _iconRegistry: MatIconRegistry,
     private _http: HttpClient,
     private _sanitizer: DomSanitizer) {
+    this.mobileQuery = this._media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => this._changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
     // Setup the translate
     this.userDisplayAs = '';
     this.curChosenHome = undefined;
@@ -96,7 +105,9 @@ export class AppComponent implements OnInit {
       this._router.navigate(['/fatalerror']);
     }
   }
-
+  ngOnDestroy(): void {
+    this.mobileQuery.removeListener(this._mobileQueryListener);
+  }
   public onLogon(): void {
     if (environment.LoginRequired) {
       this._authService.doLogin();

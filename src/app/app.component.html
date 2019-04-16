@@ -1,4 +1,28 @@
-<mat-sidenav-container>
+<div class="mainpage-container" [class.mainpage-is-mobile]="mobileQuery.matches">
+  <mat-toolbar color="primary" class="mainpage-toolbar">
+    <button mat-icon-button (click)="snav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <h1 class="mainpage-app-name">H.I.H.</h1>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="mainpage-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
+      fixedTopGap="56">
+      <mat-nav-list>
+        <a mat-list-item routerLink="." *ngFor="let nav of fillerNav">{{nav}}</a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+  <mat-toolbar class="mainpage-footer" color="primary" >Footer</mat-toolbar>
+</div>
+
+<!-- <mat-sidenav-container>
   <mat-sidenav #start mode="side">
     <hih-sidenav></hih-sidenav>
   </mat-sidenav>
@@ -11,10 +35,13 @@
       <div class="hih-toolbar">
         <h1>H.I.H.</h1>
         <div>
-          <button mat-icon-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon" matTooltip="{{'Login.Login' | translate }}"><mat-icon>account_box</mat-icon></button>
+          <button mat-icon-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon"
+            matTooltip="{{'Login.Login' | translate }}">
+            <mat-icon>account_box</mat-icon>
+          </button>
           <button mat-icon-button *ngIf="isLoggedIn" [matMenuTriggerFor]="matMenuUser">
             <mat-icon>account_box</mat-icon>
-            <span [matBadge]="_homeDefService.keyFigure?.TotalUnreadMessage" [matBadgeHidden]="!curChosenHome">              
+            <span [matBadge]="_homeDefService.keyFigure?.TotalUnreadMessage" [matBadgeHidden]="!curChosenHome">
             </span>
           </button>
           <mat-menu #matMenuUser="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
@@ -32,8 +59,10 @@
               <span>{{'Login.Logout' | translate}}</span>
             </button>
           </mat-menu>
-                
-          <button mat-icon-button mat-button *ngIf="curChosenHome" [matMenuTriggerFor]="matMenuHome"><mat-icon>domain</mat-icon></button>
+
+          <button mat-icon-button mat-button *ngIf="curChosenHome" [matMenuTriggerFor]="matMenuHome">
+            <mat-icon>domain</mat-icon>
+          </button>
           <mat-menu #matMenuHome="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item disabled>{{curChosenHome?.Name}}</button>
             <button mat-menu-item (click)="onChosenHomeDetail()">
@@ -44,7 +73,9 @@
 
           <theme-picker></theme-picker>
 
-          <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuLanguage"><mat-icon>language</mat-icon></button>
+          <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuLanguage">
+            <mat-icon>language</mat-icon>
+          </button>
           <mat-menu #matMenuLanguage="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item *ngFor="let lang of availableLanguages" (click)="onLanguageChanged(lang.value)">
               <mat-icon *ngIf="selectedLanguage === lang.value">check</mat-icon>
@@ -56,14 +87,14 @@
             <mat-icon class="mat-24">fullscreen</mat-icon>
           </button>
 
-          <a mat-icon-button class="achih-button achih-navbar-show-small"
-            href="https://github.com/alvachien/achihui" target="_blank" aria-label="GitHub Repository">
-            <img class="achih-angular-logo"
-              src="../../assets/images/github-circle-white-transparent.svg"
-              alt="achihui">
+          <a mat-icon-button class="achih-button achih-navbar-show-small" href="https://github.com/alvachien/achihui"
+            target="_blank" aria-label="GitHub Repository">
+            <img class="achih-angular-logo" src="../../assets/images/github-circle-white-transparent.svg" alt="achihui">
           </a>
-          
-          <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuApps"><mat-icon>apps</mat-icon></button>
+
+          <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuApps">
+            <mat-icon>apps</mat-icon>
+          </button>
           <mat-menu #matMenuApps="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
             <button mat-menu-item disabled>H.I.H.</button>
             <button mat-menu-item (click)="onOpenMathExcises()">Math Exercise</button>
@@ -79,4 +110,4 @@
 
     <achih-footer></achih-footer>
   </div>
-</mat-sidenav-container>
+</mat-sidenav-container> -->

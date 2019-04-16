@@ -1,80 +1,120 @@
-mat-sidenav-container {
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
-  
-    // Helps fonts on OSX looks more consistent with other systems
-    // Isn't currently in button styles due to performance concerns
-    * {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  
-    mat-sidenav {
-      min-width: 200px !important;
-      width: 12vw !important;
-      max-width: 256px !important;
-  
-      mat-button {
-        width: 100%;
-        position: relative;
-        bottom: 0;
-        margin: 24px 0;
-      }
-    }
-  
-    .hih-content {
-      padding: 16px;
-      box-sizing: border-box;
-    }
-  
-    mat-toolbar {
-      mat-icon {
-        cursor: pointer;
-      }
-  
-      .hih-toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
-    }
-  
-    h1 {
-      font-size: 20px;
-    }
-  }
-
-.flex-spacer {
-  flex-grow: 1;
+.mainpage-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-.achih-github-logo {
-  height: 21px;
-  margin: 0 7px 2px 0;
-  vertical-align: middle;
+.mainpage-is-mobile .mainpage-toolbar {
+  position: fixed;
+  /* Make sure the toolbar will stay on top of the content as it scrolls past. */
+  z-index: 2;
 }
 
-// stretch to screen size in fullscreen mode
-.hih-content {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-}  
-
-@media screen and (max-width: 884px){
-  .achih-navbar-hide-small {
-    display: none;
-  }
-
-  .achih-navbar-show-small {
-    display: block;
-  }
-
-  .achih-navbar-github-logo {
-    margin: 0;
-  }
-
-  .achih-footer-list {
-    flex-direction: column;
-  }
+h1.mainpage-app-name {
+  margin-left: 8px;
 }
+
+.mainpage-sidenav-container {
+  /* When the sidenav is not fixed, stretch the sidenav container to fill the available space. This
+     causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
+  flex: 1;
+}
+
+.mainpage-is-mobile .mainpage-sidenav-container {
+  /* When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the
+     `<body>` to be our scrolling element for mobile layouts. */
+  flex: 1 0 auto;
+}
+
+.mainpage-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+// mat-sidenav-container {
+//     font-family: Roboto, 'Helvetica Neue', sans-serif;
+  
+//     // Helps fonts on OSX looks more consistent with other systems
+//     // Isn't currently in button styles due to performance concerns
+//     * {
+//       -webkit-font-smoothing: antialiased;
+//       -moz-osx-font-smoothing: grayscale;
+//     }
+  
+//     mat-sidenav {
+//       min-width: 200px !important;
+//       width: 12vw !important;
+//       max-width: 256px !important;
+  
+//       mat-button {
+//         width: 100%;
+//         position: relative;
+//         bottom: 0;
+//         margin: 24px 0;
+//       }
+//     }
+  
+//     .hih-content {
+//       padding: 16px;
+//       box-sizing: border-box;
+//     }
+  
+//     mat-toolbar {
+//       mat-icon {
+//         cursor: pointer;
+//       }
+  
+//       .hih-toolbar {
+//         display: flex;
+//         justify-content: space-between;
+//         align-items: center;
+//         width: 100%;
+//       }
+//     }
+  
+//     h1 {
+//       font-size: 20px;
+//     }
+//   }
+
+// .flex-spacer {
+//   flex-grow: 1;
+// }
+
+// .achih-github-logo {
+//   height: 21px;
+//   margin: 0 7px 2px 0;
+//   vertical-align: middle;
+// }
+
+// // stretch to screen size in fullscreen mode
+// .hih-content {
+//   width: 100%;
+//   height: 100%;
+//   box-sizing: border-box;
+// }  
+
+// @media screen and (max-width: 884px){
+//   .achih-navbar-hide-small {
+//     display: none;
+//   }
+
+//   .achih-navbar-show-small {
+//     display: block;
+//   }
+
+//   .achih-navbar-github-logo {
+//     margin: 0;
+//   }
+
+//   .achih-footer-list {
+//     flex-direction: column;
+//   }
+// }
