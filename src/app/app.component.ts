@@ -31,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public curChosenHome: HomeDef;
   public selectedLanguage: string;
   mobileQuery: MediaQueryList;
+  currVersion: string;
 
   constructor(private _element: ElementRef,
     private _translate: TranslateService,
@@ -54,7 +55,9 @@ export class AppComponent implements OnInit, OnDestroy {
     // ICON
     this._iconRegistry.addSvgIcon(
       'github',
-      this._sanitizer.bypassSecurityTrustResourceUrl('../../assets/images/github-circle-white-transparent.svg'));
+    this._sanitizer.bypassSecurityTrustResourceUrl('../../assets/images/github-circle-white-transparent.svg'));
+    // Version
+    this.currVersion = environment.CurrentVersion;
 
     // Let's check the DB version
     let headers: HttpHeaders = new HttpHeaders();

@@ -4,6 +4,7 @@ Released at 2019.6.30
 
 Bug fixing and Feature list
 - More than 900 unit tests are all available;
+- Refine the Sidenav;
 - Finance: Document header refactored as an reusable control;
 - Finance: Items refactored as an reusable control;
 - Finance: plan;

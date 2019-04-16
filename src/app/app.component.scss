@@ -30,91 +30,36 @@ h1.mainpage-app-name {
   flex: 1 0 auto;
 }
 
-.mainpage-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 2;
+.mainpage-footer-list {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 8px;
 }
 
-// mat-sidenav-container {
-//     font-family: Roboto, 'Helvetica Neue', sans-serif;
-  
-//     // Helps fonts on OSX looks more consistent with other systems
-//     // Isn't currently in button styles due to performance concerns
-//     * {
-//       -webkit-font-smoothing: antialiased;
-//       -moz-osx-font-smoothing: grayscale;
-//     }
-  
-//     mat-sidenav {
-//       min-width: 200px !important;
-//       width: 12vw !important;
-//       max-width: 256px !important;
-  
-//       mat-button {
-//         width: 100%;
-//         position: relative;
-//         bottom: 0;
-//         margin: 24px 0;
-//       }
-//     }
-  
-//     .hih-content {
-//       padding: 16px;
-//       box-sizing: border-box;
-//     }
-  
-//     mat-toolbar {
-//       mat-icon {
-//         cursor: pointer;
-//       }
-  
-//       .hih-toolbar {
-//         display: flex;
-//         justify-content: space-between;
-//         align-items: center;
-//         width: 100%;
-//       }
-//     }
-  
-//     h1 {
-//       font-size: 20px;
-//     }
-//   }
+.mainpage-footer-version {
+  flex: 1;
+  text-align: center;
+}
 
-// .flex-spacer {
-//   flex-grow: 1;
-// }
+.mainpage-footer-copyright {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  flex-direction: column;
+  min-width: 225px;
+  text-align: center;
+}
 
-// .achih-github-logo {
-//   height: 21px;
-//   margin: 0 7px 2px 0;
-//   vertical-align: middle;
-// }
+.mainpage-toolbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
 
-// // stretch to screen size in fullscreen mode
-// .hih-content {
-//   width: 100%;
-//   height: 100%;
-//   box-sizing: border-box;
-// }  
-
-// @media screen and (max-width: 884px){
-//   .achih-navbar-hide-small {
-//     display: none;
-//   }
-
-//   .achih-navbar-show-small {
-//     display: block;
-//   }
-
-//   .achih-navbar-github-logo {
-//     margin: 0;
-//   }
-
-//   .achih-footer-list {
-//     flex-direction: column;
-//   }
-// }
+@media screen and (max-width: 884px){
+  .mainpage-footer-list {
+    flex-direction: column;
+  }
+}

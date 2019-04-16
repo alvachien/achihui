@@ -1,0 +1,9 @@
+@import '../../app-theme';
+
+// Define the light theme.
+$primary: mat-palette($mat_green, 500);
+$accent:  mat-palette($mat-gray, A200, A100, A400);
+
+$theme: mat-light-theme($primary, $accent);
+@include angular-material-theme($theme);
+@include achih-app-theme($theme);

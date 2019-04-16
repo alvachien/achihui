@@ -38,7 +38,6 @@ import { CreditsComponent } from './credits';
 import { VersionComponent } from './version';
 import { HomeMessageComponent, HomeMessageDialogComponent } from './home-message';
 import { ThemePickerModule, ThemeStorage } from './theme-picker';
-import { FooterComponent } from './footer';
 import { HomeDashboardComponent } from './home-dashboard';
 import { UserDetailComponent } from './user-detail';
 import { PageFatalErrorComponent } from './page-fatal-error';
@@ -84,7 +83,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     HomeMessageComponent,
     HomeMessageDialogComponent,
     PageLackAuthorityComponent,
-    FooterComponent,
     HomeDashboardComponent,
     UserDetailComponent,
     PageFatalErrorComponent,

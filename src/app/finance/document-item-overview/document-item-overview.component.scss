@@ -1,15 +1,14 @@
 .grid-container {
-  margin: 20px;
-  width: 94%;
-  max-width: 96%;
+  display: flex;
+  margin: 10px;
 }
 
 .dashboard-card {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  bottom: 15px;
+  top: 5px;
+  left: 0;
+  right: 0;
+  bottom: 5px;
 }
 
 .more-button {
@@ -20,7 +19,7 @@
 
 .dashboard-card-content {
   /*text-align: center;*/
-  justify-content:space-between;
+  // justify-content:space-between;
 }
 
 .flex-spacer {

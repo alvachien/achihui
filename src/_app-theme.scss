@@ -1,7 +1,6 @@
 @import '../node_modules/@angular/material/theming';
 
 @import './styles/svg-theme';
-@import './styles/footer-theme';
 
 // Styles for the docs app that are based on the current theme.
 @mixin achih-app-theme($theme) {
@@ -22,11 +21,6 @@
     h1 {
       color: mat-color($primary, default-contrast);
     }
-  }
-
-  .achih-ui-footer, .achih-ui-footer-list {
-    background: mat-color($primary);
-    color: mat-color($primary, default-contrast);
   }
 
   .mat-row:nth-child(even) {
@@ -54,5 +48,4 @@
   }
   
   @include svg-theme($theme);
-  @include footer-theme($theme);
 }
