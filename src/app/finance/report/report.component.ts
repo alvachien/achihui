@@ -620,8 +620,13 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
         let option: EChartOption = {};
         option.title = {
           text: 'Incoming',
-          subtext: 'Control Center',
+          left: 'center',
         };
+        // option.title = {
+        //   text: 'Incoming',
+        //   left: 'center',
+        //   subtext: 'Control Center',
+        // };
         option.toolbox = {
           show: true,
           feature: {
@@ -669,10 +674,11 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
         });
 
         let option: EChartOption = {};
-        option.title = {
-          text: 'Outgoing',
-          subtext: 'Control Center',
-        };
+        // option.title = {
+        //   text: 'Outgoing',
+        //   left: 'center',
+        //   // subtext: 'Control Center',
+        // };
         option.toolbox = {
           show: true,
           feature: {
@@ -721,10 +727,10 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
         });
 
         let option: EChartOption = {};
-        option.title = {
-          text: 'Incoming',
-          subtext: 'Order',
-        };
+        // option.title = {
+        //   text: 'Incoming',
+        //   subtext: 'Order',
+        // };
         option.toolbox = {
           show: true,
           feature: {
@@ -773,10 +779,10 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
         });
 
         let option: EChartOption = {};
-        option.title = {
-          text: 'Outgoing',
-          subtext: 'Order',
-        };
+        // option.title = {
+        //   text: 'Outgoing',
+        //   subtext: 'Order',
+        // };
         option.toolbox = {
           show: true,
           feature: {

@@ -44,7 +44,8 @@
 
   <!-- Planned Exchange rate -->
   <div *ngIf="tranCurrency && isForeignCurrency" class="achih-control-full-width">
-    <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan">
+    <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan"
+      [disabled]="!isExchangeRateEditable">
       {{'Finance.ProposedExchangeRate' | translate}}
     </mat-checkbox>
   </div>
@@ -70,7 +71,8 @@
 
   <!-- Planned Exchange rate -->
   <div *ngIf="tranCurrency2 && isForeignCurrency2" class="achih-control-full-width">
-    <mat-checkbox formControlName="exgp2Control" color="accent" id="exgrate_plan2">
+    <mat-checkbox formControlName="exgp2Control" color="accent" id="exgrate_plan2" 
+      [disabled]="!isExchangeRate2Editable">
       {{'Finance.ProposedExchangeRate' | translate}}
     </mat-checkbox>
   </div>
