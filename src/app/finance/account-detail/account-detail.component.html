@@ -6,7 +6,7 @@
   <mat-card-content>
     <mat-horizontal-stepper linear="true">
       <!-- First step: Generic info -->
-      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
+      <mat-step [stepControl]="firstFormGroup">
         <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
         <form [formGroup]="firstFormGroup">
@@ -46,6 +46,10 @@
             <mat-hint align="end">{{accountcomment.value.length}} / 45</mat-hint>
           </mat-form-field>
         </form>
+
+        <mat-error *ngIf="firstFormGroup && firstFormGroup.hasError('invalidcategory')">
+          <div class="mat-h3">{{'Common.InputtedCategoryIsInvalid' | translate}}</div>
+        </mat-error>
         <div>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>

@@ -219,7 +219,6 @@ describe('AccountDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
 
@@ -244,7 +243,6 @@ describe('AccountDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
 
@@ -268,8 +266,7 @@ describe('AccountDetailComponent', () => {
       component.firstFormGroup.get('cmtControl').setValue('test');
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy();
 
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -293,8 +290,7 @@ describe('AccountDetailComponent', () => {
       component.firstFormGroup.get('cmtControl').setValue('test');
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy();
 
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -318,8 +314,7 @@ describe('AccountDetailComponent', () => {
       component.firstFormGroup.get('cmtControl').setValue('test');
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy();
 
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -343,8 +338,7 @@ describe('AccountDetailComponent', () => {
       component.firstFormGroup.get('cmtControl').setValue('test');
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy();
 
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -368,8 +362,7 @@ describe('AccountDetailComponent', () => {
       component.firstFormGroup.get('cmtControl').setValue('test');
       fixture.detectChanges();
 
-      expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeFalsy();
+      expect(component.firstFormGroup.valid).toBeFalsy();
 
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
@@ -394,7 +387,6 @@ describe('AccountDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
 
@@ -419,7 +411,6 @@ describe('AccountDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
 
@@ -452,7 +443,6 @@ describe('AccountDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
@@ -501,7 +491,6 @@ describe('AccountDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();
@@ -556,7 +545,7 @@ describe('AccountDetailComponent', () => {
       fixture.detectChanges();
 
       expect(component.firstFormGroup.valid).toBeTruthy();
-      expect(component.firstStepCompleted).toBeTruthy();
+
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
       nextButtonNativeEl.click();
       fixture.detectChanges();

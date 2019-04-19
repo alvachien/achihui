@@ -5,15 +5,15 @@ import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerti
 } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal,
-  UICommonLabelEnum, IAccountCategoryFilter, momentDateFormat, ModelUtility, TranType, Currency,
+import { LogLevel, Document, DocumentItem, UIMode, financeDocTypeNormal,
+  UICommonLabelEnum, TranType, Currency,
   ControlCenter, Order, DocumentType, Account,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
+import { popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-document-normal-create',
@@ -66,10 +66,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit...');
-    }
-
     this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([

@@ -277,7 +277,7 @@ describe('DocumentTransferCreateComponent', () => {
     });
 
     it('step 1: should set the default values: base currency, date, and so on', fakeAsync(() => {
-      expect(component.headerFormGroup).toBeFalsy();
+      expect(component.headerFormGroup.valid).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -327,7 +327,7 @@ describe('DocumentTransferCreateComponent', () => {
     }));
 
     it('step 1: shall go to step 2 for base currency case', fakeAsync(() => {
-      expect(component.headerFormGroup).toBeFalsy();
+      expect(component.headerFormGroup.valid).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit
@@ -357,7 +357,7 @@ describe('DocumentTransferCreateComponent', () => {
     }));
 
     it('step 1: shall go to step 2 for foreign currency case', fakeAsync(() => {
-      expect(component.headerFormGroup).toBeFalsy();
+      expect(component.headerFormGroup.valid).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
 
       tick(); // Complete the Observables in ngOnInit

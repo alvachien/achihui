@@ -169,6 +169,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
 
   private _generateObject(): LearnObject {
     let obj: LearnObject = new LearnObject();
+    obj.HID = this._homedefService.ChosedHome.ID;
     obj.Name = this.detailForm.get('nameControl').value;
     obj.CategoryId = this.detailForm.get('ctgyControl').value;
     obj.Content = this.detailForm.get('contentControl').value;

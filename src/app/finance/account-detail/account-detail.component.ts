@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, QueryList, ViewChild, } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatSelectChange, MatHorizontalStepper } from '@angular/material';
 import { Observable, forkJoin, Subscription, ReplaySubject, } from 'rxjs';
@@ -34,26 +34,9 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
-  get firstStepCompleted(): boolean {
-    if (this.isFieldChangable) {
-      if (!(this.firstFormGroup && this.firstFormGroup.valid)) {
-        return false;
-      }
-
-      if (this.isCategoryDisabled(this.currentCategory)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
   // Step: Extra
   get extraStepCompleted(): boolean {
     if (this.isFieldChangable) {
-      if (!this.firstStepCompleted) {
-        return false;
-      }
-
       // Check the extra part
       if (this.isADPAccount) {
         if (!(this.extraADPFormGroup && this.extraADPFormGroup.valid)) {
@@ -84,7 +67,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     return this.uiMode === UIMode.Create;
   }
   get currentCategory(): number {
-    return this.firstFormGroup.get('ctgyControl').value;
+    return this.firstFormGroup && this.firstFormGroup.get('ctgyControl').value;
   }
   get isAssetAccount(): boolean {
     if (this.currentCategory === financeAccountCategoryAsset) {
@@ -114,43 +97,32 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     private _snackbar: MatSnackBar,
     private _router: Router,
     private _activateRoute: ActivatedRoute,
-    private _formBuilder: FormBuilder,
     private _uiStatusService: UIStatusService,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor...');
-    }
-
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
+    this.firstFormGroup = new FormGroup({
+      nameControl: new FormControl('', Validators.required),
+      ctgyControl: new FormControl('', Validators.required),
+      ownerControl: new FormControl(''),
+      cmtControl: new FormControl(''),
+    }, this._categoryValidator);
+    this.extraADPFormGroup = new FormGroup({
+      extADPControl: new FormControl(''),
+    });
+    this.extraAssetFormGroup = new FormGroup({
+      extAssetControl: new FormControl(''),
+    });
+    this.extraLoanFormGroup = new FormGroup({
+      extLoanControl: new FormControl(''),
+    });
+    this.statusFormGroup = new FormGroup({
+      statusControl: new FormControl({value: AccountStatusEnum.Normal, disable: true}, Validators.required),
+    });
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit...');
-    }
-
     this._destroyed$ = new ReplaySubject(1);
-
-    // Create controls
-    this.firstFormGroup = this._formBuilder.group({
-      nameControl: ['', Validators.required],
-      ctgyControl: ['', Validators.required],
-      ownerControl: '',
-      cmtControl: '',
-    });
-    this.extraADPFormGroup = this._formBuilder.group({
-      extADPControl: '',
-    });
-    this.extraAssetFormGroup = this._formBuilder.group({
-      extAssetControl: '',
-    });
-    this.extraLoanFormGroup = this._formBuilder.group({
-      extLoanControl: '',
-    });
-    this.statusFormGroup = this._formBuilder.group({
-      statusControl: [{value: AccountStatusEnum.Normal, disable: true}, Validators.required],
-    });
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -202,8 +174,6 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
                   duration: 2000,
                 });
                 this.uiMode = UIMode.Invalid;
-              }, () => {
-                // Nothing
               });
           }
         }
@@ -227,17 +197,13 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   }
 
   public isCategoryDisabled(ctgyid: number): boolean {
-    if (this.uiMode === UIMode.Create) {
-      if (ctgyid === financeAccountCategoryAsset
+    if (this.uiMode === UIMode.Create && (ctgyid === financeAccountCategoryAsset
         || ctgyid === financeAccountCategoryBorrowFrom
         || ctgyid === financeAccountCategoryLendTo
         || ctgyid === financeAccountCategoryAdvancePayment
         || ctgyid === financeAccountCategoryAdvanceReceived
-        || ctgyid === financeAccountCategoryInsurance) {
-        return true;
-      }
-
-      return false;
+        || ctgyid === financeAccountCategoryInsurance) ) {
+      return true;
     }
 
     return false;
@@ -417,5 +383,16 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     acntObj.Status = this.statusFormGroup.get('statusControl').value;
 
     return acntObj;
+  }
+  private _categoryValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+    const ctgy: any = group.get('ctgyControl').value;
+    if (ctgy && this.isFieldChangable) {
+      if (this.isCategoryDisabled(ctgy)) {
+        return { invalidcategory: true };
+      }
+    } else {
+      return { invalidcategory: true };
+    }
+    return null;
   }
 }

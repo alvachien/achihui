@@ -55,20 +55,9 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     private _homeService: HomeDefDetailService,
     private _currService: FinCurrencyService,
     private _router: Router) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...');
-    }
-  }
-
-  ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnInit...');
-    }
-
-    this._destroyed$ = new ReplaySubject(1);
     this.headerFormGroup = new FormGroup({
       headerControl: new FormControl('', Validators.required),
-      amountControl: new FormControl('', [Validators.required]),
+      amountControl: new FormControl('', Validators.required),
     });
     this.fromFormGroup = new FormGroup({
       accountControl: new FormControl('', Validators.required),
@@ -80,6 +69,10 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       ccControl: new FormControl(''),
       orderControl: new FormControl(''),
     }, [costObjectValidator, this._duplicateAccountValidator]);
+  }
+
+  ngOnInit(): void {
+    this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
       this._storageService.fetchAllAccountCategories(),
@@ -114,9 +107,6 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnDestroy...');
-    }
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
@@ -244,11 +234,9 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     }
 
     let account: any = group.get('accountControl').value;
-    let fromAccount: any = this.fromFormGroup.get('accountControl').value;
-    if (account && fromAccount) {
-      if (account === fromAccount) {
-        return { duplicatedccount: true };
-      }
+    let fromAccount: any = this.fromFormGroup && this.fromFormGroup.get('accountControl').value;
+    if (account && fromAccount && account === fromAccount) {
+      return { duplicatedccount: true };
     }
 
     return null;

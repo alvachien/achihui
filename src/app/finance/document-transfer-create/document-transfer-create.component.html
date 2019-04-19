@@ -99,6 +99,9 @@
         <mat-error *ngIf="(toFormGroup && toFormGroup.hasError('nocostobject')) || (toFormGroup && toFormGroup.hasError('costobjectoverassign'))">
           <div class="mat-h3">{{'Finance.EitherControlCenterOrOrder' | translate}}</div>
         </mat-error>
+        <mat-error *ngIf="toFormGroup && toFormGroup.hasError('duplicatedccount')">
+          <div class="mat-h3">{{'Finance.InvalidAccount' | translate}}</div>
+        </mat-error>
 
         <div>
           <button mat-button matStepperPrevious>{{'Common.BackButton' | translate}}</button>

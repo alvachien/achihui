@@ -43,7 +43,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
       console.debug('AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...');
     }
 
-    this.arMembers = this._homedefService.MembersInChosedHome.slice();
+    this.arMembers = this._homedefService.ChosedHome.Members.slice();
 
     this.detailFormGroup = new FormGroup({
       nameControl: new FormControl('', [Validators.required, Validators.maxLength(30)]),
