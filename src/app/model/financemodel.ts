@@ -1727,6 +1727,7 @@ export class Document extends hih.BaseModel {
         for (let cc of context.Currencies) {
           if (cc.Currency === this.TranCurr) {
             bExist = true;
+            break;
           }
         }
 

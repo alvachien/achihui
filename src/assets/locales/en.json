@@ -167,6 +167,9 @@
     "CategoryFetchFailedOrNoOne": "Failed to fetch categories or no category created at all",
     "DuplicatedID": "Duplicated ID",
     "CategoryIsMust": "Category is a must",
+    "UserIsMust": "User is a must",
+    "InvalidUser": "Invalid User",
+    "UserFetchedFailed": "Failed to fetch users",
     "CreateAnotherOne": "Create another One",
     "CreatedSuccessfully": "Created successfully",
     "UpdatedSuccessfully": "Updated successfully",
@@ -393,7 +396,12 @@
     "Question": "Question",
     "Answer": "Answer",
     "BriefAnswer": "Brief Answer",
-    "CreateHistory": "Create History"
+    "CreateHistory": "Create History",
+
+    "ObjectIsMust": "Object is a must",
+    "ObjectFetchFailedOrNoObject": "Objects fetch failed or there is no Object in system",
+    "InvalidObject": "Invalid Object",
+    "ContentIsMust": "Content is a must"
   },
   "Finance": {
     "Accounts": "Accounts",

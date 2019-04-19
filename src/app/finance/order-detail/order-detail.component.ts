@@ -204,13 +204,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   public onDeleteRule(rule: SettlementRule): void {
     let srules: SettlementRule[] = this.dataSource.data.slice();
 
-    let idx: number = 0;
-    for (let i: number = 0; i < srules.length; i++) {
-      if (srules[i].RuleId === rule.RuleId) {
-        idx = i;
-        break;
-      }
-    }
+    let idx: number = srules.findIndex((val: SettlementRule) => {
+      return val.RuleId === rule.RuleId;
+    });
 
     if (idx !== -1) {
       srules.splice(idx);

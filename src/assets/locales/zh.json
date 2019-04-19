@@ -167,6 +167,9 @@
     "CategoryFetchFailedOrNoOne": "类别获取失败或者系统中尚未创建类别",
     "DuplicatedID": "重复的ID",
     "CategoryIsMust": "类别必须输入",
+    "UserIsMust": "用户是必填项",
+    "InvalidUser": "无效的用户",
+    "UserFetchedFailed": "用户信息获取失败",
     "CreateAnotherOne": "再创建一个",
     "CreatedSuccessfully": "创建成功",
     "UpdatedSuccessfully": "修改成功",
@@ -393,7 +396,12 @@
     "Question": "问题",
     "Answer": "答案",
     "BriefAnswer": "答案提要",
-    "CreateHistory": "创建学习记录"
+    "CreateHistory": "创建学习记录",
+
+    "ObjectIsMust": "学习对象是必填项目",
+    "ObjectFetchFailedOrNoObject": "学习对象信息获取失败，或者尚未创建学习对象",
+    "InvalidObject": "无效的学习对象",
+    "ContentIsMust": "内容不能为空"
   },
   "Finance": {
     "Accounts": "账户",

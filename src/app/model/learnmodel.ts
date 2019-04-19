@@ -7,18 +7,18 @@ import { QuestionBankTypeEnum } from './common';
  * English Part of Speech
  */
 export enum EnPOSEnum {
-  n       = 'n', // Noun
-  pron    = 'pron',
-  adj     = 'adj',
-  adv     = 'adv',
-  v       = 'v',
-  num     = 'num',
-  art     = 'art',
-  prep    = 'prep',
-  conj    = 'conj',
-  interj  = 'interj',
-  vt      = 'vt',
-  vi      = 'vi',
+  n = 'n', // Noun
+  pron = 'pron',
+  adj = 'adj',
+  adv = 'adv',
+  v = 'v',
+  num = 'num',
+  art = 'art',
+  prep = 'prep',
+  conj = 'conj',
+  interj = 'interj',
+  vt = 'vt',
+  vi = 'vi',
 }
 
 /**
@@ -251,14 +251,22 @@ export interface LearnCategoryJson {
  * LearnCategory: Learn category, same as knowledge type
  */
 export class LearnCategory extends hih.BaseModel {
-  public Id: number;
+  private _id: number;
+  private _name: string;
+  private _cmt: string;
+  private _sysflg: boolean;
+
+  get Id(): number { return this._id; }
+  set Id(nid: number) { this._id = nid; }
+  get Name(): string { return this._name; }
+  set Name(name: string) { this._name = name; }
+  get Comment(): string { return this._cmt; }
+  set Comment(cmt: string) { this._cmt = cmt; }
+  get SysFlag(): boolean { return this._sysflg; }
+  set SysFlag(sf: boolean) { this._sysflg = sf; }
   public ParentId?: number;
-  public Name: string;
-  public Comment: string;
-  public SysFlag: boolean;
 
   // Runtime information
-  public ParentIdForJsTree: number;
   public HierLevel: number; // Level in the hierarchy: 0 stands for the root
   public FullDisplayText: string;
 
@@ -312,14 +320,25 @@ export class LearnCategory extends hih.BaseModel {
  * Learn Object: Learn object, same as Knowledge
  */
 export class LearnObject extends hih.BaseModel {
+  private _id: number;
+  private _cid: number;
+  private _name: string;
+  private _cont: string;
+  private _ctgyname: string;
+
   public HID: number;
-  public Id: number;
-  public CategoryId: number;
-  public Name: string;
-  public Content: string;
+  get Id(): number { return this._id; }
+  set Id(nid: number) { this._id = nid; }
+  get CategoryId(): number { return this._cid; }
+  set CategoryId(cid: number) { this._cid = cid; }
+  get Name(): string { return this._name; }
+  set Name(nme: string) { this._name = nme; }
+  get Content(): string { return this._cont; }
+  set Content(cnt: string) { this._cont = cnt; }
 
   // Display name, not necessary for saving
-  public CategoryName: string;
+  get CategoryName(): string { return this._ctgyname; }
+  set CategoryName(cname: string) { this._ctgyname = cname; }
 
   constructor() {
     super();
@@ -334,7 +353,30 @@ export class LearnObject extends hih.BaseModel {
       return false;
     }
 
-    return true;
+    let chkrst: boolean = true;
+
+    // HID
+    if (!this.HID) {
+      this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
+      chkrst = false;
+    }
+    // Category ID
+    if (!this.CategoryId) {
+      this._addMessage(hih.MessageType.Error, 'Common.CategoryIsMust', 'Common.CategoryIsMust');
+      chkrst = false;
+    }
+    // Name
+    if (!this.Name) {
+      this._addMessage(hih.MessageType.Error, 'Common.NameIsMust', 'Common.NameIsMust');
+      chkrst = false;
+    }
+    // Content
+    if (!this.Content) {
+      this._addMessage(hih.MessageType.Error, 'Learning.ContentIsMust', 'Learning.ContentIsMust');
+      chkrst = false;
+    }
+
+    return chkrst;
   }
 
   public writeJSONObject(): any {
@@ -382,12 +424,12 @@ export class LearnHistory extends hih.BaseModel {
   private _cmt: string;
 
   public HID: number;
-  get UserId(): string              { return this._userId;      }
-  set UserId(userid: string)        { this._userId = userid;    }
-  get ObjectId(): number            { return this._objId;       }
-  set ObjectId(objid: number)       { this._objId = objid;      }
-  get Comment(): string             { return this._cmt;         }
-  set Comment(cmt: string)          { this._cmt = cmt;          }
+  get UserId(): string { return this._userId; }
+  set UserId(userid: string) { this._userId = userid; }
+  get ObjectId(): number { return this._objId; }
+  set ObjectId(objid: number) { this._objId = objid; }
+  get Comment(): string { return this._cmt; }
+  set Comment(cmt: string) { this._cmt = cmt; }
 
   // Additional info, not need for saving
   public UserDisplayAs: string;
@@ -430,80 +472,56 @@ export class LearnHistory extends hih.BaseModel {
       this._addMessage(hih.MessageType.Error, 'Common.HIDIsMust', 'Common.HIDIsMust');
       chkrst = false;
     }
-    // User ID
-    // TBD.
-    // Learn Date
-    // TBD.
+
     // Object ID
     if (!this.ObjectId) {
-
+      this._addMessage(hih.MessageType.Error, 'Learning.ObjectIsMust', 'Learning.ObjectIsMust');
+      chkrst = false;
     } else {
+      if (context && context.arObjects && context.arObjects.length > 0) {
+        let bObj: boolean = false;
+        for (let obj of context.arObjects) {
+          if (+obj.Id === +this.ObjectId) {
+            bObj = true;
+            break;
+          }
+        }
 
+        if (!bObj) {
+          this._addMessage(hih.MessageType.Error, 'Learning.InvalidObject', 'Learning.InvalidObject');
+          chkrst = false;
+        }
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Learning.ObjectFetchFailedOrNoObject', 'Learning.ObjectFetchFailedOrNoObject');
+        chkrst = false;
+      }
     }
 
-    if (context && context.arObjects && context.arObjects.length > 0) {
-      let bObj: boolean = false;
-      for (let obj of context.arObjects) {
-        if (+obj.Id === +this.ObjectId) {
-          bObj = true;
+    // User ID
+    if (this.UserId) {
+      if (context && context.arUsers && context.arUsers.length > 0) {
+        let bFound: boolean = false;
+        for (let usr of context.arUsers) {
+          if (usr.UserId === this.UserId) {
+            bFound = true;
+            break;
+          }
         }
-      }
-
-      if (!bObj) {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgContent = 'Select an object before continues';
-        msg.MsgTime = moment();
-        msg.MsgTitle = 'No object selected';
-        msg.MsgType = hih.MessageType.Error;
-        this.VerifiedMsgs.push(msg);
+        if (!bFound) {
+          this._addMessage(hih.MessageType.Error, 'Common.InvalidUser', 'Common.InvalidUser');
+          chkrst = false;
+        }
+      } else {
+        this._addMessage(hih.MessageType.Error, 'Common.UserFetchedFailed', 'Common.UserFetchedFailed');
         chkrst = false;
       }
     } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgContent = 'No object found in the system';
-      msg.MsgTime = moment();
-      msg.MsgTitle = 'No object found';
-      msg.MsgType = hih.MessageType.Error;
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Common.UserIsMust', 'Common.UserIsMust');
       chkrst = false;
     }
 
-    if (context && context.arUsers && context.arUsers.length > 0) {
-      let bFound: boolean = false;
-      for (let usr of context.arUsers) {
-        if (usr.UserId === this.UserId) {
-          bFound = true;
-        }
-      }
-
-      if (!bFound) {
-        let msg: hih.InfoMessage = new hih.InfoMessage();
-        msg.MsgContent = 'Select an user before continues!';
-        msg.MsgTime = moment();
-        msg.MsgTitle = 'No user selected';
-        msg.MsgType = hih.MessageType.Error;
-        this.VerifiedMsgs.push(msg);
-        chkrst = false;
-      }
-    } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgContent = 'No user found in the system.';
-      msg.MsgTime = moment();
-      msg.MsgTitle = 'No user found';
-      msg.MsgType = hih.MessageType.Error;
-      this.VerifiedMsgs.push(msg);
-      chkrst = false;
-    }
-
-    if (this.LearnDate) {
-      // Allowed
-    } else {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgContent = 'Learn date is invalid.';
-      msg.MsgTime = moment();
-      msg.MsgTitle = 'Invalid learn date';
-      msg.MsgType = hih.MessageType.Error;
-      this.VerifiedMsgs.push(msg);
+    if (!this.LearnDate) {
+      this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
       chkrst = false;
     }
 

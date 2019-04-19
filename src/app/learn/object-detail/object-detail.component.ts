@@ -127,11 +127,7 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
   }
 
   public canSubmit(): boolean {
-    if (!this.isFieldChangable) {
-      return false;
-    }
-
-    if (!this.detailForm.valid) {
+    if (!this.isFieldChangable || !this.detailForm.valid) {
       return false;
     }
 
@@ -177,6 +173,12 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
   }
   private onCreateObject(): void {
     let detailObject: LearnObject = this._generateObject();
+    if (!detailObject.onVerify()) {
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, detailObject.VerifiedMsgs);
+      return;
+    }
+
     this._storageService.createObject(detailObject)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {
@@ -213,6 +215,12 @@ export class ObjectDetailComponent implements OnInit, OnDestroy {
   private onUpdateObject(): void {
     // Update mode
     let detailObject: LearnObject = this._generateObject();
+    if (!detailObject.onVerify()) {
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        undefined, detailObject.VerifiedMsgs);
+      return;
+    }
+
     this._storageService.updateObject(detailObject)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: any) => {

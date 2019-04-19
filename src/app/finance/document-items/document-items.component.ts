@@ -284,12 +284,9 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   public onDeleteDocItem(di: any): void {
     let idx: number = -1;
     let exitems: DocumentItem[] = this.dataSource.data.slice();
-    for (let i: number = 0; i < exitems.length; i++) {
-      if (exitems[i].ItemId === di.ItemId) {
-        idx = i;
-        break;
-      }
-    }
+    idx = exitems.findIndex((di2: DocumentItem) => {
+      return di2.ItemId === di.ItemId;
+    });
 
     if (idx !== -1) {
       exitems.splice(idx);

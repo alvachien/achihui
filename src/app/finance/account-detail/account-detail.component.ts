@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, QueryList, ViewChild, } from '@angular/core';
+import { Component, OnInit, OnDestroy, QueryList, ViewChild, ChangeDetectorRef, } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatSelectChange, MatHorizontalStepper } from '@angular/material';
@@ -98,6 +98,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
+    private _changeDetector: ChangeDetectorRef,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService) {
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
@@ -165,6 +166,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
                 this.extraAssetFormGroup.markAsPristine();
                 this.extraLoanFormGroup.markAsPristine();
                 this.statusFormGroup.markAsPristine();
+
+                this._changeDetector.detectChanges();
               }, (error: any) => {
                 if (environment.LoggingLevel >= LogLevel.Error) {
                   console.error(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`);
@@ -175,6 +178,8 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
                 });
                 this.uiMode = UIMode.Invalid;
               });
+          } else {
+            this._changeDetector.detectChanges();
           }
         }
       });

@@ -48,10 +48,6 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering HistoryDetailComponent ngOnInit...');
-    }
-
     this._destroyed$ = new ReplaySubject(1);
 
     this.onSetLanguage(this._uiStatusService.CurrentLanguage);
@@ -125,17 +121,15 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
 
   public onSubmit(): void {
     // Shall allow edit
-    if (!this.isFieldChangable) {
-      return;
-    }
-    // Shall ensure the form is valid
-    if (!this.detailFormGroup.valid) {
+    if (!this.isFieldChangable || !this.detailFormGroup.valid) {
       return;
     }
 
     let detailObject: LearnHistory = this._generateDetailObject();
     if (!detailObject.onVerify({
-      arObjects: [],
+      arObjects: [{
+        Id: this.objectDisplayID,
+      }],
       arUsers: this._homedefService.MembersInChosedHome,
     })) {
       // Show error message

@@ -5,8 +5,9 @@
 import { EnWordExplain, EnPOSEnum, EnWord, EnSentenceExplain,
   EnSentence, LearnCategory, LearnObject, LearnHistory, LearnAward,
   QuestionBankItem, } from './learnmodel';
-import * as moment from 'moment';
 import * as hih from './common';
+import * as moment from 'moment';
+import { FakeDataHelper } from '../../testing';
 
 describe('EnWordExplain', () => {
   let instance: EnWordExplain;
@@ -125,6 +126,59 @@ describe('LearnObject', () => {
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
+  it('#1. onVerify: HID is must', () => {
+    // instance.HID = 1;
+    instance.CategoryId = 1;
+    instance.Name = 'test';
+    instance.Content = 'test';
+    expect(instance.onVerify()).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Common.HIDIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#2. onVerify: Category is must', () => {
+    instance.HID = 1;
+    // instance.CategoryId = 1;
+    instance.Name = 'test';
+    instance.Content = 'test';
+    expect(instance.onVerify()).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Common.CategoryIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#3. onVerify: Name is must', () => {
+    instance.HID = 1;
+    instance.CategoryId = 1;
+    // instance.Name = 'test';
+    instance.Content = 'test';
+    expect(instance.onVerify()).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Common.NameIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#4. onVerify: Content is must', () => {
+    instance.HID = 1;
+    instance.CategoryId = 1;
+    instance.Name = 'test';
+    // instance.Content = 'test';
+    expect(instance.onVerify()).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Learning.ContentIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#5. onVerify: positive case', () => {
+    instance.HID = 1;
+    instance.CategoryId = 1;
+    instance.Name = 'test';
+    instance.Content = 'test';
+
+    expect(instance.onVerify()).toBeTruthy();
+    expect(instance.VerifiedMsgs.length).toEqual(0);
+  });
 });
 
 describe('LearnHistory', () => {
@@ -146,9 +200,49 @@ describe('LearnHistory', () => {
     instance2.onSetData(jsondata);
     expect(instance2).toBeTruthy();
   });
-  it('onVerify', () => {
-    let rst: boolean = instance.onVerify();
-    expect(rst).toBeFalsy();
+  it('#1. onVerify: HID is must', () => {
+    // instance.HID = 1;
+    instance.UserId = 'aaa';
+    instance.ObjectId = 11;
+    instance.LearnDate = moment();
+    expect(instance.onVerify()).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Common.HIDIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#2. onVerify: User is must', () => {
+    instance.HID = 1;
+    // instance.UserId = 'aaa';
+    instance.ObjectId = 11;
+    instance.LearnDate = moment();
+    expect(instance.onVerify()).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Common.UserIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#3. onVerify: Object is must', () => {
+    instance.HID = 1;
+    instance.UserId = 'aaa';
+    // instance.ObjectId = 11;
+    instance.LearnDate = moment();
+    expect(instance.onVerify()).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Learning.ObjectIsMust';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#4. onVerify: Learn date is must', () => {
+    instance.HID = 1;
+    instance.UserId = 'aaa';
+    instance.ObjectId = 11;
+    // instance.LearnDate = moment();
+    expect(instance.onVerify()).toBeFalsy();
+    let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Common.InvalidDate';
+    });
+    expect(idx).not.toEqual(-1);
   });
 });
 
