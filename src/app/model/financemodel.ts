@@ -2540,8 +2540,8 @@ export class Plan extends hih.BaseModel {
   }
   public onSetData(data: any): void {
     super.onSetData(data);
-    if (data && data.ID) {
-      this.ID = +data.ID;
+    if (data && data.id) {
+      this.ID = +data.id;
     }
     if (data && data.HID) {
       this.HID = +data.HID;

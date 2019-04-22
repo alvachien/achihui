@@ -502,7 +502,7 @@ export class LearnHistory extends hih.BaseModel {
       if (context && context.arUsers && context.arUsers.length > 0) {
         let bFound: boolean = false;
         for (let usr of context.arUsers) {
-          if (usr.UserId === this.UserId) {
+          if (usr.User === this.UserId) {
             bFound = true;
             break;
           }

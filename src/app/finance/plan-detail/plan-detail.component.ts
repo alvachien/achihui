@@ -45,16 +45,9 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     private _snackbar: MatSnackBar,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering PlanDetailComponent constructor...');
-    }
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit...');
-    }
-
     this._destroyed$ = new ReplaySubject(1);
 
     this.onSetLanguage(this._uiStatusService.CurrentLanguage);
@@ -139,9 +132,6 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnDestroy...');
-    }
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
@@ -189,7 +179,8 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
-    // Cancel
+    // Jump back to the list view
+    this._router.navigate(['/finance/plan']);
   }
 
   private _generatePlanObject(): Plan {
