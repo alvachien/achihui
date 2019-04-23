@@ -19,9 +19,9 @@ import { HomeDefDetailService, FinanceStorageService, UIStatusService, FinCurren
   styleUrls: ['./plan-detail.component.scss'],
 })
 export class PlanDetailComponent implements OnInit, OnDestroy {
-  private _routerID: number;
   private _destroyed$: ReplaySubject<boolean>;
 
+  public routerID: number;
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   public mainFormGroup: FormGroup;
@@ -35,6 +35,9 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Create || this.uiMode === UIMode.Change;
   }
+  get isCreateMode(): boolean {
+    return this.uiMode === UIMode.Create;
+  }
 
   constructor(private _homedefService: HomeDefDetailService,
     private _router: Router,
@@ -45,6 +48,13 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     private _snackbar: MatSnackBar,
     public _storageService: FinanceStorageService,
     public _currService: FinCurrencyService) {
+    this.mainFormGroup = new FormGroup({
+      startdateControl: new FormControl(moment(), Validators.required),
+      targetdateControl: new FormControl(moment().add(1, 'M'), Validators.required),
+      accountControl: new FormControl('', Validators.required),
+      tgtbalanceControl: new FormControl(0, [Validators.required]),
+      despControl: new FormControl('', Validators.required),
+    });
   }
 
   ngOnInit(): void {
@@ -54,13 +64,6 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
     this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       this.onSetLanguage(x);
-    });
-
-    this.mainFormGroup = new FormGroup({
-      dateControl: new FormControl(moment().add(1, 'M'), Validators.required),
-      accountControl: new FormControl('', Validators.required),
-      tgtbalanceControl: new FormControl(0, [Validators.required]),
-      despControl: new FormControl('', Validators.required),
     });
 
     forkJoin([
@@ -89,11 +92,11 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             this.uiMode = UIMode.Create;
             // Do nothing
           } else if (x[0].path === 'edit') {
-            this._routerID = +x[1].path;
+            this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Change;
           } else if (x[0].path === 'display') {
-            this._routerID = +x[1].path;
+            this.routerID = +x[1].path;
 
             this.uiMode = UIMode.Display;
           }
@@ -101,11 +104,12 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
           this.currentMode = getUIModeString(this.uiMode);
 
           if (this.uiMode === UIMode.Display || this.uiMode === UIMode.Change) {
-            this._storageService.readPlan(this._routerID)
+            this._storageService.readPlan(this.routerID)
             .pipe(takeUntil(this._destroyed$))
             .subscribe((nplan: Plan) => {
               this.mainFormGroup.setValue({
-                dateControl: nplan.TargetDate,
+                startdateControl: nplan.StartDate,
+                targetdateControl: nplan.TargetDate,
                 accountControl: nplan.AccountID,
                 tgtbalanceControl: nplan.TargetBalance,
                 despControl: nplan.Description,
@@ -186,7 +190,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   private _generatePlanObject(): Plan {
     let nplan: Plan = new Plan();
     nplan.HID = this._homedefService.ChosedHome.ID;
-    nplan.StartDate = moment();
+    nplan.StartDate = this.mainFormGroup.get('startdateControl').value;
     nplan.TranCurrency = this._homedefService.ChosedHome.BaseCurrency;
     nplan.PlanType = PlanTypeEnum.Account;
     nplan.TargetBalance = this.mainFormGroup.get('tgtbalanceControl').value;

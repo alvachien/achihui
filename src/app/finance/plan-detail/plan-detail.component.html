@@ -3,12 +3,24 @@
     <mat-card-title>{{'Finance.Plan' | translate}} ({{currentMode | translate}})</mat-card-title>
   </mat-card-header>
   <mat-card-content>
+    <div class="achih-control-full-width" *ngIf="!isCreateMode">
+      <span>{{'Common.ID' | translate}}:</span>
+      <span>{{routerID}}</span>
+    </div>
+
     <form [formGroup]="mainFormGroup">
+      <!-- Start date -->
+      <mat-form-field>
+        <input matInput formControlName="startdateControl" [matDatepicker]="stdpicker" placeholder="{{'Common.StartDate' | translate}}">
+        <mat-datepicker-toggle matSuffix [for]="stdpicker"></mat-datepicker-toggle>
+        <mat-datepicker #stdpicker></mat-datepicker>
+      </mat-form-field>
+
       <!-- Target date -->
       <mat-form-field>
-        <input matInput formControlName="dateControl" [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
-        <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
-        <mat-datepicker #tdpicker></mat-datepicker>
+        <input matInput formControlName="targetdateControl" [matDatepicker]="ttdpicker" placeholder="{{'Common.Date' | translate}}">
+        <mat-datepicker-toggle matSuffix [for]="ttdpicker"></mat-datepicker-toggle>
+        <mat-datepicker #ttdpicker></mat-datepicker>
       </mat-form-field>
 
       <!-- Account -->
@@ -34,6 +46,9 @@
         <input matInput type="text" placeholder="{{'Common.Description' |translate}}" formControlName="despControl">
       </mat-form-field>
     </form>
+
+    <mat-divider></mat-divider>
+
   </mat-card-content>
   <mat-card-actions>
     <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>

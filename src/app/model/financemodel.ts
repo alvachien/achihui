@@ -2511,14 +2511,15 @@ export class Plan extends hih.BaseModel {
     }
 
     let bsuccess: boolean = true;
-    // Check date
+    // Check dates
     let today: moment.Moment = moment();
     if (today.isAfter(this.TargetDate)) {
-      let msg: hih.InfoMessage = new hih.InfoMessage();
-      msg.MsgType = hih.MessageType.Warning;
-      msg.MsgTitle = 'Invalid date';
-      msg.MsgContent = 'Invalid date';
-      this.VerifiedMsgs.push(msg);
+      this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
+      bsuccess = false;
+    }
+    if (this.StartDate.isSameOrAfter(this.TargetDate)) {
+      this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
+      bsuccess = false;
     }
     // Check account! - TBD
 
