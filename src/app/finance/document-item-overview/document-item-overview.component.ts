@@ -12,7 +12,6 @@ import { LogLevel, Account, TemplateDocBase,
   financeTranTypeRepaymentOut, financeTranTypeRepaymentIn, ReportTrendExTypeEnum, ReportTrendExData, momentDateFormat,
   DocumentCreatedFrequenciesByUser, HomeMember, TranType, Document, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent } from '../../message-dialog';
 import { ThemeStorage } from '../../theme-picker/theme-storage/theme-storage';
 
 @Component({
@@ -66,10 +65,6 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnInit...');
-    }
-
     this._destroyed$ = new ReplaySubject(1);
 
     this._themeStorage.onThemeUpdate.pipe(takeUntil(this._destroyed$)).subscribe((val: any) => {
@@ -107,15 +102,10 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
   }
 
   ngAfterContentInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngAfterContentInit...');
-    }
+    // Empty
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentItemOverviewComponent ngOnDestroy...');
-    }
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

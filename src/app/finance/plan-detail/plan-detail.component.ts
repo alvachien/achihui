@@ -5,13 +5,15 @@ import { MatDialog, MatSnackBar, DateAdapter } from '@angular/material';
 import * as moment from 'moment';
 import { Observable, forkJoin, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { EChartOption } from 'echarts';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Plan, PlanTypeEnum, UIMode, getUIModeString, UICommonLabelEnum, BuildupAccountForSelection,
-  UIAccountForSelection, IAccountCategoryFilter, momentDateFormat, InfoMessage, MessageType,
+  UIAccountForSelection, IAccountCategoryFilter,
 } from '../../model';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
-import { HomeDefDetailService, FinanceStorageService, UIStatusService, FinCurrencyService } from '../../services';
+import { popupDialog, } from '../../message-dialog';
+import { HomeDefDetailService, FinanceStorageService, UIStatusService, FinCurrencyService, } from '../../services';
+import { ThemeStorage } from '../../theme-picker/theme-storage/theme-storage';
 
 @Component({
   selector: 'hih-finance-plan-detail',
@@ -22,12 +24,14 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
 
   public routerID: number;
+  public chartTheme: string;
   public currentMode: string;
   public uiMode: UIMode = UIMode.Create;
   public mainFormGroup: FormGroup;
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
+  progressChartOption: Observable<EChartOption>;
 
   get baseCurrency(): string {
     return this._homedefService.ChosedHome.BaseCurrency;
@@ -41,6 +45,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
   constructor(private _homedefService: HomeDefDetailService,
     private _router: Router,
+    private _themeStorage: ThemeStorage,
     private _activateRoute: ActivatedRoute,
     private _uiStatusService: UIStatusService,
     private _dateAdapter: DateAdapter<any>,
@@ -64,6 +69,14 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
     this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       this.onSetLanguage(x);
+    });
+
+    this._themeStorage.onThemeUpdate.pipe(takeUntil(this._destroyed$)).subscribe((val: any) => {
+      if (val.isDark) {
+        this.chartTheme = 'dark';
+      } else {
+        this.chartTheme = 'light';
+      }
     });
 
     forkJoin([

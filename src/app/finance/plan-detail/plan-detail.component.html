@@ -48,7 +48,9 @@
     </form>
 
     <mat-divider></mat-divider>
-
+    <div class="achih-control-full-width" *ngIf="!isCreateMode">
+      <div echarts [options]="progressChartOption | async" [theme]="chartTheme" class="trend-chart"></div>
+    </div>
   </mat-card-content>
   <mat-card-actions>
     <button mat-button color="primary" *ngIf="isFieldChangable" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
