@@ -22,6 +22,7 @@ import { PlanDetailComponent } from './plan-detail.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 import { Plan, PlanTypeEnum } from 'app/model';
+import { ThemeStorage } from 'app/theme-picker';
 
 describe('PlanDetailComponent', () => {
   let component: PlanDetailComponent;
@@ -99,6 +100,7 @@ describe('PlanDetailComponent', () => {
       providers: [
         TranslateService,
         UIStatusService,
+        ThemeStorage,
         { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },

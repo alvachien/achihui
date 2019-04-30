@@ -237,7 +237,7 @@ describe('LearnHistory', () => {
     instance.HID = 1;
     instance.UserId = 'aaa';
     instance.ObjectId = 11;
-    // instance.LearnDate = moment();
+    instance.LearnDate = undefined;
     expect(instance.onVerify()).toBeFalsy();
     let idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Common.InvalidDate';

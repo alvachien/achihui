@@ -4,6 +4,7 @@ Released at 2019.6.30
 
 Bug fixing and Feature list
 - More than 900 unit tests are all available;
+- New themes are available;
 - Refine the Sidenav;
 - Finance: Document header refactored as an reusable control;
 - Finance: Items refactored as an reusable control;
@@ -12,6 +13,7 @@ Bug fixing and Feature list
 - Finance: Transfer document now support editing;
 - Finance: All documents now support description and Tag editing;
 - [?] Use ACTSLib instead of default array or other data structures;
+
 
 ## Version 0.7.x
 Released at 2018.12.31

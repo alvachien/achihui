@@ -135,10 +135,6 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
 
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit for activateRoute URL: ${x}`);
-        }
-
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
             this.uiMode = UIMode.Create;
@@ -157,9 +153,6 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
             this._storageService.readAccount(this.routerID)
               .pipe(takeUntil(this._destroyed$))
               .subscribe((x3: Account) => {
-                if (environment.LoggingLevel >= LogLevel.Debug) {
-                  console.debug(`AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOninit, readAccount: ${x3}`);
-                }
                 this._displayAccountContent(x3);
                 this.firstFormGroup.markAsPristine();
                 this.extraADPFormGroup.markAsPristine();
