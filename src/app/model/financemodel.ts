@@ -1793,16 +1793,18 @@ export class Document extends hih.BaseModel {
 
           if (fit.UseCurr2) {
             if (this.ExgRate2) {
-              amtTotal += amtItem * this.ExgRate2 / 100;
+              amtTotal += Number.parseFloat((amtItem * this.ExgRate2 / 100).toFixed(3));
             } else {
               amtTotal += amtItem;
             }
+            amtTotal = Number.parseFloat(amtTotal.toFixed(3));
           } else {
             if (this.ExgRate) {
-              amtTotal += amtItem * this.ExgRate / 100;
+              amtTotal += Number.parseFloat((amtItem * this.ExgRate / 100).toFixed(3));
             } else {
               amtTotal += amtItem;
             }
+            amtTotal = Number.parseFloat(amtTotal.toFixed(3));
           }
 
           // Order valid check
@@ -1824,7 +1826,7 @@ export class Document extends hih.BaseModel {
     }
 
     if (this.DocType === hih.financeDocTypeTransfer || this.DocType === hih.financeDocTypeCurrencyExchange) {
-      if (amtTotal !== 0) {
+      if (Math.abs(amtTotal) >= 0.01) {
         this._addMessage(hih.MessageType.Error, 'Finance.AmountIsNotCorrect', 'Finance.AmountIsZeroInTransferDocument');
         chkrst = false;
       }

@@ -826,6 +826,46 @@ describe('Document', () => {
     });
     expect(idx).not.toEqual(-1);
   });
+  it('#11. onVerify: amount shall be zero for currency exchange doc', () => {
+    // Ref: https://github.com/alvachien/achihui/issues/260
+    instance.HID = 1;
+    instance.Id = 1;
+    instance.DocType = hih.financeDocTypeCurrencyExchange;
+    instance.TranCurr = fakeData.chosedHome.BaseCurrency;
+    instance.TranCurr2 = 'USD';
+    instance.ExgRate2 = 673.11;
+    instance.ExgRate_Plan2 = false;
+    instance.TranDate = moment();
+    instance.Desp = 'test';
+    let di: DocumentItem = new DocumentItem();
+    di.ItemId = 1;
+    di.AccountId = fakeData.finAccounts[0].Id;
+    di.ControlCenterId = fakeData.finControlCenters[0].Id;
+    di.TranType = hih.financeTranTypeTransferOut;
+    di.TranAmount = 1009.67;
+    di.Desp = 'Test 1';
+    instance.Items.push(di);
+    di = new DocumentItem();
+    di.ItemId = 2;
+    di.AccountId = fakeData.finAccounts[1].Id;
+    di.ControlCenterId = fakeData.finControlCenters[0].Id;
+    di.TranType = hih.financeTranTypeTransferIn;
+    di.TranAmount = 150;
+    di.UseCurr2 = true;
+    di.Desp = 'Test 2';
+    instance.Items.push(di);
+
+    let rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency});
+
+    expect(rst).toBeTruthy();
+  });
 });
 
 describe('DocumentItem', () => {
