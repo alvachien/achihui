@@ -326,6 +326,15 @@ export class UIDisplayStringUtil {
       case UICommonLabelEnum.DocumentUpdated:
         return 'Finance.DocumentUpdated';
 
+      case UICommonLabelEnum.OperConfirmTitle:
+        return 'Common.OperationConfirmation';
+
+      case UICommonLabelEnum.OperConfirmContent:
+        return 'Common.OperationConfirmationContent';
+
+      case UICommonLabelEnum.OperationCompleted:
+        return 'Common.OperationCompleted';
+
       default:
         return '';
     }

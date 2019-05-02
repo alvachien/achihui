@@ -2,14 +2,15 @@ import { OnInit, AfterViewInit, Component, Directive, ViewChild, Input, OnDestro
 import { Router } from '@angular/router';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
-import { environment } from '../../../environments/environment';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { BehaviorSubject, Observable, forkJoin, of as observableOf, ReplaySubject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
+
+import { environment } from '../../../environments/environment';
 import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil, OverviewScopeEnum,
-  getOverviewScopeRange } from '../../model';
+  getOverviewScopeRange, UICommonLabelEnum, } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
-import { MatSnackBar } from '@angular/material';
+import { popupDialog, popupConfirmDialog, } from '../../message-dialog';
 
 /**
  * Node type for Account tree
@@ -63,12 +64,9 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
+    private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
     private _router: Router) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent constructor...');
-    }
-
     this.isLoadingResults = false;
 
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
@@ -86,19 +84,12 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnInit...');
-    }
-
     this._destroyed$ = new ReplaySubject(1);
+
     this._refreshTree(false);
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent ngOnDestroy...');
-    }
-
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
@@ -106,10 +97,6 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
   }
 
   onTreeNodeClicked(node: AccountTreeFlatNode): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent onTreeNodeClicked...');
-    }
-
     this.curNode = node;
 
     switch (node.nodetype) {
@@ -136,10 +123,6 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
   }
 
   public onAccountStatusChange(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering AccountTreeComponent onAccountStatusChange...');
-    }
-
     this.isLoadingResults = true;
     this.dataSource.data = [];
 
@@ -159,10 +142,7 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
       if (environment.LoggingLevel >= LogLevel.Error) {
         console.error(`AC_HIH_UI [Error]: Entering AccountTreeComponent onAccountStatusChange, fetchAllAccounts failed: ${error.toString()}`);
       }
-
-      this._snackbar.open(error.toString(), undefined, {
-        duration: 2000,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString(), undefined);
     }, () => {
       this.isLoadingResults = false;
     });
@@ -184,8 +164,58 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
     this._router.navigate(['/finance/account/edit', acntid]);
   }
 
-  public onDeleteAccount(acntid: number): void {
-    // Do nothing
+  public onCloseAccount(acntid: number): void {
+    // Check the account can be closed
+    let curacnt: Account = this.availableAccounts.find((acnt: Account) => {
+      return acnt.Id === acntid;
+    });
+    if (!curacnt || curacnt.Status !== AccountStatusEnum.Normal) {
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), 'Finance.CloseAccountIsNotAllowed');
+      return;
+    }
+
+    // Show a confirm dialog
+    popupConfirmDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.OperConfirmTitle),
+      this._uiStatusService.getUILabel(UICommonLabelEnum.OperConfirmContent))
+      .afterClosed().subscribe((x2: any) => {
+      if (x2) {
+        this._storageService.updateAccountStatus(acntid, AccountStatusEnum.Closed).subscribe((x3: any) => {
+          this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.OperationCompleted), undefined, {
+            duration: 2000,
+          }).afterDismissed().subscribe(() => {
+            this._refreshTree(true);
+          });
+        }, (error: any) => {
+          popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
+        });
+      }
+    });
+  }
+  public onFreezeAccount(acntid: number): void {
+    // Check the account can be frozen
+    let curacnt: Account = this.availableAccounts.find((acnt: Account) => {
+      return acnt.Id === acntid;
+    });
+    if (!curacnt || curacnt.Status !== AccountStatusEnum.Normal) {
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), 'Finance.CloseAccountIsNotAllowed');
+      return;
+    }
+    // Show a confirm dialog
+    popupConfirmDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.OperConfirmTitle),
+      this._uiStatusService.getUILabel(UICommonLabelEnum.OperConfirmContent))
+      .afterClosed().subscribe((x2: any) => {
+      if (x2) {
+        this._storageService.updateAccountStatus(acntid, AccountStatusEnum.Frozen).subscribe((x3: any) => {
+          this._snackbar.open(this._uiStatusService.getUILabel(UICommonLabelEnum.OperationCompleted), undefined, {
+            duration: 2000,
+          }).afterDismissed().subscribe(() => {
+            this._refreshTree(true);
+          });
+        }, (error: any) => {
+          popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
+        });
+      }
+    });
   }
 
   transformer = (node: AccountTreeNode, level: number) => {
@@ -235,10 +265,8 @@ export class AccountTreeComponent implements OnInit, OnDestroy {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error('AC_HIH_UI [Error]: Entering AccountTreeComponent _refreshTree, forkJoin, failed...');
         }
-        // Do nothing
-        this._snackbar.open(error.toString(), undefined, {
-          duration: 2000,
-        });
+
+        popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString(), undefined);
       }, () => {
         this.isLoadingResults = false;
       });

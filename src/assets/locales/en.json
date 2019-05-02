@@ -79,6 +79,9 @@
     "Setting": "Setting",
     "DeleteConfirmation": "Delete Confirmation",
     "ConfirmToDeleteSelectedItem": "The selected item(s) will be deleted. Do you confirm to continue?",
+    "OperationConfirmation": "Operation Confirmation",
+    "OperationConfirmationContent": "The operation you required need a confirm. Do you confirm to continue?",
+    "OperationCompleted": "Operation Completed Successfully",
     "SearchViaName": "Select an item via the name...",
     "SystemFlag": "System Flag",
     "PleaseSelect": "Please select",
@@ -487,6 +490,7 @@
     "MonthOnMonth": "Month on Month",
     "Terminate": "Terminate",
     "CloseAccount": "Close Account",
+    "FreezeAccount": "Freeze Account",
     "IncomeAndExpenses": "Income and expenses",
     "IncomeTendencyChart": "Tendency Chart of Income",
     "ExpenseTendencyChart": "Tendency Chart of Expense",
@@ -538,7 +542,8 @@
     "DespIsTooLong": "Desp is too long",
     "NoExtraInfo": "No extra info",
     "NoTmpDocGenerated": "No template docs, you shall generate them first",
-    "InvalidDateInLegacyAsset": "Transaction date shall be a earlier date than today for Legacy Asset creation"
+    "InvalidDateInLegacyAsset": "Transaction date shall be a earlier date than today for Legacy Asset creation",
+    "CloseAccountIsNotAllowed": "It is not allowed to close account which status is not normal or the account cannot be manually closed"
   },
   "Library": {
     "BookCategories": "Book Categories",

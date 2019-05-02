@@ -39,7 +39,7 @@
               </mat-icon>
             </button>
             <a mat-button (click)="onTreeNodeClicked(node)">[{{node.id}}]{{node.displayname | translate}}
-              <span [matBadge]="node.childamount" matBadgeOverlap="false" matBadgePosition="after" matBadgeColor="accent" [matBadgeHidden]="node.childamount <= 0">
+              <span [matBadge]="node.childamount" matBadgeOverlap="false" matBadgeColor="accent" [matBadgeHidden]="node.childamount <= 0">
               </span>
             </a>
           </mat-tree-node>
@@ -73,8 +73,18 @@
                 <mat-option *ngFor="let scp of _uiStatusService.OverviewScopeStrings" [value]='scp.value'>{{scp.i18nterm | translate}}</mat-option>
               </mat-select>
             </mat-form-field>
-            <button mat-icon-button (click)="onDisplayAccount(curNode?.id)" matTooltip="{{'Common.Display' | translate}}"><mat-icon color="primary" class="toolbar-icon">web_asset</mat-icon></button>
-            <button mat-icon-button (click)="onChangeAccount(curNode?.id)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon color="primary" class="toolbar-icon">edit</mat-icon></button>
+            <button mat-icon-button (click)="onDisplayAccount(curNode?.id)" matTooltip="{{'Common.Display' | translate}}">
+              <mat-icon color="primary" class="toolbar-icon">flip_to_front</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onChangeAccount(curNode?.id)" matTooltip="{{'Common.Edit' | translate}}">
+              <mat-icon color="primary" class="toolbar-icon">edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onCloseAccount(curNode?.id)" matTooltip="{{'Finance.CloseAccount' | translate}}">
+              <mat-icon color="primary" class="toolbar-icon">close</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onFreezeAccount(curNode?.id)" matTooltip="{{'Finance.FreezeAccount' | translate}}">
+              <mat-icon color="primary" class="toolbar-icon">block</mat-icon>
+            </button>
           </mat-toolbar>
           <hih-fin-docitem-by-acnt [selectedAccount]="curNode?.id" [selectedScope]="selectedAccountScope"></hih-fin-docitem-by-acnt>
         </div>

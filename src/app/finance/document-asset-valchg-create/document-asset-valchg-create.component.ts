@@ -16,7 +16,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, fin
   HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
+import { popupDialog, } from '../../message-dialog';
 
 // Assistant class
 class DocItemWithBlance {

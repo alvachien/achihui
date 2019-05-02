@@ -76,6 +76,9 @@ export enum UICommonLabelEnum {
   Incoming              = 13,
   Outgoing              = 14,
   DocumentUpdated       = 15,
+  OperConfirmTitle      = 16,
+  OperConfirmContent    = 17,
+  OperationCompleted    = 18,
 }
 
 /**

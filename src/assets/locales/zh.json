@@ -78,7 +78,10 @@
     "TagsCloud": "标签云",
     "Setting": "设置",
     "DeleteConfirmation": "确认删除操作",
-    "ConfirmToDeleteSelectedItem": "选择项将被删除，请确认继续？",
+    "ConfirmToDeleteSelectedItem": "选择项将被删除，是否确认后继续？",
+    "OperationConfirmation": "操作确认",
+    "OperationConfirmationContent": "即将执行的操作需要确认。是否确认后继续?",
+    "OperationCompleted": "操作执行成功",
     "SearchViaName": "根据名字来搜索项...",
     "SystemFlag": "系统标志",
     "PleaseSelect": "请选择",
@@ -487,6 +490,7 @@
     "MonthOnMonth": "月度环比",
     "Terminate": "终止",
     "CloseAccount": "关闭账户",
+    "FreezeAccount": "冻结账户",
     "IncomeAndExpenses": "收支",
     "IncomeTendencyChart": "收入趋势图",
     "ExpenseTendencyChart": "支出趋势图",
@@ -538,7 +542,8 @@
     "DespIsTooLong": "描述长度超出限制",
     "NoExtraInfo": "没有附加信息",
     "NoTmpDocGenerated": "没有模板凭证，需要生成模板凭证",
-    "InvalidDateInLegacyAsset": "创建固有资产，日期必须是早于今天之前"
+    "InvalidDateInLegacyAsset": "创建固有资产，日期必须是早于今天之前",
+    "CloseAccountIsNotAllowed": "不能关闭非正常状态下的账户，也不能关闭不允许手动关闭的账户"
   },
   "Library": {
     "BookCategories": "图书种类",

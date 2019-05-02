@@ -56,10 +56,6 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit`);
-    }
-
     this._destroyed$ = new ReplaySubject(1);
 
     this._fincurrService.fetchAllCurrencies()
@@ -69,10 +65,6 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
       // Distinguish current mode
       this._activateRoute.url.subscribe((x: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit for activateRoute URL`);
-        }
-
         if (x instanceof Array && x.length > 0) {
           if (x[0].path === 'create') {
             this.uiMode = UIMode.Create;
@@ -102,6 +94,12 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
               this.detailForm.get('detailControl').setValue(dtl.Details);
               this.detailForm.markAsUntouched();
               this.detailForm.markAsPristine();
+
+              if (this.uiMode === UIMode.Display) {
+                this.detailForm.disable();
+              } else if (this.uiMode === UIMode.Change) {
+                this.detailForm.enable();
+              }
 
               this.arMembers = dtl.Members.slice();
             }, (error: any) => {

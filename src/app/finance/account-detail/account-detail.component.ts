@@ -118,7 +118,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       extLoanControl: new FormControl(''),
     });
     this.statusFormGroup = new FormGroup({
-      statusControl: new FormControl({value: AccountStatusEnum.Normal, disable: true}, Validators.required),
+      statusControl: new FormControl({value: AccountStatusEnum.Normal, disabled: true}, Validators.required),
     });
   }
 
@@ -166,9 +166,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
                   console.error(`AC_HIH_UI [Error]: Entering Entering AccountDetailComponent ngOninit, readAccount failed: ${error}`);
                 }
 
-                this._snackbar.open(error.toString(), undefined, {
-                  duration: 2000,
-                });
+                popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
                 this.uiMode = UIMode.Invalid;
               });
           } else {
@@ -181,9 +179,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
         console.error(`AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${error.toString()}`);
       }
 
-      this._snackbar.open(error.toString(), undefined, {
-        duration: 2000,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
     });
   }
 
@@ -207,26 +203,6 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  public onCloseAccount(): void {
-    // TBD.
-    // Popup a warning dialog?!
-
-    // Close the account
-    this._storageService.updateAccountStatus(this.routerID, AccountStatusEnum.Closed).subscribe((x: any) => {
-      // It has been updated successfully, then navigate to current account again
-      this._router.navigate(['/finance/account/display/' + x.Id.toString()]);
-    }, (error: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error(`AC_HIH_UI [Error]: Entering AccountDetailComponent onCloseAccount, updateAccountStatus failed: ${error.message}`);
-      }
-
-      // Show the snabckbar
-      this._snackbar.open(error.toString(), undefined, {
-        duration: 2000,
-      });
-    });
-  }
-
   public onSubmit(): void {
     if (this.uiMode === UIMode.Create) {
       this.onCreateImpl();
@@ -248,8 +224,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     if (!acntObj.onVerify({
       Categories: this.arAccountCategories,
     } as IAccountVerifyContext)) {
-      // TBD.
-      // Popup dialog
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), undefined, acntObj.VerifiedMsgs);
       return;
     }
 
@@ -290,8 +265,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
     if (!acntObj.onVerify({
       Categories: this.arAccountCategories,
     } as IAccountVerifyContext)) {
-      // TBD.
-      // Popup dialog!
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), undefined, acntObj.VerifiedMsgs);
       return;
     }
 
