@@ -56,7 +56,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onDisplayObject(row)"></mat-row>
       </mat-table>
       
-      <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]">
+      <mat-paginator #paginator [pageSizeOptions]="[10, 20, 50, 100]">
       </mat-paginator>
     </div>
   </mat-card-content>

@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, forkJoin, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
-import { environment } from '../../../environments/environment';
 import { LogLevel, LearnObject, LearnCategory, UICommonLabelEnum, } from '../../model';
 import { LearnStorageService, UIStatusService, } from '../../services';
 import { popupDialog } from '../../message-dialog';
@@ -32,10 +31,6 @@ export class ObjectListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnInit...');
-    }
-
     this._destroyed$ = new ReplaySubject(1);
 
     this._storageService.fetchAllCategories().pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
@@ -43,15 +38,11 @@ export class ObjectListComponent implements OnInit, OnDestroy {
 
       this._loadObjects();
     }, (error: any) => {
-      // Do nothing
       popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
     });
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ObjectListComponent ngOnDestroy...');
-    }
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
@@ -85,7 +76,6 @@ export class ObjectListComponent implements OnInit, OnDestroy {
       this.dataSource = new MatTableDataSource(x);
       this.dataSource.paginator = this.paginator;
     }, (error: any) => {
-      // Do nothing
       popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString());
     }, () => {
       this.isLoadingResults = false;
