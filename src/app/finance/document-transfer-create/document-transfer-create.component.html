@@ -18,6 +18,10 @@
             <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}" formControlName="amountControl">
           </mat-form-field>
         </form>
+
+        <mat-error *ngIf="headerFormGroup && headerFormGroup.hasError('exchangeRateMissing')">
+          <div class="mat-h3">{{'Finance.NoExchangeRate' | translate}}</div>
+        </mat-error>
         <div>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
         </div>

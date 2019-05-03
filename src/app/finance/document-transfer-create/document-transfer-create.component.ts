@@ -13,8 +13,8 @@ import { LogLevel, momentDateFormat, Document, DocumentItem, financeDocTypeTrans
   UIDisplayStringUtil, IAccountCategoryFilter, costObjectValidator,
   Currency, TranType, ControlCenter, Order, Account, DocumentType, UIMode,
 } from '../../model';
-import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, AuthService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
+import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService, } from '../../services';
+import { popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-document-transfer-create',
@@ -101,9 +101,8 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
       this.arDocTypes = rst[1];
     }, (error: any) => {
       // Show the error
-      this._snackbar.open(error.toString(), undefined, {
-        duration: 2000,
-      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
   ngOnDestroy(): void {

@@ -48,6 +48,9 @@
           </mat-form-field>    
         </form>
 
+        <mat-error *ngIf="firstFormGroup && firstFormGroup.hasError('exchangeRateMissing')">
+          <div class="mat-h3">{{'Finance.NoExchangeRate' | translate}}</div>
+        </mat-error>
         <mat-error *ngIf="(firstFormGroup && firstFormGroup.hasError('nocostobject')) || (firstFormGroup && firstFormGroup.hasError('costobjectoverassign'))">
           <div class="mat-h3">{{'Finance.EitherControlCenterOrOrder' | translate}}</div>
         </mat-error>

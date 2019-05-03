@@ -538,6 +538,7 @@
     "DocumentUpdated": "Document Updated",
     "NoExchangeRate": "No exchange rate",
     "UnnecessaryExchangeRate": "Exchange rate is unnecessary for base currency",
+    "UseDifferentCurrency": "Exchange rate document requires different currency",
     "DespIsMust": "Desp is must",
     "DespIsTooLong": "Desp is too long",
     "NoExtraInfo": "No extra info",

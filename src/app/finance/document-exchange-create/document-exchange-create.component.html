@@ -6,7 +6,7 @@
   <mat-card-content>
     <mat-horizontal-stepper linear (selectionChange)="onStepSelectionChange($event)">
       <!-- Step: Generic info -->
-      <mat-step [completed]="firstStepCompleted" errorMessage="Invalid header">
+      <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{'Common.GenericInfo' | translate}}</ng-template>
 
@@ -30,7 +30,7 @@
       </mat-step>
 
       <!-- Step: From -->
-      <mat-step [completed]="fromStepCompleted" errorMessage="Invalid from">
+      <mat-step [stepControl]="fromFormGroup">
         <form [formGroup]="fromFormGroup">
           <ng-template matStepLabel>{{'Finance.TransferFrom' | translate}}</ng-template>
 
@@ -79,6 +79,9 @@
           </mat-form-field>
         </form>
 
+        <mat-error *ngIf="fromFormGroup && fromFormGroup.hasError('exchangeRateMissing')">
+          <div class="mat-h3">{{'Finance.NoExchangeRate' | translate}}</div>
+        </mat-error>
         <mat-error *ngIf="(fromFormGroup && fromFormGroup.hasError('nocostobject')) || (fromFormGroup && fromFormGroup.hasError('costobjectoverassign'))">
           <div class="mat-h3">{{'Finance.EitherControlCenterOrOrder' | translate}}</div>
         </mat-error>
@@ -90,7 +93,7 @@
       </mat-step>
 
       <!-- Step: To -->
-      <mat-step [completed]="toStepCompleted" errorMessage="Invalid to">
+      <mat-step [stepControl]="toFormGroup">
         <form [formGroup]="toFormGroup">
           <ng-template matStepLabel>{{'Finance.TransferTo' | translate}}</ng-template>
 
@@ -141,9 +144,16 @@
           </mat-form-field>
         </form>
 
+        <mat-error *ngIf="toFormGroup && toFormGroup.hasError('exchangeRateMissing')">
+          <div class="mat-h3">{{'Finance.NoExchangeRate' | translate}}</div>
+        </mat-error>
+        <mat-error *ngIf="toFormGroup && toFormGroup.hasError('usedifferentcurrency')">
+          <div class="mat-h3">{{'Finance.UseDifferentCurrency' | translate}}</div>
+        </mat-error>
         <mat-error *ngIf="(toFormGroup && toFormGroup.hasError('nocostobject')) || (toFormGroup && toFormGroup.hasError('costobjectoverassign'))">
           <div class="mat-h3">{{'Finance.EitherControlCenterOrOrder' | translate}}</div>
         </mat-error>
+
         <div>
           <button mat-button matStepperPrevious>{{'Common.BackButton' | translate}}</button>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>

@@ -538,6 +538,7 @@
     "DocumentUpdated": "凭证已更新",
     "NoExchangeRate": "未定义汇率",
     "UnnecessaryExchangeRate": "本币操作无需汇率",
+    "UseDifferentCurrency": "货币兑换凭证需要不同的货币",
     "DespIsMust": "描述是必须的",
     "DespIsTooLong": "描述长度超出限制",
     "NoExtraInfo": "没有附加信息",

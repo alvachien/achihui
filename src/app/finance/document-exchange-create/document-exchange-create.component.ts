@@ -1,22 +1,22 @@
 import { Component, OnInit, OnDestroy, ViewChild, } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, ValidationErrors, } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatTableDataSource, MatHorizontalStepper, MatPaginator, DateAdapter } from '@angular/material';
 import { forkJoin, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 import { environment } from '../../../environments/environment';
-import { LogLevel, Document, DocumentItem, DocumentType, TranType, Currency, Account,
+import { LogLevel, Document, DocumentItem, DocumentType, TranType, Currency, Account, costObjectValidator,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection, UICommonLabelEnum,
   ControlCenter, Order, financeDocTypeCurrencyExchange, DocumentWithPlanExgRate, DocumentWithPlanExgRateForUpdate,
   IAccountCategoryFilter, momentDateFormat, financeTranTypeTransferIn, financeTranTypeTransferOut,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-document-exchange-create',
@@ -56,10 +56,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
   arCurrencies: Currency[];
 
   get tranDate(): any {
-    let datctrl: any = this.firstFormGroup.get('dateControl');
-    if (datctrl && datctrl.value) {
-      return datctrl.value;
-    }
+    return this.firstFormGroup.get('dateControl') && this.firstFormGroup.get('dateControl').value;
   }
   get tranDateString(): any {
     let dval: any = this.tranDate;
@@ -68,10 +65,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     }
   }
   get sourceCurrency(): string {
-    let currctrl: any = this.fromFormGroup.get('currControl');
-    if (currctrl) {
-      return currctrl.value;
-    }
+    return this.fromFormGroup.get('currControl') && this.fromFormGroup.get('currControl').value;
   }
   get isForeignSourceCurrency(): boolean {
     if (this.sourceCurrency && this.sourceCurrency !== this._homedefService.ChosedHome.BaseCurrency) {
@@ -82,46 +76,11 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
   }
 
   get targetCurrency(): string {
-    let currctrl: any = this.toFormGroup.get('currControl');
-    if (currctrl) {
-      return currctrl.value;
-    }
+    return this.toFormGroup.get('currControl') && this.toFormGroup.get('currControl').value;
   }
   get isForeignTargetCurrency(): boolean {
     if (this.targetCurrency && this.targetCurrency !== this._homedefService.ChosedHome.BaseCurrency) {
       return true;
-    }
-
-    return false;
-  }
-  get firstStepCompleted(): boolean {
-    if (this.firstFormGroup && this.firstFormGroup.valid) {
-      return true;
-    }
-    return false;
-  }
-  get fromStepCompleted(): boolean {
-    if (this.fromFormGroup && this.fromFormGroup.valid) {
-      // Foreign currency
-      if (this.isForeignSourceCurrency) {
-        if (!this.fromFormGroup.get('exgControl').value) {
-          return false;
-        }
-      }
-
-      if (this.fromFormGroup.get('ccControl').value) {
-        if (this.fromFormGroup.get('orderControl').value) {
-          return false;
-        } else {
-          return true;
-        }
-      } else {
-        if (this.fromFormGroup.get('orderControl').value) {
-          return true;
-        } else {
-          return false;
-        }
-      }
     }
 
     return false;
@@ -137,18 +96,6 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
       // Foreign currency check - exchange rate
       if (this.isForeignTargetCurrency) {
         if (!this.toFormGroup.get('exgControl').value) {
-          return false;
-        }
-      }
-
-      if (this.toFormGroup.get('ccControl').value) {
-        if (this.toFormGroup.get('orderControl').value) {
-          return false;
-        }
-      } else {
-        if (this.toFormGroup.get('orderControl').value) {
-          // return true;
-        } else {
           return false;
         }
       }
@@ -173,11 +120,36 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     private _dateAdapter: DateAdapter<any>,
     public _homedefService: HomeDefDetailService,
     public _storageService: FinanceStorageService,
-    public _currService: FinCurrencyService,
-    private _formBuilder: FormBuilder) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent constructor...');
+    public _currService: FinCurrencyService) {
+      this.firstFormGroup = new FormGroup({
+        dateControl: new FormControl({ value: moment(), disabled: false }, Validators.required),
+        despControl: new FormControl('', Validators.required),
+      });
+
+      this.fromFormGroup = new FormGroup({
+        accountControl: new FormControl('', Validators.required),
+        amountControl: new FormControl('', Validators.required),
+        currControl: new FormControl('', Validators.required),
+        exgControl: new FormControl(),
+        ccControl: new FormControl(),
+        orderControl: new FormControl(),
+      }, costObjectValidator);
+
+      this.toFormGroup = new FormGroup({
+        accountControl: new FormControl('', Validators.required),
+        amountControl: new FormControl('', Validators.required),
+        currControl: new FormControl('', Validators.required),
+        exgControl: new FormControl(),
+        ccControl: new FormControl(),
+        orderControl: new FormControl(),
+      }, [costObjectValidator, this.diffTargetCurrValidator]);
     }
+  diffTargetCurrValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+    let tcurr: any = group.get('currControl').value;
+    if (tcurr && tcurr === this.sourceCurrency) {
+      return { 'usedifferentcurrency': true };
+    }
+    return null;
   }
 
   ngOnInit(): void {
@@ -191,29 +163,6 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
 
     this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
       this.onSetLanguage(x);
-    });
-
-    this.firstFormGroup = this._formBuilder.group({
-      dateControl: [{ value: moment(), disabled: false }, Validators.required],
-      despControl: ['', Validators.required],
-    });
-
-    this.fromFormGroup = this._formBuilder.group({
-      accountControl: ['', Validators.required],
-      amountControl: ['', Validators.required],
-      currControl: ['', Validators.required],
-      exgControl: [''],
-      ccControl: [''],
-      orderControl: [''],
-    });
-
-    this.toFormGroup = this._formBuilder.group({
-      accountControl: ['', Validators.required],
-      amountControl: ['', Validators.required],
-      currControl: ['', Validators.required],
-      exgControl: [''],
-      ccControl: [''],
-      orderControl: [''],
     });
 
     forkJoin([
@@ -253,9 +202,6 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnDestroy...');
-    }
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
@@ -338,7 +284,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
         console.debug(`AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent, onSubmit, createDocument`);
       }
 
-      // Navigate back to list view
+      // Update previous docs
       let cobj: DocumentWithPlanExgRateForUpdate = new DocumentWithPlanExgRateForUpdate();
       cobj.hid = this._homedefService.ChosedHome.ID;
       if (this.selection.selected.length > 0) {

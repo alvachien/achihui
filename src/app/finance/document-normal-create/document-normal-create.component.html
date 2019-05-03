@@ -12,6 +12,9 @@
 
           <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"></hih-fin-document-header>
         </form>
+        <mat-error *ngIf="firstFormGroup && firstFormGroup.hasError('exchangeRateMissing')">
+          <div class="mat-h3">{{'Finance.NoExchangeRate' | translate}}</div>
+        </mat-error>
         
         <div>
           <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
