@@ -85,30 +85,6 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
 
     return false;
   }
-  get toStepCompleted(): boolean {
-    if (this.toFormGroup && this.toFormGroup.valid) {
-      // Foreign currency check - only one foreign currency is allowed
-      if (this.isForeignSourceCurrency) {
-        if (this.isForeignTargetCurrency) {
-          return false;
-        }
-      }
-      // Foreign currency check - exchange rate
-      if (this.isForeignTargetCurrency) {
-        if (!this.toFormGroup.get('exgControl').value) {
-          return false;
-        }
-      }
-
-      if (this.targetCurrency && this.sourceCurrency && this.targetCurrency === this.sourceCurrency) {
-        return false;
-      }
-
-      return true;
-    }
-
-    return false;
-  }
   get prvdocStepCompleted(): boolean {
     return true;
   }
@@ -133,7 +109,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
         exgControl: new FormControl(),
         ccControl: new FormControl(),
         orderControl: new FormControl(),
-      }, costObjectValidator);
+      }, [costObjectValidator, this.exchangeRateMissingValidator]);
 
       this.toFormGroup = new FormGroup({
         accountControl: new FormControl('', Validators.required),
@@ -142,7 +118,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
         exgControl: new FormControl(),
         ccControl: new FormControl(),
         orderControl: new FormControl(),
-      }, [costObjectValidator, this.diffTargetCurrValidator]);
+      }, [costObjectValidator, this.exchangeRateMissingValidator, this.diffTargetCurrValidator]);
     }
   diffTargetCurrValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
     let tcurr: any = group.get('currControl').value;
@@ -151,7 +127,16 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     }
     return null;
   }
+  exchangeRateMissingValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {
+    let tcurr: any = group.get('currControl').value;
+    if (tcurr && tcurr !== this._homedefService.ChosedHome.BaseCurrency) {
+      if (!group.get('exgControl').value) {
+        return { 'exchangeRateMissing': true };
+      }
+    }
 
+    return null;
+  }
   ngOnInit(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering DocumentExchangeCreateComponent ngOnInit...');

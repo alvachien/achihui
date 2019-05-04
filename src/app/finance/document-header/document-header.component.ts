@@ -138,10 +138,6 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
     private _uiStatusService: UIStatusService,
     private _dateAdapter: DateAdapter<any>,
     private _snackbar: MatSnackBar) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Entering DocumentHeaderComponent ngOnDestroy`);
-    }
-
     this.headerForm = new FormGroup({
       docTypeControl: new FormControl({value: this.docType, disabled: true}, Validators.required),
       dateControl: new FormControl(moment(), [Validators.required]),
