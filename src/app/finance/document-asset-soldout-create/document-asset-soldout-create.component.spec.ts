@@ -18,7 +18,7 @@ import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
-  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
+  UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
@@ -99,6 +99,7 @@ describe('DocumentAssetSoldoutCreateComponent', () => {
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
+        UIOrderValidFilterExPipe,
         DocumentAssetSoldoutCreateComponent,
         MessageDialogComponent,
         DocumentHeaderComponent,

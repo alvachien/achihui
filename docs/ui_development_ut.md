@@ -201,6 +201,7 @@ Just add them into declaration sections:
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
+        UIOrderValidFilterExPipe,
       ]
 ```
 

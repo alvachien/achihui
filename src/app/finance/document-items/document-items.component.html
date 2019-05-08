@@ -112,7 +112,7 @@
           <mat-select [disabled]="!isFieldChangable"
             [(ngModel)]="row.OrderId" name="itord" (selectionChange)="onChange()">
             <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
-            <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="tt.Id">
+            <mat-option *ngFor="let tt of arUIOrder | uiOrderValidFilterEx: docDate" [value]="tt.Id">
               {{tt.Name}}
             </mat-option>
           </mat-select>

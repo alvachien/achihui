@@ -17,7 +17,7 @@ import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
-  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
+  UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
@@ -101,6 +101,7 @@ describe('DocumentAssetValChgCreateComponent', () => {
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
+        UIOrderValidFilterExPipe,
         RouterLinkDirectiveStub,
         DocumentAssetValChgCreateComponent,
         MessageDialogComponent,

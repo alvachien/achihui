@@ -17,7 +17,7 @@ import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
-  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
+  UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
@@ -100,6 +100,7 @@ describe('DocumentAssetBuyInCreateComponent', () => {
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
+        UIOrderValidFilterExPipe,
         AccountExtAssetExComponent,
         DocumentAssetBuyInCreateComponent,
         MessageDialogComponent,

@@ -16,7 +16,7 @@ import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
-  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
+  UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { PlanDetailComponent } from './plan-detail.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
@@ -94,6 +94,7 @@ describe('PlanDetailComponent', () => {
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
+        UIOrderValidFilterExPipe,
         PlanDetailComponent,
         MessageDialogComponent,
       ],

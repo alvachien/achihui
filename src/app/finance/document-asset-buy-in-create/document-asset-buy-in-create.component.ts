@@ -24,6 +24,7 @@ import * as moment from 'moment';
 })
 export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
+  private _docDate: moment.Moment;
 
   // Stepper
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
@@ -50,6 +51,9 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   arAccounts: Account[];
   arDocTypes: DocumentType[];
   arCurrencies: Currency[];
+  get curDocDate(): moment.Moment {
+    return this._docDate;
+  }
 
   get IsLegacyAsset(): boolean {
     return this.firstFormGroup && this.firstFormGroup.get('legacyControl')!.value;
@@ -62,9 +66,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     private _homedefService: HomeDefDetailService,
     private _storageService: FinanceStorageService,
     private _currService: FinCurrencyService) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent constructor...');
-    }
+    this._docDate = moment();
     this.assetAccount = new AccountExtraAsset();
     this.arMembersInChosedHome = this._homedefService.ChosedHome.Members.slice();
 
@@ -83,10 +85,6 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentAssetBuyInCreateComponent ngOnInit...');
-    }
-
     this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
@@ -224,6 +222,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     if (event.selectedIndex === 1) {
       // Update the confirm info.
       let doc: Document = this.firstFormGroup.get('headerControl').value;
+      this._docDate = doc.TranDate;
       this.confirmInfo.tranDateString = doc.TranDateFormatString;
       this.confirmInfo.tranDesp = doc.Desp;
       this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl').value;

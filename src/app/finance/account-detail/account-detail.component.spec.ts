@@ -27,7 +27,7 @@ import { UIMode, financeAccountCategoryCash, financeAccountCategoryAdvancePaymen
   AccountExtraAsset, AccountExtraAdvancePayment } from '../../model';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
-  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
+  UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 
 describe('AccountDetailComponent', () => {
   let component: AccountDetailComponent;
@@ -99,6 +99,7 @@ describe('AccountDetailComponent', () => {
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
+        UIOrderValidFilterExPipe,
         AccountExtADPExComponent,
         AccountExtAssetExComponent,
         AccountExtLoanExComponent,
@@ -935,115 +936,6 @@ describe('AccountDetailComponent', () => {
 
       // And, there shall no changes in the selected tab
       expect(component._stepper.selectedIndex).toBe(2);
-
-      flush();
-    }));
-    it('it shall navigate to account the account close successfully (normal)', fakeAsync(() => {
-      let cashAccount: Account = new Account();
-      cashAccount.Id = 122;
-      cashAccount.Name = 'Cash';
-      cashAccount.Comment = 'Test';
-      cashAccount.OwnerId = fakeData.currentUser.getUserId();
-      cashAccount.CategoryId = financeAccountCategoryCash;
-      cashAccount.Status = AccountStatusEnum.Normal;
-      readAccountSpy.and.returnValue(asyncData(cashAccount));
-      updateAccountStatusSpy.and.returnValue(asyncData(cashAccount));
-
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-      tick(); // Complete the readAccount in ngOnInit
-      fixture.detectChanges();
-      expect(readAccountSpy).toHaveBeenCalled();
-
-      // Step 0
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      expect(component.firstFormGroup.get('nameControl').value).toEqual(cashAccount.Name);
-      expect(component.firstFormGroup.get('ctgyControl').value).toEqual(cashAccount.CategoryId);
-      expect(component.firstFormGroup.get('cmtControl').value).toEqual(cashAccount.Comment);
-      expect(component.firstFormGroup.get('ownerControl').value).toEqual(cashAccount.OwnerId);
-      expect(component.firstFormGroup.disabled).toBeFalsy();
-      fixture.detectChanges();
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // Step 1
-      expect(component._stepper.selectedIndex).toEqual(1);
-      let emptyElement: HTMLElement = fixture.debugElement.query(By.css('.extraNone')).nativeElement;
-      expect(emptyElement.hidden).toBeFalsy();
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // Step 2
-      expect(component._stepper.selectedIndex).toEqual(2);
-      expect(component.statusFormGroup.get('statusControl').value).toEqual(AccountStatusEnum.Normal);
-
-      // Do the submit
-      component.onCloseAccount();
-      expect(updateAccountStatusSpy).toHaveBeenCalled();
-      tick();
-      fixture.detectChanges();
-
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/finance/account/display/' + cashAccount.Id.toString()]);
-
-      flush();
-    }));
-    it('it shall display snackbar if failed to close a account (normal)', fakeAsync(() => {
-      let cashAccount: Account = new Account();
-      cashAccount.Id = 122;
-      cashAccount.Name = 'Cash';
-      cashAccount.Comment = 'Test';
-      cashAccount.OwnerId = fakeData.currentUser.getUserId();
-      cashAccount.CategoryId = financeAccountCategoryCash;
-      cashAccount.Status = AccountStatusEnum.Normal;
-      readAccountSpy.and.returnValue(asyncData(cashAccount));
-      updateAccountStatusSpy.and.returnValue(asyncError('Server 500 error'));
-
-      fixture.detectChanges(); // ngOnInit
-      tick(); // Complete the Observables in ngOnInit
-      fixture.detectChanges();
-      tick(); // Complete the readAccount in ngOnInit
-      fixture.detectChanges();
-      expect(readAccountSpy).toHaveBeenCalled();
-
-      // Step 0
-      expect(component._stepper.selectedIndex).toEqual(0); // At first page
-      expect(component.firstFormGroup.get('nameControl').value).toEqual(cashAccount.Name);
-      expect(component.firstFormGroup.get('ctgyControl').value).toEqual(cashAccount.CategoryId);
-      expect(component.firstFormGroup.get('cmtControl').value).toEqual(cashAccount.Comment);
-      expect(component.firstFormGroup.get('ownerControl').value).toEqual(cashAccount.OwnerId);
-      expect(component.firstFormGroup.disabled).toBeFalsy();
-      fixture.detectChanges();
-      let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // Step 1
-      expect(component._stepper.selectedIndex).toEqual(1);
-      let emptyElement: HTMLElement = fixture.debugElement.query(By.css('.extraNone')).nativeElement;
-      expect(emptyElement.hidden).toBeFalsy();
-      nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
-      nextButtonNativeEl.click();
-      fixture.detectChanges();
-
-      // Step 2
-      expect(component._stepper.selectedIndex).toEqual(2);
-      expect(component.statusFormGroup.get('statusControl').value).toEqual(AccountStatusEnum.Normal);
-
-      // Do the submit
-      component.onCloseAccount();
-      expect(updateAccountStatusSpy).toHaveBeenCalled();
-      tick();
-      fixture.detectChanges();
-
-      // Expect there is snackbar
-      let messageElement: any = overlayContainerElement.querySelector('snack-bar-container');
-      expect(messageElement.textContent).not.toBeNull();
-
-      // Then, after the snackbar disappear, expect navigate!
-      tick(2000);
 
       flush();
     }));

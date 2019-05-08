@@ -28,7 +28,7 @@
       <mat-tab label="{{'Finance.Items' | translate}}">
         <form [formGroup]="itemGroup">
           <hih-fin-document-items formControlName="itemControl" [tranCurr]="tranCurr"
-            [currentUIMode]="uiMode"
+            [currentUIMode]="uiMode" [docDate]="curDocDate"
             [tranCurr2]="tranCurr2" [docType]="curDocType"></hih-fin-document-items>
         </form>
       </mat-tab>

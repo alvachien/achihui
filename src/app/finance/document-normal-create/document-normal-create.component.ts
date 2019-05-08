@@ -6,6 +6,7 @@ import { MatDialog, MatSnackBar, MatTableDataSource, MatChipInputEvent, MatVerti
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, financeDocTypeNormal,
@@ -22,6 +23,7 @@ import { popupDialog, } from '../../message-dialog';
 })
 export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
+  private _docDate: moment.Moment;
 
   public arCurrencies: Currency[] = [];
   public arTranType: TranType[] = [];
@@ -31,6 +33,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public arDocTypes: DocumentType[] = [];
   public curDocType: number = financeDocTypeNormal;
   public curMode: UIMode = UIMode.Create;
+  get curDocDate(): moment.Moment {
+    return this._docDate;
+  }
   // Stepper
   @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
   // Step: Generic info
@@ -47,22 +52,13 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     private _homedefService: HomeDefDetailService,
     private _storageService: FinanceStorageService,
     private _currService: FinCurrencyService) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...');
-    }
-
     this.firstFormGroup = new FormGroup({
       headerControl: new FormControl('', Validators.required),
     });
     this.itemFormGroup = new FormGroup({
       itemControl: new FormControl(''),
     });
-
-    // For creation, the order shall be valid?!
-    // No, we only need ensure the order is valid in the tran-date
-    // 2019.1.2
-    //
-    // this.uiOrderFilter = true;
+    this._docDate = moment();
   }
 
   ngOnInit(): void {
@@ -102,9 +98,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...');
-    }
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
@@ -199,6 +192,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       this.confirmInfo.tranDateString = doc.TranDateFormatString;
       this.confirmInfo.tranDesp = doc.Desp;
       this.confirmInfo.tranCurrency = doc.TranCurr;
+
+      this._docDate = doc.TranDate;
     } else if (event.selectedIndex === 2) {
       this.confirmInfo.inAmount = 0;
       this.confirmInfo.outAmount = 0;

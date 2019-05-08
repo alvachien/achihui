@@ -18,7 +18,7 @@ import * as moment from 'moment';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
-  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
+  UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentTransferCreateComponent } from './document-transfer-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
@@ -94,6 +94,7 @@ describe('DocumentTransferCreateComponent', () => {
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
+        UIOrderValidFilterExPipe,
         DocumentTransferCreateComponent,
         MessageDialogComponent,
         DocumentHeaderComponent,

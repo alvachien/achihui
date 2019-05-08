@@ -16,7 +16,7 @@ import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
-  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
+  UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentExchangeCreateComponent } from './document-exchange-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
@@ -97,6 +97,7 @@ describe('DocumentExchangeCreateComponent', () => {
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
+        UIOrderValidFilterExPipe,
         DocumentExchangeCreateComponent,
         MessageDialogComponent,
       ],
@@ -315,7 +316,6 @@ describe('DocumentExchangeCreateComponent', () => {
       // component.firstFormGroup.get('despControl').setValue('Test');
       fixture.detectChanges();
       expect(component.firstFormGroup.valid).toBeFalsy();
-      expect(component.firstStepCompleted).toBeFalsy();
 
       // Click next button
       let nextButtonNativeEl: any = fixture.debugElement.queryAll(By.directive(MatStepperNext))[0].nativeElement;
@@ -355,7 +355,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeFalsy();
-      expect(component.fromStepCompleted).toBeFalsy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
@@ -394,7 +393,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeFalsy();
-      expect(component.fromStepCompleted).toBeFalsy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
@@ -433,7 +431,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeFalsy();
-      expect(component.fromStepCompleted).toBeFalsy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
@@ -472,7 +469,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeFalsy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
@@ -512,7 +508,7 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeFalsy();
+
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
       nextButtonNativeEl.click();
@@ -552,7 +548,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeFalsy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -593,7 +588,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -635,7 +629,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -676,7 +669,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -700,7 +692,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeFalsy();
-      expect(component.toStepCompleted).toBeFalsy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -740,7 +731,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -764,7 +754,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeFalsy();
-      expect(component.toStepCompleted).toBeFalsy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -804,7 +793,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -828,7 +816,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeFalsy();
-      expect(component.toStepCompleted).toBeFalsy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -868,7 +855,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -892,7 +878,7 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeFalsy();
+
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -932,7 +918,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -956,7 +941,7 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeFalsy();
+
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -996,7 +981,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1020,7 +1004,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeFalsy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1060,7 +1043,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1084,7 +1066,7 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeFalsy();
+
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1125,7 +1107,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1150,7 +1131,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeFalsy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1190,7 +1170,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1215,7 +1194,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeTruthy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1263,7 +1241,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1288,7 +1265,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeTruthy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1348,7 +1324,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1373,7 +1348,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeTruthy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1421,7 +1395,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1446,7 +1419,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeTruthy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1551,7 +1523,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1576,7 +1547,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeTruthy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1643,7 +1613,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1668,7 +1637,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeTruthy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1736,7 +1704,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1761,7 +1728,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeTruthy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1824,7 +1790,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1849,7 +1814,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeTruthy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -1929,7 +1893,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -1954,7 +1917,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeTruthy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();
@@ -2032,7 +1994,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.fromFormGroup.valid).toBeTruthy();
-      expect(component.fromStepCompleted).toBeTruthy();
 
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[1].nativeElement;
@@ -2057,7 +2018,6 @@ describe('DocumentExchangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.toFormGroup.valid).toBeTruthy();
-      expect(component.toStepCompleted).toBeTruthy();
       // Click on next button
       nextButtonNativeEl = fixture.debugElement.queryAll(By.directive(MatStepperNext))[2].nativeElement;
       nextButtonNativeEl.click();

@@ -17,7 +17,7 @@ import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
-  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
+  UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { UIMode, UserAuthInfo, Account, AccountExtraLoan, Document, } from '../../model';
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentLoanCreateComponent } from './document-loan-create.component';
@@ -100,6 +100,7 @@ describe('DocumentLoanCreateComponent', () => {
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
+        UIOrderValidFilterExPipe,
         AccountExtLoanExComponent,
         DocumentLoanCreateComponent,
         MessageDialogComponent,

@@ -16,7 +16,7 @@ import * as moment from 'moment';
 
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
-  UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
+  UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { DocumentHeaderComponent } from '../document-header';
 import { DocumentItemsComponent } from '../document-items';
@@ -92,6 +92,7 @@ describe('DocumentNormalCreateComponent', () => {
         UIAccountCtgyFilterPipe,
         UIAccountCtgyFilterExPipe,
         UIOrderValidFilterPipe,
+        UIOrderValidFilterExPipe,
         DocumentNormalCreateComponent,
         MessageDialogComponent,
         DocumentHeaderComponent,

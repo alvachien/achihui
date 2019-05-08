@@ -2,9 +2,10 @@ import { Component, OnInit, OnDestroy, AfterViewInit, EventEmitter, ChangeDetect
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
-import { Observable, forkJoin, Subject, BehaviorSubject, merge, of, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
+import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTypeNormal, UICommonLabelEnum,
@@ -14,7 +15,7 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, financeDocTy
   financeDocTypeBorrowFrom, financeDocTypeRepay,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
+import { popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-finance-document-detail',
@@ -23,6 +24,7 @@ import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, pop
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   private destroyed$: ReplaySubject<boolean>;
+  private _docDate: moment.Moment;
   public routerID: number = -1; // Current object ID in routing
 
   public currentMode: string;
@@ -43,6 +45,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   curDocType: number;
   tranCurr: string;
   tranCurr2: string;
+  get curDocDate(): moment.Moment {
+    return this._docDate;
+  }
 
   get isFieldChangable(): boolean {
     return this.uiMode === UIMode.Change;
@@ -65,6 +70,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     private _storageService: FinanceStorageService,
     private _currService: FinCurrencyService,
     private _chgDetector: ChangeDetectorRef) {
+    this._docDate = moment();
   }
 
   ngOnInit(): void {
@@ -116,6 +122,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 if (environment.LoggingLevel >= LogLevel.Debug) {
                   console.debug(`AC_HIH_UI [Debug]: Entering DocumentDetailComponent, ngOninit, readDocument`);
                 }
+
+                // Doc. date
+                this._docDate = x2.TranDate;
 
                 // Check whether we need additional fetch for account
                 let addreqs: any[] = [];

@@ -39,6 +39,7 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
   private _uiMode: UIMode;
+  private _docDate: moment.Moment;
 
   public arUIAccount: UIAccountForSelection[] = [];
   public uiAccountStatusFilter: string | undefined;
@@ -80,6 +81,13 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   get docType(): number {
     return this._docType;
   }
+  @Input()
+  set docDate(docdate: moment.Moment) {
+    this._docDate = docdate;
+  }
+  get docDate(): moment.Moment {
+    return this._docDate;
+  }
 
   // Step: Items
   separatorKeysCodes: any[] = [ENTER, COMMA];
@@ -120,7 +128,7 @@ export class DocumentItemsComponent implements OnInit, ControlValueAccessor, Val
   constructor(public _currService: FinCurrencyService,
     private _storageService: FinanceStorageService,
     private _snackbar: MatSnackBar) {
-    // Empty
+    this._docDate = moment();
   }
 
   @HostListener('change') onChange(): void {

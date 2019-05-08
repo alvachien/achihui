@@ -3,20 +3,20 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { MatDialog, MatSnackBar, MatVerticalStepper, } from '@angular/material';
 import { Observable, forkJoin, merge, of, ReplaySubject } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
+import { FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, } from '@angular/forms';
+import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account, financeAccountCategoryAsset,
   AccountExtraAsset, RepeatFrequencyEnum, UICommonLabelEnum,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  IAccountCategoryFilterEx, financeTranTypeAssetSoldoutIncome, momentDateFormat, ModelUtility,
-  InfoMessage, MessageType, financeDocTypeAssetSoldOut, financeTranTypeAssetSoldout, FinanceAssetSoldoutDocumentAPI,
+  IAccountCategoryFilterEx, momentDateFormat, ModelUtility,
+  financeDocTypeAssetSoldOut, FinanceAssetSoldoutDocumentAPI,
   HomeMember, ControlCenter, TranType, Order, DocumentType, Currency, costObjectValidator,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
-import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog } from '../../message-dialog';
-import * as moment from 'moment';
+import { popupDialog } from '../../message-dialog';
 
 @Component({
   selector: 'hih-document-asset-soldout-create',
@@ -25,6 +25,7 @@ import * as moment from 'moment';
 })
 export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
+  private _docDate: moment.Moment;
 
   public detailObject: FinanceAssetSoldoutDocumentAPI;
   // Stepper
@@ -52,6 +53,9 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
   arAccounts: Account[];
   arDocTypes: DocumentType[];
   arCurrencies: Currency[];
+  get curDocDate(): moment.Moment {
+    return this._docDate;
+  }
 
   constructor(private _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,
@@ -60,17 +64,11 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
     private _homeService: HomeDefDetailService,
     private _currService: FinCurrencyService,
     private _router: Router) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor`);
-    }
     this.arMembersInChosedHome = this._homeService.ChosedHome.Members.slice();
+    this._docDate = moment();
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit`);
-    }
-
     this._destroyed$ = new ReplaySubject(1);
 
     this.firstFormGroup = new FormGroup({
@@ -207,6 +205,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
     if (event.selectedIndex === 1) {
       // Update the confirm info.
       let doc: Document = this.firstFormGroup.get('headerControl').value;
+      this._docDate = doc.TranDate;
       this.confirmInfo.tranDateString = doc.TranDateFormatString;
       this.confirmInfo.tranDesp = doc.Desp;
       this.confirmInfo.tranAmount = this.firstFormGroup.get('amountControl').value;
