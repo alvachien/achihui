@@ -2,7 +2,7 @@ import { UIOrderValidFilterExPipe } from './uiorder-valid-filterex.pipe';
 import { UIOrderForSelection, } from '../../model';
 import * as moment from 'moment';
 
-describe('UIOrderValidFilterPipeEx', () => {
+describe('UIOrderValidFilterExPipe', () => {
   let pipe: UIOrderValidFilterExPipe;
   let arorders: UIOrderForSelection[] = [];
 
