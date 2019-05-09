@@ -64,6 +64,7 @@
 
           <mat-form-field>
             <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl">
+              <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
               <mat-option *ngFor="let cc of arControlCenters" [value]="cc.Id">
                 {{cc.Name}}
               </mat-option>
@@ -72,6 +73,7 @@
 
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Activity' | translate}}" formControlName="orderControl">
+              <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
               <mat-option *ngFor="let ord of arUIOrder | uiOrderValidFilter: uiOrderFilter" [value]="ord.Id">
                 {{ord.Name}}
               </mat-option>

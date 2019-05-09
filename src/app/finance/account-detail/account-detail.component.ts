@@ -268,6 +268,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
       popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), undefined, acntObj.VerifiedMsgs);
       return;
     }
+    acntObj.Id = this.routerID;
 
     this._storageService.changeAccount(acntObj)
       .pipe(takeUntil(this._destroyed$))

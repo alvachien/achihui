@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators, FormControl, ValidatorFn, Validatio
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account,
@@ -15,7 +16,6 @@ import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Account,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { popupDialog, } from '../../message-dialog';
-import * as moment from 'moment';
 
 @Component({
   selector: 'hih-document-asset-buy-in-create',
@@ -119,9 +119,9 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
         console.error(`AC_HIH_UI [Error]: Entering DocumentAssetBuyInCreateComponent's ngOninit, failed to load depended objects : ${error}`);
       }
 
-      this._snackbar.open(error.toString(), undefined, {
-        duration: 2000,
-      });
+      // Show a dialog for error details
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), undefined,
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 
@@ -250,7 +250,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
     if (this.IsLegacyAsset) {
       let datBuy: any = group.get('headerControl').value.TranDate;
       if (!datBuy) {
-        return { dateisempty: true};
+        return { dateisinvalid: true};
       }
       if (datBuy.startOf('day').isSameOrAfter(moment().startOf('day'))) {
         return { dateisinvalid: true };

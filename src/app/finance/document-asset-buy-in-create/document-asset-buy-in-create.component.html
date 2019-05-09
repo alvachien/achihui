@@ -39,8 +39,8 @@
   
           <!-- Control center -->
           <mat-form-field>
-            <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl"
-              name="srccc">
+            <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="srccc">
+              <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
               <mat-option *ngFor="let cc of arControlCenters" [value]="cc.Id">
                 {{cc.Name}}
               </mat-option>
@@ -49,8 +49,8 @@
   
           <!-- Order -->
           <mat-form-field>
-            <mat-select placeholder="{{'Finance.Activity' | translate}}" formControlName="orderControl"
-              name="srcord">
+            <mat-select placeholder="{{'Finance.Activity' | translate}}" formControlName="orderControl" name="srcord">
+              <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
               <mat-option *ngFor="let ord of arUIOrder" [value]="ord.Id">
                 {{ord.Name}}
               </mat-option>
@@ -64,6 +64,9 @@
         </mat-error>
         <mat-error *ngIf="(firstFormGroup && firstFormGroup.hasError('nocostobject')) || (firstFormGroup && firstFormGroup.hasError('costobjectoverassign'))">
           <div class="mat-h3">{{'Finance.EitherControlCenterOrOrder' | translate}}</div>
+        </mat-error>
+        <mat-error *ngIf="firstFormGroup && firstFormGroup.hasError('dateisinvalid')">
+          <div class="mat-h3">{{'Common.InvalidDate' | translate}}</div>
         </mat-error>
 
         <div>

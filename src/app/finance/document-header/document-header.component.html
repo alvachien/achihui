@@ -12,6 +12,7 @@
   <!-- Tran date -->
   <mat-form-field>
     <input id="trandate" matInput formControlName="dateControl" [disabled]="!isTranDateEditable"
+      (dateChange)="onChange()"
       [matDatepicker]="tdpicker" placeholder="{{'Common.Date' | translate}}">
     <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
     <mat-datepicker #tdpicker></mat-datepicker>
@@ -20,6 +21,7 @@
   <!-- Description -->
   <mat-form-field>
     <input id="desp" matInput type="text" placeholder="{{'Common.Description' |translate}}"
+      (change)="onChange()"
       [readonly]="!isFieldChangable" formControlName="despControl">
   </mat-form-field>
   
@@ -38,13 +40,13 @@
   <mat-form-field *ngIf="tranCurrency && isForeignCurrency">
     <input matInput type="number" placeholder="{{'Finance.ExchangeRate' | translate}}" 
       matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-      formControlName="exgControl" id="exgrate"
+      formControlName="exgControl" id="exgrate" (change)="onChange()"
       [readonly]="!isExchangeRateEditable">
   </mat-form-field>
 
   <!-- Planned Exchange rate -->
   <div *ngIf="tranCurrency && isForeignCurrency" class="achih-control-full-width">
-    <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan"
+    <mat-checkbox formControlName="exgpControl" color="accent" id="exgrate_plan" (change)="onChange()"
       [disabled]="!isExchangeRateEditable">
       {{'Finance.ProposedExchangeRate' | translate}}
     </mat-checkbox>
@@ -65,13 +67,13 @@
   <mat-form-field *ngIf="tranCurrency2 && isForeignCurrency2">
     <input matInput type="number" placeholder="{{'Finance.ExchangeRate' | translate}}"
       matTooltip="{{'Finance.ExchangeRateHint' | translate}}"
-      formControlName="exg2Control" id="exgrate2"
+      formControlName="exg2Control" id="exgrate2" (change)="onChange()"
       [readonly]="!isExchangeRate2Editable">
   </mat-form-field>
 
   <!-- Planned Exchange rate -->
   <div *ngIf="tranCurrency2 && isForeignCurrency2" class="achih-control-full-width">
-    <mat-checkbox formControlName="exgp2Control" color="accent" id="exgrate_plan2" 
+    <mat-checkbox formControlName="exgp2Control" color="accent" id="exgrate_plan2" (change)="onChange()"
       [disabled]="!isExchangeRate2Editable">
       {{'Finance.ProposedExchangeRate' | translate}}
     </mat-checkbox>

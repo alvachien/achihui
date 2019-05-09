@@ -41,6 +41,7 @@
           <!-- Order -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Activity' | translate}}" formControlName="orderControl" name="srcord">
+              <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
               <mat-option *ngFor="let ord of arUIOrder" [value]="ord.Id">
                 {{ord.Name}}
               </mat-option>
