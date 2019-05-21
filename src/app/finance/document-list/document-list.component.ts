@@ -94,9 +94,6 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...');
-    }
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
@@ -224,11 +221,6 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
     popupConfirmDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfirmTitle),
       this._uiStatusService.getUILabel(UICommonLabelEnum.DeleteConfrimContent))
       .afterClosed().subscribe((x2: any) => {
-      // Do nothing!
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug(`AC_HIH_UI [Debug]: Entering DocumentListComponent, onDeleteDocument, Message dialog result ${x2}`);
-      }
-
       if (x2) {
         this._storageService.deleteDocument(doc.Id).pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
           // Refresh the list!

@@ -43,7 +43,7 @@
         <!-- ID Column -->
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
-          <mat-cell *matCellDef="let row">
+          <mat-cell *matCellDef="let row" (click)="$event.stopPropagation()">
             <button mat-icon-button color="accent" (click)="onChangeDocument(row)" matTooltip="{{'Common.Edit' | translate}}"><mat-icon class="cell-icon">edit</mat-icon></button>
             <button mat-icon-button color="warn" (click)="onDeleteDocument(row)" matTooltip="{{'Common.Delete' | translate}}"><mat-icon class="cell-icon">delete</mat-icon></button>
             {{row.Id}}
