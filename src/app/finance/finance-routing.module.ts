@@ -24,6 +24,7 @@ import { DocumentAssetBuyInCreateComponent } from './document-asset-buy-in-creat
 import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-create';
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create';
 import { DocumentNormalCreateComponent } from './document-normal-create';
+import { DocumentNormalMassCreateComponent } from './document-normal-mass-create';
 import { DocumentTransferCreateComponent } from './document-transfer-create';
 import { DocumentLoanCreateComponent } from './document-loan-create';
 import { DocumentExchangeCreateComponent } from './document-exchange-create';
@@ -151,6 +152,10 @@ const routes: Routes = [
           {
             path: 'createnormal',
             component: DocumentNormalCreateComponent,
+          },
+          {
+            path: 'masscreatenormal',
+            component: DocumentNormalMassCreateComponent,
           },
           {
             path: 'createtransfer',

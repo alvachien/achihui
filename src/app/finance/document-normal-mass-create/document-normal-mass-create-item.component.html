@@ -1,0 +1,64 @@
+<div [formGroup]="itemForm">
+  <!-- Tran date -->
+  <mat-form-field>
+    <input matInput formControlName="dateControl" [matDatepicker]="tdpicker"
+      placeholder="{{'Common.Date' | translate}}">
+    <mat-datepicker-toggle matSuffix [for]="tdpicker"></mat-datepicker-toggle>
+    <mat-datepicker #tdpicker></mat-datepicker>
+  </mat-form-field>
+
+  <!-- Account -->
+  <mat-form-field>
+    <mat-select placeholder="{{'Finance.Account' | translate}}" formControlName="accountControl">
+      <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
+        <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">
+          {{acnt.Name}} ({{acnt.CategoryName | translate}})
+        </span>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Tran type -->
+  <mat-form-field>
+    <mat-select placeholder="{{'Finance.TransactionType' | translate}}" formControlName="tranTypeControl">
+      <mat-option *ngFor="let tt of arTranTypes" [value]="tt.Id">
+        <span [class.incomingtrantype]="!tt.Expense" [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Amount -->
+  <mat-form-field>
+    <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}"
+      formControlName="amountControl">
+  </mat-form-field>
+
+  <!-- Currency -->
+  <mat-form-field>
+    <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
+      <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+        {{cr.Symbol}} - {{cr.Name | translate}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- CC -->
+  <mat-form-field>
+    <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="srccc">
+      <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+      <mat-option *ngFor="let cc of arControlCenters" [value]="cc.Id">
+        {{cc.Name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Order -->
+  <mat-form-field>
+    <mat-select placeholder="{{'Finance.Activity' | translate}}" formControlName="orderControl" name="srcord">
+      <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+      <mat-option *ngFor="let ord of arUIOrder" [value]="ord.Id">
+        {{ord.Name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

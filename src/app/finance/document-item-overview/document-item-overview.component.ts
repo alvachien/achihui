@@ -203,6 +203,9 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
     }
   }
 
+  public onMassCreateNormalDocument(): void {
+    this._router.navigate(['/finance/document/masscreatenormal']);
+  }
   public onCreateNormalDocument(): void {
     this._router.navigate(['/finance/document/createnormal']);
   }

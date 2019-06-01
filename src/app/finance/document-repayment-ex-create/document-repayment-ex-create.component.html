@@ -31,7 +31,7 @@
           <!-- Currency -->
           <mat-form-field>
             <mat-select placeholder="{{'Finance.Currency' | translate}}" formControlName="currControl">
-              <mat-option *ngFor="let cr of _currService.Currencies" [value]="cr.Currency">
+              <mat-option *ngFor="let cr of arCurrencies" [value]="cr.Currency">
                 {{cr.Symbol}} - {{cr.Name | translate}}
               </mat-option>
             </mat-select>            

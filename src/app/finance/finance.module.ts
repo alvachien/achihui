@@ -28,6 +28,7 @@ import { DocumentDetailComponent } from './document-detail';
 import { ReportComponent } from './report';
 import { DocumentItemOverviewComponent } from './document-item-overview';
 import { DocumentNormalCreateComponent } from './document-normal-create';
+import { DocumentNormalMassCreateItemComponent, DocumentNormalMassCreateComponent } from './document-normal-mass-create';
 import { DocumentTransferCreateComponent } from './document-transfer-create';
 import { DocumentLoanCreateComponent } from './document-loan-create';
 import { DocumentExchangeCreateComponent } from './document-exchange-create';
@@ -116,6 +117,8 @@ import { DocumentItemByOrderComponent } from './document-item-by-order';
     DocumentHeaderComponent,
     DocumentItemsComponent,
     DocumentItemByOrderComponent,
+    DocumentNormalMassCreateItemComponent,
+    DocumentNormalMassCreateComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

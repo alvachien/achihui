@@ -6,6 +6,7 @@ Bug fixing and Feature list
 - More than 900 unit tests are all available;
 - New themes are available;
 - Refine the Sidenav;
+- Finance: Normal Document Mass Create;
 - Finance: Document header refactored as an reusable control;
 - Finance: Items refactored as an reusable control;
 - Finance: plan;
