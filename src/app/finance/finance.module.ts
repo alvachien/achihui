@@ -39,6 +39,8 @@ import { DocumentRepaymentExCreateComponent } from './document-repayment-ex-crea
 import { DocumentADPCreateComponent } from './document-adpcreate';
 import { AccountExtLoanExComponent } from './account-ext-loan-ex';
 import { AccountExtADPExComponent } from './account-ext-adpex';
+import { AccountExtCreditCardComponent } from './account-ext-credit-card';
+import { AccountExtInsuranceComponent } from './account-ext-insurance';
 import { AccountTreeComponent } from './account-tree';
 import { DocumentItemByAccountComponent } from './document-item-by-account';
 import { DocumentItemByAccountCategoryComponent } from './document-item-by-account-category';
@@ -47,7 +49,6 @@ import { DocumentItemByControlCenterComponent } from './document-item-by-control
 import { DocumentItemSearchListComponent } from './document-item-search-list';
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIAccountCtgyFilterExPipe, UIOrderValidFilterExPipe, } from './pipes';
-import { AccountExtCreditCardComponent } from './account-ext-credit-card';
 import { ConfigComponent } from './config';
 import { AccountExtAssetExComponent } from './account-ext-asset-ex';
 import { PlanComponent } from './plan';
@@ -119,6 +120,7 @@ import { DocumentItemByOrderComponent } from './document-item-by-order';
     DocumentItemByOrderComponent,
     DocumentNormalMassCreateItemComponent,
     DocumentNormalMassCreateComponent,
+    AccountExtInsuranceComponent,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,
