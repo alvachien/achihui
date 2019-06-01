@@ -26,7 +26,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
 
   displayedTmpDocColumns: string[] = ['DocID', 'TranDate', 'TranType', 'TranAmount', 'Desp'];
   dataSourceTmpDoc: MatTableDataSource<TemplateDocBase> = new MatTableDataSource([]);
-  @ViewChild('paginatorTmpDoc') paginatorTmpDoc: MatPaginator;
+  @ViewChild('paginatorTmpDoc', {static: true}) paginatorTmpDoc: MatPaginator;
   selectedTmpScope: OverviewScopeEnum;
   weeklyTrendChartOption: Observable<EChartOption>;
   dailyTrendChartOption: Observable<EChartOption>;

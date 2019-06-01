@@ -39,7 +39,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   // Stepper
-  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
+  @ViewChild(MatHorizontalStepper, {static: true}) _stepper: MatHorizontalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: Tmp. loan
@@ -54,7 +54,7 @@ export class DocumentRepaymentExCreateComponent implements OnInit, OnDestroy {
   dataSourcePayingAccount: MatTableDataSource<PayingAccountInfo>;
   displayedPayingAccountColumns: string[] = ['accountid', 'amount'];
   // Paginator
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   // Variables
   arControlCenters: ControlCenter[];
   arOrders: Order[];

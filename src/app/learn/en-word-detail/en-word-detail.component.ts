@@ -30,8 +30,8 @@ export class EnWordDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedColumns: string[] = ['id', 'pos', 'langkey', 'detail'];
   dataSource: MatTableDataSource<EnWordExplain>;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(private _dialog: MatDialog,
     private _snackbar: MatSnackBar,

@@ -20,7 +20,7 @@ export class OrderListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumns: string[] = ['id', 'name', 'ValidFrom', 'ValidTo', 'comment'];
   dataSource: MatTableDataSource<Order> = new MatTableDataSource<Order>();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   includeInvalid: boolean = false;
   isLoadingResults: boolean;
 

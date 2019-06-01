@@ -19,7 +19,7 @@ export class HistoryListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumns: string[] = ['objid', 'objname', 'usrname', 'learndate'];
   dataSource: MatTableDataSource<LearnHistory> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   isLoadingResults: boolean;
 
   constructor(private _storageService: LearnStorageService,

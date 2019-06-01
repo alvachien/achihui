@@ -41,7 +41,7 @@ export class AccountExtLoanExComponent implements OnInit, ControlValueAccessor, 
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
   dataSource: MatTableDataSource<TemplateDocLoan> = new MatTableDataSource<TemplateDocLoan>();
   columnsToDisplay: string[] = ['TranDate', 'TranAmount', 'InterestAmount', 'Desp', 'RefDoc'];
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   public loanInfoForm: FormGroup = new FormGroup({
     startDateControl: new FormControl(moment(), [Validators.required]),

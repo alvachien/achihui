@@ -26,7 +26,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['rid', 'ccid', 'precent', 'comment'];
   dataSource: MatTableDataSource<SettlementRule> = new MatTableDataSource();
   // Stepper
-  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
+  @ViewChild(MatHorizontalStepper, {static: true}) _stepper: MatHorizontalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   get firstStepCompleted(): boolean {

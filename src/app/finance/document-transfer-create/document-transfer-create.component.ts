@@ -38,7 +38,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   public curDocType: number = financeDocTypeTransfer;
   public curMode: UIMode = UIMode.Create;
   // Stepper
-  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
+  @ViewChild(MatHorizontalStepper, {static: true}) _stepper: MatHorizontalStepper;
   // Step: Header info
   public headerFormGroup: FormGroup;
   // Step: From

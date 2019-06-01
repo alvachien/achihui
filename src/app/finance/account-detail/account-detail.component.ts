@@ -31,7 +31,7 @@ export class AccountDetailComponent implements OnInit, OnDestroy {
   arAccountCategories: AccountCategory[] = [];
 
   // Stepper
-  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
+  @ViewChild(MatHorizontalStepper, {static: true}) _stepper: MatHorizontalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: Extra

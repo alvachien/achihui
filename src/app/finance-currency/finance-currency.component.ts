@@ -18,7 +18,7 @@ export class FinanceCurrencyComponent implements OnInit, AfterViewInit, OnDestro
 
   displayedColumns: string[] = ['curr', 'name', 'symbol'];
   dataSource: MatTableDataSource<Currency> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(public _currService: FinCurrencyService,
     public _snackBar: MatSnackBar) {

@@ -17,7 +17,7 @@ export class BookCategoryListComponent implements OnInit, AfterViewInit, OnDestr
   private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   dataSource: MatTableDataSource<BookCategory> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(public _storageService: LibraryStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {

@@ -42,7 +42,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   curMode: UIMode = UIMode.Create;
 
   // Stepper
-  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
+  @ViewChild(MatHorizontalStepper, {static: true}) _stepper: MatHorizontalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: Extra Info

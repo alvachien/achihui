@@ -27,7 +27,7 @@ export class DocumentAssetBuyInCreateComponent implements OnInit, OnDestroy {
   private _docDate: moment.Moment;
 
   // Stepper
-  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
+  @ViewChild(MatVerticalStepper, {static: true}) _stepper: MatVerticalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   public curDocType: number = financeDocTypeAssetBuyIn;

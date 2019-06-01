@@ -45,7 +45,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
   public detailObject: FinanceAssetValChgDocumentAPI;
 
   // Stepper
-  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
+  @ViewChild(MatVerticalStepper, {static: true}) _stepper: MatVerticalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   public curDocType: number = financeDocTypeAssetValChg;
@@ -61,7 +61,7 @@ export class DocumentAssetValChgCreateComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<DocItemWithBlance> = new MatTableDataSource<DocItemWithBlance>();
   displayedColumns: string[] = ['DocId', 'TranDate', 'Amount', 'Balance', 'NewBalance'];
   tranAmount: number;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   // Variables
   arMembersInChosedHome: HomeMember[];
   arControlCenters: ControlCenter[];

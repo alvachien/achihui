@@ -18,8 +18,8 @@ export class RecurrEventListComponent implements OnInit, AfterContentInit, OnDes
   displayedColumns: string[] = ['id', 'name', 'start', 'end', 'assignee'];
   dataSource: MatTableDataSource<RecurEvent>;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   isLoadingResults: boolean;
 

@@ -19,7 +19,7 @@ export class EnWordListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumns: string[] = ['id', 'word'];
   dataSource: MatTableDataSource<EnWord> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   isLoadingResults: boolean;
 
   constructor(public _storageService: LearnStorageService,

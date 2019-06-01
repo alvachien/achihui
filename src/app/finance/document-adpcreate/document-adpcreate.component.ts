@@ -43,7 +43,7 @@ export class DocumentADPCreateComponent implements OnInit, OnDestroy {
   public arDocTypes: DocumentType[] = [];
   public curDocType: number = financeDocTypeAdvancePayment;
   // Stepper
-  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
+  @ViewChild(MatVerticalStepper, {static: true}) _stepper: MatVerticalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: Extra

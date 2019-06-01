@@ -18,7 +18,7 @@ export class ObjectListComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: MatTableDataSource<LearnObject> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   isLoadingResults: boolean;
   arCategories: LearnCategory[];
 

@@ -21,7 +21,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['id', 'name', 'comment'];
 
   dataSource: MatTableDataSource<ControlCenter> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   isLoadingResults: boolean;
   totalCount: number;
 

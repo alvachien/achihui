@@ -49,7 +49,7 @@ export class DocumentItemByAccountComponent implements OnInit, AfterViewInit, On
   }
   get selectedAccount(): number { return this._seledAccount; }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(private _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,

@@ -19,9 +19,9 @@ export class ConfigComponent implements OnInit, OnDestroy {
   displayedColumnsAcntCtgy: string[] = ['id', 'name', 'assetflag', 'comment'];
   displayedColumnsDocType: string[] = ['id', 'name', 'comment'];
   displayedColumnsAsstCtgy: string[] = ['id', 'name', 'desp'];
-  @ViewChild('paginatorAcntCtgy') paginatorAcntCtgy: MatPaginator;
-  @ViewChild('paginatorDocType') paginatorDocType: MatPaginator;
-  @ViewChild('paginatorAstCtgy') paginatorAstCtgy: MatPaginator;
+  @ViewChild('paginatorAcntCtgy', {static: true}) paginatorAcntCtgy: MatPaginator;
+  @ViewChild('paginatorDocType', {static: true}) paginatorDocType: MatPaginator;
+  @ViewChild('paginatorAstCtgy', {static: true}) paginatorAstCtgy: MatPaginator;
 
   constructor(public _storageService: FinanceStorageService,
     private _snackbar: MatSnackBar) {

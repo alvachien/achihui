@@ -19,7 +19,7 @@ export class QuestionBankListComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['id', 'type', 'question', 'briefawr' ];
   dataSource: MatTableDataSource<QuestionBankItem> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   allTags: string[] = [];
   isLoadingResults: boolean;
 

@@ -18,8 +18,8 @@ export class MovieGenreListComponent implements OnInit, AfterViewInit, OnDestroy
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   dataSource: any = new MatTableDataSource();
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   isLoadingResults: boolean;
 
   constructor(

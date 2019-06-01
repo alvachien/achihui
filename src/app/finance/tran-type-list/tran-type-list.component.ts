@@ -79,8 +79,8 @@ export class TranTypeListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   dataSource: MatTableDataSource<TranType> = new MatTableDataSource<TranType>();
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,

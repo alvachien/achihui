@@ -22,8 +22,8 @@ export class HabitListComponent implements OnInit, AfterContentInit, OnDestroy {
   dataSource: MatTableDataSource<EventHabit>;
   selection: SelectionModel<EventHabit>;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   isLoadingResults: boolean;
 

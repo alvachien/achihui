@@ -32,7 +32,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
   public arUIOrder: UIOrderForSelection[] = [];
   public uiOrderFilter: boolean | undefined;
   // Stepper
-  @ViewChild(MatHorizontalStepper) _stepper: MatHorizontalStepper;
+  @ViewChild(MatHorizontalStepper, {static: true}) _stepper: MatHorizontalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: From
@@ -46,7 +46,7 @@ export class DocumentExchangeCreateComponent implements OnInit, OnDestroy {
     'ExchangeRate', 'PropExchangeRate', 'Currency2', 'ExchangeRate2', 'PropExchangeRate2',
   ];
   selection: any = new SelectionModel<DocumentWithPlanExgRate>(true, []);
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   // Variables
   arControlCenters: ControlCenter[];
   arOrders: Order[];

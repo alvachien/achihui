@@ -17,7 +17,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
   dataSource: MatTableDataSource<LearnCategory> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   isLoadingResults: boolean;
 
   constructor(public _storageService: LearnStorageService,

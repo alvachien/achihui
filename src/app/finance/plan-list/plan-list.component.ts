@@ -19,7 +19,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   displayedColumns: string[] = ['id', 'accid', 'tgtdate', 'tgtbalance', 'desp'];
   dataSource: MatTableDataSource<Plan> = new MatTableDataSource<Plan>();
-  @ViewChild(MatPaginator) paginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(private _router: Router,
     private _storageService: FinanceStorageService) {

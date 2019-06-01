@@ -18,7 +18,7 @@ export class EnSentenceListComponent implements OnInit, AfterViewInit, OnDestroy
 
   displayedColumns: string[] = ['id', 'sent' ];
   dataSource: MatTableDataSource<EnSentence> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   isLoadingResults: boolean;
 
   constructor(public _storageService: LearnStorageService,

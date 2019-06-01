@@ -16,7 +16,7 @@ import { EventStorageService } from '../../services';
 export class CategoryListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
   displayedColumns: string[] = ['id', 'name', 'parid', 'fulldisplay', 'comment'];
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(public _storageService: EventStorageService,
     private _router: Router) {

@@ -20,7 +20,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   displayedColumns: string[] = ['id', 'name', 'host', 'currency', 'details'];
   dataSource: MatTableDataSource<HomeDef> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   get IsCurrentHomeChosed(): boolean {
     if (this._homedefService.ChosedHome) {

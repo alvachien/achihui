@@ -48,7 +48,7 @@ export class DocumentItemByControlCenterComponent implements OnInit, AfterViewIn
   }
   get selectedControlCenter(): number { return this._seledCC; }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(private _storageService: FinanceStorageService,
     private _uiStatusService: UIStatusService,

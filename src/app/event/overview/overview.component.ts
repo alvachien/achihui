@@ -21,7 +21,7 @@ import { LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN,
 })
 export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;
-  @ViewChild('fcal') elemcalendar: ElementRef;
+  @ViewChild('fcal', {static: true}) elemcalendar: ElementRef;
   ctrlCalendar: Calendar;
   initialLocaleCode: string = 'en';
   listEvent: any[];

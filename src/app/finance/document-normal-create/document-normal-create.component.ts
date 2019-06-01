@@ -37,7 +37,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     return this._docDate;
   }
   // Stepper
-  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
+  @ViewChild(MatVerticalStepper, {static: true}) _stepper: MatVerticalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   // Step: Items

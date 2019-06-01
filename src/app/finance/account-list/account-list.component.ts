@@ -18,7 +18,7 @@ export class AccountListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumns: string[] = ['id', 'name', 'ctgy', 'status', 'comment'];
   dataSource: MatTableDataSource<Account> = new MatTableDataSource<Account>();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   arrayStatus: UIDisplayString[] = [];
   selectedStatus: AccountStatusEnum = AccountStatusEnum.Normal;
   recordAmount: number = 0;

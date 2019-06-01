@@ -50,7 +50,7 @@ export class DocumentItemByAccountCategoryComponent implements OnInit, AfterView
     this.subjAccountIDS.next(ids);
   }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(private _storageService: FinanceStorageService,
     private _dialog: MatDialog,

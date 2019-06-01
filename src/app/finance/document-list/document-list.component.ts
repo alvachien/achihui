@@ -26,7 +26,7 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
   dataSource: MatTableDataSource<Document> = new MatTableDataSource<Document>();
 
   selectedDocScope: OverviewScopeEnum;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   isLoadingResults: boolean;
   totalDocumentCount: number;
 

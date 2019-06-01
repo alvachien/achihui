@@ -27,7 +27,7 @@ export class DocumentItemSearchListComponent implements OnInit, AfterViewInit, O
   arUIAccount: UIAccountForSelection[] = [];
   arTranTypes: TranType[] = [];
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   isLoadingResults: boolean = false;
   resultsLength: number;
   public subjFilters: BehaviorSubject<GeneralFilterItem[]> = new BehaviorSubject([]);

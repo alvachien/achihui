@@ -18,7 +18,7 @@ export class LocationListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumns: string[] = ['id', 'category', 'name', 'comment'];
   dataSource: MatTableDataSource<Location> = new MatTableDataSource();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(public _storageService: LibraryStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {

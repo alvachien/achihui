@@ -17,7 +17,7 @@ export class LanguageComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['lcid', 'isoname', 'enname', 'nvname', 'appflag'];
   dataSource: MatTableDataSource<AppLanguage>;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(public _storageService: LanguageService,
     private _snackBar: MatSnackBar) {

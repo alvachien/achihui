@@ -38,12 +38,12 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
   acntCtgyChartOption: Observable<EChartOption>;
   displayedBSColumns: string[] = ['Account', 'Category', 'Debit', 'Credit', 'Balance'];
   dataSourceBS: MatTableDataSource<BalanceSheetReport> = new MatTableDataSource();
-  @ViewChild('paginatorBS') paginatorBS: MatPaginator;
+  @ViewChild('paginatorBS', {static: true}) paginatorBS: MatPaginator;
 
   // CC
   displayedCCColumns: string[] = ['ControlCenter', 'Debit', 'Credit', 'Balance'];
   dataSourceCC: MatTableDataSource<ControlCenterReport> = new MatTableDataSource();
-  @ViewChild('paginatorCC') paginatorCC: MatPaginator;
+  @ViewChild('paginatorCC', {static: true}) paginatorCC: MatPaginator;
   ccIncomingChartOption: Observable<EChartOption>;
   ccOutgoingChartOption: Observable<EChartOption>;
 
@@ -51,7 +51,7 @@ export class ReportComponent implements OnInit, AfterContentInit, OnDestroy {
   includeInvalid: boolean = false;
   displayedOrderColumns: string[] = ['Order', 'Debit', 'Credit', 'Balance'];
   dataSourceOrder: MatTableDataSource<OrderReport> = new MatTableDataSource();
-  @ViewChild('paginatorOrder') paginatorOrder: MatPaginator;
+  @ViewChild('paginatorOrder', {static: true}) paginatorOrder: MatPaginator;
   orderIncomingChartOption: Observable<EChartOption>;
   orderOutgoingChartOption: Observable<EChartOption>;
 

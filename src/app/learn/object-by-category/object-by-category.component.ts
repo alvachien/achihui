@@ -43,7 +43,7 @@ export class ObjectByCategoryComponent implements OnInit, AfterViewInit, OnDestr
     }
   }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(public _storageService: LearnStorageService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {

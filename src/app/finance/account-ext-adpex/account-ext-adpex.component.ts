@@ -39,7 +39,7 @@ export class AccountExtADPExComponent implements OnInit, ControlValueAccessor, V
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   dataSource: MatTableDataSource<TemplateDocADP> = new MatTableDataSource<TemplateDocADP>();
   displayedColumns: string[] = ['TranDate', 'TranAmount', 'Desp', 'RefDoc'];
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   refDocId?: number;
 
   public adpInfoForm: FormGroup = new FormGroup({

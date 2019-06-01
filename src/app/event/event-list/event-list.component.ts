@@ -20,8 +20,8 @@ export class EventListComponent implements OnInit, AfterViewInit, OnDestroy {
   dataSource: MatTableDataSource<GeneralEvent> = new MatTableDataSource();
   totalCountOfEvent: number;
   refreshEvent: EventEmitter<Object> = new EventEmitter<Object>();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   isLoadingResults: boolean;
   includeCompleted: boolean;
   arMembers: HomeMember[];

@@ -29,7 +29,7 @@ export class DocumentAssetSoldoutCreateComponent implements OnInit, OnDestroy {
 
   public detailObject: FinanceAssetSoldoutDocumentAPI;
   // Stepper
-  @ViewChild(MatVerticalStepper) _stepper: MatVerticalStepper;
+  @ViewChild(MatVerticalStepper, {static: true}) _stepper: MatVerticalStepper;
   // Step: Generic info
   public firstFormGroup: FormGroup;
   public curDocType: number = financeDocTypeAssetSoldOut;
