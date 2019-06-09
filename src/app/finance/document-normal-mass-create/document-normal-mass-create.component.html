@@ -13,7 +13,7 @@
       <!-- items -->
       <div formArrayName="items">
         <div *ngFor="let item of myForm.controls.items.controls; let i=index">
-          <mat-card>
+          <mat-card class="item-card">
             <mat-card-header>
               <mat-card-title>Item {{i + 1}}</mat-card-title>
               <mat-card-subtitle>
