@@ -54,25 +54,25 @@ export const appRoutes: Routes = [{
   path: 'learn',
   canActivate: [HomeChoseGuardService],
   // loadChildren: 'app/learn/learn.module#LearnModule',
-  loadChildren: () => import(`app/learn/learn.module`).then(m => m.LearnModule)
+  loadChildren: () => import('./learn/learn.module').then(m => m.LearnModule)
 },
 {
   path: 'finance',
   canActivate: [HomeChoseGuardService],
   // loadChildren: 'app/finance/finance.module#FinanceModule',
-  loadChildren: () => import(`app/finance/finance.module`).then(m => m.FinanceModule)
+  loadChildren: () => import('./finance/finance.module').then(m => m.FinanceModule)
 },
 {
   path: 'event',
   canActivate: [HomeChoseGuardService],
   // loadChildren: 'app/event/event.module#EventModule',
-  loadChildren: () => import(`app/event/event.module`).then(m => m.EventModule)
+  loadChildren: () => import('./event/event.module').then(m => m.EventModule)
 },
 {
   path: 'library',
   canActivate: [HomeChoseGuardService],
   // loadChildren: 'app/library/library.module#LibraryModule',
-  loadChildren: () => import(`app/library/library.module`).then(m => m.LibraryModule)
+  loadChildren: () => import('./library/library.module').then(m => m.LibraryModule)
 },
 { path: 'about', component: AboutComponent },
 { path: 'credits', component: CreditsComponent },
