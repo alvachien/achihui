@@ -7,11 +7,9 @@ import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import {
-  LogLevel, Account, Document, DocumentItem, ControlCenter, Order, TranType,
+  LogLevel, ControlCenter, TranType, Document,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  UICommonLabelEnum, Currency, financeDocTypeRepay, financeTranTypeRepaymentOut, financeTranTypeInterestOut,
-  financeAccountCategoryBorrowFrom, financeTranTypeRepaymentIn, financeTranTypeInterestIn, momentDateFormat,
-  AccountExtraLoan, TemplateDocLoan, financeAccountCategoryAsset, financeAccountCategoryLendTo, DocumentType,
+  UICommonLabelEnum, Currency, FinanceNormalDocItemMassCreate,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { popupDialog, } from '../../message-dialog';
@@ -56,7 +54,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public arUIOrder: UIOrderForSelection[] = [];
   public arControlCenter: ControlCenter[];
   public arTranType: TranType[];
-  public localCurrency: String;
+  public localCurrency: string;
   public arCurrencies: Currency[] = [];
 
   constructor(private _fb: FormBuilder,
@@ -118,30 +116,49 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       tranTypeControl: ['', Validators.required],
       amountControl: ['', Validators.required],
       // currControl: ['', Validators.required],
+      despControl: ['', Validators.required],
       ccControl: [''],
       orderControl: [''],
     });
   }
 
   addItem(): void {
-    const control = <FormArray>this.myForm.controls['items'];
-    const addrCtrl = this.initItem();
+    const control: any = <FormArray>this.myForm.controls.items;
+    const addrCtrl: any = this.initItem();
 
     control.push(addrCtrl);
   }
 
   removeItem(i: number): void {
-    const control = <FormArray>this.myForm.controls['items'];
+    const control: any = <FormArray>this.myForm.controls.items;
     control.removeAt(i);
   }
 
   public onSubmit(): void {
-    // Do somthing
-    const control = <FormArray>this.myForm.controls['items'];
+    let arItems: FinanceNormalDocItemMassCreate[] = [];
+
+    const control: any = <FormArray>this.myForm.controls.items;
     control.controls.forEach((ctrl: AbstractControl) => {
       // Read the items
-      console.log(ctrl);
+      if (ctrl.value) {
+        let item: FinanceNormalDocItemMassCreate = new FinanceNormalDocItemMassCreate();
+        item.accountID = ctrl.get('accountControl').value;
+        item.controlCenterID = ctrl.get('ccControl').value;
+        item.orderID = ctrl.get('orderControl').value;
+        item.desp = ctrl.get('despControl').value;
+        item.tranAmount = ctrl.get('amountControl').value;
+        item.tranCurrency = this.localCurrency;
+        item.tranDate = ctrl.get('dateControl').value;
+        item.tranType = ctrl.get('tranTypeControl').value;
+
+        if (item.isValid) {
+          arItems.push(item);
+        }
+      }
     });
-    console.log(control);
+
+    this._storageService.massCreateNormalDocument(arItems).subscribe((docs: Document[]) => {
+      // TBD.
+    });
   }
 }

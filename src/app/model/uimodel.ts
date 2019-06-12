@@ -163,3 +163,48 @@ export function BuildupOrderForSelection(orders: HIHFinance.Order[], skipinv?: b
 
   return arrst;
 }
+
+// Normal document Mass Create
+export class FinanceNormalDocItemMassCreate {
+  public tranDate: moment.Moment;
+  public accountID: number;
+  public tranType: number;
+  public tranAmount: number;
+  public tranCurrency: string;
+  public controlCenterID?: number;
+  public orderID?: number;
+  public desp: string;
+
+  // Tag
+  public tagTerms: string[];
+
+  get isValid(): boolean {
+    if (!this.desp) {
+      return false;
+    }
+    if (this.accountID <= 0) {
+      return false;
+    }
+    if (this.tranType <= 0) {
+      return false;
+    }
+    if (this.tranAmount <= 0) {
+      return false;
+    }
+    if (!this.tranCurrency) {
+      return false;
+    }
+    if (this.controlCenterID) {
+      if (this.orderID) {
+        return false;
+      }
+    } else if (this.orderID) {
+      if (this.controlCenterID) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
+}
