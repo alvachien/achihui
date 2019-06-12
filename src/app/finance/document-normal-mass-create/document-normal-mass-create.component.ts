@@ -3,13 +3,14 @@ import { FormBuilder, FormGroup, FormArray, Validators, ValidationErrors, Abstra
 import { MatDialog } from '@angular/material';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
 import {
   LogLevel, ControlCenter, TranType, Document,
   BuildupAccountForSelection, UIAccountForSelection, BuildupOrderForSelection, UIOrderForSelection,
-  UICommonLabelEnum, Currency, FinanceNormalDocItemMassCreate,
+  UICommonLabelEnum, Currency, FinanceNormalDocItemMassCreate, InfoMessage, MessageType,
 } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { popupDialog, } from '../../message-dialog';
@@ -62,6 +63,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     private _currService: FinCurrencyService,
     private _uiStatusService: UIStatusService,
     private _homeService: HomeDefDetailService,
+    private _router: Router,
     private _dialog: MatDialog) {
       // Empty
     }
@@ -156,9 +158,32 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         }
       }
     });
+    if (arItems.length <= 0 || arItems.length !== control.controls.length) {
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+      return;
+    }
 
     this._storageService.massCreateNormalDocument(arItems).subscribe((docs: Document[]) => {
-      // TBD.
+      // Show the success dialog.
+      let infoMsg: InfoMessage[] = [];
+      docs.forEach((val: Document) => {
+        let imsg: InfoMessage = new InfoMessage();
+        imsg.MsgType = MessageType.Info;
+        imsg.MsgTitle = val.Id.toString();
+        imsg.MsgContent = 'Document Posted';
+        infoMsg.push(imsg);
+      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        undefined,
+        infoMsg).afterClosed().subscribe(() => {
+          // Jump to document list page
+          this._router.navigate(['/finance/document']);
+        });
+    }, (error: any) => {
+      // Popup error dialog
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 }

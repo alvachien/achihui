@@ -1140,7 +1140,7 @@ export class FinanceStorageService {
         if (rjs instanceof Array && rjs.length > 0) {
           for (const si of rjs) {
             const hd: Document = new Document();
-            hd.onSetData(response);
+            hd.onSetData(si);
             rsts.push(hd);
           }
         }

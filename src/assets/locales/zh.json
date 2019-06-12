@@ -25,6 +25,7 @@
     "New": "新建",
     "Change": "修改",
     "Delete": "删除",
+    "Remove": "移除",
     "Create": "创建",
     "Display": "显示",
     "DisplayDetails": "显示详情",
@@ -501,6 +502,7 @@
     "LegacyAsset": "固有资产",
     "PresentValue": "当前估价",
     "Plan": "财务计划",
+    "NormalDocMassCreate": "批量创建普通凭证",
 
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",

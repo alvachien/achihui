@@ -1,30 +1,30 @@
 <mat-card style="width: 96%;">
   <mat-card-header>
     <mat-card-title>
-      Mass Create Normal Documents
+      {{'Finance.NormalDocMassCreate' | translate}}
     </mat-card-title>
   </mat-card-header>
   <mat-card-content style="width: 96%;">
     <mat-toolbar color="accent">
-      <button mat-button (click)="addItem()">New item</button>
+      <button mat-button (click)="addItem()">{{'Finance.CreateItem' | translate}}</button>
     </mat-toolbar>
 
     <form [formGroup]="myForm" style="padding: 1em;">
       <!-- items -->
       <div formArrayName="items" style="width: 96%;">
-        <div *ngFor="let item of myForm.controls.items.controls; let i=index">
+        <div *ngFor="let item of myForm?.get('items')['controls']; let i=index">
           <mat-card class="item-card" style="width: 96%;">
             <mat-card-header>
-              <mat-card-title>Item {{i + 1}}</mat-card-title>
+              <mat-card-title>{{'Finance.Items' | translate}} {{i + 1}}</mat-card-title>
               <mat-card-subtitle>
-                <button mat-button *ngIf="myForm.controls.items.controls.length > 1" (click)="removeItem(i)">
-                  Remove
+                <button mat-button (click)="removeItem(i)">
+                  {{'Common.Remove' | translate}}
                 </button>
               </mat-card-subtitle>
             </mat-card-header>
             <mat-card-content style="width: 96%;">
               <div [formGroupName]="i" style="width: 96%;">
-                <hih-document-normal-mass-create-item [group]="myForm.controls.items.controls[i]"
+                <hih-document-normal-mass-create-item [group]="myForm?.get('items')['controls'][i]"
                   [arUIAccount]="arUIAccount"
                   [arUIOrder]="arUIOrder"
                   [arControlCenter]="arControlCenter"
@@ -40,6 +40,6 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button type="submit" [disabled]="!myForm.valid" (click)="onSubmit()">Submit</button>
+    <button mat-button type="submit" [disabled]="!myForm.valid" (click)="onSubmit()">{{'Common.Submit' | translate}}</button>
   </mat-card-actions>
 </mat-card>

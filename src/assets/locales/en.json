@@ -25,6 +25,7 @@
     "New": "New",
     "Change": "Change",
     "Delete": "Delete",
+    "Remove": "Remove",
     "Create": "Create",
     "Display": "Display",
     "DisplayDetails": "Display Details",
@@ -501,6 +502,7 @@
     "LegacyAsset": "Legacy Asset",
     "PresentValue": "Present Est. Vaue",
     "Plan": "Finance Plan",
+    "NormalDocMassCreate": "Normal Document Mass Create",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

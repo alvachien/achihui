@@ -31,7 +31,7 @@
         <button mat-menu-item (click)="onOpenPlanList()">{{'Finance.Plan' | translate}} - {{'Common.ListView' | translate}}</button>
         <button mat-menu-item (click)="onCreatePlan()">{{'Finance.Plan' | translate}} - {{'Common.Create' | translate}}</button>
       </mat-menu>
-      <button mat-button (click)="onMassCreateNormalDocument()">Mass Create</button>
+      <button mat-icon-button mat-button (click)="onMassCreateNormalDocument()"><mat-icon>queue</mat-icon></button>
     </mat-toolbar>
     
     <div class="grid-container">
