@@ -2,6 +2,17 @@ import { environment } from '../../environments/environment';
 import * as hih from './common';
 import * as moment from 'moment';
 
+
+/**
+ * Finance quick access type
+ */
+export enum FinanceQuickAccessTypeEnum {
+  Account       = 1,
+  Document      = 2,
+  ControlCenter = 3,
+  Order         = 4,
+}
+
 /**
  * Enum for Account status
  */

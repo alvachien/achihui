@@ -5,11 +5,14 @@ Released at 2019.6.30
 Bug fixing and Feature list
 - More than 900 unit tests are all available;
 - New themes are available;
+- Animation: List page to Detail page;
+- Animation: Detail page to List Page;
 - Refine the Sidenav;
+- Finance: Quick Access;
 - Finance: Normal Document Mass Create;
 - Finance: Document header refactored as an reusable control;
 - Finance: Items refactored as an reusable control;
-- Finance: plan;
+- Finance: Plan concept;
 - Finance: Normal document now support editing;
 - Finance: Transfer document now support editing;
 - Finance: All documents now support description and Tag editing;

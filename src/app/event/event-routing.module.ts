@@ -31,18 +31,22 @@ const routes: Routes = [
           {
             path: '',
             component: EventListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: EventDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: EventDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: EventDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -53,6 +57,7 @@ const routes: Routes = [
           {
             path: '',
             component: CategoryListComponent,
+            data: {animation: 'ListPage'},
           },
         ],
       },
@@ -63,18 +68,22 @@ const routes: Routes = [
           {
             path: '',
             component: HabitListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: HabitDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: HabitDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: HabitDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -85,18 +94,22 @@ const routes: Routes = [
           {
             path: '',
             component: RecurrEventListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: RecurrEventDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: RecurrEventDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: RecurrEventDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },

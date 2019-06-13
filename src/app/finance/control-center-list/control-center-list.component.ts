@@ -7,14 +7,12 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 import { environment } from '../../../environments/environment';
 import { LogLevel, ControlCenter, UICommonLabelEnum } from '../../model';
 import { FinanceStorageService, UIStatusService } from '../../services';
-import { fadeAnimation } from '../../utility';
 import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, popupConfirmDialog } from '../../message-dialog';
 
 @Component({
   selector: 'hih-finance-control-center-list',
   templateUrl: './control-center-list.component.html',
   styleUrls: ['./control-center-list.component.scss'],
-  animations: [fadeAnimation],
 })
 export class ControlCenterListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean>;

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy, } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, ValidationErrors, AbstractControl, } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog, DateAdapter, } from '@angular/material';
 import { Observable, forkJoin, merge, ReplaySubject, Subscription } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -62,6 +62,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     private _storageService: FinanceStorageService,
     private _currService: FinCurrencyService,
     private _uiStatusService: UIStatusService,
+    private _dateAdapter: DateAdapter<any>,
     private _homeService: HomeDefDetailService,
     private _router: Router,
     private _dialog: MatDialog) {
@@ -72,6 +73,11 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
     this.myForm = this._fb.group({
       items: this._fb.array([]),
+    });
+
+    this.onSetLanguage(this._uiStatusService.CurrentLanguage);
+    this._uiStatusService.langChangeEvent.pipe(takeUntil(this._destroyed$)).subscribe((x: any) => {
+      this.onSetLanguage(x);
     });
 
     this.localCurrency = this._homeService.ChosedHome.BaseCurrency;
@@ -185,5 +191,14 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
         error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
+  }
+  private onSetLanguage(x: string): void {
+    if (x === 'zh') {
+      moment.locale('zh-cn');
+      this._dateAdapter.setLocale('zh-cn');
+    } else if (x === 'en') {
+      moment.locale(x);
+      this._dateAdapter.setLocale('en-us');
+    }
   }
 }

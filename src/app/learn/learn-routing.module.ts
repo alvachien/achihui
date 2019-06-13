@@ -34,22 +34,27 @@ const routes: Routes = [
           {
             path: '',
             component: CategoryListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'tree',
             component: CategoryTreeComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'create',
             component: CategoryDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: CategoryDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: CategoryDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -60,22 +65,27 @@ const routes: Routes = [
           {
             path: '',
             component: ObjectListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'tree',
             component: ObjectTreeComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: ObjectDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: ObjectDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: ObjectDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -86,18 +96,22 @@ const routes: Routes = [
           {
             path: '',
             component: HistoryListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: HistoryDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: HistoryDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: HistoryDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -108,18 +122,22 @@ const routes: Routes = [
           {
             path: '',
             component: QuestionBankListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: QuestionBankDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: QuestionBankDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: QuestionBankDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -130,18 +148,22 @@ const routes: Routes = [
           {
             path: '',
             component: EnWordListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: EnWordDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: EnWordDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: EnWordDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -152,18 +174,22 @@ const routes: Routes = [
           {
             path: '',
             component: EnSentenceListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: EnSentenceDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: EnSentenceDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: EnSentenceDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },

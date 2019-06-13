@@ -5,7 +5,7 @@ import { DefaultFlexDirective } from '@angular/flex-layout';
   selector: '[ngxSplitArea]',
   host: {
     style: 'overflow: auto;',
-  }
+  },
 })
 export class SplitAreaDirective {
   constructor(@Optional() @Self() public flex: DefaultFlexDirective) { }

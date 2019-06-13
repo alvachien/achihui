@@ -23,7 +23,7 @@ export const appRoutes: Routes = [{
   pathMatch: 'full',
 },
 { path: 'initial', component: PageInitialComponent },
-{ path: 'language', component: LanguageComponent },
+{ path: 'language', component: LanguageComponent, data: {animation: 'ListPage'}, },
 {
   path: 'homedef',
   component: HomeDefComponent,
@@ -32,24 +32,28 @@ export const appRoutes: Routes = [{
     {
       path: '',
       component: HomeDefListComponent,
+      data: {animation: 'ListPage'},
     },
     {
       path: 'create',
       component: HomeDefDetailComponent,
+      data: {animation: 'DetailPage'},
     },
     {
       path: 'display/:id',
       component: HomeDefDetailComponent,
+      data: {animation: 'DetailPage'},
     },
     {
       path: 'edit/:id',
       component: HomeDefDetailComponent,
+      data: {animation: 'DetailPage'},
     },
   ],
 },
-{ path: 'currency', component: FinanceCurrencyComponent, canActivate: [AuthGuardService], },
-{ path: 'homemsg', component: HomeMessageComponent, canActivate: [HomeChoseGuardService], },
-{ path: 'tag', component: TagsListComponent, canActivate: [AuthGuardService], },
+{ path: 'currency', component: FinanceCurrencyComponent, canActivate: [AuthGuardService], data: {animation: 'ListPage'}, },
+{ path: 'homemsg', component: HomeMessageComponent, canActivate: [HomeChoseGuardService], data: {animation: 'ListPage'}, },
+{ path: 'tag', component: TagsListComponent, canActivate: [AuthGuardService], data: {animation: 'ListPage'}, },
 {
   path: 'learn',
   canActivate: [HomeChoseGuardService],
@@ -75,9 +79,9 @@ export const appRoutes: Routes = [{
   loadChildren: () => import('./library/library.module').then(m => m.LibraryModule)
 },
 { path: 'about', component: AboutComponent },
-{ path: 'credits', component: CreditsComponent },
-{ path: 'userdetail', component: UserDetailComponent, canActivate: [AuthGuardService], },
-{ path: 'version', component: VersionComponent },
+{ path: 'credits', component: CreditsComponent, data: {animation: 'ListPage'}, },
+{ path: 'userdetail', component: UserDetailComponent, canActivate: [AuthGuardService], data: {animation: 'DetailPage'}, },
+{ path: 'version', component: VersionComponent, data: {animation: 'ListPage'}, },
 { path: 'lackauthority', component: PageLackAuthorityComponent },
 { path: 'fatalerror', component: PageFatalErrorComponent },
 { path: '**', component: PageNotFoundComponent },

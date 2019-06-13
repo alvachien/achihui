@@ -35,6 +35,7 @@ const routes: Routes = [
           {
             path: '',
             component: BookCategoryListComponent,
+            data: {animation: 'ListPage'},
           },
         ],
       },
@@ -45,18 +46,22 @@ const routes: Routes = [
           {
             path: '',
             component: PersonListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: PersonDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: PersonDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: PersonDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -67,18 +72,22 @@ const routes: Routes = [
           {
             path: '',
             component: BookListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: BookDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: BookDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: BookDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -89,18 +98,22 @@ const routes: Routes = [
           {
             path: '',
             component: MovieGenreListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: MovieGenreDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: MovieGenreDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: MovieGenreDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -111,18 +124,22 @@ const routes: Routes = [
           {
             path: '',
             component: MovieListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: MovieDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: MovieDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: MovieDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -133,18 +150,22 @@ const routes: Routes = [
           {
             path: '',
             component: LocationListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: LocationDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: LocationDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: LocationDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },

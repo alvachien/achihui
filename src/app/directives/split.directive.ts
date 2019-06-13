@@ -8,18 +8,17 @@ import {
   OnDestroy,
   QueryList,
 } from '@angular/core';
-import {FlexDirective} from '@angular/flex-layout';
-import {Subscription} from 'rxjs';
+import { FlexDirective } from '@angular/flex-layout';
+import { Subscription } from 'rxjs';
 
-import {SplitHandleDirective} from './split-handle.directive';
-import {SplitAreaDirective} from './split-area.directive';
-
+import { SplitHandleDirective } from './split-handle.directive';
+import { SplitAreaDirective } from './split-area.directive';
 
 @Directive({
   selector: '[ngxSplit]',
   host: {
-    class: 'ngx-split'
-  }
+    class: 'ngx-split',
+  },
 })
 export class SplitDirective implements AfterContentInit, OnDestroy {
   @Input('ngxSplit') direction = 'row';
@@ -34,7 +33,7 @@ export class SplitDirective implements AfterContentInit, OnDestroy {
     this.watcher = this.handle.drag.subscribe(this.onDrag.bind(this));
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.watcher.unsubscribe();
   }
 

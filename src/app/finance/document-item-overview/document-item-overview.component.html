@@ -31,7 +31,22 @@
         <button mat-menu-item (click)="onOpenPlanList()">{{'Finance.Plan' | translate}} - {{'Common.ListView' | translate}}</button>
         <button mat-menu-item (click)="onCreatePlan()">{{'Finance.Plan' | translate}} - {{'Common.Create' | translate}}</button>
       </mat-menu>
-      <button mat-icon-button mat-button (click)="onMassCreateNormalDocument()"><mat-icon>queue</mat-icon></button>
+      <button mat-icon-button mat-button (click)="onMassCreateNormalDocument()" matTooltip="{{'Finance.NormalDocMassCreate' | translate}}">
+        <mat-icon>queue</mat-icon>
+      </button>
+      <mat-divider [vertical]="true"></mat-divider>
+      <mat-form-field class="docitemoverview-toolbar-item">
+        <mat-select color="accent" [(ngModel)]="selectedQuickAccessType">
+          <mat-option *ngFor="let qat of _uiStatusService.FinanceQuickAccessTypeStrings" [value]='qat.value'>{{qat.i18nterm | translate}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="docitemoverview-toolbar-item">
+        <input matInput type="number" placeholder="ID" [(ngModel)]="quickAccessID">
+      </mat-form-field>
+      <button mat-icon-button mat-button (click)="onQuickAccess()" [disabled]="!selectedQuickAccessType && !quickAccessID" matTooltip="{{'Common.QuickAccess' | translate}}">
+        <mat-icon>flight_takeoff</mat-icon>
+      </button>
+      <mat-divider [vertical]="true"></mat-divider>
     </mat-toolbar>
     
     <div class="grid-container">

@@ -48,6 +48,11 @@ export class UIStatusService {
     return  this._arrTranTypeLevel;
   }
 
+  private _arrFinQuickAccessType: UIDisplayString[] = [];
+  get FinanceQuickAccessTypeStrings(): UIDisplayString[] {
+    return this._arrFinQuickAccessType;
+  }
+
   private _latestError: string;
   get latestError(): string {
     return this._latestError;
@@ -82,6 +87,7 @@ export class UIStatusService {
     this._arrRepayMethod = UIDisplayStringUtil.getRepaymentMethodStrings();
     this._arrEnPOS = UIDisplayStringUtil.getEnPOSStrings();
     this._arrTranTypeLevel = UIDisplayStringUtil.getTranTypeLevelDisplayStrings();
+    this._arrFinQuickAccessType = UIDisplayStringUtil.getFinanceQuickAccessTypeEnumStrings();
 
     this.arrLabels = UIDisplayStringUtil.getUICommonLabelStrings();
   }

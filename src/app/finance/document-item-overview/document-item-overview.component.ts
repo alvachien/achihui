@@ -10,9 +10,10 @@ import { environment } from '../../../environments/environment';
 import { LogLevel, Account, TemplateDocBase,
   TemplateDocADP, TemplateDocLoan, UICommonLabelEnum, OverviewScopeEnum, getOverviewScopeRange, financeAccountCategoryBorrowFrom,
   financeTranTypeRepaymentOut, financeTranTypeRepaymentIn, ReportTrendExTypeEnum, ReportTrendExData, momentDateFormat,
-  DocumentCreatedFrequenciesByUser, HomeMember, TranType, Document, } from '../../model';
+  DocumentCreatedFrequenciesByUser, HomeMember, TranType, Document, FinanceQuickAccessTypeEnum, } from '../../model';
 import { HomeDefDetailService, FinanceStorageService, FinCurrencyService, UIStatusService } from '../../services';
 import { ThemeStorage } from '../../theme-picker/theme-storage/theme-storage';
+import { MessageDialogButtonEnum, MessageDialogInfo, MessageDialogComponent, popupDialog, } from '../../message-dialog';
 
 @Component({
   selector: 'hih-fin-document-item-overview',
@@ -28,9 +29,11 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
   dataSourceTmpDoc: MatTableDataSource<TemplateDocBase> = new MatTableDataSource([]);
   @ViewChild('paginatorTmpDoc', {static: true}) paginatorTmpDoc: MatPaginator;
   selectedTmpScope: OverviewScopeEnum;
+  selectedQuickAccessType: FinanceQuickAccessTypeEnum;
   weeklyTrendChartOption: Observable<EChartOption>;
   dailyTrendChartOption: Observable<EChartOption>;
   userDocAmountChartOption: Observable<EChartOption>;
+  quickAccessID: number;
   // Variables
   chartTheme: string;
   arTranTypes: TranType[];
@@ -51,6 +54,7 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
     this.selectedTmpScope = OverviewScopeEnum.CurrentMonth;
     this.labelIncome = this._uiStatusService.getUILabel(UICommonLabelEnum.Incoming);
     this.labelOutgo = this._uiStatusService.getUILabel(UICommonLabelEnum.Outgoing);
+    this.selectedQuickAccessType = FinanceQuickAccessTypeEnum.Document;
 
     let curtheme: any = this._themeStorage.getStoredTheme();
     if (curtheme) {
@@ -92,12 +96,9 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
       // Then, the chart options
       this._buildCharts();
     }, (error: any) => {
-      if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error('AC_HIH_UI [Error]: Entering DocumentItemOverviewComponent ngAfterContentInit, forkJoin, failed...');
-      }
-      this._snackbar.open(error.toString(), undefined, {
-        duration: 2000,
-      });
+      // Error occurred, show a dialog for error details
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
 
@@ -245,6 +246,28 @@ export class DocumentItemOverviewComponent implements OnInit, AfterContentInit, 
   }
   public onCreatePlan(): void {
     this._router.navigate(['/finance/plan/create']);
+  }
+
+  public onQuickAccess(): void {
+    if (!this.quickAccessID) {
+      return;
+    }
+    switch (this.selectedQuickAccessType) {
+      case FinanceQuickAccessTypeEnum.Account:
+        this._router.navigate(['/finance/account/display/' + this.quickAccessID.toString()]);
+        break;
+      case FinanceQuickAccessTypeEnum.Document:
+        this._router.navigate(['/finance/document/display/' + this.quickAccessID.toString()]);
+        break;
+      case FinanceQuickAccessTypeEnum.ControlCenter:
+          this._router.navigate(['/finance/controlcenter/display/' + this.quickAccessID.toString()]);
+          break;
+      case FinanceQuickAccessTypeEnum.Order:
+          this._router.navigate(['/finance/order/display/' + this.quickAccessID.toString()]);
+          break;
+      default:
+        break;
+    }
   }
 
   private _buildUserDocAmount(x: DocumentCreatedFrequenciesByUser[]): EChartOption {

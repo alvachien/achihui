@@ -1,67 +1,53 @@
-import { animate, AnimationTriggerMetadata, state, style, transition, trigger } from '@angular/animations';
+import { animate, AnimationTriggerMetadata, state, query, animateChild, group, style, transition, trigger } from '@angular/animations';
 
-export const fadeAnimation: AnimationTriggerMetadata =
-  trigger('routeAnimation', [
-    state('*',
-      style({
-        opacity: 1,
-      }),
-    ),
-    transition(':enter', [
-      style({
-        opacity: 0,
-      }),
-      animate('1.0s ease-in'),
+export const slideInAnimation: any =
+  trigger('routeAnimations', [
+    transition('* <=> DetailPage', [
+      style({ position: 'relative' }),
+      query(':enter, :leave', [
+        style({
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+        }),
+      ]),
+      query(':enter', [
+        style({ left: '-100%' }),
+      ]),
+      query(':leave', animateChild()),
+      group([
+        query(':leave', [
+          animate('400ms ease-out', style({ left: '100%' })),
+        ]),
+        query(':enter', [
+          animate('400ms ease-out', style({ left: '0%' })),
+        ]),
+      ]),
+      query(':enter', animateChild()),
     ]),
-    transition(':leave', [
-      animate('1.0s ease-out', style({
-        opacity: 0,
-      })),
-    ]),
-  ]);
-
-export const slideInLeftAnimation: AnimationTriggerMetadata =
-  trigger('routeAnimation', [
-    state('*',
-      style({
-        opacity: 1,
-        transform: 'translateX(0)',
-      }),
-    ),
-    transition(':enter', [
-      style({
-        opacity: 0,
-        transform: 'translateX(-100%)',
-      }),
-      animate('0.3s ease-in'),
-    ]),
-    transition(':leave', [
-      animate('0.5s ease-out', style({
-        opacity: 0,
-        transform: 'translateX(100%)',
-      })),
-    ]),
-  ]);
-
-export const slideInDownAnimation: AnimationTriggerMetadata =
-  trigger('routeAnimation', [
-    state('*',
-      style({
-        opacity: 1,
-        transform: 'translateY(0)',
-      }),
-    ),
-    transition(':enter', [
-      style({
-        opacity: 0,
-        transform: 'translateY(-100%)',
-      }),
-      animate('0.3s ease-in'),
-    ]),
-    transition(':leave', [
-      animate('0.5s ease-out', style({
-        opacity: 0,
-        transform: 'translateY(100%)',
-      })),
+    transition('* <=> ListPage', [
+      style({ position: 'relative' }),
+      query(':enter, :leave', [
+        style({
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+        }),
+      ]),
+      query(':enter', [
+        style({ left: '-100%' }),
+      ]),
+      query(':leave', animateChild()),
+      group([
+        query(':leave', [
+          animate('300ms ease-out', style({ left: '100%' })),
+        ]),
+        query(':enter', [
+          animate('400ms ease-out', style({ left: '0%' })),
+        ]),
+      ]),
+      query(':enter', animateChild()),
     ]),
   ]);

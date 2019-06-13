@@ -44,10 +44,12 @@ const routes: Routes = [
       {
         path: 'overview',
         component: DocumentItemOverviewComponent,
+        data: {animation: 'DetailPage'},
       },
       {
         path: 'config',
         component: ConfigComponent,
+        data: {animation: 'ListPage'},
       },
       {
         path: 'trantype',
@@ -56,10 +58,12 @@ const routes: Routes = [
           {
             path: '',
             component: TranTypeTreeComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'list',
             component: TranTypeListComponent,
+            data: {animation: 'ListPage'},
           },
         ],
       },
@@ -70,22 +74,27 @@ const routes: Routes = [
           {
             path: '',
             component: AccountListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'tree',
             component: AccountTreeComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'create',
             component: AccountDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: AccountDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: AccountDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -96,22 +105,27 @@ const routes: Routes = [
           {
             path: '',
             component: ControlCenterListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'tree',
             component: ControlCenterTreeComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'create',
             component: ControlCenterDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: ControlCenterDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: ControlCenterDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -122,18 +136,22 @@ const routes: Routes = [
           {
             path: '',
             component: OrderListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: OrderDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: OrderDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: OrderDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },
@@ -144,6 +162,7 @@ const routes: Routes = [
           {
             path: '',
             component: DocumentListComponent,
+            data: {animation: 'ListPage'},
           },
           // {
           //   path: 'create',
@@ -152,60 +171,74 @@ const routes: Routes = [
           {
             path: 'createnormal',
             component: DocumentNormalCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'masscreatenormal',
             component: DocumentNormalMassCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'createtransfer',
             component: DocumentTransferCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'createadp',
             component: DocumentADPCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'createadr',
             component: DocumentADPCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'createexg',
             component: DocumentExchangeCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'createbrwfrm',
             // component: DocumentLoanDetailComponent,
             component: DocumentLoanCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'createlendto',
             // component: DocumentLoanDetailComponent,
             component: DocumentLoanCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'createassetbuy',
             component: DocumentAssetBuyInCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'createassetsold',
             component: DocumentAssetSoldoutCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'createassetvalchg',
             component: DocumentAssetValChgCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'createrepayex',
             component: DocumentRepaymentExCreateComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: DocumentDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: DocumentDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           // {
           //   path: 'editnormal/:id',
@@ -252,10 +285,12 @@ const routes: Routes = [
       {
         path: 'search',
         component: DocumentItemSearchListComponent,
+        data: {animation: 'DetailPage'},
       },
       {
         path: 'report',
         component: ReportComponent,
+        data: {animation: 'ListPage'},
       },
       {
         path: 'plan',
@@ -264,18 +299,22 @@ const routes: Routes = [
           {
             path: '',
             component: PlanListComponent,
+            data: {animation: 'ListPage'},
           },
           {
             path: 'create',
             component: PlanDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'display/:id',
             component: PlanDetailComponent,
+            data: {animation: 'DetailPage'},
           },
           {
             path: 'edit/:id',
             component: PlanDetailComponent,
+            data: {animation: 'DetailPage'},
           },
         ],
       },

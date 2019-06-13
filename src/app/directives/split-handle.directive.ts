@@ -8,7 +8,7 @@ import { map, switchMap, takeUntil, throttleTime } from 'rxjs/operators';
   host: {
     class: 'ngx-split-handle',
     title: 'Drag to resize',
-  }
+  },
 })
 export class SplitHandleDirective {
   @Output() drag: Observable<{ x: number, y: number }>;

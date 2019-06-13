@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DateAdapter, MatIconRegistry } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
@@ -8,14 +8,17 @@ import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErr
 import { environment } from '../environments/environment';
 import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN } from './model';
 import { AuthService, HomeDefDetailService, UIStatusService } from './services';
-import * as moment from 'moment';
-import { LanguageComponent } from './language';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { slideInAnimation } from './utility';
 
 @Component({
   selector: 'hih-app',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  animations: [
+    slideInAnimation,
+    // animation triggers go here
+  ],
 })
 export class AppComponent implements OnInit, OnDestroy {
   private _mobileQueryListener: () => void;
@@ -173,6 +176,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public onOpenGithubRepo(): void {
     window.open('https://github.com/alvachien/achihui', '_blank');
+  }
+  public prepareRoute(outlet: RouterOutlet): any {
+    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
   }
 
   private updateDocumentTitle(): void {

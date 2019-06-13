@@ -1,5 +1,5 @@
 import { UICommonLabelEnum, QuestionBankTypeEnum, TagTypeEnum, OverviewScopeEnum, RepeatFrequencyEnum } from './common';
-import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum } from './financemodel';
+import { AccountStatusEnum, RepaymentMethodEnum, TranTypeLevelEnum, FinanceQuickAccessTypeEnum, } from './financemodel';
 import { EnPOSEnum } from './learnmodel';
 import { ValidatorFn, FormGroup, ValidationErrors, } from '@angular/forms';
 import * as moment from 'moment';
@@ -84,7 +84,7 @@ export class UINameValuePair<T> {
  * UI Display string Enum
  */
 export type UIDisplayStringEnum = UICommonLabelEnum | QuestionBankTypeEnum | TagTypeEnum | OverviewScopeEnum | AccountStatusEnum
-  | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum | TranTypeLevelEnum | GeneralFilterOperatorEnum;
+  | RepaymentMethodEnum | EnPOSEnum | RepeatFrequencyEnum | TranTypeLevelEnum | GeneralFilterOperatorEnum | FinanceQuickAccessTypeEnum;
 
 /**
  * UI Display string
@@ -128,7 +128,7 @@ export class UIDisplayStringUtil {
           value: +se,
           i18nterm: UIDisplayStringUtil.getQuestionBankTypeDisplayString(+se),
           displaystring: '',
-        });
+        } as UIDisplayString);
       }
     }
 
@@ -146,7 +146,7 @@ export class UIDisplayStringUtil {
           value: +se,
           i18nterm: UIDisplayStringUtil.getTagTypeDisplayString(+se),
           displaystring: '',
-        });
+        } as UIDisplayString);
       }
     }
 
@@ -164,7 +164,7 @@ export class UIDisplayStringUtil {
           value: +se,
           i18nterm: UIDisplayStringUtil.getOverviewScopeDisplayString(+se),
           displaystring: '',
-        });
+        } as UIDisplayString);
       }
     }
 
@@ -182,7 +182,7 @@ export class UIDisplayStringUtil {
           value: +se,
           i18nterm: UIDisplayStringUtil.getAccountStatusDisplayString(+se),
           displaystring: '',
-        });
+        } as UIDisplayString);
       }
     }
 
@@ -200,7 +200,7 @@ export class UIDisplayStringUtil {
           value: +se,
           i18nterm: UIDisplayStringUtil.getRepaymentMethodDisplayString(+se),
           displaystring: '',
-        });
+        } as UIDisplayString);
       }
     }
 
@@ -235,7 +235,7 @@ export class UIDisplayStringUtil {
           value: +rfe,
           i18nterm: UIDisplayStringUtil.getRepeatFrequencyDisplayString(<RepeatFrequencyEnum>+rfe),
           displaystring: '',
-        });
+        } as UIDisplayString);
       }
     }
 
@@ -253,7 +253,7 @@ export class UIDisplayStringUtil {
           value: +rfe,
           i18nterm: UIDisplayStringUtil.getTranTypeLevelDisplayString(<TranTypeLevelEnum>+rfe),
           displaystring: '',
-        });
+        } as UIDisplayString);
       }
     }
 
@@ -271,7 +271,25 @@ export class UIDisplayStringUtil {
           value: +rfe,
           i18nterm: UIDisplayStringUtil.getGeneralFilterOperatorDisplayString(<GeneralFilterOperatorEnum>+rfe),
           displaystring: '',
-        });
+        } as UIDisplayString);
+      }
+    }
+
+    return arrst;
+  }
+
+  public static getFinanceQuickAccessTypeEnumStrings(): UIDisplayString[] {
+    let arrst: UIDisplayString[] = [];
+
+    for (let qat in FinanceQuickAccessTypeEnum) {
+      if (Number.isNaN(+qat)) {
+        // Do nothing
+      } else {
+        arrst.push({
+          value: +qat,
+          i18nterm: UIDisplayStringUtil.getFinanceQuickAccessTypeEnumDisplayString(<FinanceQuickAccessTypeEnum>+qat),
+          displaystring: '',
+        } as UIDisplayString);
       }
     }
 
@@ -469,6 +487,16 @@ export class UIDisplayStringUtil {
       case GeneralFilterOperatorEnum.LessThan: return 'Sys.Operator.LessThan';
       case GeneralFilterOperatorEnum.NotEqual: return 'Sys.Operator.NotEqual';
       case GeneralFilterOperatorEnum.Like: return 'Sys.Operator.Like';
+      default: return '';
+    }
+  }
+
+  public static getFinanceQuickAccessTypeEnumDisplayString(qte: FinanceQuickAccessTypeEnum): string {
+    switch (qte) {
+      case FinanceQuickAccessTypeEnum.Account: return 'Finance.Account';
+      case FinanceQuickAccessTypeEnum.Document: return 'Finance.Document';
+      case FinanceQuickAccessTypeEnum.ControlCenter:  return 'Finance.ControlCenter';
+      case FinanceQuickAccessTypeEnum.Order: return 'Finance.Activity';
       default: return '';
     }
   }
