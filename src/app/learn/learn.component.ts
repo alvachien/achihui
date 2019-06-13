@@ -1,26 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HomeDefDetailService, AuthService, UIStatusService } from '../services';
-import { environment } from '../../environments/environment';
-import { LogLevel } from '../model';
-import * as moment from 'moment';
-import { DateAdapter } from '@angular/material';
-import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { Component, } from '@angular/core';
+import { slideInAnimation } from '../utility';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'hih-learn',
-  template: `<router-outlet></router-outlet>`,
+  template: `
+  <div [@routeAnimations]="prepareRoute(o)">
+    <router-outlet #o="outlet"></router-outlet>
+  </div>
+  `,
+  animations: [ slideInAnimation ],
 })
-export class LearnComponent implements OnInit, OnDestroy {
+export class LearnComponent  {
 
   constructor() {
     // Empty
   }
-
-  ngOnInit(): void {
-    // Empty
-  }
-
-  ngOnDestroy(): void {
-    // Empty
+  public prepareRoute(outlet: RouterOutlet): any {
+    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
   }
 }

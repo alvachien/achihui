@@ -5,8 +5,6 @@ import { Component, HostBinding } from '@angular/core';
   template: `<router-outlet></router-outlet>`,
 })
 export class AccountComponent {
-  @HostBinding('@routeAnimation') routeAnimation: boolean = true;
-
   constructor() {
     // Empty
   }
