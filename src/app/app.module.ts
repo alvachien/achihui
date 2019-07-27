@@ -41,6 +41,8 @@ import { ThemePickerModule, ThemeStorage } from './theme-picker';
 import { HomeDashboardComponent } from './home-dashboard';
 import { UserDetailComponent } from './user-detail';
 import { PageFatalErrorComponent } from './page-fatal-error';
+import { AppRoutingModule } from './app-routing.module';
+import { IconsProviderModule } from './icons-provider.module';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/locales/', '.json');
@@ -63,6 +65,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     }),
     UIDependModule,
     ThemePickerModule,
+    AppRoutingModule,
+    IconsProviderModule,
   ],
   declarations: [
     AppComponent,

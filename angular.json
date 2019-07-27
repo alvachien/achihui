@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/@angular-devkit/core/src/workspace/workspace-schema.json",
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -32,25 +32,9 @@
               "src/silentrenewcallback.html"
             ],
             "styles": [
-              "node_modules/@fullcalendar/core/main.css",
-              "node_modules/@fullcalendar/daygrid/main.css",
-              "node_modules/@fullcalendar/timegrid/main.css",
-              "node_modules/@fullcalendar/list/main.css",
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/tinymce/tinymce.min.js",
-              "node_modules/tinymce/themes/silver/theme.min.js",
-              "node_modules/tinymce/plugins/advlist/plugin.min.js",
-              "node_modules/tinymce/plugins/autolink/plugin.min.js",
-              "node_modules/tinymce/plugins/code/plugin.min.js",
-              "node_modules/tinymce/plugins/colorpicker/plugin.min.js",
-              "node_modules/tinymce/plugins/fullscreen/plugin.min.js",
-              "node_modules/tinymce/plugins/image/plugin.min.js",
-              "node_modules/tinymce/plugins/link/plugin.min.js",
-              "node_modules/tinymce/plugins/table/plugin.min.js",
-              "node_modules/tinymce/plugins/print/plugin.min.js",
-              "node_modules/tinymce/plugins/searchreplace/plugin.min.js"
             ]
           },
           "configurations": {
@@ -120,24 +104,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
-              "node_modules/tinymce/tinymce.min.js",
-              "node_modules/tinymce/themes/silver/theme.min.js",
-              "node_modules/tinymce/plugins/advlist/plugin.min.js",
-              "node_modules/tinymce/plugins/autolink/plugin.min.js",
-              "node_modules/tinymce/plugins/code/plugin.min.js",
-              "node_modules/tinymce/plugins/colorpicker/plugin.min.js",
-              "node_modules/tinymce/plugins/fullscreen/plugin.min.js",
-              "node_modules/tinymce/plugins/image/plugin.min.js",
-              "node_modules/tinymce/plugins/link/plugin.min.js",
-              "node_modules/tinymce/plugins/table/plugin.min.js",
-              "node_modules/tinymce/plugins/print/plugin.min.js",
-              "node_modules/tinymce/plugins/searchreplace/plugin.min.js"
             ],
             "styles": [
-              "node_modules/@fullcalendar/core/main.css",
-              "node_modules/@fullcalendar/daygrid/main.css",
-              "node_modules/@fullcalendar/timegrid/main.css",
-              "node_modules/@fullcalendar/list/main.css",
               "src/styles.scss"
             ],
             "assets": [
