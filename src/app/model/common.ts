@@ -1,4 +1,3 @@
-import { environment } from '../../environments/environment';
 import * as moment from 'moment';
 
 export const typeParentSplitter: string = ' > ';

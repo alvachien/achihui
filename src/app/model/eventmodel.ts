@@ -1,4 +1,3 @@
-import { environment } from '../../environments/environment';
 import * as hih from './common';
 import * as moment from 'moment';
 
