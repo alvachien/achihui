@@ -1,24 +1,26 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    "baseUrl": "src",
     "sourceMap": true,
     "declaration": false,
-    "module": "esnext", // add this line
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "importHelpers": true,
     "target": "es2015",
     "typeRoots": [
       "node_modules/@types"
     ],
-    "paths": {
-      "echarts": ["node_modules/echarts/dist/echarts.min.js"]
-    },
     "lib": [
-      "esnext",
+      "es2018",
       "dom"
     ]
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
   }
 }

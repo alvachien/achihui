@@ -1,101 +1,54 @@
-<div class="mainpage-container" [class.mainpage-is-mobile]="mobileQuery.matches">
-  <mat-toolbar color="primary" class="mainpage-toolbar">
-    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-    <div class="mainpage-toolbar-content">
-      <h1 class="mainpage-app-name">H.I.H.</h1>
-      <div>
-        <button mat-icon-button *ngIf="!isLoggedIn" (click)="onLogon()" title="Logon"
-          matTooltip="{{'Login.Login' | translate }}">
-          <mat-icon>account_box</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="isLoggedIn" [matMenuTriggerFor]="matMenuUser">
-          <mat-icon>account_box</mat-icon>
-          <span [matBadge]="_homeDefService.keyFigure?.TotalUnreadMessage" [matBadgeHidden]="!curChosenHome">
-          </span>
-        </button>
-        <mat-menu #matMenuUser="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
-          <button mat-menu-item disabled>{{titleLogin}}</button>
-          <button mat-menu-item (click)="onUserDetail()">
-            <mat-icon color="accent">account_circle</mat-icon>
-            <span class="title">{{'Nav.UserDetail' | translate}}</span>
-          </button>
-          <button mat-menu-item (click)="onCheckMessages()">
-            <mat-icon color="accent">message</mat-icon>
-            <span>{{'Common.Message' | translate}}</span>
-          </button>
-          <button mat-menu-item (click)="onLogout()">
-            <mat-icon color="accent">exit_to_app</mat-icon>
-            <span>{{'Login.Logout' | translate}}</span>
-          </button>
-        </mat-menu>
-  
-        <button mat-icon-button mat-button *ngIf="curChosenHome" [matMenuTriggerFor]="matMenuHome">
-          <mat-icon>domain</mat-icon>
-        </button>
-        <mat-menu #matMenuHome="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
-          <button mat-menu-item disabled>{{curChosenHome?.Name}}</button>
-          <button mat-menu-item (click)="onChosenHomeDetail()">
-            <mat-icon>account_circle</mat-icon>
-            <span>{{'Nav.HomeDetail' | translate}}</span>
-          </button>
-        </mat-menu>
-  
-        <theme-picker></theme-picker>
-  
-        <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuLanguage">
-          <mat-icon>language</mat-icon>
-        </button>
-        <mat-menu #matMenuLanguage="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
-          <button mat-menu-item *ngFor="let lang of availableLanguages" (click)="onLanguageChanged(lang.value)">
-            <mat-icon *ngIf="selectedLanguage === lang.value">check</mat-icon>
-            {{lang.displayas | translate}}
-          </button>
-        </mat-menu>
-  
-        <button mat-icon-button (click)="toggleFullscreen()" title="Toggle fullscreen">
-          <mat-icon class="mat-24">fullscreen</mat-icon>
-        </button>
-  
-        <a mat-icon-button class="achih-button achih-navbar-show-small" href="https://github.com/alvachien/achihui"
-          target="_blank" aria-label="GitHub Repository">
-          <img class="achih-angular-logo" src="../../assets/images/github-circle-white-transparent.svg" alt="achihui">
-        </a>
-  
-        <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuApps">
-          <mat-icon>apps</mat-icon>
-        </button>
-        <mat-menu #matMenuApps="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
-          <button mat-menu-item disabled>H.I.H.</button>
-          <button mat-menu-item (click)="onOpenMathExcises()">Math Exercise</button>
-          <button mat-menu-item (click)="onOpenPhotoGallery()">Photo Gallery</button>
-        </mat-menu>  
-      </div>
+<nz-layout class="app-layout">
+  <nz-sider class="menu-sidebar"
+            nzCollapsible
+            nzWidth="256px"
+            nzBreakpoint="md"
+            [(nzCollapsed)]="isCollapsed"
+            [nzTrigger]="null">
+    <div class="sidebar-logo">
+      <a href="https://ng.ant.design/" target="_blank">
+        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
+        <h1>Ant Design Of Angular</h1>
+      </a>
     </div>
-  </mat-toolbar>
-
-  <mat-sidenav-container class="mainpage-sidenav-container"
-                         [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
-                 [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
-      <hih-sidenav></hih-sidenav>
-    </mat-sidenav>
-
-    <mat-sidenav-content class="hih-content">
-      <div [@routeAnimations]="prepareRoute(outlet)" >
-        <router-outlet #outlet="outlet"></router-outlet>
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/welcome">Welcome</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a>Monitor</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a>Workplace</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a>Basic Form</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header">
+        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+            <i class="trigger"
+               nz-icon
+               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            ></i>
+        </span>
       </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-
-  <mat-toolbar color="primary" class="mainpage-toolbar">
-    <div class="mainpage-footer-list">
-      <div class="mainpage-footer-version">
-        <span class="version">{{'Nav.Version' | translate}}: {{currVersion}}</span>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
       </div>
-  
-      <div class="mainpage-footer-copyright">
-        <span> © 2019 Alva Chien. All rights reserved.</span>
-      </div>
-    </div>
-  </mat-toolbar>
-</div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
