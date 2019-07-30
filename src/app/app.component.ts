@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { en_US, NzI18nService } from 'ng-zorro-antd';
 
 @Component({
-  selector: 'app-root',
+  selector: 'hih-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })

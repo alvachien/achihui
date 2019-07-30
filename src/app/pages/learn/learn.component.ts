@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-learn',
+  selector: 'hih-learn',
   templateUrl: './learn.component.html',
   styleUrls: ['./learn.component.less']
 })

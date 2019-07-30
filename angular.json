@@ -12,7 +12,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "hih",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -67,7 +67,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "achihui:build"
+            "browserTarget": "achihui:build",
+            "port": 29521,
+            "host": "localhost"
           },
           "configurations": {
             "production": {

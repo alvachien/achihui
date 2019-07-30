@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { FinanceRoutingModule } from './finance-routing.module';
 import { FinanceComponent } from '../finance/finance.component';
-import { AccountComponent } from './account/account.component';
-
+import { CurrencyComponent } from './currency/currency.component';
 
 @NgModule({
-  declarations: [FinanceComponent, AccountComponent],
+  declarations: [
+    FinanceComponent,
+    CurrencyComponent
+  ],
   imports: [
     CommonModule,
     FinanceRoutingModule

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-version',
+  selector: 'hih-version',
   templateUrl: './version.component.html',
   styleUrls: ['./version.component.less']
 })
