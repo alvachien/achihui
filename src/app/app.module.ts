@@ -10,12 +10,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
+import { LayoutHeaderComponent } from './pages/layout-header/layout-header.component';
+import { LayoutSidebarComponent } from './pages/layout-sidebar/layout-sidebar.component';
 
 registerLocaleData(en);
 
 @NgModule({
   declarations: [
     AppComponent,
+    LayoutHeaderComponent,
+    LayoutSidebarComponent,
   ],
   imports: [
     BrowserModule,
