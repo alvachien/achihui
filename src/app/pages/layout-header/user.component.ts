@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 // import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
-  selector: 'header-user',
+  selector: 'hih-header-user',
   template: `
     <div
       class="alain-default__nav-item d-flex align-items-center px-sm"

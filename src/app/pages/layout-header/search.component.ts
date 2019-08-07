@@ -1,7 +1,7 @@
 import { Component, HostBinding, Input, ElementRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'header-search',
+  selector: 'hih-header-search',
   template: `
     <nz-input-group [nzAddOnBeforeIcon]="focus ? 'arrow-down' : 'search'">
       <input

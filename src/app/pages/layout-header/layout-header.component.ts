@@ -11,5 +11,4 @@ export class LayoutHeaderComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

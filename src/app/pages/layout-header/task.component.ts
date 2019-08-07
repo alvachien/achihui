@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 @Component({
-  selector: 'header-task',
+  selector: 'hih-header-task',
   template: `
     <div
       class="alain-default__nav-item"
