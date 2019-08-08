@@ -43,51 +43,6 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/
             class="py-sm bg-grey-lighter-h point"
           >
             <div nz-col [nzSpan]="4" class="text-center">
-              <nz-avatar [nzSrc]="'./assets/tmp/img/2.png'"></nz-avatar>
-            </div>
-            <div nz-col [nzSpan]="20">
-              <strong>はなさき</strong>
-              <p class="mb0">ハルカソラトキヘダツヒカリ</p>
-            </div>
-          </div>
-          <div
-            nz-row
-            [nzType]="'flex'"
-            [nzJustify]="'center'"
-            [nzAlign]="'middle'"
-            class="py-sm bg-grey-lighter-h point"
-          >
-            <div nz-col [nzSpan]="4" class="text-center">
-              <nz-avatar [nzSrc]="'./assets/tmp/img/3.png'"></nz-avatar>
-            </div>
-            <div nz-col [nzSpan]="20">
-              <strong>苏先生</strong>
-              <p class="mb0">请告诉我，我应该说点什么好？</p>
-            </div>
-          </div>
-          <div
-            nz-row
-            [nzType]="'flex'"
-            [nzJustify]="'center'"
-            [nzAlign]="'middle'"
-            class="py-sm bg-grey-lighter-h point"
-          >
-            <div nz-col [nzSpan]="4" class="text-center">
-              <nz-avatar [nzSrc]="'./assets/tmp/img/4.png'"></nz-avatar>
-            </div>
-            <div nz-col [nzSpan]="20">
-              <strong>Kent</strong>
-              <p class="mb0">Please tell me what happened in a few words, don't go into details.</p>
-            </div>
-          </div>
-          <div
-            nz-row
-            [nzType]="'flex'"
-            [nzJustify]="'center'"
-            [nzAlign]="'middle'"
-            class="py-sm bg-grey-lighter-h point"
-          >
-            <div nz-col [nzSpan]="4" class="text-center">
               <nz-avatar [nzSrc]="'./assets/tmp/img/5.png'"></nz-avatar>
             </div>
             <div nz-col [nzSpan]="20">

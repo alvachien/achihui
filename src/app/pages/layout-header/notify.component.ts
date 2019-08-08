@@ -3,6 +3,46 @@ import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import { NzMessageService } from 'ng-zorro-antd';
 // import { NoticeItem, NoticeIconList } from '@delon/abc';
 
+export interface NoticeItem {
+  title: string;
+  list: NoticeIconList[];
+  /** 空列表文本，默认：`无通知` */
+  datetime?: string;
+
+  /** 额外信息，在列表项右上角 */
+  extra?: string;
+
+  /** 是否已读状态 */
+  read?: boolean;
+}
+
+export interface NoticeIconList {
+  [key: string]: any;
+
+  /** 头像图片链接 */
+  avatar?: string;
+
+  /** 标题 */
+  title?: string;
+
+  /** 描述信息 */
+  description?: string;
+
+  /** 时间戳 */
+  datetime?: string;
+
+  /** 额外信息，在列表项右上角 */
+  extra?: string;
+
+  /** 是否已读状态 */
+  read?: boolean;
+}
+
+export interface NoticeIconSelect {
+  title: string;
+  item: NoticeItem;
+}
+
 @Component({
   selector: 'hih-header-notify',
   template: `
@@ -54,10 +94,11 @@ export class HeaderNotifyComponent {
 
     notices.forEach(item => {
       const newItem = { ...item };
-      if (newItem.datetime)
+      if (newItem.datetime) {
         newItem.datetime = distanceInWordsToNow(item.datetime!, {
           locale: (window as any).__locale__,
         });
+      }
       if (newItem.extra && newItem.status) {
         newItem.color = {
           todo: undefined,
@@ -72,7 +113,9 @@ export class HeaderNotifyComponent {
   }
 
   loadData() {
-    if (this.loading) return;
+    if (this.loading) {
+      return;
+    }
     this.loading = true;
     setTimeout(() => {
       this.data = this.updateNoticeData([
