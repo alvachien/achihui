@@ -39,7 +39,7 @@ import { Router } from '@angular/router';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderUserComponent {
+export class LayoutHeaderUserComponent {
   constructor(
     // public settings: SettingsService,
     private router: Router,

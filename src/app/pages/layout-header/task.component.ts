@@ -61,7 +61,7 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderTaskComponent {
+export class LayoutHeaderTaskComponent {
   loading = true;
 
   constructor(private cdr: ChangeDetectorRef) {}

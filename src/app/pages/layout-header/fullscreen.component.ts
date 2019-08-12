@@ -13,7 +13,7 @@ import * as screenfull from 'screenfull';
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderFullScreenComponent {
+export class LayoutHeaderFullScreenComponent {
   status = false;
   private get sf(): screenfull.Screenfull {
     return screenfull as screenfull.Screenfull;

@@ -15,7 +15,7 @@ import { Component, HostBinding, Input, ElementRef, AfterViewInit, ChangeDetecti
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderSearchComponent implements AfterViewInit {
+export class LayoutHeaderSearchComponent implements AfterViewInit {
   q: string;
 
   qIpt: HTMLInputElement;
