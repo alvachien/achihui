@@ -10,22 +10,22 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
-import { LayoutHeaderFullScreenComponent, LayoutHeaderUserComponent,
-  LayoutHeaderTaskComponent, LayoutHeaderSearchComponent,
-  LayoutHeaderComponent } from './pages/layout-header';
-import { LayoutSidebarComponent } from './pages/layout-sidebar/layout-sidebar.component';
+// import { LayoutHeaderFullScreenComponent, LayoutHeaderUserComponent,
+//   LayoutHeaderTaskComponent, LayoutHeaderSearchComponent,
+//   LayoutHeaderComponent } from './pages/layout-header';
+// import { LayoutSidebarComponent } from './pages/layout-sidebar/layout-sidebar.component';
 
 registerLocaleData(en);
 
 @NgModule({
   declarations: [
     AppComponent,
-    LayoutHeaderFullScreenComponent,
-    LayoutHeaderUserComponent,
-    LayoutHeaderTaskComponent,
-    LayoutHeaderSearchComponent,
-    LayoutHeaderComponent,
-    LayoutSidebarComponent,
+    // LayoutHeaderFullScreenComponent,
+    // LayoutHeaderUserComponent,
+    // LayoutHeaderTaskComponent,
+    // LayoutHeaderSearchComponent,
+    // LayoutHeaderComponent,
+    // LayoutSidebarComponent,
   ],
   imports: [
     BrowserModule,

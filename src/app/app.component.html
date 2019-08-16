@@ -69,6 +69,15 @@
                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
             ></i>
         </span>
+        <nz-input-group [nzAddOnBeforeIcon]="focus ? 'arrow-down' : 'search'">
+          <input
+            nz-input
+            [(ngModel)]="searchContent"
+            (focus)="searchFocus()"
+            (blur)="searchBlur()"
+            [placeholder]="Search"
+          />
+        </nz-input-group>
       </div>
     </nz-header>
     <nz-content>
