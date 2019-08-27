@@ -15,10 +15,4 @@ export class AppComponent {
   switchLanguage() {
     this.i18n.setLocale(en_US);
   }
-  searchFocus() {
-
-  }
-  searchBlur() {
-    
-  }
 }
