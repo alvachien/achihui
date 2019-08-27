@@ -6,7 +6,7 @@
             [(nzCollapsed)]="isCollapsed"
             [nzTrigger]="null">
     <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
+      <a href="https://github.com/alvachien/achihui" target="_blank">
         <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
         <h1>H.I.H.</h1>
       </a>
@@ -63,21 +63,43 @@
   <nz-layout>
     <nz-header>
       <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-            <i class="trigger"
-               nz-icon
-               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-            ></i>
-        </span>
-        <nz-input-group [nzAddOnBeforeIcon]="focus ? 'arrow-down' : 'search'">
-          <input
-            nz-input
-            [(ngModel)]="searchContent"
-            (focus)="searchFocus()"
-            (blur)="searchBlur()"
-            [placeholder]="Search"
-          />
-        </nz-input-group>
+        <ul class="app-header-nav">
+          <li>
+            <div class="app-header-nav-item">
+              <i class="app-header-trigger"
+                nz-icon
+                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+                style="font-size: 24px;"
+                (click)="isCollapsed = !isCollapsed"
+              ></i>
+            </div>      
+          </li>
+          <li>
+            <div class="app-header-nav-item">
+              <a class="header-nav-item" href="https://github.com/alvachien/achihui" target="_blank">
+                <i nz-icon nzType="github" nzTheme="outline" class="app-header-icon"></i>
+              </a>
+            </div>      
+          </li>
+        </ul>
+        <div class="app-header-search">
+          <nz-input-group [nzPrefix]="searchPrefixTemplate">
+            <input type="text" nz-input placeholder="Enter your username" />
+          </nz-input-group>
+          <ng-template #searchPrefixTemplate><i nz-icon nzType="search"></i></ng-template>
+        </div>
+        <ul class="app-header-nav">
+          <li>
+            <div class="app-header-nav-item">
+              <i class="material-icons-outlined app-header-icon">domain</i>
+            </div>      
+          </li>
+          <li>
+            <div class="app-header-nav-item">
+              <i nz-icon nzType="user" nzTheme="outline" class="app-header-icon"></i>
+            </div>
+          </li>
+        </ul>
       </div>
     </nz-header>
     <nz-content>
@@ -85,5 +107,6 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
+    <nz-footer>© 2019 Alva Chien, All rights reserved</nz-footer>
   </nz-layout>
 </nz-layout>
