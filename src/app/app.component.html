@@ -1,10 +1,6 @@
 <nz-layout class="app-layout">
-  <nz-sider class="menu-sidebar"
-            nzCollapsible
-            nzWidth="256px"
-            nzBreakpoint="md"
-            [(nzCollapsed)]="isCollapsed"
-            [nzTrigger]="null">
+  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null">
     <div class="sidebar-logo">
       <a href="https://github.com/alvachien/achihui" target="_blank">
         <img src="favicon.ico" alt="logo">
@@ -66,13 +62,9 @@
         <ul class="app-header-nav">
           <li>
             <div class="app-header-nav-item">
-              <i class="app-header-trigger"
-                nz-icon
-                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-                style="font-size: 24px;"
-                (click)="isCollapsed = !isCollapsed"
-              ></i>
-            </div>      
+              <i class="app-header-trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+                style="font-size: 24px;" (click)="isCollapsed = !isCollapsed"></i>
+            </div>
           </li>
         </ul>
         <div class="app-header-search">
@@ -84,40 +76,61 @@
         <ul class="app-header-nav">
           <li>
             <div class="app-header-nav-item">
-              <i class="material-icons-outlined app-header-icon">domain</i>
-            </div>      
-          </li>
-          <li>
-            <div class="app-header-nav-item">
-              <i nz-icon nzType="user" nzTheme="outline" class="app-header-icon"></i>
+              <a class="header-nav-item" href="https://github.com/alvachien/achihui" target="_blank">
+                <i nz-icon nzType="github" nzTheme="outline" class="app-header-icon"></i>
+              </a>
             </div>
           </li>
           <li>
             <div class="app-header-nav-item">
-              <a class="header-nav-item" href="https://github.com/alvachien/achihui" target="_blank">
-                <i nz-icon nzType="github" nzTheme="outline" class="app-header-icon"></i>
+              <a nz-dropdown [nzDropdownMenu]="menuLanguage">
+                <i class="material-icons-outlined app-header-icon">language</i>
               </a>
-            </div>      
+              <nz-dropdown-menu #menuLanguage="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                  <li nz-menu-item (click)="switchLanguage('en_US')">English</li>
+                  <li nz-menu-item (click)="switchLanguage('zh_CN')">Simplified Chinese</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
           </li>
           <li>
-            <ul nz-menu nzMode="horizontal">
-              <li nz-menu-item nzSelected>
-                <i nz-icon nzType="appstore"></i>
-                <ul>
-                  <li nz-menu-group nzTitle="Item 1">
-                    <ul>
-                      <li nz-menu-item>Option 1</li>
-                      <li nz-menu-item>Option 2</li>
-                    </ul>
-                  </li>
-                </ul>                  
-              </li>
-            </ul>
             <div class="app-header-nav-item">
-              <a class="header-nav-item" href="https://github.com/alvachien/achihui" target="_blank">
+              <a nz-dropdown [nzDropdownMenu]="menuHomeDef">
+                <i class="material-icons-outlined app-header-icon">domain</i>
+              </a>
+              <nz-dropdown-menu #menuHomeDef="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                  <li nz-menu-item>Home Def. List</li>
+                  <li nz-menu-item>Current Home Def.</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </li>
+          <li>
+            <div class="app-header-nav-item">
+              <a nz-dropdown [nzDropdownMenu]="menuUser">
+                <i nz-icon nzType="user" nzTheme="outline" class="app-header-icon"></i>
+              </a>
+              <nz-dropdown-menu #menuUser="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                  <li nz-menu-item>User Info.</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </li>
+          <li>
+            <div class="app-header-nav-item">
+              <a nz-dropdown [nzDropdownMenu]="menuApps">
                 <i nz-icon nzType="appstore" nzTheme="outline" class="app-header-icon"></i>
               </a>
-            </div>      
+              <nz-dropdown-menu #menuApps="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                  <li nz-menu-item>AC Gallery</li>
+                  <li nz-menu-item>Math Learn</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
           </li>
         </ul>
       </div>
