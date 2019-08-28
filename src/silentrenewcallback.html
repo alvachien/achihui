@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>H.I.H.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <h3 id="waiting" style="padding: 20%;text-align:center;">Silent Renew...</h3>
+  <div id="error"></div>
+  <script src="/assets/lib/oidc-client.min.js"></script>
+  <script>
+    var Oidc = window.Oidc,
+      UserManager = Oidc.UserManager;
+    if ((Oidc && Oidc.Log && Oidc.Log.logger)) {
+      Oidc.Log.logger = console;
+    }
+    console.log("Silent renew callback...");
+    new UserManager().signinSilentCallback();
+  </script>
+</body>
+
+</html>

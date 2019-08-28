@@ -26,6 +26,8 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/logincallback.html",
+              "src/silentrenewcallback.html",              
               {
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",

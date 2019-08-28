@@ -69,7 +69,7 @@
         </ul>
         <div class="app-header-search">
           <nz-input-group [nzPrefix]="searchPrefixTemplate">
-            <input type="text" nz-input placeholder="Enter your username" />
+            <input type="text" nz-input placeholder="Search anything" />
           </nz-input-group>
           <ng-template #searchPrefixTemplate><i nz-icon nzType="search"></i></ng-template>
         </div>
@@ -94,6 +94,25 @@
               </nz-dropdown-menu>
             </div>
           </li>
+          <li *ngIf="!isLoggedIn">
+            <div class="app-header-nav-item">
+              <a (click)="onLogon()">
+                <i nz-icon nzType="user" nzTheme="outline" class="app-header-icon"></i>
+              </a>
+            </div>
+          </li>
+          <li *ngIf="isLoggedIn">
+            <div class="app-header-nav-item">
+              <a nz-dropdown [nzDropdownMenu]="menuUser">
+                <i nz-icon nzType="user" nzTheme="outline" class="app-header-icon"></i>
+              </a>
+              <nz-dropdown-menu #menuUser="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                  <li nz-menu-item>User Info.</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </li>
           <li>
             <div class="app-header-nav-item">
               <a nz-dropdown [nzDropdownMenu]="menuHomeDef">
@@ -103,18 +122,6 @@
                 <ul nz-menu nzSelectable>
                   <li nz-menu-item>Home Def. List</li>
                   <li nz-menu-item>Current Home Def.</li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
-          </li>
-          <li>
-            <div class="app-header-nav-item">
-              <a nz-dropdown [nzDropdownMenu]="menuUser">
-                <i nz-icon nzType="user" nzTheme="outline" class="app-header-icon"></i>
-              </a>
-              <nz-dropdown-menu #menuUser="nzDropdownMenu">
-                <ul nz-menu nzSelectable>
-                  <li nz-menu-item>User Info.</li>
                 </ul>
               </nz-dropdown-menu>
             </div>
