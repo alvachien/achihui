@@ -61,7 +61,7 @@ export class AuthService {
       }
     });
 
-    this.mgr.events.addUserUnloaded((e: any) => {
+    this.mgr.events.addUserUnloaded(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
         console.debug('AC_HIH_UI [Debug]: User unloaded');
       }

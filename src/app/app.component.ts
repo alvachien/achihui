@@ -178,6 +178,7 @@ export class AppComponent implements OnInit, OnDestroy {
     window.open('https://github.com/alvachien/achihui', '_blank');
   }
   public prepareRoute(outlet: RouterOutlet): any {
+    // tslint:disable-next-line:no-string-literal
     return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
   }
 
