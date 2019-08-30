@@ -57,6 +57,7 @@ import { PlanListComponent } from './plan-list';
 import { DocumentHeaderComponent } from './document-header';
 import { DocumentItemsComponent } from './document-items';
 import { DocumentItemByOrderComponent } from './document-item-by-order';
+import { DocumentNormalMassCreate2Component } from './document-normal-mass-create2/document-normal-mass-create2.component';
 
 @NgModule({
   imports: [
@@ -121,6 +122,7 @@ import { DocumentItemByOrderComponent } from './document-item-by-order';
     DocumentNormalMassCreateItemComponent,
     DocumentNormalMassCreateComponent,
     AccountExtInsuranceComponent,
+    DocumentNormalMassCreate2Component,
   ],
   providers: [
     MAT_DATE_LOCALE_PROVIDER,

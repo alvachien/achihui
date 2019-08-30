@@ -1,0 +1,58 @@
+<mat-horizontal-stepper linear #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Select Mass Create Mode</ng-template>
+      <mat-radio-group class="firststep-radio-group" formControlName="modeControl">
+        <mat-radio-button class="firststep-radio-button" *ngFor="let amode of availableModes" [value]="amode.id">
+          {{amode.displayTerm}}
+        </mat-radio-button>
+      </mat-radio-group>
+      <div>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Fill the criteria</ng-template>
+      <!-- Start date -->
+      <mat-form-field>
+        <input matInput formControlName="startDateControl"
+          [matDatepicker]="advstartdpicker" placeholder="{{'Common.StartDate' | translate}}">
+        <mat-datepicker-toggle matSuffix [for]="advstartdpicker"></mat-datepicker-toggle>
+        <mat-datepicker #advstartdpicker></mat-datepicker>
+      </mat-form-field>
+  
+      <!-- End date -->
+      <mat-form-field>
+        <input matInput formControlName="endDateControl"
+          [matDatepicker]="advenddpicker" placeholder="{{'Common.EndDate' | translate}}">
+        <mat-datepicker-toggle matSuffix [for]="advenddpicker"></mat-datepicker-toggle>
+        <mat-datepicker #advenddpicker></mat-datepicker>
+      </mat-form-field>
+  
+      <!-- Repeat frequency -->
+      <mat-form-field>
+        <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}"
+          formControlName="frqControl" name="rpttype">
+          <mat-option *ngFor="let rt of arFrequencies" [value]="rt.value">
+            {{rt.i18nterm | translate}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    You are now done.
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>

@@ -25,6 +25,7 @@ import { DocumentAssetSoldoutCreateComponent } from './document-asset-soldout-cr
 import { DocumentAssetValChgCreateComponent } from './document-asset-valchg-create';
 import { DocumentNormalCreateComponent } from './document-normal-create';
 import { DocumentNormalMassCreateComponent } from './document-normal-mass-create';
+import { DocumentNormalMassCreate2Component } from './document-normal-mass-create2';
 import { DocumentTransferCreateComponent } from './document-transfer-create';
 import { DocumentLoanCreateComponent } from './document-loan-create';
 import { DocumentExchangeCreateComponent } from './document-exchange-create';
@@ -176,6 +177,11 @@ const routes: Routes = [
           {
             path: 'masscreatenormal',
             component: DocumentNormalMassCreateComponent,
+            data: {animation: 'DetailPage'},
+          },
+          {
+            path: 'masscreatenormal2',
+            component: DocumentNormalMassCreate2Component,
             data: {animation: 'DetailPage'},
           },
           {
