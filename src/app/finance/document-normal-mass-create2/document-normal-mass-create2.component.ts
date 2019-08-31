@@ -5,16 +5,25 @@ import * as moment from 'moment';
 
 import { UIDisplayStringUtil, UIOrderForSelection, ControlCenter, UIAccountForSelection, TranType, Currency,
   LogLevel, BuildupAccountForSelection, BuildupOrderForSelection, UICommonLabelEnum,
-  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType } from 'app/model';
+  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, RepeatFrequencyEnum,
+  DocumentItemWithBalance, momentDateFormat, } from 'app/model';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { FinanceStorageService, FinCurrencyService, UIStatusService, HomeDefDetailService } from 'app/services';
 import { takeUntil } from 'rxjs/operators';
 import { environment } from 'environments/environment';
 import { popupDialog } from 'app/message-dialog';
 
+// Mass create mode
 class MassCreateMode {
   public id: number;
   public displayTerm: string;
+}
+
+// Simulation
+class MassCreateSimulateResult {
+  public dateFrom: moment.Moment;
+  public dateTo: moment.Moment;
+  public extFinDoc: any[];
 }
 
 @Component({
@@ -39,6 +48,8 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   public firstFormGroup: FormGroup;
   // Step: Items
   public secondFormGroup: FormGroup;
+  // Step: Comparison
+  public comparisonFormGroup: FormGroup;
   // Step: Confirm
   public confirmInfo: any = {};
 
@@ -110,6 +121,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
         undefined, error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
+
   ngOnDestroy(): void {
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -120,11 +132,16 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   onGetExistingItems(): void {
     // Fetch existing document items
     let filters: GeneralFilterItem[] = [];
+    let validFilter: boolean = false;
+    let startDate: moment.Moment = moment(this.secondFormGroup.get('startDateControl').value);
+    let endDate: moment.Moment = moment(this.secondFormGroup.get('endDateControl').value);
+    let rptType: RepeatFrequencyEnum = this.secondFormGroup.get('frqControl').value;
+
     // Date
     let filtRange: GeneralFilterItem = new GeneralFilterItem();
     filtRange.fieldName = 'TRANDATE';
-    filtRange.lowValue = moment(this.secondFormGroup.get('startDateControl').value).format('YYYYMMDD');
-    filtRange.highValue = moment(this.secondFormGroup.get('endDateControl').value).format('YYYYMMDD');
+    filtRange.lowValue = startDate.format('YYYYMMDD');
+    filtRange.highValue = endDate.format('YYYYMMDD');
     filtRange.operator = GeneralFilterOperatorEnum.Between;
     filtRange.valueType = GeneralFilterValueType.date;
     filters.push(filtRange);
@@ -153,6 +170,8 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
         filtRange.valueType = GeneralFilterValueType.number;
         filters.push(filtRange);
       });
+
+      validFilter = true;
     }
 
     // Control center
@@ -164,6 +183,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       filtRange.operator = GeneralFilterOperatorEnum.Equal;
       filtRange.valueType = GeneralFilterValueType.number;
       filters.push(filtRange);
+      validFilter = true;
     }
 
     // Order
@@ -175,16 +195,50 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       filtRange.operator = GeneralFilterOperatorEnum.Equal;
       filtRange.valueType = GeneralFilterValueType.number;
       filters.push(filtRange);
+      validFilter = true;
     }
 
-    if (filters.length > 0) {
-      this._storageService.searchDocItem(filters, 100, 0).subscribe((rst: any) => {
+    if (validFilter && (rptType !== undefined && rptType !== null)) {
+      forkJoin(
+        this._storageService.getRepeatFrequencyDates({
+          StartDate: startDate,
+          EndDate: endDate,
+          RptType: rptType as RepeatFrequencyEnum,
+        }),
+        this._storageService.searchDocItem(filters),
+      ).subscribe((rst: any[]) => {
+        let arrsts: MassCreateSimulateResult[] = [];
         if (rst) {
-          // TBD.
+          let dats: any[] = rst[0] as any[];
+          let diamt: number = rst[1].totalCount;
+          let docitems: DocumentItemWithBalance[] = [];
+
+          dats.forEach((val: any) => {
+            let nrst: MassCreateSimulateResult = new MassCreateSimulateResult();
+            nrst.dateFrom = val.startDate;
+            nrst.dateTo = val.endDate;
+
+            rst[1].items.forEach((ditem: any) => {
+              let tdate: moment.Moment = moment(ditem.tranDate, momentDateFormat);
+              if (tdate.isSameOrBefore(nrst.dateTo) && tdate.isSameOrAfter(nrst.dateFrom)) {
+                let di: DocumentItemWithBalance = new DocumentItemWithBalance();
+                di.onSetData(ditem);
+                docitems.push(di);
+              }
+            });
+
+            arrsts.push(nrst);
+          });
         }
+      }, (error: any) => {
+        // Show the error
+        popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          error);
       });
     } else {
-      // Show dialog
+      // Show the error
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        'No meaningful filter');
     }
   }
 

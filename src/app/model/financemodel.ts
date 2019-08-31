@@ -3161,3 +3161,20 @@ export interface FinanceLoanCalAPIOutput {
   TranAmount: number;
   InterestAmount: number;
 }
+
+/**
+ * Repeat frequency date - API input
+ */
+export interface RepeatFrequencyDatesAPIInput {
+  StartDate: moment.Moment;
+  EndDate: moment.Moment;
+  RptType: hih.RepeatFrequencyEnum;
+}
+
+/**
+ * Repeat frequency date - API output
+ */
+export interface RepeatFrequencyDatesAPIOutput {
+  StartDate: moment.Moment;
+  EndDate: moment.Moment;
+}

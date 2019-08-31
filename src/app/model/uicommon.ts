@@ -28,6 +28,7 @@ export enum GeneralFilterOperatorEnum {
 /**
  * Navigation item
  */
+// tslint:disable-next-line:class-name
 export interface appNavItems {
   name: string;
   route: string;
@@ -36,6 +37,7 @@ export interface appNavItems {
 /**
  * App languages
  */
+// tslint:disable-next-line:class-name
 export interface appLanguage {
   displayas: string;
   value: string;
@@ -43,9 +45,13 @@ export interface appLanguage {
 
 // For credits part
 export class CreditsComponent {
+  // tslint:disable-next-line:variable-name
   Name: string;
+  // tslint:disable-next-line:variable-name
   Version: string;
+  // tslint:disable-next-line:variable-name
   Homepage: string;
+  // tslint:disable-next-line:variable-name
   GithubRepo: string;
 }
 

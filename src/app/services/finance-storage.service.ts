@@ -13,7 +13,8 @@ import { LogLevel, AccountCategory, DocumentType, TranType, AssetCategory, Accou
   FinanceAssetBuyinDocumentAPI, FinanceAssetValChgDocumentAPI, DocumentCreatedFrequenciesByUser,
   Plan, DocumentWithPlanExgRate, BalanceSheetReport, ControlCenterReport, OrderReport,
   AccountExtraAdvancePayment, financeAccountCategoryAdvanceReceived, financeAccountCategoryAdvancePayment,
-  FinanceNormalDocItemMassCreate,
+  FinanceNormalDocItemMassCreate, RepeatFrequencyDatesAPIOutput, RepeatFrequencyDatesAPIInput,
+  RepeatFrequencyEnum,
 } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
@@ -2493,6 +2494,53 @@ export class FinanceStorageService {
       catchError((error: HttpErrorResponse) => {
         if (environment.LoggingLevel >= LogLevel.Error) {
           console.error(`AC_HIH_UI [Error]: Failed in calcLoanTmpDocs in FinanceStorageService: ${error}`);
+        }
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
+  }
+
+  // Calculate the dates
+  public getRepeatFrequencyDates(datainput: RepeatFrequencyDatesAPIInput): Observable<RepeatFrequencyDatesAPIOutput[]> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+
+    let apiurl: string = environment.ApiUrl + '/api/RepeatFrequencyDates';
+    let jobject: any = {
+      startDate: datainput.StartDate.format(momentDateFormat),
+      endDate: datainput.EndDate.format(momentDateFormat),
+      rptType: +datainput.RptType,
+    };
+    const jdata: string = JSON && JSON.stringify(jobject);
+
+    return this._http.post(apiurl, jdata, {
+      headers: headers,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.debug(`AC_HIH_UI [Debug]: Entering getRepeatFrequencyDates in FinanceStorageService.`);
+        }
+
+        let results: RepeatFrequencyDatesAPIOutput[] = [];
+        // Get the result out.
+        let y: any = <any>response;
+        if (y instanceof Array && y.length > 0) {
+          for (let tt of y) {
+            let rst: RepeatFrequencyDatesAPIOutput = {
+              StartDate: moment(tt.startDate, momentDateFormat),
+              EndDate: moment(tt.endDate, momentDateFormat),
+            };
+
+            results.push(rst);
+          }
+        }
+        return results;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Failed in getRepeatFrequencyDates in FinanceStorageService: ${error}`);
         }
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
