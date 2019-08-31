@@ -15,21 +15,24 @@
   <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
       <ng-template matStepLabel>Fill the criteria</ng-template>
-      <!-- Start date -->
-      <mat-form-field>
-        <input matInput formControlName="startDateControl"
-          [matDatepicker]="advstartdpicker" placeholder="{{'Common.StartDate' | translate}}">
-        <mat-datepicker-toggle matSuffix [for]="advstartdpicker"></mat-datepicker-toggle>
-        <mat-datepicker #advstartdpicker></mat-datepicker>
-      </mat-form-field>
-  
-      <!-- End date -->
-      <mat-form-field>
-        <input matInput formControlName="endDateControl"
-          [matDatepicker]="advenddpicker" placeholder="{{'Common.EndDate' | translate}}">
-        <mat-datepicker-toggle matSuffix [for]="advenddpicker"></mat-datepicker-toggle>
-        <mat-datepicker #advenddpicker></mat-datepicker>
-      </mat-form-field>
+
+      <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="space-between center">
+        <!-- Start date -->
+        <mat-form-field fxFlex="44">
+          <input matInput formControlName="startDateControl"
+            [matDatepicker]="advstartdpicker" placeholder="{{'Common.StartDate' | translate}}">
+          <mat-datepicker-toggle matSuffix [for]="advstartdpicker"></mat-datepicker-toggle>
+          <mat-datepicker #advstartdpicker></mat-datepicker>
+        </mat-form-field>
+    
+        <!-- End date -->
+        <mat-form-field fxFlex="44">
+          <input matInput formControlName="endDateControl"
+            [matDatepicker]="advenddpicker" placeholder="{{'Common.EndDate' | translate}}">
+          <mat-datepicker-toggle matSuffix [for]="advenddpicker"></mat-datepicker-toggle>
+          <mat-datepicker #advenddpicker></mat-datepicker>
+        </mat-form-field>
+      </div>
   
       <!-- Repeat frequency -->
       <mat-form-field>
@@ -40,6 +43,54 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <!-- Tran. type  -->
+      <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="space-between center">
+        <mat-form-field fxFlex="44">
+          <mat-select placeholder="{{'Finance.TransactionType' | translate}}" formControlName="tranTypeControl">
+            <mat-option *ngFor="let tt of arTranType" [value]="tt.Id">
+              <span [class.incomingtrantype]="!tt.Expense"
+                [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div fxFlex="44">
+          <mat-slide-toggle color="primary" formControlName="incstControl">Include All Sub. Transactions</mat-slide-toggle>
+        </div>
+      </div>
+    
+      <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="space-between center">
+        <!-- CC -->
+        <mat-form-field fxFlex="44">
+          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="cc">
+            <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+            <mat-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
+              {{cc.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      
+        <!-- Order -->
+        <mat-form-field fxFlex="44">
+          <mat-select placeholder="{{'Finance.Activity' | translate}}" formControlName="orderControl" name="ord">
+            <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+            <mat-option *ngFor="let ord of arUIOrder" [value]="ord.Id">
+              {{ord.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <button mat-button (click)="onGetExistingItems()">Fetch Data</button>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <form>
+      <ng-template matStepLabel>Simulate</ng-template>
 
       <div>
         <button mat-button matStepperPrevious>Back</button>
