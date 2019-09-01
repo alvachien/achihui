@@ -1,4 +1,4 @@
-<mat-horizontal-stepper linear #stepper>
+<mat-horizontal-stepper linear (selectionChange)="onStepSelectionChange($event)" #stepper>
   <mat-step [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">
       <ng-template matStepLabel>Select Mass Create Mode</ng-template>
@@ -82,8 +82,11 @@
         </mat-form-field>
       </div>
 
+      <mat-error *ngIf="secondFormGroup && secondFormGroup.hasError('invalidfilter')">
+        <div class="mat-h3">Filter is invalid.</div>
+      </mat-error>
+
       <div>
-        <button mat-button (click)="onGetExistingItems()">Fetch Data</button>
         <button mat-button matStepperPrevious>Back</button>
         <button mat-button matStepperNext>Next</button>
       </div>
@@ -92,13 +95,72 @@
 
   <mat-step>
     <form>
-      <ng-template matStepLabel>Simulate</ng-template>
+      <ng-template matStepLabel>Existing</ng-template>
+
+      <table mat-table [dataSource]="dataSourceSimulation" multiTemplateDataRows class="mat-elevation-z8">
+
+        <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+          <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+          <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+        </ng-container>
+
+        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+            <div class="simulation-element-detail"
+                [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+              <div *ngIf='expandedElement'>
+                <table mat-table [dataSource]="expandedElement.extFinDoc">
+                  <!-- Amount Column -->
+                  <ng-container matColumnDef="ExpandedContentAmount">
+                    <th mat-header-cell *matHeaderCellDef> Amount </th>
+                    <td mat-cell *matCellDef="let expandedetail"> {{expandedetail.TranAmount}} ({{expandedetail.TranCurr}}) </td>
+                  </ng-container>
+                
+                  <!-- Date Column -->
+                  <ng-container matColumnDef="ExpandedContentDate">
+                    <th mat-header-cell *matHeaderCellDef> Date </th>
+                    <td mat-cell *cdkCellDef="let expandedetail"> {{expandedetail.TranDateFormatString}} </td>
+                  </ng-container>
+                
+                  <!-- Desp Column -->
+                  <ng-container matColumnDef="ExpandedContentDesp">
+                    <th mat-header-cell *matHeaderCellDef> Desp </th>
+                    <td mat-cell *matCellDef="let expandedetail"> {{expandedetail.Desp}} </td>
+                  </ng-container>
+                
+                  <tr mat-header-row *matHeaderRowDef="displayedDetailColumns"></tr>
+                  <tr mat-row *matRowDef="let expandedrow; columns: displayedDetailColumns;"></tr>
+                </table>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+            class="simulation-element-row"
+            [class.simulation-expanded-row]="expandedElement === element"
+            (click)="expandedElement = expandedElement === element ? null : element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="simulation-detail-row"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
 
       <div>
         <button mat-button matStepperPrevious>Back</button>
         <button mat-button matStepperNext>Next</button>
       </div>
     </form>
+  </mat-step>
+
+  <mat-step>
+    <ng-template matStepLabel>Simulation</ng-template>
+    
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button matStepperNext>Next</button>
+  </div>
   </mat-step>
 
   <mat-step>

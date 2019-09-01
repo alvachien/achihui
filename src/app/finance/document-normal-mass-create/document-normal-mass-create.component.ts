@@ -110,6 +110,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         undefined, error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
+
   ngOnDestroy(): void {
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -192,6 +193,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
   }
+
   private onSetLanguage(x: string): void {
     if (x === 'zh') {
       moment.locale('zh-cn');

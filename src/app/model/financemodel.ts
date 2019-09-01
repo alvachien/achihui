@@ -2,7 +2,6 @@ import { environment } from '../../environments/environment';
 import * as hih from './common';
 import * as moment from 'moment';
 
-
 /**
  * Finance quick access type
  */
@@ -450,10 +449,14 @@ export class Account extends hih.BaseModel {
   get OwnerId(): string   { return this._ownerid;     }
   set OwnerId(oid: string)    { this._ownerid = oid;  }
 
+  // tslint:disable-next-line:variable-name
   public Status: AccountStatusEnum;
+  // tslint:disable-next-line:variable-name
   public CategoryName: string;
+  // tslint:disable-next-line:variable-name
   public OwnerDisplayAs: string;
 
+  // tslint:disable-next-line:variable-name
   public ExtraInfo: AccountExtra = undefined;
 
   constructor() {
@@ -632,8 +635,11 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   private _endDate: moment.Moment;
   private _refDocId: number;
   private _comment: string;
+  // tslint:disable-next-line:variable-name
   public Direct: boolean;
+  // tslint:disable-next-line:variable-name
   public RepeatType: hih.RepeatFrequencyEnum;
+  // tslint:disable-next-line:variable-name
   public DeferredDays: number;
   public dpTmpDocs: TemplateDocADP[] = [];
 
@@ -773,8 +779,11 @@ export class AccountExtraAdvancePayment extends AccountExtra {
 export class AccountExtraAsset extends AccountExtra {
   private _name: string;
   private _comment: string;
+  // tslint:disable-next-line:variable-name
   public CategoryID: number;
+  // tslint:disable-next-line:variable-name
   public RefDocForBuy: number;
+  // tslint:disable-next-line:variable-name
   public RefDocForSold?: number;
 
   get Name(): string {
@@ -861,7 +870,9 @@ export class AccountExtraLoan extends AccountExtra {
   private _comment: string;
   private _firstRepayDate?: moment.Moment;
   private _repayDayInMonth?: number;
+  // tslint:disable-next-line:variable-name
   public RepayMethod: RepaymentMethodEnum;
+  // tslint:disable-next-line:variable-name
   public RefDocId: number;
   public loanTmpDocs: TemplateDocLoan[] = [];
 
@@ -1236,6 +1247,7 @@ export class Order extends hih.BaseModel {
     return this._validTo.format(hih.momentDateFormat);
   }
 
+  // tslint:disable-next-line:variable-name
   public SRules: SettlementRule[];
 
   constructor() {
@@ -1427,6 +1439,7 @@ export class SettlementRule {
   get Comment(): string             { return this._cmt;           }
   set Comment(cmt: string)          { this._cmt = cmt;            }
 
+  // tslint:disable-next-line:variable-name
   public VerifiedMsgs: hih.InfoMessage[] = [];
 
   constructor() {
@@ -1537,7 +1550,9 @@ export class TranType extends hih.BaseModel {
   set Comment(cmt: string)            { this._cmt = cmt;        }
 
   // For UI display
+  // tslint:disable-next-line:variable-name
   public HierLevel: TranTypeLevelEnum;
+  // tslint:disable-next-line:variable-name
   public FullDisplayText: string;
 
   constructor() {
@@ -1637,10 +1652,13 @@ export class Document extends hih.BaseModel {
   get TranDate(): moment.Moment         { return this._tranDate;    }
   set TranDate(td: moment.Moment)       { this._tranDate = td;      }
 
+  // tslint:disable-next-line:variable-name
   public Items: DocumentItem[] = [];
 
   // UI fields
+  // tslint:disable-next-line:variable-name
   public DocTypeName: string;
+  // tslint:disable-next-line:variable-name
   public TranAmount: number;
   get TranDateFormatString(): string {
     return this._tranDate.format(hih.momentDateFormat);
@@ -1972,8 +1990,10 @@ export class DocumentItem {
   get Desp(): string              { return this._desp;        }
   set Desp(dsp: string)           { this._desp = dsp;         }
 
+  // tslint:disable-next-line:variable-name
   public VerifiedMsgs: hih.InfoMessage[];
 
+  // tslint:disable-next-line:variable-name
   public Tags: string[];
 
   constructor() {
@@ -2777,6 +2797,7 @@ export class TranTypeReport {
   set TranAmount(tamt: number) {
     this._tranAmount = tamt;
   }
+  // tslint:disable-next-line:variable-name
   public TranDate: moment.Moment;
 
   public onSetData(data: any): void {
@@ -2864,25 +2885,44 @@ export class ReportTrendExData {
  */
 export class DocumentItemWithBalance {
   private _tranDate: moment.Moment;
+  // tslint:disable-next-line:variable-name
   public TranType_Exp: boolean;
+  // tslint:disable-next-line:variable-name
   public TranCurr: string;
+  // tslint:disable-next-line:variable-name
   public TranAmount: number;
+  // tslint:disable-next-line:variable-name
   public TranAmount_Org: number;
+  // tslint:disable-next-line:variable-name
   public TranAmount_LC: number;
+  // tslint:disable-next-line:variable-name
   public Balance: number;
+  // tslint:disable-next-line:variable-name
   public DocDesp: string;
+  // tslint:disable-next-line:variable-name
   public DocId: number;
+  // tslint:disable-next-line:variable-name
   public ItemId: number;
+  // tslint:disable-next-line:variable-name
   public AccountId: number;
+  // tslint:disable-next-line:variable-name
   public TranType: number;
+  // tslint:disable-next-line:variable-name
   public ControlCenterId: number;
+  // tslint:disable-next-line:variable-name
   public OrderId: number;
+  // tslint:disable-next-line:variable-name
   public UseCurr2: boolean;
+  // tslint:disable-next-line:variable-name
   public Desp: string;
 
+  // tslint:disable-next-line:variable-name
   public AccountName: string;
+  // tslint:disable-next-line:variable-name
   public TranTypeName: string;
+  // tslint:disable-next-line:variable-name
   public ControlCenterName: string;
+  // tslint:disable-next-line:variable-name
   public OrderName: string;
   get TranDate(): moment.Moment {
     return this._tranDate;
@@ -2964,19 +3004,29 @@ export class DocumentItemWithBalance {
  */
 export class DocumentWithPlanExgRate {
   public HID: number;
+  // tslint:disable-next-line:variable-name
   public DocID: number;
+  // tslint:disable-next-line:variable-name
   public DocType: number;
+  // tslint:disable-next-line:variable-name
   public TranDate: moment.Moment;
   get TranDateDisplayString(): string {
     return this.TranDate.format(hih.momentDateFormat);
   }
+  // tslint:disable-next-line:variable-name
   public Desp: string;
+  // tslint:disable-next-line:variable-name
   public TranCurr: string;
+  // tslint:disable-next-line:variable-name
   public ExgRate: number;
+  // tslint:disable-next-line:variable-name
   public ExgRate_Plan: boolean;
 
+  // tslint:disable-next-line:variable-name
   public TranCurr2: string;
+  // tslint:disable-next-line:variable-name
   public ExgRate2: number;
+  // tslint:disable-next-line:variable-name
   public ExgRate_Plan2: boolean;
 
   public onSetData(jdata: any): void {

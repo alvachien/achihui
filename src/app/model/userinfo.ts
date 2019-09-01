@@ -5,9 +5,13 @@ import { User } from 'oidc-client';
  * User detail
  */
 export class UserDetail {
+  // tslint:disable-next-line:variable-name
   public UserId: string;
+  // tslint:disable-next-line:variable-name
   public DisplayAs: string;
+  // tslint:disable-next-line:variable-name
   public Email: string;
+  // tslint:disable-next-line:variable-name
   public Others: string;
 
   public onSetData(data: any): void {
