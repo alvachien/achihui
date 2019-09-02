@@ -166,6 +166,7 @@
     "InvalidValidTo": "Invalid valid to",
     "ValidToIsMust": "Valid to is a must",
     "InvalidValidRange": "Invalid range of validitiy",
+    "InvalidFilter": "Invalid filter",
     "ValidToMustLaterThanValidFrom": "Valid to must later than valid from",
     "InvalidCategory": "Invalid category",
     "InputtedCategoryIsInvalid": "Inputted category is invalid",
@@ -504,6 +505,8 @@
     "PresentValue": "Present Est. Vaue",
     "Plan": "Finance Plan",
     "NormalDocMassCreate": "Normal Document Mass Create",
+    "RepeatlyMassCreateNormalDocs": "Repeatly mass create normal documents",
+    "FreelyMassCreateNormalDocs": "Freely mass create normal documents",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

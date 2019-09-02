@@ -2,18 +2,18 @@
   <mat-step [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">
       <ng-template matStepLabel>Select Mass Create Mode</ng-template>
-      <mat-radio-group class="firststep-radio-group" formControlName="modeControl">
+      <mat-radio-group class="firststep-radio-group" formControlName="modeControl" (change)="onMassCreateModeChanged($event)">
         <mat-radio-button class="firststep-radio-button" *ngFor="let amode of availableModes" [value]="amode.id">
-          {{amode.displayTerm}}
+          {{amode.displayTerm | translate}} ({{amode.id}})
         </mat-radio-button>
       </mat-radio-group>
       <div>
-        <button mat-button matStepperNext>Next</button>
+        <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
       </div>
     </form>
   </mat-step>
 
-  <mat-step [stepControl]="secondFormGroup">
+  <mat-step [stepControl]="secondFormGroup" [optional]="isSecondStepOptional" [editable]="isSecondStepEditable">
     <form [formGroup]="secondFormGroup">
       <ng-template matStepLabel>Fill the criteria</ng-template>
 
@@ -87,13 +87,13 @@
       </mat-error>
 
       <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+        <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+        <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
       </div>
     </form>
   </mat-step>
 
-  <mat-step>
+  <mat-step [optional]="isThirdStepOptional" [editable]="isThirdStepEditable">
     <form>
       <ng-template matStepLabel>Existing</ng-template>
 
@@ -148,19 +148,54 @@
       <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
 
       <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+        <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+        <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
       </div>
     </form>
   </mat-step>
 
-  <mat-step>
+  <mat-step [stepControl]="targetFormGroup">
     <ng-template matStepLabel>Simulation</ng-template>
+
+    <form [formGroup]="targetFormGroup" style="padding: 1em;">
+      <!-- <mat-toolbar color="accent">
+        <button mat-button (click)="addItem()">{{'Finance.CreateItem' | translate}}</button>
+      </mat-toolbar> -->
+
+      <!-- items -->
+      <div formArrayName="items" style="width: 96%;">
+        <div *ngFor="let item of targetFormGroup?.get('items')['controls']; let i=index">
+          <mat-card class="item-card" style="width: 96%;">
+            <mat-card-header>
+              <mat-card-title>{{'Finance.Items' | translate}} {{i + 1}}</mat-card-title>
+              <mat-card-subtitle>
+                <button mat-button color="primary" (click)="removeItem(i)">
+                  {{'Common.Remove' | translate}}
+                </button>
+              </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content style="width: 96%;">
+              <div [formGroupName]="i" style="width: 96%;">
+                <hih-document-normal-mass-create-item [group]="targetFormGroup?.get('items')['controls'][i]"
+                  [arUIAccount]="arUIAccount"
+                  [arUIOrder]="arUIOrder"
+                  [arControlCenter]="arControlCenter"
+                  [arTranType]="arTranType"
+                  [localCurrency]="localCurrency">
+                </hih-document-normal-mass-create-item>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          <mat-divider [inset]="true"></mat-divider>
+        </div>
+      </div>
+    </form>
     
     <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button matStepperNext>Next</button>
-  </div>
+      <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+      <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+    </div>
   </mat-step>
 
   <mat-step>

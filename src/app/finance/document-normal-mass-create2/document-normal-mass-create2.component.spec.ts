@@ -8,7 +8,7 @@ describe('DocumentNormalMassCreate2Component', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentNormalMassCreate2Component ]
+      declarations: [ DocumentNormalMassCreate2Component ],
     })
     .compileComponents();
   }));

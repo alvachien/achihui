@@ -166,6 +166,7 @@
     "InvalidValidTo": "无效的有效期结束日期",
     "ValidToIsMust": "有效期结束日期必须输入",
     "InvalidValidRange": "无效的有效期范围",
+    "InvalidFilter": "无效的过滤条件",
     "ValidToMustLaterThanValidFrom": "有效期结束日期必须晚于开始日期",
     "InvalidCategory": "无效的类别",
     "InputtedCategoryIsInvalid": "输入的类别无效",
@@ -504,6 +505,8 @@
     "PresentValue": "当前估价",
     "Plan": "财务计划",
     "NormalDocMassCreate": "批量创建普通凭证",
+    "RepeatlyMassCreateNormalDocs": "批量创建周期性普通凭证",
+    "FreelyMassCreateNormalDocs": "批量创建普通凭证",
 
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",

@@ -1,14 +1,15 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { MatHorizontalStepper, DateAdapter, MatDialog, MatTableDataSource, MatPaginator, } from '@angular/material';
+import { MatHorizontalStepper, DateAdapter, MatDialog, MatTableDataSource, MatPaginator, MatRadioChange, } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 import { UIDisplayStringUtil, UIOrderForSelection, ControlCenter, UIAccountForSelection, TranType, Currency,
-  LogLevel, BuildupAccountForSelection, BuildupOrderForSelection, UICommonLabelEnum,
-  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, RepeatFrequencyEnum,
-  DocumentItemWithBalance, momentDateFormat, dateRangeValidator, RepeatFrequencyDatesAPIOutput, } from 'app/model';
+  LogLevel, BuildupAccountForSelection, BuildupOrderForSelection, UICommonLabelEnum, Document, MessageType,
+  GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, RepeatFrequencyEnum, InfoMessage,
+  DocumentItemWithBalance, momentDateFormat, dateRangeValidator, RepeatFrequencyDatesAPIOutput, FinanceNormalDocItemMassCreate, } from 'app/model';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { FinanceStorageService, FinCurrencyService, UIStatusService, HomeDefDetailService } from 'app/services';
 import { takeUntil } from 'rxjs/operators';
@@ -71,18 +72,22 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   public firstFormGroup: FormGroup;
   // Step: Items
   public secondFormGroup: FormGroup;
-  // Step: Comparison
+  isSecondStepOptional: boolean;
+  isSecondStepEditable: boolean;
+  // Step: Existing records
   public comparisonFormGroup: FormGroup;
+  isThirdStepOptional: boolean;
+  isThirdStepEditable: boolean;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  // Step: Confirm
-  public confirmInfo: any = {};
+  // Step: Target
+  public targetFormGroup: FormGroup;
 
   availableModes: MassCreateMode[] = [ {
     id: 1,
-    displayTerm: 'Mode 1: Repeatly create normal documents',
+    displayTerm: 'Finance.RepeatlyMassCreateNormalDocs',
   }, {
     id: 2,
-    displayTerm: 'Mode 2: Freely create Mass Normal Documents',
+    displayTerm: 'Finance.FreelyMassCreateNormalDocs',
   }];
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
 
@@ -92,6 +97,8 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
     private _dateAdapter: DateAdapter<any>,
     private _homeService: HomeDefDetailService,
     private _dialog: MatDialog,
+    private _fb: FormBuilder,
+    private _router: Router,
   ) {
     this.firstFormGroup = new FormGroup({
       modeControl: new FormControl(1, Validators.required),
@@ -105,6 +112,10 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       ccControl: new FormControl(),
       orderControl: new FormControl(),
     }, [dateRangeValidator, this._filterValidator]);
+    this._setMassCreateMode(1);
+    this.targetFormGroup = this._fb.group({
+      items: this._fb.array([]),
+    });
   }
 
   ngOnInit(): void {
@@ -260,13 +271,23 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
     });
   }
 
+  public onMassCreateModeChanged(event: MatRadioChange): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalMassCreate2Component onMassCreateModeChanged with value ${event.value}`);
+    }
+    this._setMassCreateMode(event.value);
+  }
+
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalMassCreate2Component onStepSelectionChange with index = ${event.selectedIndex}`);
     }
 
     if (event.selectedIndex === 1) {
-      // Todo
+      let nmode: number = this.firstFormGroup.get('modeControl').value as number;
+      if (nmode === 2) {
+        this._stepper.selectedIndex = 3;
+      }
     } else if (event.selectedIndex === 2) {
       // Now fetch the data
       this.dataSourceSimulation.data = []; // Clear the data
@@ -274,7 +295,120 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
 
       this.onGetExistingItems();
     } else if (event.selectedIndex === 3) {
-      // Todo
+      // Update the target form
+      this.dataSourceSimulation.data.forEach((rst: MassCreateSimulateResult) => {
+        if (rst.extFinDoc.length <= 0) {
+          this.addItem(rst);
+        }
+      });
+    }
+  }
+
+  public onSubmit(): void {
+    let arItems: FinanceNormalDocItemMassCreate[] = [];
+
+    const control: any = <FormArray>this.targetFormGroup.controls.items;
+    control.controls.forEach((ctrl: AbstractControl) => {
+      // Read the items
+      if (ctrl.value) {
+        let item: FinanceNormalDocItemMassCreate = new FinanceNormalDocItemMassCreate();
+        item.accountID = ctrl.get('accountControl').value;
+        item.controlCenterID = ctrl.get('ccControl').value;
+        item.orderID = ctrl.get('orderControl').value;
+        item.desp = ctrl.get('despControl').value;
+        item.tranAmount = ctrl.get('amountControl').value;
+        item.tranCurrency = this.localCurrency;
+        item.tranDate = ctrl.get('dateControl').value;
+        item.tranType = ctrl.get('tranTypeControl').value;
+
+        if (item.isValid) {
+          arItems.push(item);
+        }
+      }
+    });
+    if (arItems.length <= 0 || arItems.length !== control.controls.length) {
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+      return;
+    }
+
+    this._storageService.massCreateNormalDocument(arItems).subscribe((docs: Document[]) => {
+      // Show the success dialog.
+      let infoMsg: InfoMessage[] = [];
+      docs.forEach((val: Document) => {
+        let imsg: InfoMessage = new InfoMessage();
+        imsg.MsgType = MessageType.Info;
+        imsg.MsgTitle = val.Id.toString();
+        imsg.MsgContent = 'Document Posted';
+        infoMsg.push(imsg);
+      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        undefined,
+        infoMsg).afterClosed().subscribe(() => {
+          // Jump to document list page
+          this._router.navigate(['/finance/document']);
+        });
+    }, (error: any) => {
+      // Popup error dialog
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+    });
+  }
+
+  initItem(): FormGroup {
+    return this._fb.group({
+      dateControl: [moment(), Validators.required],
+      accountControl: ['', Validators.required],
+      tranTypeControl: ['', Validators.required],
+      amountControl: ['', Validators.required],
+      // currControl: ['', Validators.required],
+      despControl: ['', Validators.required],
+      ccControl: [''],
+      orderControl: [''],
+    });
+  }
+
+  addItem(rst?: MassCreateSimulateResult): void {
+    const control: any = <FormArray>this.targetFormGroup.controls.items;
+    const addrCtrl: any = this.initItem();
+
+    if (rst) {
+      addrCtrl.get('dateControl').value = rst.dateFrom;
+      addrCtrl.get('amountControl').value = 1;
+      addrCtrl.get('despControl').value = 'Set description';
+    }
+    let ccid: any = this.secondFormGroup.get('ccControl').value;
+    if (ccid) {
+      addrCtrl.get('ccControl').value = ccid;
+    }
+    let orderid: any = this.secondFormGroup.get('orderControl').value;
+    if (ccid) {
+      addrCtrl.get('orderControl').value = orderid;
+    }
+    let ttid: any = this.secondFormGroup.get('tranTypeControl').value;
+    if (ttid) {
+      addrCtrl.get('tranTypeControl').value = ttid;
+    }
+
+    control.push(addrCtrl);
+  }
+
+  removeItem(i: number): void {
+    const control: any = <FormArray>this.targetFormGroup.controls.items;
+    control.removeAt(i);
+  }
+
+  private _setMassCreateMode(mid: number): void {
+    if (mid === 1) {
+      this.isSecondStepOptional = false;
+      this.isThirdStepOptional = false;
+      this.isSecondStepEditable = false;
+      this.isThirdStepEditable = false;
+    } else if (mid === 2) {
+      this.isSecondStepOptional = true;
+      this.isThirdStepOptional = true;
+      this.isSecondStepEditable = true;
+      this.isThirdStepEditable = true;
     }
   }
 
