@@ -156,6 +156,8 @@
     "CompleteDate": "Complete Date",
     "Score": "Score",
     "Dashboard": "Dashboard",
+    "SearchCriteria": "Search Criteria",
+    "DefaultValues": "Default Values",
 
     "InvalidName": "Invalid name",
     "InvalidDate": "Invalid date",
@@ -507,6 +509,7 @@
     "NormalDocMassCreate": "Normal Document Mass Create",
     "RepeatlyMassCreateNormalDocs": "Repeatly mass create normal documents",
     "FreelyMassCreateNormalDocs": "Freely mass create normal documents",
+    "ExistingDocuments": "Existing Documents",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

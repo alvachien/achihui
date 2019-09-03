@@ -1,30 +1,30 @@
 <mat-horizontal-stepper linear (selectionChange)="onStepSelectionChange($event)" #stepper>
   <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
-      <ng-template matStepLabel>Fill the criteria</ng-template>
+      <ng-template matStepLabel>{{'Common.SearchCriteria' | translate}}</ng-template>
 
-      <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="space-between center">
+      <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column"
+        fxLayoutAlign="space-between center">
         <!-- Start date -->
         <mat-form-field fxFlex="44">
-          <input matInput formControlName="startDateControl"
-            [matDatepicker]="advstartdpicker" placeholder="{{'Common.StartDate' | translate}}">
+          <input matInput formControlName="startDateControl" [matDatepicker]="advstartdpicker"
+            placeholder="{{'Common.StartDate' | translate}}">
           <mat-datepicker-toggle matSuffix [for]="advstartdpicker"></mat-datepicker-toggle>
           <mat-datepicker #advstartdpicker></mat-datepicker>
         </mat-form-field>
-    
+
         <!-- End date -->
         <mat-form-field fxFlex="44">
-          <input matInput formControlName="endDateControl"
-            [matDatepicker]="advenddpicker" placeholder="{{'Common.EndDate' | translate}}">
+          <input matInput formControlName="endDateControl" [matDatepicker]="advenddpicker"
+            placeholder="{{'Common.EndDate' | translate}}">
           <mat-datepicker-toggle matSuffix [for]="advenddpicker"></mat-datepicker-toggle>
           <mat-datepicker #advenddpicker></mat-datepicker>
         </mat-form-field>
       </div>
-  
+
       <!-- Repeat frequency -->
       <mat-form-field>
-        <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}"
-          formControlName="frqControl" name="rpttype">
+        <mat-select placeholder="{{'Common.RepeatFrequency' | translate}}" formControlName="frqControl" name="rpttype">
           <mat-option *ngFor="let rt of arFrequencies" [value]="rt.value">
             {{rt.i18nterm | translate}}
           </mat-option>
@@ -32,7 +32,8 @@
       </mat-form-field>
 
       <!-- Tran. type  -->
-      <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="space-between center">
+      <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column"
+        fxLayoutAlign="space-between center">
         <mat-form-field fxFlex="44">
           <mat-select placeholder="{{'Finance.TransactionType' | translate}}" formControlName="tranTypeControl">
             <mat-option *ngFor="let tt of arTranType" [value]="tt.Id">
@@ -42,11 +43,13 @@
           </mat-select>
         </mat-form-field>
         <div fxFlex="44">
-          <mat-slide-toggle color="primary" formControlName="incstControl">Include All Sub. Transactions</mat-slide-toggle>
+          <mat-slide-toggle color="primary" formControlName="incstControl">Include All Sub. Transactions
+          </mat-slide-toggle>
         </div>
       </div>
-    
-      <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="space-between center">
+
+      <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column"
+        fxLayoutAlign="space-between center">
         <!-- CC -->
         <mat-form-field fxFlex="44">
           <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="cc">
@@ -56,7 +59,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-      
+
         <!-- Order -->
         <mat-form-field fxFlex="44">
           <mat-select placeholder="{{'Finance.Activity' | translate}}" formControlName="orderControl" name="ord">
@@ -69,7 +72,7 @@
       </div>
 
       <mat-error *ngIf="secondFormGroup && secondFormGroup.hasError('invalidfilter')">
-        <div class="mat-h3">Filter is invalid.</div>
+        <div class="mat-h3">{{'Common.InvalidFilter' | translate}}</div>
       </mat-error>
 
       <div>
@@ -80,7 +83,7 @@
 
   <mat-step>
     <form>
-      <ng-template matStepLabel>Existing</ng-template>
+      <ng-template matStepLabel>{{'Finance.ExistingDocuments' | translate}}</ng-template>
 
       <table mat-table [dataSource]="dataSourceExisting" multiTemplateDataRows class="mat-elevation-z8">
 
@@ -93,27 +96,28 @@
         <ng-container matColumnDef="expandedDetail">
           <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
             <div class="simulation-element-detail"
-                [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+              [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
               <div *ngIf='expandedElement'>
                 <table mat-table [dataSource]="expandedElement.extFinDoc">
                   <!-- Amount Column -->
                   <ng-container matColumnDef="ExpandedContentAmount">
-                    <th mat-header-cell *matHeaderCellDef> Amount </th>
-                    <td mat-cell *matCellDef="let expandedetail"> {{expandedetail.TranAmount}} ({{expandedetail.TranCurr}}) </td>
+                    <th mat-header-cell *matHeaderCellDef> {{'Finance.Amount' | translate}} </th>
+                    <td mat-cell *matCellDef="let expandedetail"> {{expandedetail.TranAmount}}
+                      ({{expandedetail.TranCurr}}) </td>
                   </ng-container>
-                
+
                   <!-- Date Column -->
                   <ng-container matColumnDef="ExpandedContentDate">
-                    <th mat-header-cell *matHeaderCellDef> Date </th>
+                    <th mat-header-cell *matHeaderCellDef> {{'Common.Date' | translate}} </th>
                     <td mat-cell *cdkCellDef="let expandedetail"> {{expandedetail.TranDateFormatString}} </td>
                   </ng-container>
-                
+
                   <!-- Desp Column -->
                   <ng-container matColumnDef="ExpandedContentDesp">
-                    <th mat-header-cell *matHeaderCellDef> Desp </th>
+                    <th mat-header-cell *matHeaderCellDef> {{'Common.Description' | translate}} </th>
                     <td mat-cell *matCellDef="let expandedetail"> {{expandedetail.Desp}} </td>
                   </ng-container>
-                
+
                   <tr mat-header-row *matHeaderRowDef="displayedDetailColumns"></tr>
                   <tr mat-row *matRowDef="let expandedrow; columns: displayedDetailColumns;"></tr>
                 </table>
@@ -123,10 +127,9 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
-            class="simulation-element-row"
-            [class.simulation-expanded-row]="expandedElement === element"
-            (click)="expandedElement = expandedElement === element ? null : element">
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="simulation-element-row"
+          [class.simulation-expanded-row]="expandedElement === element"
+          (click)="expandedElement = expandedElement === element ? null : element">
         </tr>
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="simulation-detail-row"></tr>
       </table>
@@ -139,8 +142,66 @@
     </form>
   </mat-step>
 
+  <mat-step>
+    <ng-template matStepLabel>{{'Common.DefaultValues' | translate}}</ng-template>
+
+    <form [formGroup]="defaultValueFormGroup">
+      <mat-form-field>
+        <mat-select placeholder="{{'Finance.Account' | translate}}" formControlName="accountControl">
+          <mat-option *ngFor="let acnt of arUIAccount" [value]="acnt.Id">
+            <span [class.assetaccount]="acnt.AssetFlag" [class.expenseaccount]="!acnt.AssetFlag">
+              {{acnt.Name}} ({{acnt.CategoryName | translate}})
+            </span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select placeholder="{{'Finance.TransactionType' | translate}}" formControlName="tranTypeControl">
+          <mat-option *ngFor="let tt of arTranType" [value]="tt.Id">
+            <span [class.incomingtrantype]="!tt.Expense"
+              [class.outgoingtrantype]="tt.Expense">{{tt.FullDisplayText}}</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    
+      <mat-form-field>
+        <input matInput type="number" required placeholder="{{'Finance.Amount' | translate}}"
+          formControlName="amountControl">
+        <span matSuffix>{{localCurrency}}</span>
+      </mat-form-field>
+
+      <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="space-between center">
+        <!-- CC -->
+        <mat-form-field fxFlex="44">
+          <mat-select placeholder="{{'Finance.ControlCenter' | translate}}" formControlName="ccControl" name="srccc">
+            <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+            <mat-option *ngFor="let cc of arControlCenter" [value]="cc.Id">
+              {{cc.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+    
+        <!-- Order -->
+        <mat-form-field fxFlex="44">
+          <mat-select placeholder="{{'Finance.Activity' | translate}}" formControlName="orderControl" name="srcord">
+            <mat-option>{{'Common.ResetCurrentSelection' | translate}}</mat-option>
+            <mat-option *ngFor="let ord of arUIOrder" [value]="ord.Id">
+              {{ord.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      
+      <div>
+        <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+        <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
   <mat-step [stepControl]="targetFormGroup">
-    <ng-template matStepLabel>Simulation</ng-template>
+    <ng-template matStepLabel>{{'Finance.NormalDocMassCreate' | translate}}</ng-template>
 
     <form [formGroup]="targetFormGroup" style="padding: 1em;">
       <mat-toolbar color="accent">
@@ -148,35 +209,29 @@
       </mat-toolbar>
 
       <!-- items -->
-      <div formArrayName="items" style="width: 96%;">
+      <div formArrayName="items">
         <div *ngFor="let item of targetFormGroup?.get('items')['controls']; let i=index">
-          <mat-card class="item-card" style="width: 96%;">
-            <mat-card-header>
-              <mat-card-title>{{'Finance.Items' | translate}} {{i + 1}}</mat-card-title>
-              <mat-card-subtitle>
-                <button mat-button color="primary" (click)="removeItem(i)">
-                  {{'Common.Remove' | translate}}
-                </button>
-              </mat-card-subtitle>
-            </mat-card-header>
+          <mat-expansion-panel style="width: 96%;">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{'Finance.Items' | translate}} {{i + 1}}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
 
-            <mat-card-content style="width: 96%;">
-              <div [formGroupName]="i" style="width: 96%;">
-                <hih-document-normal-mass-create-item [group]="targetFormGroup?.get('items')['controls'][i]"
-                  [arUIAccount]="arUIAccount"
-                  [arUIOrder]="arUIOrder"
-                  [arControlCenter]="arControlCenter"
-                  [arTranType]="arTranType"
-                  [localCurrency]="localCurrency">
-                </hih-document-normal-mass-create-item>
-              </div>
-            </mat-card-content>
-          </mat-card>
-          <mat-divider [inset]="true"></mat-divider>
+            <div [formGroupName]="i" style="width: 96%;">
+              <hih-document-normal-mass-create-item [group]="targetFormGroup?.get('items')['controls'][i]"
+                [arUIAccount]="arUIAccount" [arUIOrder]="arUIOrder" [arControlCenter]="arControlCenter"
+                [arTranType]="arTranType" [localCurrency]="localCurrency">
+              </hih-document-normal-mass-create-item>
+            </div>
+            <mat-action-row>
+              <button mat-button color="warn" (click)="removeItem(i)">{{'Common.Remove' | translate}}</button>
+            </mat-action-row>
+          </mat-expansion-panel>
         </div>
       </div>
     </form>
-    
+
     <div>
       <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
       <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
@@ -184,11 +239,12 @@
   </mat-step>
 
   <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
+    <ng-template matStepLabel>Result</ng-template>
     You are now done.
     <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
+      <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
+      <button mat-button (click)="stepper.reset()">{{'Common.Reset' | translate}}</button>
+      <button mat-button (click)="onGenerateDocs()">{{'Common.OK' | translate}}</button>
     </div>
   </mat-step>
 </mat-horizontal-stepper>

@@ -156,7 +156,9 @@
     "CompleteDate": "完成日期",
     "Score": "得分",
     "Dashboard": "仪表板",
-    
+    "SearchCriteria": "搜索条件",
+    "DefaultValues": "默认值",
+
     "InvalidName": "无效的名字",
     "InvalidDate": "无效的日期",
     "NameIsMust": "名字必须输入",
@@ -507,6 +509,7 @@
     "NormalDocMassCreate": "批量创建普通凭证",
     "RepeatlyMassCreateNormalDocs": "批量创建周期性普通凭证",
     "FreelyMassCreateNormalDocs": "批量创建普通凭证",
+    "ExistingDocuments": "系统中的凭证",
 
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",

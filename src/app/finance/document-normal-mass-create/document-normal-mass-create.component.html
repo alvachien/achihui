@@ -12,7 +12,7 @@
     <form [formGroup]="myForm" style="padding: 1em;">
       <!-- items -->
       <div formArrayName="items" style="width: 96%;">
-        <div *ngFor="let item of myForm?.get('items')['controls']; let i=index">
+        <div *ngFor="let item of myForm?.get('items')['controls']; let i=index">          
           <mat-card class="item-card" style="width: 96%;">
             <mat-card-header>
               <mat-card-title>{{'Finance.Items' | translate}} {{i + 1}}</mat-card-title>

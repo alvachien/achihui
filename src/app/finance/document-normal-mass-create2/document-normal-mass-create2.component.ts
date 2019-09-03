@@ -73,16 +73,11 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   // Step: Existing docs
   public comparisonFormGroup: FormGroup;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  // Step: Default values
+  public defaultValueFormGroup: FormGroup;
   // Step: Target
   public targetFormGroup: FormGroup;
 
-  availableModes: MassCreateMode[] = [ {
-    id: 1,
-    displayTerm: 'Finance.RepeatlyMassCreateNormalDocs',
-  }, {
-    id: 2,
-    displayTerm: 'Finance.FreelyMassCreateNormalDocs',
-  }];
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
 
   constructor(private _storageService: FinanceStorageService,
@@ -103,6 +98,13 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       ccControl: new FormControl(),
       orderControl: new FormControl(),
     }, [dateRangeValidator, this._filterValidator]);
+    this.defaultValueFormGroup = new FormGroup({
+      accountControl: new FormControl(),
+      tranTypeControl: new FormControl(),
+      amountControl: new FormControl(),
+      ccControl: new FormControl(),
+      orderControl: new FormControl(),
+    });
     this.targetFormGroup = this._fb.group({
       items: this._fb.array([]),
     });
@@ -270,8 +272,8 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       this.dataSourceExisting.paginator = this.paginator;
 
       this.onGetExistingItems();
-  } else if (event.selectedIndex === 2) {
-      // Now fetch the data
+    } else if (event.selectedIndex === 3) {
+      // Create step
       this.dataSourceExisting.data.forEach((rst: MassCreateExistingResult) => {
         if (rst.extFinDoc.length <= 0) {
           this.addItem(rst);
@@ -280,7 +282,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
     }
   }
 
-  public onSubmit(): void {
+  public onGenerateDocs(): void {
     let arItems: FinanceNormalDocItemMassCreate[] = [];
 
     const control: any = <FormArray>this.targetFormGroup.controls.items;
