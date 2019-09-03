@@ -1,19 +1,5 @@
 <mat-horizontal-stepper linear (selectionChange)="onStepSelectionChange($event)" #stepper>
-  <mat-step [stepControl]="firstFormGroup">
-    <form [formGroup]="firstFormGroup">
-      <ng-template matStepLabel>Select Mass Create Mode</ng-template>
-      <mat-radio-group class="firststep-radio-group" formControlName="modeControl" (change)="onMassCreateModeChanged($event)">
-        <mat-radio-button class="firststep-radio-button" *ngFor="let amode of availableModes" [value]="amode.id">
-          {{amode.displayTerm | translate}} ({{amode.id}})
-        </mat-radio-button>
-      </mat-radio-group>
-      <div>
-        <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
-      </div>
-    </form>
-  </mat-step>
-
-  <mat-step [stepControl]="secondFormGroup" [optional]="isSecondStepOptional" [editable]="isSecondStepEditable">
+  <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
       <ng-template matStepLabel>Fill the criteria</ng-template>
 
@@ -87,17 +73,16 @@
       </mat-error>
 
       <div>
-        <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
         <button mat-button matStepperNext>{{'Common.NextButton' | translate}}</button>
       </div>
     </form>
   </mat-step>
 
-  <mat-step [optional]="isThirdStepOptional" [editable]="isThirdStepEditable">
+  <mat-step>
     <form>
       <ng-template matStepLabel>Existing</ng-template>
 
-      <table mat-table [dataSource]="dataSourceSimulation" multiTemplateDataRows class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSourceExisting" multiTemplateDataRows class="mat-elevation-z8">
 
         <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
           <th mat-header-cell *matHeaderCellDef> {{column}} </th>
@@ -158,9 +143,9 @@
     <ng-template matStepLabel>Simulation</ng-template>
 
     <form [formGroup]="targetFormGroup" style="padding: 1em;">
-      <!-- <mat-toolbar color="accent">
+      <mat-toolbar color="accent">
         <button mat-button (click)="addItem()">{{'Finance.CreateItem' | translate}}</button>
-      </mat-toolbar> -->
+      </mat-toolbar>
 
       <!-- items -->
       <div formArrayName="items" style="width: 96%;">

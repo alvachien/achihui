@@ -22,8 +22,8 @@ class MassCreateMode {
   public displayTerm: string;
 }
 
-// Simulation
-class MassCreateSimulateResult {
+// Existing docs
+class MassCreateExistingResult {
   public dateFrom: moment.Moment;
   public dateTo: moment.Moment;
   public extFinDocTotalCount: number;
@@ -62,22 +62,16 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   public arCurrencies: Currency[] = [];
   // public arSimaltedResults: MassCreateSimulateResult[] = [];
   columnsToDisplay: string[] = ['dateFromString', 'dateToString', 'extFinDocCount'];
-  expandedElement: MassCreateSimulateResult | null;
+  expandedElement: MassCreateExistingResult | null;
   displayedDetailColumns: string[] = ['ExpandedContentAmount', 'ExpandedContentDate', 'ExpandedContentDesp'];
-  dataSourceSimulation: MatTableDataSource<MassCreateSimulateResult> = new MatTableDataSource<MassCreateSimulateResult>([]);
+  dataSourceExisting: MatTableDataSource<MassCreateExistingResult> = new MatTableDataSource<MassCreateExistingResult>([]);
 
   // Stepper
   @ViewChild(MatHorizontalStepper, {static: true}) _stepper: MatHorizontalStepper;
-  // Step: Generic info
-  public firstFormGroup: FormGroup;
-  // Step: Items
+  // Step: Filter
   public secondFormGroup: FormGroup;
-  isSecondStepOptional: boolean;
-  isSecondStepEditable: boolean;
-  // Step: Existing records
+  // Step: Existing docs
   public comparisonFormGroup: FormGroup;
-  isThirdStepOptional: boolean;
-  isThirdStepEditable: boolean;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   // Step: Target
   public targetFormGroup: FormGroup;
@@ -100,9 +94,6 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
     private _fb: FormBuilder,
     private _router: Router,
   ) {
-    this.firstFormGroup = new FormGroup({
-      modeControl: new FormControl(1, Validators.required),
-    });
     this.secondFormGroup = new FormGroup({
       startDateControl: new FormControl(moment().subtract(1, 'y')),
       endDateControl: new FormControl(moment()),
@@ -112,7 +103,6 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       ccControl: new FormControl(),
       orderControl: new FormControl(),
     }, [dateRangeValidator, this._filterValidator]);
-    this._setMassCreateMode(1);
     this.targetFormGroup = this._fb.group({
       items: this._fb.array([]),
     });
@@ -156,7 +146,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
         undefined, error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
     });
 
-    this.dataSourceSimulation.paginator = this.paginator;
+    this.dataSourceExisting.paginator = this.paginator;
   }
 
   ngOnDestroy(): void {
@@ -238,7 +228,6 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       }),
       this._storageService.searchDocItem(filters),
     ).subscribe((rst: any[]) => {
-      // let arrsts: MassCreateSimulateResult[] = [];
       if (rst) {
         let dats: RepeatFrequencyDatesAPIOutput[] = rst[0] as RepeatFrequencyDatesAPIOutput[];
         // let diamt: number = rst[1].totalCount;
@@ -246,7 +235,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
         let arrsts: any[] = [];
 
         dats.forEach((val: RepeatFrequencyDatesAPIOutput) => {
-          let nrst: MassCreateSimulateResult = new MassCreateSimulateResult();
+          let nrst: MassCreateExistingResult = new MassCreateExistingResult();
           nrst.dateFrom = val.StartDate;
           nrst.dateTo = val.EndDate;
           nrst.extFinDoc = [];
@@ -261,8 +250,8 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
           arrsts.push(nrst);
         });
 
-        this.dataSourceSimulation.data = arrsts;
-        this.dataSourceSimulation.paginator = this.paginator;
+        this.dataSourceExisting.data = arrsts;
+        this.dataSourceExisting.paginator = this.paginator;
       }
     }, (error: any) => {
       // Show the error
@@ -271,32 +260,19 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
     });
   }
 
-  public onMassCreateModeChanged(event: MatRadioChange): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalMassCreate2Component onMassCreateModeChanged with value ${event.value}`);
-    }
-    this._setMassCreateMode(event.value);
-  }
-
   public onStepSelectionChange(event: StepperSelectionEvent): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalMassCreate2Component onStepSelectionChange with index = ${event.selectedIndex}`);
     }
 
     if (event.selectedIndex === 1) {
-      let nmode: number = this.firstFormGroup.get('modeControl').value as number;
-      if (nmode === 2) {
-        this._stepper.selectedIndex = 3;
-      }
-    } else if (event.selectedIndex === 2) {
-      // Now fetch the data
-      this.dataSourceSimulation.data = []; // Clear the data
-      this.dataSourceSimulation.paginator = this.paginator;
+      this.dataSourceExisting.data = []; // Clear the data
+      this.dataSourceExisting.paginator = this.paginator;
 
       this.onGetExistingItems();
-    } else if (event.selectedIndex === 3) {
-      // Update the target form
-      this.dataSourceSimulation.data.forEach((rst: MassCreateSimulateResult) => {
+  } else if (event.selectedIndex === 2) {
+      // Now fetch the data
+      this.dataSourceExisting.data.forEach((rst: MassCreateExistingResult) => {
         if (rst.extFinDoc.length <= 0) {
           this.addItem(rst);
         }
@@ -368,7 +344,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
     });
   }
 
-  addItem(rst?: MassCreateSimulateResult): void {
+  addItem(rst?: MassCreateExistingResult): void {
     const control: any = <FormArray>this.targetFormGroup.controls.items;
     const addrCtrl: any = this.initItem();
 
@@ -396,20 +372,6 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   removeItem(i: number): void {
     const control: any = <FormArray>this.targetFormGroup.controls.items;
     control.removeAt(i);
-  }
-
-  private _setMassCreateMode(mid: number): void {
-    if (mid === 1) {
-      this.isSecondStepOptional = false;
-      this.isThirdStepOptional = false;
-      this.isSecondStepEditable = false;
-      this.isThirdStepEditable = false;
-    } else if (mid === 2) {
-      this.isSecondStepOptional = true;
-      this.isThirdStepOptional = true;
-      this.isSecondStepEditable = true;
-      this.isThirdStepEditable = true;
-    }
   }
 
   private _filterValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {

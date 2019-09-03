@@ -31,12 +31,13 @@
         <button mat-menu-item (click)="onOpenPlanList()">{{'Finance.Plan' | translate}} - {{'Common.ListView' | translate}}</button>
         <button mat-menu-item (click)="onCreatePlan()">{{'Finance.Plan' | translate}} - {{'Common.Create' | translate}}</button>
       </mat-menu>
-      <button mat-icon-button mat-button (click)="onMassCreateNormalDocument()" matTooltip="{{'Finance.NormalDocMassCreate' | translate}}">
+      <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuDocMassCreate" matTooltip="{{'Finance.NormalDocMassCreate' | translate}}">
         <mat-icon>queue</mat-icon>
       </button>
-      <button mat-icon-button mat-button (click)="onMassCreateNormalDocument2()" matTooltip="{{'Finance.NormalDocMassCreate' | translate}}">
-        <mat-icon>queue</mat-icon>
-      </button>
+      <mat-menu #matMenuDocMassCreate="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
+        <button mat-menu-item (click)="onMassCreateNormalDocument()">{{'Finance.FreelyMassCreateNormalDocs' | translate}}</button>
+        <button mat-menu-item (click)="onMassCreateNormalDocument2()">{{'Finance.RepeatlyMassCreateNormalDocs' | translate}}</button>
+      </mat-menu>
       <mat-divider [vertical]="true"></mat-divider>
       <mat-form-field class="docitemoverview-toolbar-item">
         <mat-select color="accent" [(ngModel)]="selectedQuickAccessType">
