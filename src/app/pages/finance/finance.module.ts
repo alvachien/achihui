@@ -12,7 +12,7 @@ import { CurrencyComponent } from './currency/currency.component';
 @NgModule({
   declarations: [
     FinanceComponent,
-    CurrencyComponent
+    CurrencyComponent,
   ],
   imports: [
     CommonModule,

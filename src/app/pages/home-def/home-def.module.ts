@@ -4,6 +4,7 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { HomeDefRoutingModule } from './home-def-routing.module';
 import { HomeDefComponent } from './home-def.component';
@@ -22,6 +23,7 @@ import { HomeDefDetailComponent } from './home-def-detail';
     NzBreadCrumbModule,
     NzPageHeaderModule,
     NzTableModule,
+    NzSpinModule,
     NzDividerModule,
   ]
 })

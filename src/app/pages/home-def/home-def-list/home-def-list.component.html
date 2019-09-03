@@ -1,47 +1,47 @@
-<nz-page-header nzBackIcon nzTitle="Home Def">
-  <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item>Home Define</nz-breadcrumb-item>
-    <nz-breadcrumb-item>Currencies</nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <nz-page-header-content>
-    <div class="wrap">
-      <div class="content">
+<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
+  <nz-page-header nzBackIcon nzTitle="Home Def">
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item>Home Define</nz-breadcrumb-item>
+      <nz-breadcrumb-item>List View</nz-breadcrumb-item>
+    </nz-breadcrumb>
+
+    <nz-page-header-content>
+      <div class="wrap">
         <div class="content">
-          <p nz-paragraph>
-            Ant Design interprets the color system into two levels: a system-level color system and a product-level
-            color system.
-          </p>
-          <p nz-paragraph>
-            Ant Design's design team preferred to design with the HSB color model, which makes it easier for
-            designers to have a clear psychological expectation of color when adjusting colors, as well as
-            facilitate communication in teams.
-          </p>
-          <div>
-            <nz-table #basicTable [nzData]="dataSource">
-              <thead>
-                <tr>
-                  <th>Currency</th>
-                  <th>Name</th>
-                  <th>Symbol</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let data of basicTable.data">
-                  <td>{{ data.Currency }}</td>
-                  <td>{{ data.Name }}</td>
-                  <td>{{ data.Symbol }}</td>
-                  <td>
-                    <a>Action 一 {{ data.curr }}</a>
-                    <nz-divider nzType="vertical"></nz-divider>
-                    <a>Delete</a>
-                  </td>
-                </tr>
-              </tbody>
-            </nz-table>
+          <div class="content">
+            <p nz-paragraph>
+              Home Define List View which current user can view.
+            </p>
+            <div>
+              <nz-table #basicTable [nzData]="dataSource">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Host</th>
+                    <th>Currency</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of basicTable.data">
+                    <td>
+                      <span>{{ row.ID }}</span>
+                      <nz-divider nzType="vertical"></nz-divider>
+                      <a (click)="onChooseHome(row)" *ngIf="!IsCurrentHomeChosed">Choose</a>
+                      <a (click)="onDisplayHome(row)" *ngIf="IsCurrentHomeChosed">Display</a>
+                    </td>
+                    <td>{{ row.Name }}</td>
+                    <td>{{ row.CreatorDisplayAs }}</td>
+                    <td>{{ row.BaseCurrency }}</td>
+                    <td>{{ row.Details }}</td>
+                  </tr>
+                </tbody>
+              </nz-table>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </nz-page-header-content>
-</nz-page-header>
+    </nz-page-header-content>
+  </nz-page-header>
+</nz-spin>
