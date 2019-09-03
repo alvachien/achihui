@@ -1,47 +1,12 @@
-<nz-page-header nzBackIcon nzTitle="Currency">
-  <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item>Finance</nz-breadcrumb-item>
-    <nz-breadcrumb-item>Account</nz-breadcrumb-item>
-  </nz-breadcrumb>
-  <nz-page-header-content>
-    <div class="wrap">
-      <div class="content">
-        <div class="content">
-          <p nz-paragraph>
-            Ant Design interprets the color system into two levels: a system-level color system and a product-level
-            color system.
-          </p>
-          <p nz-paragraph>
-            Ant Design's design team preferred to design with the HSB color model, which makes it easier for
-            designers to have a clear psychological expectation of color when adjusting colors, as well as
-            facilitate communication in teams.
-          </p>
-          <div>
-            <nz-table #basicTable [nzData]="dataSource">
-              <thead>
-                <tr>
-                  <th>Currency</th>
-                  <th>Name</th>
-                  <th>Symbol</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let data of basicTable.data">
-                  <td>{{ data.Currency }}</td>
-                  <td>{{ data.Name }}</td>
-                  <td>{{ data.Symbol }}</td>
-                  <td>
-                    <a>Action 一 {{ data.curr }}</a>
-                    <nz-divider nzType="vertical"></nz-divider>
-                    <a>Delete</a>
-                  </td>
-                </tr>
-              </tbody>
-            </nz-table>
-          </div>
-        </div>
+<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
+  <nz-page-header nzBackIcon nzTitle="Account List">
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item>Finance</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Account List View</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-content>
+      <div>
       </div>
-    </div>
-  </nz-page-header-content>
-</nz-page-header>
+    </nz-page-header-content>
+  </nz-page-header>
+</nz-spin>

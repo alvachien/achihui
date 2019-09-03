@@ -9,6 +9,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { AccountRoutingModule } from './account-routing.module';
 import { AccountComponent } from './account.component';
@@ -34,6 +35,7 @@ import { AccountHierarchyComponent } from './account-hierarchy';
     NzTagModule,
     NzDescriptionsModule,
     NzTabsModule,
+    NzGridModule,
     AccountRoutingModule,
   ]
 })

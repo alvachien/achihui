@@ -33,6 +33,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,
     ) {
+      this.isLoadingResults = false; // Default value
+
       this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
       this.selectedStatus = AccountStatusEnum.Normal;
       this.selectedAccounts = [];
@@ -63,6 +65,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree...');
     }
+
     this.isLoadingResults = true;
 
     forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts(isReload))
@@ -121,7 +124,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       aracnt.forEach((val: Account) => {
         if (val.CategoryId === ctgyid) {
           // Child nodes!
-          let node: NzTreeNodeOptions = {
+          const node: NzTreeNodeOptions = {
             key: val.Id.toString(),
             title: val.Name,
             isLeaf: true,

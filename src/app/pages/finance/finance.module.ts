@@ -7,7 +7,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 import { FinanceRoutingModule } from './finance-routing.module';
 import { FinanceComponent } from '../finance/finance.component';
-import { CurrencyComponent } from './currency/currency.component';
+import { CurrencyComponent } from './currency';
 
 @NgModule({
   declarations: [

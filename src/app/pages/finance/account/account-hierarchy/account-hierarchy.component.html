@@ -1,13 +1,21 @@
-
 <nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
-  <div nz-row>
-    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
-      <nz-tree [nzData]="accountTree" nzShowLine (nzClick)="nodeClick($event)"> </nz-tree>
-    </div>
-    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="16" nzXl="16">
-      <div>
-  
+  <nz-page-header nzBackIcon nzTitle="Account Hierarchy">
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item>Finance</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Account Hierarchy View</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-content>
+      <div nz-row>
+        <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+          <nz-tree [nzData]="accountTreeNodes" nzShowLine (nzClick)="nodeClick($event)">            
+          </nz-tree>
+        </div>
+        <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="16" nzXl="16">
+          <div>
+            TBD.
+          </div>
+        </div>
       </div>
-    </div>
-  </div>  
+    </nz-page-header-content>
+  </nz-page-header>
 </nz-spin>
