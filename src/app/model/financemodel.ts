@@ -136,10 +136,15 @@ export interface AccountCategoryJson extends hih.BaseModelJson {
  * Account category
  */
 export class AccountCategory extends hih.BaseModel {
+  // tslint:disable-next-line:variable-name
   private _id: number;
+  // tslint:disable-next-line:variable-name
   private _hid: number;
+  // tslint:disable-next-line:variable-name
   private _name: string;
+  // tslint:disable-next-line:variable-name
   private _assetFlag: boolean;
+  // tslint:disable-next-line:variable-name
   private _comment: string;
 
   get ID(): number          { return this._id;        }
@@ -225,9 +230,13 @@ export interface DocumentTypeJson extends hih.BaseModelJson {
 }
 
 export class DocumentType extends hih.BaseModel {
+  // tslint:disable-next-line:variable-name
   private _hid: number;
+  // tslint:disable-next-line:variable-name
   private _id: number;
+  // tslint:disable-next-line:variable-name
   private _name: string;
+  // tslint:disable-next-line:variable-name
   private _comment: string;
 
   get HID(): number       { return this._hid;   }
@@ -301,9 +310,13 @@ export interface AssetCategoryJson extends hih.BaseModelJson {
 }
 
 export class AssetCategory extends hih.BaseModel {
+  // tslint:disable-next-line:variable-name
   private _id: number;
+  // tslint:disable-next-line:variable-name
   private _hid: number;
+  // tslint:disable-next-line:variable-name
   private _name: string;
+  // tslint:disable-next-line:variable-name
   private _desp: string;
 
   get ID(): number {
@@ -1516,11 +1529,17 @@ export interface TranTypeJson extends hih.BaseModelJson {
 }
 
 export class TranType extends hih.BaseModel {
+  // tslint:disable-next-line:variable-name
   private _id: number;
+  // tslint:disable-next-line:variable-name
   private _hid: number;
+  // tslint:disable-next-line:variable-name
   private _name: string;
+  // tslint:disable-next-line:variable-name
   private _expense: boolean;
+  // tslint:disable-next-line:variable-name
   private _parid?: number;
+  // tslint:disable-next-line:variable-name
   private _cmt: string;
 
   get Id(): number                    { return this._id;        }

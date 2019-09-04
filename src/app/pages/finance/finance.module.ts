@@ -4,6 +4,9 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzStatisticModule } from 'ng-zorro-antd/statistic';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzCardModule } from 'ng-zorro-antd/card';
 
 import { FinanceRoutingModule } from './finance-routing.module';
 import { FinanceComponent } from '../finance/finance.component';
@@ -20,6 +23,9 @@ import { CurrencyComponent } from './currency';
     NzPageHeaderModule,
     NzTableModule,
     NzDividerModule,
+    NzStatisticModule,
+    NzGridModule,
+    NzCardModule,
     FinanceRoutingModule,
   ]
 })

@@ -1,0 +1,18 @@
+<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500" [nzSize]="'large'" nzTip="Loading...">
+  <nz-table #basicTable [nzData]="dataSet">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Desp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{data.ID}}</td>
+        <td>{{data.Name}}</td>
+        <td>{{data.Desp}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-spin>

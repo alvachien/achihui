@@ -1,1 +1,7 @@
-<p>Welcome</p>
+<div nz-row nzType="flex">
+  <nz-carousel nzDotPosition="right">
+    <div nz-carousel-content *ngFor="let index of array">
+      <h3>{{ index }}</h3>
+    </div>
+  </nz-carousel>
+</div>

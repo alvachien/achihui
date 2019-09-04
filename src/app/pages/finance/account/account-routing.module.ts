@@ -7,6 +7,7 @@ import { AccountHierarchyComponent } from './account-hierarchy';
 
 const routes: Routes = [
   { path: '', component: AccountHierarchyComponent },
+  { path: 'hierarchy', component: AccountHierarchyComponent },
   { path: 'list', component: AccountListComponent },
   { path: 'create', component: AccountDetailComponent },
   { path: 'display', component: AccountDetailComponent },

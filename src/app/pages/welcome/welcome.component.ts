@@ -6,10 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./welcome.component.css'],
 })
 export class WelcomeComponent implements OnInit {
+  array = [1, 2, 3, 4];
 
   constructor() { }
 
   ngOnInit() {
   }
-
 }

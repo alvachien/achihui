@@ -1,6 +1,17 @@
 # UI Development
 This page summarize some common parts inside UI development.
 
+## Modules and Components
+Generate Modules with lazying loading:
+```
+ng g m pages\finance\ControlCenter --routing
+```
+
+Generate Components:
+```
+ng g c pages\finance\control-center\ControlCenter -m pages\finance\control-center
+```
+
 ## Overview
 There are three kinds of page in the UI development of whole H.I.H. project:
 - List page

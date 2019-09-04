@@ -11,26 +11,41 @@
       <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
+            <a [routerLink]="['/', 'welcome']">Welcome</a>
           </li>
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/welcome2">Monitor</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
           </li>
         </ul>
       </li>
       <li nz-submenu nzTitle="Finance" nzIcon="money-collect">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/finance/currency">Currency</a>
+            <a [routerLink]="['/', 'finance', 'overview']">Overview</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/finance/account">Account</a>
+            <a [routerLink]="['/', 'finance', 'currency']">Currency</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/finance/document">Document</a>
+            <a [routerLink]="['/', 'finance', 'config']">Config</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'finance', 'account']">Account</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'finance', 'document']">Document</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'finance', 'controlcenter']">Control Center</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'finance', 'order']">Order</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'finance', 'report']">Report</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'finance', 'plan']">Plan</a>
           </li>
         </ul>
       </li>
