@@ -39,6 +39,14 @@ class MassCreateExistingResult {
   }
 }
 
+// Default value
+interface MassCreateDefaultValue {
+  accountid?: number;
+  desp: string;
+  ccid?: number;
+  orderid?: number;
+}
+
 @Component({
   selector: 'hih-document-normal-mass-create2',
   templateUrl: './document-normal-mass-create2.component.html',
@@ -75,6 +83,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   // Step: Default values
   public defaultValueFormGroup: FormGroup;
+  defaultValue: any;
   // Step: Target
   public targetFormGroup: FormGroup;
 
@@ -102,9 +111,11 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       accountControl: new FormControl(),
       tranTypeControl: new FormControl(),
       amountControl: new FormControl(),
+      despControl: new FormControl(),
       ccControl: new FormControl(),
       orderControl: new FormControl(),
     });
+    this.defaultValue = {};
     this.targetFormGroup = this._fb.group({
       items: this._fb.array([]),
     });
@@ -128,7 +139,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       this._currService.fetchAllCurrencies(),
     ]).pipe(takeUntil(this._destroyed$)).subscribe((rst: any) => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit for activateRoute URL: ${rst.length}`);
+        console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalMassCreate2Component ngOnInit for activateRoute URL: ${rst.length}`);
       }
 
       // Accounts

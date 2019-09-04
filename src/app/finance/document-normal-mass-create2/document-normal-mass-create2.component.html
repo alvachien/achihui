@@ -171,6 +171,11 @@
         <span matSuffix>{{localCurrency}}</span>
       </mat-form-field>
 
+      <mat-form-field>
+        <input matInput required placeholder="{{'Common.Description' | translate}}"
+          formControlName="despControl">
+      </mat-form-field>
+
       <div class="achih-control-full-width" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="space-between center">
         <!-- CC -->
         <mat-form-field fxFlex="44">
@@ -211,14 +216,14 @@
       <!-- items -->
       <div formArrayName="items">
         <div *ngFor="let item of targetFormGroup?.get('items')['controls']; let i=index">
-          <mat-expansion-panel style="width: 96%;">
+          <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
                 {{'Finance.Items' | translate}} {{i + 1}}
               </mat-panel-title>
             </mat-expansion-panel-header>
 
-            <div [formGroupName]="i" style="width: 96%;">
+            <div [formGroupName]="i">
               <hih-document-normal-mass-create-item [group]="targetFormGroup?.get('items')['controls'][i]"
                 [arUIAccount]="arUIAccount" [arUIOrder]="arUIOrder" [arControlCenter]="arControlCenter"
                 [arTranType]="arTranType" [localCurrency]="localCurrency">
