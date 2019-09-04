@@ -14,12 +14,16 @@ import { FinCurrencyService } from '../../../services';
 export class CurrencyComponent implements OnInit {
   private _destroyed$: ReplaySubject<boolean>;
   public dataSource: Currency[] = [];
+  isLoadingResults: boolean;
 
-  constructor(public _currService: FinCurrencyService) { }
+  constructor(public _currService: FinCurrencyService) {
+    this.isLoadingResults = false;
+  }
 
   ngOnInit() {
     this._destroyed$ = new ReplaySubject(1);
 
+    this.isLoadingResults = false;
     this._currService.fetchAllCurrencies().pipe(takeUntil(this._destroyed$))
     .subscribe((x: any) => {
       if (x) {
@@ -32,6 +36,8 @@ export class CurrencyComponent implements OnInit {
       // this._snackBar.open(error.toString(), undefined, {
       //   duration: 2000,
       // });
+    }, () => {
+      this.isLoadingResults = false;
     });
   }
 }

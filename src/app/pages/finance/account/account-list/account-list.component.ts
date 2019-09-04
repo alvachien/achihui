@@ -11,7 +11,7 @@ import {
 import { environment } from '../../../../../environments/environment';
 
 @Component({
-  selector: 'hih-account-list',
+  selector: 'hih-fin-account-list',
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.less']
 })
@@ -22,7 +22,9 @@ export class AccountListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
 
   constructor(public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService,) { }
+    public _uiStatusService: UIStatusService,) {
+      this.isLoadingResults = false;
+    }
 
   ngOnInit() {
     this._destroyed$ = new ReplaySubject(1);

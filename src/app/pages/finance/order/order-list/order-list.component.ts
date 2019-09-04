@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'hih-order-list',
+  selector: 'hih-fin-order-list',
   templateUrl: './order-list.component.html',
-  styleUrls: ['./order-list.component.less']
+  styleUrls: ['./order-list.component.less'],
 })
 export class OrderListComponent implements OnInit {
 

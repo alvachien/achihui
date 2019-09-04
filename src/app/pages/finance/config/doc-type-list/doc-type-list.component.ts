@@ -7,7 +7,7 @@ import { FinanceStorageService, UIStatusService, } from '../../../../services';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
-  selector: 'hih-finance-doc-type-list',
+  selector: 'hih-fin-doc-type-list',
   templateUrl: './doc-type-list.component.html',
   styleUrls: ['./doc-type-list.component.less'],
 })

@@ -12,7 +12,7 @@ import {
 import { environment } from '../../../../../environments/environment';
 
 @Component({
-  selector: 'hih-account-hierarchy',
+  selector: 'hih-fin-account-hierarchy',
   templateUrl: './account-hierarchy.component.html',
   styleUrls: ['./account-hierarchy.component.less'],
 })

@@ -7,7 +7,7 @@ import { FinanceStorageService, UIStatusService, } from '../../../../services';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
-  selector: 'hih-finance-tran-type-list',
+  selector: 'hih-fin-tran-type-list',
   templateUrl: './tran-type-list.component.html',
   styleUrls: ['./tran-type-list.component.less'],
 })
