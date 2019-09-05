@@ -1223,11 +1223,17 @@ export interface OrderJson extends hih.BaseModelJson {
  * Order
  */
 export class Order extends hih.BaseModel {
+  // tslint:disable-next-line:variable-name
   private _id: number;
+  // tslint:disable-next-line:variable-name
   private _hid: number;
+  // tslint:disable-next-line:variable-name
   private _name: string;
+  // tslint:disable-next-line:variable-name
   private _cmt: string;
+  // tslint:disable-next-line:variable-name
   private _validFrom: moment.Moment;
+  // tslint:disable-next-line:variable-name
   private _validTo: moment.Moment;
 
   get Id(): number                    { return this._id;              }
