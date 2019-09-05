@@ -510,6 +510,7 @@
     "RepeatlyMassCreateNormalDocs": "批量创建周期性普通凭证",
     "FreelyMassCreateNormalDocs": "批量创建普通凭证",
     "ExistingDocuments": "系统中的凭证",
+    "IncludeChildTranType": "包括子交易类型",
 
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",

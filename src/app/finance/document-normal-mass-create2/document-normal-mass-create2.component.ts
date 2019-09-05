@@ -171,6 +171,146 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
     }
   }
 
+  public onStepSelectionChange(event: StepperSelectionEvent): void {
+    if (environment.LoggingLevel >= LogLevel.Debug) {
+      console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalMassCreate2Component onStepSelectionChange with index = ${event.selectedIndex}`);
+    }
+
+    if (event.selectedIndex === 1) {
+      this.dataSourceExisting.data = []; // Clear the data
+      this.dataSourceExisting.paginator = this.paginator;
+
+      this.onGetExistingItems();
+    } else if (event.selectedIndex === 2) {
+      // Default value
+      let ccid: any = this.secondFormGroup.get('ccControl').value;
+      if (ccid) {
+        this.defaultValueFormGroup.get('ccControl').setValue(ccid);
+      }
+      let order: any = this.secondFormGroup.get('orderControl').value;
+      if (order) {
+        this.defaultValueFormGroup.get('orderControl').setValue(order);
+      }
+    } else if (event.selectedIndex === 3) {
+      // Update the default value.
+      this.updateDefaultValue();
+
+      // Create step
+      this.dataSourceExisting.data.forEach((rst: MassCreateExistingResult) => {
+        if (rst.extFinDoc.length <= 0) {
+          this.addItem(rst);
+        }
+      });
+    }  else if (event.selectedIndex === 4) {
+      // Confirm
+      this.confirmInfo.docCount = (this.targetFormGroup.controls.items as FormArray).controls.length;
+    }
+  }
+
+  public onGenerateDocs(): void {
+    let arItems: FinanceNormalDocItemMassCreate[] = [];
+
+    const control: any = <FormArray>this.targetFormGroup.controls.items;
+    control.controls.forEach((ctrl: AbstractControl) => {
+      // Read the items
+      if (ctrl.value) {
+        let item: FinanceNormalDocItemMassCreate = new FinanceNormalDocItemMassCreate();
+        item.accountID = ctrl.get('accountControl').value;
+        item.controlCenterID = ctrl.get('ccControl').value;
+        item.orderID = ctrl.get('orderControl').value;
+        item.desp = ctrl.get('despControl').value;
+        item.tranAmount = ctrl.get('amountControl').value;
+        item.tranCurrency = this.localCurrency;
+        item.tranDate = ctrl.get('dateControl').value;
+        item.tranType = ctrl.get('tranTypeControl').value;
+
+        if (item.isValid) {
+          arItems.push(item);
+        }
+      }
+    });
+    if (arItems.length <= 0 || arItems.length !== control.controls.length) {
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+      return;
+    }
+
+    this._storageService.massCreateNormalDocument(arItems).subscribe((docs: Document[]) => {
+      // Show the success dialog.
+      let infoMsg: InfoMessage[] = [];
+      docs.forEach((val: Document) => {
+        let imsg: InfoMessage = new InfoMessage();
+        imsg.MsgType = MessageType.Info;
+        imsg.MsgTitle = val.Id.toString();
+        imsg.MsgContent = 'Document Posted';
+        infoMsg.push(imsg);
+      });
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
+        undefined,
+        infoMsg).afterClosed().subscribe(() => {
+          // Jump to document list page
+          this._router.navigate(['/finance/document']);
+        });
+    }, (error: any) => {
+      // Popup error dialog
+      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+    });
+  }
+
+  initItem(): FormGroup {
+    return this._fb.group({
+      dateControl: [moment(), Validators.required],
+      accountControl: ['', Validators.required],
+      tranTypeControl: ['', Validators.required],
+      amountControl: ['', Validators.required],
+      // currControl: ['', Validators.required],
+      despControl: ['', Validators.required],
+      ccControl: [''],
+      orderControl: [''],
+    });
+  }
+
+  addItem(rst?: MassCreateExistingResult): void {
+    const control: any = <FormArray>this.targetFormGroup.controls.items;
+    const addrCtrl: any = this.initItem();
+
+    if (rst) {
+      addrCtrl.get('dateControl').value = rst.dateFrom;
+    }
+
+    if (this.defaultValue && this.defaultValue.accountid) {
+      addrCtrl.get('accountControl').value = this.defaultValue.accountid;
+    }
+    if (this.defaultValue && this.defaultValue.desp) {
+      addrCtrl.get('despControl').value = this.defaultValue.desp;
+    }
+    if (this.defaultValue && this.defaultValue.amount) {
+      addrCtrl.get('amountControl').value = this.defaultValue.amount;
+    }
+    if (this.defaultValue && this.defaultValue.ccid) {
+      addrCtrl.get('ccControl').value = this.defaultValue.ccid;
+    }
+    if (this.defaultValue && this.defaultValue.orderid) {
+      addrCtrl.get('orderControl').value = this.defaultValue.orderid;
+    }
+
+    control.push(addrCtrl);
+  }
+
+  removeItem(i: number): void {
+    const control: any = <FormArray>this.targetFormGroup.controls.items;
+    control.removeAt(i);
+  }
+
+  updateDefaultValue(): void {
+    this.defaultValue.desp = this.defaultValueFormGroup.get('despControl').value;
+    this.defaultValue.accountid = this.defaultValueFormGroup.get('accountControl').value;
+    this.defaultValue.amount = this.defaultValueFormGroup.get('amountControl').value;
+    this.defaultValue.ccid = this.defaultValueFormGroup.get('ccControl').value;
+    this.defaultValue.orderid = this.defaultValueFormGroup.get('orderControl').value;
+  }
+
   onGetExistingItems(): void {
     // Fetch existing document items
     let filters: GeneralFilterItem[] = [];
@@ -273,135 +413,6 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
         error);
     });
-  }
-
-  public onStepSelectionChange(event: StepperSelectionEvent): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Entering DocumentNormalMassCreate2Component onStepSelectionChange with index = ${event.selectedIndex}`);
-    }
-
-    if (event.selectedIndex === 1) {
-      this.dataSourceExisting.data = []; // Clear the data
-      this.dataSourceExisting.paginator = this.paginator;
-
-      this.onGetExistingItems();
-    } else if (event.selectedIndex === 2) {
-      // Default value
-      let ccid: any = this.secondFormGroup.get('ccControl').value;
-      if (ccid) {
-        this.defaultValueFormGroup.get('ccControl').setValue(ccid);
-      }
-      let order: any = this.secondFormGroup.get('orderControl').value;
-      if (order) {
-        this.defaultValueFormGroup.get('orderControl').setValue(order);
-      }
-    } else if (event.selectedIndex === 3) {
-      // Create step
-      this.dataSourceExisting.data.forEach((rst: MassCreateExistingResult) => {
-        if (rst.extFinDoc.length <= 0) {
-          this.addItem(rst);
-        }
-      });
-    }  else if (event.selectedIndex === 4) {
-      // Confirm
-      this.confirmInfo.docCount = (this.targetFormGroup.controls.items as FormArray).controls.length;
-    }
-  }
-
-  public onGenerateDocs(): void {
-    let arItems: FinanceNormalDocItemMassCreate[] = [];
-
-    const control: any = <FormArray>this.targetFormGroup.controls.items;
-    control.controls.forEach((ctrl: AbstractControl) => {
-      // Read the items
-      if (ctrl.value) {
-        let item: FinanceNormalDocItemMassCreate = new FinanceNormalDocItemMassCreate();
-        item.accountID = ctrl.get('accountControl').value;
-        item.controlCenterID = ctrl.get('ccControl').value;
-        item.orderID = ctrl.get('orderControl').value;
-        item.desp = ctrl.get('despControl').value;
-        item.tranAmount = ctrl.get('amountControl').value;
-        item.tranCurrency = this.localCurrency;
-        item.tranDate = ctrl.get('dateControl').value;
-        item.tranType = ctrl.get('tranTypeControl').value;
-
-        if (item.isValid) {
-          arItems.push(item);
-        }
-      }
-    });
-    if (arItems.length <= 0 || arItems.length !== control.controls.length) {
-      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
-      return;
-    }
-
-    this._storageService.massCreateNormalDocument(arItems).subscribe((docs: Document[]) => {
-      // Show the success dialog.
-      let infoMsg: InfoMessage[] = [];
-      docs.forEach((val: Document) => {
-        let imsg: InfoMessage = new InfoMessage();
-        imsg.MsgType = MessageType.Info;
-        imsg.MsgTitle = val.Id.toString();
-        imsg.MsgContent = 'Document Posted';
-        infoMsg.push(imsg);
-      });
-      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.DocumentPosted),
-        undefined,
-        infoMsg).afterClosed().subscribe(() => {
-          // Jump to document list page
-          this._router.navigate(['/finance/document']);
-        });
-    }, (error: any) => {
-      // Popup error dialog
-      popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
-        error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
-    });
-  }
-
-  initItem(): FormGroup {
-    return this._fb.group({
-      dateControl: [moment(), Validators.required],
-      accountControl: ['', Validators.required],
-      tranTypeControl: ['', Validators.required],
-      amountControl: ['', Validators.required],
-      // currControl: ['', Validators.required],
-      despControl: ['', Validators.required],
-      ccControl: [''],
-      orderControl: [''],
-    });
-  }
-
-  addItem(rst?: MassCreateExistingResult): void {
-    const control: any = <FormArray>this.targetFormGroup.controls.items;
-    const addrCtrl: any = this.initItem();
-
-    if (rst) {
-      addrCtrl.get('dateControl').value = rst.dateFrom;
-    }
-
-    if (this.defaultValue && this.defaultValue.accountid) {
-      addrCtrl.get('accountControl').value = this.defaultValue.desp;
-    }
-    if (this.defaultValue && this.defaultValue.desp) {
-      addrCtrl.get('despControl').value = this.defaultValue.desp;
-    }
-    if (this.defaultValue && this.defaultValue.amount) {
-      addrCtrl.get('amountControl').value = this.defaultValue.amount;
-    }
-    if (this.defaultValue && this.defaultValue.ccid) {
-      addrCtrl.get('ccControl').value = this.defaultValue.ccid;
-    }
-    if (this.defaultValue && this.defaultValue.orderid) {
-      addrCtrl.get('orderControl').value = this.defaultValue.orderid;
-    }
-
-    control.push(addrCtrl);
-  }
-
-  removeItem(i: number): void {
-    const control: any = <FormArray>this.targetFormGroup.controls.items;
-    control.removeAt(i);
   }
 
   private _filterValidator: ValidatorFn = (group: FormGroup): ValidationErrors | null => {

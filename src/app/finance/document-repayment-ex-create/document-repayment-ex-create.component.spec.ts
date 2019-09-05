@@ -21,7 +21,6 @@ import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '..
 import { DocumentRepaymentExCreateComponent } from './document-repayment-ex-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
-import { store } from '@angular/core/src/render3';
 import { UIAccountForSelection, financeAccountCategoryBorrowFrom, Account, Document, AccountExtraLoan, } from 'app/model';
 
 describe('DocumentRepaymentExCreateComponent', () => {

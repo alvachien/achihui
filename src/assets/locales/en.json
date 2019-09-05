@@ -510,6 +510,7 @@
     "RepeatlyMassCreateNormalDocs": "Repeatly mass create normal documents",
     "FreelyMassCreateNormalDocs": "Freely mass create normal documents",
     "ExistingDocuments": "Existing Documents",
+    "IncludeChildTranType": "Include Child Transaction Type",
 
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",

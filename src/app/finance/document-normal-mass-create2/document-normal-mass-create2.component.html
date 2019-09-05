@@ -1,4 +1,5 @@
 <mat-horizontal-stepper linear (selectionChange)="onStepSelectionChange($event)" #stepper>
+  <!-- Step: Filter -->
   <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
       <ng-template matStepLabel>{{'Common.SearchCriteria' | translate}}</ng-template>
@@ -43,7 +44,8 @@
           </mat-select>
         </mat-form-field>
         <div fxFlex="44">
-          <mat-slide-toggle color="primary" formControlName="incstControl">Include All Sub. Transactions
+          <mat-slide-toggle color="primary" formControlName="incstControl">
+            {{'Finance.IncludeChildTranType' | translate}}
           </mat-slide-toggle>
         </div>
       </div>
@@ -81,6 +83,7 @@
     </form>
   </mat-step>
 
+  <!-- Step: Existing documents -->
   <mat-step>
     <form>
       <ng-template matStepLabel>{{'Finance.ExistingDocuments' | translate}}</ng-template>
@@ -142,6 +145,7 @@
     </form>
   </mat-step>
 
+  <!-- Step: Default value -->
   <mat-step>
     <ng-template matStepLabel>{{'Common.DefaultValues' | translate}}</ng-template>
 
@@ -205,12 +209,13 @@
     </form>
   </mat-step>
 
+  <!-- Step: Document Generation -->
   <mat-step [stepControl]="targetFormGroup">
     <ng-template matStepLabel>{{'Finance.NormalDocMassCreate' | translate}}</ng-template>
 
     <form [formGroup]="targetFormGroup" style="padding: 1em;">
       <mat-toolbar color="accent">
-        <button mat-button (click)="addItem()">{{'Finance.CreateItem' | translate}}</button>
+        <button mat-button (click)="addItem()">{{'Common.Create' | translate}}</button>
       </mat-toolbar>
 
       <!-- items -->
