@@ -43,6 +43,7 @@ class MassCreateExistingResult {
 interface MassCreateDefaultValue {
   accountid?: number;
   desp: string;
+  amount?: number;
   ccid?: number;
   orderid?: number;
 }
@@ -68,6 +69,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   public arTranType: TranType[];
   public localCurrency: string;
   public arCurrencies: Currency[] = [];
+  public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   // public arSimaltedResults: MassCreateSimulateResult[] = [];
   columnsToDisplay: string[] = ['dateFromString', 'dateToString', 'extFinDocCount'];
   expandedElement: MassCreateExistingResult | null;
@@ -83,11 +85,11 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   // Step: Default values
   public defaultValueFormGroup: FormGroup;
-  defaultValue: any;
+  defaultValue: MassCreateDefaultValue;
   // Step: Target
   public targetFormGroup: FormGroup;
-
-  public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
+  // Step: Confirm
+  public confirmInfo: any = {};
 
   constructor(private _storageService: FinanceStorageService,
     private _currService: FinCurrencyService,
@@ -115,7 +117,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       ccControl: new FormControl(),
       orderControl: new FormControl(),
     });
-    this.defaultValue = {};
+    this.defaultValue = undefined;
     this.targetFormGroup = this._fb.group({
       items: this._fb.array([]),
     });
@@ -283,6 +285,16 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       this.dataSourceExisting.paginator = this.paginator;
 
       this.onGetExistingItems();
+    } else if (event.selectedIndex === 2) {
+      // Default value
+      let ccid: any = this.secondFormGroup.get('ccControl').value;
+      if (ccid) {
+        this.defaultValueFormGroup.get('ccControl').setValue(ccid);
+      }
+      let order: any = this.secondFormGroup.get('orderControl').value;
+      if (order) {
+        this.defaultValueFormGroup.get('orderControl').setValue(order);
+      }
     } else if (event.selectedIndex === 3) {
       // Create step
       this.dataSourceExisting.data.forEach((rst: MassCreateExistingResult) => {
@@ -290,6 +302,9 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
           this.addItem(rst);
         }
       });
+    }  else if (event.selectedIndex === 4) {
+      // Confirm
+      this.confirmInfo.docCount = (this.targetFormGroup.controls.items as FormArray).controls.length;
     }
   }
 
@@ -363,20 +378,22 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
 
     if (rst) {
       addrCtrl.get('dateControl').value = rst.dateFrom;
-      addrCtrl.get('amountControl').value = 1;
-      addrCtrl.get('despControl').value = 'Set description';
     }
-    let ccid: any = this.secondFormGroup.get('ccControl').value;
-    if (ccid) {
-      addrCtrl.get('ccControl').value = ccid;
+
+    if (this.defaultValue && this.defaultValue.accountid) {
+      addrCtrl.get('accountControl').value = this.defaultValue.desp;
     }
-    let orderid: any = this.secondFormGroup.get('orderControl').value;
-    if (ccid) {
-      addrCtrl.get('orderControl').value = orderid;
+    if (this.defaultValue && this.defaultValue.desp) {
+      addrCtrl.get('despControl').value = this.defaultValue.desp;
     }
-    let ttid: any = this.secondFormGroup.get('tranTypeControl').value;
-    if (ttid) {
-      addrCtrl.get('tranTypeControl').value = ttid;
+    if (this.defaultValue && this.defaultValue.amount) {
+      addrCtrl.get('amountControl').value = this.defaultValue.amount;
+    }
+    if (this.defaultValue && this.defaultValue.ccid) {
+      addrCtrl.get('ccControl').value = this.defaultValue.ccid;
+    }
+    if (this.defaultValue && this.defaultValue.orderid) {
+      addrCtrl.get('orderControl').value = this.defaultValue.orderid;
     }
 
     control.push(addrCtrl);

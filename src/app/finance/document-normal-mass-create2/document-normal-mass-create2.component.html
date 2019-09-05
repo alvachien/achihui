@@ -219,7 +219,7 @@
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
-                {{'Finance.Items' | translate}} {{i + 1}}
+                {{'Finance.Document' | translate}} {{i + 1}}
               </mat-panel-title>
             </mat-expansion-panel-header>
 
@@ -244,8 +244,11 @@
   </mat-step>
 
   <mat-step>
-    <ng-template matStepLabel>Result</ng-template>
-    You are now done.
+    <ng-template matStepLabel>{{'Common.Confirm' | translate}}</ng-template>
+    <div class="mat-typography achih-control-full-width">
+      <h3>{{'Common.Count' | translate}}: {{confirmInfo?.docCount}}</h3>
+    </div>
+
     <div>
       <button mat-button matStepperPrevious>{{'Common.PreviousButton' | translate}}</button>
       <button mat-button (click)="stepper.reset()">{{'Common.Reset' | translate}}</button>
