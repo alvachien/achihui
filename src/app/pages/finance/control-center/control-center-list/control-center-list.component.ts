@@ -27,7 +27,7 @@ export class ControlCenterListComponent implements OnInit {
 
   ngOnInit() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnInit...');
+      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...');
     }
 
     this._destroyed$ = new ReplaySubject(1);
@@ -35,7 +35,7 @@ export class ControlCenterListComponent implements OnInit {
 
   ngOnDestroy() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnDestroy...');
+      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...');
     }
     if (this._destroyed$) {
       this._destroyed$.next(true);

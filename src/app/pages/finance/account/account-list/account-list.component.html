@@ -1,12 +1,16 @@
 <nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
-  <nz-page-header nzBackIcon nzTitle="Account List">
+  <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item><a routerLink="/finance/overview">Overview</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Account List View</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Accounts</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-content>
-      <div>
-      </div>
-    </nz-page-header-content>
+    <nz-page-header-title>Account</nz-page-header-title>
+    <nz-page-header-subtitle>List View</nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <button nz-button nzType="primary">Create</button>
+      <a nz-button nzType="link" routerLink="/finance/account/hierarchy">Hierarchy View</a>
+    </nz-page-header-extra>
   </nz-page-header>
+  <div nz-row>
+  </div>
 </nz-spin>

@@ -1,21 +1,26 @@
 <nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
-  <nz-page-header nzBackIcon nzTitle="Control Center Hierarchy">
+  <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item><a routerLink="/finance/overview">Overview</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Control Center Hierarchy</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Control Centers</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-content>
-      <div nz-row>
-        <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
-          <nz-tree [nzData]="ccTreeNodes" nzShowLine (nzClick)="nodeClick($event)">
-          </nz-tree>
-        </div>
-        <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="16" nzXl="16">
-          <div>
-            TBD.
-          </div>
-        </div>
-      </div>
-    </nz-page-header-content>
+    <nz-page-header-title>Control Center</nz-page-header-title>
+    <nz-page-header-subtitle>Hierarchy View</nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <button nz-button nzType="primary">Create</button>
+      <a nz-button nzType="link" routerLink="/finance/controlcenter/list">List View</a>
+    </nz-page-header-extra>
   </nz-page-header>
+  
+  <div nz-row>
+    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" nzXl="8">
+      <nz-tree [nzData]="ccTreeNodes" nzShowLine (nzClick)="nodeClick($event)">
+      </nz-tree>
+    </div>
+    <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="16" nzXl="16">
+      <div>
+        TBD.
+      </div>
+    </div>
+  </div>
 </nz-spin>

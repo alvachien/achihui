@@ -10,6 +10,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { OrderRoutingModule } from './order-routing.module';
 import { OrderComponent } from './order.component';
@@ -35,7 +36,8 @@ import { OrderDetailComponent } from './order-detail/order-detail.component';
     NzDescriptionsModule,
     NzTabsModule,
     NzGridModule,
-    OrderRoutingModule
+    NzButtonModule,
+    OrderRoutingModule,
   ]
 })
 export class OrderModule { }

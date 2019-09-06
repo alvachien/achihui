@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
+import { Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
@@ -6,8 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FinanceStorageService, UIStatusService } from '../../../../services';
 import {
   LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
-  OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Book,
+  OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, 
 } from '../../../../model';
 import { environment } from '../../../../../environments/environment';
 
@@ -30,8 +30,9 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   availableAccounts: Account[];
   accountTreeNodes: NzTreeNodeOptions[] = [];
 
-  constructor(public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService,
+  constructor(private _storageService: FinanceStorageService,
+    private _uiStatusService: UIStatusService,
+    private _router: Router,
     ) {
       this.isLoadingResults = false; // Default value
 
@@ -59,6 +60,10 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
 
   nodeClick(event: NzFormatEmitEvent): void {
     console.log(event);
+  }
+
+  onCreateAccount(): void {
+    this._router.navigate(['/finance/account/create']);
   }
 
   private _refreshTree(isReload?: boolean): void {

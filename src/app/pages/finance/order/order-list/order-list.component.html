@@ -1,4 +1,11 @@
 <nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500" [nzSize]="'large'" nzTip="Loading...">
+  <nz-page-header nzBackIcon>
+    <nz-page-header-title>Order</nz-page-header-title>
+    <nz-page-header-subtitle>List View</nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <button nz-button nzType="primary">Create</button>
+    </nz-page-header-extra>
+  </nz-page-header>
   <nz-table #basicTable [nzData]="dataSet">
     <thead>
       <tr>

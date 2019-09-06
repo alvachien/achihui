@@ -10,6 +10,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { ControlCenterRoutingModule } from './control-center-routing.module';
 import { ControlCenterComponent } from './control-center.component';
@@ -37,6 +38,7 @@ import { ControlCenterHierarchyComponent } from './control-center-hierarchy';
     NzDescriptionsModule,
     NzTabsModule,
     NzGridModule,
+    NzButtonModule,
     ControlCenterRoutingModule
   ]
 })
