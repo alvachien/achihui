@@ -71,7 +71,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   public arCurrencies: Currency[] = [];
   public arFrequencies: any[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
   // public arSimaltedResults: MassCreateSimulateResult[] = [];
-  columnsToDisplay: string[] = ['dateFromString', 'dateToString', 'extFinDocCount'];
+  columnsToDisplay: string[] = ['dateFrom', 'dateTo', 'existingDocCount'];
   expandedElement: MassCreateExistingResult | null;
   displayedDetailColumns: string[] = ['ExpandedContentAmount', 'ExpandedContentDate', 'ExpandedContentDesp'];
   dataSourceExisting: MatTableDataSource<MassCreateExistingResult> = new MatTableDataSource<MassCreateExistingResult>([]);
@@ -88,6 +88,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   defaultValue: MassCreateDefaultValue;
   // Step: Target
   public targetFormGroup: FormGroup;
+  public isDocGenerating: boolean;
   // Step: Confirm
   public confirmInfo: any = {};
 
@@ -121,6 +122,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
     this.targetFormGroup = this._fb.group({
       items: this._fb.array([]),
     });
+    this.isDocGenerating = false;
   }
 
   ngOnInit(): void {
@@ -195,12 +197,20 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       // Update the default value.
       this.updateDefaultValue();
 
-      // Create step
-      this.dataSourceExisting.data.forEach((rst: MassCreateExistingResult) => {
-        if (rst.extFinDoc.length <= 0) {
-          this.addItem(rst);
-        }
-      });
+      this.isDocGenerating = true;
+      setInterval(() => {
+        // Clear all controls
+        const control: FormArray = this.targetFormGroup.controls.items as FormArray;
+        control.clear();
+
+        // Create step
+        this.dataSourceExisting.data.forEach((rst: MassCreateExistingResult) => {
+          if (rst.extFinDoc.length <= 0) {
+            this.addItem(rst);
+          }
+        });
+        this.isDocGenerating = false;
+      }, 500);
     }  else if (event.selectedIndex === 4) {
       // Confirm
       this.confirmInfo.docCount = (this.targetFormGroup.controls.items as FormArray).controls.length;
@@ -304,11 +314,17 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
   }
 
   updateDefaultValue(): void {
-    this.defaultValue.desp = this.defaultValueFormGroup.get('despControl').value;
-    this.defaultValue.accountid = this.defaultValueFormGroup.get('accountControl').value;
-    this.defaultValue.amount = this.defaultValueFormGroup.get('amountControl').value;
-    this.defaultValue.ccid = this.defaultValueFormGroup.get('ccControl').value;
-    this.defaultValue.orderid = this.defaultValueFormGroup.get('orderControl').value;
+    this.defaultValue = {
+      desp: this.defaultValueFormGroup.get('despControl').value,
+      accountid: this.defaultValueFormGroup.get('accountControl').value,
+      amount: this.defaultValueFormGroup.get('amountControl').value,
+      ccid: this.defaultValueFormGroup.get('ccControl').value,
+      orderid: this.defaultValueFormGroup.get('orderControl').value,
+    };
+  }
+
+  onReset(): void {
+    this._stepper.reset();
   }
 
   onGetExistingItems(): void {
