@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { HomeDefDetailService } from './home-def-detail.service';
 import { AuthService } from './auth.service';
 import { UserAuthInfo } from '../model';
-import { FakeDataHelper } from '../../testing';
+import { FakeDataHelper } from '../../../../src/testing';
 import { environment } from '../../environments/environment';
 
 describe('HomeDefDetailService', () => {

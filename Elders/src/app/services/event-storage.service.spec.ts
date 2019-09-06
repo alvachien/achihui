@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { HomeDefDetailService } from './home-def-detail.service';
 import { UserAuthInfo, EventHabit, EventHabitDetail, } from '../model';
-import { FakeDataHelper, asyncData, asyncError, } from '../../testing';
+import { FakeDataHelper, asyncData, asyncError, } from '../../../../src/testing';
 
 describe('EventStorageService', () => {
   let httpTestingController: HttpTestingController;

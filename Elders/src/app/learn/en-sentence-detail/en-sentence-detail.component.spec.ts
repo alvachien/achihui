@@ -8,7 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, UrlSegment, ActivatedRoute, } from '@angular/router';
 import { of } from 'rxjs';
 
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper } from '../../../../../src/testing';
 import { EnSentenceDetailComponent } from './en-sentence-detail.component';
 import { LearnStorageService, HomeDefDetailService, UIStatusService } from '../../services';
 

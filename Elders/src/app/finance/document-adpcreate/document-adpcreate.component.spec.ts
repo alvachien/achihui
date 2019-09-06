@@ -17,7 +17,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { DocumentADPCreateComponent } from './document-adpcreate.component';
 import { UserAuthInfo, Document, RepeatFrequencyEnum, AccountExtraAdvancePayment  } from '../../model';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService,

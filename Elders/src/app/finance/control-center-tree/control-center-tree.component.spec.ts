@@ -9,7 +9,7 @@ import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Component, Input } from '@angular/core';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, } from '../../../../../src/testing';
 import { ControlCenterTreeComponent } from './control-center-tree.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 

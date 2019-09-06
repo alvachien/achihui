@@ -16,7 +16,7 @@ import * as moment from 'moment';
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { DocumentItemsComponent } from './document-items.component';
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { Document, DocumentType, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange } from '../../model';
 

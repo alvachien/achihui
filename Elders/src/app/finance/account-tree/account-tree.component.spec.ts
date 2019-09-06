@@ -11,7 +11,7 @@ import { Component, Input } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { AccountTreeComponent } from './account-tree.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 

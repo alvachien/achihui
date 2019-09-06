@@ -14,7 +14,7 @@ import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-mo
 import { EventEmitter } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError, } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError, } from '../../../../../src/testing';
 import { ReportComponent } from './report.component';
 import { ThemeStorage } from '../../theme-picker';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';

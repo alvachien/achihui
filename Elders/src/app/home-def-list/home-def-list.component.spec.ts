@@ -10,7 +10,7 @@ import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError, } from '../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError, } from '../../../../src/testing';
 import { HomeDefListComponent } from './home-def-list.component';
 import { HomeDefDetailService, UIStatusService, } from '../services';
 import { MessageDialogComponent } from '../message-dialog/message-dialog.component';

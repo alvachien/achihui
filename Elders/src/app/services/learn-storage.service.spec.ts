@@ -8,7 +8,7 @@ import { LearnStorageService } from './learn-storage.service';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import { environment } from '../../environments/environment';
-import { FakeDataHelper } from '../../testing';
+import { FakeDataHelper } from '../../../../src/testing';
 import { QuestionBankItem, QuestionBankTypeEnum, LearnObject, LearnHistory } from '../model';
 
 describe('LearnStorageService', () => {

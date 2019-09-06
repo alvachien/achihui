@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
 import { UserAuthInfo } from '../model';
 import { environment } from '../../environments/environment';
-import { FakeDataHelper } from '../../testing';
+import { FakeDataHelper } from '../../../../src/testing';
 
 describe('LibraryStorageService', () => {
   let httpClient: HttpClient;

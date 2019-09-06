@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { of, BehaviorSubject } from 'rxjs';
 
-import { HttpLoaderTestFactory } from '../../testing';
+import { HttpLoaderTestFactory } from '../../../../src/testing';
 import { SideNavComponent } from './side-nav.component';
 import { SideNavService } from '../services';
 

@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../../src/testing';
 import { ThemeStorage } from '../theme-picker';
 import { HomeDashboardComponent } from './home-dashboard.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, LearnStorageService } from '../services';

@@ -15,7 +15,7 @@ import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
 import { DocumentHeaderComponent } from './document-header.component';
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { Document, DocumentType, DocumentItem, financeDocTypeNormal, financeDocTypeCurrencyExchange, UIMode, } from '../../model';
 

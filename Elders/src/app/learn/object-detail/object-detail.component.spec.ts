@@ -11,7 +11,7 @@ import { of } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError, } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../src/testing';
 import { ObjectDetailComponent } from './object-detail.component';
 import { LearnStorageService, HomeDefDetailService, UIStatusService } from '../../services';
 import { LearnObject } from '../../model';

@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../../src/testing';
 import { FinanceCurrencyComponent } from './finance-currency.component';
 import { FinCurrencyService } from '../services';
 import { MessageDialogComponent } from '../message-dialog/message-dialog.component';

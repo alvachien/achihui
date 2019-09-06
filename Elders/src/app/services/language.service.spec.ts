@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { FakeDataHelper } from '../../testing';
+import { FakeDataHelper } from '../../../../src/testing';
 import { LanguageService } from './language.service';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';

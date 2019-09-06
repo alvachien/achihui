@@ -7,7 +7,7 @@ import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BehaviorSubject } from 'rxjs';
 
-import { HttpLoaderTestFactory, } from '../../testing';
+import { HttpLoaderTestFactory, } from '../../../../src/testing';
 import { UserDetailComponent } from './user-detail.component';
 import { AuthService } from '../services';
 import { UserAuthInfo } from '../model';

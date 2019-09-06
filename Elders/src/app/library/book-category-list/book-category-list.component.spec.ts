@@ -3,7 +3,7 @@ import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory } from '../../../../../src/testing';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';

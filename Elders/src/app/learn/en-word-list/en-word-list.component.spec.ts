@@ -8,7 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory } from '../../../../../src/testing';
 import { EnWordListComponent } from './en-word-list.component';
 import { LearnStorageService } from '../../services';
 

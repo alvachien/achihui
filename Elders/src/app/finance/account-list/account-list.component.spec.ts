@@ -10,7 +10,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { AccountListComponent } from './account-list.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 import { Account, AccountStatusEnum } from '../../model';

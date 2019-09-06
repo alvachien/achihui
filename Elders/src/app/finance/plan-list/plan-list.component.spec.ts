@@ -11,7 +11,7 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory } from '../../../../../src/testing';
 import { PlanListComponent } from './plan-list.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 

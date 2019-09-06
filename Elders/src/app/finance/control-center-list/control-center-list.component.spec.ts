@@ -15,7 +15,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { ControlCenterListComponent } from './control-center-list.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';

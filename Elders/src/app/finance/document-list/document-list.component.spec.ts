@@ -13,7 +13,7 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_LOCALE_PROVIDE
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { DocumentListComponent } from './document-list.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService } from 'app/services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';

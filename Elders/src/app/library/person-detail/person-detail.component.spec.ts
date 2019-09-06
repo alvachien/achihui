@@ -4,7 +4,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory } from '../../../../../src/testing';
 import { PersonDetailComponent } from './person-detail.component';
 
 describe('PersonDetailComponent', () => {

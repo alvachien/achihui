@@ -16,7 +16,7 @@ import { MatStepperNext, } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { AccountDetailComponent } from './account-detail.component';
 import { AccountExtADPExComponent } from '../account-ext-adpex';
 import { AccountExtAssetExComponent } from '../account-ext-asset-ex';

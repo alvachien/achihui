@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { OverviewComponent } from './overview.component';
 import { EventStorageService, HomeDefDetailService, UIStatusService } from 'app/services';
 

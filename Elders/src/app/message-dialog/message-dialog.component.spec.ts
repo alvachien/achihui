@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material';
 
-import { HttpLoaderTestFactory } from '../../testing';
+import { HttpLoaderTestFactory } from '../../../../src/testing';
 import { MessageDialogComponent } from './message-dialog.component';
 
 describe('MessageDialogComponent', () => {

@@ -19,7 +19,7 @@ import * as moment from 'moment';
 import { UIAccountStatusFilterPipe, UIAccountCtgyFilterPipe,
   UIOrderValidFilterPipe, UIOrderValidFilterExPipe, UIAccountCtgyFilterExPipe, } from '../pipes';
 import { UIMode, UserAuthInfo, Account, AccountExtraLoan, Document, } from '../../model';
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { DocumentLoanCreateComponent } from './document-loan-create.component';
 import { FinanceStorageService, HomeDefDetailService, UIStatusService, FinCurrencyService,
   AuthService } from 'app/services';

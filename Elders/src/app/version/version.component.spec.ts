@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory } from '../../testing';
+import { HttpLoaderTestFactory } from '../../../../src/testing';
 import { VersionComponent } from './version.component';
 
 describe('VersionComponent', () => {

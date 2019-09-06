@@ -13,7 +13,7 @@ import { UserAuthInfo, FinanceADPCalAPIInput, FinanceLoanCalAPIInput, RepeatFreq
   Account, TemplateDocADP, Order, AccountStatusEnum, GeneralFilterItem, GeneralFilterValueType,
   GeneralFilterOperatorEnum, Plan, PlanTypeEnum, ControlCenter, } from '../model';
 import { environment } from '../../environments/environment';
-import { FakeDataHelper } from '../../testing';
+import { FakeDataHelper } from '../../../../src/testing';
 
 describe('FinanceStorageService', () => {
   let httpClient: HttpClient;

@@ -8,7 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory } from '../../testing';
+import { HttpLoaderTestFactory } from '../../../../src/testing';
 import { HomeMessageComponent } from './home-message.component';
 import { HomeDefDetailService, UIStatusService, AuthService } from '../services';
 import { UserAuthInfo } from '../model';

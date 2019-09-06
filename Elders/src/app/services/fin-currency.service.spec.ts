@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/htt
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
 
-import { FakeDataHelper } from '../../testing';
+import { FakeDataHelper } from '../../../../src/testing';
 import { FinCurrencyService } from './fin-currency.service';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';

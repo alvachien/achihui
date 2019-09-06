@@ -16,7 +16,7 @@ import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
 import { HttpLoaderTestFactory, ActivatedRouteUrlStub, RouterLinkDirectiveStub, FakeDataHelper,
-  asyncData, asyncError, } from '../../../testing';
+  asyncData, asyncError, } from '../../../../../src/testing';
 import { HistoryDetailComponent } from './history-detail.component';
 import { LearnStorageService, HomeDefDetailService, UIStatusService } from '../../services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';

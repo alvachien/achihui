@@ -9,7 +9,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { HttpLoaderTestFactory, asyncData, asyncError, } from '../../../testing';
+import { HttpLoaderTestFactory, asyncData, asyncError, } from '../../../../../src/testing';
 import { ObjectListComponent } from './object-list.component';
 import { LearnStorageService, UIStatusService, } from '../../services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';

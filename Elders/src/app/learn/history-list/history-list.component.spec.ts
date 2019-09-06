@@ -12,7 +12,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import * as moment from 'moment';
 
-import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError, } from '../../../testing';
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError, } from '../../../../../src/testing';
 import { HistoryListComponent } from './history-list.component';
 import { LearnStorageService, UIStatusService } from '../../services';
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';

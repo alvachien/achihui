@@ -8,7 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError } from '../../../../src/testing';
 import { LanguageComponent } from './language.component';
 import { LanguageService } from '../services';
 

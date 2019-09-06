@@ -7,7 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, } from '../../../../../src/testing';
 import { ObjectByCategoryComponent } from './object-by-category.component';
 import { AuthService, HomeDefDetailService, LearnStorageService } from '../../services';
 

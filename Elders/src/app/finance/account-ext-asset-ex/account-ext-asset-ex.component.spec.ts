@@ -3,7 +3,7 @@ import { UIDependModule } from '../../uidepend.module';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory } from '../../../../../src/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,7 +11,7 @@ import { FormsModule, ReactiveFormsModule, ControlContainer, NgForm } from '@ang
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 
-import { RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { AccountExtAssetExComponent } from './account-ext-asset-ex.component';
 import { FinanceStorageService } from 'app/services';
 import { CommonModule } from '@angular/common';

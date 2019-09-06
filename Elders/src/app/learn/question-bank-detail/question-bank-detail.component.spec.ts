@@ -12,7 +12,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 
 import { MessageDialogComponent } from '../../message-dialog/message-dialog.component';
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../../../src/testing';
 import { QuestionBankDetailComponent } from './question-bank-detail.component';
 import { LearnStorageService, HomeDefDetailService, UIStatusService } from '../../services';
 import { QuestionBankTypeEnum, QuestionBankItem, } from 'app/model';

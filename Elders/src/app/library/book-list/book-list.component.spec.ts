@@ -7,7 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 
-import { HttpLoaderTestFactory, RouterLinkDirectiveStub } from '../../../testing';
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub } from '../../../../../src/testing';
 import { BookListComponent } from './book-list.component';
 import { LibraryStorageService } from 'app/services';
 

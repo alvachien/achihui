@@ -13,7 +13,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { MatTabGroup } from '@angular/material';
 import { By } from '@angular/platform-browser';
 
-import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../testing';
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub, FakeDataHelper, asyncData, asyncError } from '../../../../src/testing';
 import { TagsListComponent } from './tags-list.component';
 import { AuthService, HomeDefDetailService, TagsService, UIStatusService } from '../services';
 import { UserAuthInfo, TagTypeEnum, } from '../model';

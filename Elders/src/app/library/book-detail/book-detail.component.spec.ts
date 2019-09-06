@@ -6,7 +6,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory } from '../../../../../src/testing';
 import { BookDetailComponent } from './book-detail.component';
 
 describe('BookDetailComponent', () => {

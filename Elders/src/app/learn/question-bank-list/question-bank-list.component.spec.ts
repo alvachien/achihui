@@ -8,7 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory } from '../../../../../src/testing';
 import { QuestionBankListComponent } from './question-bank-list.component';
 import { LearnStorageService, UIStatusService, } from '../../services';
 

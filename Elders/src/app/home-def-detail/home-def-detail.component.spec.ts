@@ -10,7 +10,7 @@ import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../testing';
+import { HttpLoaderTestFactory, ActivatedRouteUrlStub, FakeDataHelper, asyncData, asyncError } from '../../../../src/testing';
 import { HomeDefDetailComponent } from './home-def-detail.component';
 import { AuthService, FinCurrencyService, HomeDefDetailService, UIStatusService, } from '../services';
 import { UserAuthInfo } from '../model';

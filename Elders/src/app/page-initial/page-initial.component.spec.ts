@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
-import { HttpLoaderTestFactory } from '../../testing';
+import { HttpLoaderTestFactory } from '../../../../src/testing';
 import { PageInitialComponent } from './page-initial.component';
 import { AuthService, HomeDefDetailService, } from '../services';
 import { UserAuthInfo } from '../model';

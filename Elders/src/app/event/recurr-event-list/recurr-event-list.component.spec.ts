@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError, } from '../../../testing';
+import { HttpLoaderTestFactory, FakeDataHelper, asyncData, asyncError, } from '../../../../../src/testing';
 import { RecurrEventListComponent } from './recurr-event-list.component';
 import { EventStorageService, HomeDefDetailService } from 'app/services';
 

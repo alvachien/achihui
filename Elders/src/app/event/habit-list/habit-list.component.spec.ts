@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { HttpLoaderTestFactory } from '../../../testing';
+import { HttpLoaderTestFactory } from '../../../../../src/testing';
 import { HabitListComponent } from './habit-list.component';
 import { EventStorageService, HomeDefDetailService } from 'app/services';
 

@@ -4,7 +4,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { HttpLoaderTestFactory, RouterLinkDirectiveStub } from '../../testing';
+import { HttpLoaderTestFactory, RouterLinkDirectiveStub } from '../../../../src/testing';
 import { SideNavItemComponent } from './side-nav-item.component';
 import { SideNavService } from '../services';
 
