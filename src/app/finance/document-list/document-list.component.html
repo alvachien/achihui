@@ -36,9 +36,13 @@
         <button mat-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | translate}}</button>
         <button mat-menu-item (click)="onCreateAssetValChgDocument()">{{'Sys.DocTy.AssetValChg' | translate}}</button>
       </mat-menu>
-      <button mat-icon-button mat-button (click)="onMassCreateNormalDocument()" matTooltip="{{'Finance.NormalDocMassCreate' | translate}}">
+      <button mat-icon-button mat-button [matMenuTriggerFor]="matMenuDocMassCreate" matTooltip="{{'Finance.NormalDocMassCreate' | translate}}">
         <mat-icon>queue</mat-icon>
       </button>
+      <mat-menu #matMenuDocMassCreate="matMenu" overlapTrigger="false" xPosition="after" yPosition="below">
+        <button mat-menu-item (click)="onMassCreateNormalDocument()">{{'Finance.FreelyMassCreateNormalDocs' | translate}}</button>
+        <button mat-menu-item (click)="onMassCreateNormalDocument2()">{{'Finance.RepeatlyMassCreateNormalDocs' | translate}}</button>
+      </mat-menu>
     </mat-toolbar>
 
     <div class="table-container mat-elevation-z8">

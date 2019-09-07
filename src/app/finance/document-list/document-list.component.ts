@@ -147,6 +147,9 @@ export class DocumentListComponent implements OnInit, AfterContentInit, OnDestro
   public onMassCreateNormalDocument(): void {
     this._router.navigate(['/finance/document/masscreatenormal']);
   }
+  public onMassCreateNormalDocument2(): void {
+    this._router.navigate(['/finance/document/masscreatenormal2']);
+  }
 
   public onChangeDocument(doc: Document): void {
     switch (doc.DocType) {

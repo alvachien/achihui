@@ -42,6 +42,7 @@ class MassCreateExistingResult {
 // Default value
 interface MassCreateDefaultValue {
   accountid?: number;
+  ttid?: number;
   desp: string;
   amount?: number;
   ccid?: number;
@@ -193,12 +194,16 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       if (order) {
         this.defaultValueFormGroup.get('orderControl').setValue(order);
       }
+      let ttid: any = this.secondFormGroup.get('tranTypeControl').value;
+      if (ttid) {
+        this.defaultValueFormGroup.get('tranTypeControl').setValue(ttid);
+      }
     } else if (event.selectedIndex === 3) {
       // Update the default value.
       this.updateDefaultValue();
 
       this.isDocGenerating = true;
-      setInterval(() => {
+      setTimeout(() => {
         // Clear all controls
         const control: FormArray = this.targetFormGroup.controls.items as FormArray;
         control.clear();
@@ -289,20 +294,23 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
       addrCtrl.get('dateControl').value = rst.dateFrom;
     }
 
+    if (this.defaultValue && this.defaultValue.ttid) {
+      addrCtrl.get('tranTypeControl').setValue(this.defaultValue.ttid);
+    }
     if (this.defaultValue && this.defaultValue.accountid) {
-      addrCtrl.get('accountControl').value = this.defaultValue.accountid;
+      addrCtrl.get('accountControl').setValue(this.defaultValue.accountid);
     }
     if (this.defaultValue && this.defaultValue.desp) {
-      addrCtrl.get('despControl').value = this.defaultValue.desp;
+      addrCtrl.get('despControl').setValue(this.defaultValue.desp);
     }
     if (this.defaultValue && this.defaultValue.amount) {
-      addrCtrl.get('amountControl').value = this.defaultValue.amount;
+      addrCtrl.get('amountControl').setValue(this.defaultValue.amount);
     }
     if (this.defaultValue && this.defaultValue.ccid) {
-      addrCtrl.get('ccControl').value = this.defaultValue.ccid;
+      addrCtrl.get('ccControl').setValue(this.defaultValue.ccid);
     }
     if (this.defaultValue && this.defaultValue.orderid) {
-      addrCtrl.get('orderControl').value = this.defaultValue.orderid;
+      addrCtrl.get('orderControl').setValue(this.defaultValue.orderid);
     }
 
     control.push(addrCtrl);
@@ -317,6 +325,7 @@ export class DocumentNormalMassCreate2Component implements OnInit, OnDestroy {
     this.defaultValue = {
       desp: this.defaultValueFormGroup.get('despControl').value,
       accountid: this.defaultValueFormGroup.get('accountControl').value,
+      ttid: this.defaultValueFormGroup.get('tranTypeControl').value,
       amount: this.defaultValueFormGroup.get('amountControl').value,
       ccid: this.defaultValueFormGroup.get('ccControl').value,
       orderid: this.defaultValueFormGroup.get('orderControl').value,
