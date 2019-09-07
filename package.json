@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "0.8.14",
+  "version": "0.8.18",
   "private": true,
   "description": "UI layer for HIH, built with Angular 6, Material 6, and so on.",
   "keywords": [
@@ -78,6 +78,7 @@
     "karma-jasmine": "^2.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
     "protractor": "^5.4.1",
+    "source-map-explorer": "^2.0.1",
     "ts-node": "^8.3.0",
     "tslint": "^5.19.0",
     "typescript": "^3.5.3"
