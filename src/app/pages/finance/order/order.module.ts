@@ -11,12 +11,12 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { OrderRoutingModule } from './order-routing.module';
 import { OrderComponent } from './order.component';
 import { OrderListComponent } from './order-list/order-list.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
-
 
 @NgModule({
   declarations: [
@@ -38,6 +38,7 @@ import { OrderDetailComponent } from './order-detail/order-detail.component';
     NzGridModule,
     NzButtonModule,
     OrderRoutingModule,
+    TranslateModule.forChild(),
   ]
 })
 export class OrderModule { }

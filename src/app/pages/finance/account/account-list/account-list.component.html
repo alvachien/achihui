@@ -12,5 +12,21 @@
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
+    <nz-table #basicTable [nzData]="dataSet">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{data.ID}}</td>
+          <td>{{data.Name}}</td>
+          <td>{{data.Comment}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
   </div>
 </nz-spin>

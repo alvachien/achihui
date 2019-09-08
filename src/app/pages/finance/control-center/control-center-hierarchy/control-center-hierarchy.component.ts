@@ -103,4 +103,8 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
 
     return data;
   }
+
+  nodeClick(event: NzFormatEmitEvent): void {
+    // Do nothing
+  }
 }

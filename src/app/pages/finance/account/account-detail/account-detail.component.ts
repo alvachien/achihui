@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'hih-fin-account-detail',
@@ -6,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./account-detail.component.less']
 })
 export class AccountDetailComponent implements OnInit {
+  // tslint:disable-next-line:variable-name
+  private _destroyed$: ReplaySubject<boolean>;
+  isLoadingResults: boolean;
 
   constructor() { }
 

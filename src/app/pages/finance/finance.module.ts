@@ -12,6 +12,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { FinanceRoutingModule } from './finance-routing.module';
 import { FinanceComponent } from '../finance/finance.component';
 import { CurrencyComponent } from './currency';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { CurrencyComponent } from './currency';
     NzCardModule,
     NzSpinModule,
     FinanceRoutingModule,
+    TranslateModule.forChild(),
   ]
 })
 export class FinanceModule { }

@@ -4,10 +4,7 @@ import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
 
 import { FinanceStorageService, UIStatusService } from '../../../../services';
-import {
-  LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
-  OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Book,
+import { LogLevel, ControlCenter, getOverviewScopeRange, UICommonLabelEnum,
 } from '../../../../model';
 import { environment } from '../../../../../environments/environment';
 
@@ -17,8 +14,10 @@ import { environment } from '../../../../../environments/environment';
   styleUrls: ['./control-center-list.component.less']
 })
 export class ControlCenterListComponent implements OnInit {
+  // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
+  dataSet: ControlCenter[] = [];
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService) {
@@ -31,6 +30,21 @@ export class ControlCenterListComponent implements OnInit {
     }
 
     this._destroyed$ = new ReplaySubject(1);
+
+    this.isLoadingResults = true;
+    this._storageService.fetchAllControlCenters()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((value: ControlCenter[]) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...');
+        }
+
+        this.dataSet = value;
+      }, (error: any) => {
+        // Do nothing
+      }, () => {
+        this.isLoadingResults = false;
+      });
   }
 
   ngOnDestroy() {

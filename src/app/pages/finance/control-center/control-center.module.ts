@@ -11,13 +11,13 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { ControlCenterRoutingModule } from './control-center-routing.module';
 import { ControlCenterComponent } from './control-center.component';
 import { ControlCenterListComponent } from './control-center-list';
 import { ControlCenterDetailComponent } from './control-center-detail';
 import { ControlCenterHierarchyComponent } from './control-center-hierarchy';
-
 
 @NgModule({
   declarations: [
@@ -39,7 +39,8 @@ import { ControlCenterHierarchyComponent } from './control-center-hierarchy';
     NzTabsModule,
     NzGridModule,
     NzButtonModule,
-    ControlCenterRoutingModule
+    ControlCenterRoutingModule,
+    TranslateModule.forChild(),
   ]
 })
 export class ControlCenterModule { }

@@ -5,6 +5,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { ConfigRoutingModule } from './config-routing.module';
 import { ConfigComponent } from './config.component';
@@ -31,6 +32,7 @@ import { TranTypeListComponent } from './tran-type-list/tran-type-list.component
     NzPageHeaderModule,
     NzSpinModule,
     ConfigRoutingModule,
+    TranslateModule.forChild(),
   ]
 })
 export class ConfigModule { }
