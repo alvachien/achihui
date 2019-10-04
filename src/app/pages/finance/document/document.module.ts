@@ -11,6 +11,7 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { DocumentRoutingModule } from './document-routing.module';
@@ -36,6 +37,7 @@ import { DocumentDetailComponent } from './document-detail/document-detail.compo
     NzDescriptionsModule,
     NzTabsModule,
     NzGridModule,
+    NzDatePickerModule,
     NzButtonModule,
     DocumentRoutingModule,
     TranslateModule.forChild(),

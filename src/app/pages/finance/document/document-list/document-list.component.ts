@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { ReplaySubject, forkJoin, of } from 'rxjs';
+import { takeUntil, catchError, map } from 'rxjs/operators';
 
 import { FinanceStorageService, UIStatusService } from '../../../../services';
 import { LogLevel, Account, Document, UIDisplayString, UIDisplayStringUtil,
   OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Book,
+  getOverviewScopeRange, UICommonLabelEnum, BaseListModel,
 } from '../../../../model';
 import { environment } from '../../../../../environments/environment';
 
@@ -18,7 +18,12 @@ export class DocumentListComponent implements OnInit {
   // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
   isLoadingResults: boolean;
-  dataSet: Document[] = [];
+  listOfDocs: Document[] = [];
+  selectedDocScope: OverviewScopeEnum;
+  isReload = false;
+  pageIndex = 1;
+  pageSize = 10;
+  totalDocumentCount = 1;
 
   constructor(public _storageService: FinanceStorageService,
     public _uiStatusService: UIStatusService,) {
@@ -27,28 +32,43 @@ export class DocumentListComponent implements OnInit {
 
   ngOnInit() {
     this._destroyed$ = new ReplaySubject(1);
+    this.selectedDocScope = OverviewScopeEnum.CurrentMonth;
 
-    this.isLoadingResults = true;
-    forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts(this.isReload))
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe((data: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering DocumentListComponent _refreshTree, forkJoin...');
-        }
-
-        if (data instanceof Array && data.length > 0) {
-          // Parse the data
-          this.dataSet = data[1] as Account[];
-        }
-      }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error('AC_HIH_UI [Error]: Entering DocumentListComponent _refreshTree, forkJoin, failed...');
-        }
-
-        // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString(), undefined);
-      }, () => {
-        this.isLoadingResults = false;
-      });
+    this.fetchData();
   }
 
+  fetchData(reset: boolean = false): void {
+    if (reset) {
+      this.pageIndex = 1;
+    }
+    this.isLoadingResults = true;
+    const { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
+    this._storageService.fetchAllDocuments(bgn, end, this.pageSize, this.pageIndex * this.pageSize)
+      .pipe(
+        map((revdata: BaseListModel<Document>) => {
+          if (revdata) {
+            if (revdata.totalCount) {
+              this.totalDocumentCount = +revdata.totalCount;
+            } else {
+              this.totalDocumentCount = 0;
+            }
+
+            if (revdata.contentList) {
+              return revdata.contentList;
+            }
+          }
+
+          return [];
+        }),
+        catchError((error: any) => {
+          // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error),
+          //   error ? error.toString() : this._uiStatusService.getUILabel(UICommonLabelEnum.Error));
+
+          return of([]);
+        }),
+      ).subscribe((data: any) => {
+        this.isLoadingResults = false;
+        this.listOfDocs = data;
+      });
+  }
 }
