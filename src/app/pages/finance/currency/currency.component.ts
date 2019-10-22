@@ -4,7 +4,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 
 import { environment } from '../../../../environments/environment';
 import { LogLevel, Currency } from '../../../model';
-import { FinCurrencyService } from '../../../services';
+import { FinanceOdataService } from '../../../services';
 
 @Component({
   selector: 'hih-finance-currency',
@@ -16,7 +16,7 @@ export class CurrencyComponent implements OnInit {
   public dataSource: Currency[] = [];
   isLoadingResults: boolean;
 
-  constructor(public _currService: FinCurrencyService) {
+  constructor(public _currService: FinanceOdataService) {
     this.isLoadingResults = false;
   }
 

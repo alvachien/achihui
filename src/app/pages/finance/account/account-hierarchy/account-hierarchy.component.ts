@@ -5,9 +5,8 @@ import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
 
 import { FinanceStorageService, UIStatusService } from '../../../../services';
-import {
-  LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
-  OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, 
+import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
+  OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum,
 } from '../../../../model';
 import { environment } from '../../../../../environments/environment';
 

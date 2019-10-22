@@ -16,6 +16,7 @@ import { AuthService, AuthGuardService,
   FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService, LibraryStorageService,
   HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService,
   EventStorageService,
+  FinanceOdataService,
 } from './services';
 
 registerLocaleData(en);
@@ -60,6 +61,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     SideNavService,
     TagsService,
     EventStorageService,
+    FinanceOdataService,
   ],
   bootstrap: [AppComponent]
 })
