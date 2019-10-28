@@ -30,7 +30,7 @@ export class FinanceOdataService {
 
   public fetchAllCurrencies(forceReload?: boolean): Observable<Currency[]> {
     if (!this.isCurrencylistLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/odata/FinanceCurrencies';
+      const apiurl: string = environment.ApiUrl + '/odata/FinanceCurrency';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
