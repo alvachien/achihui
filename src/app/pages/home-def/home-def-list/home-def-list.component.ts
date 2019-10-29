@@ -5,7 +5,7 @@ import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators
 
 import { environment } from '../../../../environments/environment';
 import { LogLevel, HomeDef, UICommonLabelEnum, } from '../../../model';
-import { HomeDefDetailService, UIStatusService, } from '../../../services';
+import { HomeDefOdataService, UIStatusService, } from '../../../services';
 
 @Component({
   selector: 'hih-home-def-list',
@@ -20,13 +20,14 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   public dataSource: HomeDef[] = [];
 
   get IsCurrentHomeChosed(): boolean {
-    if (this._homedefService.ChosedHome) {
+    if (this.homeService.ChosedHome) {
       return true;
     }
     return false;
   }
 
-  constructor(public _homedefService: HomeDefDetailService,
+  constructor(
+    public homeService: HomeDefOdataService,
     private _uiService: UIStatusService,
     private _router: Router) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -65,12 +66,12 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   public onChooseHome(row: HomeDef): void {
-    this._homedefService.ChosedHome = row;
+    this.homeService.ChosedHome = row;
 
-    this._homedefService.fetchAllMembersInChosedHome().subscribe(x => {
-      if (this._homedefService.RedirectURL) {
-        let url: string = this._homedefService.RedirectURL;
-        this._homedefService.RedirectURL = '';
+    this.homeService.fetchAllMembersInChosedHome().subscribe(x => {
+      if (this.homeService.RedirectURL) {
+        const url: string = this.homeService.RedirectURL;
+        this.homeService.RedirectURL = '';
 
         this._router.navigate([url]);
       } else {
@@ -94,7 +95,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   private _fetchData(forceLoad?: boolean): void {
     this.isLoadingResults = true;
 
-    this._homedefService.fetchAllHomeDef(forceLoad)
+    this.homeService.fetchAllHomeDef(forceLoad)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((arHomeDef: HomeDef[]) => {
         this.dataSource = arHomeDef;

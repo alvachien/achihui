@@ -1,6 +1,8 @@
 import * as moment from 'moment';
 import * as hih from './common';
 
+// tslint:disable:variable-name
+
 /**
  * Relationship
  */
@@ -25,10 +27,10 @@ export function getHomeMemberRelationString(re: HomeMemberRelationEnum): string 
  * Home members
  */
 export interface IHomeMemberJson {
-  homeID: number;
-  user: string;
-  displayAs: string;
-  relation: HomeMemberRelationEnum;
+  Hid: number;
+  User: string;
+  Displayas: string;
+  Relt: HomeMemberRelationEnum;
 }
 
 /**
@@ -93,20 +95,20 @@ export class HomeMember {
  * Home definition JSON
  */
 export interface HomeDefJson {
-  id?: number;
-  name: string;
-  details: string;
-  host: string;
-  baseCurrency: string;
-  creatorDisplayAs?: string; // For creation
+  Id?: number;
+  Name: string;
+  Details: string;
+  Host: string;
+  Basecurr: string;
+  CreatorDisplayAs?: string; // For creation
 
-  members?: IHomeMemberJson[];
+  THomemem?: IHomeMemberJson[];
 }
 
 /**
  * Home definition
  */
-export class HomeDef {
+export class HomeDef extends hih.BaseModel {
   private _id: number;
   private _name: string;
   private _details: string;
@@ -116,6 +118,7 @@ export class HomeDef {
   private _listMembers: HomeMember[];
 
   constructor() {
+    super();
     this._listMembers = [];
   }
 
@@ -181,12 +184,12 @@ export class HomeDef {
   }
 
   public parseJSONData(data: HomeDefJson): void {
-    this._id = data.id;
-    this._name = data.name;
-    this._details = data.details;
-    this._host = data.host;
-    this._basecurr = data.baseCurrency;
-    this._creatorDisplayAs = data.creatorDisplayAs;
+    this._id = data.Id;
+    this._name = data.Name;
+    this._details = data.Details;
+    this._host = data.Host;
+    this._basecurr = data.BaseCurrency;
+    this._creatorDisplayAs = data.CreatorDisplayAs;
 
     this._listMembers = [];
     if (data.members) {

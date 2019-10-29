@@ -1,5 +1,7 @@
 import * as moment from 'moment';
 
+// tslint:disable:variable-name
+
 export const typeParentSplitter: string = ' > ';
 export const idSplitChar: string = ',';
 
@@ -241,10 +243,10 @@ export class InfoMessage {
  * Interface of Base Model Json
  */
 export interface BaseModelJson {
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
-  updatedBy: string;
+  Createdat: string;
+  Createdby: string;
+  Updatedat: string;
+  Updatedby: string;
 }
 
 /**
@@ -256,16 +258,16 @@ export class BaseModel {
   protected _createdBy: string;
   protected _updatedBy: string;
   protected _verifiedMsgs: InfoMessage[];
-  get CreatedBy(): string {
+  get Createdby(): string {
     return this._createdBy;
   }
-  set CreatedBy(cb: string) {
+  set Createdby(cb: string) {
     this._createdBy = cb;
   }
-  get UpdatedBy(): string {
+  get Updatedby(): string {
     return this._updatedBy;
   }
-  set UpdatedBy(ub: string) {
+  set Updatedby(ub: string) {
     this._updatedBy = ub;
   }
 
@@ -276,16 +278,16 @@ export class BaseModel {
     this._verifiedMsgs = msgs;
   }
 
-  get CreatedAt(): moment.Moment {
+  get Createdat(): moment.Moment {
     return this._createdAt;
   }
-  set CreatedAt(ca: moment.Moment) {
+  set Createdat(ca: moment.Moment) {
     this._createdAt = ca;
   }
-  get UpdatedAt(): moment.Moment {
+  get Updatedat(): moment.Moment {
     return this._updatedAt;
   }
-  set UpdatedAt(ua: moment.Moment) {
+  set Updatedat(ua: moment.Moment) {
     this._updatedAt = ua;
   }
 
@@ -316,14 +318,14 @@ export class BaseModel {
     if (this._createdAt) {
       rstobj.createdAt = this._createdAt.format(momentDateFormat);
     }
-    if (this.CreatedBy && this.CreatedBy.length > 0) {
-      rstobj.createdBy = this.CreatedBy;
+    if (this.Createdby && this.Createdby.length > 0) {
+      rstobj.Createdby = this.Createdby;
     }
     if (this._updatedAt) {
-      rstobj.updatedAt = this._updatedAt.format(momentDateFormat);
+      rstobj.Updatedat = this._updatedAt.format(momentDateFormat);
     }
-    if (this.UpdatedBy && this.UpdatedBy.length > 0) {
-      rstobj.updatedBy = this.UpdatedBy;
+    if (this.Updatedby && this.Updatedby.length > 0) {
+      rstobj.Updatedby = this.Updatedby;
     }
 
     return rstobj;
@@ -338,24 +340,25 @@ export class BaseModel {
   }
 
   public onSetData(data: any): void {
-    if (data && data.createdBy) {
-      this.CreatedBy = data.createdBy;
+    if (data && data.Createdby) {
+      this.Createdby = data.Createdby;
     }
     if (data && data.createdAt) {
-      this.CreatedAt = moment(data.createdAt, momentDateFormat);
+      this.Createdat = moment(data.Createdat, momentDateFormat);
     }
     if (data && data.updatedBy) {
-      this.UpdatedBy = data.updatedBy;
+      this.Updatedby = data.Updatedby;
     }
     if (data && data.updatedAt) {
-      this.UpdatedAt = moment(data.updatedAt, momentDateFormat);
+      this.Updatedat = moment(data.Updatedat, momentDateFormat);
     }
   }
 
-  protected _addMessage(msgtype: MessageType,
+  protected _addMessage(
+    msgtype: MessageType,
     msgtitle: string,
     msgcontent: string): void {
-    let msg: InfoMessage = new InfoMessage();
+    const msg: InfoMessage = new InfoMessage();
     msg.MsgType = msgtype;
     msg.MsgTitle = msgtitle;
     msg.MsgContent = msgcontent;

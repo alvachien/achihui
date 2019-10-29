@@ -5,7 +5,7 @@ import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd';
 
 import { environment } from '../environments/environment';
 import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN } from './model';
-import { AuthService, HomeDefDetailService, UIStatusService } from './services';
+import { AuthService, UIStatusService, HomeDefOdataService } from './services';
 
 @Component({
   selector: 'hih-root',
@@ -20,9 +20,10 @@ export class AppComponent {
   public userDisplayAs: string;
   public curChosenHome: HomeDef;
 
-  constructor(private i18n: NzI18nService,
+  constructor(
+    private i18n: NzI18nService,
     private _authService: AuthService,
-    public _homeDefService: HomeDefDetailService,
+    public _homeService: HomeDefOdataService,
     private _zone: NgZone,
     private _changeDetectorRef: ChangeDetectorRef,) {
       this._authService.authContent.subscribe((x: any) => {

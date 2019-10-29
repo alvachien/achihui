@@ -14,9 +14,10 @@ import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
 import { AuthService, AuthGuardService,
   FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService, LibraryStorageService,
-  HomeDefDetailService, CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService,
+  CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService,
   EventStorageService,
   FinanceOdataService,
+  HomeDefOdataService,
 } from './services';
 
 registerLocaleData(en);
@@ -51,7 +52,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     AuthGuardService,
     FinCurrencyService,
     HomeChoseGuardService,
-    HomeDefDetailService,
     CanDeactivateGuardService,
     FinanceStorageService,
     LearnStorageService,
@@ -61,8 +61,9 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     SideNavService,
     TagsService,
     EventStorageService,
+    HomeDefOdataService,
     FinanceOdataService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }
