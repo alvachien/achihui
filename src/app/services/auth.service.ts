@@ -10,7 +10,7 @@ const authSettings: any = {
   redirect_uri: environment.AppLoginCallbackUrl,
   post_logout_redirect_uri: environment.AppLogoutCallbackUrl,
   response_type: 'id_token token',
-  scope: 'openid profile api.hihapi',
+  scope: 'openid profile api.hih',
 
   silent_redirect_uri: environment.AppLoginSlientRevewCallbackUrl,
   automaticSilentRenew: true,
