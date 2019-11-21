@@ -25,7 +25,7 @@ export class LanguageService {
 
   public fetchAllLanguages(): Observable<AppLanguage[]> {
     if (!this._islistLoaded) {
-      const apiurl: string = environment.ApiUrl + '/api/Language';
+      const apiurl: string = environment.ApiUrl + '/api/Languages';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')

@@ -71,7 +71,7 @@ export class HomeDefOdataService {
   public fetchAllHomeDef(forceReload?: boolean): Observable<HomeDef[]> {
     if (!this._islistLoaded || forceReload) {
       const apiurl: string = environment.ApiUrl
-        + `/odata/HomeDefinition?$count=true&$expand=THomemem`;
+        + `/api/HomeDefines?$count=true&$expand=HomeMembers`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -165,7 +165,7 @@ export class HomeDefOdataService {
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let apiurl: string = environment.ApiUrl + '/api/homedef';
+    let apiurl: string = environment.ApiUrl + '/api/HomeDefines';
 
     const data: HomeDefJson = objhd.generateJSONData(true);
     const jdata: any = JSON && JSON.stringify(data);
@@ -202,7 +202,7 @@ export class HomeDefOdataService {
     }
 
     if (!this._isMemberInChosedHomeLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/homemember';
+      const apiurl: string = environment.ApiUrl + '/api/HomeMembers';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')

@@ -30,7 +30,7 @@ export class FinanceOdataService {
 
   public fetchAllCurrencies(forceReload?: boolean): Observable<Currency[]> {
     if (!this.isCurrencylistLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/odata/FinanceCurrency';
+      const apiurl: string = environment.ApiUrl + '/api/FinanceCurrencies';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -42,7 +42,7 @@ export class FinanceOdataService {
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinCurrencyService`);
+            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinanceOdataService`);
           }
 
           this.listCurrency = [];
@@ -61,7 +61,7 @@ export class FinanceOdataService {
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinCurrencyService: ${error}`);
+              console.error(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinanceOdataService: ${error}`);
             }
 
             this.isCurrencylistLoaded = false;
