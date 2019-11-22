@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 
 // tslint:disable:variable-name
+// tslint:disable:no-inferrable-types
 
 export const typeParentSplitter: string = ' > ';
 export const idSplitChar: string = ',';
@@ -312,7 +313,7 @@ export class BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstobj: any = {
+    const rstobj: any = {
     };
 
     if (this._createdAt) {
@@ -332,7 +333,7 @@ export class BaseModel {
   }
 
   public writeJSONString(): string {
-    let forJSON: any = this.writeJSONObject();
+    const forJSON: any = this.writeJSONObject();
     if (forJSON) {
       return JSON && JSON.stringify(forJSON);
     }
@@ -433,7 +434,7 @@ export class Tag {
 
   public onSetData(data?: any): void {
     if (data && data.tagType) {
-      this.TagType = <TagTypeEnum>data.tagType;
+      this.TagType = data.tagType as TagTypeEnum;
     }
 
     if (data && data.tagID) {
@@ -587,7 +588,7 @@ export class MultipleNamesObject extends BaseModel {
   }
 
   public writeJSONObject(): any {
-    let rstobj: any = super.writeJSONObject();
+    const rstobj: any = super.writeJSONObject();
 
     rstobj.nativeName = this.NativeName;
     if (this.EnglishName) {
@@ -672,7 +673,7 @@ export function getOverviewScopeRange(scope: OverviewScopeEnum): IOverviewScopeR
 }
 
 export function isOverviewDateInScope(dt: moment.Moment, scope: OverviewScopeEnum): boolean {
-  let { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(scope);
+  const { BeginDate: bgn, EndDate: end } = getOverviewScopeRange(scope);
 
   if (dt.isBefore(end) && dt.isAfter(bgn)) {
     return true;

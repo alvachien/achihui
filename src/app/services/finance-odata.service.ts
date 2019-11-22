@@ -3,7 +3,7 @@ import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErr
 import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { LogLevel, Currency } from '../model';
+import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -18,10 +18,11 @@ export class FinanceOdataService {
     return this.listCurrency;
   }
 
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     private authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering FinanceOdataService constructor...');
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering FinanceOdataService constructor...', ConsoleLogTypeEnum.debug);
     }
 
     this.isCurrencylistLoaded = false; // Performance improvement
@@ -30,7 +31,7 @@ export class FinanceOdataService {
 
   public fetchAllCurrencies(forceReload?: boolean): Observable<Currency[]> {
     if (!this.isCurrencylistLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceCurrencies';
+      const apiurl: string = environment.ApiUrl + '/api/Currencies?$count=true';
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -38,18 +39,19 @@ export class FinanceOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
       return this.http.get(apiurl, {
-        headers: headers,
+        headers,
       })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinanceOdataService`);
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllCurrencies in FinanceOdataService`,
+              ConsoleLogTypeEnum.debug);
           }
 
           this.listCurrency = [];
-          const rjs: any = <any>response;
-
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
+          const rjs: any = response;
+          const amt = rjs['odata.count'];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
               const rst: Currency = new Currency();
               rst.onSetData(si);
               this.listCurrency.push(rst);
@@ -61,7 +63,8 @@ export class FinanceOdataService {
         }),
           catchError((error: HttpErrorResponse) => {
             if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinanceOdataService: ${error}`);
+              ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllCurrencies in FinanceOdataService: ${error}`,
+                ConsoleLogTypeEnum.error);
             }
 
             this.isCurrencylistLoaded = false;

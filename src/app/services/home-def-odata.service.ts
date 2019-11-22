@@ -3,6 +3,7 @@ import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse, }
 import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+
 import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, HomeMsg, HomeKeyFigure } from '../model';
 import { AuthService } from './auth.service';
 
@@ -88,7 +89,7 @@ export class HomeDefOdataService {
 
           this._islistLoaded = true;
           this._listHomeDefList = [];
-          const rjs: any = <any>response;
+          const rjs: any = response;
 
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
@@ -281,7 +282,7 @@ export class HomeDefOdataService {
 
     const jdata: any = JSON && JSON.stringify(data.writeJSONObject());
     return this._http.post(apiurl, jdata, {
-        headers: headers,
+        headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
         if (environment.LoggingLevel >= LogLevel.Debug) {

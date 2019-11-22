@@ -109,14 +109,14 @@ export class Currency extends hih.BaseModel {
   public onSetData(data: any): void {
     super.onSetData(data);
 
-    if (data && data.curr) {
-      this.Currency = data.curr;
+    if (data && data.Curr) {
+      this.Currency = data.Curr;
     }
-    if (data && data.name) {
-      this.Name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.symbol) {
-      this.Symbol = data.symbol;
+    if (data && data.Symbol) {
+      this.Symbol = data.Symbol;
     }
   }
 }

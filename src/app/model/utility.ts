@@ -1,6 +1,12 @@
 import { dateSplitChar } from './common';
 import { DocumentItem } from './financemodel';
 
+export enum ConsoleLogTypeEnum {
+  log   = 0,
+  debug = 1,
+  warn  = 2,
+  error = 3,
+}
 /**
  * Utility class in Model
  */
@@ -17,9 +23,9 @@ export class ModelUtility {
     // let curr_year : string = dt.getFullYear().toString();
     // return (curr_date + "-" + curr_month + "-" + curr_year);
 
-    let y: number = dt.getFullYear();
-    let m: number = dt.getMonth() + 1;
-    let d: number = dt.getDate();
+    const y: number = dt.getFullYear();
+    const m: number = dt.getMonth() + 1;
+    const d: number = dt.getDate();
     return y.toString() + dateSplitChar + (m < 10 ? ('0' + m) : m).toString() + dateSplitChar + (d < 10 ? ('0' + d) : d).toString();
   }
 
@@ -33,10 +39,10 @@ export class ModelUtility {
       return new Date();
     }
 
-    let ss: any = (s.split(dateSplitChar));
-    let y: number = parseInt(ss[0], 10);
-    let m: number = parseInt(ss[1], 10);
-    let d: number = parseInt(ss[2], 10);
+    const ss: any = (s.split(dateSplitChar));
+    const y: number = parseInt(ss[0], 10);
+    const m: number = parseInt(ss[1], 10);
+    const d: number = parseInt(ss[2], 10);
     if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
       return new Date(y, m - 1, d);
     } else {
@@ -53,13 +59,13 @@ export class ModelUtility {
   public static DaysBetween(first: Date, second: Date): number {
 
     // Copy date parts of the timestamps, discarding the time parts.
-    let one: Date = new Date(first.getFullYear(), first.getMonth(), first.getDate());
-    let two: Date = new Date(second.getFullYear(), second.getMonth(), second.getDate());
+    const one: Date = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+    const two: Date = new Date(second.getFullYear(), second.getMonth(), second.getDate());
 
     // Do the math.
-    let millisecondsPerDay: number = 1000 * 60 * 60 * 24;
-    let millisBetween: number = two.getTime() - one.getTime();
-    let days: number = millisBetween / millisecondsPerDay;
+    const millisecondsPerDay: number = 1000 * 60 * 60 * 24;
+    const millisBetween: number = two.getTime() - one.getTime();
+    const days: number = millisBetween / millisecondsPerDay;
 
     // Round down.
     return Math.floor(days);
@@ -80,13 +86,13 @@ export class ModelUtility {
    * @returns true if strMail is valid
    */
   public static CheckMail(strMail: string): boolean {
-    let isValid: boolean = false;
+    let isValid = false;
 
     if (strMail.indexOf('@') >= 1) {
-      let mValidDom: string = strMail.substr(strMail.indexOf('@') + 1);
+      const mValidDom: string = strMail.substr(strMail.indexOf('@') + 1);
       if (mValidDom.indexOf('@') === -1) {
         if (mValidDom.indexOf('.') >= 1) {
-          let mValidDomE: string = mValidDom.substr(mValidDom.indexOf('.') + 1);
+          const mValidDomE: string = mValidDom.substr(mValidDom.indexOf('.') + 1);
           if (mValidDomE.length >= 1) {
             isValid = true;
           }
@@ -105,8 +111,8 @@ export class ModelUtility {
    * @returns true if the string meet the length check
    */
   public static CheckStringLength(strField: string, minlength: number, maxLength: number): boolean {
-    let lengthDf: number = strField.length;
-    let bResult: boolean = false;
+    const lengthDf: number = strField.length;
+    let bResult = false;
 
     if (lengthDf >= minlength && lengthDf <= maxLength) {
       bResult = true;
@@ -121,7 +127,7 @@ export class ModelUtility {
    * @returns number of level
    */
   public static GetPasswordStrengthLevel(strField: string): number {
-    let passLevel: number = 0;
+    let passLevel = 0;
 
     if (strField.match(/[a-z]/g)) {
       passLevel++;
@@ -149,9 +155,9 @@ export class ModelUtility {
    * @returns true indicates duplicated entries exist
    */
   public static hasDuplicatesInStringArray(strarray: string): boolean {
-    let valuesSoFar: any = Object.create(undefined);
-    for (let i: number = 0; i < strarray.length; ++i) {
-      let value: any = strarray[i];
+    const valuesSoFar: any = Object.create(undefined);
+    for (let i = 0; i < strarray.length; ++i) {
+      const value: any = strarray[i];
       if (value in valuesSoFar) {
         return true;
       }
@@ -194,13 +200,40 @@ export class ModelUtility {
       return 1;
     }
 
-    let nMax: number = 0;
-    for (let item of items) {
+    let nMax = 0;
+    for (const item of items) {
       if (item.ItemId > nMax) {
         nMax = item.ItemId;
       }
     }
 
     return nMax + 1;
+  }
+
+  public static writeConsoleLog(log: string, logType: ConsoleLogTypeEnum = ConsoleLogTypeEnum.log): void {
+    if (log) {
+      switch (logType) {
+        case ConsoleLogTypeEnum.debug:
+          // tslint:disable-next-line:no-console
+          console.debug(log);
+          break;
+
+        case ConsoleLogTypeEnum.warn:
+          // tslint:disable-next-line:no-console
+          console.warn(log);
+          break;
+
+        case ConsoleLogTypeEnum.error:
+          // tslint:disable-next-line:no-console
+          console.error(log);
+          break;
+
+        case ConsoleLogTypeEnum.log:
+        default:
+          // tslint:disable-next-line:no-console
+          console.log(log);
+          break;
+      }
+    }
   }
 }

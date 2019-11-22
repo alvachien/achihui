@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { LogLevel, UserAuthInfo } from '../model';
+
+import { LogLevel, UserAuthInfo, ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
   constructor(private authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering constructor of AuthGuardService');
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering constructor of AuthGuardService', ConsoleLogTypeEnum.debug);
     }
   }
 
@@ -20,7 +21,7 @@ export class AuthGuardService implements CanActivate {
     }
 
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering can Activate of AuthGuard');
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering can Activate of AuthGuard', ConsoleLogTypeEnum.debug);
     }
 
     return this.checkLogin(url);
@@ -30,7 +31,7 @@ export class AuthGuardService implements CanActivate {
 
     if (this.authService.authSubject.getValue().isAuthorized) {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: Entering checkLogin of AuthGuard with TRUE');
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering checkLogin of AuthGuard with TRUE', ConsoleLogTypeEnum.debug);
       }
       return true;
     }
@@ -41,7 +42,8 @@ export class AuthGuardService implements CanActivate {
 
     // Navigate to the login page with extras
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering checkLogin of AuthGuard with FALSE, therefore redirecting...');
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering checkLogin of AuthGuard with FALSE, therefore redirecting...',
+        ConsoleLogTypeEnum.debug);
     }
     this.authService.doLogin();
 
