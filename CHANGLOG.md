@@ -1,4 +1,12 @@
 # Change logs
+## Version 0.9.x
+Released at 2020.6.30
+
+Bug fixing and Feature list
+- Suits the new OData-based API (HIHAPI);
+- Remove Material library;
+- Add Ant Design support;
+
 ## Version 0.8.x
 Released at 2019.6.30
 
