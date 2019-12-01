@@ -1,0 +1,48 @@
+<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
+  <nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item><a routerLink="/finance/overview">Overview</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Documents</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>Document</nz-page-header-title>
+    <nz-page-header-subtitle>List View</nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <nz-select style="width: 120px;" [(ngModel)]="selectedValue" nzAllowClear nzPlaceHolder="Choose">
+        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+      </nz-select>
+      <nz-range-picker></nz-range-picker>
+      <button nz-button nzType="primary">Create</button>
+    </nz-page-header-extra>
+  </nz-page-header>
+  <div nz-row>
+    <nz-table #basicTable
+      nzShowSizeChanger
+      [nzFrontPagination]="false"
+      [nzData]="listOfDocs"
+      [nzLoading]="loading"
+      [nzTotal]="totalDocumentCount"
+      [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize"
+      (nzPageIndexChange)="fetchData()"
+      (nzPageSizeChange)="fetchData(true)">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Currency</th>
+          <th>Date</th>
+          <th>Desp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{data.Id}}</td>
+          <td>{{data.TranCurr}}</td>
+          <td>{{data.TranDateFormatString}}</td>
+          <td>{{data.Desp}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</nz-spin>

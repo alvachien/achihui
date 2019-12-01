@@ -1,6 +1,8 @@
 import * as moment from 'moment';
 import * as hih from './common';
 
+// tslint:disable:variable-name
+
 /**
  * Relationship
  */
@@ -25,10 +27,10 @@ export function getHomeMemberRelationString(re: HomeMemberRelationEnum): string 
  * Home members
  */
 export interface IHomeMemberJson {
-  homeID: number;
-  user: string;
-  displayAs: string;
-  relation: HomeMemberRelationEnum;
+  Hid: number;
+  User: string;
+  Displayas: string;
+  Relt: HomeMemberRelationEnum;
 }
 
 /**
@@ -73,17 +75,17 @@ export class HomeMember {
   }
 
   public parseJSONData(data: IHomeMemberJson): void {
-    this._hid = data.homeID;
-    this._user = data.user;
-    this._displayas = data.displayAs;
-    this._relation = +data.relation;
+    this._hid = data.Hid;
+    this._user = data.User;
+    this._displayas = data.Displayas;
+    this._relation = +data.Relt;
   }
   public generateJSONData(): IHomeMemberJson {
     let jdata: IHomeMemberJson = {
-      homeID: this._hid,
-      user: this._user,
-      displayAs: this._displayas,
-      relation: this._relation,
+      Hid: this._hid,
+      User: this._user,
+      Displayas: this._displayas,
+      Relt: this._relation,
     };
     return jdata;
   }
@@ -93,20 +95,20 @@ export class HomeMember {
  * Home definition JSON
  */
 export interface HomeDefJson {
-  id?: number;
-  name: string;
-  details: string;
-  host: string;
-  baseCurrency: string;
-  creatorDisplayAs?: string; // For creation
+  Id?: number;
+  Name: string;
+  Details: string;
+  Host: string;
+  Basecurr: string;
+  CreatorDisplayAs?: string; // For creation
 
-  members?: IHomeMemberJson[];
+  THomemem?: IHomeMemberJson[];
 }
 
 /**
  * Home definition
  */
-export class HomeDef {
+export class HomeDef extends hih.BaseModel {
   private _id: number;
   private _name: string;
   private _details: string;
@@ -116,6 +118,7 @@ export class HomeDef {
   private _listMembers: HomeMember[];
 
   constructor() {
+    super();
     this._listMembers = [];
   }
 
@@ -181,33 +184,33 @@ export class HomeDef {
   }
 
   public parseJSONData(data: HomeDefJson): void {
-    this._id = data.id;
-    this._name = data.name;
-    this._details = data.details;
-    this._host = data.host;
-    this._basecurr = data.baseCurrency;
-    this._creatorDisplayAs = data.creatorDisplayAs;
+    this._id = data.Id;
+    this._name = data.Name;
+    this._details = data.Details;
+    this._host = data.Host;
+    this._basecurr = data.Basecurr;
+    this._creatorDisplayAs = data.CreatorDisplayAs;
 
     this._listMembers = [];
-    if (data.members) {
-      for (let mem of data.members) {
-        let hmem: HomeMember = new HomeMember();
-        hmem.parseJSONData(mem);
-        this._listMembers.push(hmem);
-      }
-    }
+    // if (data.members) {
+    //   for (let mem of data.members) {
+    //     let hmem: HomeMember = new HomeMember();
+    //     hmem.parseJSONData(mem);
+    //     this._listMembers.push(hmem);
+    //   }
+    // }
   }
 
   public generateJSONData(createmode?: boolean): HomeDefJson {
     let jdata: HomeDefJson = {
-      id: this._id,
-      name: this._name,
-      details: this._details,
-      host: this._host,
-      baseCurrency: this._basecurr,
+      Id: this._id,
+      Name: this._name,
+      Details: this._details,
+      Host: this._host,
+      Basecurr: this._basecurr,
     };
     if (createmode) {
-      jdata.creatorDisplayAs = this._creatorDisplayAs;
+      jdata.CreatorDisplayAs = this._creatorDisplayAs;
     }
 
     return jdata;

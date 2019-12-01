@@ -76,7 +76,7 @@ describe('TagsService', () => {
       // Service should have made one request to GET tags from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tagsAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock tags
@@ -95,7 +95,7 @@ describe('TagsService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tagsAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush([]); // Respond with no data
@@ -114,7 +114,7 @@ describe('TagsService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tagsAPIURL && requrl.params.has('hid');
-       });
+      });
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });

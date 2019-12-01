@@ -1,8 +1,13 @@
-export const environment: any = {
+// This file can be replaced during build by using the `fileReplacements` array.
+// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
+// The list of file replacements can be found in `angular.json`.
+
+export const environment = {
   production: false,
+
   LoginRequired: true,
-  CurrentVersion: '0.8.18',
-  ReleasedDate: '2019.10.1',
+  CurrentVersion: '0.9.0',
+  ReleasedDate: '2020.9.1',
 
   DebugLogging: true,
   LoggingLevel: 4,
@@ -16,3 +21,12 @@ export const environment: any = {
   AppMathExercise: 'http://localhost:20000',
   AppGallery: 'http://localhost:16001',
 };
+
+/*
+ * For easier debugging in development mode, you can import the following file
+ * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
+ *
+ * This import should be commented out in production mode because it will have a negative impact
+ * on performance if an error is thrown.
+ */
+// import 'zone.js/dist/zone-error';  // Included with Angular CLI.

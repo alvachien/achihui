@@ -7,11 +7,13 @@ import * as moment from 'moment';
 import { FinanceStorageService, } from './finance-storage.service';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
-import { UserAuthInfo, FinanceADPCalAPIInput, FinanceLoanCalAPIInput, RepeatFrequencyEnum,
+import {
+  UserAuthInfo, FinanceADPCalAPIInput, FinanceLoanCalAPIInput, RepeatFrequencyEnum,
   FinanceADPCalAPIOutput, FinanceLoanCalAPIOutput, momentDateFormat, Document, DocumentItem,
   financeDocTypeNormal, DocumentWithPlanExgRateForUpdate, ReportTrendExTypeEnum,
   Account, TemplateDocADP, Order, AccountStatusEnum, GeneralFilterItem, GeneralFilterValueType,
-  GeneralFilterOperatorEnum, Plan, PlanTypeEnum, ControlCenter, } from '../model';
+  GeneralFilterOperatorEnum, Plan, PlanTypeEnum, ControlCenter,
+} from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
 
@@ -92,7 +94,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET account categories from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock account categories
@@ -113,7 +115,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush([]); // Respond with no data
@@ -160,7 +162,7 @@ describe('FinanceStorageService', () => {
       service.fetchAllAccountCategories().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
@@ -174,7 +176,7 @@ describe('FinanceStorageService', () => {
       );
       const req3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountCategoryAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
@@ -204,7 +206,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET asset categories from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock asset categories
@@ -225,7 +227,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
       req.flush([]); // Respond with no data
     });
@@ -243,7 +245,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // respond with a 404 and the error message in the body
@@ -263,7 +265,7 @@ describe('FinanceStorageService', () => {
       );
       const reqs: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
       reqs[0].flush(fakeData.finAssetCategoriesFromAPI);
       httpTestingController.verify();
@@ -272,7 +274,7 @@ describe('FinanceStorageService', () => {
       service.fetchAllAssetCategories().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
@@ -286,7 +288,7 @@ describe('FinanceStorageService', () => {
       );
       const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === assetCategoryAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
@@ -316,7 +318,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET doc types from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock doc types
@@ -337,7 +339,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
       req.flush([]); // Respond with no data
     });
@@ -355,7 +357,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // respond with a 404 and the error message in the body
@@ -375,7 +377,7 @@ describe('FinanceStorageService', () => {
       );
       const reqs: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
       reqs[0].flush(fakeData.finDocTypesFromAPI);
       httpTestingController.verify();
@@ -384,7 +386,7 @@ describe('FinanceStorageService', () => {
       service.fetchAllDocTypes().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
@@ -398,7 +400,7 @@ describe('FinanceStorageService', () => {
       );
       const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === docTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
@@ -428,7 +430,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET tran types from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock tran types
@@ -449,7 +451,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
       req.flush([]); // Respond with no data
     });
@@ -467,7 +469,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // respond with a 404 and the error message in the body
@@ -487,7 +489,7 @@ describe('FinanceStorageService', () => {
       );
       const reqs: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(reqs.length).toEqual(1, 'shall be only 1 calls to real API!');
       reqs[0].flush(fakeData.finTranTypesFromAPI);
       httpTestingController.verify();
@@ -496,7 +498,7 @@ describe('FinanceStorageService', () => {
       service.fetchAllTranTypes().subscribe();
       const reqs2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(reqs2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
@@ -510,7 +512,7 @@ describe('FinanceStorageService', () => {
       );
       const reqs3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === tranTypeAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(reqs3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
@@ -541,7 +543,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET account from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock account categories
@@ -562,7 +564,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush([]); // Respond with no data
@@ -609,7 +611,7 @@ describe('FinanceStorageService', () => {
       service.fetchAllAccounts().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
@@ -623,7 +625,7 @@ describe('FinanceStorageService', () => {
       );
       const req3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
@@ -652,7 +654,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === accountAPIURL;
-       });
+      });
 
       req.flush(fakeData.getFinCashAccountForCreation()); // Respond with data
     });
@@ -671,7 +673,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === accountAPIURL;
-       });
+      });
 
       req.flush(fakeData.getFinCreditcardAccountForCreation()); // Respond with data
     });
@@ -744,7 +746,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'PUT' && requrl.url === accountAPIURL + '/' + currentAccount.Id.toString();
-       });
+      });
 
       req.flush(currentAccount); // Respond with data
     });
@@ -798,7 +800,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'PATCH' && requrl.url === accountAPIURL + '/' + currentAccount.Id.toString();
-       });
+      });
 
       req.flush(currentAccount); // Respond with data
     });
@@ -849,7 +851,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock cc
@@ -870,7 +872,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush([]); // Respond with no data
@@ -917,7 +919,7 @@ describe('FinanceStorageService', () => {
       service.fetchAllControlCenters().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
@@ -931,7 +933,7 @@ describe('FinanceStorageService', () => {
       );
       const req3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === ccAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
@@ -962,7 +964,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       // Respond with the mock cc
@@ -983,7 +985,7 @@ describe('FinanceStorageService', () => {
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req.request.params.get('hid')).toEqual(fakeData.chosedHome.ID.toString());
 
       req.flush([]); // Respond with no data
@@ -1030,7 +1032,7 @@ describe('FinanceStorageService', () => {
       service.fetchAllOrders().subscribe();
       const req2: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req2.length).toEqual(0, 'shall be 0 calls to real API due to buffer!');
 
       // Third call
@@ -1044,7 +1046,7 @@ describe('FinanceStorageService', () => {
       );
       const req3: any = httpTestingController.match((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === orderAPIURL && requrl.params.has('hid');
-       });
+      });
       expect(req3.length).toEqual(0, 'shall be 0 calls to real API in third call!');
     });
   });
@@ -1088,7 +1090,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === documentAPIURL;
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finNormalDocumentForCreate.writeJSONObject());
@@ -1153,7 +1155,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === documentAPIURL + '/1';
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finNormalDocumentForCreate.writeJSONObject());
@@ -1205,7 +1207,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === adpDocumentAPIURL;
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finADPDocumentForCreate.writeJSONObject());
@@ -1238,7 +1240,7 @@ describe('FinanceStorageService', () => {
 
     beforeEach(() => {
       service = TestBed.get(FinanceStorageService);
-      inputData =  {
+      inputData = {
         TotalAmount: 200,
         StartDate: moment(),
         EndDate: moment().add(1, 'y'),
@@ -1246,7 +1248,7 @@ describe('FinanceStorageService', () => {
         Desp: 'test',
       };
       outputData = [];
-      for (let i: number = 0; i < 10; i ++) {
+      for (let i: number = 0; i < 10; i++) {
         let rst: any = {
           tranDate: moment().add(i, 'M').format(momentDateFormat),
           tranAmount: 20,
@@ -1274,7 +1276,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === calcADPTmpAPIURL;
-       });
+      });
 
       // Respond with the mock data
       req.flush(outputData);
@@ -1320,7 +1322,7 @@ describe('FinanceStorageService', () => {
         RepayDayInMonth: 1,
       };
       outputData = [];
-      for (let i: number = 0; i < 10; i ++) {
+      for (let i: number = 0; i < 10; i++) {
         let od: any = {
           tranDate: moment().add(i, 'M'),
           tranAmount: 100,
@@ -1348,7 +1350,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to POST
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === calcLoanTmpAPIURL;
-       });
+      });
 
       // Respond with the mock data
       req.flush(outputData);
@@ -1399,7 +1401,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === apiurl;
-       });
+      });
 
       // Respond with the mock data
       req.flush(100);
@@ -1449,7 +1451,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === apiurl;
-       });
+      });
 
       // Respond with the mock data
       req.flush(100);
@@ -1499,7 +1501,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === apiurl;
-       });
+      });
 
       // Respond with the mock data
       req.flush(100);
@@ -1564,7 +1566,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'PUT' && requrl.url === documentAPIURL + '/100';
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finNormalDocumentForCreate.writeJSONObject());
@@ -1616,7 +1618,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === accountAPIURL + '/21' && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finAccountsFromAPI[0]);
@@ -1667,7 +1669,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === ccAPIURL + '/21' && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finControlCentersFromAPI[0]);
@@ -1718,7 +1720,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === service.controlCenterAPIUrl;
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finControlCentersFromAPI[0]);
@@ -1773,7 +1775,7 @@ describe('FinanceStorageService', () => {
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'PUT' && requrl.url === service.controlCenterAPIUrl + '/11'
           && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finOrdersFromAPI[0]);
@@ -1825,7 +1827,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === orderAPIURL + '/21' && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finOrdersFromAPI[0]);
@@ -1876,7 +1878,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === orderAPIURL;
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finOrdersFromAPI[0]);
@@ -1930,7 +1932,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to PUT from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'PUT' && requrl.url === orderAPIURL + '/11' && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush(fakeData.finOrdersFromAPI[0]);
@@ -1980,7 +1982,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === apiurl;
-       });
+      });
 
       // Respond with the mock data
       req.flush(100);
@@ -2032,7 +2034,7 @@ describe('FinanceStorageService', () => {
         return requrl.method === 'POST' && requrl.url === apiurl
           && requrl.params.has('hid')
           && requrl.params.has('loanAccountID');
-       });
+      });
 
       // Respond with the mock data
       req.flush(100);
@@ -2086,7 +2088,7 @@ describe('FinanceStorageService', () => {
         return requrl.method === 'GET' && requrl.url === apiurl
           && requrl.params.has('hid')
           && requrl.params.has('tgtcurr');
-       });
+      });
 
       // Respond with the mock data
       req.flush([{
@@ -2156,7 +2158,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === apiurl;
-       });
+      });
 
       // Respond with the mock data
       req.flush({});
@@ -2207,28 +2209,38 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush([
-        {'hid': 1, 'docID': 649, 'refDocID': null, 'accountID': 81, 'tranDate': '2019-02-26',
-        'tranType': 59, 'tranAmount': 240.00, 'controlCenterID': 13,
-        'orderID': null, 'desp': '安安钢琴课-2019上半年 | 8 / 25', 'createdBy': 'aaa', 'createdAt': '2019-01-08',
-        'updatedBy': null, 'updatedAt': '0001-01-01'},
-        {'hid': 1, 'docID': 582, 'refDocID': null, 'accountID': 79, 'tranDate': '2019-02-23',
-        'tranType': 59, 'tranAmount': 117.82, 'controlCenterID': 12,
-        'orderID': null, 'desp': '多多2019羽毛球课48节(寒暑假除外) | 8 / 55', 'createdBy': 'aaa', 'createdAt': '2018-12-27',
-        'updatedBy': null, 'updatedAt': '0001-01-01'},
-        {'hid': 1, 'docID': 493, 'refDocID': null, 'accountID': 66, 'tranDate': '2019-02-23',
-        'tranType': 59, 'tranAmount': 217.53, 'controlCenterID': 13,
-        'orderID': null, 'desp': '安安吉的堡2018.9-2019.8报名 | 24 / 49', 'createdBy': 'aaa', 'createdAt': '2018-10-07',
-        'updatedBy': null, 'updatedAt': '0001-01-01'},
-        {'hid': 1, 'docID': 552, 'refDocID': null, 'accountID': 76, 'tranDate': '2019-02-23',
-        'tranType': 59, 'tranAmount': 240.00, 'controlCenterID': 12,
-        'orderID': null, 'desp': '多多钢琴课 | 17 / 25', 'createdBy': 'aaa', 'createdAt': '2018-11-04', 'updatedBy': null, 'updatedAt': '0001-01-01'},
-        {'hid': 1, 'docID': 263, 'refDocID': null, 'accountID': 26, 'tranDate': '2019-02-19',
-        'tranType': 59, 'tranAmount': 350.00, 'controlCenterID': 10,
-        'orderID': null, 'desp': '买课 | 71/72', 'createdBy': 'aaa', 'createdAt': '2017-10-10', 'updatedBy': null, 'updatedAt': '0001-01-01'},
+        {
+          'hid': 1, 'docID': 649, 'refDocID': null, 'accountID': 81, 'tranDate': '2019-02-26',
+          'tranType': 59, 'tranAmount': 240.00, 'controlCenterID': 13,
+          'orderID': null, 'desp': '安安钢琴课-2019上半年 | 8 / 25', 'createdBy': 'aaa', 'createdAt': '2019-01-08',
+          'updatedBy': null, 'updatedAt': '0001-01-01'
+        },
+        {
+          'hid': 1, 'docID': 582, 'refDocID': null, 'accountID': 79, 'tranDate': '2019-02-23',
+          'tranType': 59, 'tranAmount': 117.82, 'controlCenterID': 12,
+          'orderID': null, 'desp': '多多2019羽毛球课48节(寒暑假除外) | 8 / 55', 'createdBy': 'aaa', 'createdAt': '2018-12-27',
+          'updatedBy': null, 'updatedAt': '0001-01-01'
+        },
+        {
+          'hid': 1, 'docID': 493, 'refDocID': null, 'accountID': 66, 'tranDate': '2019-02-23',
+          'tranType': 59, 'tranAmount': 217.53, 'controlCenterID': 13,
+          'orderID': null, 'desp': '安安吉的堡2018.9-2019.8报名 | 24 / 49', 'createdBy': 'aaa', 'createdAt': '2018-10-07',
+          'updatedBy': null, 'updatedAt': '0001-01-01'
+        },
+        {
+          'hid': 1, 'docID': 552, 'refDocID': null, 'accountID': 76, 'tranDate': '2019-02-23',
+          'tranType': 59, 'tranAmount': 240.00, 'controlCenterID': 12,
+          'orderID': null, 'desp': '多多钢琴课 | 17 / 25', 'createdBy': 'aaa', 'createdAt': '2018-11-04', 'updatedBy': null, 'updatedAt': '0001-01-01'
+        },
+        {
+          'hid': 1, 'docID': 263, 'refDocID': null, 'accountID': 26, 'tranDate': '2019-02-19',
+          'tranType': 59, 'tranAmount': 350.00, 'controlCenterID': 10,
+          'orderID': null, 'desp': '买课 | 71/72', 'createdBy': 'aaa', 'createdAt': '2017-10-10', 'updatedBy': null, 'updatedAt': '0001-01-01'
+        },
       ]);
     });
 
@@ -2277,7 +2289,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush(`[{'hid':1, 'docID':397, 'refDocID':null, 'accountID':58, 'tranDate':'2019-02-22', 'tranAmount':3653.63, 'interestAmount':9782.60,
@@ -2331,15 +2343,15 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush([
-        {'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': false, 'tranAmount': 17600.0},
-        {'tranDate': '2019-02-01', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -279.00},
-        {'tranDate': '2019-02-02', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -575.35},
-        {'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -14590.00},
-        {'tranDate': '2019-02-09', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -217.53},
+        { 'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': false, 'tranAmount': 17600.0 },
+        { 'tranDate': '2019-02-01', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -279.00 },
+        { 'tranDate': '2019-02-02', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -575.35 },
+        { 'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -14590.00 },
+        { 'tranDate': '2019-02-09', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -217.53 },
       ]);
     });
 
@@ -2362,15 +2374,15 @@ describe('FinanceStorageService', () => {
           && requrl.params.has('dtbgn')
           && requrl.params.has('dtend')
           ;
-       });
+      });
 
       // Respond with the mock data
       req.flush([
-        {'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': false, 'tranAmount': 17600.0},
-        {'tranDate': '2019-02-01', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -279.00},
-        {'tranDate': '2019-02-02', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -575.35},
-        {'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -14590.00},
-        {'tranDate': '2019-02-09', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -217.53},
+        { 'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': false, 'tranAmount': 17600.0 },
+        { 'tranDate': '2019-02-01', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -279.00 },
+        { 'tranDate': '2019-02-02', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -575.35 },
+        { 'tranDate': '2019-02-05', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -14590.00 },
+        { 'tranDate': '2019-02-09', 'tranWeek': null, 'tranMonth': null, 'tranYear': null, 'expense': true, 'tranAmount': -217.53 },
       ]);
     });
 
@@ -2388,13 +2400,13 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush([
-        {'tranDate': null, 'tranWeek': 5, 'tranMonth': null, 'tranYear': 2019, 'expense': true, 'tranAmount': -854.35},
-        {'tranDate': null, 'tranWeek': 6, 'tranMonth': null, 'tranYear': 2019, 'expense': false, 'tranAmount': 17600.00},
-        {'tranDate': null, 'tranWeek': 6, 'tranMonth': null, 'tranYear': 2019, 'expense': true, 'tranAmount': -14807.53},
+        { 'tranDate': null, 'tranWeek': 5, 'tranMonth': null, 'tranYear': 2019, 'expense': true, 'tranAmount': -854.35 },
+        { 'tranDate': null, 'tranWeek': 6, 'tranMonth': null, 'tranYear': 2019, 'expense': false, 'tranAmount': 17600.00 },
+        { 'tranDate': null, 'tranWeek': 6, 'tranMonth': null, 'tranYear': 2019, 'expense': true, 'tranAmount': -14807.53 },
       ]);
     });
 
@@ -2443,7 +2455,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush(`[
@@ -2488,7 +2500,7 @@ describe('FinanceStorageService', () => {
     });
 
     it('should return doc for success case', () => {
-      service.doPostADPTmpDoc({DocId: 100} as TemplateDocADP).subscribe(
+      service.doPostADPTmpDoc({ DocId: 100 } as TemplateDocADP).subscribe(
         (data: any) => {
           expect(data).toBeTruthy();
         },
@@ -2501,15 +2513,15 @@ describe('FinanceStorageService', () => {
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === apiurl
           && requrl.params.has('hid') && requrl.params.has('docid');
-       });
+      });
 
       // Respond with the mock data
-      req.flush({id: 100});
+      req.flush({ id: 100 });
     });
 
     it('should return error in case error appear', () => {
       const msg: string = 'server failed';
-      service.doPostADPTmpDoc({DocId: 100} as TemplateDocADP).subscribe(
+      service.doPostADPTmpDoc({ DocId: 100 } as TemplateDocADP).subscribe(
         (data: any) => {
           fail('expected to fail');
         },
@@ -2554,14 +2566,14 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
-      req.flush([{'tranType': 1, 'tranDate': '2019-02-05', 'name': '起始资金', 'expenseFlag': false, 'tranAmount': 8800.00},
-        {'tranType': 9, 'tranDate': '2019-02-05', 'name': '生活类开支', 'expenseFlag': true, 'tranAmount': -2200.00},
-        {'tranType': 59, 'tranDate': '2019-02-09', 'name': '培训进修', 'expenseFlag': true, 'tranAmount': -217.53},
-        {'tranType': 66, 'tranDate': '2019-02-20', 'name': '大家电类', 'expenseFlag': true, 'tranAmount': -1799.00},
-        {'tranType': 88, 'tranDate': '2019-02-05', 'name': '预付款支出', 'expenseFlag': true, 'tranAmount': -8800.00}]);
+      req.flush([{ 'tranType': 1, 'tranDate': '2019-02-05', 'name': '起始资金', 'expenseFlag': false, 'tranAmount': 8800.00 },
+      { 'tranType': 9, 'tranDate': '2019-02-05', 'name': '生活类开支', 'expenseFlag': true, 'tranAmount': -2200.00 },
+      { 'tranType': 59, 'tranDate': '2019-02-09', 'name': '培训进修', 'expenseFlag': true, 'tranAmount': -217.53 },
+      { 'tranType': 66, 'tranDate': '2019-02-20', 'name': '大家电类', 'expenseFlag': true, 'tranAmount': -1799.00 },
+      { 'tranType': 88, 'tranDate': '2019-02-05', 'name': '预付款支出', 'expenseFlag': true, 'tranAmount': -8800.00 }]);
     });
 
     it('should return data with parameters for success case', () => {
@@ -2581,14 +2593,14 @@ describe('FinanceStorageService', () => {
           && requrl.params.has('hid')
           && requrl.params.has('dtbgn')
           && requrl.params.has('dtend');
-       });
+      });
 
       // Respond with the mock data
-      req.flush([{'tranType': 1, 'tranDate': '2019-02-05', 'name': '起始资金', 'expenseFlag': false, 'tranAmount': 8800.00},
-        {'tranType': 9, 'tranDate': '2019-02-05', 'name': '生活类开支', 'expenseFlag': true, 'tranAmount': -2200.00},
-        {'tranType': 59, 'tranDate': '2019-02-09', 'name': '培训进修', 'expenseFlag': true, 'tranAmount': -217.53},
-        {'tranType': 66, 'tranDate': '2019-02-20', 'name': '大家电类', 'expenseFlag': true, 'tranAmount': -1799.00},
-        {'tranType': 88, 'tranDate': '2019-02-05', 'name': '预付款支出', 'expenseFlag': true, 'tranAmount': -8800.00}]);
+      req.flush([{ 'tranType': 1, 'tranDate': '2019-02-05', 'name': '起始资金', 'expenseFlag': false, 'tranAmount': 8800.00 },
+      { 'tranType': 9, 'tranDate': '2019-02-05', 'name': '生活类开支', 'expenseFlag': true, 'tranAmount': -2200.00 },
+      { 'tranType': 59, 'tranDate': '2019-02-09', 'name': '培训进修', 'expenseFlag': true, 'tranAmount': -217.53 },
+      { 'tranType': 66, 'tranDate': '2019-02-20', 'name': '大家电类', 'expenseFlag': true, 'tranAmount': -1799.00 },
+      { 'tranType': 88, 'tranDate': '2019-02-05', 'name': '预付款支出', 'expenseFlag': true, 'tranAmount': -8800.00 }]);
     });
 
     it('should return error in case error appear', () => {
@@ -2637,13 +2649,17 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
-      req.flush([{'accountID': 4, 'accountName': 'cash1', 'accountCategoryID': 1,
-        'accountCategoryName': 'Sys.AcntCty.Cash', 'debitBalance': 67973.86, 'creditBalance': 117976.61, 'balance': -50002.75},
-      {'accountID': 5, 'accountName': 'cash2', 'accountCategoryID': 1, 'accountCategoryName': 'Sys.AcntCty.Cash',
-      'debitBalance': 605692.00, 'creditBalance': 95509.18, 'balance': 510182.82}]);
+      req.flush([{
+        'accountID': 4, 'accountName': 'cash1', 'accountCategoryID': 1,
+        'accountCategoryName': 'Sys.AcntCty.Cash', 'debitBalance': 67973.86, 'creditBalance': 117976.61, 'balance': -50002.75
+      },
+      {
+        'accountID': 5, 'accountName': 'cash2', 'accountCategoryID': 1, 'accountCategoryName': 'Sys.AcntCty.Cash',
+        'debitBalance': 605692.00, 'creditBalance': 95509.18, 'balance': 510182.82
+      }]);
     });
 
     it('should return error in case error appear', () => {
@@ -2692,14 +2708,18 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush([
-        {'controlCenterID': 6, 'controlCenterName': 'cc1',
-        'debitBalance': 35223.00, 'creditBalance': 147407.33, 'balance': -112184.33},
-        {'controlCenterID': 7, 'controlCenterName': 'cc2',
-        'debitBalance': 0.00, 'creditBalance': 33747.50, 'balance': -33747.50},
+        {
+          'controlCenterID': 6, 'controlCenterName': 'cc1',
+          'debitBalance': 35223.00, 'creditBalance': 147407.33, 'balance': -112184.33
+        },
+        {
+          'controlCenterID': 7, 'controlCenterName': 'cc2',
+          'debitBalance': 0.00, 'creditBalance': 33747.50, 'balance': -33747.50
+        },
       ]);
     });
 
@@ -2749,14 +2769,18 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush([
-        {'orderID': 5, 'orderName': 'order1', 'validFrom': '2015-03-02', 'validTo': '2015-05-29',
-        'debitBalance': 0.00, 'creditBalance': 0.00, 'balance': 0.00},
-        {'orderID': 6, 'orderName': 'order2', 'validFrom': '2015-03-02', 'validTo': '2015-04-30',
-        'debitBalance': 0.00, 'creditBalance': 1570.00, 'balance': -1570.00},
+        {
+          'orderID': 5, 'orderName': 'order1', 'validFrom': '2015-03-02', 'validTo': '2015-05-29',
+          'debitBalance': 0.00, 'creditBalance': 0.00, 'balance': 0.00
+        },
+        {
+          'orderID': 6, 'orderName': 'order2', 'validFrom': '2015-03-02', 'validTo': '2015-04-30',
+          'debitBalance': 0.00, 'creditBalance': 1570.00, 'balance': -1570.00
+        },
       ]);
     });
 
@@ -2806,11 +2830,11 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
-      req.flush([{'year': 2019, 'month': 1, 'expense': false, 'tranAmount': 26377.11},
-      {'year': 2019, 'month': 1, 'expense': true, 'tranAmount': -47009.24},
+      req.flush([{ 'year': 2019, 'month': 1, 'expense': false, 'tranAmount': 26377.11 },
+      { 'year': 2019, 'month': 1, 'expense': true, 'tranAmount': -47009.24 },
       ]);
     });
 
@@ -2832,11 +2856,11 @@ describe('FinanceStorageService', () => {
           && requrl.params.has('exctran')
           && requrl.params.has('dtbgn')
           && requrl.params.has('dtend');
-       });
+      });
 
       // Respond with the mock data
-      req.flush([{'year': 2019, 'month': 1, 'expense': false, 'tranAmount': 26377.11},
-      {'year': 2019, 'month': 1, 'expense': true, 'tranAmount': -47009.24},
+      req.flush([{ 'year': 2019, 'month': 1, 'expense': false, 'tranAmount': 26377.11 },
+      { 'year': 2019, 'month': 1, 'expense': true, 'tranAmount': -47009.24 },
       ]);
     });
 
@@ -2891,19 +2915,24 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === apiurl && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       req.flush({
         'contentList': [
-          {'docID': 473, 'itemID': 2, 'hid': 0, 'tranDate': '2017-12-02', 'docDesp': '美元兑换', 'accountID': 4,
-          'tranType': 37, 'tranTypeName': '转账收入', 'tranType_Exp': false, 'useCurr2': true, 'tranCurr': 'USD',
-          'tranAmount': 1000.00, 'tranAmount_Org': 1000.00, 'tranAmount_LC': 6632.00, 'controlCenterID': 0,
-          'orderID': 12, 'desp': '美元兑换'},
-          {'docID': 474, 'itemID': 1, 'hid': 0, 'tranDate': '2017-12-04', 'docDesp': '12.4在美国开支', 'accountID': 4,
-          'tranType': 46, 'tranTypeName': '早中晚餐', 'tranType_Exp': true, 'useCurr2': false, 'tranCurr': 'USD',
-          'tranAmount': -6.55, 'tranAmount_Org': 6.55, 'tranAmount_LC': -43.434, 'controlCenterID': 0, 'orderID': 12,
-          'desp': 'Walmart买面包和橙子'}], 'totalCount': 17});
+          {
+            'docID': 473, 'itemID': 2, 'hid': 0, 'tranDate': '2017-12-02', 'docDesp': '美元兑换', 'accountID': 4,
+            'tranType': 37, 'tranTypeName': '转账收入', 'tranType_Exp': false, 'useCurr2': true, 'tranCurr': 'USD',
+            'tranAmount': 1000.00, 'tranAmount_Org': 1000.00, 'tranAmount_LC': 6632.00, 'controlCenterID': 0,
+            'orderID': 12, 'desp': '美元兑换'
+          },
+          {
+            'docID': 474, 'itemID': 1, 'hid': 0, 'tranDate': '2017-12-04', 'docDesp': '12.4在美国开支', 'accountID': 4,
+            'tranType': 46, 'tranTypeName': '早中晚餐', 'tranType_Exp': true, 'useCurr2': false, 'tranCurr': 'USD',
+            'tranAmount': -6.55, 'tranAmount_Org': 6.55, 'tranAmount_LC': -43.434, 'controlCenterID': 0, 'orderID': 12,
+            'desp': 'Walmart买面包和橙子'
+          }], 'totalCount': 17
+      });
     });
 
     it('should return error in case error appear', () => {
@@ -2955,31 +2984,43 @@ describe('FinanceStorageService', () => {
           && requrl.params.has('dtend')
           && requrl.params.has('top')
           && requrl.params.has('skip');
-       });
+      });
 
       // Respond with the mock data
-      req.flush({'contentList': [
-        {'items': [], 'docTypeName': 'Sys.DocTy.Normal', 'id': 94, 'hid': 1, 'docType': 1, 'tranDate': '2019-04-12', 'tranCurr': 'CNY',
-        'desp': 'Test New ADP Doc | 5 / 12', 'exgRate': 0.0, 'exgRate_Plan': false, 'tranCurr2': null, 'exgRate2': 0.0, 'exgRate_Plan2': false,
-        'tranAmount': -166.67, 'createdBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
-        'createdAt': '2019-01-03', 'updatedBy': null, 'updatedAt': '0001-01-01'},
-        {'items': [], 'docTypeName': 'Sys.DocTy.Normal', 'id': 92, 'hid': 1, 'docType': 1, 'tranDate': '2019-01-12', 'tranCurr': 'CNY',
-        'desp': 'Test New ADP Doc | 2 / 12', 'exgRate': 0.0, 'exgRate_Plan': false, 'tranCurr2': null, 'exgRate2': 0.0, 'exgRate_Plan2': false,
-        'tranAmount': -166.67, 'createdBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
-        'createdAt': '2019-01-03', 'updatedBy': null, 'updatedAt': '0001-01-01'},
-        {'items': [], 'docTypeName': 'Sys.DocTy.Repay', 'id': 93, 'hid': 1, 'docType': 11, 'tranDate': '2019-01-03', 'tranCurr': 'CNY',
-        'desp': 'Test Borrow In | 1 / 12', 'exgRate': 0.0, 'exgRate_Plan': false, 'tranCurr2': null, 'exgRate2': 0.0, 'exgRate_Plan2': false,
-        'tranAmount': -41.67, 'createdBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
-        'createdAt': '2019-01-03', 'updatedBy': null, 'updatedAt': '0001-01-01'},
-        {'items': [], 'docTypeName': 'Sys.DocTy.Normal', 'id': 91, 'hid': 1, 'docType': 1, 'tranDate': '2019-01-02', 'tranCurr': 'CNY',
-        'desp': 'Test', 'exgRate': 0.0, 'exgRate_Plan': false, 'tranCurr2': null, 'exgRate2': 0.0, 'exgRate_Plan2': false,
-        'tranAmount': 2000.00, 'createdBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
-        'createdAt': '2019-01-02', 'updatedBy': null, 'updatedAt': '0001-01-01'},
-        {'items': [], 'docTypeName': 'Sys.DocTy.Repay', 'id': 90, 'hid': 1, 'docType': 11, 'tranDate': '2019-01-02', 'tranCurr': 'CNY',
-        'desp': 'Test Borrow In | 3 / 12', 'exgRate': 0.0, 'exgRate_Plan': false, 'tranCurr2': null, 'exgRate2': 0.0, 'exgRate_Plan2': false,
-        'tranAmount': -34.87, 'createdBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
-        'createdAt': '2019-01-02', 'updatedBy': null, 'updatedAt': '0001-01-01'}],
-        'totalCount': 5});
+      req.flush({
+        'contentList': [
+          {
+            'items': [], 'docTypeName': 'Sys.DocTy.Normal', 'id': 94, 'hid': 1, 'docType': 1, 'tranDate': '2019-04-12', 'tranCurr': 'CNY',
+            'desp': 'Test New ADP Doc | 5 / 12', 'exgRate': 0.0, 'exgRate_Plan': false, 'tranCurr2': null, 'exgRate2': 0.0, 'exgRate_Plan2': false,
+            'tranAmount': -166.67, 'createdBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
+            'createdAt': '2019-01-03', 'updatedBy': null, 'updatedAt': '0001-01-01'
+          },
+          {
+            'items': [], 'docTypeName': 'Sys.DocTy.Normal', 'id': 92, 'hid': 1, 'docType': 1, 'tranDate': '2019-01-12', 'tranCurr': 'CNY',
+            'desp': 'Test New ADP Doc | 2 / 12', 'exgRate': 0.0, 'exgRate_Plan': false, 'tranCurr2': null, 'exgRate2': 0.0, 'exgRate_Plan2': false,
+            'tranAmount': -166.67, 'createdBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
+            'createdAt': '2019-01-03', 'updatedBy': null, 'updatedAt': '0001-01-01'
+          },
+          {
+            'items': [], 'docTypeName': 'Sys.DocTy.Repay', 'id': 93, 'hid': 1, 'docType': 11, 'tranDate': '2019-01-03', 'tranCurr': 'CNY',
+            'desp': 'Test Borrow In | 1 / 12', 'exgRate': 0.0, 'exgRate_Plan': false, 'tranCurr2': null, 'exgRate2': 0.0, 'exgRate_Plan2': false,
+            'tranAmount': -41.67, 'createdBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
+            'createdAt': '2019-01-03', 'updatedBy': null, 'updatedAt': '0001-01-01'
+          },
+          {
+            'items': [], 'docTypeName': 'Sys.DocTy.Normal', 'id': 91, 'hid': 1, 'docType': 1, 'tranDate': '2019-01-02', 'tranCurr': 'CNY',
+            'desp': 'Test', 'exgRate': 0.0, 'exgRate_Plan': false, 'tranCurr2': null, 'exgRate2': 0.0, 'exgRate_Plan2': false,
+            'tranAmount': 2000.00, 'createdBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
+            'createdAt': '2019-01-02', 'updatedBy': null, 'updatedAt': '0001-01-01'
+          },
+          {
+            'items': [], 'docTypeName': 'Sys.DocTy.Repay', 'id': 90, 'hid': 1, 'docType': 11, 'tranDate': '2019-01-02', 'tranCurr': 'CNY',
+            'desp': 'Test Borrow In | 3 / 12', 'exgRate': 0.0, 'exgRate_Plan': false, 'tranCurr2': null, 'exgRate2': 0.0, 'exgRate_Plan2': false,
+            'tranAmount': -34.87, 'createdBy': 'a6319719-2f73-426d-9548-8dbcc25fe7a4',
+            'createdAt': '2019-01-02', 'updatedBy': null, 'updatedAt': '0001-01-01'
+          }],
+        'totalCount': 5
+      });
     });
 
     it('should return error in case error appear', () => {
@@ -3031,10 +3072,10 @@ describe('FinanceStorageService', () => {
         return requrl.method === 'DELETE'
           && requrl.url === service.documentAPIUrl + '/1'
           && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
-      req.flush('', {status: 200, statusText: 'OK'});
+      req.flush('', { status: 200, statusText: 'OK' });
     });
 
     it('should return error in case error appear', () => {
@@ -3053,7 +3094,7 @@ describe('FinanceStorageService', () => {
         return requrl.method === 'DELETE'
           && requrl.url === service.documentAPIUrl + '/1'
           && requrl.params.has('hid');
-       });
+      });
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: 'server failed' });
@@ -3087,12 +3128,14 @@ describe('FinanceStorageService', () => {
           && requrl.params.has('hid')
           && requrl.params.has('top')
           && requrl.params.has('skip');
-       });
+      });
 
       // Respond with the mock data
-      req.flush([{id: 1, hid: 1, planType: 0, accountID: 4,
+      req.flush([{
+        id: 1, hid: 1, planType: 0, accountID: 4,
         startDate: '2019-03-23', targetDate: '2019-04-23', targetBalance: 10.00, tranCurr: 'CNY',
-        description: 'Test plan 1', createdBy: 'aaa', createdAt: '2019-03-23'}]);
+        description: 'Test plan 1', createdBy: 'aaa', createdAt: '2019-03-23'
+      }]);
     });
 
     it('should return error in case error appear', () => {
@@ -3142,7 +3185,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'GET' && requrl.url === service.planAPIUrl + '/21' && requrl.params.has('hid');
-       });
+      });
 
       // Respond with the mock data
       let planData: Plan = new Plan();
@@ -3210,7 +3253,7 @@ describe('FinanceStorageService', () => {
       // Service should have made one request to GET cc from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
         return requrl.method === 'POST' && requrl.url === service.planAPIUrl;
-       });
+      });
 
       // Respond with the mock data
       req.flush(planData.writeJSONObject());
@@ -3265,10 +3308,10 @@ describe('FinanceStorageService', () => {
           && requrl.params.has('skip')
           && requrl.params.has('dtbgn')
           && requrl.params.has('dtend');
-     });
+      });
 
       // Respond with the mock data
-      req.flush({totalCount: 0, contentList: []});
+      req.flush({ totalCount: 0, contentList: [] });
     });
 
     it('should return error in case error appear', () => {
@@ -3323,10 +3366,10 @@ describe('FinanceStorageService', () => {
           && requrl.params.has('skip')
           && requrl.params.has('dtbgn')
           && requrl.params.has('dtend');
-     });
+      });
 
       // Respond with the mock data
-      req.flush({totalCount: 0, contentList: []});
+      req.flush({ totalCount: 0, contentList: [] });
     });
 
     it('should return error in case error appear', () => {
@@ -3378,10 +3421,10 @@ describe('FinanceStorageService', () => {
           && requrl.params.has('ordid')
           && requrl.params.has('dtbgn')
           && requrl.params.has('dtend');
-     });
+      });
 
       // Respond with the mock data
-      req.flush({totalCount: 0, contentList: []});
+      req.flush({ totalCount: 0, contentList: [] });
     });
 
     it('should return error in case error appear', () => {

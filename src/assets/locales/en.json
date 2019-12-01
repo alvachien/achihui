@@ -1,4 +1,4 @@
-﻿{
+{
   "Common": {
     "OK": "OK",
     "Cancel": "Cancel",
@@ -15,7 +15,6 @@
     "Field": "Field",
     "Operator": "Operator",
     "QuickAccess": "Quick Access",
-
     "ListView": "List View",
     "HierarchyView": "Hierarchy View",
     "Themes": "Themes",
@@ -44,7 +43,6 @@
     "Checkin": "Check in",
     "Weekly": "Weekly",
     "Daily": "Daily",
-    
     "ID": "ID",
     "Category": "Category",
     "Categories": "Categories",
@@ -100,12 +98,11 @@
     "CurrentYear": "Current Year",
     "All": "All",
     "ChooseThisHome": "Choose this home",
-    "WelcomeToHIH": "Welcome to H.I.H.",    
+    "WelcomeToHIH": "Welcome to H.I.H.",
     "ShortIntroduceHIH": "H.I.H. helps to build a digitial life for each home",
     "RequireLogin": "Please login to enpower the features provided by H.I.H.",
     "RequireChooseHome": "Please choose a Home which you already assigned to, or create your new home to continue",
     "ShortIntroduceHIH2": "Home Information Hub, with the abbreviation HIH, which was designed to build the central information hub for all necessary information among all family members.",
-
     "GenericInfo": "Generic Info",
     "ExtraInfo": "Extra Info",
     "ReviewForSubmit": "Review for submit",
@@ -115,11 +112,11 @@
     "Error": "Error",
     "Success": "Success",
     "RepeatFrequency": "Repeat Frequency",
-    "PageNotFoundHeader":"Page not found",
+    "PageNotFoundHeader": "Page not found",
     "PageNotFoundContent": "The page which you aim to visit is not exist",
     "PageFatalErrorHeader": "Fatal Error",
     "PageFatalErrorContent": "There is a fatal error occurs in API layer and the DB layer. Please contact system administrator",
-    "PageLackAuthorityHeader":"Lack of Authority",
+    "PageLackAuthorityHeader": "Lack of Authority",
     "PageLackAuthorityContent": "The page which you aim to visit are banned due to lack of authority",
     "EnglishName": "English Name",
     "NativeName": "Native Name",
@@ -156,9 +153,6 @@
     "CompleteDate": "Complete Date",
     "Score": "Score",
     "Dashboard": "Dashboard",
-    "SearchCriteria": "Search Criteria",
-    "DefaultValues": "Default Values",
-
     "InvalidName": "Invalid name",
     "InvalidDate": "Invalid date",
     "NameIsMust": "Name is a must",
@@ -168,7 +162,6 @@
     "InvalidValidTo": "Invalid valid to",
     "ValidToIsMust": "Valid to is a must",
     "InvalidValidRange": "Invalid range of validitiy",
-    "InvalidFilter": "Invalid filter",
     "ValidToMustLaterThanValidFrom": "Valid to must later than valid from",
     "InvalidCategory": "Invalid category",
     "InputtedCategoryIsInvalid": "Inputted category is invalid",
@@ -192,7 +185,7 @@
     "TendencyChart": "Tendency Chart",
     "HIHAuthor": "Writen and Maintained by Alva Chien"
   },
-  "Sys":{
+  "Sys": {
     "Currency": {
       "CNY": "Chinese Yuan",
       "EUR": "Euro",
@@ -261,7 +254,7 @@
       "Bible": "Christian Books & Bibles",
       "Comics": "Comics & Graphic Novels",
       "Computer": "Computers & Technology",
-      "Cookbook" :"Cookbooks, Food & Wine",
+      "Cookbook": "Cookbooks, Food & Wine",
       "CraftAndHobby": "Crafts, Hobbies & Home",
       "Education": "Education & Teaching",
       "Transportation": "Engineering & Transportation",
@@ -362,7 +355,7 @@
     "LearningTrace": "Learning Trace",
     "FinanceTrace": "Finance Trace",
     "LibraryTrace": "Library Trace",
-    "EventTrace": "Event Trace",    
+    "EventTrace": "Event Trace",
     "About": "About",
     "Acknowledgements": "Acknowledgements",
     "Credits": "Credits",
@@ -405,7 +398,6 @@
     "Answer": "Answer",
     "BriefAnswer": "Brief Answer",
     "CreateHistory": "Create History",
-
     "ObjectIsMust": "Object is a must",
     "ObjectFetchFailedOrNoObject": "Objects fetch failed or there is no Object in system",
     "InvalidObject": "Invalid Object",
@@ -507,11 +499,6 @@
     "PresentValue": "Present Est. Vaue",
     "Plan": "Finance Plan",
     "NormalDocMassCreate": "Normal Document Mass Create",
-    "RepeatlyMassCreateNormalDocs": "Repeatly mass create normal documents",
-    "FreelyMassCreateNormalDocs": "Freely mass create normal documents",
-    "ExistingDocuments": "Existing Documents",
-    "IncludeChildTranType": "Include Child Transaction Type",
-
     "InvalidSettlementRule": "Invalid settlement rule",
     "NoSettlementRule": "No settlement rule",
     "SettlementRulePrecentSumNotCorrect": "Sum of the precentage of all rules is not correct",

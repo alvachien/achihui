@@ -33,62 +33,62 @@ export class TagsService {
     tagterm?: string,
   ): Observable<any> {
     // if (!this._islistLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/Tag';
+    const apiurl: string = environment.ApiUrl + '/api/Tag';
 
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-                .append('Accept', 'application/json')
-                .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      params = params.append('reqamt', (<boolean>reqamt).toString());
-      if (tagtype) {
-        params = params.append('tagtype', (<number>tagtype).toString());
-      }
-      if (tagterm) {
-        params = params.append('tagterm', tagterm);
-      }
+    let params: HttpParams = new HttpParams();
+    params = params.append('hid', this._homeService.ChosedHome.ID.toString());
+    params = params.append('reqamt', (<boolean>reqamt).toString());
+    if (tagtype) {
+      params = params.append('tagtype', (<number>tagtype).toString());
+    }
+    if (tagterm) {
+      params = params.append('tagterm', tagterm);
+    }
 
-      return this._http.get(apiurl, {
-          headers: headers,
-          params: params,
-        })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService`);
-          }
+    return this._http.get(apiurl, {
+      headers: headers,
+      params: params,
+    })
+      .pipe(map((response: HttpResponse<any>) => {
+        if (environment.LoggingLevel >= LogLevel.Debug) {
+          console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllTags in TagsService`);
+        }
 
-          let listCountRst: TagCount[] = [];
-          let listRst: Tag[] = [];
-          const rjs: any = <any>response;
-          let mapIDs: Map<string, string> = new Map<string, string>();
+        let listCountRst: TagCount[] = [];
+        let listRst: Tag[] = [];
+        const rjs: any = <any>response;
+        let mapIDs: Map<string, string> = new Map<string, string>();
 
-          for (const si of rjs) {
-            if (reqamt) {
-              let tc: TagCount = new TagCount();
-              tc.onSetData(si);
-              listCountRst.push(tc);
+        for (const si of rjs) {
+          if (reqamt) {
+            let tc: TagCount = new TagCount();
+            tc.onSetData(si);
+            listCountRst.push(tc);
+          } else {
+            let tag: Tag = new Tag();
+            tag.onSetData(si);
+
+            let rids: string = (<number>tag.TagType).toString() + '_' + tag.TagID.toString();
+            if (mapIDs.has(rids)) {
+              continue;
             } else {
-              let tag: Tag = new Tag();
-              tag.onSetData(si);
-
-              let rids: string = (<number>tag.TagType).toString() + '_' + tag.TagID.toString();
-              if (mapIDs.has(rids)) {
-                continue;
-              } else {
-                mapIDs.set(rids, rids);
-              }
-
-              listRst.push(tag);
+              mapIDs.set(rids, rids);
             }
+
+            listRst.push(tag);
           }
+        }
 
-          // this._islistLoaded = true;
-          // this.listDataChange.next(listRst);
+        // this._islistLoaded = true;
+        // this.listDataChange.next(listRst);
 
-          return reqamt ? listCountRst : listRst;
-        }),
+        return reqamt ? listCountRst : listRst;
+      }),
         catchError((err: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
             console.error(`AC_HIH_UI [Error]: Entering TagsService, fetchAllTags, failed with ${err}`);

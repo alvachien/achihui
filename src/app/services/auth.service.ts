@@ -1,7 +1,8 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { LogLevel, UserAuthInfo } from '../model';
+
+import { LogLevel, UserAuthInfo, ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { UserManager, Log, MetadataService, User } from 'oidc-client';
 
 const authSettings: any = {
@@ -10,7 +11,7 @@ const authSettings: any = {
   redirect_uri: environment.AppLoginCallbackUrl,
   post_logout_redirect_uri: environment.AppLogoutCallbackUrl,
   response_type: 'id_token token',
-  scope: 'openid profile api.hihapi',
+  scope: 'openid profile api.hih',
 
   silent_redirect_uri: environment.AppLoginSlientRevewCallbackUrl,
   automaticSilentRenew: true,
@@ -32,7 +33,7 @@ export class AuthService {
 
   constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering AuthService constructor...');
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService constructor...', ConsoleLogTypeEnum.debug);
     }
 
     this.mgr = new UserManager(authSettings);
@@ -40,8 +41,9 @@ export class AuthService {
     this.mgr.getUser().then((u: any) => {
       if (u) {
         if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: AuthService constructor, user get successfully as following: ');
-          console.log(u);
+          ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: AuthService constructor, user get successfully as following: ', 
+            ConsoleLogTypeEnum.debug);
+          ModelUtility.writeConsoleLog(u);
         }
 
         // Set the content
@@ -56,14 +58,14 @@ export class AuthService {
       this.authSubject.next(this.authSubject.value);
     }, (reason: any) => {
       if (environment.LoggingLevel >= LogLevel.Error) {
-        console.error('AC_HIH_UI [Error]: AuthService failed to fetch user:');
-        console.error(reason);
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: AuthService failed to fetch user:', ConsoleLogTypeEnum.error);
+        ModelUtility.writeConsoleLog(reason, ConsoleLogTypeEnum.error);
       }
     });
 
     this.mgr.events.addUserUnloaded(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: User unloaded');
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: User unloaded', ConsoleLogTypeEnum.debug);
       }
       this.authSubject.value.cleanContent();
 
@@ -72,13 +74,13 @@ export class AuthService {
 
     this.mgr.events.addAccessTokenExpiring(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.warn('AC_HIH_UI [Warn]: token expiring');
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Warn]: token expiring', ConsoleLogTypeEnum.warn);
       }
     });
 
     this.mgr.events.addAccessTokenExpired(() => {
       if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.error('AC_HIH_UI [Error]: token expired');
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: token expired', ConsoleLogTypeEnum.error);
       }
 
       this.doLogin();
@@ -87,7 +89,7 @@ export class AuthService {
 
   public doLogin(): void {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Start the login...');
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Start the login...', ConsoleLogTypeEnum.debug);
     }
 
     if (this.mgr) {

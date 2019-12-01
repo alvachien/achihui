@@ -1,201 +1,92 @@
 {
-  "rulesDirectory": ["./node_modules/codelyzer"],
+  "extends": "tslint:recommended",
   "rules": {
-    "align": [
+    "array-type": false,
+    "arrow-parens": false,
+    "deprecation": {
+      "severity": "warning"
+    },
+    "component-class-suffix": true,
+    "contextual-lifecycle": true,
+    "directive-class-suffix": true,
+    "directive-selector": [
       true,
-      "statements"
+      "attribute",
+      "hih",
+      "camelCase"
     ],
-    "array-type": [
+    "component-selector": [
       true,
-      "array" 
+      "element",
+      "hih",
+      "kebab-case"
     ],
-    "arrow-parens": true,
-    "ban": [
+    "import-blacklist": [
       true,
-      []
+      "rxjs/Rx"
     ],
-    "class-name": true,
-    "comment-format": [
+    "interface-name": false,
+    "max-classes-per-file": false,
+    "max-line-length": [
       true,
-      "check-space"
+      140
     ],
-    "curly": true,
-    "eofline": true,
-    "forin": false,
-    "indent": [
-      true,
-      "spaces"
-    ],
-    "jsdoc-format": true,
-    "label-position": true,
-    "max-line-length": [true, 150],
-    "member-access": [
-      false
-    ],
+    "member-access": false,
     "member-ordering": [
       true,
       {
-        "order" : [
-          "private-static-field",
-          "protected-static-field",
-          "public-static-field",
-          "private-instance-field",
-          "protected-instance-field",
-          "public-instance-field",
-          "constructor",
-          "public-static-method",
-          "protected-static-method",
-          "private-static-method",
-          "public-instance-method",
-          "protected-instance-method",
-          "private-instance-method"
+        "order": [
+          "static-field",
+          "instance-field",
+          "static-method",
+          "instance-method"
         ]
       }
     ],
-    "new-parens": true,
-    "no-angle-bracket-type-assertion": false,
-    "no-any": false,
-    "no-arg": true,
-    "no-bitwise": true,
-    "no-conditional-assignment": true,
-    "no-consecutive-blank-lines": [true],
+    "no-consecutive-blank-lines": false,
     "no-console": [
-      false, 
-      "assert", 
-      "count", 
-      "debug", 
-      "dir", 
-      "dirxml", 
-      "error", 
-      "group",
-      "groupCollapsed",
-      "groupEnd",
+      true,
+      "debug",
       "info",
-      "log",
-      "profile",
-      "profileEnd",
-      "table",
       "time",
       "timeEnd",
-      "timeStamp",
-      "trace",
-      "warn"
+      "trace"
     ],
-    "no-construct": true,
-    "no-debugger": true,
-    "no-default-export": true,
-    "no-duplicate-variable": true,
-    "no-empty": true,
-    "no-empty-interface": false,
-    "no-eval": true,
+    "no-empty": false,
     "no-inferrable-types": [
-      false,
+      true,
       "ignore-params"
     ],
-    "no-internal-module": true,
-    "no-invalid-this": true,
-    "no-magic-numbers": false, //TODO_LINT (we should lint for this)
-    "no-namespace": true,
-    "no-null-keyword": false, // null is acceptable, 2019.2.16
-    "no-reference": true,
-    "no-require-imports": true,
-    "no-shadowed-variable": true,
-    "no-string-literal": true,
-    "no-string-throw": true,
+    "no-non-null-assertion": true,
+    "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
-    "no-trailing-whitespace": true,
-    "no-unused-expression": true,
     "no-use-before-declare": true,
-    "no-var-keyword": true,
-    "no-var-requires": true,
-    "object-literal-sort-keys": false,
-    "one-line": [
+    "no-var-requires": false,
+    "object-literal-key-quotes": [
       true,
-      "check-catch",
-      "check-finally",
-      "check-else",
-      "check-open-brace",
-      "check-whitespace"
+      "as-needed"
     ],
-    "one-variable-per-declaration": true,
+    "object-literal-sort-keys": false,
+    "ordered-imports": false,
     "quotemark": [
       true,
-      "single",
-      "avoid-escape"
+      "single"
     ],
-    "radix": true,
-    "semicolon": [
-      true,
-      "always"
-    ],
-    "switch-default": true,
-    "trailing-comma": [
-      true,
-      {
-        "multiline": "always",
-        "single": "always"
-      }
-    ],
-    "triple-equals": true,
-    "typedef": [
-      true,
-      "call-signature",
-      "parameter",
-      "arrow-parameter",
-      "property-declaration",
-      "variable-declaration",
-      "member-variable-declaration"
-    ],
-    "typedef-whitespace": [
-      true,
-      {
-        "call-signature": "nospace",
-        "index-signature": "nospace",
-        "parameter": "nospace",
-        "property-declaration": "nospace",
-        "variable-declaration": "nospace"
-      },
-      {
-        "call-signature": "onespace",
-        "index-signature": "onespace",
-        "parameter": "onespace",
-        "property-declaration": "onespace",
-        "variable-declaration": "onespace"
-      }
-    ],
-    "use-isnan": true,
-    "variable-name": [
-      true,
-      "ban-keywords",
-      "check-format",
-      "allow-leading-underscore"
-    ],
-    "whitespace": [
-      true,
-      "check-branch",
-      "check-decl",
-      "check-operator",
-      "check-module",
-      "check-separator",
-      "check-type"
-    ],
-    // ANGULAR 2 Rules
-    "directive-selector": [false, "attribute", "qs", "camelCase"],
-    "component-selector": [false, "element", "qs", "kebab-case"],
-    "component-class-suffix": true,
-    "directive-class-suffix": true,
-    "use-input-property-decorator": true,
-    "use-output-property-decorator": true,
-    "use-host-property-decorator": true,
-    "no-attribute-parameter-decorator": true,
-    "no-input-rename": false, // so we can rename @Input so we can change API easier -> @Input('rename') name
-    "no-output-rename": false, // same but for @Output
-    "no-forward-ref" : false,
-    "use-life-cycle-interface": true,
-    "use-pipe-transform-interface": true,
-    "pipe-naming": [
-      true,
-      "camelCase"
-    ]
-  }
+    "trailing-comma": false,
+    "no-conflicting-lifecycle": true,
+    "no-host-metadata-property": true,
+    "no-input-rename": true,
+    "no-inputs-metadata-property": true,
+    "no-output-native": true,
+    "no-output-on-prefix": true,
+    "no-output-rename": true,
+    "no-outputs-metadata-property": true,
+    "template-banana-in-box": true,
+    "template-no-negated-async": true,
+    "use-lifecycle-interface": true,
+    "use-pipe-transform-interface": true
+  },
+  "rulesDirectory": [
+    "codelyzer"
+  ]
 }

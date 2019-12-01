@@ -1,0 +1,35 @@
+<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
+  <nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item><a routerLink="/finance/overview">Overview</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>Control Centers</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>Control Center</nz-page-header-title>
+    <nz-page-header-subtitle>List View</nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <button nz-button nzType="primary">Create</button>
+      <a nz-button nzType="link" routerLink="/finance/controlcenter/hierarchy">Hierarchy View</a>
+    </nz-page-header-extra>
+  </nz-page-header>
+
+  <div nz-row>
+    <nz-table #basicTable [nzData]="dataSet">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Asset Flag</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{data.ID}}</td>
+          <td>{{data.Name}}</td>
+          <td>{{data.AssetFlag}}</td>
+          <td>{{data.Comment}}</td>
+        </tr>
+      </tbody>
+    </nz-table>  
+  </div>
+</nz-spin>

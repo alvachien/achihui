@@ -1,0 +1,35 @@
+<nz-page-header nzBackIcon nzTitle="Config">
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">Overview</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>Config</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-content>
+    <nz-tabset>
+      <nz-tab nzTitle="Account Category">
+        <ng-template nz-tab>
+          <hih-fin-account-category-list></hih-fin-account-category-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Doc type">
+        <ng-template nz-tab>
+          <hih-fin-doc-type-list></hih-fin-doc-type-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Tran Type hierarchy">
+        <ng-template nz-tab>
+          <hih-fin-tran-type-hierarchy></hih-fin-tran-type-hierarchy>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Tran Type List">
+        <ng-template nz-tab>
+          <hih-fin-tran-type-list></hih-fin-tran-type-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Asset Category">
+        <ng-template nz-tab>
+          <hih-fin-asset-type-list></hih-fin-asset-type-list>
+        </ng-template>
+      </nz-tab>
+    </nz-tabset>
+  </nz-page-header-content>
+</nz-page-header>

@@ -1,4 +1,4 @@
-﻿{
+{
   "Common": {
     "OK": "OK",
     "Cancel": "取消",
@@ -15,7 +15,6 @@
     "Field": "字段",
     "Operator": "运算符",
     "QuickAccess": "快捷访问",
-
     "ListView": "列表视图",
     "HierarchyView": "树形视图",
     "Themes": "主题",
@@ -44,7 +43,6 @@
     "Checkin": "登记",
     "Weekly": "每周",
     "Daily": "每天",
-    
     "ID": "ID",
     "Category": "类别",
     "Categories": "类别",
@@ -105,7 +103,6 @@
     "RequireLogin": "请先登录以体验H.I.H.所提供的各项功能",
     "RequireChooseHome": "请先选择一个您已经加入的家庭、或创建您自己的新家庭以继续",
     "ShortIntroduceHIH2": "家庭信息总汇 Home Information Hub, 简称HIH, 旨在创建一个以家庭为目标、服务于所有家庭成员的信息中心。",
-
     "GenericInfo": "基础信息",
     "ExtraInfo": "附加信息",
     "ReviewForSubmit": "检查与提交",
@@ -115,11 +112,11 @@
     "Error": "错误",
     "Success": "成功",
     "RepeatFrequency": "重复频率",
-    "PageNotFoundHeader":"页面未找到",
+    "PageNotFoundHeader": "页面未找到",
     "PageNotFoundContent": "你想要访问的页面并不存在",
     "PageFatalErrorHeader": "检测到关键性错误",
     "PageFatalErrorContent": "检测到在API层和数据库层出现了关键性错误。请联系系统管理员。",
-    "PageLackAuthorityHeader":"缺乏权限",
+    "PageLackAuthorityHeader": "缺乏权限",
     "PageLackAuthorityContent": "你没有权限访问该页面",
     "EnglishName": "英文名字",
     "NativeName": "本地名称",
@@ -156,9 +153,6 @@
     "CompleteDate": "完成日期",
     "Score": "得分",
     "Dashboard": "仪表板",
-    "SearchCriteria": "搜索条件",
-    "DefaultValues": "默认值",
-
     "InvalidName": "无效的名字",
     "InvalidDate": "无效的日期",
     "NameIsMust": "名字必须输入",
@@ -168,7 +162,6 @@
     "InvalidValidTo": "无效的有效期结束日期",
     "ValidToIsMust": "有效期结束日期必须输入",
     "InvalidValidRange": "无效的有效期范围",
-    "InvalidFilter": "无效的过滤条件",
     "ValidToMustLaterThanValidFrom": "有效期结束日期必须晚于开始日期",
     "InvalidCategory": "无效的类别",
     "InputtedCategoryIsInvalid": "输入的类别无效",
@@ -192,7 +185,7 @@
     "TendencyChart": "趋势图",
     "HIHAuthor": "作者: Alva Chien"
   },
-  "Sys":{
+  "Sys": {
     "Currency": {
       "CNY": "人民币",
       "EUR": "欧元",
@@ -261,7 +254,7 @@
       "Bible": "宗教类",
       "Comics": "漫画",
       "Computer": "计算机技术等",
-      "Cookbook" :"食谱、菜谱等",
+      "Cookbook": "食谱、菜谱等",
       "CraftAndHobby": "手工艺及居家等",
       "Education": "教育类",
       "Transportation": "交通运输类",
@@ -384,7 +377,7 @@
     "LearningPlan": "学习计划",
     "QuestionBank": "题库",
     "EnglishWord": "英文单词",
-    "EnglishSentence": "英文例句",    
+    "EnglishSentence": "英文例句",
     "Ctgy_LAL": "语文",
     "Ctgy_Poem": "诗词",
     "Ctgy_TangSongPoem": "唐诗宋词",
@@ -405,7 +398,6 @@
     "Answer": "答案",
     "BriefAnswer": "答案提要",
     "CreateHistory": "创建学习记录",
-
     "ObjectIsMust": "学习对象是必填项目",
     "ObjectFetchFailedOrNoObject": "学习对象信息获取失败，或者尚未创建学习对象",
     "InvalidObject": "无效的学习对象",
@@ -507,11 +499,6 @@
     "PresentValue": "当前估价",
     "Plan": "财务计划",
     "NormalDocMassCreate": "批量创建普通凭证",
-    "RepeatlyMassCreateNormalDocs": "批量创建周期性普通凭证",
-    "FreelyMassCreateNormalDocs": "批量创建普通凭证",
-    "ExistingDocuments": "系统中已有的凭证",
-    "IncludeChildTranType": "包括子交易类型",
-
     "InvalidSettlementRule": "无效的结算规则",
     "NoSettlementRule": "结算规则没有定义",
     "SettlementRulePrecentSumNotCorrect": "结算规则的百分比之和不正确",

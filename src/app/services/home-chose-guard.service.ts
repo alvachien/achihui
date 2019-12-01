@@ -4,12 +4,13 @@ import { environment } from '../../environments/environment';
 import { LogLevel, UserAuthInfo } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefDetailService } from './home-def-detail.service';
+import { HomeDefOdataService } from './home-def-odata.service';
 
 @Injectable()
 export class HomeChoseGuardService {
 
   constructor(private authService: AuthService,
-    private homedefService: HomeDefDetailService,
+    private homeService: HomeDefOdataService,
     private router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
@@ -28,9 +29,9 @@ export class HomeChoseGuardService {
     }
 
     // Has logged in but no home chosen yet.
-    this.homedefService.RedirectURL = url;
+    this.homeService.RedirectURL = url;
 
-    if (this.homedefService.ChosedHome === undefined) {
+    if (this.homeService.ChosedHome === undefined) {
         // Navigate to other page
         this.router.navigate(['/homedef']);
         return false;
