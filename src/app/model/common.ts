@@ -244,10 +244,10 @@ export class InfoMessage {
  * Interface of Base Model Json
  */
 export interface BaseModelJson {
-  Createdat: string;
-  Createdby: string;
-  Updatedat: string;
-  Updatedby: string;
+  CreatedAt?: string;
+  CreatedBy: string;
+  UpdatedAt?: string;
+  UpdatedBy: string;
 }
 
 /**
@@ -317,16 +317,16 @@ export class BaseModel {
     };
 
     if (this._createdAt) {
-      rstobj.createdAt = this._createdAt.format(momentDateFormat);
+      rstobj.CreatedAt = this._createdAt.format(momentDateFormat);
     }
     if (this.Createdby && this.Createdby.length > 0) {
-      rstobj.Createdby = this.Createdby;
+      rstobj.CreatedBy = this.Createdby;
     }
     if (this._updatedAt) {
-      rstobj.Updatedat = this._updatedAt.format(momentDateFormat);
+      rstobj.UpdatedAt = this._updatedAt.format(momentDateFormat);
     }
     if (this.Updatedby && this.Updatedby.length > 0) {
-      rstobj.Updatedby = this.Updatedby;
+      rstobj.UpdatedBy = this.Updatedby;
     }
 
     return rstobj;

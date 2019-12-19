@@ -3,9 +3,8 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
 
-import { FinanceStorageService, UIStatusService } from '../../../../services';
-import { LogLevel, ControlCenter, getOverviewScopeRange, UICommonLabelEnum,
-} from '../../../../model';
+import { FinanceOdataService, UIStatusService } from '../../../../services';
+import { LogLevel, ControlCenter, getOverviewScopeRange, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -19,38 +18,34 @@ export class ControlCenterListComponent implements OnInit {
   isLoadingResults: boolean;
   dataSet: ControlCenter[] = [];
 
-  constructor(public _storageService: FinanceStorageService,
+  constructor(
+    public odataService: FinanceOdataService,
     public _uiStatusService: UIStatusService) {
       this.isLoadingResults = false;
     }
 
   ngOnInit() {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...');
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...', ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    this._storageService.fetchAllControlCenters()
+    this.odataService.fetchAllControlCenters()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((value: ControlCenter[]) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...');
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...', ConsoleLogTypeEnum.debug);
 
         this.dataSet = value;
       }, (error: any) => {
-        // Do nothing
+        // TBD
       }, () => {
         this.isLoadingResults = false;
       });
   }
 
   ngOnDestroy() {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...');
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
+
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

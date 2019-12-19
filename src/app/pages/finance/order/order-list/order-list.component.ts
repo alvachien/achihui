@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { LogLevel, Order, } from '../../../../model';
-import { FinanceStorageService, UIStatusService, } from '../../../../services';
+import { LogLevel, Order, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
+import { FinanceOdataService, UIStatusService, } from '../../../../services';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -17,29 +17,33 @@ export class OrderListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   dataSet: Order[] = [];
 
-  constructor(public _storageService: FinanceStorageService,
+  constructor(
+    public odataService: FinanceOdataService,
     public _uiStatusService: UIStatusService,) {
       this.isLoadingResults = false;
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: Entering OrderListComponent constructor...');
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent constructor...', ConsoleLogTypeEnum.debug);
     }
 
   ngOnInit() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent OnInit...', ConsoleLogTypeEnum.debug);
+
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    this._storageService.fetchAllOrders()
+    this.odataService.fetchAllOrders()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: Order[]) => {
         this.dataSet = x;
     }, (error: any) => {
+      // TBD.
     }, () => {
       this.isLoadingResults = false;
     });
   }
 
   ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent OnDestroy...', ConsoleLogTypeEnum.debug);
+
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

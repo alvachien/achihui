@@ -124,11 +124,11 @@ export class Currency extends hih.BaseModel {
  * Account category in JSON format
  */
 export interface AccountCategoryJson extends hih.BaseModelJson {
-  id: number;
-  hid?: number;
-  name: string;
-  assetFlag: boolean;
-  comment?: string;
+  ID: number;
+  HomeID?: number;
+  Name: string;
+  AssetFlag: boolean;
+  Comment?: string;
 }
 
 /**
@@ -188,32 +188,32 @@ export class AccountCategory extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): AccountCategoryJson {
     const rstObj: any = super.writeJSONObject();
-    rstObj.id = this.ID;
-    rstObj.hid = this.HID;
-    rstObj.name = this.Name;
-    rstObj.assetFlag = this.AssetFlag;
-    rstObj.comment = this.Comment;
+    rstObj.ID = this.ID;
+    rstObj.HomeID = this.HID;
+    rstObj.Name = this.Name;
+    rstObj.AssetFlag = this.AssetFlag;
+    rstObj.Comment = this.Comment;
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: AccountCategoryJson): void {
     super.onSetData(data);
-    if (data && data.id) {
-      this.ID = +data.id;
+    if (data && data.ID) {
+      this.ID = +data.ID;
     }
-    if (data && data.hid) {
-      this.HID = +data.hid;
+    if (data && data.HomeID) {
+      this.HID = +data.HomeID;
     }
-    if (data && data.name) {
-      this.Name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.assetFlag) {
-      this.AssetFlag = data.assetFlag;
+    if (data && data.AssetFlag) {
+      this.AssetFlag = data.AssetFlag;
     }
-    if (data && data.comment) {
-      this.Comment = data.comment;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
   }
 }
@@ -222,10 +222,10 @@ export class AccountCategory extends hih.BaseModel {
  * Document type
  */
 export interface DocumentTypeJson extends hih.BaseModelJson {
-  hid?: number;
-  id: number;
-  name: string;
-  comment?: string;
+  HomeID?: number;
+  ID: number;
+  Name: string;
+  Comment?: string;
 }
 
 export class DocumentType extends hih.BaseModel {
@@ -271,29 +271,29 @@ export class DocumentType extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): DocumentTypeJson {
     const rstObj: any = super.writeJSONObject();
-    rstObj.hid = this.HID;
-    rstObj.id = this.Id;
-    rstObj.name = this.Name;
-    rstObj.comment = this.Comment;
+    rstObj.HomeID = this.HID;
+    rstObj.ID = this.Id;
+    rstObj.Name = this.Name;
+    rstObj.Comment = this.Comment;
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: DocumentTypeJson): void {
     super.onSetData(data);
 
-    if (data && data.hid) {
-      this.HID = +data.hid;
+    if (data && data.HomeID) {
+      this.HID = +data.HomeID;
     }
-    if (data && data.id) {
-      this.Id = +data.id;
+    if (data && data.ID) {
+      this.Id = +data.ID;
     }
-    if (data && data.name) {
-      this.Name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.comment) {
-      this.Comment = data.comment;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
   }
 }
@@ -302,10 +302,10 @@ export class DocumentType extends hih.BaseModel {
  * Asset category
  */
 export interface AssetCategoryJson extends hih.BaseModelJson {
-  hid?: number;
-  id: number;
-  name: string;
-  desp?: string;
+  HomeID?: number;
+  ID: number;
+  Name: string;
+  Desp?: string;
 }
 
 export class AssetCategory extends hih.BaseModel {
@@ -370,28 +370,28 @@ export class AssetCategory extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): AssetCategoryJson {
     const rstObj: any = super.writeJSONObject();
-    rstObj.id = this.ID;
-    rstObj.hid = this.HID;
-    rstObj.name = this._name;
-    rstObj.desp = this._desp;
+    rstObj.ID = this.ID;
+    rstObj.HomeID = this.HID;
+    rstObj.Name = this._name;
+    rstObj.Desp = this._desp;
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: AssetCategoryJson): void {
     super.onSetData(data);
-    if (data && data.id) {
-      this.ID = +data.id;
+    if (data && data.ID) {
+      this.ID = +data.ID;
     }
-    if (data && data.hid) {
-      this.HID = +data.hid;
+    if (data && data.HomeID) {
+      this.HID = +data.HomeID;
     }
-    if (data && data.name) {
-      this._name = data.name;
+    if (data && data.Name) {
+      this._name = data.Name;
     }
-    if (data && data.desp) {
-      this._desp = data.desp;
+    if (data && data.Desp) {
+      this._desp = data.Desp;
     }
   }
 }
@@ -422,15 +422,13 @@ export abstract class AccountExtra {
 }
 
 export interface AccountJson extends hih.BaseModelJson {
-  id: number;
-  hid: number;
-  name: string;
-  ctgyID: number;
-  ctgyName?: string;
-  comment?: string;
-  owner?: string;
-  status: number;
-  ownerDisplayAs?: string;
+  ID: number;
+  HomeID: number;
+  Name: string;
+  CategoryID: number;
+  Comment?: string;
+  Owner?: string;
+  Status: number;
 
   // Extra. info
   extraInfo_ADP?: any;
@@ -548,14 +546,14 @@ export class Account extends hih.BaseModel {
     return brst;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): AccountJson {
     const rstObj: any = super.writeJSONObject();
-    rstObj.id = this.Id;
-    rstObj.hid = this.HID;
-    rstObj.ctgyId = this.CategoryId;
-    rstObj.name = this.Name;
-    rstObj.comment = this.Comment;
-    rstObj.owner = this.OwnerId;
+    rstObj.ID = this.Id;
+    rstObj.HomeID = this.HID;
+    rstObj.CategoryID = this.CategoryId;
+    rstObj.Name = this.Name;
+    rstObj.Comment = this.Comment;
+    rstObj.Owner = this.OwnerId;
 
     if ((this.CategoryId === hih.financeAccountCategoryAdvancePayment
       || this.CategoryId === hih.financeAccountCategoryAdvanceReceived) && this.ExtraInfo) {
@@ -571,35 +569,29 @@ export class Account extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: AccountJson): void {
     super.onSetData(data);
 
-    if (data && data.id) {
-      this.Id = +data.id;
+    if (data && data.ID) {
+      this.Id = +data.ID;
     }
-    if (data && data.hid) {
-      this.HID = +data.hid;
+    if (data && data.HomeID) {
+      this.HID = +data.HomeID;
     }
-    if (data && data.name && data.name.length > 0) {
-      this.Name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.ctgyID) {
-      this.CategoryId = +data.ctgyID;
+    if (data && data.CategoryID) {
+      this.CategoryId = +data.CategoryID;
     }
-    if (data && data.ctgyName && data.ctgyName.length > 0) {
-      this.CategoryName = data.ctgyName;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
-    if (data && data.comment && data.comment.length > 0) {
-      this.Comment = data.comment;
+    if (data && data.Owner) {
+      this.OwnerId = data.Owner;
     }
-    if (data && data.owner && data.owner.length > 0) {
-      this.OwnerId = data.owner;
-    }
-    if (data && data.status) {
-      this.Status = data.status as AccountStatusEnum;
-    }
-    if (data && data.ownerDisplayAs && data.ownerDisplayAs.length > 0) {
-      this.OwnerDisplayAs = data.ownerDisplayAs;
+    if (data && data.Status) {
+      this.Status = data.Status as AccountStatusEnum;
     }
 
     if (data && this.CategoryId === hih.financeAccountCategoryAdvancePayment && data.extraInfo_ADP) {
@@ -1086,12 +1078,12 @@ export class AccountExtraLoan extends AccountExtra {
 
 // Json format to communicate with API
 export interface ControlCenterJson extends hih.BaseModelJson {
-  hid: number;
-  id: number;
-  name: string;
-  comment?: string;
-  parID?: number;
-  owner?: string;
+  HomeID: number;
+  ID: number;
+  Name: string;
+  Comment?: string;
+  ParentID?: number;
+  Owner?: string;
 }
 
 /**
@@ -1173,42 +1165,42 @@ export class ControlCenter extends hih.BaseModel {
     return bRst;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): ControlCenterJson {
     const rstObj: any = super.writeJSONObject();
-    rstObj.hid = this.HID;
-    rstObj.id = this.Id;
-    rstObj.name = this.Name;
-    rstObj.comment = this.Comment;
+    rstObj.HomeID = this.HID;
+    rstObj.ID= this.Id;
+    rstObj.Name = this.Name;
+    rstObj.Comment = this.Comment;
     if (this.ParentId) {
-      rstObj.parId = this.ParentId;
+      rstObj.ParentID = this.ParentId;
     }
     if (this.Owner && this.Owner.length > 0) {
-      rstObj.owner = this.Owner;
+      rstObj.Owner = this.Owner;
     }
 
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: ControlCenterJson): void {
     super.onSetData(data);
 
-    if (data && data.hid) {
-      this.HID = +data.hid;
+    if (data && data.HomeID) {
+      this.HID = +data.HomeID;
     }
-    if (data && data.id) {
-      this.Id = +data.id;
+    if (data && data.ID) {
+      this.Id = +data.ID;
     }
-    if (data && data.name && data.name.length > 0) {
-      this.Name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.comment && data.comment.length > 0) {
-      this.Comment = data.comment;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
-    if (data && data.parID) {
-      this.ParentId = +data.parID;
+    if (data && data.ParentID) {
+      this.ParentId = +data.ParentID;
     }
-    if (data && data.owner && data.owner.length > 0) {
-      this.Owner = data.owner;
+    if (data && data.Owner) {
+      this.Owner = data.Owner;
     }
   }
 }
@@ -1221,13 +1213,13 @@ export interface IOrderVerifyContext {
 }
 
 export interface OrderJson extends hih.BaseModelJson {
-  id: number;
-  hid: number;
-  name: string;
-  comment?: string;
-  validFrom: string;
-  validTo: string;
-  sRuleList: SettlementRuleJson[];
+  ID: number;
+  HomeID: number;
+  Name: string;
+  Comment?: string;
+  ValidFrom: string;
+  ValidTo: string;
+  SRule: SettlementRuleJson[];
 }
 
 /**
@@ -1378,50 +1370,50 @@ export class Order extends hih.BaseModel {
     return chkrst;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): OrderJson {
     const rstObj: any = super.writeJSONObject();
-    rstObj.id = this.Id;
-    rstObj.hid = this.HID;
-    rstObj.name = this.Name;
-    rstObj.validFrom = this._validFrom.format(hih.momentDateFormat);
-    rstObj.validTo = this._validTo.format(hih.momentDateFormat);
-    rstObj.comment = this.Comment;
-    rstObj.sRuleList = [];
+    rstObj.ID = this.Id;
+    rstObj.HomeID = this.HID;
+    rstObj.Name = this.Name;
+    rstObj.ValidFrom = this._validFrom.format(hih.momentDateFormat);
+    rstObj.ValidTo = this._validTo.format(hih.momentDateFormat);
+    rstObj.Comment = this.Comment;
+    rstObj.SRule = [];
 
     for (const srule of this.SRules) {
       const sruleinfo: any = srule.writeJSONObject();
       sruleinfo.ordId = this.Id;
-      rstObj.sRuleList.push(sruleinfo);
+      rstObj.SRule.push(sruleinfo);
     }
 
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: OrderJson): void {
     super.onSetData(data);
 
-    if (data && data.id) {
-      this.Id = +data.id;
+    if (data && data.ID) {
+      this.Id = +data.ID;
     }
-    if (data && data.hid) {
-      this.HID = +data.hid;
+    if (data && data.HomeID) {
+      this.HID = +data.HomeID;
     }
-    if (data && data.name && data.name.length > 0) {
-      this.Name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.comment && data.comment.length > 0) {
-      this.Comment = data.comment;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
-    if (data && data.validFrom) {
-      this.ValidFrom = moment(data.validFrom, hih.momentDateFormat);
+    if (data && data.ValidFrom) {
+      this.ValidFrom = moment(data.ValidFrom, hih.momentDateFormat);
     }
-    if (data && data.validTo) {
-      this.ValidTo = moment(data.validTo, hih.momentDateFormat);
+    if (data && data.ValidTo) {
+      this.ValidTo = moment(data.ValidTo, hih.momentDateFormat);
     }
 
     this.SRules = [];
-    if (data && data.sRuleList && data.sRuleList instanceof Array) {
-      for (const sr of data.sRuleList) {
+    if (data && data.SRule && data.SRule instanceof Array) {
+      for (const sr of data.SRule) {
         const srule: SettlementRule = new SettlementRule();
         srule.onSetData(sr);
         this.SRules.push(srule);
@@ -1431,10 +1423,10 @@ export class Order extends hih.BaseModel {
 }
 
 export interface SettlementRuleJson {
-  ruleID: number;
-  controlCenterID: number;
-  precent: number;
-  comment?: string;
+  RuleID: number;
+  ControlCenterID: number;
+  Precent: number;
+  Comment?: string;
 }
 
 /**
@@ -1502,29 +1494,29 @@ export class SettlementRule {
     return brst;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): SettlementRuleJson {
     const rstObj: any = { };
-    rstObj.ruleID = this.RuleId;
-    rstObj.controlCenterID = this.ControlCenterId;
-    rstObj.precent = this.Precent;
-    rstObj.comment = this.Comment;
+    rstObj.RuleID = this.RuleId;
+    rstObj.ControlCenterID = this.ControlCenterId;
+    rstObj.Precent = this.Precent;
+    rstObj.Comment = this.Comment;
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: SettlementRuleJson): void {
     // Not need call for the super class's method, because createdat and modifiedat not required here
 
-    if (data && data.ruleID) {
-      this.RuleId = +data.ruleID;
+    if (data && data.RuleID) {
+      this.RuleId = +data.RuleID;
     }
-    if (data && data.controlCenterID) {
-      this.ControlCenterId = +data.controlCenterID;
+    if (data && data.ControlCenterID) {
+      this.ControlCenterId = +data.ControlCenterID;
     }
-    if (data && data.precent) {
-      this.Precent = +data.precent;
+    if (data && data.Precent) {
+      this.Precent = +data.Precent;
     }
-    if (data && data.comment && data.comment.length > 0) {
-      this.Comment = data.comment;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
   }
 }
@@ -1539,12 +1531,12 @@ export enum TranTypeLevelEnum {
  * Tran type
  */
 export interface TranTypeJson extends hih.BaseModelJson {
-  hid?: number;
-  id: number;
-  name: string;
-  expense: boolean;
-  parID?: number;
-  comment?: string;
+  HomeID?: number;
+  ID: number;
+  Name: string;
+  Expense: boolean;
+  ParID?: number;
+  Comment?: string;
 }
 
 export class TranType extends hih.BaseModel {
@@ -1596,31 +1588,31 @@ export class TranType extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): TranTypeJson {
     const rstObj: any = super.writeJSONObject();
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: TranTypeJson): void {
     super.onSetData(data);
 
-    if (data && data.hid) {
-      this.HID = +data.hid;
+    if (data && data.HomeID) {
+      this.HID = +data.HomeID;
     }
-    if (data && data.id) {
-      this.Id = +data.id;
+    if (data && data.ID) {
+      this.Id = +data.ID;
     }
-    if (data && data.name) {
-      this.Name = data.name;
+    if (data && data.Name) {
+      this.Name = data.Name;
     }
-    if (data && data.expense) {
-      this.Expense = data.expense;
+    if (data && data.Expense) {
+      this.Expense = data.Expense;
     }
-    if (data && data.parID) {
-      this.ParId = +data.parID;
+    if (data && data.ParID) {
+      this.ParId = +data.ParID;
     }
-    if (data && data.comment) {
-      this.Comment = data.comment;
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
     }
   }
 }

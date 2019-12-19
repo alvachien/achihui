@@ -31,6 +31,8 @@ export class FinanceOdataService {
   private listOrder: Order[];
 
   readonly accountAPIUrl: string = environment.ApiUrl + '/api/FinanceAccounts';
+  readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenters';
+  readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrders';
 
   // Buffer in current page.
   get Currencies(): Currency[] {
@@ -136,28 +138,27 @@ export class FinanceOdataService {
   // Account categories
   public fetchAllAccountCategories(forceReload?: boolean): Observable<AccountCategory[]> {
     if (!this.isAcntCtgyListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceAccountCategories';
+      const hid = this.homeService.ChosedHome.ID;
+      const apiurl: string = environment.ApiUrl + `/api/FinanceAccountCategories?$select=ID,HomeID,Name,AssetFlag,Comment&$filter=HomeID eq ${hid} or HomeID eq null`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this.homeService.ChosedHome.ID.toString());
       return this.http.get(apiurl, {
         headers,
-        params,
       })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAccountCategories in FinanceStorageService`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAccountCategories in FinanceOdataService`,
             ConsoleLogTypeEnum.debug);
 
           this.listAccountCategory = [];
-          const rjs: any = <any>response;
 
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
+          const rjs: any = response;
+          const amt = rjs['odata.count'];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
               const rst: AccountCategory = new AccountCategory();
               rst.onSetData(si);
               this.listAccountCategory.push(rst);
@@ -169,7 +170,7 @@ export class FinanceOdataService {
           return this.listAccountCategory;
         }),
           catchError((error: HttpErrorResponse) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllAccountCategories in FinanceStorageService: ${error}`,
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllAccountCategories in FinanceOdataService: ${error}`,
               ConsoleLogTypeEnum.error);
 
             this.isAcntCtgyListLoaded = false;
@@ -185,39 +186,39 @@ export class FinanceOdataService {
   // Doc type
   public fetchAllDocTypes(forceReload?: boolean): Observable<DocumentType[]> {
     if (!this.isDocTypeListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceDocumentTypes';
+      const hid = this.homeService.ChosedHome.ID;
+      const apiurl: string = environment.ApiUrl + `/api/FinanceDocumentTypes?$select=ID,HomeID,Name,Comment&$filter=HomeID eq ${hid} or HomeID eq null`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this.homeService.ChosedHome.ID.toString());
       return this.http.get(apiurl, {
         headers,
-        params,
       })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceStorageService.`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceOdataService.`,
             ConsoleLogTypeEnum.debug);
 
           this.listDocType = [];
 
-          const rjs: any = <any>response;
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
+          const rjs: any = response;
+          const amt = rjs['odata.count'];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
               const rst: DocumentType = new DocumentType();
               rst.onSetData(si);
               this.listDocType.push(rst);
             }
           }
+
           this.isDocTypeListLoaded = true;
 
           return this.listDocType;
         }),
           catchError((error: HttpErrorResponse) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllDocTypes in FinanceStorageService: ${error}`,
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllDocTypes in FinanceOdataService: ${error}`,
               ConsoleLogTypeEnum.error);
 
             this.isDocTypeListLoaded = false;
@@ -233,7 +234,8 @@ export class FinanceOdataService {
   // Tran type
   public fetchAllTranTypes(forceReload?: boolean): Observable<TranType[]> {
     if (!this.isTranTypeListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceTransactionTypes';
+      const hid = this.homeService.ChosedHome.ID;
+      const apiurl: string = environment.ApiUrl + `/api/FinanceTransactionTypes?$select=ID,HomeID,Name,Expense,ParID,Comment&$filter=HomeID eq ${hid} or HomeID eq null`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
@@ -247,14 +249,15 @@ export class FinanceOdataService {
         params,
       })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceStorageService.`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceOdataService.`,
             ConsoleLogTypeEnum.debug);
 
           this.listTranType = [];
 
-          const rjs: any = <any>response;
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
+          const rjs: any = response;
+          const amt = rjs['odata.count'];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
               const rst: TranType = new TranType();
               rst.onSetData(si);
               this.listTranType.push(rst);
@@ -288,7 +291,7 @@ export class FinanceOdataService {
           return this.listTranType;
         }),
           catchError((error: HttpErrorResponse) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllTranTypes in FinanceStorageService: ${error}`,
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllTranTypes in FinanceOdataService: ${error}`,
               ConsoleLogTypeEnum.error);
 
             this.isTranTypeListLoaded = false;
@@ -304,40 +307,37 @@ export class FinanceOdataService {
   // Asset categories
   public fetchAllAssetCategories(forceReload?: boolean): Observable<AssetCategory[]> {
     if (!this.isAsstCtgyListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceAssetCategories';
+      const hid = this.homeService.ChosedHome.ID;
+      const apiurl: string = environment.ApiUrl + `/api/FinanceAssetCategories?$select=ID,HomeID,Name,Desp&$filter=HomeID eq ${hid} or HomeID eq null`;
 
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this.homeService.ChosedHome.ID.toString());
       return this.http.get(apiurl, {
         headers,
-        params,
       })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAssetCategories in FinanceStorageService`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAssetCategories in FinanceOdataService`,
             ConsoleLogTypeEnum.debug);
 
           this.listAssetCategory = [];
-          const rjs: any = <any>response;
-
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
+          const rjs: any = response;
+          const amt = rjs['odata.count'];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
               const rst: AssetCategory = new AssetCategory();
               rst.onSetData(si);
               this.listAssetCategory.push(rst);
             }
           }
-
           this.isAsstCtgyListLoaded = true;
 
           return this.listAssetCategory;
         }),
           catchError((error: HttpErrorResponse) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllAssetCategories in FinanceStorageService: ${error}`,
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllAssetCategories in FinanceOdataService: ${error}`,
               ConsoleLogTypeEnum.error);
 
             this.isAsstCtgyListLoaded = false;
@@ -352,26 +352,25 @@ export class FinanceOdataService {
 
   public fetchAllAccounts(forceReload?: boolean): Observable<Account[]> {
     if (!this.isAccountListLoaded || forceReload) {
+      const hid = this.homeService.ChosedHome.ID;
+      const apiurl: string = this.accountAPIUrl + `?$select=ID,HomeID,Name&$filter=HomeID eq ${hid}`;
       let headers: HttpHeaders = new HttpHeaders();
       headers = headers.append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this.homeService.ChosedHome.ID.toString());
-      return this.http.get(this.accountAPIUrl, {
+      return this.http.get(apiurl, {
         headers,
-        params,
       })
         .pipe(map((response: HttpResponse<any>) => {
-          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceStorageService.`,
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceOdataService.`,
             ConsoleLogTypeEnum.debug);
 
           this.listAccount = [];
           const rjs: any = response;
-
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
+          const amt = rjs['odata.count'];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
               const rst: Account = new Account();
               rst.onSetData(si);
               this.listAccount.push(rst);
@@ -382,7 +381,7 @@ export class FinanceOdataService {
           return this.listAccount;
         }),
           catchError((error: HttpErrorResponse) => {
-            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllAccounts in FinanceStorageService.`,
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllAccounts in FinanceOdataService.`,
               ConsoleLogTypeEnum.error);
 
             this.isAccountListLoaded = false;
@@ -392,6 +391,95 @@ export class FinanceOdataService {
           }));
     } else {
       return of(this.listAccount);
+    }
+  }
+
+  /**
+   * Read all control centers
+   */
+  public fetchAllControlCenters(forceReload?: boolean): Observable<ControlCenter[]> {
+    if (!this.isConctrolCenterListLoaded || forceReload) {
+      const hid = this.homeService.ChosedHome.ID;
+      const apiurl: string = this.controlCenterAPIUrl + `?$select=ID,HomeID,Name,ParentID,Comment&$filter=HomeID eq ${hid}`;
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+      return this.http.get<any>(apiurl, {
+          headers: headers,
+        })
+        // .retry(3)
+        .pipe(map((response: HttpResponse<any>) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
+
+          this.listControlCenter = [];
+          const rjs: any = response;
+          const amt = rjs['odata.count'];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              const rst: ControlCenter = new ControlCenter();
+              rst.onSetData(si);
+              this.listControlCenter.push(rst);
+            }
+          }
+
+          this.isConctrolCenterListLoaded = true;
+          return this.listControlCenter;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceOdataService.`, ConsoleLogTypeEnum.error);
+
+          this.isConctrolCenterListLoaded = false;
+          this.listControlCenter = [];
+
+          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+        }));
+    } else {
+      return of(this.listControlCenter);
+    }
+  }
+
+    /**
+   * Read all orders out
+   */
+  public fetchAllOrders(forceReload?: boolean): Observable<Order[]> {
+    if (!this.isOrderListLoaded || forceReload) {
+      const hid = this.homeService.ChosedHome.ID;
+      const apiurl: string = this.orderAPIUrl + `?$filter=HomeID eq ${hid}&$expand=SRule`;
+      let headers: HttpHeaders = new HttpHeaders();
+      headers = headers.append('Content-Type', 'application/json')
+        .append('Accept', 'application/json')
+        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+
+      return this.http.get(apiurl, { headers, })
+        .pipe(map((response: HttpResponse<any>) => {
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceOdataService.`, ConsoleLogTypeEnum.debug);
+
+          this.listOrder = [];
+          const rjs: any = response;
+          const amt = rjs['odata.count'];
+          if (rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              const rst: Order = new Order();
+              rst.onSetData(si);
+              this.listOrder.push(rst);
+            }
+          }
+
+          this.isOrderListLoaded = true;
+
+          return this.listOrder;
+        }),
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllOrders in FinanceOdataService.`, ConsoleLogTypeEnum.error);
+
+            this.isOrderListLoaded = false;
+
+            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+          }));
+    } else {
+      return of(this.listOrder);
     }
   }
 

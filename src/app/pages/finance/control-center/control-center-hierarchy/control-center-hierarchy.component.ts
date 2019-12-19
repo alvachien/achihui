@@ -3,9 +3,8 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
 
-import { FinanceStorageService, UIStatusService } from '../../../../services';
-import { LogLevel, ControlCenter, } from '../../../../model';
-import { environment } from '../../../../../environments/environment';
+import { FinanceOdataService, UIStatusService } from '../../../../services';
+import { LogLevel, ControlCenter, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
 
 @Component({
   selector: 'hih-fin-control-center-hierarchy',
@@ -17,40 +16,36 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   ccTreeNodes: NzTreeNodeOptions[] = [];
 
-  constructor(public _storageService: FinanceStorageService,
+  constructor(
+    public odataService: FinanceOdataService,
     public _uiStatusService: UIStatusService) {
       this.isLoadingResults = false;
     }
 
   ngOnInit() {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnInit...');
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnInit...', ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    this._storageService.fetchAllControlCenters()
+    this.odataService.fetchAllControlCenters()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((value: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnInit, fetchAllControlCenters...');
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnInit, fetchAllControlCenters.',
+          ConsoleLogTypeEnum.debug);
 
         if (value) {
           this.ccTreeNodes = this._buildControlCenterTree(value, 1);
         }
       }, (error: any) => {
-        // Do nothing
+        // TBD.
       }, () => {
         this.isLoadingResults = false;
       });
   }
 
   ngOnDestroy() {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnDestroy...');
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);

@@ -7,7 +7,6 @@ import { LogLevel, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringU
   OverviewScopeEnum,
   getOverviewScopeRange, UICommonLabelEnum, Book, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../../model';
-import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'hih-fin-account-list',

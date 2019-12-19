@@ -397,7 +397,7 @@ export class FinanceStorageService {
         }
 
         let hd: Account = new Account();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
         this._listAccount.push(hd);
         return hd;
       }),
@@ -435,7 +435,7 @@ export class FinanceStorageService {
         }
 
         let hd: Account = new Account();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
 
         // Update the buffer
         let idx: number = this._listAccount.findIndex((val: any) => {
@@ -528,7 +528,7 @@ export class FinanceStorageService {
         }
 
         let hd: Account = new Account();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
 
         // Update the buffer if necessary
         let idx: number = this._listAccount.findIndex((val: any) => {
@@ -623,7 +623,7 @@ export class FinanceStorageService {
         }
 
         let hd: ControlCenter = new ControlCenter();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
 
         this._listControlCenter.push(hd);
         return hd;
@@ -662,7 +662,7 @@ export class FinanceStorageService {
         }
 
         let hd: ControlCenter = new ControlCenter();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
 
         let idx: number = this._listControlCenter.findIndex((val: any) => {
           return val.Id === hd.Id;
@@ -707,7 +707,7 @@ export class FinanceStorageService {
         }
 
         let hd: ControlCenter = new ControlCenter();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
         // Update the buffer if necessary
         let idx: number = this._listControlCenter.findIndex((val: any) => {
           return val.Id === hd.Id;
@@ -839,7 +839,7 @@ export class FinanceStorageService {
         }
 
         let hd: Order = new Order();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
 
         let idx: number = this._listOrder.findIndex((val: any) => {
           return val.Id === hd.Id;
@@ -884,7 +884,7 @@ export class FinanceStorageService {
         }
 
         let hd: Order = new Order();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
 
         // Update the buffer if necessary
         let idx: number = this._listOrder.findIndex((val: any) => {
