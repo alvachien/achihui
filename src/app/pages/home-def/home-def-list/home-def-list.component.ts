@@ -3,8 +3,7 @@ import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, of, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
-import { environment } from '../../../../environments/environment';
-import { LogLevel, HomeDef, UICommonLabelEnum, } from '../../../model';
+import { LogLevel, HomeDef, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum, } from '../../../model';
 import { HomeDefOdataService, UIStatusService, } from '../../../services';
 
 @Component({
@@ -13,6 +12,7 @@ import { HomeDefOdataService, UIStatusService, } from '../../../services';
   styleUrls: ['./home-def-list.component.less'],
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
+  // tslint:disable-next-line:variable-name
   private _destroyed$: ReplaySubject<boolean>;
 
   isLoadingResults: boolean;
@@ -30,26 +30,20 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     public homeService: HomeDefOdataService,
     private _uiService: UIStatusService,
     private _router: Router) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...');
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...', ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...');
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...', ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
     this._fetchData();
   }
 
   ngOnDestroy(): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...');
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
 
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -68,16 +62,16 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   public onChooseHome(row: HomeDef): void {
     this.homeService.ChosedHome = row;
 
-    this.homeService.fetchAllMembersInChosedHome().subscribe(x => {
-      if (this.homeService.RedirectURL) {
-        const url: string = this.homeService.RedirectURL;
-        this.homeService.RedirectURL = '';
+    // this.homeService.fetchAllMembersInChosedHome().subscribe(x => {
+    if (this.homeService.RedirectURL) {
+      const url: string = this.homeService.RedirectURL;
+      this.homeService.RedirectURL = '';
 
-        this._router.navigate([url]);
-      } else {
-        this._router.navigate(['/']);
-      }
-    });
+      this._router.navigate([url]);
+    } else {
+      this._router.navigate(['/']);
+    }
+    // });
   }
 
   public onHomeDefRowSelect(row: HomeDef): void {

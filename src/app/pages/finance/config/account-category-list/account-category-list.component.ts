@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { LogLevel, AccountCategory, } from '../../../../model';
-import { FinanceStorageService, UIStatusService, } from '../../../../services';
+import { LogLevel, AccountCategory, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
+import { FinanceOdataService, UIStatusService, } from '../../../../services';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -17,23 +17,24 @@ export class AccountCategoryListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   dataSet: AccountCategory[] = [];
 
-  constructor(public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService,) {
+  constructor(
+    public odataService: FinanceOdataService,
+    public uiStatusService: UIStatusService,
+    ) {
       this.isLoadingResults = false;
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: Entering AccountCategoryListComponent constructor...');
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountCategoryListComponent constructor...', ConsoleLogTypeEnum.debug);
     }
 
   ngOnInit() {
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    this._storageService.fetchAllAccountCategories()
+    this.odataService.fetchAllAccountCategories()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: AccountCategory[]) => {
         this.dataSet = x;
     }, (error: any) => {
+      // TBD.
     }, () => {
       this.isLoadingResults = false;
     });
