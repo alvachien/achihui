@@ -1,5 +1,6 @@
-import { dateSplitChar } from './common';
+import { dateSplitChar, LogLevel } from './common';
 import { DocumentItem } from './financemodel';
+import { environment } from '../../environments/environment';
 
 export enum ConsoleLogTypeEnum {
   log   = 0,
@@ -7,6 +8,7 @@ export enum ConsoleLogTypeEnum {
   warn  = 2,
   error = 3,
 }
+
 /**
  * Utility class in Model
  */
@@ -214,24 +216,32 @@ export class ModelUtility {
     if (log) {
       switch (logType) {
         case ConsoleLogTypeEnum.debug:
-          // tslint:disable-next-line:no-console
-          console.debug(log);
+          if (environment.LoggingLevel >= LogLevel.Debug) {
+            // tslint:disable-next-line:no-console
+            console.debug(log);
+          }
           break;
 
         case ConsoleLogTypeEnum.warn:
-          // tslint:disable-next-line:no-console
-          console.warn(log);
+          if (environment.LoggingLevel >= LogLevel.Warning) {
+            // tslint:disable-next-line:no-console
+            console.warn(log);
+          }
           break;
 
         case ConsoleLogTypeEnum.error:
-          // tslint:disable-next-line:no-console
-          console.error(log);
+          if (environment.LoggingLevel >= LogLevel.Error) {
+            // tslint:disable-next-line:no-console
+            console.error(log);
+          }
           break;
 
         case ConsoleLogTypeEnum.log:
         default:
-          // tslint:disable-next-line:no-console
-          console.log(log);
+          if (environment.LoggingLevel >= LogLevel.Info) {
+            // tslint:disable-next-line:no-console
+            console.log(log);
+          }
           break;
       }
     }

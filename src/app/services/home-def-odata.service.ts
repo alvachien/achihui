@@ -4,7 +4,8 @@ import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxj
 import { catchError, map, startWith, switchMap, } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
-import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, HomeMsg, HomeKeyFigure } from '../model';
+import { LogLevel, HomeDef, HomeMember, HomeDefJson, IHomeMemberJson, HomeMsg, HomeKeyFigure,
+  ModelUtility, ConsoleLogTypeEnum, } from '../model';
 import { AuthService } from './auth.service';
 
 // tslint:disable:variable-name
@@ -31,7 +32,7 @@ export class HomeDefOdataService {
   }
   set ChosedHome(hd: HomeDef) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug(`AC_HIH_UI [Debug]: Setting ChosedHome in HomeDefOdataService: ${hd}`);
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Setting ChosedHome in HomeDefOdataService: ${hd}`, ConsoleLogTypeEnum.debug);
     }
 
     if (hd) {
@@ -58,7 +59,7 @@ export class HomeDefOdataService {
   constructor(private _http: HttpClient,
     private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...');
+      ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...`, ConsoleLogTypeEnum.debug);
     }
 
     this._islistLoaded = false; // Performance improvement
@@ -84,7 +85,8 @@ export class HomeDefOdataService {
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef, map.`);
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef, map...`,
+              ConsoleLogTypeEnum.debug);
           }
 
           this._islistLoaded = true;
@@ -103,7 +105,8 @@ export class HomeDefOdataService {
         }),
         catchError((error: HttpErrorResponse) => {
           if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Entering HomeDefOdataService, fetchAllHomeDef, Failed: ${error}`);
+            ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef, Failed: ${error}`,
+              ConsoleLogTypeEnum.debug);
           }
 
           this._islistLoaded = false;
@@ -129,9 +132,7 @@ export class HomeDefOdataService {
 
     return this._http.get(apiurl, { headers: headers, })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, readHomeDef, map`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, readHomeDef, map.`, ConsoleLogTypeEnum.debug);
 
         const hd: HomeDef = new HomeDef();
         hd.parseJSONData(<any>response);
@@ -149,9 +150,8 @@ export class HomeDefOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering HomeDefOdataService, readHomeDef, Failed ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, readHomeDef, Failed ${error}`, 
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
@@ -174,9 +174,7 @@ export class HomeDefOdataService {
         headers: headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, createHomeDef, map.`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, createHomeDef, map.`, ConsoleLogTypeEnum.debug);
 
         let hd: HomeDef = new HomeDef();
         hd.parseJSONData(<any>response);
@@ -186,9 +184,8 @@ export class HomeDefOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering HomeDefOdataService, createHomeDef, Failed: ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, createHomeDef, Failed: ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
@@ -217,12 +214,11 @@ export class HomeDefOdataService {
           params: params,
         })
         .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefOdataService.`);
-          }
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefOdataService.`,
+            ConsoleLogTypeEnum.debug);
 
           const rjs: any = <any>response;
-          let arMembers: HomeMember[] = [];
+          const arMembers: HomeMember[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
             for (const si of rjs.contentList) {
@@ -238,9 +234,8 @@ export class HomeDefOdataService {
           return arMembers;
         }),
         catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllMembersInChosedHome in HomeDefOdataService: ${error}`);
-          }
+          ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Failed in fetchAllMembersInChosedHome in HomeDefOdataService: ${error}`,
+            ConsoleLogTypeEnum.error);
 
           this._isMemberInChosedHomeLoaded = false;
 
@@ -285,9 +280,7 @@ export class HomeDefOdataService {
         headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]:' + response);
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
 
         let hd: HomeMsg = new HomeMsg();
         hd.onSetData(<any>response);
@@ -318,9 +311,7 @@ export class HomeDefOdataService {
         params: params,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]:' + response);
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
 
         let hd: HomeMsg = new HomeMsg();
         hd.onSetData(<any>response);
@@ -351,12 +342,10 @@ export class HomeDefOdataService {
         params: params,
       })
       .pipe(map((response: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]:' + response);
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
 
-        let hd: HomeMsg = new HomeMsg();
-        hd.onSetData(<any>response);
+        const hd: HomeMsg = new HomeMsg();
+        hd.onSetData(response);
         return hd;
       }));
   }
@@ -374,19 +363,18 @@ export class HomeDefOdataService {
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, {headers: headers, })
+    return this._http.get<any>(requestUrl, { headers, })
       .pipe(map((x: HttpResponse<any>) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, getHomeKeyFigure, map.`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefDetailService, getHomeKeyFigure, map.`,
+          ConsoleLogTypeEnum.debug);
+
         this.keyFigure = new HomeKeyFigure();
-        this.keyFigure.onSetData(<any>x);
+        this.keyFigure.onSetData(x);
         return this.keyFigure;
       }),
       catchError((error: HttpErrorResponse) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error(`AC_HIH_UI [Error]: Entering HomeDefDetailService, getHomeKeyFigure, Failed: ${error}`);
-        }
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefDetailService, getHomeKeyFigure, Failed: ${error}`,
+          ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));

@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { LogLevel, DocumentType } from '../../../../model';
-import { FinanceStorageService, UIStatusService, } from '../../../../services';
+import { LogLevel, DocumentType, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+import { FinanceOdataService, UIStatusService, } from '../../../../services';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -17,19 +17,19 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   dataSet: DocumentType[];
 
-  constructor(public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService,) {
+  constructor(
+    public odataService: FinanceOdataService,
+    public uiStatusService: UIStatusService,
+    ) {
       this.isLoadingResults = false;
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: Entering DocTypeListComponent constructor...');
-      }
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocTypeListComponent constructor...', ConsoleLogTypeEnum.debug);
     }
 
   ngOnInit() {
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    this._storageService.fetchAllDocTypes()
+    this.odataService.fetchAllDocTypes()
       .pipe(takeUntil(this._destroyed$))
       .subscribe((x: DocumentType[]) => {
         this.dataSet = x;

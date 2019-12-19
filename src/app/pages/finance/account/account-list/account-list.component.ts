@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FinanceStorageService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { LogLevel, Account, AccountStatusEnum, UIDisplayString, UIDisplayStringUtil,
   OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, Book,
+  getOverviewScopeRange, UICommonLabelEnum, Book, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../../model';
 import { environment } from '../../../../../environments/environment';
 
@@ -21,8 +21,10 @@ export class AccountListComponent implements OnInit, OnDestroy {
   dataSet: Account[] = [];
   isReload: boolean;
 
-  constructor(public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService,) {
+  constructor(
+    public odataService: FinanceOdataService,
+    public uiStatusService: UIStatusService,
+    ) {
       this.isLoadingResults = false;
       this.isReload = false;
     }
@@ -31,22 +33,22 @@ export class AccountListComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     this.isLoadingResults = true;
-    forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts(this.isReload))
+    const reqs = [this.odataService.fetchAllAccountCategories(), this.odataService.fetchAllAccounts(this.isReload)];
+    forkJoin(reqs)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((data: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...');
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...',
+          ConsoleLogTypeEnum.debug);
 
         if (data instanceof Array && data.length > 0) {
           // Parse the data
           this.dataSet = data[1] as Account[];
         }
       }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error('AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...');
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
+          ConsoleLogTypeEnum.error);
 
+        // TBD.
         // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString(), undefined);
       }, () => {
         this.isLoadingResults = false;

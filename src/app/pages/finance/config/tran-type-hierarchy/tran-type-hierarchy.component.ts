@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { LogLevel, AccountCategory, AssetCategory, DocumentType } from '../../../../model';
-import { FinanceStorageService, UIStatusService, } from '../../../../services';
+import { LogLevel, AccountCategory, AssetCategory, DocumentType, ModelUtility, ConsoleLogTypeEnum } from '../../../../model';
+import { FinanceOdataService, UIStatusService, } from '../../../../services';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
@@ -17,11 +17,10 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
 
   isLoadingResults: boolean;
 
-  constructor(public _storageService: FinanceStorageService,
-    public _uiStatusService: UIStatusService,) {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        console.debug('AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent constructor...');
-      }
+  constructor(
+    public odataService: FinanceOdataService,
+    public uiStatusService: UIStatusService,) {
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent constructor...', ConsoleLogTypeEnum.debug);
      }
 
   ngOnInit() {

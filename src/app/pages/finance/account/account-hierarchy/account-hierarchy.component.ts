@@ -4,9 +4,9 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeNodeOptions, } from 'ng-zorro-antd/core';
 import { takeUntil } from 'rxjs/operators';
 
-import { FinanceStorageService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { LogLevel, Account, AccountStatusEnum, AccountCategory, UIDisplayString, UIDisplayStringUtil,
-  OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum,
+  OverviewScopeEnum, getOverviewScopeRange, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../../model';
 import { environment } from '../../../../../environments/environment';
 
@@ -29,8 +29,9 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   availableAccounts: Account[];
   accountTreeNodes: NzTreeNodeOptions[] = [];
 
-  constructor(private _storageService: FinanceStorageService,
-    private _uiStatusService: UIStatusService,
+  constructor(
+    private odataService: FinanceOdataService,
+    private uiStatusService: UIStatusService,
     private _router: Router,
     ) {
       this.isLoadingResults = false; // Default value
@@ -58,7 +59,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
 
   nodeClick(event: NzFormatEmitEvent): void {
-    console.log(event);
+    ModelUtility.writeConsoleLog(event.eventName);
   }
 
   onCreateAccount(): void {
@@ -66,18 +67,17 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
 
   private _refreshTree(isReload?: boolean): void {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      console.debug('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree...');
-    }
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree...',
+      ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = true;
 
-    forkJoin(this._storageService.fetchAllAccountCategories(), this._storageService.fetchAllAccounts(isReload))
+    const reqs = [this.odataService.fetchAllAccountCategories(), this.odataService.fetchAllAccounts(isReload)];
+    forkJoin(reqs)
       .pipe(takeUntil(this._destroyed$))
       .subscribe((data: any) => {
-        if (environment.LoggingLevel >= LogLevel.Debug) {
-          console.debug('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...');
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...',
+          ConsoleLogTypeEnum.debug);
 
         if (data instanceof Array && data.length > 0) {
           // Parse the data
@@ -87,10 +87,10 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           this.accountTreeNodes = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
         }
       }, (error: any) => {
-        if (environment.LoggingLevel >= LogLevel.Error) {
-          console.error('AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...');
-        }
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
+          ConsoleLogTypeEnum.error);
 
+        // TBD.
         // popupDialog(this._dialog, this._uiStatusService.getUILabel(UICommonLabelEnum.Error), error.toString(), undefined);
       }, () => {
         this.isLoadingResults = false;
