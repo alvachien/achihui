@@ -56,7 +56,8 @@ export class HomeDefOdataService {
   // Properties
   keyFigure: HomeKeyFigure;
 
-  constructor(private _http: HttpClient,
+  constructor(
+    private _http: HttpClient,
     private _authService: AuthService) {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...`, ConsoleLogTypeEnum.debug);
@@ -81,7 +82,7 @@ export class HomeDefOdataService {
                        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
       return this._http.get(apiurl, {
-          headers: headers,
+          headers,
         })
         .pipe(map((response: HttpResponse<any>) => {
           if (environment.LoggingLevel >= LogLevel.Debug) {
@@ -89,7 +90,6 @@ export class HomeDefOdataService {
               ConsoleLogTypeEnum.debug);
           }
 
-          this._islistLoaded = true;
           this._listHomeDefList = [];
           const rjs: any = response;
 
@@ -101,6 +101,7 @@ export class HomeDefOdataService {
             }
           }
 
+          this._islistLoaded = true;
           return this._listHomeDefList;
         }),
         catchError((error: HttpErrorResponse) => {
@@ -130,15 +131,15 @@ export class HomeDefOdataService {
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get(apiurl, { headers: headers, })
+    return this._http.get(apiurl, { headers, })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, readHomeDef, map.`, ConsoleLogTypeEnum.debug);
 
         const hd: HomeDef = new HomeDef();
-        hd.parseJSONData(<any>response);
+        hd.parseJSONData(response as any);
 
         // Buffer it
-        let nidx: number = this._listHomeDefList.findIndex((val: HomeDef) => {
+        const nidx: number = this._listHomeDefList.findIndex((val: HomeDef) => {
           return val.ID === hd.ID;
         });
         if (nidx === -1) {
@@ -150,7 +151,7 @@ export class HomeDefOdataService {
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, readHomeDef, Failed ${error}`, 
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering HomeDefOdataService, readHomeDef, Failed ${error}`,
           ConsoleLogTypeEnum.error);
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
@@ -166,18 +167,18 @@ export class HomeDefOdataService {
     headers = headers.append('Content-Type', 'application/json')
                      .append('Accept', 'application/json')
                      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-    let apiurl: string = environment.ApiUrl + '/api/HomeDefines';
+    const apiurl: string = environment.ApiUrl + '/api/HomeDefines';
 
     const data: HomeDefJson = objhd.generateJSONData(true);
     const jdata: any = JSON && JSON.stringify(data);
     return this._http.post(apiurl, jdata, {
-        headers: headers,
+        headers,
       })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering HomeDefOdataService, createHomeDef, map.`, ConsoleLogTypeEnum.debug);
 
-        let hd: HomeDef = new HomeDef();
-        hd.parseJSONData(<any>response);
+        const hd: HomeDef = new HomeDef();
+        hd.parseJSONData(response as any);
 
         this._listHomeDefList.push(hd);
 
@@ -210,14 +211,14 @@ export class HomeDefOdataService {
       let params: HttpParams = new HttpParams();
       params = params.append('hid', this.ChosedHome.ID.toString());
       return this._http.get(apiurl, {
-          headers: headers,
-          params: params,
+          headers,
+          params,
         })
         .pipe(map((response: HttpResponse<any>) => {
           ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering map in fetchAllMembersInChosedHome in HomeDefOdataService.`,
             ConsoleLogTypeEnum.debug);
 
-          const rjs: any = <any>response;
+          const rjs: any = response as any;
           const arMembers: HomeMember[] = [];
 
           if (rjs.totalCount > 0 && rjs.contentList instanceof Array && rjs.contentList.length > 0) {
@@ -261,7 +262,7 @@ export class HomeDefOdataService {
                       .append('Accept', 'application/json')
                       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<any>(requestUrl, { headers: headers, });
+    return this._http.get<any>(requestUrl, { headers, });
   }
 
   /**
@@ -282,8 +283,8 @@ export class HomeDefOdataService {
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
 
-        let hd: HomeMsg = new HomeMsg();
-        hd.onSetData(<any>response);
+        const hd: HomeMsg = new HomeMsg();
+        hd.onSetData(response as any);
         return hd;
       }));
   }
@@ -299,7 +300,7 @@ export class HomeDefOdataService {
     const apiurl: string = environment.ApiUrl + '/api/homemsg/' + msg.ID.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this.ChosedHome.ID.toString());
-    let jdata: any[] = [{
+    const jdata: any[] = [{
         'op': 'replace',
         'path': '/readFlag',
         'value': true,
@@ -307,14 +308,14 @@ export class HomeDefOdataService {
     ];
 
     return this._http.patch(apiurl, jdata, {
-        headers: headers,
-        params: params,
+        headers,
+        params,
       })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);
 
-        let hd: HomeMsg = new HomeMsg();
-        hd.onSetData(<any>response);
+        const hd: HomeMsg = new HomeMsg();
+        hd.onSetData(response as any);
         return hd;
       }));
   }
@@ -330,16 +331,16 @@ export class HomeDefOdataService {
     const apiurl: string = environment.ApiUrl + '/api/homemsg/' + msg.ID.toString();
     let params: HttpParams = new HttpParams();
     params = params.append('hid', this.ChosedHome.ID.toString());
-    let jdata: any[] = [{
+    const jdata: any[] = [{
         'op': 'replace',
-        'path': senderdel ?  '/senderDeletion' : '/receiverDeletion',
+        'path': senderdel ? '/senderDeletion' : '/receiverDeletion',
         'value': true,
       },
     ];
 
     return this._http.patch(apiurl, jdata, {
-        headers: headers,
-        params: params,
+        headers,
+        params,
       })
       .pipe(map((response: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]:' + response, ConsoleLogTypeEnum.debug);

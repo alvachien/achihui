@@ -81,7 +81,7 @@ export class HomeMember {
     this._relation = +data.Relation;
   }
   public generateJSONData(): IHomeMemberJson {
-    let jdata: IHomeMemberJson = {
+    const jdata: IHomeMemberJson = {
       HomeID: this._hid,
       User: this._user,
       DisplayAs: this._displayas,
@@ -113,7 +113,6 @@ export class HomeDef extends hih.BaseModel {
   private _details: string;
   private _host: string;
   private _basecurr: string;
-  private _creatorDisplayAs: string; // Only for creation mode!
   private _listMembers: HomeMember[];
 
   constructor() {
@@ -151,6 +150,18 @@ export class HomeDef extends hih.BaseModel {
   set BaseCurrency(curr: string) {
     this._basecurr = curr;
   }
+  get CreatorDisplayAs(): string {
+    if (this._listMembers) {
+      const hostmem = this._listMembers.find(
+        (mem: HomeMember) => mem.Relation === HomeMemberRelationEnum.Self
+      );
+      if (hostmem) {
+        return hostmem.DisplayAs;
+      }
+    }
+
+    return '';
+  }
 
   get Members(): HomeMember[] {
     return this._listMembers;
@@ -182,8 +193,8 @@ export class HomeDef extends hih.BaseModel {
 
     this._listMembers = [];
     if (data.HomeMembers) {
-      for (let mem of data.HomeMembers) {
-        let hmem: HomeMember = new HomeMember();
+      for (const mem of data.HomeMembers) {
+        const hmem: HomeMember = new HomeMember();
         hmem.parseJSONData(mem);
         this._listMembers.push(hmem);
       }
@@ -191,7 +202,7 @@ export class HomeDef extends hih.BaseModel {
   }
 
   public generateJSONData(createmode?: boolean): HomeDefJson {
-    let jdata: HomeDefJson = {
+    const jdata: HomeDefJson = {
       ID: this._id,
       Name: this._name,
       Details: this._details,
@@ -199,8 +210,8 @@ export class HomeDef extends hih.BaseModel {
       BaseCurrency: this._basecurr,
     };
     if (this._listMembers) {
-      for(let mem of this._listMembers) {
-        let memjson: IHomeMemberJson = mem.generateJSONData();
+      for (const mem of this._listMembers) {
+        const memjson: IHomeMemberJson = mem.generateJSONData();
         jdata.HomeMembers.push(memjson);
       }
     }
@@ -339,7 +350,7 @@ export class HomeMsg {
     }
   }
   public writeJSONObject(): IHomeMsgJson {
-    let hmj: IHomeMsgJson = {
+    const hmj: IHomeMsgJson = {
       id: this._id,
       hid: this._hid,
       userFrom: this._usrfrom,

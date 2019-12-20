@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Observable, Subject, BehaviorSubject, of, merge, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
-import { LogLevel, HomeDef, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum, } from '../../../model';
+import { HomeDef, ModelUtility, ConsoleLogTypeEnum, } from '../../../model';
 import { HomeDefOdataService, UIStatusService, } from '../../../services';
 
 @Component({
@@ -27,9 +27,9 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    public homeService: HomeDefOdataService,
-    private _uiService: UIStatusService,
-    private _router: Router) {
+    private homeService: HomeDefOdataService,
+    private uiService: UIStatusService,
+    private router: Router) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...', ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = false;
@@ -52,11 +52,11 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   public onCreateHome(): void {
-    this._router.navigate(['/homedef/create']);
+    this.router.navigate(['/homedef/create']);
   }
 
   public onDisplayHome(row: HomeDef): void {
-    this._router.navigate(['/homedef/display/' + row.ID.toString()]);
+    this.router.navigate(['/homedef/display/' + row.ID.toString()]);
   }
 
   public onChooseHome(row: HomeDef): void {
@@ -67,9 +67,9 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       const url: string = this.homeService.RedirectURL;
       this.homeService.RedirectURL = '';
 
-      this._router.navigate([url]);
+      this.router.navigate([url]);
     } else {
-      this._router.navigate(['/']);
+      this.router.navigate(['/']);
     }
     // });
   }
@@ -93,9 +93,8 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe((arHomeDef: HomeDef[]) => {
         this.dataSource = arHomeDef;
-        // this.dataSource = new MatTableDataSource(arHomeDef);
-        // this.dataSource.paginator = this.paginator;
       }, (error: any) => {
+        // TBD.
         // Show error dialog
         // popupDialog(this._dialog, this._uiService.getUILabel(UICommonLabelEnum.Error),
         //   error ? error.toString() : this._uiService.getUILabel(UICommonLabelEnum.Error));
