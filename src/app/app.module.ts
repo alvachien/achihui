@@ -13,9 +13,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
 import { AuthService, AuthGuardService,
-  FinCurrencyService, HomeChoseGuardService, FinanceStorageService, LearnStorageService, LibraryStorageService,
+  FinCurrencyService, HomeChoseGuardService,
   CanDeactivateGuardService, LanguageService, UIStatusService, SideNavService, TagsService,
-  EventStorageService,
   FinanceOdataService,
   HomeDefOdataService,
 } from './services';
@@ -53,14 +52,9 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     FinCurrencyService,
     HomeChoseGuardService,
     CanDeactivateGuardService,
-    // FinanceStorageService,
-    // LearnStorageService,
-    // LibraryStorageService,
     LanguageService,
     UIStatusService,
     SideNavService,
-    // TagsService,
-    // EventStorageService,
     HomeDefOdataService,
     FinanceOdataService,
   ],

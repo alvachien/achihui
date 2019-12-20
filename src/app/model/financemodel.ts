@@ -1630,6 +1630,34 @@ export interface DocumentVerifyContext {
   BaseCurrency: string;
 }
 
+export interface DocumentItemJson {
+  DocID: number;
+  ItemID: number;
+  AccountID: number;
+  TranType: number;
+  TranAmount: number;
+  UseCurr2?: boolean;
+  ControlCenterID?: number;
+  OrderID?: number;
+  Desp: string;
+}
+
+export interface DocumentJson {
+  ID: number;
+  HomeID: number;
+  DocType: number;
+  TranDate: string;
+  TranCurr: string;
+  Desp: string;
+  ExgRate: number;
+  ExgRate_Plan: boolean;
+  TranCurr2: string;
+  ExgRate2: number;
+  ExgRate_Plan2: boolean;
+
+  Items: DocumentItemJson[];
+}
+
 /**
  * Document
  */
@@ -1881,28 +1909,28 @@ export class Document extends hih.BaseModel {
     return chkrst;
   }
 
-  public writeJSONObject(): any {
-    const rstObj: any = super.writeJSONObject();
-    rstObj.id = this.Id;
-    rstObj.hid = this.HID;
-    rstObj.docType = this.DocType;
-    rstObj.tranDate = this._tranDate.format(hih.momentDateFormat);
-    rstObj.tranCurr = this.TranCurr;
+  public writeJSONObject(): DocumentJson {
+    let rstObj: any = super.writeJSONObject();
+    rstObj.ID = this.Id;
+    rstObj.HomeID = this.HID;
+    rstObj.DocType = this.DocType;
+    rstObj.TranDate = this._tranDate.format(hih.momentDateFormat);
+    rstObj.TranCurr = this.TranCurr;
     if (this.TranCurr2) {
-      rstObj.tranCurr2 = this.TranCurr2;
+      rstObj.TranCurr2 = this.TranCurr2;
     }
-    rstObj.desp = this.Desp;
+    rstObj.Desp = this.Desp;
     if (this.ExgRate) {
-      rstObj.exgRate = this.ExgRate;
+      rstObj.ExgRate = this.ExgRate;
     }
     if (this.ExgRate_Plan) {
-      rstObj.exgRate_Plan = this.ExgRate_Plan;
+      rstObj.ExgRate_Plan = this.ExgRate_Plan;
     }
     if (this.ExgRate2) {
-      rstObj.exgRate2 = this.ExgRate2;
+      rstObj.ExgRate2 = this.ExgRate2;
     }
     if (this.ExgRate_Plan2) {
-      rstObj.exgRate_Plan2 = this.ExgRate_Plan2;
+      rstObj.ExgRate_Plan2 = this.ExgRate_Plan2;
     }
 
     rstObj.items = [];
@@ -1914,54 +1942,48 @@ export class Document extends hih.BaseModel {
     return rstObj;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: DocumentJson): void {
     super.onSetData(data);
 
-    if (data && data.id) {
-      this.Id = +data.id;
+    if (data && data.ID) {
+      this.Id = +data.ID;
     }
-    if (data && data.hid) {
-      this.HID = +data.hid;
+    if (data && data.HomeID) {
+      this.HID = +data.HomeID;
     }
-    if (data && data.docType) {
-      this.DocType = +data.docType;
+    if (data && data.DocType) {
+      this.DocType = +data.DocType;
     }
-    if (data && data.tranDate) {
-      this.TranDate = moment(data.tranDate, hih.momentDateFormat);
+    if (data && data.TranDate) {
+      this.TranDate = moment(data.TranDate, hih.momentDateFormat);
     }
-    if (data && data.tranCurr) {
-      this.TranCurr = data.tranCurr;
+    if (data && data.TranCurr) {
+      this.TranCurr = data.TranCurr;
     }
-    if (data && data.exgRate) {
-      this.ExgRate = +data.exgRate;
+    if (data && data.ExgRate) {
+      this.ExgRate = +data.ExgRate;
     }
-    if (data && data.exgRate_Plan) {
-      this.ExgRate_Plan = data.exgRate_Plan;
+    if (data && data.ExgRate_Plan) {
+      this.ExgRate_Plan = data.ExgRate_Plan;
     }
-    if (data && data.tranCurr2) {
-      this.TranCurr2 = data.tranCurr2;
+    if (data && data.TranCurr2) {
+      this.TranCurr2 = data.TranCurr2;
     }
-    if (data && data.exgRate2) {
-      this.ExgRate2 = data.exgRate2;
+    if (data && data.ExgRate2) {
+      this.ExgRate2 = data.ExgRate2;
     }
-    if (data && data.exgRate_Plan2) {
-      this.ExgRate_Plan2 = data.exgRate_Plan2;
+    if (data && data.ExgRate_Plan2) {
+      this.ExgRate_Plan2 = data.ExgRate_Plan2;
     }
-    if (data && data.desp) {
-      this.Desp = data.desp;
-    }
-    if (data && data.tranAmount) {
-      this.TranAmount = data.tranAmount;
-    }
-    if (data && data.docTypeName) {
-      this.DocTypeName = data.docTypeName;
+    if (data && data.Desp) {
+      this.Desp = data.Desp;
     }
 
     this.Items = [];
-    if (data && data.items && data.items instanceof Array) {
-      for (let it of data.items) {
+    if (data && data.Items && data.Items instanceof Array) {
+      for (let it of data.Items) {
         let item: DocumentItem = new DocumentItem();
-        item.onSetData(it);
+        item.onSetData(it as DocumentItemJson);
         this.Items.push(item);
       }
     }
@@ -2183,63 +2205,63 @@ export class DocumentItem {
     return chkrst;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): DocumentItemJson {
     const rstObj: any = {};
     if (this.DocId) {
-      rstObj.docID = this.DocId;
+      rstObj.DocID = this.DocId;
     }
-    rstObj.itemID = this.ItemId;
-    rstObj.accountID = this.AccountId;
-    rstObj.tranType = this.TranType;
-    rstObj.tranAmount = this.TranAmount;
-    rstObj.useCurr2 = this.UseCurr2;
+    rstObj.ItemID = this.ItemId;
+    rstObj.AccountID = this.AccountId;
+    rstObj.TranType = this.TranType;
+    rstObj.TranAmount = this.TranAmount;
+    rstObj.UseCurr2 = this.UseCurr2;
     if (this.ControlCenterId) {
-      rstObj.controlCenterID = this.ControlCenterId;
+      rstObj.ControlCenterID = this.ControlCenterId;
     }
     if (this.OrderId) {
-      rstObj.orderID = this.OrderId;
+      rstObj.OrderID = this.OrderId;
     }
-    rstObj.desp = this.Desp;
-    if (this.Tags.length > 0) {
-      rstObj.tagTerms = [];
-      for (const tag of this.Tags) {
-        rstObj.tagTerms.push(tag);
-      }
-    }
+    rstObj.Desp = this.Desp;
+    // if (this.Tags.length > 0) {
+    //   rstObj.tagTerms = [];
+    //   for (const tag of this.Tags) {
+    //     rstObj.tagTerms.push(tag);
+    //   }
+    // }
 
     return rstObj;
   }
 
-  public onSetData(data: any): void {
-    if (data && data.itemID) {
-      this.ItemId = +data.itemID;
+  public onSetData(data: DocumentItemJson): void {
+    if (data && data.ItemID) {
+      this.ItemId = +data.ItemID;
     }
-    if (data && data.accountID) {
-      this.AccountId = +data.accountID;
+    if (data && data.AccountID) {
+      this.AccountId = +data.AccountID;
     }
-    if (data && data.tranType) {
-      this.TranType = +data.tranType;
+    if (data && data.TranType) {
+      this.TranType = +data.TranType;
     }
-    if (data && data.tranAmount) {
-      this.TranAmount = +data.tranAmount;
+    if (data && data.TranAmount) {
+      this.TranAmount = +data.TranAmount;
     }
-    if (data && data.useCurr2) {
-      this.UseCurr2 = data.useCurr2;
+    if (data && data.UseCurr2) {
+      this.UseCurr2 = data.UseCurr2;
     }
-    if (data && data.controlCenterID) {
-      this.ControlCenterId = +data.controlCenterID;
+    if (data && data.ControlCenterID) {
+      this.ControlCenterId = +data.ControlCenterID;
     }
-    if (data && data.orderID) {
-      this.OrderId = +data.orderID;
+    if (data && data.OrderID) {
+      this.OrderId = +data.OrderID;
     }
-    if (data && data.desp) {
-      this.Desp = data.desp;
+    if (data && data.Desp) {
+      this.Desp = data.Desp;
     }
-    if (data && data.tagTerms && data.tagTerms instanceof Array && data.tagTerms.length > 0) {
-      for (const term of data.tagTerms) {
-        this.Tags.push(term);
-      }
-    }
+    // if (data && data.tagTerms && data.tagTerms instanceof Array && data.tagTerms.length > 0) {
+    //   for (const term of data.tagTerms) {
+    //     this.Tags.push(term);
+    //   }
+    // }
   }
 }
 

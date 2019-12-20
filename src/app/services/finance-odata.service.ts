@@ -2,10 +2,11 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject, BehaviorSubject, merge, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import * as  moment from 'moment';
 
 import { environment } from '../../environments/environment';
 import { LogLevel, Currency, ModelUtility, ConsoleLogTypeEnum, AccountCategory, TranType, AssetCategory, ControlCenter,
-  DocumentType, Order, Document, Account, } from '../model';
+  DocumentType, Order, Document, Account, momentDateFormat, BaseListModel, } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 
@@ -33,6 +34,7 @@ export class FinanceOdataService {
   readonly accountAPIUrl: string = environment.ApiUrl + '/api/FinanceAccounts';
   readonly controlCenterAPIUrl: string = environment.ApiUrl + '/api/FinanceControlCenters';
   readonly orderAPIUrl: string = environment.ApiUrl + '/api/FinanceOrders';
+  readonly documentAPIUrl: string = environment.ApiUrl + '/api/FinanceDocuments';
 
   // Buffer in current page.
   get Currencies(): Currency[] {
@@ -481,6 +483,52 @@ export class FinanceOdataService {
     } else {
       return of(this.listOrder);
     }
+  }
+
+  /**
+   * Read all documents out
+   * @param dtbgn Begin date
+   * @param dtend End Date
+   * @param top The maximum returned amount
+   * @param skip Skip the amount
+   */
+  public fetchAllDocuments(dtbgn: moment.Moment, dtend: moment.Moment, top: number, skip: number): Observable<BaseListModel<Document>> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+    const hid = this.homeService.ChosedHome.ID;
+    const dtbgnfmt = dtbgn.format(momentDateFormat);
+    const dtendfmt = dtend.format(momentDateFormat);
+    let apiUrl = this.documentAPIUrl + `?$select=ID,HomeID,TranDate,DocType,Desp&$filter=HomeID eq ${hid} and date(TranDate) ge ${dtbgnfmt} and date(TranDate) le ${dtendfmt}&$top=${top}&$skip=${skip}&count=true`;
+
+    return this.http.get(apiUrl, { headers, })
+      .pipe(map((response: HttpResponse<any>) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, fetchAllDocuments, mpa.`,
+          ConsoleLogTypeEnum.debug);
+
+        let listRst: Document[] = [];
+        const rjs: any = <any>response;
+        const amt = rjs['odata.count'];
+        if (rjs.totalCount > 0 && rjs.values instanceof Array && rjs.values.length > 0) {
+          for (const si of rjs.values) {
+            const rst: Document = new Document();
+            rst.onSetData(si);
+            listRst.push(rst);
+          }
+        }
+        let rstObj: BaseListModel<Document> = new BaseListModel<Document>();
+        rstObj.totalCount = amt;
+        rstObj.contentList = listRst;
+
+        return rstObj;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering FinanceOdataService, fetchAllDocuments failed ${error}`,
+          ConsoleLogTypeEnum.error);
+
+        return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
+      }));
   }
 
   // Private methods

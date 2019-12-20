@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ReplaySubject, forkJoin, of } from 'rxjs';
 import { takeUntil, catchError, map } from 'rxjs/operators';
 
-import { FinanceStorageService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { LogLevel, Account, Document, UIDisplayString, UIDisplayStringUtil,
   OverviewScopeEnum,
-  getOverviewScopeRange, UICommonLabelEnum, BaseListModel,
+  getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../../model';
-import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'hih-fin-document-list',
@@ -25,25 +24,30 @@ export class DocumentListComponent implements OnInit {
   pageSize = 10;
   totalDocumentCount = 1;
 
-  constructor(public _storageService: FinanceStorageService,
+  constructor(
+    public odataService: FinanceOdataService,
     public _uiStatusService: UIStatusService,) {
+      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...', ConsoleLogTypeEnum.debug);
       this.isLoadingResults = false;
     }
 
   ngOnInit() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent OnInit...', ConsoleLogTypeEnum.debug);
+
     this._destroyed$ = new ReplaySubject(1);
-    this.selectedDocScope = OverviewScopeEnum.CurrentMonth;
+    this.selectedDocScope = OverviewScopeEnum.CurrentYear;
 
     this.fetchData();
   }
 
   fetchData(reset: boolean = false): void {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent fetchData...', ConsoleLogTypeEnum.debug);
     if (reset) {
       this.pageIndex = 1;
     }
     this.isLoadingResults = true;
     const { BeginDate: bgn,  EndDate: end }  = getOverviewScopeRange(this.selectedDocScope);
-    this._storageService.fetchAllDocuments(bgn, end, this.pageSize, this.pageIndex * this.pageSize)
+    this.odataService.fetchAllDocuments(bgn, end, this.pageSize, this.pageIndex * this.pageSize)
       .pipe(
         map((revdata: BaseListModel<Document>) => {
           if (revdata) {

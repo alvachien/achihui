@@ -77,8 +77,12 @@ export class HomeMember {
   public parseJSONData(data: IHomeMemberJson): void {
     this._hid = data.HomeID;
     this._user = data.User;
-    this._displayas = data.DisplayAs;
-    this._relation = +data.Relation;
+    if (data.DisplayAs) {
+      this._displayas = data.DisplayAs;
+    }
+    if (data.Relation) {
+      this._relation = HomeMemberRelationEnum[data.Relation as unknown as keyof typeof HomeMemberRelationEnum];
+    }
   }
   public generateJSONData(): IHomeMemberJson {
     const jdata: IHomeMemberJson = {

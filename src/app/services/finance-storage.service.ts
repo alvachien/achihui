@@ -103,280 +103,6 @@ export class FinanceStorageService {
     this._listOrder = [];
   }
 
-  // Account categories
-  public fetchAllAccountCategories(forceReload?: boolean): Observable<AccountCategory[]> {
-    if (!this._isAcntCtgyListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceAccountCategory';
-
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-        .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
-        headers: headers,
-        params: params,
-      })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllAccountCategories in FinanceStorageService`);
-          }
-
-          this._listAccountCategory = [];
-          const rjs: any = <any>response;
-
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
-              const rst: AccountCategory = new AccountCategory();
-              rst.onSetData(si);
-              this._listAccountCategory.push(rst);
-            }
-          }
-
-          this._isAcntCtgyListLoaded = true;
-
-          return this._listAccountCategory;
-        }),
-          catchError((error: HttpErrorResponse) => {
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccountCategories in FinanceStorageService: ${error}`);
-            }
-
-            this._isAcntCtgyListLoaded = false;
-            this._listAccountCategory = [];
-
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-          }));
-    } else {
-      return of(this._listAccountCategory);
-    }
-  }
-
-  // Doc type
-  public fetchAllDocTypes(forceReload?: boolean): Observable<DocumentType[]> {
-    if (!this._isDocTypeListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceDocType';
-
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-        .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
-        headers: headers,
-        params: params,
-      })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllDocTypes in FinanceStorageService.`);
-          }
-
-          this._listDocType = [];
-
-          const rjs: any = <any>response;
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
-              const rst: DocumentType = new DocumentType();
-              rst.onSetData(si);
-              this._listDocType.push(rst);
-            }
-          }
-          this._isDocTypeListLoaded = true;
-
-          return this._listDocType;
-        }),
-          catchError((error: HttpErrorResponse) => {
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllDocTypes in FinanceStorageService: ${error}`);
-            }
-
-            this._isDocTypeListLoaded = false;
-            this._listDocType = [];
-
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-          }));
-    } else {
-      return of(this._listDocType);
-    }
-  }
-
-  // Tran type
-  public fetchAllTranTypes(forceReload?: boolean): Observable<TranType[]> {
-    if (!this._isTranTypeListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceTranType';
-
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-        .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
-        headers: headers,
-        params: params,
-      })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            // console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceStorageService: ${response}`);
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllTranTypes in FinanceStorageService.`);
-          }
-
-          this._listTranType = [];
-
-          const rjs: any = <any>response;
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
-              const rst: TranType = new TranType();
-              rst.onSetData(si);
-              this._listTranType.push(rst);
-            }
-          }
-
-          // Prepare for the hierarchy
-          this.buildTranTypeHierarchy(this._listTranType);
-
-          // Sort it
-          this._listTranType.sort((a: any, b: any) => {
-            if (a.Expense) {
-              if (b.Expense) {
-                // Both are expense
-                return a.FullDisplayText.localeCompare(b.FullDisplayText);
-              } else {
-                return 1;
-              }
-            } else {
-              if (b.Expense) {
-                return -1;
-              } else {
-                // Both are income
-                return a.FullDisplayText.localeCompare(b.FullDisplayText);
-              }
-            }
-          });
-
-          this._isTranTypeListLoaded = true;
-
-          return this._listTranType;
-        }),
-          catchError((error: HttpErrorResponse) => {
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllTranTypes in FinanceStorageService: ${error}`);
-            }
-
-            this._isTranTypeListLoaded = false;
-            this._listTranType = [];
-
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-          }));
-    } else {
-      return of(this._listTranType);
-    }
-  }
-
-  // Asset categories
-  public fetchAllAssetCategories(forceReload?: boolean): Observable<AssetCategory[]> {
-    if (!this._isAsstCtgyListLoaded || forceReload) {
-      const apiurl: string = environment.ApiUrl + '/api/FinanceAssetCategory';
-
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-        .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(apiurl, {
-        headers: headers,
-        params: params,
-      })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllAssetCategories in FinanceStorageService`);
-          }
-
-          this._listAssetCategory = [];
-          const rjs: any = <any>response;
-
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
-              const rst: AssetCategory = new AssetCategory();
-              rst.onSetData(si);
-              this._listAssetCategory.push(rst);
-            }
-          }
-
-          this._isAsstCtgyListLoaded = true;
-
-          return this._listAssetCategory;
-        }),
-          catchError((error: HttpErrorResponse) => {
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllAssetCategories in FinanceStorageService: ${error}`);
-            }
-
-            this._isAsstCtgyListLoaded = false;
-            this._listAssetCategory = [];
-
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-          }));
-    } else {
-      return of(this._listAssetCategory);
-    }
-  }
-
-  // Account
-  public fetchAllAccounts(forceReload?: boolean): Observable<Account[]> {
-    if (!this._isAccountListLoaded || forceReload) {
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-        .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      return this._http.get(this.accountAPIUrl, {
-        headers: headers,
-        params: params,
-      })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllAccounts in FinanceStorageService.`);
-          }
-
-          this._listAccount = [];
-          const rjs: any = <any>response;
-
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
-              const rst: Account = new Account();
-              rst.onSetData(si);
-              this._listAccount.push(rst);
-            }
-          }
-
-          this._isAccountListLoaded = true;
-          return this._listAccount;
-        }),
-          catchError((error: HttpErrorResponse) => {
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllAccounts in FinanceStorageService.`);
-            }
-
-            this._isAccountListLoaded = false;
-            this._listAccount = [];
-
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-          }));
-    } else {
-      return of(this._listAccount);
-    }
-  }
-
   /**
    * Create an account
    * @param objAcnt Account to create
@@ -552,58 +278,6 @@ export class FinanceStorageService {
   }
 
   /**
-   * Read all control centers
-   */
-  public fetchAllControlCenters(forceReload?: boolean): Observable<ControlCenter[]> {
-    if (!this._isConctrolCenterListLoaded || forceReload) {
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-        .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-
-      return this._http.get<any>(this.controlCenterAPIUrl, {
-          headers: headers,
-          params: params,
-        })
-        // .retry(3)
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllControlCenters in FinanceStorageService.`);
-          }
-
-          this._listControlCenter = [];
-          const rjs: any = <any>response;
-
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
-              const rst: ControlCenter = new ControlCenter();
-              rst.onSetData(si);
-              this._listControlCenter.push(rst);
-            }
-          }
-
-          this._isConctrolCenterListLoaded = true;
-          return this._listControlCenter;
-        }),
-        catchError((error: HttpErrorResponse) => {
-          if (environment.LoggingLevel >= LogLevel.Error) {
-            console.error(`AC_HIH_UI [Error]: Failed in fetchAllControlCenters in FinanceStorageService.`);
-          }
-
-          this._isConctrolCenterListLoaded = false;
-          this._listControlCenter = [];
-
-          return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-        }));
-    } else {
-      return of(this._listControlCenter);
-    }
-  }
-
-  /**
    * Create a control center
    * @param objDetail Instance of control center to create
    */
@@ -727,57 +401,6 @@ export class FinanceStorageService {
 
         return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
       }));
-  }
-
-  /**
-   * Read all orders out
-   */
-  public fetchAllOrders(forceReload?: boolean): Observable<Order[]> {
-    if (!this._isOrderListLoaded || forceReload) {
-      let headers: HttpHeaders = new HttpHeaders();
-      headers = headers.append('Content-Type', 'application/json')
-        .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
-
-      let incInv: boolean = true;
-      let params: HttpParams = new HttpParams();
-      params = params.append('hid', this._homeService.ChosedHome.ID.toString());
-      params = params.append('incInv', incInv.toString());
-
-      return this._http.get(this.orderAPIUrl, {
-        headers: headers,
-        params: params,
-      })
-        .pipe(map((response: HttpResponse<any>) => {
-          if (environment.LoggingLevel >= LogLevel.Debug) {
-            console.debug(`AC_HIH_UI [Debug]: Entering map in fetchAllOrders in FinanceStorageService.`);
-          }
-
-          this._listOrder = [];
-          const rjs: any = <any>response;
-          if (rjs instanceof Array && rjs.length > 0) {
-            for (const si of rjs) {
-              const rst: Order = new Order();
-              rst.onSetData(si);
-              this._listOrder.push(rst);
-            }
-          }
-          this._isOrderListLoaded = true;
-
-          return this._listOrder;
-        }),
-          catchError((error: HttpErrorResponse) => {
-            if (environment.LoggingLevel >= LogLevel.Error) {
-              console.error(`AC_HIH_UI [Error]: Failed in fetchAllOrders in FinanceStorageService.`);
-            }
-
-            this._isOrderListLoaded = false;
-
-            return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-          }));
-    } else {
-      return of(this._listOrder);
-    }
   }
 
   /**
@@ -1104,7 +727,7 @@ export class FinanceStorageService {
         }
 
         let hd: Document = new Document();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
@@ -1232,7 +855,7 @@ export class FinanceStorageService {
         }
 
         let hd: Document = new Document();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
@@ -1268,7 +891,7 @@ export class FinanceStorageService {
         }
 
         let hd: Document = new Document();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
         return hd;
       }),
       catchError((error: HttpErrorResponse) => {
@@ -1300,7 +923,7 @@ export class FinanceStorageService {
         }
 
         let hd: Document = new Document();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
         return hd;
       }))
       .subscribe((x: any) => {
@@ -1395,7 +1018,7 @@ export class FinanceStorageService {
         }
 
         let hd: Document = new Document();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
 
         return hd;
       }),
@@ -1525,7 +1148,7 @@ export class FinanceStorageService {
         }
 
         let hd: Document = new Document();
-        hd.onSetData(response);
+        hd.onSetData(response as any);
         return hd;
       }),
       catchError((errresp: HttpErrorResponse) => {
