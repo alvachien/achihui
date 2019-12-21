@@ -111,7 +111,7 @@ export class FinanceOdataService {
 
           this.listCurrency = [];
           const rjs: any = response;
-          const amt = rjs['odata.count'];
+          const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: Currency = new Currency();
@@ -158,7 +158,7 @@ export class FinanceOdataService {
           this.listAccountCategory = [];
 
           const rjs: any = response;
-          const amt = rjs['odata.count'];
+          const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: AccountCategory = new AccountCategory();
@@ -206,7 +206,7 @@ export class FinanceOdataService {
           this.listDocType = [];
 
           const rjs: any = response;
-          const amt = rjs['odata.count'];
+          const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: DocumentType = new DocumentType();
@@ -257,7 +257,7 @@ export class FinanceOdataService {
           this.listTranType = [];
 
           const rjs: any = response;
-          const amt = rjs['odata.count'];
+          const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: TranType = new TranType();
@@ -326,7 +326,7 @@ export class FinanceOdataService {
 
           this.listAssetCategory = [];
           const rjs: any = response;
-          const amt = rjs['odata.count'];
+          const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: AssetCategory = new AssetCategory();
@@ -370,7 +370,7 @@ export class FinanceOdataService {
 
           this.listAccount = [];
           const rjs: any = response;
-          const amt = rjs['odata.count'];
+          const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: Account = new Account();
@@ -417,7 +417,7 @@ export class FinanceOdataService {
 
           this.listControlCenter = [];
           const rjs: any = response;
-          const amt = rjs['odata.count'];
+          const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: ControlCenter = new ControlCenter();
@@ -460,7 +460,7 @@ export class FinanceOdataService {
 
           this.listOrder = [];
           const rjs: any = response;
-          const amt = rjs['odata.count'];
+          const amt = rjs['@odata.count'];
           if (rjs.value instanceof Array && rjs.value.length > 0) {
             for (const si of rjs.value) {
               const rst: Order = new Order();
@@ -500,7 +500,7 @@ export class FinanceOdataService {
     const hid = this.homeService.ChosedHome.ID;
     const dtbgnfmt = dtbgn.format(momentDateFormat);
     const dtendfmt = dtend.format(momentDateFormat);
-    let apiUrl = this.documentAPIUrl + `?$select=ID,HomeID,TranDate,DocType,Desp&$filter=HomeID eq ${hid} and date(TranDate) ge ${dtbgnfmt} and date(TranDate) le ${dtendfmt}&$top=${top}&$skip=${skip}&count=true`;
+    let apiUrl = this.documentAPIUrl + `?$select=ID,HomeID,TranDate,DocType,TranCurr,Desp&$filter=HomeID eq ${hid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}&$top=${top}&$skip=${skip}&$count=true`;
 
     return this.http.get(apiUrl, { headers, })
       .pipe(map((response: HttpResponse<any>) => {
@@ -508,10 +508,10 @@ export class FinanceOdataService {
           ConsoleLogTypeEnum.debug);
 
         let listRst: Document[] = [];
-        const rjs: any = <any>response;
-        const amt = rjs['odata.count'];
-        if (rjs.totalCount > 0 && rjs.values instanceof Array && rjs.values.length > 0) {
-          for (const si of rjs.values) {
+        const rjs: any = response as any;
+        const amt = rjs['@odata.count'];
+        if (rjs.value instanceof Array && rjs.value.length > 0) {
+          for (const si of rjs.value) {
             const rst: Document = new Document();
             rst.onSetData(si);
             listRst.push(rst);

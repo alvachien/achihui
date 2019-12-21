@@ -7,6 +7,9 @@
     <nz-page-header-title>Document</nz-page-header-title>
     <nz-page-header-subtitle>List View</nz-page-header-subtitle>
     <nz-page-header-extra>
+      <nz-select [ngModel]="'lucy'" nzDisabled>
+        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+      </nz-select>
       <!-- <nz-select style="width: 120px;" [(ngModel)]="selectedDocScope" nzAllowClear nzPlaceHolder="Choose">
         <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
         <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
@@ -17,11 +20,12 @@
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
-    <nz-table #basicTable
+    <nz-table nzSize="small"
+      #docTable
       nzShowSizeChanger
-      [nzFrontPagination]="false"
+      [nzFrontPagination]="false"      
       [nzData]="listOfDocs"
-      [nzLoading]="loading"
+      [nzLoading]="isLoadingResults"
       [nzTotal]="totalDocumentCount"
       [(nzPageIndex)]="pageIndex"
       [(nzPageSize)]="pageSize"
@@ -29,19 +33,27 @@
       (nzPageSizeChange)="fetchData(true)">
       <thead>
         <tr>
-          <th>Id</th>
+          <th nzShowExpand></th>
+          <th>ID</th>
           <th>Currency</th>
           <th>Date</th>
           <th>Desp</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let data of basicTable.data">
-          <td>{{data.Id}}</td>
-          <td>{{data.TranCurr}}</td>
-          <td>{{data.TranDateFormatString}}</td>
-          <td>{{data.Desp}}</td>
-        </tr>
+        <ng-template ngFor let-data [ngForOf]="docTable.data">
+          <tr>
+            <td nzShowExpand [(nzExpand)]="mapOfExpandData[data.Id]"></td>
+            <td>{{data.Id}}</td>
+            <td>{{data.TranCurr}}</td>
+            <td>{{data.TranDateFormatString}}</td>
+            <td>{{data.Desp}}</td>
+            </tr>
+          <tr [nzExpand]="mapOfExpandData[data.Id]">
+            <td>Items</td>
+            <td colspan="3"></td>
+          </tr>
+        </ng-template>
       </tbody>
     </nz-table>
   </div>

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -28,6 +29,8 @@ import { DocumentDetailComponent } from './document-detail/document-detail.compo
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     NzBreadCrumbModule,
     NzPageHeaderModule,
     NzTableModule,

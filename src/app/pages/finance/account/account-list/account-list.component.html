@@ -12,7 +12,9 @@
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
-    <nz-table #basicTable [nzData]="dataSet">
+    <nz-table #basicTable
+      [nzLoading]="isLoadingResults"
+      [nzData]="dataSet">
       <thead>
         <tr>
           <th>ID</th>
