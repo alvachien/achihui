@@ -7,20 +7,15 @@
     <nz-page-header-title>Document</nz-page-header-title>
     <nz-page-header-subtitle>List View</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <nz-select [ngModel]="'lucy'" nzDisabled>
-        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+      <nz-select [ngModel]="selectedDocScope">
+        <nz-option *ngFor="let scp of uiStatusService.OverviewScopeStrings" [nzValue]='scp.value' [nzLabel]="scp.displaystring"></nz-option>
       </nz-select>
-      <!-- <nz-select style="width: 120px;" [(ngModel)]="selectedDocScope" nzAllowClear nzPlaceHolder="Choose">
-        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-      </nz-select> -->
       <nz-range-picker></nz-range-picker>
       <button nz-button nzType="primary">Create</button>
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
-    <nz-table nzSize="small"
+    <nz-table
       #docTable
       nzShowSizeChanger
       [nzFrontPagination]="false"      
@@ -48,10 +43,29 @@
             <td>{{data.TranCurr}}</td>
             <td>{{data.TranDateFormatString}}</td>
             <td>{{data.Desp}}</td>
-            </tr>
+          </tr>
           <tr [nzExpand]="mapOfExpandData[data.Id]">
-            <td>Items</td>
-            <td colspan="3"></td>
+            <td></td>
+            <td colspan="4">
+              <nz-table #itemTable [nzData]="data.Items">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Account</th>
+                    <th>TranType</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let itemdata of itemTable.data">
+                    <td>{{ itemdata.ItemId }}</td>
+                    <td>{{ itemdata.AccountId }}</td>
+                    <td>{{ itemdata.TranType }}</td>
+                    <td>{{ itemdata.TranAmount }}</td>
+                  </tr>
+                </tbody>
+              </nz-table>
+            </td>
           </tr>
         </ng-template>
       </tbody>

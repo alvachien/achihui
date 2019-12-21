@@ -500,7 +500,10 @@ export class FinanceOdataService {
     const hid = this.homeService.ChosedHome.ID;
     const dtbgnfmt = dtbgn.format(momentDateFormat);
     const dtendfmt = dtend.format(momentDateFormat);
-    let apiUrl = this.documentAPIUrl + `?$select=ID,HomeID,TranDate,DocType,TranCurr,Desp&$filter=HomeID eq ${hid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}&$top=${top}&$skip=${skip}&$count=true`;
+    let apiUrl = this.documentAPIUrl 
+      + `?$select=ID,HomeID,TranDate,DocType,TranCurr,Desp&$filter=HomeID eq ${hid} and TranDate ge ${dtbgnfmt} and TranDate le ${dtendfmt}`
+      + `&$orderby=TranDate desc`
+      + `&$top=${top}&$skip=${skip}&$count=true&$expand=Items`;
 
     return this.http.get(apiUrl, { headers, })
       .pipe(map((response: HttpResponse<any>) => {

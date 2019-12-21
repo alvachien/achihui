@@ -27,7 +27,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   
   constructor(
     public odataService: FinanceOdataService,
-    public _uiStatusService: UIStatusService,) {
+    public uiStatusService: UIStatusService,) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...', ConsoleLogTypeEnum.debug);
       this.isLoadingResults = false;
     }
