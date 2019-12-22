@@ -1,0 +1,78 @@
+<ng-container class="achih-control-full-width" [formGroup]="headerForm" *transloco="let t">
+  <!-- Doc type -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4" nzRequired nzFor="idDocType">{{'Finance.DocumentType' | transloco}}</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="Please input your doc type">
+      <nz-select id="idDocType" formControlName="docTypeControl">
+        <nz-option *ngFor="let dt of arDocTypes" [nzValue]='dt.Id' [nzLabel]="t(dt.Name)"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Tran date -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4" nzRequired nzFor="idTranDate">{{'Common.Date' | transloco}}</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="Please input your tran. date">
+      <nz-date-picker id="idTranDate" formControlName="dateControl" (ngModelChange)="onChange($event)"></nz-date-picker>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Description -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4" nzRequired nzFor="idDesp">{{'Common.Description' | transloco}}</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="Please input description">
+      <input nz-input id="idDesp" formControlName="despControl" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Currency -->
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4" nzRequired nzFor="idCurrency">{{'Finance.Currency' | transloco}}</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="Please input your currency">
+      <nz-select id="idCurrency" formControlName="currControl">
+        <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Symbol) + ' - ' + t(cr.Name)"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Exchange rate -->
+  <nz-form-item *ngIf="tranCurrency && isForeignCurrency">
+    <nz-form-label [nzSpan]="4" nzRequired nzFor="idexg">{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="Please input description">
+      <input nz-input id="idexg" formControlName="exgControl" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Planned Exchange rate -->
+  <nz-form-item *ngIf="tranCurrency && isForeignCurrency">
+    <nz-form-control [nzSpan]="8" [nzOffset]="4">
+      <label nz-checkbox formControlName="exgpControl">{{'Finance.ProposedExchangeRate' | transloco}}</label>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Currency 2 -->
+  <nz-form-item *ngIf="isCurrencyExchangeDocument">
+    <nz-form-label [nzSpan]="4" nzRequired nzFor="idCurrency2">{{'Finance.Currency' | transloco}}</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="Please input your currency">
+      <nz-select id="idCurrency2" formControlName="curr2Control">
+        <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Symbol) + ' - ' + t(cr.Name)"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Exchange rate -->
+  <nz-form-item *ngIf="tranCurrency2 && isForeignCurrency2">
+    <nz-form-label [nzSpan]="4" nzRequired nzFor="idexg2">{{'Finance.ExchangeRate' | transloco}}</nz-form-label>
+    <nz-form-control [nzSpan]="8" nzErrorTip="Please input exchange rate">
+      <input nz-input id="idexg2" formControlName="exg2Control" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Planned Exchange rate -->
+  <nz-form-item *ngIf="tranCurrency2 && isForeignCurrency2">
+    <nz-form-control [nzSpan]="8" [nzOffset]="4">
+      <label nz-checkbox formControlName="exgp2Control">{{'Finance.ProposedExchangeRate' | transloco}}</label>
+    </nz-form-control>
+  </nz-form-item>
+
+</ng-container>

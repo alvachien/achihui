@@ -7,10 +7,6 @@
     <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <nz-select [ngModel]="selectedDocScope">
-        <nz-option *ngFor="let scp of uiStatusService.OverviewScopeStrings" [nzValue]='scp.value' [nzLabel]="t(scp.i18nterm)"></nz-option>
-      </nz-select>
-      <nz-range-picker></nz-range-picker>
       <a nz-dropdown [nzDropdownMenu]="menuCreateDocument">
         {{'Common.Create' | transloco}}
         <i nz-icon nzType="down"></i>
@@ -33,6 +29,10 @@
           <li nz-menu-item (click)="onCreateAssetValChgDocument()">{{'Sys.DocTy.AssetValChg' | transloco}}</li>
           </ul>
       </nz-dropdown-menu>
+      <nz-select [ngModel]="selectedDocScope">
+        <nz-option *ngFor="let scp of uiStatusService.OverviewScopeStrings" [nzValue]='scp.value' [nzLabel]="t(scp.i18nterm)"></nz-option>
+      </nz-select>
+      <nz-range-picker></nz-range-picker>
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
@@ -62,9 +62,18 @@
           <tr>
             <td nzShowExpand [(nzExpand)]="mapOfExpandData[data.Id]"></td>
             <td>{{data.Id}}</td>
-            <td>{{data.TranCurr}}</td>
+            <td>
+              <nz-select [(ngModel)]="data.TranCurr" nzDisabled>
+                <nz-option *ngFor="let cr of arCurrencies" [nzValue]='cr.Currency' [nzLabel]="t(cr.Name) + ' ' + cr.Symbol"></nz-option>
+              </nz-select>
+
+            </td>
             <td>{{data.TranDateFormatString}}</td>
-            <td>{{data.DocType}}</td>
+            <td>
+              <nz-select [(ngModel)]="data.DocType" nzDisabled>
+                <nz-option *ngFor="let dt of arDocTypes" [nzValue]='dt.Id' [nzLabel]="t(dt.Name)"></nz-option>
+              </nz-select>
+            </td>
             <td>{{data.Desp}}</td>
           </tr>
           <tr [nzExpand]="mapOfExpandData[data.Id]">
@@ -73,18 +82,28 @@
               <nz-table #itemTable [nzData]="data.Items">
                 <thead>
                   <tr>
-                    <th>Item</th>
+                    <th>#</th>
                     <th>{{'Finance.Account' | transloco}}</th>
                     <th>{{'Finance.TransactionType' | transloco}}</th>
                     <th>{{'Finance.Amount' | transloco}}</th>
+                    <th>{{'Common.Description' | transloco}}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let itemdata of itemTable.data">
                     <td>{{ itemdata.ItemId }}</td>
-                    <td>{{ itemdata.AccountId }}</td>
-                    <td>{{ itemdata.TranType }}</td>
+                    <td>
+                      <nz-select [(ngModel)]="itemdata.AccountId" nzDisabled>
+                        <nz-option *ngFor="let acnt of arAccounts" [nzValue]='acnt.Id' [nzLabel]="acnt.Name"></nz-option>
+                      </nz-select>
+                    </td>
+                    <td>
+                      <nz-select [(ngModel)]="itemdata.TranType" nzDisabled>
+                        <nz-option *ngFor="let tt of arTranTypes" [nzValue]='tt.Id' [nzLabel]="tt.FullDisplayText"></nz-option>
+                      </nz-select>
+                    </td>
                     <td>{{ itemdata.TranAmount }}</td>
+                    <td>{{ itemdata.Desp }}</td>
                   </tr>
                 </tbody>
               </nz-table>

@@ -1,0 +1,56 @@
+<ng-container class="achih-control-full-width" *transloco="let t">
+  <div *ngIf="isAddItemAllowed" color="accent">
+    <button nz-button (click)="onCreateDocItem()">      
+    </button>
+  </div>
+
+  <nz-table #basicTable [nzData]="listItems">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>{{'Finance.Account' | transloco}}</th>
+        <th>{{'Finance.TransactionType' | transloco}}</th>
+        <th>{{'Finance.Amount' | transloco}}</th>
+        <th>{{'Finance.Currency' | transloco}}</th>
+        <th>{{'Common.Comment' | transloco}}</th>
+        <th>{{'Finance.ControlCenter' | transloco}}</th>
+        <th>{{'Finance.Activity' | transloco}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{ data.ItemId }}</td>
+        <td>
+          <nz-select [(ngModel)]="data.AccountId">
+            <nz-option *ngFor="let acnt of arUIAccount" [nzValue]='acnt.Id' [nzLabel]="t(acnt.Name)"></nz-option>
+          </nz-select>
+        </td>
+        <td>
+          <nz-select [(ngModel)]="data.TranType">
+            <nz-option *ngFor="let tt of arTranType" [nzValue]='tt.Id' [nzLabel]="t(tt.FullDisplayText)"></nz-option>
+          </nz-select>
+        </td>
+        <td>
+          <input nz-input [(ngModel)]="data.TranAmount" />
+        </td>
+        <td>
+          <div *ngIf="!data.UseCurr2">{{tranCurr}}</div>
+          <div *ngIf="data.UseCurr2">{{tranCurr2}}</div>  
+        </td>
+        <td>
+          <input nz-input [(ngModel)]="data.Desp" />
+        </td>
+        <td>
+          <nz-select [(ngModel)]="data.ControlCenterId">
+            <nz-option *ngFor="let tt of arControlCenters" [nzValue]='tt.Id' [nzLabel]="t(tt.Name)"></nz-option>
+          </nz-select>
+        </td>
+        <td>
+          <nz-select [(ngModel)]="data.OrderId">
+            <nz-option *ngFor="let tt of arUIOrder" [nzValue]='tt.Id' [nzLabel]="t(tt.Name)"></nz-option>
+          </nz-select>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</ng-container>

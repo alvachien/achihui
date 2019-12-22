@@ -4,8 +4,8 @@ import { takeUntil, catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
-import { LogLevel, Account, Document, UIDisplayString, UIDisplayStringUtil,
-  OverviewScopeEnum,
+import { Account, Document, ControlCenter, AccountCategory, TranType,
+  OverviewScopeEnum, DocumentType, Currency, Order,
   getOverviewScopeRange, UICommonLabelEnum, BaseListModel, ModelUtility, ConsoleLogTypeEnum,
 } from '../../../../model';
 
@@ -25,7 +25,14 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   pageSize = 10;
   totalDocumentCount = 1;
   mapOfExpandData: { [key: string]: boolean } = {};
-  
+  public arCurrencies: Currency[] = [];
+  public arDocTypes: DocumentType[] = [];
+  public arAccounts: Account[] = [];
+  public arAccountCategories: AccountCategory[] = [];
+  public arControlCenters: ControlCenter[] = [];
+  public arOrders: Order[] = [];
+  public arTranTypes: TranType[] = [];
+
   constructor(
     public odataService: FinanceOdataService,
     public uiStatusService: UIStatusService,
@@ -35,15 +42,45 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     }
 
   ngOnInit() {
-    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent OnInit...', ConsoleLogTypeEnum.debug);
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit...', ConsoleLogTypeEnum.debug);
 
     this._destroyed$ = new ReplaySubject(1);
     this.selectedDocScope = OverviewScopeEnum.All;
 
-    this.fetchData();
+    this.isLoadingResults = true;
+
+    forkJoin(
+      this.odataService.fetchAllDocTypes(),
+      this.odataService.fetchAllCurrencies(),
+      this.odataService.fetchAllAccountCategories(),
+      this.odataService.fetchAllTranTypes(),
+      this.odataService.fetchAllAccounts(),
+      this.odataService.fetchAllControlCenters(),
+      this.odataService.fetchAllOrders()
+      )
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((val: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit, forkJoin...', ConsoleLogTypeEnum.debug);
+
+        this.arDocTypes = val[0];
+        this.arCurrencies = val[1];
+        this.arAccountCategories = val[2];
+        this.arTranTypes = val[3];
+        this.arAccounts = val[4];
+        this.arControlCenters = val[5];
+        this.arOrders = val[6];
+
+        this.fetchData();
+      }, (error: any) => {
+        ModelUtility.writeConsoleLog('AC_HIH_UI [Error]: Entering DocumentListComponent ngOnInit, forkJoin...', ConsoleLogTypeEnum.error);
+        // Error
+        // TBD.
+      });
   }
 
   ngOnDestroy() {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...', ConsoleLogTypeEnum.debug);
+
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();

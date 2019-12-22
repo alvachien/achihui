@@ -317,7 +317,7 @@ export class FakeDataHelper {
     this._chosedHome.ID = 2;
     this._chosedHome.Name = 'Home for UT';
     this._chosedHome.BaseCurrency = 'CNY';
-    this._chosedHome.CreatorDisplayAs = 'Creator in Home for UT';
+    // this._chosedHome.CreatorDisplayAs = 'Creator in Home for UT';
     this._chosedHome.Host = this.userID1;
     let hmem: HomeMember = new HomeMember();
     hmem.HomeID = this._chosedHome.ID;
@@ -335,7 +335,7 @@ export class FakeDataHelper {
     def.ID = 3;
     def.Name = 'Second Home for UT';
     def.BaseCurrency = 'USD';
-    def.CreatorDisplayAs = 'Creator';
+    // def.CreatorDisplayAs = 'Creator';
     def.Host = this.userID1;
     this._homeDefs.push(def);
   }
