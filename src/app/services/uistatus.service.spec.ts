@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslocoService } from '@ngneat/transloco';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
@@ -11,17 +11,11 @@ describe('UIStatusService', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: HttpLoaderTestFactory,
-            deps: [HttpClient],
-          },
-        }),
+        TranslocoService,
       ],
       providers: [
         UIStatusService,
-        TranslateService,
+        TranslocoService,
       ],
     });
   });

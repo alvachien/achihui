@@ -1,4 +1,4 @@
-<nz-layout class="app-layout">
+<nz-layout class="app-layout" *transloco="let t">
   <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
     [nzTrigger]="null">
     <div class="sidebar-logo">
@@ -8,7 +8,7 @@
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+      <li nz-submenu nzOpen [nzTitle]="t('Common.Dashboard')" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'welcome']">Welcome</a>
@@ -18,38 +18,38 @@
           </li>
         </ul>
       </li>
-      <li nz-submenu nzTitle="Finance" nzIcon="money-collect">
+      <li nz-submenu [nzTitle]="t('Nav.FinanceTrace')" nzIcon="money-collect">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'overview']">Overview</a>
+            <a [routerLink]="['/', 'finance', 'overview']">{{'Common.Overview' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'currency']">Currency</a>
+            <a [routerLink]="['/', 'finance', 'currency']">{{'Finance.Currencies' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'config']">Config</a>
+            <a [routerLink]="['/', 'finance', 'config']">{{'Finance.ConfigObjects' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'account']">Account</a>
+            <a [routerLink]="['/', 'finance', 'account']">{{'Finance.Accounts' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'document']">Document</a>
+            <a [routerLink]="['/', 'finance', 'document']">{{'Finance.Documents' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'controlcenter']">Control Center</a>
+            <a [routerLink]="['/', 'finance', 'controlcenter']">{{'Finance.ControlCenters' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'order']">Order</a>
+            <a [routerLink]="['/', 'finance', 'order']">{{'Finance.Activities' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'report']">Report</a>
+            <a [routerLink]="['/', 'finance', 'report']">{{'Finance.Reports' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['/', 'finance', 'plan']">Plan</a>
+            <a [routerLink]="['/', 'finance', 'plan']">{{'Finance.Plan' | transloco}}</a>
           </li>
         </ul>
       </li>
-      <li nz-submenu nzTitle="Learn" nzIcon="read">
+      <li nz-submenu [nzTitle]="t('Nav.LearningTrace')" nzIcon="read">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a>Object</a>
@@ -59,13 +59,13 @@
       <li nz-submenu nzTitle="Help" nzIcon="question-circle">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/about">About</a>
+            <a routerLink="/about">{{'Nav.About' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/version">Version</a>
+            <a routerLink="/version">{{'Nav.Version' | transloco}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/credits">Credits</a>
+            <a routerLink="/credits">{{'Nav.Credits' | transloco}}</a>
           </li>
         </ul>
       </li>
@@ -103,8 +103,8 @@
               </a>
               <nz-dropdown-menu #menuLanguage="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                  <li nz-menu-item (click)="switchLanguage('en_US')">English</li>
-                  <li nz-menu-item (click)="switchLanguage('zh_CN')">Simplified Chinese</li>
+                  <li nz-menu-item (click)="switchLanguage('en_US')">{{'Nav.English' | transloco }}</li>
+                  <li nz-menu-item (click)="switchLanguage('zh_CN')">{{'Nav.SimplifiedChinese' | transloco }}</li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -123,7 +123,7 @@
               </a>
               <nz-dropdown-menu #menuUser="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                  <li nz-menu-item>User Info.</li>
+                  <li nz-menu-item>{{'Nav.UserDetail' | transloco}}</li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -135,8 +135,8 @@
               </a>
               <nz-dropdown-menu #menuHomeDef="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                  <li nz-menu-item>Home Def. List</li>
-                  <li nz-menu-item>Current Home Def.</li>
+                  <li nz-menu-item>{{'Nav.HomeList' | transloco}}</li>
+                  <li nz-menu-item>{{'Nav.HomeDetail' | transloco}}</li>
                 </ul>
               </nz-dropdown-menu>
             </div>

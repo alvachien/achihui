@@ -58,6 +58,44 @@ export function HttpLoaderTestFactory(http: HttpClient): TranslateHttpLoader {
 }
 ```
 
+### TranslocoService
+The following code snipets coming from https://netbasal.gitbook.io/transloco/general/unit-testing.
+```typescript
+import { TranslocoTestingModule } from '@ngneat/transloco';
+import en from '../assets/i18n/en.json';
+import es from '../assets/i18n/es.json';
+
+export function getTranslocoModule(config: Partial<TranslocoConfig> = {}) {
+  return TranslocoTestingModule.withLangs(
+    { en, es },
+    {
+      availableLangs: ['en', 'es'],
+      defaultLang: 'en',
+      ...config
+    }
+  );
+}
+```
+
+And in test module:
+```typescript
+describe('AppComponent', () => {
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [getTranslocoModule()],
+      declarations: [AppComponent]
+    }).compileComponents();
+  }));
+
+  it('should work', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('h1'))
+               .nativeElement.innerText).toBe('hello');
+  });
+});
+```
+
 ### Router
 ```typescript
 const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);

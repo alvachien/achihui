@@ -1,17 +1,38 @@
-<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
+<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500" *transloco="let t">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item><a routerLink="/finance/overview">Overview</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Documents</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'Finance.Documents' | transloco}}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-title>Document</nz-page-header-title>
-    <nz-page-header-subtitle>List View</nz-page-header-subtitle>
+    <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
       <nz-select [ngModel]="selectedDocScope">
-        <nz-option *ngFor="let scp of uiStatusService.OverviewScopeStrings" [nzValue]='scp.value' [nzLabel]="scp.displaystring"></nz-option>
+        <nz-option *ngFor="let scp of uiStatusService.OverviewScopeStrings" [nzValue]='scp.value' [nzLabel]="t(scp.i18nterm)"></nz-option>
       </nz-select>
       <nz-range-picker></nz-range-picker>
-      <button nz-button nzType="primary">Create</button>
+      <a nz-dropdown [nzDropdownMenu]="menuCreateDocument">
+        {{'Common.Create' | transloco}}
+        <i nz-icon nzType="down"></i>
+      </a>
+      <nz-dropdown-menu #menuCreateDocument="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="onCreateNormalDocument()">{{'Finance.Document' | transloco}}</li>
+          <li nz-menu-item (click)="onCreateTransferDocument()">{{'Finance.TransferDocument' | transloco}}</li>
+          <li nz-menu-item (click)="onCreateExgDocument()">{{'Finance.CurrencyExchange' | transloco}}</li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onCreateADPDocument()">{{'Finance.AdvancePayment' | transloco}}</li>
+          <li nz-menu-item (click)="onCreateADRDocument()">{{'Sys.DocTy.AdvancedRecv' | transloco}}</li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onCreateBorrowFromDocument()">{{'Sys.DocTy.BorrowFrom' | transloco}}</li>
+          <li nz-menu-item (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | transloco}}</li>
+          <li nz-menu-item (click)="onCreateRepayDocument()">{{'Sys.DocTy.Repay' | transloco}}</li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onCreateAssetBuyInDocument()">{{'Sys.DocTy.AssetBuyIn' | transloco}}</li>
+          <li nz-menu-item (click)="onCreateAssetSoldOutDocument()">{{'Sys.DocTy.AssetSoldOut' | transloco}}</li>
+          <li nz-menu-item (click)="onCreateAssetValChgDocument()">{{'Sys.DocTy.AssetValChg' | transloco}}</li>
+          </ul>
+      </nz-dropdown-menu>
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
@@ -30,9 +51,10 @@
         <tr>
           <th nzShowExpand></th>
           <th>ID</th>
-          <th>Currency</th>
-          <th>Date</th>
-          <th>Desp</th>
+          <th>{{'Finance.Currency' | transloco}}</th>
+          <th>{{'Common.Date' | transloco}}</th>
+          <th>{{'Finance.DocumentType' | transloco}}</th>
+          <th>{{'Common.Description' | transloco}}</th>
         </tr>
       </thead>
       <tbody>
@@ -42,6 +64,7 @@
             <td>{{data.Id}}</td>
             <td>{{data.TranCurr}}</td>
             <td>{{data.TranDateFormatString}}</td>
+            <td>{{data.DocType}}</td>
             <td>{{data.Desp}}</td>
           </tr>
           <tr [nzExpand]="mapOfExpandData[data.Id]">
@@ -51,9 +74,9 @@
                 <thead>
                   <tr>
                     <th>Item</th>
-                    <th>Account</th>
-                    <th>TranType</th>
-                    <th>Amount</th>
+                    <th>{{'Finance.Account' | transloco}}</th>
+                    <th>{{'Finance.TransactionType' | transloco}}</th>
+                    <th>{{'Finance.Amount' | transloco}}</th>
                   </tr>
                 </thead>
                 <tbody>

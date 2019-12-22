@@ -8,11 +8,11 @@ import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { TranslocoModule } from '@ngneat/transloco';
 
 import { FinanceRoutingModule } from './finance-routing.module';
 import { FinanceComponent } from '../finance/finance.component';
 import { CurrencyComponent } from './currency';
-import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -29,8 +29,8 @@ import { TranslateModule } from '@ngx-translate/core';
     NzGridModule,
     NzCardModule,
     NzSpinModule,
+    TranslocoModule,
     FinanceRoutingModule,
-    TranslateModule.forChild(),
   ]
 })
 export class FinanceModule { }

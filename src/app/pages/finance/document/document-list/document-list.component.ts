@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, forkJoin, of } from 'rxjs';
 import { takeUntil, catchError, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { LogLevel, Account, Document, UIDisplayString, UIDisplayStringUtil,
@@ -27,7 +28,8 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   
   constructor(
     public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,) {
+    public uiStatusService: UIStatusService,
+    private router: Router) {
       ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...', ConsoleLogTypeEnum.debug);
       this.isLoadingResults = false;
     }
@@ -78,5 +80,48 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       }, () => {
         this.isLoadingResults = false;
       });
+  }
+
+  public onCreateNormalDocument(): void {
+    this.router.navigate(['/finance/document/createnormal']);
+  }
+  public onCreateTransferDocument(): void {
+    this.router.navigate(['/finance/document/createtransfer']);
+  }
+  public onCreateADPDocument(): void {
+    this.router.navigate(['/finance/document/createadp']);
+  }
+  public onCreateADRDocument(): void {
+    this.router.navigate(['/finance/document/createadr']);
+  }
+  public onCreateExgDocument(): void {
+    this.router.navigate(['/finance/document/createexg']);
+  }
+  public onCreateAssetBuyInDocument(): void {
+    this.router.navigate(['/finance/document/createassetbuy']);
+  }
+  public onCreateAssetSoldOutDocument(): void {
+    this.router.navigate(['/finance/document/createassetsold']);
+  }
+  public onCreateBorrowFromDocument(): void {
+    this.router.navigate(['/finance/document/createbrwfrm']);
+  }
+  public onCreateLendToDocument(): void {
+    this.router.navigate(['/finance/document/createlendto']);
+  }
+  public onCreateAssetValChgDocument(): void {
+    this.router.navigate(['/finance/document/createassetvalchg']);
+  }
+  public onCreateRepayDocument(): void {
+    this.router.navigate(['/finance/document/createrepayex']);
+  }
+  public onDisplayDocument(doc: Document): void {
+    this.router.navigate(['/finance/document/display', doc.Id]);
+  }
+  public onMassCreateNormalDocument(): void {
+    this.router.navigate(['/finance/document/masscreatenormal']);
+  }
+  public onMassCreateNormalDocument2(): void {
+    this.router.navigate(['/finance/document/masscreatenormal2']);
   }
 }

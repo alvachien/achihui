@@ -11,7 +11,7 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslocoModule } from '@ngneat/transloco';
 
 import { AccountRoutingModule } from './account-routing.module';
 import { AccountComponent } from './account.component';
@@ -40,7 +40,7 @@ import { AccountHierarchyComponent } from './account-hierarchy';
     NzGridModule,
     NzButtonModule,
     AccountRoutingModule,
-    TranslateModule.forChild()
+    TranslocoModule,
   ]
 })
 export class AccountModule { }

@@ -6,8 +6,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslocoModule, translocoConfig, TRANSLOCO_CONFIG } from '@ngneat/transloco';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,11 +17,10 @@ import { AuthService, AuthGuardService,
   FinanceOdataService,
   HomeDefOdataService,
 } from './services';
+import { environment } from '../environments/environment';
+import { translocoLoader } from './transloco-loader';
 
 registerLocaleData(en);
-export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http, './assets/locales/', '.json');
-}
 
 @NgModule({
   declarations: [
@@ -37,13 +35,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     HttpClientModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
-      },
-    }),
+    TranslocoModule,
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
@@ -57,6 +49,16 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     SideNavService,
     HomeDefOdataService,
     FinanceOdataService,
+    {
+      provide: TRANSLOCO_CONFIG,
+      useValue: translocoConfig({
+        availableLangs: ['en', 'zh'],
+        defaultLang: 'en',
+        reRenderOnLangChange: true,
+        prodMode: environment.production,
+      })
+    },
+    translocoLoader,
   ],
   bootstrap: [AppComponent],
 })

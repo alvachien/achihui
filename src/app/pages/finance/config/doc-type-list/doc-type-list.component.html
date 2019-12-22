@@ -3,14 +3,14 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>Name</th>
-        <th>Comment</th>
+        <th>{{'Common.Name' | transloco}}</th>
+        <th>{{'Common.Comment' | transloco}}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
         <td>{{data.Id}}</td>
-        <td>{{data.Name}}</td>
+        <td>{{data.Name | transloco}}</td>
         <td>{{data.Comment}}</td>
       </tr>
     </tbody>

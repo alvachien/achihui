@@ -507,7 +507,7 @@ export class FinanceOdataService {
 
     return this.http.get(apiUrl, { headers, })
       .pipe(map((response: HttpResponse<any>) => {
-        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, fetchAllDocuments, mpa.`,
+        ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering FinanceOdataService, fetchAllDocuments, map.`,
           ConsoleLogTypeEnum.debug);
 
         let listRst: Document[] = [];

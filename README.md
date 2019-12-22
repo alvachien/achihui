@@ -58,7 +58,7 @@ This project also require the following components:
 * [Typescript](http://www.typescriptlang.org)
 * [Angular](https://github.com/angular/angular)
 * [Ant Design](https://ng.ant.design)
-* [Ngx-translate](https://github.com/ngx-translate/core)
+* [Transloco](https://github.com/ngneat/transloco)
 * [Oidc-Client](https://github.com/IdentityModel/oidc-client-js)
 * [Moment.js](https://momentjs.com/)
 * [FullCalendar](https://fullcalendar.io/)

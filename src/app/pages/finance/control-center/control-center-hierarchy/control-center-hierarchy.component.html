@@ -1,14 +1,14 @@
 <nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item><a routerLink="/finance/overview">Overview</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Control Centers</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'Finance.ControlCenters' | transloco}}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-title>Control Center</nz-page-header-title>
-    <nz-page-header-subtitle>Hierarchy View</nz-page-header-subtitle>
+    <nz-page-header-title>{{'Finance.ControlCenter' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{'Common.HierarchyView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <button nz-button nzType="primary">Create</button>
-      <a nz-button nzType="link" routerLink="/finance/controlcenter/list">List View</a>
+      <button nz-button nzType="primary">{{'Common.Create' | transloco}}</button>
+      <a nz-button nzType="link" routerLink="/finance/controlcenter/list">{{'Common.ListView' | transloco}}</a>
     </nz-page-header-extra>
   </nz-page-header>
   

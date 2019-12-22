@@ -11,7 +11,7 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslocoModule } from '@ngneat/transloco';
 
 import { ReportRoutingModule } from './report-routing.module';
 import { ControlCenterReportComponent } from './control-center-report/control-center-report.component';
@@ -40,7 +40,7 @@ import { ReportComponent } from './report.component';
     NzGridModule,
     NzButtonModule,
     ReportRoutingModule,
-    TranslateModule.forChild(),
+    TranslocoModule,
   ]
 })
 export class ReportModule { }

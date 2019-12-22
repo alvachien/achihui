@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, NgZone, ChangeDetectorRef, OnDestroy } f
 import { Router, RouterOutlet } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd';
+import { TranslocoService } from '@ngneat/transloco';
 
 import { environment } from '../environments/environment';
 import { appNavItems, appLanguage, LogLevel, UIStatusEnum, HomeDef, languageEn, languageZh, languageZhCN } from './model';
@@ -22,6 +23,7 @@ export class AppComponent {
 
   constructor(
     private i18n: NzI18nService,
+    private translocoService: TranslocoService,
     private _authService: AuthService,
     public _homeService: HomeDefOdataService,
     private _zone: NgZone,
@@ -43,8 +45,10 @@ export class AppComponent {
   switchLanguage(lang: string) {
     if (lang === 'en_US') {
       this.i18n.setLocale(en_US);
+      this.translocoService.setActiveLang('en');
     } else {
       this.i18n.setLocale(zh_CN);
+      this.translocoService.setActiveLang('zh');
     }
   }
 

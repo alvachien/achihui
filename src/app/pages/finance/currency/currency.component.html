@@ -1,15 +1,15 @@
-<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
-  <nz-page-header nzBackIcon nzTitle="Currency">
+<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500" *transloco="let t">
+  <nz-page-header nzBackIcon [nzTitle]="t('Finance.Currency')">
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item><a routerLink="/finance/overview">Overview</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Currencies</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'Finance.Currencies' | transloco}}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-content>
       <div class="wrap">
         <div class="content">
           <div class="content">
             <p nz-paragraph>
-              Currencies.
+             {{'Finance.Currencies' | transloco}}
             </p>
             <p nz-paragraph>
               The list of currencies which supported.
@@ -18,22 +18,16 @@
               <nz-table #basicTable [nzData]="dataSource">
                 <thead>
                   <tr>
-                    <th>Currency</th>
-                    <th>Name</th>
-                    <th>Symbol</th>
-                    <th>Action</th>
+                    <th>{{'Finance.Currency' | transloco}}</th>
+                    <th>{{'Common.Name' | transloco}}</th>
+                    <th>{{'Finance.CurrencySymbol' | transloco}}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let data of basicTable.data">
                     <td>{{ data.Currency }}</td>
-                    <td>{{ data.Name }}</td>
+                    <td>{{ data.Name | transloco }}</td>
                     <td>{{ data.Symbol }}</td>
-                    <td>
-                      <a>Action 一 {{ data.curr }}</a>
-                      <nz-divider nzType="vertical"></nz-divider>
-                      <a>Delete</a>
-                    </td>
                   </tr>
                 </tbody>
               </nz-table>

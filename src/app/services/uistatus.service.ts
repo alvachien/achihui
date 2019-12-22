@@ -2,7 +2,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, } from '@angular/forms';
 import { OverviewScopeEnum, QuestionBankTypeEnum, TagTypeEnum, UICommonLabelEnum,
   UIDisplayString, UIDisplayStringUtil, TemplateDocLoan, QuestionBankItem, LearnObject, } from '../model';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslocoService } from '@ngneat/transloco';
 
 @Injectable()
 export class UIStatusService {
@@ -80,7 +80,7 @@ export class UIStatusService {
   public arrLabels: UIDisplayString[] = [];
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 
-  constructor(private _tranService: TranslateService) {
+  constructor(private _tranService: TranslocoService) {
     this._arrOverviewScopes = UIDisplayStringUtil.getOverviewScopeStrings();
     this._arrQuestionBankType = UIDisplayStringUtil.getQuestionBankTypeStrings();
     this._arrTagType = UIDisplayStringUtil.getTagTypeStrings();
@@ -123,14 +123,14 @@ export class UIStatusService {
       arstrings.push(lab.i18nterm);
     }
 
-    this._tranService.get(arstrings).subscribe((x: any) => {
-      for (let attr in x) {
-        for (let lab of this.arrLabels) {
-          if (lab.i18nterm === attr) {
-            lab.displaystring = x[attr];
-          }
-        }
-      }
-    });
+    // this._tranService.get(arstrings).subscribe((x: any) => {
+    //   for (let attr in x) {
+    //     for (let lab of this.arrLabels) {
+    //       if (lab.i18nterm === attr) {
+    //         lab.displaystring = x[attr];
+    //       }
+    //     }
+    //   }
+    // });
   }
 }

@@ -5,7 +5,7 @@ import { DocumentDetailComponent } from './document-detail';
 
 const routes: Routes = [
   { path: '', component: DocumentListComponent },
-  { path: 'create', component: DocumentDetailComponent },
+  { path: 'createnormal', component: DocumentDetailComponent },
   { path: 'edit', component: DocumentDetailComponent },
   { path: 'display', component: DocumentDetailComponent },
 ];

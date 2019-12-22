@@ -11,13 +11,12 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslocoModule } from '@ngneat/transloco';
 
 import { PlanRoutingModule } from './plan-routing.module';
 import { PlanComponent } from './plan.component';
 import { PlanListComponent } from './plan-list/plan-list.component';
 import { PlanDetailComponent } from './plan-detail/plan-detail.component';
-
 
 @NgModule({
   declarations: [
@@ -39,7 +38,7 @@ import { PlanDetailComponent } from './plan-detail/plan-detail.component';
     NzGridModule,
     NzButtonModule,
     PlanRoutingModule,
-    TranslateModule.forChild(),
+    TranslocoModule,
   ]
 })
 export class PlanModule { }

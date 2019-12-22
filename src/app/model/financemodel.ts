@@ -1700,11 +1700,6 @@ export class Document extends hih.BaseModel {
   // tslint:disable-next-line:variable-name
   public Items: DocumentItem[] = [];
 
-  // UI fields
-  // tslint:disable-next-line:variable-name
-  public DocTypeName: string;
-  // tslint:disable-next-line:variable-name
-  public TranAmount: number;
   get TranDateFormatString(): string {
     return this._tranDate.format(hih.momentDateFormat);
   }

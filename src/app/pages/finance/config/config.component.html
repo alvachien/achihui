@@ -1,31 +1,31 @@
-<nz-page-header nzBackIcon nzTitle="Config">
+<nz-page-header nzBackIcon [nzTitle]="t('Finance.ConfigObjects')" *transloco="let t">
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">Overview</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>Config</nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Finance.ConfigObjects' | transloco}}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-content>
     <nz-tabset>
-      <nz-tab nzTitle="Account Category">
+      <nz-tab [nzTitle]="t('Finance.AccountCategories')">
         <ng-template nz-tab>
           <hih-fin-account-category-list></hih-fin-account-category-list>
         </ng-template>
       </nz-tab>
-      <nz-tab nzTitle="Doc type">
+      <nz-tab [nzTitle]="t('Finance.DocumentTypes')">
         <ng-template nz-tab>
           <hih-fin-doc-type-list></hih-fin-doc-type-list>
         </ng-template>
       </nz-tab>
-      <nz-tab nzTitle="Tran Type hierarchy">
+      <nz-tab [nzTitle]="t('Finance.TransactionTypes') + ' - ' + t('Common.HierarchyView')">
         <ng-template nz-tab>
           <hih-fin-tran-type-hierarchy></hih-fin-tran-type-hierarchy>
         </ng-template>
       </nz-tab>
-      <nz-tab nzTitle="Tran Type List">
+      <nz-tab [nzTitle]="t('Finance.TransactionTypes') + ' - ' + t('Common.ListView')">
         <ng-template nz-tab>
           <hih-fin-tran-type-list></hih-fin-tran-type-list>
         </ng-template>
       </nz-tab>
-      <nz-tab nzTitle="Asset Category">
+      <nz-tab [nzTitle]="t('Finance.AssetCategories')">
         <ng-template nz-tab>
           <hih-fin-asset-type-list></hih-fin-asset-type-list>
         </ng-template>

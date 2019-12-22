@@ -14,7 +14,8 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { TranslateModule } from '@ngx-translate/core';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { TranslocoModule } from '@ngneat/transloco';
 
 import { DocumentRoutingModule } from './document-routing.module';
 import { DocumentComponent } from './document.component';
@@ -44,8 +45,9 @@ import { DocumentDetailComponent } from './document-detail/document-detail.compo
     NzDatePickerModule,
     NzButtonModule,
     NzSelectModule,
+    NzDropDownModule,
     DocumentRoutingModule,
-    TranslateModule.forChild(),
+    TranslocoModule,
   ]
 })
 export class DocumentModule { }

@@ -1,8 +1,7 @@
 <nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
   <nz-page-header nzBackIcon nzTitle="Home Def">
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item>Home Define</nz-breadcrumb-item>
-      <nz-breadcrumb-item>List View</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'Nav.HomeList' | transloco}}</nz-breadcrumb-item>
     </nz-breadcrumb>
 
     <nz-page-header-content>
@@ -10,17 +9,17 @@
         <div class="content">
           <div class="content">
             <p nz-paragraph>
-              Home Define List View which current user can view.
+              {{'Common.RequireChooseHome' | transloco}}
             </p>
             <div>
               <nz-table #basicTable [nzData]="dataSource">
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Host</th>
-                    <th>Currency</th>
-                    <th>Details</th>
+                    <th>{{'Common.Name' | transloco}}</th>
+                    <th>{{'Common.Host' | transloco}}</th>
+                    <th>{{'Finance.Currency' | transloco}}</th>
+                    <th>{{'Common.Detail' | transloco}}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -28,8 +27,8 @@
                     <td>
                       <span>{{ row.ID }}</span>
                       <nz-divider nzType="vertical"></nz-divider>
-                      <a (click)="onChooseHome(row)" *ngIf="!IsCurrentHomeChosed">Choose</a>
-                      <a (click)="onDisplayHome(row)" *ngIf="IsCurrentHomeChosed">Display</a>
+                      <a (click)="onChooseHome(row)" *ngIf="!IsCurrentHomeChosed">{{'Common.ChooseThisHome' | transloco}}</a>
+                      <a (click)="onDisplayHome(row)" *ngIf="IsCurrentHomeChosed">{{'Common.DisplayDetails' | transloco}}</a>
                     </td>
                     <td>{{ row.Name }}</td>
                     <td>{{ row.CreatorDisplayAs }}</td>

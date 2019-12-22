@@ -1,14 +1,14 @@
-<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500">
+<nz-spin [nzSpinning]="isLoadingResults" [nzDelay]="500" *transloco="let t">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item><a routerLink="/finance/overview">Overview</a></nz-breadcrumb-item>
-      <nz-breadcrumb-item>Accounts</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'Finance.Accounts' | transloco}}</nz-breadcrumb-item>
     </nz-breadcrumb>
-    <nz-page-header-title>Account</nz-page-header-title>
-    <nz-page-header-subtitle>List View</nz-page-header-subtitle>
+    <nz-page-header-title>{{'Finance.Account' | transloco}}</nz-page-header-title>
+    <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <button nz-button nzType="primary">Create</button>
-      <a nz-button nzType="link" routerLink="/finance/account/hierarchy">Hierarchy View</a>
+      <button nz-button nzType="primary">{{'Common.Create' | transloco}}</button>
+      <a nz-button nzType="link" routerLink="/finance/account/hierarchy">{{'Common.HierarchyView' | transloco}}</a>
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
@@ -18,8 +18,8 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Name</th>
-          <th>Comment</th>
+          <th>{{'Common.Name' | transloco}}</th>
+          <th>{{'Common.Comment' | transloco}}</th>
         </tr>
       </thead>
       <tbody>
