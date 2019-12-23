@@ -135,7 +135,9 @@
               </a>
               <nz-dropdown-menu #menuHomeDef="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                  <li nz-menu-item>{{'Nav.HomeList' | transloco}}</li>
+                  <li nz-menu-item>
+                    <a routerLink="/homedef">{{'Nav.HomeList' | transloco}}</a>
+                  </li>
                   <li nz-menu-item>{{'Nav.HomeDetail' | transloco}}</li>
                 </ul>
               </nz-dropdown-menu>
@@ -162,6 +164,6 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer>© 2019 Alva Chien, All rights reserved</nz-footer>
+    <nz-footer>© 2016 - 2020 Alva Chien, All rights reserved</nz-footer>
   </nz-layout>
 </nz-layout>

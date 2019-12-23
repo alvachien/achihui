@@ -78,13 +78,15 @@ export class UIAccountForSelection {
  * @param skiploan Skip Loan accounts
  * @param skipasset Skip Asset accounts
  */
-export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg: HIHFinance.AccountCategory[],
+export function BuildupAccountForSelection(
+  acnts: HIHFinance.Account[],
+  acntctg: HIHFinance.AccountCategory[],
   ctgyFilter?: HIHFinance.IAccountCategoryFilter): UIAccountForSelection[] {
-  let arrst: UIAccountForSelection[] = [];
+  const arrst: UIAccountForSelection[] = [];
 
   if (acnts && acnts.length > 0) {
-    for (let acnt of acnts) {
-      let rst: UIAccountForSelection = new UIAccountForSelection();
+    for (const acnt of acnts) {
+      const rst: UIAccountForSelection = new UIAccountForSelection();
       rst.CategoryId = acnt.CategoryId;
       rst.Id = acnt.Id;
       rst.Name = acnt.Name;
@@ -109,7 +111,7 @@ export function BuildupAccountForSelection(acnts: HIHFinance.Account[], acntctg:
       }
 
       if (acntctg && acntctg.length > 0) {
-        for (let ctgy of acntctg) {
+        for (const ctgy of acntctg) {
           if (ctgy.ID === rst.CategoryId) {
             rst.CategoryName = ctgy.Name;
             rst.AssetFlag = ctgy.AssetFlag;
@@ -140,11 +142,11 @@ export class UIOrderForSelection {
  * @param skipinv Skip invalid orders
  */
 export function BuildupOrderForSelection(orders: HIHFinance.Order[], skipinv?: boolean): UIOrderForSelection[] {
-  let arrst: UIOrderForSelection[] = [];
+  const arrst: UIOrderForSelection[] = [];
 
   if (orders && orders.length > 0) {
-    for (let ord of orders) {
-      let rst: UIOrderForSelection = new UIOrderForSelection();
+    for (const ord of orders) {
+      const rst: UIOrderForSelection = new UIOrderForSelection();
       rst.Id = ord.Id;
       rst.Name = ord.Name;
       rst._validFrom = ord.ValidFrom.clone();

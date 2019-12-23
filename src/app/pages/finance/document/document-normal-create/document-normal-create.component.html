@@ -1,8 +1,21 @@
-<form nz-form>
-  <nz-form-item>
-    <!-- <nz-form-label [nzSpan]="6" nzFor="email">E-mail</nz-form-label>
-    <nz-form-control [nzSpan]="14">
-      <input nz-input name="email" type="email" id="email">
-    </nz-form-control> -->
-  </nz-form-item>
+<nz-page-header nzBackIcon>
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><a routerLink="/finance/overview">{{'Common.Overview' | transloco}}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/finance/document/list">{{'Finance.Documents' | transloco}}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'Common.Create' | transloco}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
+  <nz-page-header-subtitle>{{'Common.Create' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <button nz-button nzType="primary" (click)="onSave()">
+      {{'Common.Save' | transloco}}
+    </button>
+  </nz-page-header-extra>
+</nz-page-header>
+
+<form nz-form [formGroup]="docForm">
+  <hih-fin-document-header [docType]="curDocType" [currentUIMode]="curMode" formControlName="headerControl"></hih-fin-document-header>
+  <hih-fin-document-items formControlName="itemControl" [currentUIMode]="curMode" [docDate]="curDocDate"
+    [docType]="curDocType">
+  </hih-fin-document-items>
 </form>

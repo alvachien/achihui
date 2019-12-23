@@ -6,7 +6,7 @@ import { HomeDefDetailComponent } from './home-def-detail';
 const routes: Routes = [
   { path: '', component: HomeDefListComponent },
   { path: 'create', component: HomeDefDetailComponent },
-  { path: 'display', component: HomeDefDetailComponent },
+  { path: 'display/:id', component: HomeDefDetailComponent },
 ];
 
 @NgModule({

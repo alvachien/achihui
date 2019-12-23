@@ -11,7 +11,8 @@ import { DocumentLoanCreateComponent } from './document-loan-create';
 
 const routes: Routes = [
   { path: '', component: DocumentListComponent },
-  
+  { path: 'list', component: DocumentListComponent },
+
   { path: 'createnormal', component: DocumentNormalCreateComponent },
   { path: 'createtransfer', component: DocumentTransferCreateComponent },
 

@@ -17,6 +17,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { TranslocoModule } from '@ngneat/transloco';
 
 import { DocumentRoutingModule } from './document-routing.module';
@@ -66,6 +68,8 @@ import { DocumentLoanCreateComponent } from './document-loan-create/document-loa
     NzSelectModule,
     NzDropDownModule,
     NzStepsModule,
+    NzInputModule,
+    NzInputNumberModule,
     DocumentRoutingModule,
     TranslocoModule,
   ]

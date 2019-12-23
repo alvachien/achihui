@@ -7,10 +7,10 @@
     <nz-page-header-title>{{'Finance.Document' | transloco}}</nz-page-header-title>
     <nz-page-header-subtitle>{{'Common.ListView' | transloco}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <a nz-dropdown [nzDropdownMenu]="menuCreateDocument">
+      <button nz-button nz-dropdown [nzDropdownMenu]="menuCreateDocument">
         {{'Common.Create' | transloco}}
         <i nz-icon nzType="down"></i>
-      </a>
+      </button>
       <nz-dropdown-menu #menuCreateDocument="nzDropdownMenu">
         <ul nz-menu nzSelectable>
           <li nz-menu-item (click)="onCreateNormalDocument()">{{'Finance.Document' | transloco}}</li>
@@ -29,6 +29,7 @@
           <li nz-menu-item (click)="onCreateAssetValChgDocument()">{{'Sys.DocTy.AssetValChg' | transloco}}</li>
           </ul>
       </nz-dropdown-menu>
+      <nz-divider nzType="vertical"></nz-divider>
       <nz-select [ngModel]="selectedDocScope">
         <nz-option *ngFor="let scp of uiStatusService.OverviewScopeStrings" [nzValue]='scp.value' [nzLabel]="t(scp.i18nterm)"></nz-option>
       </nz-select>

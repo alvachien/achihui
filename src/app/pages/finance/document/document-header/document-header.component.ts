@@ -7,7 +7,7 @@ import * as moment from 'moment';
 
 import { LogLevel, Document, DocumentItem, UIMode, getUIModeString, Currency, financeDocTypeCurrencyExchange,
   UIStatusEnum, financeDocTypeNormal, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
-import { HomeDefDetailService, FinanceOdataService, FinCurrencyService, UIStatusService } from '../../../../services';
+import { HomeDefOdataService, FinanceOdataService, FinCurrencyService, UIStatusService } from '../../../../services';
 
 @Component({
   selector: 'hih-fin-document-header',
@@ -26,8 +26,9 @@ import { HomeDefDetailService, FinanceOdataService, FinCurrencyService, UIStatus
   ],
 })
 export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
+  // tslint:disable:variable-name
   private _destroyed$: ReplaySubject<boolean>;
-  private _isChangable: boolean = true; // Default is changable
+  private _isChangable = true; // Default is changable
   private _onTouched: () => void;
   private _onChange: (val: any) => void;
   private _doctype: number;
@@ -131,14 +132,13 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
   }
 
   constructor(
-    public _currService: FinCurrencyService,
     private odataService: FinanceOdataService,
-    private _homeService: HomeDefDetailService,
+    private _homeService: HomeDefOdataService,
     private _uiStatusService: UIStatusService
     ) {
     this.headerForm = new FormGroup({
       docTypeControl: new FormControl({value: this.docType, disabled: true}, Validators.required),
-      dateControl: new FormControl(moment(), [Validators.required]),
+      dateControl: new FormControl(new Date(), [Validators.required]),
       despControl: new FormControl('', [Validators.required, Validators.maxLength(44)]),
       currControl: new FormControl('', Validators.required),
       exgControl: new FormControl(''),
@@ -174,7 +174,7 @@ export class DocumentHeaderComponent implements OnInit, ControlValueAccessor, Va
 
     forkJoin(
       this.odataService.fetchAllDocTypes(),
-      this._currService.fetchAllCurrencies(),
+      this.odataService.fetchAllCurrencies(),
       )
       .pipe(takeUntil(this._destroyed$))
       .subscribe((val: any) => {
