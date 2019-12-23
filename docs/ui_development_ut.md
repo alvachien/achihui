@@ -13,10 +13,22 @@ Guideline is a must read, without any doubt.
 [Testing in Angular](https://angular.cn/guide/testing)
 
 ## Reuse code snippets (for HIH only)
+### Add Ant Design module
+```typescript
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
+```
+And then add imports:
+```typescript
+  imports: [
+    NgZorroAntdModule,
+    ...
+  ]
+```
+
 ### HttpClient
 Just import ```HttpClientTestingModule``` is enough.
 ```typescript
-import { HttpClientTestingModule } from '@angular/router/testing'
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 ```
 Then:
 ```typescript

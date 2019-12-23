@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
 import { PlanDetailComponent } from './plan-detail.component';
 
@@ -8,6 +9,7 @@ describe('PlanDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ NgZorroAntdModule ],
       declarations: [ PlanDetailComponent ]
     })
     .compileComponents();

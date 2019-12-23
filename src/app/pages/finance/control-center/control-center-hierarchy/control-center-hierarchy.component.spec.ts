@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
 import { ControlCenterHierarchyComponent } from './control-center-hierarchy.component';
+import { getTranslocoModule } from '../../../../../testing';
 
 describe('ControlCenterHierarchyComponent', () => {
   let component: ControlCenterHierarchyComponent;
@@ -8,6 +10,10 @@ describe('ControlCenterHierarchyComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        NgZorroAntdModule,
+        getTranslocoModule(),
+      ],
       declarations: [ ControlCenterHierarchyComponent ]
     })
     .compileComponents();

@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
 import { HomeDefComponent } from './home-def.component';
 
@@ -8,6 +9,7 @@ describe('HomeDefComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ NgZorroAntdModule ],
       declarations: [ HomeDefComponent ]
     })
     .compileComponents();

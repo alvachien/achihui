@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgZorroAntdModule, NZ_I18N, en_US, } from 'ng-zorro-antd';
 
 import { FatalErrorComponent } from './fatal-error.component';
 
@@ -8,6 +9,7 @@ describe('FatalErrorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [NgZorroAntdModule],
       declarations: [ FatalErrorComponent ]
     })
     .compileComponents();

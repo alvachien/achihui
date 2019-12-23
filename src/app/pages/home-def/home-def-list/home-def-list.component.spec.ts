@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
 import { HomeDefListComponent } from './home-def-list.component';
+import { getTranslocoModule } from '../../../../testing';
 
 describe('HomeDefListComponent', () => {
   let component: HomeDefListComponent;
@@ -8,6 +10,10 @@ describe('HomeDefListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        NgZorroAntdModule,
+        getTranslocoModule(),
+      ],
       declarations: [ HomeDefListComponent ]
     })
     .compileComponents();

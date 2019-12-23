@@ -57,9 +57,9 @@ describe('Currency', () => {
 
     let jdata: CurrencyJson = instance.writeJSONObject();
     expect(jdata).toBeTruthy();
-    expect(jdata.name).toEqual('US Dollar');
-    expect(jdata.symbol).toEqual('$');
-    expect(jdata.curr).toEqual('USD');
+    expect(jdata.Name).toEqual('US Dollar');
+    expect(jdata.Symbol).toEqual('$');
+    expect(jdata.Curr).toEqual('USD');
 
     let instance2: Currency = new Currency();
     instance2.onSetData(jdata);
@@ -104,9 +104,9 @@ describe('AccountCategory', () => {
 
     let jdata: AccountCategoryJson = instance.writeJSONObject();
     expect(jdata).toBeTruthy();
-    expect(jdata.name).toEqual('test');
-    expect(jdata.assetFlag).toEqual(true);
-    expect(jdata.comment).toEqual('test');
+    expect(jdata.Name).toEqual('test');
+    expect(jdata.AssetFlag).toEqual(true);
+    expect(jdata.Comment).toEqual('test');
 
     let instance2: AccountCategory = new AccountCategory();
     instance2.onSetData(jdata);
@@ -147,8 +147,8 @@ describe('DocumentType', () => {
 
     let jdata: DocumentTypeJson = instance.writeJSONObject();
     expect(jdata).toBeTruthy();
-    expect(jdata.name).toEqual('test');
-    expect(jdata.comment).toEqual('test');
+    expect(jdata.Name).toEqual('test');
+    expect(jdata.Comment).toEqual('test');
 
     let instance2: DocumentType = new DocumentType();
     instance2.onSetData(jdata);
@@ -189,8 +189,8 @@ describe('AssetCategory', () => {
 
     let jdata: AssetCategoryJson = instance.writeJSONObject();
     expect(jdata).toBeTruthy();
-    expect(jdata.name).toEqual('test');
-    expect(jdata.desp).toEqual('test');
+    expect(jdata.Name).toEqual('test');
+    expect(jdata.Desp).toEqual('test');
 
     let instance2: AssetCategory = new AssetCategory();
     instance2.onSetData(jdata);

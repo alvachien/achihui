@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
 import { TranTypeHierarchyComponent } from './tran-type-hierarchy.component';
+import { getTranslocoModule } from '../../../../../testing';
 
 describe('TranTypeHierarchyComponent', () => {
   let component: TranTypeHierarchyComponent;
@@ -8,6 +10,10 @@ describe('TranTypeHierarchyComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        NgZorroAntdModule,
+        getTranslocoModule(),
+      ],
       declarations: [ TranTypeHierarchyComponent ]
     })
     .compileComponents();

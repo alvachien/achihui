@@ -3,7 +3,6 @@ import { TranslocoService } from '@ngneat/transloco';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { HttpLoaderTestFactory } from '../../testing';
 import { UIStatusService } from './uistatus.service';
 
 describe('UIStatusService', () => {

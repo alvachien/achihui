@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
 import { LackAuthorityComponent } from './lack-authority.component';
 
@@ -8,6 +9,7 @@ describe('LackAuthorityComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ NgZorroAntdModule ],
       declarations: [ LackAuthorityComponent ]
     })
     .compileComponents();

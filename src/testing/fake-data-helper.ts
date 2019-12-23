@@ -300,15 +300,15 @@ export class FakeDataHelper {
   public buildCurrenciesFromAPI(): void {
     this._currenciesFromAPI = [];
     let curr: CurrencyJson = {
-      name: 'Chinese Yuan',
-      symbol: '#',
-      curr: 'CNY',
+      Name: 'Chinese Yuan',
+      Symbol: '#',
+      Curr: 'CNY',
     };
     this._currenciesFromAPI.push(curr);
     let curr2: CurrencyJson = {
-      name: 'US Dollar',
-      symbol: '$',
-      curr: 'USD',
+      Name: 'US Dollar',
+      Symbol: '$',
+      Curr: 'USD',
     };
     this._currenciesFromAPI.push(curr2);
   }

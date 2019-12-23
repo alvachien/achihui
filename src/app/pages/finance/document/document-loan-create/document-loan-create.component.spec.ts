@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgZorroAntdModule, } from 'ng-zorro-antd';
 
 import { DocumentLoanCreateComponent } from './document-loan-create.component';
+import { getTranslocoModule } from '../../../../../testing';
 
 describe('DocumentLoanCreateComponent', () => {
   let component: DocumentLoanCreateComponent;
@@ -8,6 +10,10 @@ describe('DocumentLoanCreateComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        NgZorroAntdModule,
+        getTranslocoModule(),
+      ],
       declarations: [ DocumentLoanCreateComponent ]
     })
     .compileComponents();

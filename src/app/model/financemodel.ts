@@ -34,9 +34,9 @@ export enum RepaymentMethodEnum {
  * Currency definition in HIH
  */
 export interface CurrencyJson {
-  curr: string;
-  name: string;
-  symbol: string;
+  Curr: string;
+  Name: string;
+  Symbol: string;
 }
 
 /**
@@ -97,15 +97,15 @@ export class Currency extends hih.BaseModel {
     return true;
   }
 
-  public writeJSONObject(): any {
+  public writeJSONObject(): CurrencyJson {
     const rstObj: any = super.writeJSONObject();
-    rstObj.curr = this.Currency;
-    rstObj.name = this.Name;
-    rstObj.symbol = this.Symbol;
-    return rstObj;
+    rstObj.Curr = this.Currency;
+    rstObj.Name = this.Name;
+    rstObj.Symbol = this.Symbol;
+    return rstObj as CurrencyJson;
   }
 
-  public onSetData(data: any): void {
+  public onSetData(data: CurrencyJson): void {
     super.onSetData(data);
 
     if (data && data.Curr) {
