@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ControlCenterComponent } from './control-center.component';
 

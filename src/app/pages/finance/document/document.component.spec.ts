@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { DocumentComponent } from './document.component';
 
@@ -9,7 +10,10 @@ describe('DocumentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ NgZorroAntdModule ],
+      imports: [
+        NgZorroAntdModule,
+        RouterTestingModule,
+      ],
       declarations: [ DocumentComponent ]
     })
     .compileComponents();
@@ -18,7 +22,7 @@ describe('DocumentComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

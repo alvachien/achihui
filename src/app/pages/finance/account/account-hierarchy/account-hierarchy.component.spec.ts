@@ -21,8 +21,8 @@ describe('AccountHierarchyComponent', () => {
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
-      imports: [ 
-        NgZorroAntdModule, 
+      imports: [
+        NgZorroAntdModule,
         HttpClientTestingModule,
         getTranslocoModule(),
       ],
