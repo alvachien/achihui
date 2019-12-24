@@ -11,5 +11,4 @@ export class DocumentTransferCreateComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

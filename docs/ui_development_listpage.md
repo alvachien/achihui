@@ -1,18 +1,22 @@
 # List page
+
 List page, plays the role that the entrance of the objects, for instance, the DocumentList page shows a table contains recent documents, and provides buttons to create/display/edit/delete document.
 
 ## JSON format for commuication with API
+
 The JSON format:
 
 ```javascript 
-{"contentList":[],"totalCount":0} 
+{"contentList":[],"totalCount":0}
 ```
 
 The two parts:
+
 - *contentList*: the array of the returned objects (it may just part of the whole result if applying the paging concept);
 - *totalCount*: the count of whole results.
 
 There is a Typescript class defined for it:
+
 ```typescript
 export class BaseListModel<T> {
   totalCount: number;
@@ -21,12 +25,15 @@ export class BaseListModel<T> {
 ```
 
 ## Theme
+
 TBD.
 
 ## Using Material Table Component;
+
 By default, the list page shall use the Material Table component;
 
 ### HTML code blocks
+
 Add the HTML codes (DocumentList page as the example):
 
 ```html
@@ -76,13 +83,14 @@ Add the HTML codes (DocumentList page as the example):
             {{ row.Desp }}
           </mat-cell>
         </ng-container>
-        
+
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onDisplayDocument(row)"></mat-row>
     </mat-table>
 ```
 
 ### CSS
+
 Following is the CSS (within scss format):
 
 ```scss
@@ -122,11 +130,14 @@ Following is the CSS (within scss format):
 ```
 
 ### Data Source
+
 There are two ways to specify the data source:
+
 1. Use the MaterialDataSource
 2. Use the DataSource from CDK/Collections;
 
-##### MaterialDataSource
+#### MaterialDataSource
+
 First of all, you need import the following:
 
 ```typescript
@@ -134,45 +145,50 @@ import { MatTableDataSource } from '@angular/material';
 ```
 
 Then, define the variable in the component (also use the DocumentList page as the example):
+
 ```typescript
 dataSource: MatTableDataSource<Document> = new MatTableDataSource<Document>();
 ```
 
 Next, to operator with the array, use the attribute:
+
 ```typescript
 this.dataSource.data = []; // Empty the results
 ```
 
-##### DataSource from CDK/Collection
+#### DataSource from CDK/Collection
+
 First of all, you need import the following:
+
 ```typescript
 import { DataSource } from '@angular/cdk/collections';
 ```
 
 Then, you need create a data source class (Example for DocumentList):
+
 ```typescript
 export class DocumentDataSource extends DataSource<any> {
    constructor(private _storageService: FinanceStorageService,
      private _paginator: MatPaginator) {
      super();
    }
- 
+
    /** Connect function called by the table to retrieve one stream containing the data to render. */
    connect(): Observable<Document[]> {
      const displayDataChanges: any[] = [
        this._storageService.listDocumentChange,
        this._paginator.page,
      ];
- 
+
      return merge(...displayDataChanges).pipe(map(() => {
        const data: any = this._storageService.Documents.slice();
- 
+
        // Grab the page's slice of data.
        const startIndex: number = this._paginator.pageIndex * this._paginator.pageSize;
        return data.splice(startIndex, this._paginator.pageSize);
      }));
    }
- 
+
    disconnect(): void {
      // Empty
    }
@@ -180,11 +196,13 @@ export class DocumentDataSource extends DataSource<any> {
 ```
 
 Next, define the variable in component itself:
+
 ```typescript
 dataSource: DocumentDataSource | undefined;
 ```
 
 Initialize the variable in ngOnInit():
+
 ```typescript
    ngOnInit(): void {
         // Other codes...
@@ -194,20 +212,26 @@ Initialize the variable in ngOnInit():
 ```
 
 ### Displayed Columns
+
 There shall be a variable defined in the component class for the displayed column:
+
 ```typescript
 displayedColumns: string[] = ['id', 'DocType', 'TranDate', 'TranAmount', 'Desp'];
 ```
 
 ## Paging
+
 Paging is the key requirement to improve the performance, not only the memory consumption but also the response time.
 
 ### Communication between API and UI
+
 To supporting paging, the API shall provides the following parameters:
+
 - *total*: the amount of returned records;
 - *skip*: the amount that the returned records offset from the beginning;
 
 ### HTML code blocks
+
 Add HTML codes to bring the paginator (normally the codeblock continues after the mat-table):
 
 ```html
@@ -220,33 +244,40 @@ Add HTML codes to bring the paginator (normally the codeblock continues after th
 ```
 
 ### MaterialPaginator component
+
 By default, the list page shall use the MaterialPaginator component to support the paging;
 
 First of all, import the class:
+
 ```typescript
 import { MatPaginator } from '@angular/material';
 ```
 
 Next, define the variable in the component class:
+
 ```typescript
 @ViewChild(MatPaginator) paginator: MatPaginator;
 ```
 
 ### Communicated with Material Table component
+
 The Paginator have to sync with Material Table component for the following scenarios:
+
 1. Paginator triggers the events, like change the page;
 2. Table triggers the events, like the refresh;
 
-
 There are three ways to sync the events:
+
 1. In the example above for DataSource from cdk/collection, the events of Paginator already embedded via a merge in the *connect()* method.
 
 2. If using the MatDataSource, it can be easily achieved by assign the paginator instance to MatTable.
+
 ```typescript
   this.dataSource.paginator = this.paginator;
 ```
 
 3. If using the MatDataSource, you can define an own *merge()* and define it in *ngAfterViewInit()*:
+
 ```typescript
   ngAfterViewInit(): void {
     // If the user changes the sort order, reset back to the first page.
@@ -288,12 +319,15 @@ There are three ways to sync the events:
 ```
 
 ## Sort
+
 By default, to support sort in list page, use the built-in sorting of Material Table component.
 
 [Official linkage](https://material.angular.io/components/sort/overview).
 
 The sorting consists of following parts:
+
 - HTML
+
 ```html
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
@@ -325,7 +359,9 @@ The sorting consists of following parts:
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 ```
+
 - CSS
+
 ```css
 table {
   width: 100%;
@@ -335,7 +371,9 @@ th.mat-sort-header-sorted {
   color: black;
 }
 ```
-- TS 
+
+- TS
+
 ```typescript
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatSort, MatTableDataSource} from '@angular/material';

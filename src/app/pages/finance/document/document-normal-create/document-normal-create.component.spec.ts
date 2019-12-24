@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgZorroAntdModule, } from 'ng-zorro-antd';
 import { BehaviorSubject } from 'rxjs';
@@ -22,6 +23,9 @@ describe('DocumentNormalCreateComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
+        HttpClientTestingModule,
+        FormsModule,
+        ReactiveFormsModule,
         NgZorroAntdModule,
         getTranslocoModule(),
       ],
@@ -38,7 +42,7 @@ describe('DocumentNormalCreateComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentNormalCreateComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    //fixture.detectChanges();
   });
 
   it('should create', () => {

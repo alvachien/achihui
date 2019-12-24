@@ -5,7 +5,6 @@ import { takeUntil } from 'rxjs/operators';
 
 import { FinanceOdataService, UIStatusService } from '../../../../services';
 import { LogLevel, ControlCenter, getOverviewScopeRange, UICommonLabelEnum, ModelUtility, ConsoleLogTypeEnum, } from '../../../../model';
-import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'hih-control-center-list',

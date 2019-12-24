@@ -21,7 +21,8 @@ describe('DocumentTransferCreateComponent', () => {
     const routerSpy: any = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
-      imports : [
+      imports: [
+        HttpClientTestingModule,
         NgZorroAntdModule,
         getTranslocoModule(),
       ],
